@@ -176,35 +176,52 @@ export const CoachActionGroupOverview: React.FC<CoachActionGroupOverviewProps> =
       );
 
     case 'ended':
-      return (
-        <div className="flex flex-col gap-2 w-full">
-          {props.reviewType === 'session-review' && (
+      if( props.hasCallQualityRating === false ) {
+        // Type narrowing: props is now CoachEndedSessionReviewCard
+        const endedProps = props as Extract<CoachActionGroupOverviewProps, { status: 'ended'; hasCallQualityRating: false }>;
+        return (
+          <div className="flex flex-col gap-2 w-full">
             <Button
               variant="primary"
               className="w-full"
               size="medium"
               text={dictionary.components.coachingSessionCard.rateCallQualityText}
-              onClick={props.onClickRateCallQuality}
+              onClick={endedProps.onClickRateCallQuality}
             />
-          )}
-          <Button
-            variant="secondary"
-            className=""
-            size="medium"
-            hasIconLeft
-            iconLeft={<IconCloudDownload size="6" />}
-            text={dictionary.components.coachingSessionCard.downloadRecordingText}
-            onClick={props.onClickDownloadRecording}
-            disabled={props.reviewType === 'session-review' || (props.reviewType === 'call-quality' && props.isRecordingDownloading)}
-          />
-          {props.reviewType === 'call-quality' && props.isRecordingDownloading && (
-            <p className="text-xs text-text-secondary leading-[100%]">
-              {dictionary.components.coachingSessionCard.recordingAvailabilityInfo}
-            </p>
-          )}
-        </div>
-      );
-
+            <Button
+              variant="secondary"
+              className=""
+              size="medium"
+              hasIconLeft
+              iconLeft={<IconCloudDownload size="6" />}
+              text={dictionary.components.coachingSessionCard.downloadRecordingText}
+              onClick={props.onClickDownloadRecording}
+            />
+          </div>
+        );
+      } else {
+        // Type narrowing: props is now CoachEndedCallQualityCard
+        const endedProps = props as Extract<CoachActionGroupOverviewProps, { status: 'ended'; hasCallQualityRating: true }>;
+        return (
+          <div className="flex flex-col gap-2 w-full">
+            <Button
+              variant="secondary"
+              className=""
+              size="medium"
+              hasIconLeft
+              iconLeft={<IconCloudDownload size="6" />}
+              text={dictionary.components.coachingSessionCard.downloadRecordingText}
+              onClick={endedProps.onClickDownloadRecording}
+              disabled={endedProps.isRecordingDownloading}
+            />
+            {endedProps.isRecordingDownloading && (
+              <p className="text-xs text-text-secondary leading-[100%]">
+                {dictionary.components.coachingSessionCard.recordingAvailabilityInfo}
+              </p>
+            )}
+          </div>
+        );
+      };
 
 
     case 'canceled':

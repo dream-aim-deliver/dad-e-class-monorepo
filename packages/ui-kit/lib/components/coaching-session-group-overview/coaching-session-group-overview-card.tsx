@@ -74,6 +74,10 @@ type StudentEndedWithoutReviewCard = BaseCardSharedProps & {
     userType: 'student';
     status: 'ended';
     hasReview: false;
+    averageRating: number;
+    reviewCount: number;
+    studentCount: number;
+    onClickReadReviews: () => void;
     onClickReviewCoachingSession: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
@@ -90,11 +94,10 @@ type StudentEndedWithReviewCard = BaseCardSharedProps & {
     userType: 'student';
     status: 'ended';
     hasReview: true;
-    reviewText: string;
-    rating: number;
-    totalReviews?: number;
-    averageRating?: number;
-    onClickReadReviews?: () => void;
+    averageRating: number;
+    reviewCount: number;
+    studentCount: number;
+    onClickReadReviews: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
     creatorName: string;
@@ -170,12 +173,11 @@ type CoachUpcomingLockedCard = BaseCardSharedProps & {
 type CoachEndedSessionReviewCard = BaseCardSharedProps & {
     userType: 'coach';
     status: 'ended';
-    reviewType: 'session-review';
-    reviewText: string;
-    rating: number;
-    totalReviews?: number;
-    averageRating?: number;
-    onClickReadReviews?: () => void;
+    hasCallQualityRating: false;
+    averageRating: number;
+    reviewCount: number;
+    studentCount: number;
+    onClickReadReviews: () => void;
     onClickRateCallQuality: () => void;
     onClickDownloadRecording: () => void;
 };
@@ -187,8 +189,11 @@ type CoachEndedSessionReviewCard = BaseCardSharedProps & {
 type CoachEndedCallQualityCard = BaseCardSharedProps & {
     userType: 'coach';
     status: 'ended';
-    reviewType: 'call-quality';
-    callQualityRating: number;
+    hasCallQualityRating: true;
+    averageRating: number;
+    reviewCount: number;
+    studentCount: number;
+    onClickReadReviews: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
 };

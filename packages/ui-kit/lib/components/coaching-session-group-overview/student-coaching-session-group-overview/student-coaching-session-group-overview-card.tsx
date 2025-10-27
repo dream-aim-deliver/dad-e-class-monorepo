@@ -91,7 +91,7 @@ export const StudentCoachingSessionGroupOverviewCard: React.FC<StudentCoachingSe
     // These sessions don't have finalized date/time but still show creator information
     if (props.status === 'unscheduled') {
         return (
-            <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
+            <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto h-fit">
                 <div className="flex gap-4 items-center justify-between">
                     <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
                         {props.title}
@@ -139,7 +139,7 @@ export const StudentCoachingSessionGroupOverviewCard: React.FC<StudentCoachingSe
     // All other session statuses with defined creators and scheduling
     // TypeScript ensures all required props are present based on the specific status
     return (
-        <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
+        <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto h-fit">
             <div className="flex gap-4 items-center justify-between">
                 <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
                     {props.title}
@@ -156,12 +156,10 @@ export const StudentCoachingSessionGroupOverviewCard: React.FC<StudentCoachingSe
                 endTime={props.endTime}
                 hasReview={props.status === 'ended'}
             />
-            {props.status === 'ended' && props.hasReview && props.rating && props.rating > 0 && (
+            {props.status === 'ended' &&  (
                 <ReviewCardGroupOverview
-                    type="student-review"
-                    reviewText={props.reviewText}
-                    rating={props.rating}
-                    totalReviews={props.totalReviews}
+                    reviewCount={props.reviewCount}
+                    studentCount={props.studentCount}
                     averageRating={props.averageRating}
                     onClickReadReviews={props.onClickReadReviews}
                     locale={props.locale}

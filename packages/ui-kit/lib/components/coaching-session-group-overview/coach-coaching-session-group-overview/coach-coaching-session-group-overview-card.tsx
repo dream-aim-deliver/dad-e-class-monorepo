@@ -96,7 +96,7 @@ export const CoachCoachingSessionGroupOverviewCard: React.FC<CoachCoachingSessio
   // These sessions don't have finalized date/time or creator assignments
   if (props.status === 'unscheduled') {
     return (
-      <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
+      <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto h-fit">
         <div className="flex gap-4 items-center justify-between">
           <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
             {props.title}
@@ -142,7 +142,7 @@ export const CoachCoachingSessionGroupOverviewCard: React.FC<CoachCoachingSessio
   }
 
   return (
-    <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto">
+    <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto h-fit">
       <div className="flex gap-4 items-center justify-between">
         <p
           title={props.title}
@@ -163,28 +163,13 @@ export const CoachCoachingSessionGroupOverviewCard: React.FC<CoachCoachingSessio
         hasReview={props.status === 'ended'}
       />
       {props.status === 'ended' && (
-        (props.reviewType === 'session-review' && props.rating && props.rating > 0) ||
-        (props.reviewType === 'call-quality' && props.callQualityRating && props.callQualityRating > 0)
-      ) && (
-          <>
-            {props.reviewType === 'session-review' ? (
-              <ReviewCardGroupOverview
-                type="coach-session-review"
-                reviewText={props.reviewText}
-                rating={props.rating}
-                totalReviews={props.totalReviews}
-                averageRating={props.averageRating}
-                onClickReadReviews={props.onClickReadReviews}
-                locale={props.locale}
-              />
-            ) : (
-              <ReviewCardGroupOverview
-                type="coach-call-quality"
-                rating={props.callQualityRating}
-                locale={props.locale}
-              />
-            )}
-          </>
+        <ReviewCardGroupOverview
+          reviewCount={props.reviewCount}
+          studentCount={props.studentCount}
+          averageRating={props.averageRating}
+          onClickReadReviews={props.onClickReadReviews}
+          locale={props.locale}
+        />
         )}
       <CourseCreatorGroupOverview
         withinCourse={props.withinCourse}

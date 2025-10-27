@@ -208,11 +208,10 @@ export const StudentActionGroupOverview: React.FC<StudentActionGroupOverviewProp
             return ( 
                 <Badge
                     variant="errorprimary"
-                    size="huge"
+                    className="text-sm max-w-fit"
                     text={dictionary.components.coachingSessionCard.sessionCanceledText}
                     hasIconLeft
                     iconLeft={<IconTrashAlt size="5" />}
-                    className="max-w-fit rounded-[8px] px-3 py-2"
                 />
             );
 

@@ -11,10 +11,11 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { DefaultLoading, DefaultError, DefaultNotFound, CoachingSessionCard, Breadcrumbs, Dropdown, Button, IconFilter, CoachingSessionList } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, Breadcrumbs, Dropdown, Button,  CoachingSessionGroupOverviewList, CoachingSessionGroupOverviewCard } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/cms-client';
 import { useListGroupCoachingSessionsPresenter } from '../hooks/use-list-group-coaching-sessions-presenter';
 import useClientSidePagination from '../utils/use-client-side-pagination';
+import { useRouter } from 'next/navigation';
 
 interface EndedGroupCoachingSessionsProps {
     locale: TLocale;
@@ -32,6 +33,7 @@ export default function EndedGroupCoachingSessions({
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const paginationTranslations = useTranslations('components.paginationButton');
     const { data: session, status } = useSession();
+    const router = useRouter();
 
     // Fetch ended group coaching sessions using TRPC
     const [sessionsResponse] = trpc.listGroupCoachingSessions.useSuspenseQuery({
@@ -64,6 +66,29 @@ export default function EndedGroupCoachingSessions({
             hour12: true
         });
     };
+
+    // Helper function to generate common props for coaching session cards
+    const getCommonCardProps = (session: any) => ({
+        locale: localeProp,
+        userType: 'coach' as const,
+        title: session.coachingOfferingTitle,
+        duration: session.coachingOfferingDuration,
+        date: new Date(session.publicationDate),
+        startTime: formatTime(session.startTime),
+        endTime: formatTime(session.endTime),
+        withinCourse: !!session.course,
+        courseName: session.course.title,
+        courseImageUrl: session.course.imageUrl || "",
+        groupName: session.group.name,
+        status: 'ended' as const,
+        reviewCount: session.reviewCount,
+        averageRating: session.averageRating || 0,
+        studentCount: session.studentCount,
+        onClickReadReviews: () => console.log("Read reviews clicked"),
+        onClickDownloadRecording: () => console.log("Download recording clicked"),
+        onClickCourse: () => console.log("Course is clicked"),
+        onClickGroup: () => console.log("Group is clicked"),
+    });
 
     // Sort options based on session criteria
     const sortOptions = [
@@ -182,15 +207,11 @@ export default function EndedGroupCoachingSessions({
                 items={[
                     {
                         label: breadcrumbsTranslations('home'),
-                        onClick: () => {
-                            // TODO: Implement navigation to home
-                        },
+                        onClick: () => router.push(`/${currentLocale}`),
                     },
                     {
                         label: breadcrumbsTranslations('workspace'),
-                        onClick: () => {
-                            // TODO: Implement navigation to workspace
-                        },
+                        onClick: () => router.push(`/${currentLocale}/workspace`),
                     },
                     {
                         label: breadcrumbsTranslations('yourCourses'),
@@ -200,27 +221,19 @@ export default function EndedGroupCoachingSessions({
                     },
                     {
                         label: courseSlug,
-                        onClick: () => {
-                            // TODO: Implement navigation to your course details
-                        },
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}`),
                     },
                     {
                         label: breadcrumbsTranslations('groups'),
-                        onClick: () => {
-                            // TODO: Implement navigation to groups
-                        },
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups`),
                     },
                     {
                         label: sessionsData.sessions[0]?.group.name || '',
-                        onClick: () => {
-                            // TODO: Implement navigation to specific group details
-                        },
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups/${groupId}`),
                     },
                     {
                         label: breadcrumbsTranslations('coachingSessionReviews'),
-                        onClick: () => {
-                            // TODO: Implement navigation to coaching session reviews
-                        },
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups/${groupId}/coaching-sessions`),
                     },
                 ]}
             />
@@ -256,31 +269,35 @@ export default function EndedGroupCoachingSessions({
                 </div>
 
                 {/* Sessions with pagination */}
-                <CoachingSessionList locale={localeProp}>
-                    {displayedSessions.map((session) => {
-                        return (
-                            <CoachingSessionCard
-                                key={session.id}
-                                locale={localeProp}
-                                userType="coach"
-                                status="ended"
-                                title={session.coachingOfferingTitle}
-                                duration={session.coachingOfferingDuration}
-                                date={new Date(session.publicationDate)}
-                                startTime={formatTime(session.startTime)}
-                                endTime={formatTime(session.endTime)}
-                                studentName={session.group.name}
-                                studentImageUrl={session.course.imageUrl || ""}
-                                onClickStudent={() => console.log('Navigate to group details')}
-                                reviewType="session-review"
-                                reviewText={`${session.studentCount} participants • Course: ${session.course.title}`}
-                                rating={session.averageRating || 0}
-                                onClickDownloadRecording={() => console.log('Download recording')}
-                                onClickRateCallQuality={() => console.log('Rate call quality')}
-                            />
-                        );
+                <CoachingSessionGroupOverviewList locale={localeProp}>
+                    {displayedSessions.map((session , idx) => {
+                        const commonProps = getCommonCardProps(session);
+                        
+                        // TODO: Add hasCallQualityRating in listGroupCoachingSessions response
+                        const hasCallQualityRating = idx % 2 != 0;
+
+                        // Conditional props based on hasCallQualityRating
+                        if (hasCallQualityRating) {
+                            return (
+                                <CoachingSessionGroupOverviewCard 
+                                    key={session.id}
+                                    {...commonProps}
+                                    hasCallQualityRating={true}
+                                    isRecordingDownloading={false} // TODO: Add actual loading state
+                                />
+                            );
+                        } else {
+                            return (
+                                <CoachingSessionGroupOverviewCard 
+                                    key={session.id}
+                                    {...commonProps}
+                                    hasCallQualityRating={false}
+                                    onClickRateCallQuality={() => console.log("Call quality rating clicked")}
+                                />
+                            );
+                        }
                     })}
-                </CoachingSessionList>
+                </CoachingSessionGroupOverviewList>
                 {hasMoreSessions && (
                     <div className="flex justify-center items-center w-full mt-6">
                         <Button

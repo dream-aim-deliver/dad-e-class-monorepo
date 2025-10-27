@@ -52,8 +52,8 @@ type StudentUnscheduledStory = StrictStoryObj<Extract<CoachingSessionGroupOvervi
 type CoachOngoingStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ongoing' }>>;
 type CoachUpcomingEditableStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'upcoming-editable' }>>;
 type CoachUpcomingLockedStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'upcoming-locked' }>>;
-type CoachEndedSessionReviewStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ended'; reviewType: 'session-review' }>>;
-type CoachEndedCallQualityStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ended'; reviewType: 'call-quality' }>>;
+type CoachEndedSessionReviewStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ended'; hasCallQualityRating: false }>>;
+type CoachEndedCallQualityStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ended'; hasCallQualityRating: true }>>;
 type CoachCanceledStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'canceled' }>>;
 type CoachUnscheduledStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'unscheduled' }>>;
 
@@ -94,6 +94,10 @@ export const StudentEndedWithoutReview: StudentEndedWithoutReviewStory = {
     userType: 'student',
     status: 'ended',
     hasReview: false,
+    averageRating: 4.7,
+    reviewCount: 15,
+    studentCount: 20,
+    onClickReadReviews: () => alert('Read reviews clicked'),
     onClickReviewCoachingSession: () => alert('Review coaching session clicked'),
     onClickDownloadRecording: () => alert('Download recording clicked'),
     isRecordingDownloading: false,
@@ -106,10 +110,9 @@ export const StudentEndedWithReview: StudentEndedWithReviewStory = {
     userType: 'student',
     status: 'ended',
     hasReview: true,
-    reviewText: 'This was an excellent coaching session. The coach explained complex concepts clearly and provided valuable feedback.',
-    rating: 5,
-    totalReviews: 8,
     averageRating: 4.7,
+    reviewCount: 15,
+    studentCount: 20,
     onClickReadReviews: () => alert('Read reviews clicked'),
     onClickDownloadRecording: () => alert('Download recording clicked'),
     isRecordingDownloading: false,
@@ -188,11 +191,10 @@ export const CoachEndedSessionReview: CoachEndedSessionReviewStory = {
     ...baseSharedProps,
     userType: 'coach',
     status: 'ended',
-    reviewType: 'session-review',
-    reviewText: 'The student was very engaged and asked great questions throughout the session.',
-    rating: 4.5,
-    totalReviews: 8,
+    hasCallQualityRating: false,
     averageRating: 4.7,
+    reviewCount: 15,
+    studentCount: 20,
     onClickReadReviews: () => alert('Read reviews clicked'),
     onClickRateCallQuality: () => alert('Rate call quality clicked'),
     onClickDownloadRecording: () => alert('Download recording clicked'),
@@ -204,8 +206,11 @@ export const CoachEndedCallQuality: CoachEndedCallQualityStory = {
     ...baseSharedProps,
     userType: 'coach',
     status: 'ended',
-    reviewType: 'call-quality',
-    callQualityRating: 4,
+    hasCallQualityRating: true,
+    averageRating: 4.3,
+    reviewCount: 10,
+    studentCount: 18,
+    onClickReadReviews: () => alert('Read reviews clicked'),
     onClickDownloadRecording: () => alert('Download recording clicked'),
     isRecordingDownloading: false,
   },
