@@ -62,6 +62,22 @@ export const EN: TDictionary = {
       resetFilters: 'Reset Filters',
       applyFilters: 'Apply Filters',
     },
+    coachingSessionFilterModal: {
+      title: 'Session Filters',
+      ratingFilter: 'Rating',
+      minimumRatingPlaceholder: 'Minimum rating',
+      maximumRatingPlaceholder: 'Maximum rating',
+      courseNameFilter: 'Course Name',
+      courseNamePlaceholder: 'Enter course name',
+      participantsFilter: 'Number of Participants',
+      minParticipantsPlaceholder: 'Min',
+      maxParticipantsPlaceholder: 'Max',
+      sessionDateFilter: 'Session Date Range',
+      after: 'After',
+      before: 'Before',
+      resetFilters: 'Reset Filters',
+      applyFilters: 'Apply Filters',
+    },
     studentCardFilterModal: {
       title: 'Student Card Filters',
       studentNameFilter: 'Student Name',
@@ -424,7 +440,7 @@ export const EN: TDictionary = {
     coachingSessionCard: {
       durationText: 'min.',
       createdByText: 'Created by',
-      courseText: 'Offer',
+      courseText: 'Course',
       groupText: 'Group',
       joinMeetingText: 'Join Meeting',
       studentText: 'Student',
@@ -449,6 +465,10 @@ export const EN: TDictionary = {
       loadMoreText: 'Load more...',
       toBeDefined: 'To be defined',
       toBeDefinedMessage: 'Contact the coach with your availability. Use scheduling tools like Doodle to find a time that works for everyone.',
+      reviewsSentText: 'Reviews sent:',
+      averageRatingText: 'Average rating:',
+      readReviewsText: 'Read reviews',
+      scheduleSessionText: 'Schedule Session',
     },
     coachingSessionCancelModal: {
       noText: 'No',
@@ -652,6 +672,12 @@ export const EN: TDictionary = {
     groupCourseBanner: {
       takenAlsoBy: 'Taken also by',
       groupWorkspaceButton: 'Group Workspace',
+    },
+    groupIntroduction: {
+      students: 'students',
+      course: 'Course',
+      coach: 'Coach',
+      you: 'You',
     },
     reviewSnippet: {
       by: 'by',
@@ -1031,6 +1057,8 @@ export const EN: TDictionary = {
       yourCalendar: "Your Calendar",
       yourReviews: 'Your Reviews',
       coupons: 'Coupons',
+      yourCourses: 'Your Courses',
+      groups: 'Groups',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1904,17 +1932,30 @@ export const EN: TDictionary = {
         title: 'Group Introduction',
       },
       assignments: {
-        title: 'Group Assignments',
+        title: 'Assignments',
+        sortBy: 'Sort by',
+        selectSort: 'Select sort option',
+        filterButton: 'Filters',
+        downloadAllButton: 'Download all(.zip)',
+        sortOptions: {
+          title: 'Title (A-Z)',
+          status: 'Status',
+          date: 'Date (Latest)',
+          student: 'Student Name',
+        },
       },
       nextCoachingSession: {
-        title: 'Next Coaching Session',
+        title: 'Next session',
         noSession: 'No upcoming coaching session scheduled',
+        closedSessionsButton: 'Closed sessions',
       },
       members: {
         title: 'Group Members',
+        searchstudent: 'search student',
       },
       notes: {
         title: 'Group Notes',
+        editButton: 'Edit',
         saveButton: 'Save Notes',
         saving: 'Saving...',
         saved: 'Notes saved successfully',

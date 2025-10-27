@@ -62,6 +62,22 @@ export const DE: TDictionary = {
       resetFilters: 'Filter zurücksetzen',
       applyFilters: 'Filter anwenden',
     },
+    coachingSessionFilterModal: {
+      title: 'Sitzungsfilter',
+      ratingFilter: 'Bewertung',
+      minimumRatingPlaceholder: 'Mindestbewertung',
+      maximumRatingPlaceholder: 'Höchstbewertung',
+      courseNameFilter: 'Kursname',
+      courseNamePlaceholder: 'Kursname eingeben',
+      participantsFilter: 'Anzahl der Teilnehmer',
+      minParticipantsPlaceholder: 'Min',
+      maxParticipantsPlaceholder: 'Max',
+      sessionDateFilter: 'Sitzungsdatumsbereich',
+      after: 'Nach',
+      before: 'Vor',
+      resetFilters: 'Filter zurücksetzen',
+      applyFilters: 'Filter anwenden',
+    },
     studentCardFilterModal: {
       title: 'Studentenkarten-Filter',
       studentNameFilter: 'Studentenname',
@@ -452,6 +468,10 @@ export const DE: TDictionary = {
       loadMoreText: 'Mehr laden...',
       toBeDefined: 'Wird noch festgelegt',
       toBeDefinedMessage: 'Kontaktiere den Coach mit deiner Verfügbarkeit. Verwende Planungstools wie Doodle, um einen passenden Termin für alle zu finden.',
+      reviewsSentText: 'Bewertungen gesendet:',
+      averageRatingText: 'Durchschnittsbewertung:',
+      readReviewsText: 'Bewertungen lesen',
+      scheduleSessionText: 'Sitzung planen',
     },
     coachingSessionCancelModal: {
       noText: 'NEIN',
@@ -642,6 +662,12 @@ export const DE: TDictionary = {
     groupCourseBanner: {
       takenAlsoBy: 'Ebenfalls belegt von',
       groupWorkspaceButton: 'Gruppenarbeitsbereich',
+    },
+    groupIntroduction: {
+      students: 'Studenten',
+      course: 'Kurs',
+      coach: 'Trainer',
+      you: 'Du',
     },
     reviewSnippet: {
       by: 'von',
@@ -1035,6 +1061,8 @@ export const DE: TDictionary = {
       yourCalendar: "Ihr Kalender",
       yourReviews: 'Deine Bewertungen',
       coupons: 'Gutscheine',
+      yourCourses: 'Ihre Kurse',
+      groups: 'Gruppen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1907,17 +1935,30 @@ export const DE: TDictionary = {
         title: 'Gruppenvorstellung',
       },
       assignments: {
-        title: 'Gruppenaufgaben',
+        title: 'Aufgaben',
+        sortBy: 'Sortieren nach',
+        selectSort: 'Sortieroption auswählen',
+        filterButton: 'Filter',
+        downloadAllButton: 'Alles herunterladen (.zip)',
+        sortOptions: {
+          title: 'Titel (A-Z)',
+          status: 'Status',
+          date: 'Datum (Neueste)',
+          student: 'Schülername',
+        },
       },
       nextCoachingSession: {
-        title: 'Nächste Coaching-Sitzung',
+        title: 'Nächste Sitzung',
         noSession: 'Keine bevorstehende Coaching-Sitzung geplant',
+        closedSessionsButton: 'Geschlossene Sitzungen',
       },
       members: {
         title: 'Gruppenmitglieder',
+        searchstudent: 'Suche Student',
       },
       notes: {
         title: 'Gruppennotizen',
+        editButton: 'Bearbeiten',
         saveButton: 'Notizen speichern',
         saving: 'Wird gespeichert...',
         saved: 'Notizen erfolgreich gespeichert',

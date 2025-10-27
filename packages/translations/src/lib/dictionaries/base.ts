@@ -62,6 +62,22 @@ export const DictionarySchema = z.object({
       resetFilters: z.string(),
       applyFilters: z.string(),
     }),
+    coachingSessionFilterModal: z.object({
+      title: z.string(),
+      ratingFilter: z.string(),
+      minimumRatingPlaceholder: z.string(),
+      maximumRatingPlaceholder: z.string(),
+      courseNameFilter: z.string(),
+      courseNamePlaceholder: z.string(),
+      participantsFilter: z.string(),
+      minParticipantsPlaceholder: z.string(),
+      maxParticipantsPlaceholder: z.string(),
+      sessionDateFilter: z.string(),
+      after: z.string(),
+      before: z.string(),
+      resetFilters: z.string(),
+      applyFilters: z.string(),
+    }),
     studentCardFilterModal: z.object({
       title: z.string(),
       studentNameFilter: z.string(),
@@ -453,6 +469,10 @@ export const DictionarySchema = z.object({
       loadMoreText: z.string(),
       toBeDefined: z.string(),
       toBeDefinedMessage: z.string(),
+      reviewsSentText: z.string(),
+      averageRatingText: z.string(),
+      readReviewsText: z.string(),
+      scheduleSessionText: z.string(),
     }),
     coachingSessionCancelModal: z.object({
       noText: z.string(),
@@ -643,6 +663,12 @@ export const DictionarySchema = z.object({
     groupCourseBanner: z.object({
       takenAlsoBy: z.string(),
       groupWorkspaceButton: z.string(),
+    }),
+    groupIntroduction: z.object({
+      students: z.string(),
+      course: z.string(),
+      coach: z.string(),
+      you: z.string(),
     }),
     reviewSnippet: z.object({
       by: z.string(),
@@ -1022,6 +1048,8 @@ export const DictionarySchema = z.object({
       yourCalendar: z.string(),
       yourReviews: z.string(),
       coupons: z.string(),
+      yourCourses: z.string(),
+      groups: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1940,16 +1968,29 @@ export const DictionarySchema = z.object({
       }),
       assignments: z.object({
         title: z.string(),
+        sortBy: z.string(),
+        selectSort: z.string(),
+        filterButton: z.string(),
+        downloadAllButton: z.string(),
+        sortOptions: z.object({
+          title: z.string(),
+          status: z.string(),
+          date: z.string(),
+          student: z.string(),
+        }),
       }),
       nextCoachingSession: z.object({
         title: z.string(),
         noSession: z.string(),
+        closedSessionsButton: z.string(),
       }),
       members: z.object({
         title: z.string(),
+        searchstudent: z.string(),
       }),
       notes: z.object({
         title: z.string(),
+        editButton: z.string(),
         saveButton: z.string(),
         saving: z.string(),
         saved: z.string(),

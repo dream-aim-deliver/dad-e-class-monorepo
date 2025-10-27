@@ -240,6 +240,12 @@ export { ReviewFilterModal, type ReviewFilterModel } from './components/grids/re
 export { default as CoachReviewCard, type ReviewCardProps as CoachReviewCardProps } from './components/review/coach-review-card';
 export { RevokeCouponModal, type RevokeCouponModalProps } from './components/coupon/revoke-coupon-modal';
 export { CreateCouponModal, type CreateCouponModalProps } from './components/coupon/create-coupon-modal';
-
+export { GroupIntroduction } from './components/group-introduction';
+export { CoachNotesView , CoachNotesCreate } from './components/coach/coach-notes';
+export { CoachNotesEditDialog } from './components/coach/coach-notes-edit-dialog';
+export { AssignmentCard } from './components/assignment/assignment-card';
+export { AssignmentCardFilterModal } from './components/assignment/assignment-card-filter-modal';
+export { CoachingSessionGroupOverviewList, CoachingSessionFilterModal, type CoachingSessionFilterModel } from './components/coaching-session-group-overview';
+export { CoachingSessionGroupOverviewCard } from './components/coaching-session-group-overview/coaching-session-group-overview-card';
 
 export * from "./components/cms"

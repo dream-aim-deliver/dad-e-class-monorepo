@@ -183,7 +183,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     return (
         <div
             className={cn(
-                'flex flex-col p-4 bg-card-fill border-1 border-card-stroke rounded-medium',
+                'flex flex-col p-4 bg-card-fill border-1 border-card-stroke rounded-medium h-fit',
                 (replies as assignment.TAssignmentReplyWithId[]).length > 0 ? 'gap-2' : 'gap-4',
             )}
         >
