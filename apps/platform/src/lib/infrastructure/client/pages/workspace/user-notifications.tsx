@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useListNotificationsPresenter } from '../../hooks/use-notifications-presenter';
+import { useListNotificationsPresenter } from '../../hooks/use-list-notifications-presenter';
 import { useSession } from 'next-auth/react';
 import {
     DefaultLoading,
@@ -12,14 +12,14 @@ import { Activity } from '@maany_shr/e-class-ui-kit';
 import { RecentActivity } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 
 export default function UserNotifications() {
     const locale = useLocale() as TLocale;
     const sessionDTO = useSession();
     const session = sessionDTO.data;
-    
-    const [viewModel, setViewModel] = useState<viewModels.TNotificationsViewModel | null>(null);
+
+    const [viewModel, setViewModel] = useState<viewModels.TListNotificationsViewModel | null>(null);
     const { presenter } = useListNotificationsPresenter(setViewModel);
 
     // URL validation helper
@@ -57,14 +57,14 @@ export default function UserNotifications() {
     // Memoize activity components at top level
     const activityComponents = useMemo(() => {
         if (!viewModel || viewModel.mode !== 'default') return [];
-        
+
         const notifications = viewModel.data.notifications;
         return notifications.map((notification) => (
             <Activity
                 key={notification.id}
                 message={notification.message}
-                action={notification.action || { title: 'View', url: '#' }}
-                timestamp={notification.timestamp}
+                action={{ title: notification.actionTitle, url: notification.actionUrl }}
+                timestamp={notification.createdAt instanceof Date ? notification.createdAt.toISOString() : String(notification.createdAt)}
                 isRead={notification.isRead}
                 platformName="E-Class"
                 recipients={1}
@@ -74,7 +74,8 @@ export default function UserNotifications() {
                     if (url && url !== '#' && isValidUrl(url)) {
                         window.open(url, '_blank', 'noopener,noreferrer');
                     }
-                }}
+                }
+                }
             />
         ));
     }, [viewModel, locale, isValidUrl]);
@@ -88,6 +89,7 @@ export default function UserNotifications() {
     // Present the data when available
     useEffect(() => {
         if (notificationsResponse && presenter) {
+            // @ts-ignore
             presenter.present(notificationsResponse, viewModel ?? undefined);
         }
     }, [notificationsResponse, presenter, viewModel]);
@@ -107,13 +109,14 @@ export default function UserNotifications() {
         const notifications = viewModel.data.notifications;
 
         const handleMarkAllAsRead = () => {
-            const unreadNotificationIds = notifications
+            const unreadNotificationIds: number[] = notifications
                 .filter(n => !n.isRead)
-                .map(n => n.id);
-            
+                .map(n => Number(n.id))
+                .filter((id): id is number => !Number.isNaN(id));
+
             if (unreadNotificationIds.length > 0) {
-                markAsReadMutation.mutate({ 
-                    notificationIds: unreadNotificationIds 
+                markAsReadMutation.mutate({
+                    notificationIds: unreadNotificationIds
                 });
             }
         };

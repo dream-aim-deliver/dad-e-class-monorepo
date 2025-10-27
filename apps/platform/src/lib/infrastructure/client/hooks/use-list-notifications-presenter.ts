@@ -1,11 +1,13 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import ListNotificationsPresenter, { TNotificationsPresenterUtilities } from '../../common/presenters/list-notifications-presenter';
+import ListNotificationsPresenter, {
+    TListNotificationsPresenterUtilities,
+} from '../../common/presenters/list-notifications-presenter';
 
 export function useListNotificationsPresenter(
-    setViewModel: (viewModel: viewModels.TNotificationsViewModel) => void,
+    setViewModel: (viewModel: viewModels.TListNotificationsViewModel) => void,
 ) {
-    const presenterUtilities: TNotificationsPresenterUtilities = {};
+    const presenterUtilities: TListNotificationsPresenterUtilities = {};
     const presenter = useMemo(
         () => new ListNotificationsPresenter(setViewModel, presenterUtilities),
         [setViewModel],

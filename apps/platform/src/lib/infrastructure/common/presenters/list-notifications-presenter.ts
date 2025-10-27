@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ListNotificationsUseCaseResponseSchema,
+    TListNotificationsUseCaseResponse,
+    TListNotificationsErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -6,31 +11,31 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TNotificationsPresenterUtilities = {};
+export type TListNotificationsPresenterUtilities = {};
 
 export const ListNotificationsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListNotificationsUseCaseResponse,
-        viewModels.TNotificationsViewModel,
-        TNotificationsPresenterUtilities
+        TListNotificationsUseCaseResponse,
+        viewModels.TListNotificationsViewModel,
+        TListNotificationsPresenterUtilities
     >;
 
 type TListNotificationsResponseMiddleware = typeof ListNotificationsResponseMiddleware;
 
 export default class ListNotificationsPresenter extends BasePresenter<
-    useCaseModels.TListNotificationsUseCaseResponse,
-    viewModels.TNotificationsViewModel,
-    TNotificationsPresenterUtilities,
+    TListNotificationsUseCaseResponse,
+    viewModels.TListNotificationsViewModel,
+    TListNotificationsPresenterUtilities,
     TListNotificationsResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TNotificationsViewModel) => void,
-        viewUtilities: TNotificationsPresenterUtilities,
+        setViewModel: (viewModel: viewModels.TListNotificationsViewModel) => void,
+        viewUtilities: TListNotificationsPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.ListNotificationsUseCaseResponseSchema,
-                viewModel: viewModels.NotificationsViewModelSchema
+                responseModel: ListNotificationsUseCaseResponseSchema,
+                viewModel: viewModels.ListNotificationsViewModelSchema
             },
             middleware: ListNotificationsResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -40,10 +45,10 @@ export default class ListNotificationsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListNotificationsUseCaseResponse,
+            TListNotificationsUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TNotificationsViewModel {
+    ): viewModels.TListNotificationsViewModel {
         return {
             mode: 'default',
             data: {
@@ -54,10 +59,20 @@ export default class ListNotificationsPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListNotificationsUseCaseErrorResponse,
+            TListNotificationsErrorResponse,
             TListNotificationsResponseMiddleware
         >,
-    ): viewModels.TNotificationsViewModel {
+    ): viewModels.TListNotificationsViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {
