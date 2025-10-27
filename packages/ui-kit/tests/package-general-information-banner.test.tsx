@@ -81,10 +81,10 @@ describe('PackageGeneralInformation', () => {
         // Button and prices
         expect(screen.getByText('Buy Now')).toBeInTheDocument();
         expect(
-            screen.getByText(`from CHF ${mockProps.pricing.fullPrice}`),
+            screen.getByText(`from CHF ${mockProps.pricing.partialPrice}`),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(`save CHF ${mockProps.pricing.partialPrice}`),
+            screen.getByText(`save CHF ${mockProps.pricing.fullPrice - mockProps.pricing.partialPrice}`),
         ).toBeInTheDocument();
     });
 

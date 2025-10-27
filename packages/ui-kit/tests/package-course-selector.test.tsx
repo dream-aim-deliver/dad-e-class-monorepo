@@ -116,8 +116,8 @@ describe('PackageCourseSelector', () => {
         expect(screen.getByText('Build your learning package')).toBeInTheDocument();
         expect(screen.getByText('Premium Package')).toBeInTheDocument();
         expect(screen.getByText('Customize your learning experience')).toBeInTheDocument();
-        expect(screen.getByText(/CHF\s+1000/)).toBeInTheDocument();
-        expect(screen.getByText(/Save\s+CHF\s+799/)).toBeInTheDocument();
+        expect(screen.getByText(/CHF\s+799/)).toBeInTheDocument();
+        expect(screen.getByText(/Save\s+CHF\s+201/)).toBeInTheDocument();
     });
 
     it('renders correct number of course cards', () => {
@@ -150,7 +150,7 @@ describe('PackageCourseSelector', () => {
     it('displays correct pricing information', () => {
         render(<PackageCourseSelector {...mockProps} />);
 
-        expect(screen.getByText(/CHF\s+1000/)).toBeInTheDocument();
-        expect(screen.getByText(/Save\s+CHF\s+799/)).toBeInTheDocument();
+        expect(screen.getByText(/CHF\s+799/)).toBeInTheDocument();
+        expect(screen.getByText(/Save\s+CHF\s+201/)).toBeInTheDocument();
     });
 });
