@@ -2139,5 +2139,17 @@ export const DE: TDictionary = {
         },
       },
     },
+    cmsPlatformUsers: {
+      title: 'Benutzer',
+      description: 'Verwalte Plattform-Benutzer und sende Benachrichtigungen',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Benutzer ist ein Fehler aufgetreten.',
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die angeforderten Benutzer konnten nicht gefunden werden.',
+        },
+      },
+    },
   },
 };

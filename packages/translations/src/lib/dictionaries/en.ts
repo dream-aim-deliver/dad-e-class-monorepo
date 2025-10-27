@@ -2136,5 +2136,17 @@ export const EN: TDictionary = {
         },
       },
     },
+    cmsPlatformUsers: {
+      title: 'Users',
+      description: 'Manage platform users and send notifications',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading users.',
+        notFound: {
+          title: 'Not Found',
+          description: 'The requested users could not be found.',
+        },
+      },
+    },
   },
 };

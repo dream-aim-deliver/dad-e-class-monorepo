@@ -2171,6 +2171,18 @@ export const DictionarySchema = z.object({
         }),
       }),
     }),
+    cmsPlatformUsers: z.object({
+      title: z.string(),
+      description: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
   }),
 });
 
