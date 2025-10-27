@@ -123,3 +123,4 @@ export * from './mark-notifications-as-read-view-model';
 export * from './list-sent-notifications-view-model';
 export * from './list-cms-courses-view-model';
 export * from './list-users-view-model';
+export * from './send-notification-view-model';
