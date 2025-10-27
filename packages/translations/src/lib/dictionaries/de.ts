@@ -2097,5 +2097,17 @@ export const DE: TDictionary = {
         },
       },
     },
+    cmsNotifications: {
+      title: 'Benachrichtigungen',
+      description: 'Verwalte und sende Benachrichtigungen an Plattform-Nutzer',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Benachrichtigungen ist ein Fehler aufgetreten.',
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die angeforderte Benachrichtigung konnte nicht gefunden werden.',
+        },
+      },
+    },
   },
 };

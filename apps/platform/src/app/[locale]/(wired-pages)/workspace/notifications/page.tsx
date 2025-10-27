@@ -2,16 +2,17 @@
 // Notion: https://www.notion.so/Activity-history-Notifications-Page-2245a7432d01800e8e33d5d245ae9c4e
 
 import ActivityHistoryServerComponent from '../../../../../lib/infrastructure/server/pages/activity-history-rsc';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 export default async function ActivityHistoryPage({
   searchParams: searchParamsPromise,
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: TLocale }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
 
-  return <ActivityHistoryServerComponent locale={params.locale as any} />;
+  return <ActivityHistoryServerComponent locale={params.locale} />;
 }
