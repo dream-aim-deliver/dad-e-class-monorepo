@@ -60,7 +60,6 @@ import { listStudentCoachingSessions } from './procedures/student-coaching-sessi
 import { createCoachingSessionReview } from './procedures/create-coaching-session-review';
 import { unscheduleCoachingSession } from './procedures/unschedule-coaching-session';
 import { listUpcomingStudentCoachingSessions } from './procedures/upcoming-student-coaching-sessions';
-import { markNotificationsAsRead } from './procedures/mark-notifications-as-read';
 import { createNotification } from './procedures/create-notification';
 import { getAssignment } from './procedures/assignment';
 import { sendAssignmentReply } from './procedures/assignment-reply';
@@ -127,7 +126,6 @@ export const mockRouter = t.router({
     createCoachingSessionReview,
     unscheduleCoachingSession,
     listUpcomingStudentCoachingSessions,
-    markNotificationsAsRead,
     createNotification,
     getAssignment,
     sendAssignmentReply,
