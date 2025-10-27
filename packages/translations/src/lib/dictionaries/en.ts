@@ -2078,5 +2078,21 @@ export const EN: TDictionary = {
         description: 'An error occurred while loading the footer.',
       },
     },
+    activityHistory: {
+      title: 'Activity History',
+      description: 'View your notifications and activity',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading your activity history.',
+        unauthorized: {
+          title: 'Access Denied',
+          description: 'You need to be logged in to view your activity history.',
+        },
+        notFound: {
+          title: 'Not Found',
+          description: 'The requested activity could not be found.',
+        },
+      },
+    },
   },
 };
