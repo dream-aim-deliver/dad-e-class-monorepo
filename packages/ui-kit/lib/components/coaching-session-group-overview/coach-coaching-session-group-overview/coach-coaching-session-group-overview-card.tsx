@@ -67,7 +67,6 @@ export type CoachCoachingSessionGroupOverviewCardProps = Extract<CoachingSession
  * <CoachCoachingSessionGroupOverviewCard
  *   userType="coach"
  *   status="ended"
- *   hasCallQualityRating={false}
  *   reviewCount={5}
  *   studentCount={10}
  *   averageRating={4.5}
@@ -80,8 +79,6 @@ export type CoachCoachingSessionGroupOverviewCardProps = Extract<CoachingSession
  *   studentImageUrl="student.jpg"
  *   onClickReadReviews={() => console.log("Read reviews")}
  *   onClickStudent={() => console.log("Student clicked")}
- *   onClickDownloadRecording={() => console.log("Download recording")}
- *   isRecordingDownloading={false}
  *   locale="en"
  * />
  *

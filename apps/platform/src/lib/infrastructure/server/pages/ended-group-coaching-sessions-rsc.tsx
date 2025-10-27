@@ -40,6 +40,13 @@ export default async function EndedGroupCoachingSessionsServerComponent(
         prefetch(trpc.listGroupCoachingSessions.queryOptions({
             groupId: props.groupId,
         })),
+        prefetch(trpc.getGroupIntroduction.queryOptions({
+            courseSlug: props.courseSlug,
+            additionalParams: {
+                groupId: props.groupId,
+                requestType: "requestForCoach",
+            }
+        }))
     ]);
 
     return (

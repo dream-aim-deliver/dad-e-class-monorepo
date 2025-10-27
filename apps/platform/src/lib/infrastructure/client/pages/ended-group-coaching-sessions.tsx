@@ -11,11 +11,12 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { DefaultLoading, DefaultError, DefaultNotFound, Breadcrumbs, Dropdown, Button,  CoachingSessionGroupOverviewList, CoachingSessionGroupOverviewCard, CoachingSessionFilterModal, type CoachingSessionFilterModel, IconFilter } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, Breadcrumbs, Dropdown, Button, CoachingSessionGroupOverviewList, CoachingSessionGroupOverviewCard, CoachingSessionFilterModal, type CoachingSessionFilterModel, IconFilter } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/cms-client';
 import { useListGroupCoachingSessionsPresenter } from '../hooks/use-list-group-coaching-sessions-presenter';
 import useClientSidePagination from '../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
+import { useGetGroupIntroductionPresenter } from '../hooks/use-get-group-introduction-presenter';
 
 interface EndedGroupCoachingSessionsProps {
     locale: TLocale;
@@ -41,9 +42,22 @@ export default function EndedGroupCoachingSessions({
         groupId,
     });
 
+    // Fetch group introduction using TRPC
+    const [groupIntroductionResponse] = trpc.getGroupIntroduction.useSuspenseQuery({
+        courseSlug,
+        additionalParams: {
+            groupId,
+            requestType: "requestForCoach",
+        }
+    });
+
     // View model state
     const [sessionsViewModel, setSessionsViewModel] = useState<
         viewModels.TListGroupCoachingSessionsViewModel | undefined
+    >(undefined);
+
+    const [groupIntroductionViewModel , setGroupIntroductionViewModel] = useState<
+        viewModels.TGetGroupIntroductionViewModel | undefined
     >(undefined);
 
     // Sorting state
@@ -63,12 +77,16 @@ export default function EndedGroupCoachingSessions({
 
     // Initialize presenter
     const { presenter } = useListGroupCoachingSessionsPresenter(setSessionsViewModel);
+    const { presenter: groupIntroPresenter } = useGetGroupIntroductionPresenter(setGroupIntroductionViewModel);
 
     // Present data to view model
     useEffect(() => {
         // @ts-ignore - Presenter type compatibility issue
         presenter.present(sessionsResponse, sessionsViewModel);
     }, [sessionsResponse, presenter, sessionsViewModel]);
+
+    // @ts-ignore
+    groupIntroPresenter.present(groupIntroductionResponse, groupIntroductionViewModel);
 
     // Handlers
     const formatTime = (isoString: string) => {
@@ -79,29 +97,6 @@ export default function EndedGroupCoachingSessions({
             hour12: true
         });
     };
-
-    // Helper function to generate common props for coaching session cards
-    const getCommonCardProps = (session: any) => ({
-        locale: localeProp,
-        userType: 'coach' as const,
-        title: session.coachingOfferingTitle,
-        duration: session.coachingOfferingDuration,
-        date: new Date(session.publicationDate),
-        startTime: formatTime(session.startTime),
-        endTime: formatTime(session.endTime),
-        withinCourse: !!session.course,
-        courseName: session.course.title,
-        courseImageUrl: session.course.imageUrl || "",
-        groupName: session.group.name,
-        status: 'ended' as const,
-        reviewCount: session.reviewCount,
-        averageRating: session.averageRating || 0,
-        studentCount: session.studentCount,
-        onClickReadReviews: () => console.log("Read reviews clicked"),
-        onClickDownloadRecording: () => console.log("Download recording clicked"),
-        onClickCourse: () => console.log("Course is clicked"),
-        onClickGroup: () => console.log("Group is clicked"),
-    });
 
     // Sort options - only keep basic sorting, filtering handles the rest
     const sortOptions = [
@@ -172,7 +167,7 @@ export default function EndedGroupCoachingSessions({
     // Apply sorting to filtered sessions
     const sortedSessions = useMemo(() => {
         const sessions = [...filteredSessions];
-        
+
         return sessions.sort((a, b) => {
             switch (sortBy) {
                 case 'sessionDate':
@@ -201,7 +196,7 @@ export default function EndedGroupCoachingSessions({
     });
 
     // Loading state
-    if (status === 'loading' || !sessionsViewModel) {
+    if (status === 'loading' || !sessionsViewModel || !groupIntroductionViewModel) {
         return <DefaultLoading locale={currentLocale} variant="minimal" />;
     }
 
@@ -219,32 +214,56 @@ export default function EndedGroupCoachingSessions({
     // Error handling using discovered project patterns
     if (sessionsViewModel.mode === 'kaboom') {
         const errorData = sessionsViewModel.data;
-        console.error(errorData);
 
         return (
             <DefaultError
                 locale={currentLocale}
                 title={t('error.title')}
-                description={t('error.description')}
+                description={errorData.message || t('error.description')}
             />
         );
     }
 
+    if( groupIntroductionViewModel.mode === 'kaboom') {
+        const errorData = groupIntroductionViewModel.data;
+
+        return (
+            <DefaultError
+                locale={currentLocale}
+                title={t('error.title')}
+                description={errorData.message || t('error.description')}
+            />
+        );
+    }
+    
+
     if (sessionsViewModel.mode === 'not-found') {
         const errorData = sessionsViewModel.data;
-        console.error(errorData);
 
         return (
             <DefaultNotFound
                 locale={currentLocale}
                 title={t('error.notFoundTitle')}
-                description={t('error.notFoundDescription')}
+                description={errorData.message || t('error.notFoundDescription')}
+            />
+        );
+    }
+
+    if( groupIntroductionViewModel.mode === 'not-found') {
+        const errorData = groupIntroductionViewModel.data;
+
+        return (
+            <DefaultNotFound
+                locale={currentLocale}
+                title={t('error.notFoundTitle')}
+                description={errorData.message || t('error.notFoundDescription')}
             />
         );
     }
 
     // Success state - extract data
     const sessionsData = sessionsViewModel.data;
+    const groupIntroductionData = groupIntroductionViewModel.data;
 
     return (
         <div className="flex flex-col space-y-5">
@@ -260,9 +279,7 @@ export default function EndedGroupCoachingSessions({
                     },
                     {
                         label: breadcrumbsTranslations('yourCourses'),
-                        onClick: () => {
-                            // TODO: Implement navigation to your courses
-                        },
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses`),
                     },
                     {
                         label: courseSlug,
@@ -273,7 +290,7 @@ export default function EndedGroupCoachingSessions({
                         onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups`),
                     },
                     {
-                        label: sessionsData.sessions[0]?.group.name || '',
+                        label: groupIntroductionData.name,
                         onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups/${groupId}`),
                     },
                     {
@@ -287,7 +304,7 @@ export default function EndedGroupCoachingSessions({
                 <div className='flex items-start justify-between md:flex-row flex-col gap-4'>
                     <div className='flex flex-col gap-2'>
                         <h6 className='text-text-secondary text-sm md:text-md leading-[120%]'>
-                            {sessionsData.sessions[0]?.group.name || ''}
+                            {groupIntroductionData.name}
                         </h6>
                         <h2 className='text-text-primary md:text-3xl text-xl font-bold'>
                             {t('title')}
@@ -328,33 +345,29 @@ export default function EndedGroupCoachingSessions({
                 {displayedSessions.length > 0 ? (
                     <>
                         <CoachingSessionGroupOverviewList locale={localeProp}>
-                            {displayedSessions.map((session , idx) => {
-                                const commonProps = getCommonCardProps(session);
-                                
-                                // TODO: Add hasCallQualityRating in listGroupCoachingSessions response
-                                const hasCallQualityRating = idx % 2 != 0;
-
-                                // Conditional props based on hasCallQualityRating
-                                if (hasCallQualityRating) {
-                                    return (
-                                        <CoachingSessionGroupOverviewCard 
-                                            key={session.id}
-                                            {...commonProps}
-                                            hasCallQualityRating={true}
-                                            isRecordingDownloading={false} // TODO: Add actual loading state
-                                        />
-                                    );
-                                } else {
-                                    return (
-                                        <CoachingSessionGroupOverviewCard 
-                                            key={session.id}
-                                            {...commonProps}
-                                            hasCallQualityRating={false}
-                                            onClickRateCallQuality={() => console.log("Call quality rating clicked")}
-                                        />
-                                    );
-                                }
-                            })}
+                            {displayedSessions.map((session, idx) => (
+                                <CoachingSessionGroupOverviewCard
+                                    key={session.id}
+                                    locale={localeProp}
+                                    userType='coach'
+                                    title={session.coachingOfferingTitle}
+                                    duration={session.coachingOfferingDuration}
+                                    date={new Date(session.publicationDate)}
+                                    startTime={formatTime(session.startTime)}
+                                    endTime={formatTime(session.endTime)}
+                                    withinCourse={!!session.course}
+                                    courseName={session.course.title}
+                                    courseImageUrl={session.course.imageUrl || ""}
+                                    groupName={session.group.name}
+                                    status='ended'
+                                    reviewCount={session.reviewCount}
+                                    averageRating={session.averageRating || 0}
+                                    studentCount={session.studentCount}
+                                    onClickReadReviews={() => console.log("Read reviews clicked")}
+                                    onClickCourse={() => console.log("Course is clicked")}
+                                    onClickGroup={() => console.log("Group is clicked")}
+                                />
+                            ))}
                         </CoachingSessionGroupOverviewList>
                         {hasMoreSessions && (
                             <div className="flex justify-center items-center w-full mt-6">
