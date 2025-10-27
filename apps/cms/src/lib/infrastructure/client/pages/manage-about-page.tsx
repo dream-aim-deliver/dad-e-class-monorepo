@@ -202,7 +202,7 @@ export default function ManageAboutPage() {
 			<div className="flex flex-col space-y-2">
 				<h1>Manage About Page</h1>
 				<p className="text-text-secondary text-sm">
-					Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+					Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
 				</p>
 			</div>
 
