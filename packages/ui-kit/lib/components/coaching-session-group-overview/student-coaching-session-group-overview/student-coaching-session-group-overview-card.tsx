@@ -116,20 +116,6 @@ export const StudentCoachingSessionGroupOverviewCard: React.FC<StudentCoachingSe
                         </p>
                     </div>
                 </div>
-                <CourseCreatorGroupOverview
-                    withinCourse={props.withinCourse}
-                    userRole="student"
-                    status={props.status}
-                    courseName={undefined}
-                    courseImageUrl={undefined}
-                    groupName={undefined}
-                    creatorName={props.creatorName}
-                    creatorImageUrl={props.creatorImageUrl}
-                    onClickCourse={undefined}
-                    onClickGroup={undefined}
-                    onClickCreator={props.onClickCreator}
-                    locale={props.locale}
-                />
                 <p className="text-md text-text-primary">
                     {dictionary.components.coachingSessionCard.toBeDefinedMessage}
                 </p>

@@ -44,16 +44,14 @@ type StrictStoryObj<T> = {
 type StudentOngoingStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'student'; status: 'ongoing' }>>;
 type StudentUpcomingEditableStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'student'; status: 'upcoming-editable' }>>;
 type StudentUpcomingLockedStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'student'; status: 'upcoming-locked' }>>;
-type StudentEndedWithoutReviewStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'student'; status: 'ended'; hasReview: false }>>;
-type StudentEndedWithReviewStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'student'; status: 'ended'; hasReview: true }>>;
+type StudentEndedStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'student'; status: 'ended' }>>;
 type StudentCanceledStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'student'; status: 'canceled' }>>;
 type StudentUnscheduledStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'student'; status: 'unscheduled' }>>;
 
 type CoachOngoingStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ongoing' }>>;
 type CoachUpcomingEditableStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'upcoming-editable' }>>;
 type CoachUpcomingLockedStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'upcoming-locked' }>>;
-type CoachEndedSessionReviewStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ended'; hasCallQualityRating: false }>>;
-type CoachEndedCallQualityStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ended'; hasCallQualityRating: true }>>;
+type CoachEndedStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'ended';}>>;
 type CoachCanceledStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'canceled' }>>;
 type CoachUnscheduledStory = StrictStoryObj<Extract<CoachingSessionGroupOverviewCardProps, { userType: 'coach'; status: 'unscheduled' }>>;
 
@@ -88,34 +86,15 @@ export const StudentUpcomingLocked: StudentUpcomingLockedStory = {
   },
 };
 
-export const StudentEndedWithoutReview: StudentEndedWithoutReviewStory = {
+export const StudentEnded: StudentEndedStory = {
   args: {
     ...baseSharedProps,
     userType: 'student',
     status: 'ended',
-    hasReview: false,
     averageRating: 4.7,
     reviewCount: 15,
     studentCount: 20,
     onClickReadReviews: () => alert('Read reviews clicked'),
-    onClickReviewCoachingSession: () => alert('Review coaching session clicked'),
-    onClickDownloadRecording: () => alert('Download recording clicked'),
-    isRecordingDownloading: false,
-  },
-};
-
-export const StudentEndedWithReview: StudentEndedWithReviewStory = {
-  args: {
-    ...baseSharedProps,
-    userType: 'student',
-    status: 'ended',
-    hasReview: true,
-    averageRating: 4.7,
-    reviewCount: 15,
-    studentCount: 20,
-    onClickReadReviews: () => alert('Read reviews clicked'),
-    onClickDownloadRecording: () => alert('Download recording clicked'),
-    isRecordingDownloading: false,
   },
 };
 
@@ -136,10 +115,6 @@ export const StudentUnscheduled: StudentUnscheduledStory = {
     locale: 'en' as TLocale,
     title: 'Design Principles Discussion',
     duration: 60,
-    withinCourse: true,
-    creatorName: 'Jane Smith',
-    creatorImageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-    onClickCreator: () => alert('Creator clicked'),
   },
 };
 
@@ -186,36 +161,17 @@ export const CoachUpcomingLocked: CoachUpcomingLockedStory = {
   },
 };
 
-export const CoachEndedSessionReview: CoachEndedSessionReviewStory = {
+export const CoachEnded: CoachEndedStory = {
   args: {
     ...baseSharedProps,
     userType: 'coach',
     status: 'ended',
-    hasCallQualityRating: false,
     averageRating: 4.7,
     reviewCount: 15,
     studentCount: 20,
     onClickReadReviews: () => alert('Read reviews clicked'),
-    onClickRateCallQuality: () => alert('Rate call quality clicked'),
-    onClickDownloadRecording: () => alert('Download recording clicked'),
   },
 };
-
-export const CoachEndedCallQuality: CoachEndedCallQualityStory = {
-  args: {
-    ...baseSharedProps,
-    userType: 'coach',
-    status: 'ended',
-    hasCallQualityRating: true,
-    averageRating: 4.3,
-    reviewCount: 10,
-    studentCount: 18,
-    onClickReadReviews: () => alert('Read reviews clicked'),
-    onClickDownloadRecording: () => alert('Download recording clicked'),
-    isRecordingDownloading: false,
-  },
-};
-
 
 
 export const CoachCanceled: CoachCanceledStory = {

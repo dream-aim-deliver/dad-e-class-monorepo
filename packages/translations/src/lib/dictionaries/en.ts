@@ -440,7 +440,7 @@ export const EN: TDictionary = {
     coachingSessionCard: {
       durationText: 'min.',
       createdByText: 'Created by',
-      courseText: 'Offer',
+      courseText: 'Course',
       groupText: 'Group',
       joinMeetingText: 'Join Meeting',
       studentText: 'Student',

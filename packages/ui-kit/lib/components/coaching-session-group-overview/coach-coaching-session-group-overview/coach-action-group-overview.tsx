@@ -4,7 +4,6 @@ import { getDictionary } from '@maany_shr/e-class-translations';
 import { IconCalendarAlt } from '../../icons/icon-calendar-alt';
 import { IconTrashAlt } from '../../icons/icon-trash-alt';
 import { Badge } from '../../badge';
-import { IconCloudDownload } from '../../icons/icon-cloud-download';
 import { CoachingSessionGroupOverviewCardProps } from '..';
 
 /**
@@ -38,11 +37,7 @@ type CoachActionGroupOverviewProps = Extract<CoachingSessionGroupOverviewCardPro
  * - `ended`: Conditional rendering based on review type - call quality rating and/or download options
  * - `canceled`: Shows cancellation status badge
  * - `unscheduled`: Shows schedule session button
- *
- * Review type handling for ended sessions:
- * - hasCallQuality == true: Only shows download recording button
- * - hasSessionReview == false: Shows rate call quality button plus download recording (disabled until rated)
- *
+ * *
  * @param props Coach-specific coaching session props with discriminated union typing
  *
  * @example
@@ -69,14 +64,11 @@ type CoachActionGroupOverviewProps = Extract<CoachingSessionGroupOverviewCardPro
  * />
  *
  * @example
- * // Ended session requiring call quality rating
+ * // Ended session 
  * <CoachActionGroupOverview
  *   userType="coach"
  *   status="ended"
- *   hasCallQualityRating={false}
  *   onClickRateCallQuality={() => openRatingModal()}
- *   onClickDownloadRecording={() => downloadRecording()}
- *   isRecordingDownloading={false}
  *   locale="en"
  *   // ... other required props
  * />
@@ -170,53 +162,9 @@ export const CoachActionGroupOverview: React.FC<CoachActionGroupOverviewProps> =
         </div>
       );
 
+    // Do not show any action buttons for ended sessions that have reviews
     case 'ended':
-      if( props.hasCallQualityRating === false ) {
-        // Type narrowing: props is now CoachEndedSessionReviewCard
-        const endedProps = props as Extract<CoachActionGroupOverviewProps, { status: 'ended'; hasCallQualityRating: false }>;
-        return (
-          <div className="flex flex-col gap-2 w-full">
-            <Button
-              variant="primary"
-              className="w-full"
-              size="medium"
-              text={dictionary.components.coachingSessionCard.rateCallQualityText}
-              onClick={endedProps.onClickRateCallQuality}
-            />
-            <Button
-              variant="secondary"
-              className=""
-              size="medium"
-              hasIconLeft
-              iconLeft={<IconCloudDownload size="6" />}
-              text={dictionary.components.coachingSessionCard.downloadRecordingText}
-              onClick={props.onClickDownloadRecording}
-            />
-          </div>
-        );
-      } else {
-        // Type narrowing: props is now CoachEndedCallQualityCard
-        const endedProps = props as Extract<CoachActionGroupOverviewProps, { status: 'ended'; hasCallQualityRating: true }>;
-        return (
-          <div className="flex flex-col gap-2 w-full">
-            <Button
-              variant="secondary"
-              className=""
-              size="medium"
-              hasIconLeft
-              iconLeft={<IconCloudDownload size="6" />}
-              text={dictionary.components.coachingSessionCard.downloadRecordingText}
-              onClick={endedProps.onClickDownloadRecording}
-              disabled={endedProps.isRecordingDownloading}
-            />
-            {endedProps.isRecordingDownloading && (
-              <p className="text-xs text-text-secondary leading-[100%]">
-                {dictionary.components.coachingSessionCard.recordingAvailabilityInfo}
-              </p>
-            )}
-          </div>
-        );
-      };
+      return null;
 
 
     case 'canceled':

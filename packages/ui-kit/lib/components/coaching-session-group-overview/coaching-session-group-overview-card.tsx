@@ -66,39 +66,15 @@ type StudentUpcomingLockedCard = BaseCardSharedProps & {
 };
 
 /**
- * Student coaching session group overview card for completed sessions without a review.
- * Provides options to review the session and download recording.
+ * Student coaching session group overview card.
  */
-type StudentEndedWithoutReviewCard = BaseCardSharedProps & {
+type StudentEndedCard = BaseCardSharedProps & {
     userType: 'student';
     status: 'ended';
-    hasReview: false;
     averageRating: number;
     reviewCount: number;
     studentCount: number;
     onClickReadReviews: () => void;
-    onClickReviewCoachingSession: () => void;
-    onClickDownloadRecording: () => void;
-    isRecordingDownloading: boolean;
-    creatorName: string;
-    creatorImageUrl: string;
-    onClickCreator: () => void;
-};
-
-/**
- * Student coaching session group overview card for completed sessions with an existing review.
- * Displays the review content and rating, with recording download option.
- */
-type StudentEndedWithReviewCard = BaseCardSharedProps & {
-    userType: 'student';
-    status: 'ended';
-    hasReview: true;
-    averageRating: number;
-    reviewCount: number;
-    studentCount: number;
-    onClickReadReviews: () => void;
-    onClickDownloadRecording: () => void;
-    isRecordingDownloading: boolean;
     creatorName: string;
     creatorImageUrl: string;
     onClickCreator: () => void;
@@ -126,10 +102,6 @@ type StudentUnscheduledCard = {
     locale: TLocale;
     title: string;
     duration: number;
-    withinCourse: boolean;
-    creatorName: string;
-    creatorImageUrl: string;
-    onClickCreator: () => void;
 };
 
 /**
@@ -167,34 +139,15 @@ type CoachUpcomingLockedCard = BaseCardSharedProps & {
 
 /**
  * Coach coaching session group overview card for completed sessions with student review.
- * Displays the session review from student with rating functionality for coach.
  */
-type CoachEndedSessionReviewCard = BaseCardSharedProps & {
-    userType: 'coach';
-    status: 'ended';
-    hasCallQualityRating: false;
-    averageRating: number;
-    reviewCount: number;
-    studentCount: number;
-    onClickReadReviews: () => void;
-    onClickRateCallQuality: () => void;
-    onClickDownloadRecording: () => void;
-};
 
-/**
- * Coach coaching session group overview card for completed sessions with call quality rating.
- * Shows the call quality rating with recording download functionality.
- */
-type CoachEndedCallQualityCard = BaseCardSharedProps & {
+type CoachEndedCard = BaseCardSharedProps & {
     userType: 'coach';
     status: 'ended';
-    hasCallQualityRating: true;
     averageRating: number;
     reviewCount: number;
     studentCount: number;
     onClickReadReviews: () => void;
-    onClickDownloadRecording: () => void;
-    isRecordingDownloading: boolean;
 };
 
 /**
@@ -237,15 +190,13 @@ export type CoachingSessionGroupOverviewCardProps =
     | StudentOngoingCard
     | StudentUpcomingEditableCard
     | StudentUpcomingLockedCard
-    | StudentEndedWithoutReviewCard
-    | StudentEndedWithReviewCard
+    | StudentEndedCard
     | StudentCanceledCard
     | StudentUnscheduledCard
     | CoachOngoingCard
     | CoachUpcomingEditableCard
     | CoachUpcomingLockedCard
-    | CoachEndedSessionReviewCard
-    | CoachEndedCallQualityCard
+    | CoachEndedCard
     | CoachCanceledCard
     | CoachUnscheduledCard;
 
