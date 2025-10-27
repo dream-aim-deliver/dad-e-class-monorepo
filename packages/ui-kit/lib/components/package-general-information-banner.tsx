@@ -136,12 +136,12 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                 />
                 <div className="flex gap-4 mt-4 justify-start">
                     <h6 className="text-text-primary lg:text-lg text-md">
-                        {dictionary.fromText} {(pricing as any).currency as string}{' '}
-                        {(pricing as any).fullPrice as number}
+                        {dictionary.fromText} {pricing.currency}{' '}
+                        {Math.round(pricing.partialPrice * 100) / 100}
                     </h6>
                     <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
-                        {dictionary.saveText} {(pricing as any).currency as string}{' '}
-                        {(pricing as any).partialPrice as number}
+                        {dictionary.saveText} {pricing.currency}{' '}
+                        {Math.round((pricing.fullPrice - pricing.partialPrice) * 100) / 100}
                     </p>
                 </div>
             </div>
