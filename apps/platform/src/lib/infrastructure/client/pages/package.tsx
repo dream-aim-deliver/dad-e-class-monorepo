@@ -124,7 +124,7 @@ export default function Package({ locale, packageId }: PackageProps) {
   );
 
   // Calculate pricing with partial discounts
-  const calculatePricing = () => {
+  const calculatePackageWithCoursesPricing = () => {
     const roundToTwoDecimals = (value: number) => Math.round(value * 100) / 100;
     
     const courseCount = displayedCourses.length;
@@ -139,16 +139,15 @@ export default function Package({ locale, packageId }: PackageProps) {
       )
     );
     
-    // If all courses are selected, use the full package price
+    // If all courses are selected, use the same logic as calculatePackagePricing
     if (allCoursesSelected) {
       const packagePrice = roundToTwoDecimals(
         coachingIncluded ? packageData.priceWithCoachings : packageData.price
       );
-      const savings = roundToTwoDecimals(sumOfCoursePrices - packagePrice);
       
       return {
-        fullPrice: packagePrice,
-        partialPrice: savings,
+        fullPrice: sumOfCoursePrices,
+        partialPrice: packagePrice,
       };
     }
     
@@ -158,15 +157,10 @@ export default function Package({ locale, packageId }: PackageProps) {
       .find(discount => courseCount >= discount.courseAmount);
     
     if (!applicableDiscount) {
-      // No discount available for this course count - pay full individual prices
-      const packagePrice = roundToTwoDecimals(
-        coachingIncluded ? packageData.priceWithCoachings : packageData.price
-      );
-      const savings = roundToTwoDecimals(sumOfCoursePrices - packagePrice);
-
+      // No discount available for this course count - no discount applied
       return {
-        fullPrice: packagePrice,
-        partialPrice: savings,
+        fullPrice: sumOfCoursePrices,
+        partialPrice: sumOfCoursePrices,
       };
     }
     
@@ -175,18 +169,17 @@ export default function Package({ locale, packageId }: PackageProps) {
     const discountedPrice = roundToTwoDecimals(
       sumOfCoursePrices * (1 - discountPercent / 100)
     );
-    const savings = roundToTwoDecimals(sumOfCoursePrices - discountedPrice);
     
     return {
-      fullPrice: discountedPrice,
-      partialPrice: savings,
+      fullPrice: sumOfCoursePrices,
+      partialPrice: discountedPrice,
     };
   };
 
-  const pricing = calculatePricing();
+  const pricing = calculatePackageWithCoursesPricing();
 
-  // Calculate pricing for PackageGeneralInformation (all courses, no exclusions)
-  const calculateGeneralInformationPricing = () => {
+  // Calculate pricing for the Package (all courses, no exclusions)
+  const calculatePackagePricing = () => {
     const roundToTwoDecimals = (value: number) => Math.round(value * 100) / 100;
     
     // Sum of ALL courses in the package (no exclusions)
@@ -194,19 +187,17 @@ export default function Package({ locale, packageId }: PackageProps) {
       sum + (coachingIncluded ? course.priceIncludingCoachings : course.basePrice), 0
     ));
     
-    // Package price (with or without coaching)
+    // Package price (with or without coaching) which is the discounted price
     const packagePrice = roundToTwoDecimals(coachingIncluded ? packageData.priceWithCoachings : packageData.price);
-    
-    // Savings = difference between sum of all courses and package price
-    const savings = roundToTwoDecimals(sumOfAllCourses - packagePrice);
+
     
     return {
-      fullPrice: packagePrice,
-      partialPrice: savings
+      fullPrice: sumOfAllCourses,
+      partialPrice: packagePrice
     };
   };
 
-  const generalInformationPricing = calculateGeneralInformationPricing();
+  const packagePricing = calculatePackagePricing();
 
   // Handlers
   const handleToggleCoaching = () => setCoachingIncluded(!coachingIncluded);
@@ -273,8 +264,8 @@ export default function Package({ locale, packageId }: PackageProps) {
           duration={packageData.courses.reduce((sum, c) => sum + c.duration, 0)}
           pricing={{
             currency: 'CHF', // TODO: Get the right platform currency
-            fullPrice: generalInformationPricing.fullPrice,
-            partialPrice: generalInformationPricing.partialPrice
+            fullPrice: packagePricing.fullPrice,
+            partialPrice: packagePricing.partialPrice
           }}
           locale={currentLocale}
           onClickPurchase={handlePurchase}
@@ -387,8 +378,8 @@ export default function Package({ locale, packageId }: PackageProps) {
           duration={packageData.courses.reduce((sum, c) => sum + c.duration, 0)}
           pricing={{
             currency: 'CHF', // TODO: Get the right platform currency
-            fullPrice: generalInformationPricing.fullPrice,
-            partialPrice: generalInformationPricing.partialPrice
+            fullPrice: packagePricing.fullPrice,
+            partialPrice: packagePricing.partialPrice
           }}
           locale={currentLocale}
           onClickPurchase={handlePurchase}
