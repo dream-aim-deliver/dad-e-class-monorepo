@@ -121,3 +121,4 @@ export * from './save-platform-footer-view-model';
 export * from './list-notifications-view-model';
 export * from './mark-notifications-as-read-view-model';
 export * from './list-sent-notifications-view-model';
+export * from './list-cms-courses-view-model';
