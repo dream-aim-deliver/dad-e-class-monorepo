@@ -1621,6 +1621,9 @@ export const EN: TDictionary = {
     aboutPage: {
       title: 'About us',
     },
+    impressum: {
+      title: 'Impressum',
+    },
     student: {
       tabs: {
         assignments: 'Assignments',
