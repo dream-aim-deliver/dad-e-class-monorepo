@@ -6,6 +6,7 @@ import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
 import { auth, viewModels } from '@maany_shr/e-class-models';
+import type { TGetPlatformUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../../lib/infrastructure/server/config/auth/next-auth.config';
 import {
@@ -14,6 +15,8 @@ import {
 } from '../../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../../lib/infrastructure/client/pages/layout';
 import CMSTRPCClientProviders from '../../../lib/infrastructure/client/trpc/cms-client-provider';
+import { PlatformProvider } from '../../../lib/infrastructure/client/context/platform-context';
+import { getQueryClient, trpc } from '../../../lib/infrastructure/server/config/trpc/cms-server';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -109,6 +112,19 @@ export default async function RootLayout({
         session = sessionDTO.data;
     }
 
+    // Fetch platform details from database via TRPC
+    const queryClient = getQueryClient();
+    // @ts-expect-error - fetchQuery returns unknown, but we know the type from TRPC router
+    const platformResult: useCaseModels.TGetPlatformUseCaseResponse = await queryClient.fetchQuery(
+        trpc.getPlatform.queryOptions({})
+    );
+
+    if (!platformResult.success) {
+        throw new Error('Failed to load platform data');
+    }
+
+    const platform = platformResult.data;
+
     return (
         <html lang={locale}>
             <body
@@ -116,11 +132,13 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <CMSTRPCClientProviders>
-                            <Layout availableLocales={availableLocales}>
-                                {children}
-                            </Layout>
-                        </CMSTRPCClientProviders>
+                        <PlatformProvider platform={platform}>
+                            <CMSTRPCClientProviders>
+                                <Layout availableLocales={availableLocales}>
+                                    {children}
+                                </Layout>
+                            </CMSTRPCClientProviders>
+                        </PlatformProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>
             </body>
