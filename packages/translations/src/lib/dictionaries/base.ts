@@ -2131,6 +2131,22 @@ export const DictionarySchema = z.object({
         description: z.string(),
       }),
     }),
+    activityHistory: z.object({
+      title: z.string(),
+      description: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        unauthorized: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
   }),
 });
 
