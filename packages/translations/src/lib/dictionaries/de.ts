@@ -2127,5 +2127,17 @@ export const DE: TDictionary = {
         },
       },
     },
+    cmsCourses: {
+      title: 'Kurse',
+      description: 'Verwalte Plattform-Kurse',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Kurse ist ein Fehler aufgetreten.',
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die angeforderten Kurse konnten nicht gefunden werden.',
+        },
+      },
+    },
   },
 };
