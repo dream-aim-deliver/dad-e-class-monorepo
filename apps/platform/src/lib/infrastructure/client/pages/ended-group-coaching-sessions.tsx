@@ -6,14 +6,16 @@
 // User Type: Coach
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=6913-296778
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { DefaultLoading, DefaultError, DefaultNotFound } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, Breadcrumbs, Dropdown, Button,  CoachingSessionGroupOverviewList, CoachingSessionGroupOverviewCard, CoachingSessionFilterModal, type CoachingSessionFilterModel, IconFilter } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/cms-client';
 import { useListGroupCoachingSessionsPresenter } from '../hooks/use-list-group-coaching-sessions-presenter';
+import useClientSidePagination from '../utils/use-client-side-pagination';
+import { useRouter } from 'next/navigation';
 
 interface EndedGroupCoachingSessionsProps {
     locale: TLocale;
@@ -28,7 +30,11 @@ export default function EndedGroupCoachingSessions({
 }: EndedGroupCoachingSessionsProps) {
     const currentLocale = useLocale() as TLocale;
     const t = useTranslations('pages.endedGroupCoachingSessions');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const paginationTranslations = useTranslations('components.paginationButton');
+    const dictionary = getDictionary(localeProp);
     const { data: session, status } = useSession();
+    const router = useRouter();
 
     // Fetch ended group coaching sessions using TRPC
     const [sessionsResponse] = trpc.listGroupCoachingSessions.useSuspenseQuery({
@@ -40,6 +46,21 @@ export default function EndedGroupCoachingSessions({
         viewModels.TListGroupCoachingSessionsViewModel | undefined
     >(undefined);
 
+    // Sorting state
+    const [sortBy, setSortBy] = useState<string>('sessionDate');
+
+    // Filter states
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const [filters, setFilters] = useState<CoachingSessionFilterModel>({
+        maxRating: 5,
+        minRating: 1,
+        courseName: '',
+        dateBefore: '',
+        dateAfter: '',
+        minParticipants: undefined,
+        maxParticipants: undefined,
+    });
+
     // Initialize presenter
     const { presenter } = useListGroupCoachingSessionsPresenter(setSessionsViewModel);
 
@@ -48,6 +69,136 @@ export default function EndedGroupCoachingSessions({
         // @ts-ignore - Presenter type compatibility issue
         presenter.present(sessionsResponse, sessionsViewModel);
     }, [sessionsResponse, presenter, sessionsViewModel]);
+
+    // Handlers
+    const formatTime = (isoString: string) => {
+        const date = new Date(isoString);
+        return date.toLocaleTimeString(localeProp, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
+    // Helper function to generate common props for coaching session cards
+    const getCommonCardProps = (session: any) => ({
+        locale: localeProp,
+        userType: 'coach' as const,
+        title: session.coachingOfferingTitle,
+        duration: session.coachingOfferingDuration,
+        date: new Date(session.publicationDate),
+        startTime: formatTime(session.startTime),
+        endTime: formatTime(session.endTime),
+        withinCourse: !!session.course,
+        courseName: session.course.title,
+        courseImageUrl: session.course.imageUrl || "",
+        groupName: session.group.name,
+        status: 'ended' as const,
+        reviewCount: session.reviewCount,
+        averageRating: session.averageRating || 0,
+        studentCount: session.studentCount,
+        onClickReadReviews: () => console.log("Read reviews clicked"),
+        onClickDownloadRecording: () => console.log("Download recording clicked"),
+        onClickCourse: () => console.log("Course is clicked"),
+        onClickGroup: () => console.log("Group is clicked"),
+    });
+
+    // Sort options - only keep basic sorting, filtering handles the rest
+    const sortOptions = [
+        { label: t('filters.sessionDateNewest'), value: 'sessionDate' },
+        { label: t('filters.sessionDateOldest'), value: 'sessionDateOldest' },
+        { label: t('filters.courseNameAZ'), value: 'courseName' },
+        { label: t('filters.courseNameZA'), value: 'courseNameDesc' },
+    ];
+
+    // Handle dropdown change
+    const handleSortChange = (value: string | string[] | null) => {
+        if (typeof value === 'string') {
+            setSortBy(value);
+        }
+    };
+
+    const handleOpenFilterModal = () => {
+        setIsFilterModalOpen(true);
+    };
+
+    // Get sessions data or use empty array for filtering
+    const allSessions = useMemo(() => {
+        if (!sessionsViewModel || sessionsViewModel.mode !== 'default') {
+            return [];
+        }
+        return sessionsViewModel.data.sessions;
+    }, [sessionsViewModel]);
+
+    // Apply filters to the sessions using useMemo for performance
+    const filteredSessions = useMemo(() => {
+        return allSessions.filter(session => {
+            const rating = session.averageRating || 0;
+            const sessionDate = new Date(session.publicationDate);
+
+            // Apply rating filters
+            if (rating < (filters.minRating || 1) || rating > (filters.maxRating || 5)) {
+                return false;
+            }
+
+            // Apply course name filter
+            if (filters.courseName && !session.course.title.toLowerCase().includes(filters.courseName.toLowerCase())) {
+                return false;
+            }
+
+            // Apply participants filter
+            if (filters.minParticipants && session.studentCount < filters.minParticipants) {
+                return false;
+            }
+            if (filters.maxParticipants && session.studentCount > filters.maxParticipants) {
+                return false;
+            }
+
+            // Apply date filters
+            if (filters.dateBefore) {
+                const beforeDate = new Date(filters.dateBefore);
+                if (sessionDate > beforeDate) return false;
+            }
+
+            if (filters.dateAfter) {
+                const afterDate = new Date(filters.dateAfter);
+                if (sessionDate < afterDate) return false;
+            }
+
+            return true;
+        });
+    }, [allSessions, filters]);
+
+    // Apply sorting to filtered sessions
+    const sortedSessions = useMemo(() => {
+        const sessions = [...filteredSessions];
+        
+        return sessions.sort((a, b) => {
+            switch (sortBy) {
+                case 'sessionDate':
+                    return new Date(b.publicationDate).getTime() - new Date(a.publicationDate).getTime();
+                case 'sessionDateOldest':
+                    return new Date(a.publicationDate).getTime() - new Date(b.publicationDate).getTime();
+                case 'courseName':
+                    return a.course.title.localeCompare(b.course.title);
+                case 'courseNameDesc':
+                    return b.course.title.localeCompare(a.course.title);
+                default:
+                    return 0;
+            }
+        });
+    }, [filteredSessions, sortBy]);
+
+    // Pagination for sessions
+    const {
+        displayedItems: displayedSessions,
+        hasMoreItems: hasMoreSessions,
+        handleLoadMore: handleLoadMoreSessions,
+    } = useClientSidePagination({
+        items: sortedSessions,
+        itemsPerPage: 6,
+        itemsPerPage2xl: 8,
+    });
 
     // Loading state
     if (status === 'loading' || !sessionsViewModel) {
@@ -96,21 +247,141 @@ export default function EndedGroupCoachingSessions({
     const sessionsData = sessionsViewModel.data;
 
     return (
-        <div className="flex flex-col space-y-5 px-30">
-            <h1>{t('title')}</h1>
-            <p>{t('description')}</p>
+        <div className="flex flex-col space-y-5">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => router.push(`/${currentLocale}`),
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => router.push(`/${currentLocale}/workspace`),
+                    },
+                    {
+                        label: breadcrumbsTranslations('yourCourses'),
+                        onClick: () => {
+                            // TODO: Implement navigation to your courses
+                        },
+                    },
+                    {
+                        label: courseSlug,
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}`),
+                    },
+                    {
+                        label: breadcrumbsTranslations('groups'),
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups`),
+                    },
+                    {
+                        label: sessionsData.sessions[0]?.group.name || '',
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups/${groupId}`),
+                    },
+                    {
+                        label: breadcrumbsTranslations('coachingSessionReviews'),
+                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups/${groupId}/coaching-sessions`),
+                    },
+                ]}
+            />
 
-            {/* TODO: Implement ended sessions list */}
-            {/* TODO: Add filtering/sorting options */}
-            {/* TODO: Display session cards with:
-                - Session date/time
-                - Course name
-                - Number of participants
-                - Session recording link (if available)
-                - Reviews/ratings
-            */}
+            <div className='flex flex-col gap-4'>
+                <div className='flex items-start justify-between md:flex-row flex-col gap-4'>
+                    <div className='flex flex-col gap-2'>
+                        <h6 className='text-text-secondary text-sm md:text-md leading-[120%]'>
+                            {sessionsData.sessions[0]?.group.name || ''}
+                        </h6>
+                        <h2 className='text-text-primary md:text-3xl text-xl font-bold'>
+                            {t('title')}
+                        </h2>
+                        <p className='text-text-secondary text-sm md:text-md'>
+                            {t('description')}
+                        </p>
+                    </div>
+                    {/* Filter and sort controls */}
+                    <div className="flex items-center gap-4 flex-wrap md:w-auto w-full justify-between">
+                        <div className="flex items-center gap-2">
+                            <p className="text-sm text-text-primary whitespace-nowrap">
+                                {t('filters.sortBy')}
+                            </p>
+                            <div className="w-48">
+                                <Dropdown
+                                    type="simple"
+                                    options={sortOptions}
+                                    onSelectionChange={handleSortChange}
+                                    defaultValue={sortBy}
+                                    text={{ simpleText: t('filters.selectSort') }}
+                                />
+                            </div>
+                        </div>
+                        <Button
+                            variant="secondary"
+                            size="medium"
+                            text={t('filters.filterSessions')}
+                            onClick={handleOpenFilterModal}
+                            hasIconLeft
+                            iconLeft={<IconFilter />}
+                            className="w-auto"
+                        />
+                    </div>
+                </div>
 
-            {/* TODO: Add pagination or infinite scroll */}
+                {/* Sessions with pagination */}
+                {displayedSessions.length > 0 ? (
+                    <>
+                        <CoachingSessionGroupOverviewList locale={localeProp}>
+                            {displayedSessions.map((session , idx) => {
+                                const commonProps = getCommonCardProps(session);
+                                
+                                // TODO: Add hasCallQualityRating in listGroupCoachingSessions response
+                                const hasCallQualityRating = idx % 2 != 0;
+
+                                // Conditional props based on hasCallQualityRating
+                                if (hasCallQualityRating) {
+                                    return (
+                                        <CoachingSessionGroupOverviewCard 
+                                            key={session.id}
+                                            {...commonProps}
+                                            hasCallQualityRating={true}
+                                            isRecordingDownloading={false} // TODO: Add actual loading state
+                                        />
+                                    );
+                                } else {
+                                    return (
+                                        <CoachingSessionGroupOverviewCard 
+                                            key={session.id}
+                                            {...commonProps}
+                                            hasCallQualityRating={false}
+                                            onClickRateCallQuality={() => console.log("Call quality rating clicked")}
+                                        />
+                                    );
+                                }
+                            })}
+                        </CoachingSessionGroupOverviewList>
+                        {hasMoreSessions && (
+                            <div className="flex justify-center items-center w-full mt-6">
+                                <Button
+                                    variant="text"
+                                    text={paginationTranslations('loadMore')}
+                                    onClick={handleLoadMoreSessions}
+                                />
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <div className="flex items-center justify-center py-16">
+                        <p className="text-text-secondary md:text-xl text-lg">{t('noSessionsFound')}</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Coaching Session Filter Modal */}
+            {isFilterModalOpen && (
+                <CoachingSessionFilterModal
+                    onApplyFilters={(f) => setFilters(f)}
+                    onClose={() => setIsFilterModalOpen(false)}
+                    initialFilters={filters}
+                    locale={localeProp}
+                />
+            )}
         </div>
     );
 }
