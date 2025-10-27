@@ -2112,5 +2112,17 @@ export const EN: TDictionary = {
         },
       },
     },
+    cmsNotifications: {
+      title: 'Notifications',
+      description: 'Manage and send notifications to platform users',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading notifications.',
+        notFound: {
+          title: 'Not Found',
+          description: 'The requested notification could not be found.',
+        },
+      },
+    },
   },
 };
