@@ -1655,6 +1655,9 @@ export const DictionarySchema = z.object({
     aboutPage: z.object({
       title: z.string(),
     }),
+    impressum: z.object({
+      title: z.string(),
+    }),
     student: z.object({
       tabs: z.object({
         assignments: z.string(),
