@@ -69,27 +69,51 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
 
   // Track the locale for which data was loaded to prevent race conditions
   const loadedForLocaleRef = useRef<string>('');
+  const lastDataHashRef = useRef<string>('');
+
+  // Track update counter to force remount when data changes
+  const [updateCounter, setUpdateCounter] = useState(0);
 
   // Initialize content state from fetched data for saving later
-  // The content prop on RichTextDesignerComponent comes directly from platformLanguageViewModel
+  // Update whenever the data actually changes (detected by content hash)
   useEffect(() => {
     if (
       platformLanguageViewModel?.mode === 'default' &&
-      platformLanguageViewModel.data &&
-      loadedForLocaleRef.current !== contentLocale
+      platformLanguageViewModel.data
     ) {
-      setImpressumContent(platformLanguageViewModel.data.impressumContent || '');
-      setPrivacyPolicyContent(platformLanguageViewModel.data.privacyPolicyContent || '');
-      setTermsOfUseContent(platformLanguageViewModel.data.termsOfUseContent || '');
-      loadedForLocaleRef.current = contentLocale;
-      setIsContentInitialized(true);
+      // Create a hash of the content to detect actual data changes
+      const dataHash = (platformLanguageViewModel.data.impressumContent || '').substring(0, 100);
+
+      console.log('[ManageLegalTexts] State update check:', {
+        currentLocale: contentLocale,
+        loadedFor: loadedForLocaleRef.current,
+        lastHash: lastDataHashRef.current.substring(0, 30),
+        currentHash: dataHash.substring(0, 30),
+        hashChanged: lastDataHashRef.current !== dataHash,
+        localeChanged: loadedForLocaleRef.current !== contentLocale,
+        willUpdate: lastDataHashRef.current !== dataHash || loadedForLocaleRef.current !== contentLocale,
+      });
+
+      // Only update if the data hash actually changed OR we haven't loaded for this locale yet
+      if (lastDataHashRef.current !== dataHash || loadedForLocaleRef.current !== contentLocale) {
+        console.log('[ManageLegalTexts] UPDATING STATE - data changed for locale:', contentLocale);
+        console.log('[ManageLegalTexts] Setting impressumContent to:', (platformLanguageViewModel.data.impressumContent || '').substring(0, 50));
+        setImpressumContent(platformLanguageViewModel.data.impressumContent || '');
+        setPrivacyPolicyContent(platformLanguageViewModel.data.privacyPolicyContent || '');
+        setTermsOfUseContent(platformLanguageViewModel.data.termsOfUseContent || '');
+        loadedForLocaleRef.current = contentLocale;
+        lastDataHashRef.current = dataHash;
+        setIsContentInitialized(true);
+        // Increment counter to force remount of RichTextDesignerComponent
+        setUpdateCounter(prev => prev + 1);
+      }
     }
   }, [platformLanguageViewModel, contentLocale]);
 
-  // When content locale changes, reset initialization and refetch
+  // When content locale changes, just refetch - the first useEffect will handle state updates
   useEffect(() => {
     if (loadedForLocaleRef.current && loadedForLocaleRef.current !== contentLocale) {
-      setIsContentInitialized(false);
+      console.log('[ManageLegalTexts] Locale changed from', loadedForLocaleRef.current, 'to', contentLocale, '- refetching');
       refetchPlatformLanguage();
     }
   }, [contentLocale]);
@@ -191,11 +215,11 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
             <div className="flex flex-col gap-4">
               <h2 className="text-xl font-semibold text-white">{t('tabs.impressum')}</h2>
               <RichTextDesignerComponent
-                key={`impressum-${loadedForLocaleRef.current}`}
+                key={`impressum-${updateCounter}`}
                 elementInstance={{
                   id: 'impressum-content',
                   type: FormElementType.RichText,
-                  content: platformLanguageViewModel.data.impressumContent || '',
+                  content: impressumContent || '',
                 } as RichTextElement}
                 locale={currentLocale}
                 onContentChange={(value: string) => {
@@ -210,11 +234,11 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
             <div className="flex flex-col gap-4">
               <h2 className="text-xl font-semibold text-white">{t('tabs.privacyPolicy')}</h2>
               <RichTextDesignerComponent
-                key={`privacy-policy-${loadedForLocaleRef.current}`}
+                key={`privacy-policy-${updateCounter}`}
                 elementInstance={{
                   id: 'privacy-policy-content',
                   type: FormElementType.RichText,
-                  content: platformLanguageViewModel.data.privacyPolicyContent || '',
+                  content: privacyPolicyContent || '',
                 } as RichTextElement}
                 locale={currentLocale}
                 onContentChange={(value: string) => {
@@ -229,11 +253,11 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
             <div className="flex flex-col gap-4">
               <h2 className="text-xl font-semibold text-white">{t('tabs.termsOfUse')}</h2>
               <RichTextDesignerComponent
-                key={`terms-of-use-${loadedForLocaleRef.current}`}
+                key={`terms-of-use-${updateCounter}`}
                 elementInstance={{
                   id: 'terms-of-use-content',
                   type: FormElementType.RichText,
-                  content: platformLanguageViewModel.data.termsOfUseContent || '',
+                  content: termsOfUseContent || '',
                 } as RichTextElement}
                 locale={currentLocale}
                 onContentChange={(value: string) => {
