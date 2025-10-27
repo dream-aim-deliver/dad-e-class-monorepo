@@ -1021,6 +1021,7 @@ export const EN: TDictionary = {
       topics: 'Topics',
       categories: 'Categories',
       aboutPage: 'About Page',
+      footer: 'Footer',
       coachingOfferings: 'Coaching Offerings',
       yourStudents: 'Your students',
       yourProfile: 'Your Profile',
@@ -2070,6 +2071,20 @@ export const EN: TDictionary = {
       error: {
         title: 'Error',
         description: 'An error occurred while loading legal texts.',
+      },
+    },
+    manageFooter: {
+      title: 'Manage Footer',
+      description: 'Update footer content for your platform',
+      footerContentTitle: 'Footer content',
+      languageIndependentNote: 'Note: The footer content is shared across all languages of the platform',
+      saveButton: 'Save Changes',
+      saving: 'Saving changes...',
+      saveSuccess: 'Footer content saved successfully!',
+      saveError: 'Failed to save footer content',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading the footer.',
       },
     },
   },

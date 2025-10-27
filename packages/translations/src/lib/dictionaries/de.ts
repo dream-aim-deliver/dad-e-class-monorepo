@@ -1025,6 +1025,7 @@ export const DE: TDictionary = {
       topics: 'Themen',
       categories: 'Kategorien',
       aboutPage: 'Über uns Seite',
+      footer: 'Fußzeile',
       coachingOfferings: 'Coaching-Angebote',
       yourStudents: 'Deine Schüler',
       yourProfile: 'Ihr Profil',
@@ -2073,6 +2074,20 @@ export const DE: TDictionary = {
       error: {
         title: 'Fehler',
         description: 'Beim Laden der rechtlichen Texte ist ein Fehler aufgetreten.',
+      },
+    },
+    manageFooter: {
+      title: 'Fußzeile verwalten',
+      description: 'Aktualisiere den Fußzeileninhalt für deine Plattform',
+      footerContentTitle: 'Fußzeileninhalt',
+      languageIndependentNote: 'Hinweis: Der Fußzeileninhalt wird für alle Sprachen der Plattform geteilt',
+      saveButton: 'Änderungen speichern',
+      saving: 'Änderungen werden gespeichert...',
+      saveSuccess: 'Fußzeileninhalt erfolgreich gespeichert!',
+      saveError: 'Fehler beim Speichern des Fußzeileninhalts',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Fußzeile ist ein Fehler aufgetreten.',
       },
     },
   },
