@@ -64,7 +64,6 @@ export * from './student-coaching-sessions-list-view-model';
 export * from './create-coaching-session-review-view-model';
 export * from './unschedule-coaching-session-view-model';
 export * from './upcoming-coaching-sessions-list-view-model';
-export * from './notifications-view-model';
 
 export * from './schedule-coaching-session-view-model';
 export * from './request-coaching-session-view-model';
@@ -119,3 +118,4 @@ export * from './list-transactions-view-model';
 export * from './publish-package-view-model';
 export * from './save-platform-language-legal-texts-view-model';
 export * from './save-platform-footer-view-model';
+export * from './list-notifications-view-model';
