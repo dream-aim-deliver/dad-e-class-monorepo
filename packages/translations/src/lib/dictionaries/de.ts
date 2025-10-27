@@ -2081,5 +2081,21 @@ export const DE: TDictionary = {
         description: 'Beim Laden der Fußzeile ist ein Fehler aufgetreten.',
       },
     },
+    activityHistory: {
+      title: 'Aktivitätsverlauf',
+      description: 'Zeige deine Benachrichtigungen und Aktivitäten an',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden deines Aktivitätsverlaufs ist ein Fehler aufgetreten.',
+        unauthorized: {
+          title: 'Zugriff verweigert',
+          description: 'Du musst angemeldet sein, um deinen Aktivitätsverlauf anzuzeigen.',
+        },
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die angeforderte Aktivität konnte nicht gefunden werden.',
+        },
+      },
+    },
   },
 };
