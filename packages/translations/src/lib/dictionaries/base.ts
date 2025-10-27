@@ -1662,6 +1662,9 @@ export const DictionarySchema = z.object({
     termsOfUse: z.object({
       title: z.string(),
     }),
+    privacyPolicy: z.object({
+      title: z.string(),
+    }),
     student: z.object({
       tabs: z.object({
         assignments: z.string(),
