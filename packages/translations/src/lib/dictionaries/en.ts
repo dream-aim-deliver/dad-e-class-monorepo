@@ -2106,5 +2106,17 @@ export const EN: TDictionary = {
         },
       },
     },
+    cmsCourses: {
+      title: 'Courses',
+      description: 'Manage platform courses',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading courses.',
+        notFound: {
+          title: 'Not Found',
+          description: 'The requested courses could not be found.',
+        },
+      },
+    },
   },
 };
