@@ -13,11 +13,14 @@ import { RecentActivity } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
+import { useRequiredPlatform } from '../../context/platform-context';
 
 export default function UserNotifications() {
     const locale = useLocale() as TLocale;
     const sessionDTO = useSession();
     const session = sessionDTO.data;
+
+    const { platform } = useRequiredPlatform();
 
     const [viewModel, setViewModel] = useState<viewModels.TListNotificationsViewModel | null>(null);
     const { presenter } = useListNotificationsPresenter(setViewModel);
@@ -66,7 +69,7 @@ export default function UserNotifications() {
                 action={{ title: notification.actionTitle, url: notification.actionUrl }}
                 timestamp={notification.createdAt instanceof Date ? notification.createdAt.toISOString() : String(notification.createdAt)}
                 isRead={notification.isRead}
-                platformName="E-Class"
+                platformName={platform.name}
                 recipients={1}
                 layout="horizontal"
                 locale={locale}
