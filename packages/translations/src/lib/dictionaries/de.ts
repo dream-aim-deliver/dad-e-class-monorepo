@@ -1627,6 +1627,9 @@ export const DE: TDictionary = {
     impressum: {
       title: 'Impressum',
     },
+    termsOfUse: {
+      title: 'Nutzungsbedingungen',
+    },
     student: {
       tabs: {
         assignments: 'Aufgaben',
