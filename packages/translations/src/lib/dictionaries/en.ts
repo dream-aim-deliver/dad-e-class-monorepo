@@ -2160,5 +2160,17 @@ export const EN: TDictionary = {
         },
       },
     },
+    cmsTransactions: {
+      title: 'Transactions',
+      description: 'Manage platform transactions and payments',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading transactions.',
+        notFound: {
+          title: 'Not Found',
+          description: 'The requested transactions could not be found.',
+        },
+      },
+    },
   },
 };

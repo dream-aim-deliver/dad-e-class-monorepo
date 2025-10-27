@@ -2163,5 +2163,17 @@ export const DE: TDictionary = {
         },
       },
     },
+    cmsTransactions: {
+      title: 'Transaktionen',
+      description: 'Verwalte Plattform-Transaktionen und Zahlungen',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Transaktionen ist ein Fehler aufgetreten.',
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die angeforderten Transaktionen konnten nicht gefunden werden.',
+        },
+      },
+    },
   },
 };
