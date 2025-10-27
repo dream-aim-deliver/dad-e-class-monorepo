@@ -101,10 +101,10 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
                     />
                     <div className="flex items-center gap-2">
                         <h6 className="text-md font-bold text-text-primary leading-[120%] whitespace-nowrap">
-                            {pricing.currency}  {Math.round(pricing.partialPrice * 100) / 100}
+                            {(pricing as any).currency}  {Math.round((pricing as any).partialPrice * 100) / 100}
                         </h6>
                         <p className="text-sm font-bold text-feedback-success-primary leading-[100%] whitespace-nowrap">
-                            {dictionary.components.courseCard.saveText}  {pricing.currency}  {Math.round((pricing.fullPrice - pricing.partialPrice) * 100) / 100}
+                            {dictionary.components.courseCard.saveText}  {(pricing as any).currency}  {Math.round(((pricing as any).fullPrice - (pricing as any).partialPrice) * 100) / 100}
                         </p>
                     </div>
                 </div>
