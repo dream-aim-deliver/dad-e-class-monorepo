@@ -2,7 +2,8 @@ module.exports = {
     apps: [
         {
             name: "e-class-cms",
-            script: "cd /opt/dadai/app/dist/apps/cms && node_modules/.bin/next start",
+            script: "next start",
+            "cwd": "apps/cms",
             env: {
                 NODE_ENV: "production",
                 NEXTAUTH_SECRET: "{{ NEXTAUTH_SECRET }}",
