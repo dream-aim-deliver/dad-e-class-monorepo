@@ -1,9 +1,6 @@
 import 'server-only';
 import { TAppRouter } from '@dream-aim-deliver/e-class-cms-rest';
-import {
-    getTRPCUrl,
-    makeQueryClient,
-} from '../../../common/utils/get-cms-query-client';
+import { makeQueryClient } from '../../../common/utils/get-cms-query-client';
 import React, { cache } from 'react';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import {
@@ -14,12 +11,16 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import superjson from 'superjson';
 import nextAuth from '../auth/next-auth.config';
 import { getLocale } from 'next-intl/server';
-import env from '../env';
 
 export const getQueryClient = cache(makeQueryClient);
 
 /**
  * Creates headers for server-side TRPC requests with authentication and localization
+ *
+ * Note: We don't call connection() here because the server components that use this
+ * client (like layout.tsx) already call getRuntimeConfig() which triggers connection().
+ * This enables dynamic rendering for the entire request, allowing us to read runtime
+ * environment variables from process.env.
  */
 async function createServerHeaders(): Promise<Record<string, string>> {
     const headers: Record<string, string> = {};
@@ -47,9 +48,10 @@ async function createServerHeaders(): Promise<Record<string, string>> {
         console.warn('Failed to get locale for server-side TRPC:', error);
     }
 
-    // Add platform header
+    // Add platform header - read directly from process.env
+    // This works at runtime because the parent server component called connection()
     try {
-        const platformSlug = env.NEXT_PUBLIC_E_CLASS_RUNTIME;
+        const platformSlug = process.env.NEXT_PUBLIC_E_CLASS_RUNTIME;
         if (platformSlug) {
             headers['x-eclass-runtime'] = platformSlug;
         }
@@ -59,6 +61,20 @@ async function createServerHeaders(): Promise<Record<string, string>> {
     return headers;
 }
 
+/**
+ * Gets the TRPC URL from runtime environment variables
+ * Reads directly from process.env (works because parent called connection())
+ */
+function getTRPCUrl(): string {
+    const base =
+        process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173';
+    return `${base}/api/trpc`;
+}
+
+/**
+ * TRPC client for server-side requests
+ * Reads runtime environment variables via process.env
+ */
 const client = createTRPCClient<TAppRouter>({
     links: [
         httpBatchLink({
@@ -71,10 +87,14 @@ const client = createTRPCClient<TAppRouter>({
     ],
 });
 
-export const trpc: ReturnType<typeof createTRPCOptionsProxy<TAppRouter>> = createTRPCOptionsProxy({
-    client: client,
-    queryClient: getQueryClient,
-});
+/**
+ * TRPC query options proxy for server components
+ */
+export const trpc: ReturnType<typeof createTRPCOptionsProxy<TAppRouter>> =
+    createTRPCOptionsProxy({
+        client: client,
+        queryClient: getQueryClient,
+    });
 
 /**
  * Hydrates the client with the provided state.
