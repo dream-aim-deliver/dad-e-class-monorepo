@@ -39,6 +39,10 @@ RUN pnpm install --frozen-lockfile
 RUN jq '.plugins = [.plugins[] | select(.plugin != "@nx/eslint/plugin")]' nx.json > nx.tmp.json && \
     mv nx.tmp.json nx.json
 
+# Build the CMS app during Docker image creation
+# This improves startup time from ~2-3 minutes to ~1 second
+RUN pnpm nx build cms
+
 EXPOSE 443
 EXPOSE 80
 EXPOSE 3000
