@@ -6,8 +6,20 @@ import {
 import superjson from 'superjson';
 import env from '../../client/config/env';
 
+/**
+ * Gets the TRPC URL for cms-rest connections
+ *
+ * For server-side requests:
+ * - In Kubernetes: Uses E_CLASS_CMS_REST_URL (internal cluster URL) to avoid hairpin NAT
+ * - In local dev: Falls back to NEXT_PUBLIC_E_CLASS_CMS_REST_URL (localhost)
+ *
+ * For client-side requests:
+ * - E_CLASS_CMS_REST_URL is not available in browser, so uses NEXT_PUBLIC_E_CLASS_CMS_REST_URL
+ */
 export function getTRPCUrl() {
-    const base = env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
+    const base =
+        process.env.E_CLASS_CMS_REST_URL ||
+        env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
     return `${base}/api/trpc`;
 }
 

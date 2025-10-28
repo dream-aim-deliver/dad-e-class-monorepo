@@ -64,10 +64,16 @@ async function createServerHeaders(): Promise<Record<string, string>> {
 /**
  * Gets the TRPC URL from runtime environment variables
  * Reads directly from process.env (works because parent called connection())
+ *
+ * For server-side requests:
+ * - In Kubernetes: Uses E_CLASS_CMS_REST_URL (internal cluster URL) to avoid hairpin NAT
+ * - In local dev: Falls back to NEXT_PUBLIC_E_CLASS_CMS_REST_URL (localhost)
  */
 function getTRPCUrl(): string {
     const base =
-        process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173';
+        process.env.E_CLASS_CMS_REST_URL ||
+        process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL ||
+        'http://localhost:5173';
     return `${base}/api/trpc`;
 }
 
