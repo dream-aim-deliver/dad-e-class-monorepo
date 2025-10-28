@@ -20,6 +20,7 @@ interface CouponsProps {
 export default function Coupons({ platformSlug, platformLocale }: CouponsProps) {
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.coupons');
+  const tCreate = useTranslations('components.createCouponModal');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
   // Platform context
@@ -88,7 +89,6 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
     },
     onError: (error) => {
       setCreateSuccess(false);
-      console.error('Failed to create coupon:', error);
       
       // Set appropriate error message based on error type
       const errorData = (error as any)?.data;
@@ -110,6 +110,8 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
 
   // TRPC query for page data
   const [couponsResponse] = trpc.listCoupons.useSuspenseQuery({});
+
+  //console.log('couponsResponse', couponsResponse);
   
   // @ts-ignore
   presenter.present(couponsResponse, listCouponsViewModel);
@@ -146,6 +148,8 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
 
   // Success state - extract data from ViewModel
   const couponsData = listCouponsViewModel.data;
+
+  console.log('couponsData', listCouponsViewModel.data.coupons);
 
   // Revoke coupon handlers
   const handleRevokeCoupon = (couponId: string) => {
@@ -184,11 +188,22 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   };
 
   const handleCreateCoupon = (data: any) => {
+    const newName: string | undefined = data?.name?.trim();
+    if (newName) {
+      const exists = listCouponsViewModel?.data?.coupons?.some(
+        (c) => (c.name || '').toLowerCase() === newName.toLowerCase()
+      );
+      if (exists) {
+        setCreateSuccess(false);
+        setCreateErrorMessage(tCreate('nameConflictMessage', { couponName: newName }));
+        return;
+      }
+    }
+    setCreateErrorMessage(null);
     createCouponMutation.mutate(data);
   };
 
-  const handleCreateCouponSuccess = (couponName: string) => {
-    console.log('Coupon created successfully:', couponName);
+  const handleCreateCouponSuccess = (_couponName: string) => {
     // The modal will be closed by the mutation's onSuccess callback
   };
 
