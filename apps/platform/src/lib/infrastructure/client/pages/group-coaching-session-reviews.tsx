@@ -11,12 +11,13 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { DefaultLoading, DefaultError, CoachReviewCard, Breadcrumbs, Button, IconFilter, CoachReviewFilterModal, GroupCoachingSessionBanner, GroupCoachingSessionReviewsBanner } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, CoachReviewCard, Breadcrumbs, Button, IconFilter, CoachReviewFilterModal, GroupCoachingSessionReviewsBanner } from '@maany_shr/e-class-ui-kit';
 import type { CoachReviewFilterModel } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/cms-client';
 import { useListGroupCoachingSessionReviewsPresenter } from '../hooks/use-list-group-coaching-session-reviews-presenter';
 import useClientSidePagination from '../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
+import { useGetGroupIntroductionPresenter } from '../hooks/use-get-group-introduction-presenter';
 
 interface GroupCoachingSessionReviewsProps {
     locale: TLocale;
@@ -45,9 +46,21 @@ export default function GroupCoachingSessionReviews({
         coachingSessionId,
     });
 
+    const [groupIntroductionResponse] = trpc.getGroupIntroduction.useSuspenseQuery({
+        courseSlug: courseSlug,
+        additionalParams: {
+            groupId: groupId,
+            requestType: "requestForCoach",
+        }
+    });
+
     // View model state
     const [reviewsViewModel, setReviewsViewModel] = useState<
         viewModels.TListGroupCoachingSessionReviewsViewModel | undefined
+    >(undefined);
+
+    const [groupIntroductionViewModel, setGroupIntroductionViewModel] = useState<
+        viewModels.TGetGroupIntroductionViewModel | undefined
     >(undefined);
 
     // Filter states
@@ -61,12 +74,16 @@ export default function GroupCoachingSessionReviews({
 
     // Initialize presenter
     const { presenter } = useListGroupCoachingSessionReviewsPresenter(setReviewsViewModel);
+    const { presenter: groupIntroPresenter } = useGetGroupIntroductionPresenter(setGroupIntroductionViewModel);
 
     // Present data to view model
     useEffect(() => {
         // @ts-ignore - Presenter type compatibility issue
         presenter.present(reviewsResponse, reviewsViewModel);
     }, [reviewsResponse, presenter, reviewsViewModel]);
+
+    // @ts-ignore
+    groupIntroPresenter.present(groupIntroductionResponse, groupIntroductionViewModel);
 
     // Get reviews data or use empty array for filtering
     const allReviews = useMemo(() => {
@@ -114,7 +131,7 @@ export default function GroupCoachingSessionReviews({
     });
 
     // Loading state
-    if (status === 'loading' || !reviewsViewModel) {
+    if (status === 'loading' || !reviewsViewModel || !groupIntroductionViewModel) {
         return <DefaultLoading locale={currentLocale} variant="minimal" />;
     }
 
@@ -130,7 +147,7 @@ export default function GroupCoachingSessionReviews({
     }
 
     // Error handling
-    if (reviewsViewModel.mode === 'kaboom') {
+    if (reviewsViewModel.mode === 'kaboom' || groupIntroductionViewModel.mode === 'kaboom') {
         return (
             <DefaultError
                 locale={currentLocale}
@@ -140,7 +157,7 @@ export default function GroupCoachingSessionReviews({
         );
     }
 
-    if (reviewsViewModel.mode === 'not-found') {
+    if (reviewsViewModel.mode === 'not-found' || groupIntroductionViewModel.mode === 'not-found') {
         return (
             <DefaultError
                 locale={currentLocale}
@@ -151,6 +168,7 @@ export default function GroupCoachingSessionReviews({
     }
 
     const reviewsData = reviewsViewModel.data;
+    const groupIntroductionData = groupIntroductionViewModel.data;
 
     return (
         <div className="flex flex-col space-y-5">
@@ -170,9 +188,7 @@ export default function GroupCoachingSessionReviews({
                     },
                     {
                         label: breadcrumbsTranslations('yourCourses'),
-                        onClick: () => {
-                            // TODO: Implement navigation to your courses
-                        },
+                        onClick: () => route.push(`/${localeProp}/workspace/courses`),
                     },
                     {
                         label: courseSlug,
@@ -183,8 +199,7 @@ export default function GroupCoachingSessionReviews({
                         onClick: () => route.push(`/${localeProp}/workspace/courses/${courseSlug}/groups`),
                     },
                     {
-                        // TODO: We should get group name directly from reviewsData instead of reviews array
-                        label: reviewsData.reviews[0]?.group.name || '',
+                        label: groupIntroductionData.name,
                         onClick: () => route.push(`/${localeProp}/workspace/courses/${courseSlug}/groups/${groupId}`),
                     },
                     {
@@ -194,19 +209,25 @@ export default function GroupCoachingSessionReviews({
                 ]}
             />
             <div className='flex flex-col gap-4'>
-                <div className='flex items-center justify-between'>
-                    <div className='flex flex-col gap-2'>
-                        {/* TODO: We should get group name directly from reviewsData instead of reviews array */}
-                        <h6 className='text-text-secondary text-sm md:text-md leading-[120%]'>
-                            {reviewsData.reviews[0]?.group.name || ''}
-                        </h6>
-                        <h2 className='text-text-primary md:text-3xl text-xl font-bold'>
-                            {t('title')}
-                        </h2>
-                        <p className='text-text-secondary text-sm md:text-md'>
-                            {t('description')}
-                        </p>
-                    </div>
+                <div className='flex flex-col gap-2'>
+                    <h6 className='text-text-secondary text-sm md:text-md leading-[120%]'>
+                        {groupIntroductionData.name}
+                    </h6>
+                    <h2 className='text-text-primary md:text-3xl text-xl font-bold'>
+                        {t('title')}
+                    </h2>
+                    <p className='text-text-secondary text-sm md:text-md'>
+                        {t('description')}
+                    </p>
+                </div>
+                
+                <div className="w-full flex items-center justify-between gap-4">
+                    <GroupCoachingSessionReviewsBanner
+                        reviewCount={reviewsData.reviewCount}
+                        averageRating={reviewsData.averageRating || 0}
+                        studentCount={reviewsData.studentCount}
+                        locale={localeProp}
+                    />
                     {/* Filter Button */}
                     <Button
                         variant="secondary"
@@ -216,23 +237,6 @@ export default function GroupCoachingSessionReviews({
                         hasIconLeft
                         iconLeft={<IconFilter />}
                         className="w-auto"
-                    />
-                </div>
-                
-                <div className="w-full flex items-center justify-between gap-4">
-                    <GroupCoachingSessionBanner
-                        // TODO: We should get title, date, time and duration directly from reviewsData instead of reviews array
-                        title={reviewsData.reviews[0]?.coachingOfferingTitle || ''}
-                        date={new Date(reviewsData.reviews[0]?.createdAt)}
-                        time={new Date(reviewsData.reviews[0]?.createdAt).toLocaleTimeString(localeProp)}
-                        durationMinutes={60}
-                        locale={localeProp}
-                    />
-                    <GroupCoachingSessionReviewsBanner
-                        reviewCount={reviewsData.reviewCount}
-                        averageRating={reviewsData.averageRating || 0}
-                        studentCount={reviewsData.studentCount}
-                        locale={localeProp}
                     />
                 </div>
 
