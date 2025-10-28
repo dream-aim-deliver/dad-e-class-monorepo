@@ -9,6 +9,7 @@ const serverEnvSchema = clientEnvSchema.merge(z.object({
     AUTH_AUTH0_ISSUER: z.string().url(),
     AUTH_AUTH0_AUTHORIZATION_URL: z.string().url(),
     E_CLASS_DEV_MODE: z.boolean(),
+    E_CLASS_CMS_REST_URL: z.string().url().optional(),
     S3_HOSTNAME: z.string().min(1),
     S3_PORT: z.string().min(1),
     S3_PROTOCOL: z.enum(['http', 'https']),
@@ -36,6 +37,7 @@ const runtimeEnv = {
     AUTH_AUTH0_AUTHORIZATION_URL: process.env.AUTH_AUTH0_AUTHORIZATION_URL || (isBuildTime ? 'https://build-time.placeholder.com/authorize' : undefined),
     E_CLASS_DEV_MODE:
         process.env.E_CLASS_DEV_MODE?.trim().toLowerCase() === 'true',
+    E_CLASS_CMS_REST_URL: process.env.E_CLASS_CMS_REST_URL,
     S3_HOSTNAME: process.env.S3_HOSTNAME || (isBuildTime ? 'localhost' : undefined),
     S3_PORT: process.env.S3_PORT || (isBuildTime ? '9000' : undefined),
     S3_PROTOCOL: process.env.S3_PROTOCOL === 'https' ? 'https' : 'http',
