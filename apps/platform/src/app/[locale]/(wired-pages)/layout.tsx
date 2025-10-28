@@ -17,6 +17,9 @@ import Layout from '../../../lib/infrastructure/client/pages/layout';
 import CMSTRPCClientProviders from '../../../lib/infrastructure/client/trpc/cms-client-provider';
 import { PlatformProvider } from '../../../lib/infrastructure/client/context/platform-context';
 import { getQueryClient, trpc } from '../../../lib/infrastructure/server/config/trpc/cms-server';
+import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/context/runtime-config-context';
+import { connection } from 'next/server';
+import env from '../../../lib/infrastructure/server/config/env';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -104,6 +107,19 @@ export default async function RootLayout({
 
     const messages = await getMessages({ locale });
 
+    // Enable dynamic rendering for runtime environment variables
+    // This causes env.ts to be evaluated at request time, not build time
+    await connection();
+
+    // Get runtime configuration from env.ts (evaluated at request time due to connection() above)
+    const runtimeConfig = {
+        NEXT_PUBLIC_E_CLASS_RUNTIME: env.NEXT_PUBLIC_E_CLASS_RUNTIME,
+        NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME,
+        NEXT_PUBLIC_APP_URL: env.NEXT_PUBLIC_APP_URL,
+        NEXT_PUBLIC_E_CLASS_CMS_REST_URL: env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
+        defaultTheme: env.DEFAULT_THEME,
+    };
+
     // Perform authentication
     const authGateway = new NextAuthGateway(nextAuth);
     const sessionDTO = await authGateway.getSession();
@@ -132,13 +148,15 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <PlatformProvider platform={platform}>
-                            <CMSTRPCClientProviders>
-                                <Layout availableLocales={availableLocales}>
-                                    {children}
-                                </Layout>
-                            </CMSTRPCClientProviders>
-                        </PlatformProvider>
+                        <RuntimeConfigProvider config={runtimeConfig}>
+                            <PlatformProvider platform={platform}>
+                                <CMSTRPCClientProviders>
+                                    <Layout availableLocales={availableLocales}>
+                                        {children}
+                                    </Layout>
+                                </CMSTRPCClientProviders>
+                            </PlatformProvider>
+                        </RuntimeConfigProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>
             </body>

@@ -3,17 +3,14 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useMemo } from 'react';
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
-import {
-    getQueryClient,
-    getTRPCUrl,
-} from '../../common/utils/get-cms-query-client';
+import { getQueryClient } from '../../common/utils/get-cms-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { trpc } from '../trpc/cms-client';
 import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 import { useSession } from 'next-auth/react';
 import { useLocale } from 'next-intl';
-import env from '../config/env';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface ClientProvidersProps {
     children: ReactNode;
@@ -25,6 +22,7 @@ export default function CMSTRPCClientProviders({
     const queryClient = getQueryClient();
     const { data: session, status } = useSession();
     const locale = useLocale();
+    const runtimeConfig = useRuntimeConfig();
 
     // Debug logging for session state
 
@@ -35,11 +33,14 @@ export default function CMSTRPCClientProviders({
             // Wait for session to be determined (not loading) before setting up auth
             const isSessionReady = status !== 'loading';
 
+            // Build TRPC URL from runtime config
+            const trpcUrl = `${runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL}/api/trpc`;
+
             return trpc.createClient({
                 links: [
                     httpBatchLink({
                         transformer: superjson,
-                        url: getTRPCUrl(),
+                        url: trpcUrl,
                         headers() {
                             const headers: Record<string, string> = {};
 
@@ -66,10 +67,10 @@ export default function CMSTRPCClientProviders({
                             }
 
                             // Add platform header
-                            if (env.NEXT_PUBLIC_E_CLASS_RUNTIME) {
+                            if (runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME) {
                                 headers['x-eclass-runtime'] =
-                                    env.NEXT_PUBLIC_E_CLASS_RUNTIME;
-                                console.log('[TRPC Headers] ✅ Platform header added:', env.NEXT_PUBLIC_E_CLASS_RUNTIME);
+                                    runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
+                                console.log('[TRPC Headers] ✅ Platform header added:', runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME);
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing platform header');
                             }
@@ -81,13 +82,13 @@ export default function CMSTRPCClientProviders({
                 ],
             });
         },
-        [session?.user?.idToken, locale, status], // Recreate client when session or locale changes
+        [session?.user?.idToken, locale, status, runtimeConfig], // Recreate client when session, locale, or config changes
     );
 
     // Handle potential errors in TRPC provider setup
     try {
         return (
-            <ThemeProvider>
+            <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
                 <trpc.Provider client={trpcClient} queryClient={queryClient}>
                     <QueryClientProvider client={queryClient}>
                         {children}
@@ -102,7 +103,7 @@ export default function CMSTRPCClientProviders({
         console.error('[TRPC Provider] Failed to initialize TRPC provider:', error);
         // Fallback: render children without TRPC (will cause hook errors but app won't crash completely)
         return (
-            <ThemeProvider>
+            <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
                 <div style={{ color: 'red', padding: '1rem' }}>
                     TRPC Provider Error - Check console for details
                 </div>

@@ -39,6 +39,11 @@ RUN pnpm install --frozen-lockfile
 RUN jq '.plugins = [.plugins[] | select(.plugin != "@nx/eslint/plugin")]' nx.json > nx.tmp.json && \
     mv nx.tmp.json nx.json
 
+# Build the Next.js application during Docker image build
+# This creates a production-optimized build that can read runtime environment variables
+# using Next.js 15's dynamic rendering (connection() API)
+RUN pnpm nx build platform
+
 EXPOSE 443
 EXPOSE 80
 EXPOSE 3000

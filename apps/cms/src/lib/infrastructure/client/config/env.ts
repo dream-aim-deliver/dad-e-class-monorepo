@@ -11,12 +11,15 @@ const clientEnvSchema = z.object({
 export { clientEnvSchema };
 export type TEnv = z.infer<typeof clientEnvSchema>;
 
+// During Docker build, env vars may not be available yet (they're injected at runtime by PM2)
+// So we provide placeholder values during build that will be overridden at runtime
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build';
 
 const runtimeEnv = {
     NEXT_PUBLIC_E_CLASS_RUNTIME: process.env.NEXT_PUBLIC_E_CLASS_RUNTIME || 'development',
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173',
-    NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
+    NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL || (isBuildTime ? 'build-time@placeholder.com' : undefined),
     NEXT_PUBLIC_CMS_BACKGROUND_IMAGE_URL: process.env.NEXT_PUBLIC_CMS_BACKGROUND_IMAGE_URL,
 };
 

@@ -5,7 +5,7 @@ import '../../ui-kit/lib/assets/css/index.css';
 export const decorators = [
   withThemeByClassName({
     themes: {
-      justDoAdd: 'theme-just-do-add',
+      justDoAdd: 'theme-just-do-ad',
       jobBrandandMe: 'theme-job-brand-and-me',
       Bewerbeagentur: 'theme-bewerbeagentur',
       CMS: 'theme-cms',

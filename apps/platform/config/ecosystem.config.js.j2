@@ -2,7 +2,8 @@ module.exports = {
     apps: [
         {
             name: "e-class-platform",
-            script: "pnpm nx start platform",
+            script: "next start",
+            cwd: "apps/platform",
             env: {
                 NODE_ENV: "production",
                 NEXTAUTH_SECRET: "{{ NEXTAUTH_SECRET }}",
@@ -13,9 +14,9 @@ module.exports = {
                 AUTH_AUTH0_CLIENT_SECRET: "{{ AUTH_AUTH0_CLIENT_SECRET }}",
                 AUTH_AUTH0_ISSUER: "{{ AUTH_AUTH0_ISSUER }}",
                 AUTH_AUTH0_AUTHORIZATION_URL: "{{ AUTH_AUTH0_AUTHORIZATION_URL }}",
-                E_CLASS_DEV_MODE: "false",
-                NEXT_PUBLIC_E_CLASS_RUNTIME: "just-do-ad",
-                NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: "JustDoAd",
+                E_CLASS_DEV_MODE: "{{ E_CLASS_DEV_MODE | default('false') }}",
+                NEXT_PUBLIC_E_CLASS_RUNTIME: "{{ NEXT_PUBLIC_E_CLASS_RUNTIME }}",
+                NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: "{{ NEXT_PUBLIC_E_CLASS_PLATFORM_NAME }}",
                 NEXT_PUBLIC_APP_URL: "{{ NEXT_PUBLIC_APP_URL }}",
                 NEXT_PUBLIC_E_CLASS_CMS_REST_URL: "{{ NEXT_PUBLIC_E_CLASS_CMS_REST_URL }}",
                 S3_HOSTNAME: "{{ S3_HOSTNAME }}",
