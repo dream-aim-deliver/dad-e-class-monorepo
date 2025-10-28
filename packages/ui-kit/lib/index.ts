@@ -30,6 +30,7 @@ export { CourseCreatorCard, type CourseStatus } from './components/course-card/c
 export { ProfileTabs, DragAndDrop, Badge };
 export { CoachBanner } from './components/coach-banner';
 export { CourseCard } from './components/course-card/course-card';
+export { CourseCardList } from './components/course-card/course-card-list';
 export { default as BuyCoachingSession, type BuyCoachingSessionProps } from './components/buy-coaching-session';
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/accordion';
 export * as contexts from './contexts';
