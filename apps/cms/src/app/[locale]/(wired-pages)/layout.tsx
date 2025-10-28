@@ -52,7 +52,7 @@ export default async function RootLayout({
     params: Promise<{ locale: string }>;
 }) {
     // Theme configuration - change this variable to switch themes
-    // Available themes: 'just-do-add', 'job-brand-me', 'bewerbeagentur', 'cms'
+    // Available themes: 'just-do-ad', 'job-brand-me', 'bewerbeagentur', 'cms'
     const THEME = 'cms';
     const { languages } = {
         languages: [

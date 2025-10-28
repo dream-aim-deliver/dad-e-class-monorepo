@@ -88,7 +88,7 @@ export default function CMSTRPCClientProviders({
     // Handle potential errors in TRPC provider setup
     try {
         return (
-            <ThemeProvider>
+            <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
                 <trpc.Provider client={trpcClient} queryClient={queryClient}>
                     <QueryClientProvider client={queryClient}>
                         {children}
@@ -103,7 +103,7 @@ export default function CMSTRPCClientProviders({
         console.error('[TRPC Provider] Failed to initialize TRPC provider:', error);
         // Fallback: render children without TRPC (will cause hook errors but app won't crash completely)
         return (
-            <ThemeProvider>
+            <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
                 <div style={{ color: 'red', padding: '1rem' }}>
                     TRPC Provider Error - Check console for details
                 </div>

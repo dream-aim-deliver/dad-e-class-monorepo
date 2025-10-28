@@ -12,6 +12,7 @@ const serverEnvSchema = clientEnvSchema.merge(z.object({
     S3_HOSTNAME: z.string().min(1),
     S3_PORT: z.string().min(1),
     S3_PROTOCOL: z.enum(['http', 'https']),
+    DEFAULT_THEME: z.enum(['just-do-ad', 'job-brand-me', 'bewerbeagentur', 'cms']),
 }));
 
 export type TEnv = z.infer<typeof serverEnvSchema>;
@@ -38,6 +39,7 @@ const runtimeEnv = {
     S3_HOSTNAME: process.env.S3_HOSTNAME || (isBuildTime ? 'localhost' : undefined),
     S3_PORT: process.env.S3_PORT || (isBuildTime ? '9000' : undefined),
     S3_PROTOCOL: process.env.S3_PROTOCOL === 'https' ? 'https' : 'http',
+    DEFAULT_THEME: (process.env.DEFAULT_THEME as 'just-do-ad' | 'job-brand-me' | 'bewerbeagentur' | 'cms') || 'just-do-ad',
 };
 
 const envValidationResult = serverEnvSchema.safeParse(runtimeEnv);
