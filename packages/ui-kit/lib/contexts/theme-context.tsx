@@ -8,8 +8,13 @@ type ThemeContextProps = {
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<string>("just-do-add"); // TODO: set via environment variable
+type ThemeProviderProps = {
+  children: ReactNode;
+  defaultTheme?: 'just-do-ad' | 'job-brand-me' | 'bewerbeagentur' | 'cms';
+};
+
+const ThemeProvider = ({ children, defaultTheme = "just-do-ad" }: ThemeProviderProps) => {
+  const [theme, setTheme] = useState<string>(defaultTheme);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
