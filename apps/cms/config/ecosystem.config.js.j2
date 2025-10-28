@@ -2,7 +2,7 @@ module.exports = {
     apps: [
         {
             name: "e-class-cms",
-            script: "pnpm nx start cms",
+            script: "cd /opt/dadai/app/dist/apps/cms && node_modules/.bin/next start",
             env: {
                 NODE_ENV: "production",
                 NEXTAUTH_SECRET: "{{ NEXTAUTH_SECRET }}",

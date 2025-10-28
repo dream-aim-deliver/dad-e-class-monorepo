@@ -13,8 +13,9 @@ import {
     localeToLanguageCode,
 } from '../../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../../lib/infrastructure/client/pages/layout';
-// import env to validate 
-import serverEnv from '../../../lib/infrastructure/server/config/env';
+import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/context/runtime-config-context';
+import { connection } from 'next/server';
+import env from '../../../lib/infrastructure/server/config/env';
 
 
 export const metadata = {
@@ -87,6 +88,17 @@ export default async function RootLayout({
 
     const messages = await getMessages({ locale });
 
+    // Enable dynamic rendering for runtime environment variables
+    // This causes env.ts to be evaluated at request time, not build time
+    await connection();
+
+    // Get runtime configuration from env.ts (evaluated at request time due to connection() above)
+    const runtimeConfig = {
+        NEXT_PUBLIC_E_CLASS_RUNTIME: env.NEXT_PUBLIC_E_CLASS_RUNTIME,
+        NEXT_PUBLIC_APP_URL: env.NEXT_PUBLIC_APP_URL,
+        NEXT_PUBLIC_E_CLASS_CMS_REST_URL: env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
+    };
+
     // Authentication is handled in middleware.ts
     // Only authenticated users with admin role can reach this point
     const authGateway = new NextAuthGateway(nextAuth);
@@ -103,9 +115,11 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
+                        <RuntimeConfigProvider config={runtimeConfig}>
                             <Layout availableLocales={availableLocales}>
                                 {children}
                             </Layout>
+                        </RuntimeConfigProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>
             </body>
