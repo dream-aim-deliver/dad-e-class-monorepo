@@ -167,10 +167,10 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                 </div>
                 <div className="flex flex-col p-4 gap-4">
                     <div className="flex flex-col gap-2">
-                        <div className="group relative">
+                        <div className="group relative truncate w-full">
                             <h6
                                 title={title}
-                                className="text-md font-bold text-text-primary line-clamp-2 text-start"
+                                className="text-md font-bold text-text-primary truncate text-start"
                             >
                                 {title}
                             </h6>

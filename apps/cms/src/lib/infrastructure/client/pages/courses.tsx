@@ -9,15 +9,80 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { trpc } from '../trpc/cms-client';
+import { Tabs, CourseCard, CourseCardList, DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { useState } from 'react';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListCmsCoursesPresenter } from '../hooks/use-list-cms-courses-presenter';
+import { z } from 'zod';
 
 interface CoursesProps {
   locale: TLocale;
   platformSlug: string;
 }
 
+
+type TCourse = z.infer<typeof viewModels.ListCmsCoursesSuccessSchema>['courses'][number];
+
 export default function Courses({ locale, platformSlug }: CoursesProps) {
   const t = useTranslations('pages.cmsCourses');
   const currentLocale = useLocale() as TLocale;
+  const [activeTab, setActiveTab] = useState<'all' | 'draft' | 'review' | 'live'>('all');
+
+  // Fetch courses data
+  const [coursesResponse] = trpc.listCmsCourses.useSuspenseQuery({});
+
+  const [listCoursesViewModel, setListCoursesViewModel] = useState<
+    viewModels.TListCmsCoursesViewModel | undefined
+  >(undefined);
+
+  const { presenter } = useListCmsCoursesPresenter(
+    setListCoursesViewModel
+  );
+
+  // @ts-ignore
+  presenter.present(coursesResponse, listCoursesViewModel);
+
+  // Loading state
+  if (!listCoursesViewModel) {
+    return <DefaultLoading locale={currentLocale} variant="minimal" />;
+  }
+
+  // Error handling - kaboom error
+  if (listCoursesViewModel.mode === 'kaboom') {
+    return (
+      <DefaultError
+        locale={currentLocale}
+        title={t('error.title')}
+        description={t('error.description')}
+      />
+    );
+  }
+
+  // Error handling - not found
+  if (listCoursesViewModel.mode === 'not-found') {
+    return (
+      <DefaultError
+        locale={currentLocale}
+        title={t('error.title')}
+        description={t('error.description')}
+      />
+    );
+  }
+
+  const courses = listCoursesViewModel.data.courses || [];
+
+  // Filter courses based on active tab
+  const filteredCourses = activeTab === 'all'
+    ? courses
+    : courses.filter(course => course.status === activeTab);
+
+  const tabs = [
+    { value: 'all', label: 'All' },
+    { value: 'draft', label: 'Draft' },
+    { value: 'review', label: 'Review' },
+    { value: 'live', label: 'Live' },
+  ];
 
   return (
     <div className="flex flex-col space-y-5 px-30">
@@ -26,12 +91,78 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
         <p>{t('description')}</p>
       </div>
 
-      {/* Features from Notion:
-          - FEAT-115 (listCMSCourses - In Progress)
-      */}
-      {/* UI Components from Notion:
-          - 2 components referenced
-      */}
+      <Tabs.Root defaultTab="all" onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
+        <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
+          {tabs.map((tab, index) => (
+            <Tabs.Trigger
+              key={tab.value}
+              value={tab.value}
+              isLast={index === tabs.length - 1}
+            >
+              {tab.label}
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
+
+        {tabs.map((tab) => (
+          <Tabs.Content key={tab.value} value={tab.value}>
+            <CourseCardList
+              locale={currentLocale}
+              emptyStateMessage={'No courses found'}
+              emptyStateButtonText={'Create Course'}
+            >
+              {filteredCourses.map((course) => {
+                // Map status to CourseCreatorCard expected format
+                const statusMap = {
+                  review: 'under-review' as const,
+                  draft: 'draft' as const,
+                  live: 'published' as const,
+                };
+
+                // Map course data to CourseMetadata format
+                const courseMetadata = {
+                  title: course.title,
+                  description: '', // Not available in the API response
+                  duration: {
+                    video: course.duration,
+                    coaching: course.coachingSessionCount,
+                    selfStudy: 0,
+                  },
+                  pricing: {
+                    fullPrice: 0,
+                    partialPrice: 0,
+                    currency: 'USD',
+                  },
+                  imageUrl: course.imageUrl || '',
+                  author: {
+                    name: `${course.creator.name} ${course.creator.surname}`,
+                    image: course.creator.avatarUrl || '',
+                  },
+                  rating: course.rating || 0,
+                  language: {
+                    code: course.language,
+                    name: course.language,
+                  },
+                };
+
+                return (
+                  <CourseCard
+                    key={course.id}
+                    userType="creator"
+                    reviewCount={course.ratingCount}
+                    locale={currentLocale}
+                    language={{ code: course.language, name: course.language }}
+                    creatorStatus={statusMap[course.status]}
+                    course={courseMetadata}
+                    sessions={course.coachingSessionCount}
+                    sales={course.salesCount}
+                  />
+                );
+              })}
+            </CourseCardList>
+          </Tabs.Content>
+        ))}
+      </Tabs.Root>
     </div>
   );
 }
