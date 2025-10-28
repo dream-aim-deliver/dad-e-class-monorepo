@@ -4,13 +4,14 @@ import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
-import env from '../config/env';
+import type { RuntimeConfig } from '../../types/runtime-config';
 
 interface LoginPageProps {
     platform: string;
     locale: TLocale;
     enableCredentials: boolean;
     isProduction: boolean;
+    runtimeConfig: RuntimeConfig;
 }
 
 const LoginPage = (props: LoginPageProps) => {
@@ -41,17 +42,17 @@ const LoginPage = (props: LoginPageProps) => {
                 // TODO: the logo URL is passed from the backend
                 platform_logo_public_url: 'mock',
                 // TODO: the platform is identified by its ID ( Not in Auth0 Setup)
-                platform_short_name: env.NEXT_PUBLIC_E_CLASS_RUNTIME,
+                platform_short_name: props.runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME,
                 terms_and_conditions_title:
                     dictionary.pages.sso.termsAndConditions.title,
                 terms_and_conditions_content:
                     dictionary.pages.sso.termsAndConditions.content,
                 terms_and_conditions_confirmation_text:
                     dictionary.pages.sso.termsAndConditions.confirmationText,
-                privacy_policy_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/privacy-policy`,
-                terms_of_use_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
-                rules_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/rules`,
-                courses_information_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/courses-information`,
+                privacy_policy_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/privacy-policy`,
+                terms_of_use_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
+                rules_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/rules`,
+                courses_information_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/courses-information`,
             },
         );
     };

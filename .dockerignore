@@ -36,6 +36,15 @@ docs
 # NextJS specific
 **/.next
 
+# Environment files (should not be baked into Docker image)
+# Runtime environment variables will be provided by Kubernetes/PM2
+**/.env
+**/.env.local
+**/.env.*.local
+**/.env.development
+**/.env.production
+**/.env.test
+
 # Version Control
 .gitignore
 .git
