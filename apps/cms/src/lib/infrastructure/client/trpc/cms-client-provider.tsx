@@ -4,7 +4,6 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useMemo } from 'react';
 import {
     getQueryClient,
-    getTRPCUrl,
 } from '../../common/utils/get-cms-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { trpc } from '../trpc/cms-client';
@@ -12,7 +11,7 @@ import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 import { useSession } from 'next-auth/react';
 import { useLocale } from 'next-intl';
-import env from '../config/env';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface PlatformContext {
     platformSlug: string;
@@ -31,6 +30,7 @@ export default function CMSTRPCClientProviders({
     const queryClient = getQueryClient();
     const { data: session, status } = useSession();
     const locale = useLocale();
+    const runtimeConfig = useRuntimeConfig();
 
     // Debug logging for session state
     console.log('[TRPC Provider] Session status:', status);
@@ -44,11 +44,15 @@ export default function CMSTRPCClientProviders({
 
     const trpcClient = useMemo(
         () => {
+            // Build TRPC URL from runtime config
+            const trpcUrl = `${runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL}/api/trpc`;
+
             console.log('[TRPC Client] Creating new TRPC client with:', {
                 hasIdToken: !!session?.user?.idToken,
                 tokenLength: session?.user?.idToken?.length || 0,
                 locale,
-                sessionStatus: status
+                sessionStatus: status,
+                trpcUrl
             });
 
             // Wait for session to be determined (not loading) before setting up auth
@@ -61,7 +65,7 @@ export default function CMSTRPCClientProviders({
                 links: [
                     httpBatchLink({
                         transformer: superjson,
-                        url: getTRPCUrl(),
+                        url: trpcUrl,
                         headers() {
                             const headers: Record<string, string> = {};
 
@@ -77,9 +81,9 @@ export default function CMSTRPCClientProviders({
                             }
 
                             // Add runtime header
-                            if (env.NEXT_PUBLIC_E_CLASS_RUNTIME) {
+                            if (runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME) {
                                 headers['x-eclass-runtime'] =
-                                    env.NEXT_PUBLIC_E_CLASS_RUNTIME;
+                                    runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing runtime header');
                             }
@@ -95,7 +99,7 @@ export default function CMSTRPCClientProviders({
                 ],
             });
         },
-        [session?.user?.idToken, locale, status, platformContext], // Recreate client when session, locale, or platform context changes
+        [session?.user?.idToken, locale, status, platformContext, runtimeConfig], // Recreate client when session, locale, platform context, or runtime config changes
     );
 
     // Handle potential errors in TRPC provider setup
