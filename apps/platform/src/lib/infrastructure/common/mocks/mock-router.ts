@@ -49,6 +49,7 @@ import { listCourseStudents } from "./procedures/course-students";
 import { uploadLessonProgressFile } from './procedures/lesson-progress-file';
 import { listCourseMaterials } from './procedures/course-materials';
 import { listStudentNotes } from './procedures/course-notes';
+import { listCourseGroups, registerCoachToGroup } from './procedures/course-groups';
 import { getPublicCourseDetails } from './procedures/get-public-course-detail';
 import { listCourseReviews } from './procedures/course-reviews';
 import { getCoursePackages } from './procedures/course-packages';
@@ -115,6 +116,8 @@ export const mockRouter = t.router({
     uploadLessonProgressFile,
     listCourseMaterials,
     listStudentNotes,
+    listCourseGroups,
+    registerCoachToGroup,
     getPublicCourseDetails,
     listCourseReviews,
     getCoursePackages,
