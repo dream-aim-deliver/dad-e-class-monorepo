@@ -4,7 +4,9 @@ import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import UserDashboard from '../../../client/pages/workspace/user-dashboard';
 import { HydrateClient, prefetch, trpc } from '../../config/trpc/cms-server';
-import MockTRPCClientProviders from '../../../client/trpc/mock-client-providers';
+import CMSTRPCClientProviders from '../../../client/trpc/cms-client-provider';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { getLocale } from 'next-intl/server';
 
 export default async function UserDashboardServerComponent() {
     const session = await getSession();
@@ -13,12 +15,22 @@ export default async function UserDashboardServerComponent() {
         redirect('/auth/login');
     }
 
+    const locale = await getLocale();
+    const dictionary = getDictionary(locale as TLocale);
+
     const roles = session.user.roles;
+    const isVisitor = !roles || (roles.length === 1 && roles[0] === 'visitor');
+
+    if (isVisitor) {
+        throw new Error(dictionary.pages.userDashboard.errorAccess);
+    }
+
     const isCoach = roles?.includes('coach');
 
     // Prefetch data based on user role
     const prefetchPromises = [
-        prefetch(trpc.listUserCourses.queryOptions({}))
+        prefetch(trpc.listUserCourses.queryOptions({})),
+        prefetch(trpc.getPersonalProfile.queryOptions({}))
     ];
 
     // Add coach-specific data prefetching
@@ -46,15 +58,19 @@ export default async function UserDashboardServerComponent() {
         // );
     }
 
-    await Promise.all(prefetchPromises);
+    try {
+        await Promise.all(prefetchPromises);
+    } catch (error) {
+        throw new Error(dictionary.pages.userDashboard.errorFailed);
+    }
 
     return (
-        <MockTRPCClientProviders>
+        <CMSTRPCClientProviders>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
                     <UserDashboard roles={roles || []} />
                 </Suspense>
             </HydrateClient>
-        </MockTRPCClientProviders>
+        </CMSTRPCClientProviders>
     );
 }

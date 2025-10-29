@@ -214,6 +214,7 @@ export { type CoachingSessionData } from './components/available-coaching-sessio
 export { CoachingAvailabilityCard } from './components/available-coaching-sessions/coaching-availability-card';
 
 export { ReviewModal, ReviewDialog, ReviewCard } from './components/review/review-modal';
+export { default as CoachReviewCard } from './components/review/coach-review-card';
 export { CancelCoachingSessionModal } from './components/coaching-sessions/cancel-coaching-session-modal';
 export { CoachingSessionList } from "./components/coaching-sessions/coaching-session-list"
 export { ConfirmationModal } from './components/confirmation-modal';
@@ -234,7 +235,6 @@ export { ManageCoachingOfferingItem } from './components/manage-coaching-offerin
 export { ManageCoachingOfferingList } from './components/manage-coaching-offering/manage-coaching-offering-list';
 export { CoachStudentInteractionCard } from './components/coach-student-interaction-card';
 export { UserAvatar } from './components/avatar/user-avatar';
-export { default as ReviewCard } from './components/review/coach-review-card';
 export { CouponGrid, type CouponRow, type CouponGridProps } from './components/grids/coupon-grid';
 export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterModalProps } from './components/grids/coupon-grid-filter-modal';
 export { ReviewFilterModal, type ReviewFilterModel } from './components/grids/review-filter-modal';

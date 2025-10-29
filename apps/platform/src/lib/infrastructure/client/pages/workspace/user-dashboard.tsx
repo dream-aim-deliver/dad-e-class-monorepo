@@ -13,6 +13,8 @@ import {
     DialogContent,
     DialogTrigger,
     useDialog,
+    DefaultError,
+    DefaultLoading,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -29,6 +31,7 @@ import { trpc } from '../../trpc/cms-client';
 import { trpc as trpcMock } from '../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useSearchCoursesPresenter } from '../../hooks/use-search-courses-presenter';
+import { useGetPersonalProfilePresenter } from '../../hooks/use-get-personal-profile-presenter';
 
 interface UserDashboardProps {
     roles: string[];
@@ -149,6 +152,25 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     const isCoach = useMemo(() => roles.includes('coach'), [roles]);
     const isAdmin = useMemo(() => roles.includes('admin'), [roles]);
 
+    // Fetch personal profile to get full name
+    const { data: personalProfileResponse } = trpc.getPersonalProfile.useQuery({});
+
+    // Set up view model and presenter for personal profile
+    const [personalProfileViewModel, setPersonalProfileViewModel] = useState<
+        viewModels.TGetPersonalProfileViewModel | undefined
+    >(undefined);
+    const { presenter: personalProfilePresenter } = useGetPersonalProfilePresenter(
+        setPersonalProfileViewModel
+    );
+
+    // Present personal profile data when available
+    useEffect(() => {
+        if (personalProfileResponse && personalProfilePresenter) {
+            // @ts-ignore
+            personalProfilePresenter.present(personalProfileResponse, personalProfileViewModel);
+        }
+    }, [personalProfileResponse, personalProfilePresenter, personalProfileViewModel]);
+
     // Fetch coach reviews if user is a coach
     const { data: reviewsResponse } = trpc.listCoachReviews.useQuery(
         {
@@ -190,11 +212,14 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     }, [router, locale]);
 
     const getDisplayName = useCallback(() => {
-        if (session?.user?.name) {
-            return session.user.name;
+        if (personalProfileViewModel?.mode === 'default') {
+            const profile = personalProfileViewModel.data.profile;
+            if (profile?.name && profile?.surname) {
+                return `${profile.name} ${profile.surname}`;
+            }
         }
         return isCoach ? 'Coach' : 'Student';
-    }, [session?.user?.name, isCoach]);
+    }, [personalProfileViewModel, isCoach]);
 
     const formatRoles = useCallback(() => {
         if (!roles || roles.length === 0) return [];
@@ -205,6 +230,22 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
             .map((role) => role.charAt(0).toUpperCase() + role.slice(1));
     }, [roles]);
 
+    // Handle loading state
+    if (!personalProfileViewModel) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    // Handle kaboom (error) state
+    if (personalProfileViewModel.mode === 'kaboom') {
+        return (
+            <DefaultError
+                locale={locale}
+                title={t('errorFailed')}
+                description={t('errorFailed')}
+            />
+        );
+    }
+
     return (
         <div className="min-h-screen text-white">
             <div className="flex flex-col space-y-2 p-6">
@@ -214,12 +255,6 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                             label: breadcrumbsTranslations('home'),
                             onClick: () => {
                                 router.push('/');
-                            },
-                        },
-                        {
-                            label: breadcrumbsTranslations('workspace'),
-                            onClick: () => {
-                                router.push('/workspace');
                             },
                         },
                         {

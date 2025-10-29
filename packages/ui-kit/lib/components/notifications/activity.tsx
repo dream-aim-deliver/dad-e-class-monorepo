@@ -135,7 +135,7 @@ export const Activity: FC<ActivityProps> = ({
                         : 'bg-base-neutral-800 rounded-small'
                 }`,
                 // Responsive layout: vertical on mobile, horizontal on larger screens
-                'flex-col items-start md:flex-col md:items-center md:justify-between',
+                'flex-col items-start md:flex-col md:items-start md:justify-between',
                 className,
             )}
         >
