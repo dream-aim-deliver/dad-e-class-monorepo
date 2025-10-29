@@ -121,6 +121,13 @@ export const EN: TDictionary = {
       dateTime: 'Date & Time',
       clearFilters: 'Clear Filters',
       filterButton: 'Filters',
+      markSelectedAsRead: 'Mark Selected as Read',
+      received: 'Received',
+      sent: 'Sent',
+      filterByType: 'Filter by type',
+      type: 'Type',
+      recipients: 'recipients',
+      recipientsHeader: 'Recipients',
     },
     calendar: {
       coachAvailability: 'Coach Availability',

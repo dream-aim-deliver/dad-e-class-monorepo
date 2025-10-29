@@ -121,6 +121,13 @@ export const DE: TDictionary = {
       all: 'Alle',
       clearFilters: 'Filter zurücksetzen',
       filterButton: 'Filter',
+      markSelectedAsRead: 'Ausgewählte als gelesen markieren',
+      received: 'Empfangen',
+      sent: 'Gesendet',
+      filterByType: 'Nach Typ filtern',
+      type: 'Typ',
+      recipients: 'Empfänger',
+      recipientsHeader: 'Empfänger',
     },
     calendar: {
       coachAvailability: 'Coach-Verfügbarkeit',

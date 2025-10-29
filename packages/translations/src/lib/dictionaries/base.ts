@@ -129,6 +129,13 @@ export const DictionarySchema = z.object({
       dateTime: z.string(),
       filterButton: z.string(),
       clearFilters: z.string(),
+      markSelectedAsRead: z.string(),
+      received: z.string(),
+      sent: z.string(),
+      filterByType: z.string(),
+      type: z.string(),
+      recipients: z.string(),
+      recipientsHeader: z.string(),
     }),
     modulePagination: z.object({
       previous: z.string(),
