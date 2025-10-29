@@ -6,7 +6,6 @@ import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
 import { auth, viewModels } from '@maany_shr/e-class-models';
-import type { TGetPlatformUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../../lib/infrastructure/server/config/auth/next-auth.config';
 import {
@@ -117,6 +116,8 @@ export default async function RootLayout({
         NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME,
         NEXT_PUBLIC_APP_URL: env.NEXT_PUBLIC_APP_URL,
         NEXT_PUBLIC_E_CLASS_CMS_REST_URL: env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
+        // TODO: remove this and wire logo properly once CMS Settings page is implemented
+        NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL: env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL,
         defaultTheme: env.DEFAULT_THEME,
     };
 
