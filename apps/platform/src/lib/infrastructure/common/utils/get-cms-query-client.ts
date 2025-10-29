@@ -4,10 +4,23 @@ import {
     defaultShouldDehydrateQuery,
 } from '@tanstack/react-query';
 import superjson from 'superjson';
-import env from '../../client/config/env';
 
 export function getTRPCUrl() {
-    const base = env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
+    const serverUrl = process.env.E_CLASS_CMS_REST_URL;
+    const publicUrl = process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
+    const fallbackUrl = 'http://localhost:5173';
+
+    const base = serverUrl || publicUrl || fallbackUrl;
+
+    console.log('[getTRPCUrl] Environment check:', {
+        hasServerUrl: !!serverUrl,
+        serverUrl: serverUrl || 'NOT SET',
+        hasPublicUrl: !!publicUrl,
+        publicUrl: publicUrl || 'NOT SET',
+        selectedUrl: base,
+        fallbackUsed: !serverUrl && !publicUrl
+    });
+
     return `${base}/api/trpc`;
 }
 
