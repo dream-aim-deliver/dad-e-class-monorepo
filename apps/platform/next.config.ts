@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
                 // The path for mock data. Should be configured with environment variables in production.
                 hostname: 'res.cloudinary.com',
             },
+            {
+                protocol: 'https',
+                hostname: 'static.wixstatic.com',
+            },
             ...(process.env.S3_HOSTNAME ? [{
                 protocol: (process.env.S3_PROTOCOL || 'http') as 'http' | 'https',
                 hostname: process.env.S3_HOSTNAME,

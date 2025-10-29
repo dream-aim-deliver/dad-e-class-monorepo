@@ -28,6 +28,8 @@ const runtimeEnv = {
     NEXT_PUBLIC_APP_URL:
         process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173',
+    // TODO: remove this and wire logo properly once CMS Settings page is implemented
+    NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL: process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL,
     AUTH_SECRET: process.env.AUTH_SECRET || (isBuildTime ? 'build-time-placeholder' : undefined),
     AUTH_ENABLE_TEST_ACCOUNTS:
         process.env.AUTH_ENABLE_TEST_ACCOUNTS?.trim().toLowerCase() === 'true',
