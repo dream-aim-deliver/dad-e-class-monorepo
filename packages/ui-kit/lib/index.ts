@@ -252,3 +252,4 @@ export * from "./components/cms"
 export { JoinGroup } from './components/groups-card/join-group';
 export { GroupOverviewCard, type GroupOverviewCardDetails, type GroupOverviewCardProps } from './components/groups-card/groups-overview-card';
 export { GroupsList, type GroupsListProps } from './components/groups-card/groups-list';
+export { CMSNotificationGrid } from './components/grids/cms-notification-grid';
