@@ -4,7 +4,6 @@ import {
     defaultShouldDehydrateQuery,
 } from '@tanstack/react-query';
 import superjson from 'superjson';
-import env from '../../client/config/env';
 
 /**
  * Gets the TRPC URL for cms-rest connections
@@ -17,9 +16,21 @@ import env from '../../client/config/env';
  * - E_CLASS_CMS_REST_URL is not available in browser, so uses NEXT_PUBLIC_E_CLASS_CMS_REST_URL
  */
 export function getTRPCUrl() {
-    const base =
-        process.env.E_CLASS_CMS_REST_URL ||
-        env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
+    const serverUrl = process.env.E_CLASS_CMS_REST_URL;
+    const publicUrl = process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
+    const fallbackUrl = 'http://localhost:5173';
+
+    const base = serverUrl || publicUrl || fallbackUrl;
+
+    console.log('[getTRPCUrl] Environment check:', {
+        hasServerUrl: !!serverUrl,
+        serverUrl: serverUrl || 'NOT SET',
+        hasPublicUrl: !!publicUrl,
+        publicUrl: publicUrl || 'NOT SET',
+        selectedUrl: base,
+        fallbackUsed: !serverUrl && !publicUrl
+    });
+
     return `${base}/api/trpc`;
 }
 
