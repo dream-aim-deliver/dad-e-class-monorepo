@@ -1033,6 +1033,7 @@ export const DE: TDictionary = {
       yourCoachingSessions: 'Deine Coaching-Sitzungen',
       preCourseAssessmentForm: "Vorkurs-Bewertungsformular",
       yourCalendar: "Ihr Kalender",
+      yourReviews: 'Deine Bewertungen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -2173,5 +2174,19 @@ export const DE: TDictionary = {
       disable: "Deaktivieren",
       disabling: "Wird deaktiviert..."
     },
+    yourReviews: {
+      title: 'Deine Bewertungen',
+      filterButton: "Filtern",
+      noReviews: "Noch keine Bewertungen. Bewertungen aus deinen Coaching-Sitzungen werden hier angezeigt.",
+      noReviewsFiltered: "Keine Bewertungen entsprechen deinen Filtern.",
+      sortBy: "Sortieren nach",
+      sortMostRecent: "Neueste zuerst",
+      sortOldest: "Älteste zuerst",
+      sortBest: "Beste zuerst",
+      sortWorst: "Schlechteste zuerst",
+      activeFilters: "Aktive Filter:",
+      clearFilters: "Alle löschen",
+      loadMore: "Mehr laden",
+     },
   },
 };
