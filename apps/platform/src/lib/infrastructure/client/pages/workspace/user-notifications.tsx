@@ -48,13 +48,14 @@ export default function UserNotifications() {
         console.log('Navigate to full notifications page - implement navigation');
     }, []);
 
+    // TODO: Uncomment pagination once implemented
     // TRPC queries
     const [notificationsResponse, { refetch: refetchNotifications }] = trpc.listNotifications.useSuspenseQuery({
-        userId: getUserId(),
-        pagination: {
-            pageSize: 10,
-            page: 1
-        }
+        // userId: getUserId(),
+        // pagination: {
+        //    pageSize: 5,
+        //    page: 1
+        //}
     });
 
     // Memoize activity components at top level

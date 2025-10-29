@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { Button, ReviewCard } from '@maany_shr/e-class-ui-kit';
+import { Button, CoachReviewCard } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
 
 export default function CoachDashboardReviews() {
@@ -67,7 +67,7 @@ export default function CoachDashboardReviews() {
             {hasReviews ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {reviews.slice(0, 3).map((review: any) => (
-                        <ReviewCard
+                        <CoachReviewCard
                             key={review.id}
                             locale={locale}
                             reviewerName={`${review.student?.name} ${review.student?.surname}`.trim()}

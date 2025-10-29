@@ -2081,6 +2081,8 @@ manageHomePage: {
       yourCourses: "Deine Kurse",
       createCourse: "Kurs erstellen",
       viewAllCourses: "Alle Kurse anzeigen",
+      errorAccess: "Zugriff verweigert. Sie haben keine Berechtigung, auf das Dashboard zuzugreifen.",
+      errorFailed: "Fehler beim Laden der Dashboard-Daten. Bitte versuchen Sie es später erneut.",
     },
     userCoachingSessions: {
       title: "Deine Coaching-Sitzungen",
