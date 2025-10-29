@@ -6,11 +6,17 @@ import { trpc } from '../../../trpc/client';
 import React, { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListStudentCoachingSessionsPresenter } from '../../../hooks/use-list-student-coaching-sessions-presenter';
-import { CalendarNavigationHeader, Divider, Tabs } from '@maany_shr/e-class-ui-kit';
+import {
+    Breadcrumbs,
+    CalendarNavigationHeader,
+    Divider,
+    Tabs,
+} from '@maany_shr/e-class-ui-kit';
 import {
     WeeklyStudentCalendarWrapper,
     MonthlyStudentCalendarWrapper,
 } from '../../common/student-calendar-wrappers';
+import { useRouter } from 'next/navigation';
 
 export default function StudentCalendar() {
     const locale = useLocale() as TLocale;
@@ -38,6 +44,8 @@ export default function StudentCalendar() {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(
         undefined,
     );
+    const router = useRouter();
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     return (
         <Tabs.Root
@@ -47,8 +55,26 @@ export default function StudentCalendar() {
             }
         >
             <div className="flex flex-col h-full">
-                <h2>{t('yourCalendarTitle')}</h2>
-                <Divider className='my-4'/>
+                <Breadcrumbs
+                    items={[
+                        {
+                            label: breadcrumbsTranslations('home'),
+                            onClick: () => router.push('/'),
+                        },
+                        {
+                            label: breadcrumbsTranslations('dashboard'),
+                            onClick: () => router.push('/workspace/dashboard'),
+                        },
+                        {
+                            label: breadcrumbsTranslations('yourCalendar'),
+                            onClick: () => {
+                                // Nothing should happen on clicking the current page
+                            },
+                        },
+                    ]}
+                />
+                <h1>{t('yourCalendarTitle')}</h1>
+                <Divider className="my-4" />
                 {/* Desktop view with header and calendar */}
                 <div className="h-[800px] flex-row hidden md:flex">
                     <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col">

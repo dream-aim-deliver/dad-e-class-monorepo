@@ -1030,6 +1030,9 @@ export const DE: TDictionary = {
       yourStudents: 'Deine Schüler',
       yourProfile: 'Ihr Profil',
       legalTexts: 'Rechtliche Texte',
+      yourCoachingSessions: 'Deine Coaching-Sitzungen',
+      preCourseAssessmentForm: "Vorkurs-Bewertungsformular",
+      yourCalendar: "Ihr Kalender",
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -2156,6 +2159,19 @@ export const DE: TDictionary = {
           description: 'Die angeforderten Transaktionen konnten nicht gefunden werden.',
         },
       },
+    },
+    preCourseAssessmentForm: {
+      title: "Vorkurs-Bewertungsformular",
+      description: "Dieses Formular wird automatisch zu Beginn jedes Kurses angezeigt.",
+      formBuilderTab: "Formular-Editor",
+      previewTab: "Vorschau",
+      enableForm: "Formular aktivieren",
+      enabling: "Formular wird aktiviert...",
+      disabled: "Dieses Formular ist deaktiviert.",
+      save: "Speichern",
+      saving: "Wird gespeichert...",
+      disable: "Deaktivieren",
+      disabling: "Wird deaktiviert..."
     },
   },
 };

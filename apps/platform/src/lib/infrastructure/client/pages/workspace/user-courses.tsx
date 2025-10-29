@@ -127,6 +127,7 @@ function CreateCourseDialog() {
 export default function UserCourses(props: UserCoursesProps) {
     const canCreateCourse = props.roles.includes('admin') || props.roles.includes('course_creator');
     const isStudent = props.roles.includes('student');
+    const router = useRouter();
 
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const pageTranslations = useTranslations('pages.userCourses');
@@ -135,18 +136,14 @@ export default function UserCourses(props: UserCoursesProps) {
         <div className="flex flex-col space-y-2">
             <Breadcrumbs
                 items={[
-                    {
-                        label: breadcrumbsTranslations('home'),
-                        onClick: () => {
-                            // TODO: Implement navigation to home
+                        {
+                            label: breadcrumbsTranslations('home'),
+                            onClick: () => router.push('/'),
                         },
-                    },
-                    {
-                        label: breadcrumbsTranslations('workspace'),
-                        onClick: () => {
-                            // TODO: Implement navigation to workspace
+                        {
+                            label: breadcrumbsTranslations('dashboard'),
+                            onClick: () => router.push('/workspace/dashboard'),
                         },
-                    },
                     {
                         label: breadcrumbsTranslations('courses'),
                         onClick: () => {

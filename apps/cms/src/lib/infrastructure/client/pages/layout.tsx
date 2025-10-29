@@ -58,7 +58,7 @@ export default function Layout({
 
     return (
         <div
-            className="w-full h-full bg-repeat-y flex flex-col justify-center items-center px-4"
+            className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center px-4"
             style={{
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${"https://i.imgur.com/PoJASP9.png"})`,
                 backgroundPosition: 'center',

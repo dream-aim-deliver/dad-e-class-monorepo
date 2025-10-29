@@ -1,4 +1,4 @@
-import { TDictionary } from './base';
+﻿import { TDictionary } from './base';
 import { Home_EN } from '../pages/home/home-en';
 import { Login_EN } from '../pages/login/login-en';
 import { SSO_EN } from '../pages/sso/sso-en';
@@ -1026,6 +1026,9 @@ export const EN: TDictionary = {
       yourStudents: 'Your students',
       yourProfile: 'Your Profile',
       legalTexts: 'Legal Texts',
+      yourCoachingSessions: 'Your Coaching Sessions',
+      preCourseAssessmentForm: "Pre-Course Assessment Form",
+      yourCalendar: "Your Calendar",
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -2153,6 +2156,19 @@ export const EN: TDictionary = {
           description: 'The requested transactions could not be found.',
         },
       },
+    },
+    preCourseAssessmentForm: {
+      title: "Pre-Course Assessment Form",
+      description: "This form is displayed automatically at the beginning of each course",
+      formBuilderTab: "Form Builder",
+      previewTab: "Preview",
+      enableForm: "Enable form",
+      enabling: "Enabling form...",
+      disabled: "This form is disabled.",
+      save: "Save",
+      saving: "Saving...",
+      disable: "Disable",
+      disabling: "Disabling..."
     },
   },
 };

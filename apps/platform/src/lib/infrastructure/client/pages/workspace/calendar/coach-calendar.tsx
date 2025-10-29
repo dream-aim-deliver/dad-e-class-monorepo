@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../../hooks/use-coach-availability-presenter';
 import {
+    Breadcrumbs,
     DefaultError,
     DefaultLoading,
     Tabs,
@@ -21,6 +22,7 @@ import {
     MonthlyCoachCalendarWrapper,
     WeeklyCoachCalendarWrapper,
 } from '../../common/coach-calendar-wrappers';
+import { useRouter } from 'next/navigation';
 
 function CalendarContent() {
     const locale = useLocale() as TLocale;
@@ -70,7 +72,7 @@ function CalendarContent() {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mt-4">
-                <h2>{t('yourCalendarTitle')}</h2>
+                <h1>{t('yourCalendarTitle')}</h1>
 
                 <AddAvailabilityDialog
                     isOpen={isAddDialogOpen}
@@ -183,29 +185,73 @@ function CalendarContent() {
 export default function CoachCalendar() {
     const session = useSession();
     const t = useTranslations('pages.calendarPage');
+    const router = useRouter();
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const isStudent = session.data?.user?.roles?.includes('student');
     const tabContentClass = 'mt-4';
 
     if (isStudent) {
         return (
-            <Tabs.Root defaultTab="coach">
-                <Tabs.List>
-                    <Tabs.Trigger value="coach" isLast={false}>
-                        {t('coachTab')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger value="student" isLast={true}>
-                        {t('studentTab')}
-                    </Tabs.Trigger>
-                </Tabs.List>
-                <Tabs.Content value="coach" className={tabContentClass}>
-                    <CalendarContent />
-                </Tabs.Content>
-                <Tabs.Content value="student" className={tabContentClass}>
-                    <StudentCalendar />
-                </Tabs.Content>
-            </Tabs.Root>
+            <div className="flex flex-col space-y-2">
+                <Breadcrumbs
+                    items={[
+                        {
+                            label: breadcrumbsTranslations('home'),
+                            onClick: () => router.push('/'),
+                        },
+                        {
+                            label: breadcrumbsTranslations('dashboard'),
+                            onClick: () => router.push('/workspace/dashboard'),
+                        },
+                        {
+                            label: breadcrumbsTranslations('yourCalendar'),
+                            onClick: () => {
+                                // Nothing should happen on clicking the current page
+                            },
+                        },
+                    ]}
+                />
+                <Tabs.Root defaultTab="coach">
+                    <Tabs.List>
+                        <Tabs.Trigger value="coach" isLast={false}>
+                            {t('coachTab')}
+                        </Tabs.Trigger>
+                        <Tabs.Trigger value="student" isLast={true}>
+                            {t('studentTab')}
+                        </Tabs.Trigger>
+                    </Tabs.List>
+                    <Tabs.Content value="coach" className={tabContentClass}>
+                        <CalendarContent />
+                    </Tabs.Content>
+                    <Tabs.Content value="student" className={tabContentClass}>
+                        <StudentCalendar />
+                    </Tabs.Content>
+                </Tabs.Root>
+            </div>
         );
     }
 
-    return <CalendarContent />;
+    return (
+        <div className="flex flex-col space-y-2">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => router.push('/'),
+                    },
+                    {
+                        label: breadcrumbsTranslations('dashboard'),
+                        onClick: () => router.push('/workspace/dashboard'),
+                    },
+                    {
+                        label: breadcrumbsTranslations('yourCalendar'),
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
+                    },
+                ]}
+            />
+            <CalendarContent />
+        </div>
+    );
 }

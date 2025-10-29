@@ -348,16 +348,16 @@ export default function StudentCoachingSessions() {
                     ) : (
                         <>
                             <div className="flex items-center gap-4 mb-4">
-                                <h3 className="text-lg font-semibold text-white">
+                                <h5>
                                     {coachingSessionTranslations('yourPastCoaches')}
-                                </h3>
+                                </h5>
                                 <Button
                                     variant="text"
                                     text={coachingSessionTranslations('viewAllCoaches')}
                                     onClick={handleViewAllCoaches}
                                 />
                             </div>
-                            <CardListLayout className="md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2">
+                            <CardListLayout className="md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
                                 {displayedAvailableCoaches.map((coach) => (
                                     <CoachCard
                                         key={`coach-${coach.username}`}
@@ -581,9 +581,9 @@ export default function StudentCoachingSessions() {
             <Tabs.Root defaultTab="upcoming" onValueChange={setActiveTab}>
                 <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
                     <div className="w-full flex gap-4 items-center justify-between" >
-                        <p className="text-2xl font-semibold text-white" >
+                        <h1>
                             {coachingSessionTranslations('yourCoachingSessions')}
-                        </p>
+                        </h1>
                         <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
                             <Tabs.Trigger value="upcoming" isLast={false}>
                                 {coachingSessionTranslations('upcoming')}

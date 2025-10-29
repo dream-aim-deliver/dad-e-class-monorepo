@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Breadcrumbs,
     Button,
     ComponentCard,
     DefaultError,
@@ -41,6 +42,7 @@ import {
     ComponentRendererProps,
     typeToRendererMap,
 } from '../common/component-renderers';
+import { useRouter } from 'next/navigation';
 
 const LoadingComponent = () => {
     const locale = useLocale() as TLocale;
@@ -130,14 +132,16 @@ function PreCourseAssessmentDisabledCard({
     onEnable,
     isPending,
 }: PreCourseAssessmentDisabledCardProps) {
+    const t = useTranslations('pages.preCourseAssessmentForm');
+
     return (
         <div className="flex flex-col justify-between w-full bg-neutral-800 h-28 rounded-md border-1 border-neutral-700 p-4">
             <span className="text-sm text-text-primary font-bold">
-                This form is disabled.
+                {t('disabled')}
             </span>
             <Button
                 variant="primary"
-                text={isPending ? 'Enabling form...' : 'Enable form'}
+                text={isPending ? t('enabling') : t('enableForm')}
                 className="w-min"
                 size="small"
                 onClick={onEnable}
@@ -160,20 +164,22 @@ function PreCourseAssessmentEnabledControls({
     isPending,
     isSaving,
 }: PreCourseAssessmentEnabledControlsProps) {
+    const t = useTranslations('pages.preCourseAssessmentForm');
+
     return (
         <div className="flex flex-row gap-4">
             <Button
                 variant="primary"
                 hasIconLeft
                 iconLeft={<IconSave />}
-                text={isSaving ? 'Saving...' : 'Save'}
+                text={isSaving ? t('saving') : t('save')}
                 onClick={onSave}
                 disabled={isSaving || isPending}
             />
             <Button
                 variant="text"
                 className="text-sm p-0 m-0"
-                text={isPending ? 'Disabling...' : 'Disable'}
+                text={isPending ? t('disabling') : t('disable')}
                 onClick={onDisable}
                 disabled={isPending || isSaving}
             />
@@ -349,6 +355,7 @@ function PreCourseAssessmentTabs({
     validationErrors,
 }: PreCourseAssessmentTabProps) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.preCourseAssessmentForm');
 
     const [componentsResponse] =
         trpc.listPreCourseAssessmentComponents.useSuspenseQuery(
@@ -390,10 +397,10 @@ function PreCourseAssessmentTabs({
         <Tabs.Root defaultTab="form">
             <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2 mb-4">
                 <Tabs.Trigger value="form" isLast={false}>
-                    Form Builder
+                    {t('formBuilderTab')}
                 </Tabs.Trigger>
                 <Tabs.Trigger value="preview" isLast={true}>
-                    Preview
+                    {t('previewTab')}
                 </Tabs.Trigger>
             </Tabs.List>
 
@@ -434,6 +441,9 @@ function PreCourseAssessmentContent({
 }: PreCourseAssessmentContentProps) {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
+    const router = useRouter();
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const t = useTranslations('pages.preCourseAssessmentForm');
 
     const [components, setComponents] = useState<LessonElement[]>([]);
 
@@ -492,9 +502,28 @@ function PreCourseAssessmentContent({
     const error = toggleError ?? saveError;
 
     return (
-        <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
-            <div className="w-full flex sm:flex-row gap-2 flex-col sm:gap-0 justify-between items-start sm:items-center">
-                <SectionHeading text="Pre-course assessment form" />
+        <div className="flex flex-col space-y-2">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => router.push('/'),
+                    },
+                    {
+                        label: breadcrumbsTranslations('dashboard'),
+                        onClick: () => router.push('/workspace/dashboard'),
+                    },
+                    {
+                        label: breadcrumbsTranslations('preCourseAssessmentForm'),
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
+                    },
+                ]}
+            />
+            <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
+                <div className="w-full flex sm:flex-row gap-2 flex-col sm:gap-0 justify-between items-start sm:items-center">
+                    <h1> {t('title')} </h1>
                 {isEnabled && (
                     <PreCourseAssessmentEnabledControls
                         onDisable={() => onToggle(false)}
@@ -505,8 +534,7 @@ function PreCourseAssessmentContent({
                 )}
             </div>
             <span className="text-sm text-text-secondary">
-                This form is displayed automatically at the beginning of each
-                course
+                {t('description')}
             </span>
             {error && <DefaultError locale={locale} description={error} />}
 
@@ -526,6 +554,7 @@ function PreCourseAssessmentContent({
                     />
                 </Suspense>
             )}
+            </div>
         </div>
     );
 }

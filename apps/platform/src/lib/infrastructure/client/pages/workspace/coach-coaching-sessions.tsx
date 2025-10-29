@@ -478,13 +478,11 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             onClick: () => router.push('/'),
                         },
                         {
-                            label: breadcrumbsTranslations('workspace'),
-                            onClick: () => {
-                                // TODO: Implement navigation to workspace
-                            },
+                            label: breadcrumbsTranslations('dashboard'),
+                            onClick: () => router.push('/workspace/dashboard'),
                         },
                         {
-                            label: breadcrumbsTranslations('dashboard'),
+                            label: breadcrumbsTranslations('yourCoachingSessions'),
                             onClick: () => {
                                 // Nothing should happen on clicking the current page
                             },
@@ -504,14 +502,14 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             <Tabs.Root defaultTab="upcoming">
                 <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
                     <div className="w-full flex gap-4 items-center justify-between" >
-                        <p className="text-2xl font-semibold text-white" >
+                        <h1>
                             {t('yourCoachingSessions')}
-                        </p>
+                        </h1>
                         <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
                             <Tabs.Trigger value="upcoming" isLast={false}>
                                 {t('upcoming')}
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="ended" isLast={false}>
+                            <Tabs.Trigger value="ended" isLast={true}>
                                 {t('ended')}
                             </Tabs.Trigger>
                         </Tabs.List>
