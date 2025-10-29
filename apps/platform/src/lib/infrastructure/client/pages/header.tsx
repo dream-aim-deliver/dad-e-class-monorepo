@@ -128,11 +128,12 @@ export default function Header({
         // logout is handled by the Navbar component itself
     };
 
-    if (platformViewModel.mode !== 'default') return null;
-
     // TODO: remove this and wire logo properly once CMS Settings page is implemented
     const runtimeConfig = useRuntimeConfig();
-    const logoUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL;
+    const logoUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL ??
+        (platformViewModel.mode === 'default' ? platformViewModel.data.logoUrl : null) ?? '';
+
+    if (platformViewModel.mode !== 'default') return null;
 
     return (
         <Navbar
@@ -142,9 +143,7 @@ export default function Header({
             logo={
                 <Image
                     priority
-                    // TODO: remove this and wire logo properly once CMS Settings page is implemented
                     src={logoUrl}
-                    // src={platformViewModel.data.logoUrl}
                     alt={platformViewModel.data.name}
                     width={48}
                     height={48}
