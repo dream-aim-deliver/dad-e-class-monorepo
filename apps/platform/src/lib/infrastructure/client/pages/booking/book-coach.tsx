@@ -277,5 +277,5 @@ export default function BookCoachPage({
         );
     }
 
-    return <BookCoachPage coachUsername={coachUsername} />;
+    return <BookCoachPageContent coachUsername={coachUsername} defaultSession={null} />;
 }
