@@ -1,5 +1,4 @@
 'use client';
-import { z } from 'zod';
 import { AllCommunityModule, IRowNode, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { RefObject, useState, useCallback, useMemo, useEffect, useRef } from 'react';
@@ -116,7 +115,7 @@ const NotificationStatusRenderer = (props: { value: boolean }) => {
     const isRead = props.value;
     return isRead ? null : (
         <div className="flex items-center justify-center h-full">
-            <div className="rounded-full bg-base-brand-500 w-2 h-2"></div>
+            <div className="rounded-full bg-button-primary-fill w-2 h-2"></div>
         </div>
     );
 };
@@ -147,7 +146,6 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     const {
         receivedNotifications,
         sentNotifications,
-        onNotificationClick,
         onMarkAllRead,
         onMarkSelectedAsRead,
         gridRef,
@@ -275,7 +273,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col space-y-5">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
                 <InputField
@@ -325,7 +323,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                 columnDefs={columnDefs}
                 rowData={rowData}
                 pagination={true}
-                paginationAutoPageSize={true}
+                paginationPageSize={50}
                 suppressPaginationPanel={true}
                 domLayout="normal"
                 isExternalFilterPresent={() => true}
