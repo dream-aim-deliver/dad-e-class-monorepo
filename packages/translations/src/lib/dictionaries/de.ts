@@ -2477,6 +2477,9 @@ manageHomePage: {
       error: {
         title: 'Fehler',
         description: 'Beim Laden der Benachrichtigungen ist ein Fehler aufgetreten.',
+        mutation: {
+          title: 'Aktion fehlgeschlagen',
+        },
         notFound: {
           title: 'Nicht gefunden',
           description: 'Die angeforderte Benachrichtigung konnte nicht gefunden werden.',

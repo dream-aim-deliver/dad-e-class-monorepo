@@ -2474,6 +2474,9 @@ export const EN: TDictionary = {
       error: {
         title: 'Error',
         description: 'An error occurred while loading notifications.',
+        mutation: {
+          title: 'Action Failed',
+        },
         notFound: {
           title: 'Not Found',
           description: 'The requested notification could not be found.',

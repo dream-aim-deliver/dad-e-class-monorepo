@@ -8,8 +8,15 @@
 // User Types from Notion: CMS (admin/superadmin - enforced by middleware)
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=8494-227923
 
+import { useState, useRef } from 'react';
+import { DefaultLoading, DefaultError, CMSNotificationGrid, Banner } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { trpc } from '../trpc/cms-client';
+import { useSession } from 'next-auth/react';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListSentNotificationsPresenter } from '../hooks/use-list-sent-notifications-presenter';
+import { useListNotificationsPresenter } from '../hooks/use-list-notifications-presenter';
 
 interface NotificationsProps {
   locale: TLocale;
@@ -20,6 +27,104 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
   const t = useTranslations('pages.cmsNotifications');
   const currentLocale = useLocale() as TLocale;
 
+  // All hooks must be called at the top level before any conditional returns
+  const [receivedNotificationsViewModel, setReceivedNotificationsViewModel] = useState<
+    viewModels.TListNotificationsViewModel | undefined
+  >(undefined);
+  const [sentNotificationsViewModel, setSentNotificationsViewModel] = useState<
+    viewModels.TListSentNotificationsViewModel | undefined
+  >(undefined);
+
+  // Error state for mutations
+  const [mutationError, setMutationError] = useState<string | null>(null);
+
+  // Defensive client-side auth check (middleware already enforces admin/superadmin)
+  const sessionDTO = useSession();
+  const session = sessionDTO.data;
+  const isAdmin = session?.user?.roles?.includes('admin') || session?.user?.roles?.includes('superadmin');
+  // TRPC queries for page data
+  const [receivedNotificationsResponse, { refetch: refetchReceived }] = trpc.listNotifications.useSuspenseQuery({});
+  const [sentNotificationsResponse, { refetch: refetchSent }] = trpc.listSentNotifications.useSuspenseQuery({});
+  const markNotificationsAsReadMutation = trpc.markNotificationsAsRead.useMutation({
+    onSuccess: () => {
+      // Clear any previous errors and refetch both lists to reflect changes
+      setMutationError(null);
+      refetchReceived();
+      refetchSent();
+    },
+    onError: (error) => {
+      console.error('Error marking notifications as read:', error);
+      setMutationError(error.message || 'Failed to mark notifications as read');
+    }
+  });
+
+  const { presenter: receivedNotificationsPresenter } = useListNotificationsPresenter(setReceivedNotificationsViewModel);
+  const { presenter: sentNotificationsPresenter } = useListSentNotificationsPresenter(setSentNotificationsViewModel);
+
+  const gridRef = useRef<any>(null);
+
+  // Present data on mount and when responses change
+  // @ts-ignore
+  receivedNotificationsPresenter.present(receivedNotificationsResponse, receivedNotificationsViewModel);
+  // @ts-ignore
+  sentNotificationsPresenter.present(sentNotificationsResponse, sentNotificationsViewModel);
+
+  // Extract data from view models
+  const receivedNotificationsData = receivedNotificationsViewModel?.mode === 'default' ? receivedNotificationsViewModel.data.notifications : [];
+  const sentNotificationsData = sentNotificationsViewModel?.mode === 'default' ? sentNotificationsViewModel.data.notifications : [];
+
+  if (receivedNotificationsViewModel?.mode === 'kaboom' || sentNotificationsViewModel?.mode === 'kaboom') {
+    return (
+      <DefaultError
+        locale={currentLocale}
+        title={t('error.title')}
+        description={t('error.description')}
+      />
+    );
+  }
+
+  // Defensive auth check on client side
+  if (!session || !isAdmin) {
+    return (
+      <DefaultError
+        locale={currentLocale}
+        title={"Access Denied"}
+        description={"You do not have permission to access this page."}
+      />
+    );
+  }
+
+  // Loading state (defensive check)
+  if (!receivedNotificationsResponse || !sentNotificationsResponse) {
+    return <DefaultLoading locale={currentLocale} variant="minimal" />;
+  }
+
+  const handleNotificationClick = (notification: any) => {
+    // Handle notification click - could navigate to notification details or perform action
+    console.log('Notification clicked:', notification);
+  };
+
+  const handleMarkAllRead = () => {
+    // Mark all received notifications as read
+    const receivedIds = receivedNotificationsData.map(n => Number(n.id)).filter((id) => !Number.isNaN(id));
+    if (receivedIds.length > 0) {
+      markNotificationsAsReadMutation.mutate({ notificationIds: receivedIds });
+    }
+
+
+  };
+
+  const handleMarkSelectedAsRead = (ids: string[]) => {
+    const numericIds = ids.map((id) => Number(id)).filter((id) => !Number.isNaN(id));
+    if (numericIds.length > 0) {
+      markNotificationsAsReadMutation.mutate({ notificationIds: numericIds });
+    }
+  };
+
+
+
+
+
   return (
     <div className="flex flex-col space-y-5 px-30">
       <div>
@@ -27,16 +132,27 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
         <p>{t('description')}</p>
       </div>
 
-      {/* Features from Notion:
-        - FEAT-5 (listNotifications - In Progress)
-        - FEAT-95 (markNotificationsAsRead - E2E Mocked)
-        - FEAT-213 (listSentNotifications - E2E Mocked)
-      */}
-      {/* UI Components from Notion:
-        - Nav bar / Header
-        - Tabs (Section Selector)
-        - CMS Notification Table / NotificationGrid
-      */}
+      <CMSNotificationGrid
+        receivedNotifications={receivedNotificationsData}
+        sentNotifications={sentNotificationsData}
+        onNotificationClick={handleNotificationClick}
+        onMarkAllRead={handleMarkAllRead}
+        onMarkSelectedAsRead={handleMarkSelectedAsRead}
+        gridRef={gridRef}
+        locale={currentLocale}
+        loading={markNotificationsAsReadMutation.isPending}
+      />
+
+      {mutationError && (
+        <Banner
+          title={t('error.mutation.title')}
+          description={mutationError}
+          style="error"
+          icon={true}
+          closeable={true}
+          onClose={() => setMutationError(null)}
+        />
+      )}
     </div>
   );
 }
