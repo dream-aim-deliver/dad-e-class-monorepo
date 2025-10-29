@@ -150,6 +150,13 @@ export const EN: TDictionary = {
       clearFilters: 'Clear Filters',
       filterButton: 'Filters',
       noNotifications: 'No notifications found',
+      markSelectedAsRead: 'Mark Selected as Read',
+      received: 'Received',
+      sent: 'Sent',
+      filterByType: 'Filter by type',
+      type: 'Type',
+      recipients: 'recipients',
+      recipientsHeader: 'Recipients',
     },
     calendar: {
       coachAvailability: 'Coach Availability',
