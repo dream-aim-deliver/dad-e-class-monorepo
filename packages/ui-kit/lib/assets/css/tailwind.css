@@ -150,11 +150,12 @@
 
   /* AG Grid */
   --ag-header-row-border: none;
-  /* TODO: ensure styling matching Figma */
-  --ag-background-color: var(--color-base-neutral-900);
-  --ag-foreground-color: var(--color-base-neutral-50);
-  --ag-header-background-color: var(--color-base-neutral-900);
-  --ag-accent-color: var(--color-base-brand-500);
+  --ag-background-color: var(--ag-background-color);
+  --ag-foreground-color: var(--ag-foreground-color);
+  --ag-header-background-color: var(--ag-header-background-color);
+  --ag-accent-color: var(--ag-accent-color);
+  --ag-header-text-color: var(--ag-header-text-color);
+  --ag-header-font-weight: var(--ag-header-font-weight);
 }
 
 @layer base {
@@ -312,6 +313,12 @@
   --font-weight-h5: var(--font-weight-important);
   font-family: var(--font-nunito);
   --ag-font-family: var(--font-nunito);
+    --ag-background-color: var(--color-card-fill);
+  --ag-foreground-color: var(--color-text-primary);
+  --ag-header-background-color: var(--color-card-fill);
+  --ag-accent-color: var(--color-base-brand-500);
+  --ag-header-text-color: var(--color-text-secondary) ;
+  --ag-header-font-weight: 700;
 }
 
 .theme-job-brand-me {
@@ -435,6 +442,12 @@
   --font-weight-h5: var(--font-weight-important);
   font-family: var(--font-roboto);
   --ag-font-family: var(--font-roboto);
+    --ag-background-color: var(--color-card-fill);
+  --ag-foreground-color: var(--color-text-primary);
+  --ag-header-background-color: var(--color-card-fill);
+  --ag-accent-color: var(--color-base-brand-500);
+  --ag-header-text-color: var(--color-text-secondary) ;
+  --ag-header-font-weight: 700;
 }
 
 .theme-bewerbeagentur {
@@ -558,6 +571,12 @@
   --font-weight-h5: 400;
   font-family: var(--font-raleway);
   --ag-font-family: var(--font-raleway);
+    --ag-background-color: var(--color-card-fill);
+  --ag-foreground-color: var(--color-text-primary);
+  --ag-header-background-color: var(--color-card-fill);
+  --ag-accent-color: var(--color-base-brand-500);
+  --ag-header-text-color: var(--color-text-secondary) ;
+  --ag-header-font-weight: 700;
 }
 
 .theme-cms {
@@ -676,6 +695,12 @@
   --font-weight-h5: var(--font-weight-important);
   font-family: var(--font-figtree);
   --ag-font-family: var(--font-figtree);
+    --ag-background-color: var(--color-card-fill);
+  --ag-foreground-color: var(--color-text-primary);
+  --ag-header-background-color: var(--color-card-fill);
+  --ag-accent-color: var(--color-base-brand-500);
+  --ag-header-text-color: var(--color-text-secondary) ;
+  --ag-header-font-weight: 700;
 }
 
 /* Page Entrance Animation */
