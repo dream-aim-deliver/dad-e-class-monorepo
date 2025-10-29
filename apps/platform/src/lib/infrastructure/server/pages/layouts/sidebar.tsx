@@ -7,6 +7,7 @@ import {
     IconDashboard,
     IconGroup,
     IconLogOut,
+    IconPreCourseAssessmentForm,
     IconSales,
     IconStar,
     SideMenu,
@@ -94,7 +95,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                 ...(isAdmin
                     ? [
                           {
-                              icon: <IconStar />,
+                              icon: <IconPreCourseAssessmentForm />,
                               label: 'Pre-Course Assessment',
                               onClick: () =>
                                   router.push(routeMap.preCourseAssessment),

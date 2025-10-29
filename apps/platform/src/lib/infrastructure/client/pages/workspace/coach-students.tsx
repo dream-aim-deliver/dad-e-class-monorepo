@@ -89,7 +89,9 @@ export default function CoachStudents(props: CoachStudentsProps) {
         ) {
             const searchTerm = appliedFilters.studentName.toLowerCase().trim();
             filtered = filtered.filter((student) =>
-                `${student.name} ${student.surname}`.toLowerCase().includes(searchTerm),
+                `${student.name} ${student.surname}`
+                    .toLowerCase()
+                    .includes(searchTerm),
             );
         }
 
@@ -199,10 +201,8 @@ export default function CoachStudents(props: CoachStudentsProps) {
                         onClick: () => router.push('/'),
                     },
                     {
-                        label: breadcrumbsTranslations('workspace'),
-                        onClick: () => {
-                            // TODO: Implement navigation to workspace
-                        },
+                        label: breadcrumbsTranslations('dashboard'),
+                        onClick: () => router.push('/workspace/dashboard'),
                     },
                     {
                         label: breadcrumbsTranslations('students'),
@@ -257,8 +257,8 @@ export default function CoachStudents(props: CoachStudentsProps) {
                     filteredStudents !== undefined
                         ? filteredStudents
                         : studentsViewModel?.mode === 'default'
-                            ? studentsViewModel.data.students
-                            : []
+                          ? studentsViewModel.data.students
+                          : []
                 }
                 isLoading={isFetching}
                 error={error}
