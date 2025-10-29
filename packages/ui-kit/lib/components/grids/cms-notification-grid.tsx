@@ -54,7 +54,6 @@ export interface NotificationRow {
 export interface CMSNotificationGridProps extends isLocalAware {
     receivedNotifications: ReceivedNotification[];
     sentNotifications: SentNotification[];
-    onNotificationClick: (notification: NotificationRow) => void;
     onMarkAllRead: () => void;
     onMarkSelectedAsRead: (ids: string[]) => void;
     gridRef: RefObject<AgGridReact>;
@@ -120,28 +119,27 @@ const NotificationStatusRenderer = (props: { value: boolean }) => {
     );
 };
 
-const RecipientsRenderer = (props: { value: { name: string }[] }) => {
-    const recipients = props.value || [];
-    const count = recipients.length;
-    if (count === 0) return <span>-</span>;
-    const formatCount = (num: number): string => {
-        if (num >= 100000) {
-            const lakhs = Math.floor(num / 100000);
-            return `${lakhs}L`;
-        } else if (num >= 1000) {
-            const thousands = Math.floor(num / 1000);
-            return `${thousands}K`;
-        }
-        return num.toString();
-    };
+    const RecipientsRenderer =(props: { value: { name: string }[] }) => {
+        const recipients = props.value || [];
+        const count = recipients.length;
+        if (count === 0) return <span>-</span>;
+        const formatCount = (num: number): string => {
+            if (num >= 100000) {
+                const lakhs = Math.floor(num / 100000);
+                return `${lakhs}L`;
+            } else if (num >= 1000) {
+                const thousands = Math.floor(num / 1000);
+                return `${thousands}K`;
+            }
+            return num.toString();
+        };
 
-    return (
-        <span title={`${count} recipients`}>
-            {formatCount(count)}
-        </span>
-    );
-};
-
+        return (
+            <span title={`${count}`}>
+                {formatCount(count)}
+            </span>
+        );
+    }
 export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     const {
         receivedNotifications,
@@ -166,16 +164,15 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             id: String(n.id),
             action: { title: n.actionTitle, url: n.actionUrl },
             timestamp: n.createdAt,
-            isRead: n.isRead,
-            recipients: [],
+            isRead: n.isRead
         })),
         ...sentNotifications.map((n) => ({
             ...n,
             type: 'sent' as const,
             action: { title: n.actionTitle, url: n.actionUrl },
             timestamp: n.createdAt,
-            isRead: true, // sent notifications are always read
-            recipients: n.receivers?.map(r => ({ name: r.name || r.username })) || [],
+            isRead: true,
+            recipients: n.receivers || [],
         })),
     ], [receivedNotifications, sentNotifications]);
 
@@ -200,12 +197,12 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
         },
         {
             field: 'type',
-            headerName: 'Type',
-            valueFormatter: (params: { value: string }) => params.value === 'received' ? 'Received' : 'Sent',
+            headerName: dictionary.type,
+            valueFormatter: (params: { value: string }) => params.value === 'received' ? dictionary.received : dictionary.sent,
         },
         {
             field: 'recipients',
-            headerName: 'Recipients',
+            headerName: dictionary.recipientsHeader,
             cellRenderer: RecipientsRenderer,
             hide: false,
         },
@@ -274,8 +271,8 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
 
     return (
         <div className="flex flex-col space-y-5">
-            <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between mb-4 gap-2">
+            <div className="flex items-center gap-2 w-full ">
                 <InputField
                     className="flex-1 relative h-10"
                     setValue={setSearchTerm}
@@ -287,13 +284,13 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                 <Dropdown
                     type="simple"
                     options={[
-                        { value: 'all', label: 'All' },
-                        { value: 'received', label: 'Received' },
-                        { value: 'sent', label: 'Sent' },
+                        { value: 'all', label: dictionary.all },
+                        { value: 'received', label: dictionary.received },
+                        { value: 'sent', label: dictionary.sent },
                     ]}
                     onSelectionChange={(selected) => setFilterType(selected as 'all' | 'received' | 'sent')}
                     defaultValue={filterType}
-                    text={{ simpleText: 'Filter by type' }}
+                    text={{ simpleText: dictionary.filterByType }}
                     className="w-40"
                 />
             </div>
@@ -301,7 +298,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                     <Button
                         variant="secondary"
                         size="medium"
-                        text="Mark Selected as Read"
+                        text={dictionary.markSelectedAsRead}
                         onClick={handleMarkSelectedAsRead}
                         disabled={loading || selectedRows.filter(row => row.type === 'received').length === 0}
                     />

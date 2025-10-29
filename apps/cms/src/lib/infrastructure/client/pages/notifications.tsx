@@ -47,13 +47,11 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
   const [sentNotificationsResponse, { refetch: refetchSent }] = trpc.listSentNotifications.useSuspenseQuery({});
   const markNotificationsAsReadMutation = trpc.markNotificationsAsRead.useMutation({
     onSuccess: () => {
-      // Clear any previous errors and refetch both lists to reflect changes
       setMutationError(null);
       refetchReceived();
       refetchSent();
     },
     onError: (error) => {
-      console.error('Error marking notifications as read:', error);
       setMutationError(error.message || 'Failed to mark notifications as read');
     }
   });
@@ -88,8 +86,8 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
     return (
       <DefaultError
         locale={currentLocale}
-        title={"Access Denied"}
-        description={"You do not have permission to access this page."}
+        title={t('error.title')}
+        description={t('error.description')}
       />
     );
   }
@@ -99,10 +97,7 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
   }
 
-  const handleNotificationClick = (notification: any) => {
-    // Handle notification click - could navigate to notification details or perform action
-    console.log('Notification clicked:', notification);
-  };
+  
 
   const handleMarkAllRead = () => {
     // Mark all received notifications as read
@@ -126,7 +121,7 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
 
 
   return (
-    <div className="flex flex-col space-y-5 px-30">
+    <div className="flex flex-col space-y-5 px-10">
       <div>
         <h1>{t('title')}</h1>
         <p>{t('description')}</p>
@@ -135,7 +130,6 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
       <CMSNotificationGrid
         receivedNotifications={receivedNotificationsData}
         sentNotifications={sentNotificationsData}
-        onNotificationClick={handleNotificationClick}
         onMarkAllRead={handleMarkAllRead}
         onMarkSelectedAsRead={handleMarkSelectedAsRead}
         gridRef={gridRef}
