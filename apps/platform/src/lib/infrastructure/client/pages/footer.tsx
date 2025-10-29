@@ -58,11 +58,12 @@ export default function Footer({
         router.push(newUrl);
     };
 
-    if (platformViewModel.mode !== 'default') return null;
-
     // TODO: remove this and wire logo properly once CMS Settings page is implemented
     const runtimeConfig = useRuntimeConfig();
-    const logoUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL;
+    const logoUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL ??
+        (platformViewModel.mode === 'default' ? platformViewModel.data.logoUrl : null) ?? '';
+
+    if (platformViewModel.mode !== 'default') return null;
 
     return (
         <FooterComponent
@@ -71,9 +72,7 @@ export default function Footer({
             logo={
                 <Image
                     priority
-                    // TODO: remove this and wire logo properly once CMS Settings page is implemented
                     src={logoUrl}
-                    // src={platformViewModel.data.logoUrl}
                     alt={platformViewModel.data.name}
                     width={48}
                     height={48}
