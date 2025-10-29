@@ -104,14 +104,16 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button
-            className='p-0 gap-1 text-sm  max-w-full'
-            variant='text'
-            size="small"
-            hasIconLeft
-            iconLeft={<UserAvatar fullName={courseTitle} imageUrl={courseImage} className='rounded-small' size="small" />}
-            text={courseTitle}
-          />
+          { (courseTitle || courseImage) &&
+            <Button
+              className='p-0 gap-1 text-sm  max-w-full'
+              variant='text'
+              size="small"
+              hasIconLeft
+              iconLeft={<UserAvatar fullName={courseTitle} imageUrl={courseImage} className='rounded-small' size="small" />}
+              text={courseTitle}
+            />
+          }
         </div>
       </div>
     </div>
