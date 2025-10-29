@@ -9,6 +9,7 @@ import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface HeaderProps {
     platformViewModel: viewModels.TPlatformViewModel;
@@ -129,6 +130,10 @@ export default function Header({
 
     if (platformViewModel.mode !== 'default') return null;
 
+    // TODO: remove this and wire logo properly once CMS Settings page is implemented
+    const runtimeConfig = useRuntimeConfig();
+    const logoUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL;
+
     return (
         <Navbar
             isLoggedIn={!!session}
@@ -137,7 +142,9 @@ export default function Header({
             logo={
                 <Image
                     priority
-                    src={platformViewModel.data.logoUrl}
+                    // TODO: remove this and wire logo properly once CMS Settings page is implemented
+                    src={logoUrl}
+                    // src={platformViewModel.data.logoUrl}
                     alt={platformViewModel.data.name}
                     width={48}
                     height={48}

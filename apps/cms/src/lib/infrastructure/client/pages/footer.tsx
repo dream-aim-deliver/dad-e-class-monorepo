@@ -66,7 +66,7 @@ export default function Footer({
             logo={
                 <Image
                     priority
-                    src={platformViewModel.data.logoUrl}
+                    src={platformViewModel.data.logoUrl || ''}
                     alt={platformViewModel.data.name}
                     width={48}
                     height={48}

@@ -6,18 +6,15 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import {
+    GetPlatformSuccessResponseSchema
+} from '@dream-aim-deliver/e-class-cms-rest';
 
-export const PlatformSuccessSchema = z.object({
-    id: z.string().or(z.number()),
-    name: z.string(),
-    logoUrl: z.string(),
-    backgroundImageUrl: z.string(),
-    footerContent: z.string(),
-});
+export const GetPlatformSuccessSchema = GetPlatformSuccessResponseSchema.shape.data;
+export type TGetPlatformSuccess = z.infer<typeof GetPlatformSuccessSchema>;
 
-export type TPlatformSuccess = z.infer<typeof PlatformSuccessSchema>;
 
-const PlatformDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", PlatformSuccessSchema)
+const PlatformDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", GetPlatformSuccessSchema)
 const PlatformKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
 
 export const PlatformViewModelSchemaMap = {

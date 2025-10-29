@@ -10,6 +10,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface FooterProps {
     platformViewModel: viewModels.TPlatformViewModel;
@@ -59,6 +60,10 @@ export default function Footer({
 
     if (platformViewModel.mode !== 'default') return null;
 
+    // TODO: remove this and wire logo properly once CMS Settings page is implemented
+    const runtimeConfig = useRuntimeConfig();
+    const logoUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL;
+
     return (
         <FooterComponent
             availableLocales={availableLocales}
@@ -66,7 +71,9 @@ export default function Footer({
             logo={
                 <Image
                     priority
-                    src={platformViewModel.data.logoUrl}
+                    // TODO: remove this and wire logo properly once CMS Settings page is implemented
+                    src={logoUrl}
+                    // src={platformViewModel.data.logoUrl}
                     alt={platformViewModel.data.name}
                     width={48}
                     height={48}
