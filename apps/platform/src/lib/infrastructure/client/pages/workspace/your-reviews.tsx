@@ -324,8 +324,8 @@ export default function YourReviews({ roles }: YourReviewsProps) {
                                 workshopTitle={review.coachingSession.coachingOfferingTitle}
                                 date={new Date(review.coachingSession.startTime)}
                                 time={new Date(review.coachingSession.startTime).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
-                                courseTitle={review.course.title}
-                                courseImage={review.course.image?.downloadUrl || ''}
+                                courseTitle={review.course?.title || ''}
+                                courseImage={review.course?.image?.downloadUrl || ''}
                             />
                         ))}
                     </CardListLayout>
