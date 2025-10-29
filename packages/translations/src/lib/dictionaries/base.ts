@@ -2135,6 +2135,9 @@ export const DictionarySchema = z.object({
       error: z.object({
         title: z.string(),
         description: z.string(),
+        mutation: z.object({
+          title: z.string(),
+        }),
         notFound: z.object({
           title: z.string(),
           description: z.string(),

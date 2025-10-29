@@ -239,3 +239,5 @@ export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterMod
 
 
 export * from "./components/cms"
+
+export { CMSNotificationGrid } from './components/grids/cms-notification-grid';
