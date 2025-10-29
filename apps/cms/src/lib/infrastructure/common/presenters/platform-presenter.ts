@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TGetPlatformUseCaseResponse,
+    TGetPlatformUseCaseErrorResponse,
+    GetPlatformUseCaseResponseSchema
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TPlatformPresenterUtilities = {};
 
 export const GetPlatformResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetPlatformUseCaseResponse,
+        TGetPlatformUseCaseResponse,
         viewModels.TPlatformViewModel,
         TPlatformPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const GetPlatformResponseMiddleware =
 type TGetPlatformResponseMiddleware = typeof GetPlatformResponseMiddleware;
 
 export default class PlatformPresenter extends BasePresenter<
-    useCaseModels.TGetPlatformUseCaseResponse,
+    TGetPlatformUseCaseResponse,
     viewModels.TPlatformViewModel,
     TPlatformPresenterUtilities,
     TGetPlatformResponseMiddleware
@@ -29,7 +34,7 @@ export default class PlatformPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetPlatformUseCaseResponseSchema,
+                responseModel: GetPlatformUseCaseResponseSchema,
                 viewModel: viewModels.PlatformViewModelSchema
             },
             middleware: GetPlatformResponseMiddleware,
@@ -40,7 +45,7 @@ export default class PlatformPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetPlatformUseCaseResponse,
+            TGetPlatformUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TPlatformViewModel {
@@ -53,7 +58,7 @@ export default class PlatformPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetPlatformUseCaseErrorResponse,
+            TGetPlatformUseCaseErrorResponse,
             TGetPlatformResponseMiddleware
         >,
     ): viewModels.TPlatformViewModel {

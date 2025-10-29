@@ -1,6 +1,6 @@
 'use client';
 
-import { trpc } from '../trpc/client';
+import { trpc } from '../trpc/cms-client';
 import Header from './header';
 import Footer from './footer';
 import { useState, useEffect, useRef } from 'react';
@@ -49,6 +49,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
     >(undefined);
     const { presenter: platformPresenter } =
         useGetPlatformPresenter(setPlatformViewModel);
+    // @ts-ignore
     platformPresenter.present(platformResponse, platformViewModel);
 
     if (!platformViewModel)
@@ -62,7 +63,9 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
             className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
             style={{
                 // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImageUrl})`,
+                // TODO: remove hardcoded background image URL and use platformViewModel data when CMS Settings page is implemented
+                //backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImageUrl})`,
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(https://res.cloudinary.com/dsyephqpf/image/upload/v1747650265/background-eln_mhvipu.jpg)`,
                 backgroundSize: '100% auto',
                 // TODO: have a fallback color
                 backgroundColor: '#141414',
