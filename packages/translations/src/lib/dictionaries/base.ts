@@ -1020,6 +1020,7 @@ export const DictionarySchema = z.object({
       yourCoachingSessions: z.string(),
       preCourseAssessmentForm: z.string(),
       yourCalendar: z.string(),
+      yourReviews: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -2204,6 +2205,20 @@ export const DictionarySchema = z.object({
       saving: z.string(),
       disable: z.string(),
       disabling: z.string(),
+    }),
+    yourReviews: z.object({
+      title: z.string(),
+      filterButton: z.string(),
+      noReviews: z.string(),
+      noReviewsFiltered: z.string(),
+      sortBy: z.string(),
+      sortMostRecent: z.string(),
+      sortOldest: z.string(),
+      sortBest: z.string(),
+      sortWorst: z.string(),
+      activeFilters: z.string(),
+      clearFilters: z.string(),
+      loadMore: z.string(),
     }),
   }),
 });
