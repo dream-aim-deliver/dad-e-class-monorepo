@@ -358,8 +358,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                       size="medium"
                       className="whitespace-nowrap"
                       text={action.label}
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         action.onClick(searchQuery.trim());
                       }}
                       disabled={action.disabled || !searchQuery.trim() || options.some(o => (o.searchText ?? (typeof o.label === 'string' ? o.label : '')).toLowerCase().trim() === searchQuery.toLowerCase().trim())}
