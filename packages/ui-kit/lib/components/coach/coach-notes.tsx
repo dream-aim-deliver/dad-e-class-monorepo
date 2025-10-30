@@ -303,7 +303,6 @@ function CoachNotesCreate({
                         text={dictionary.components.coachNotes.back}
                         onClick={onBack}
                         variant="secondary"
-                        size={'big'}
                         className="w-full"
                         disabled={editingLinkIndex !== null}
                     />
@@ -322,7 +321,6 @@ function CoachNotesCreate({
                         )
                     }
                     disabled={editingLinkIndex !== null}
-                    size={'big'}
                     className="w-full"
                     variant="primary"
                 />

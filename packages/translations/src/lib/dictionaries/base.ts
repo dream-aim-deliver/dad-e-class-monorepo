@@ -1023,6 +1023,9 @@ export const DictionarySchema = z.object({
       }),
       defaultSortBy: z.string(),
     }),
+    assignmentOverviewList: z.object({
+      emptyState: z.string(),
+    }),
     breadcrumbs: z.object({
       home: z.string(),
       workspace: z.string(),
@@ -1971,7 +1974,6 @@ export const DictionarySchema = z.object({
         sortBy: z.string(),
         selectSort: z.string(),
         filterButton: z.string(),
-        downloadAllButton: z.string(),
         sortOptions: z.object({
           title: z.string(),
           status: z.string(),

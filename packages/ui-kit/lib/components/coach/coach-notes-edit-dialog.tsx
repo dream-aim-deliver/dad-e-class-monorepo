@@ -34,7 +34,7 @@ function CoachNotesEditDialog({
                 closeOnOverlayClick={false}
                 closeOnEscape={true}
             >
-                <DialogBody className="p-0 overflow-y-auto max-h-[calc(95vh-120px)]">
+                <DialogBody className="p-0 overflow-y-auto h-[80vh]">
                     <div className="flex flex-col w-full gap-5">
                         <h3 className="text-2xl text-text-primary capitalize">
                             {dictionary.components.coachNotes.editCoachNotes}

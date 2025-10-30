@@ -1031,6 +1031,9 @@ export const DE: TDictionary = {
       },
       defaultSortBy: 'Titel',
     },
+    assignmentOverviewList: {
+      emptyState: 'Noch keine Aufgaben eingereicht.',
+    },
     userAvatarReel: {
       andLabel: 'und',
       othersLabel: 'andere',
@@ -1939,7 +1942,6 @@ export const DE: TDictionary = {
         sortBy: 'Sortieren nach',
         selectSort: 'Sortieroption auswählen',
         filterButton: 'Filter',
-        downloadAllButton: 'Alles herunterladen (.zip)',
         sortOptions: {
           title: 'Titel (A-Z)',
           status: 'Status',

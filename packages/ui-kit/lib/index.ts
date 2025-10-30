@@ -247,5 +247,7 @@ export { AssignmentCard } from './components/assignment/assignment-card';
 export { AssignmentCardFilterModal } from './components/assignment/assignment-card-filter-modal';
 export { CoachingSessionGroupOverviewList, CoachingSessionFilterModal, type CoachingSessionFilterModel } from './components/coaching-session-group-overview';
 export { CoachingSessionGroupOverviewCard } from './components/coaching-session-group-overview/coaching-session-group-overview-card';
+export { AssignmentOverview } from './components/assignment/assignment-overview';
+export { AssignmentOverviewList } from './components/assignment/assignment-overview-list';
 
 export * from "./components/cms"

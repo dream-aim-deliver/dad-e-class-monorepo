@@ -9,7 +9,7 @@
 import { useState } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { DefaultLoading, DefaultError, DefaultNotFound, Breadcrumbs, GroupIntroduction, Button, CoachNotesView, Dropdown, IconFilter, AssignmentCard, AssignmentCardFilterModal, TextInput, IconSearch, StudentCardList, StudentCard, CoachNotesEditDialog, IconEdit, CoachingSessionGroupOverviewCard } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, Breadcrumbs, GroupIntroduction, Button, CoachNotesView, Dropdown, IconFilter,  AssignmentCardFilterModal, TextInput, IconSearch, StudentCardList, StudentCard, CoachingSessionGroupOverviewCard, AssignmentOverview, AssignmentOverviewList } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -17,8 +17,8 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetGroupIntroductionPresenter } from '../hooks/use-get-group-introduction-presenter';
 import { useGetGroupNotesPresenter } from '../hooks/use-get-group-notes-presenter';
 import { useGetGroupNextCoachingSessionPresenter } from '../hooks/use-get-group-next-coaching-session-presenter';
-import { useListGroupAssignmentsPresenter } from '../hooks/use-list-group-assignments-presenter';
-import { useListGroupMembersPresenter } from '../hooks/use-list-group-members-presenter';
+import { useAssignmentFilters } from './workspace/hooks/use-assignment-filters';
+import { useGroupMembers } from './workspace/hooks/use-group-members';
 
 interface GroupWorkspaceStudentProps {
   locale: TLocale;
@@ -36,100 +36,8 @@ export default function GroupWorkspaceStudent({
   const t = useTranslations('pages.groupWorkspaceCoach');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
-  // Sorting state
-  const [sortBy, setSortBy] = useState<string>('title');
-  const [search, setSearch] = useState<string>('');
-
-  // Filter state
-  const [filters, setFilters] = useState<{
-    title?: string;
-    status?: string[];
-    course?: string;
-    module?: string;
-    lesson?: string;
-    student?: string;
-    groupName?: string;
-  }>({});
-  const [showFilterModal, setShowFilterModal] = useState(false);
-
-  // Sort handler
-  const handleSortChange = (selected: string | string[] | null) => {
-    if (typeof selected === 'string') {
-      setSortBy(selected);
-    }
-  };
-
-  // Sort options for dropdown
-  const sortOptions = [
-    { value: 'title', label: t('assignments.sortOptions.title') },
-    { value: 'status', label: t('assignments.sortOptions.status') },
-    { value: 'date', label: t('assignments.sortOptions.date') },
-    { value: 'student', label: t('assignments.sortOptions.student') },
-  ];
-
-  // Filter handler
-  const handleApplyFilters = (newFilters: typeof filters) => {
-    setFilters(newFilters);
-    setShowFilterModal(false);
-  };
-
   // Authentication using Pattern B (Student role only)
   const sessionDTO = useSession();
-  const session = sessionDTO.data;
-  const isStudent = session?.user?.roles?.includes('student');
-
-  if (!isStudent) {
-    return (
-      <DefaultError
-        locale={currentLocale}
-        title={t('error.accessDenied.title')}
-        description={t('error.accessDenied.description')}
-      />
-    );
-  }
-
-  // TRPC queries for page data
-  // TODO: Replace with actual usecases from: saveGroupNotes, getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
-
-  // Fetch group introduction from getGroupIntroduction usecase
-  const [groupIntroductionResponse] = trpc.getGroupIntroduction.useSuspenseQuery({
-    courseSlug: courseSlug,
-    additionalParams: {
-      requestType: 'requestForStudent',
-    }
-  });
-
-  // Fetch group notes from getGroupNotes usecase
-  const [groupNotesResponse] = trpc.getGroupNotes.useSuspenseQuery({
-    courseSlug: courseSlug,
-    additionalParams: {
-        requestType: 'requestForStudent',
-    }
-  });
-
-  // Fetch next coaching session from getGroupNextCoachingSession usecase
-  const [nextSessionResponse] = trpc.getGroupNextCoachingSession.useSuspenseQuery({
-    courseSlug: courseSlug,
-    additionalParams: {
-      requestType: 'requestForStudent',
-    }
-  });
-
-  // Fetch group assignments from listGroupAssignments usecase
-  const [assignmentsResponse] = trpc.listGroupAssignments.useSuspenseQuery({
-    courseSlug: courseSlug,
-    additionalParams: {
-      requestType: 'requestForStudent',
-    }
-  });
-
-  // Fetch group members from listGroupMembers usecase
-  const [membersResponse] = trpc.listGroupMembers.useSuspenseQuery({
-    courseSlug: courseSlug,
-    additionalParams: {
-      requestType: 'requestForStudent',
-    }
-  });
 
   const [groupIntroductionViewModel, setGroupIntroductionViewModel] = useState<
     viewModels.TGetGroupIntroductionViewModel | undefined
@@ -143,21 +51,94 @@ export default function GroupWorkspaceStudent({
     viewModels.TGetGroupNextCoachingSessionViewModel | undefined
   >(undefined);
 
-  const [assignmentsViewModel, setAssignmentsViewModel] = useState<
-    viewModels.TListGroupAssignmentsViewModel | undefined
-  >(undefined);
+  // TRPC queries for page data
 
-  const [membersViewModel, setMembersViewModel] = useState<
-    viewModels.TListGroupMembersViewModel | undefined
-  >(undefined);
+  // Fetch group introduction from getGroupIntroduction usecase
+  const [groupIntroductionResponse] = trpc.getGroupIntroduction.useSuspenseQuery({
+    courseSlug: courseSlug,
+    additionalParams: {
+      requestType: 'requestForStudent',
+    }
+  });
 
+  // Fetch group notes from getGroupNotes usecase
+  const [groupNotesResponse] = trpc.getGroupNotes.useSuspenseQuery({
+    courseSlug: courseSlug,
+    additionalParams: {
+      requestType: 'requestForStudent',
+    }
+  });
+
+  // Fetch next coaching session from getGroupNextCoachingSession usecase
+  const [nextSessionResponse] = trpc.getGroupNextCoachingSession.useSuspenseQuery({
+    courseSlug: courseSlug,
+    additionalParams: {
+      requestType: 'requestForStudent',
+    }
+  });
 
   const { presenter: groupIntroductionPresenter } = useGetGroupIntroductionPresenter(setGroupIntroductionViewModel);
   const { presenter: notesPresenter } = useGetGroupNotesPresenter(setGroupNotesViewModel);
   const { presenter: nextSessionPresenter } = useGetGroupNextCoachingSessionPresenter(setNextSessionViewModel);
-  const { presenter: assignmentsPresenter } = useListGroupAssignmentsPresenter(setAssignmentsViewModel);
-  const { presenter: membersPresenter } = useListGroupMembersPresenter(setMembersViewModel);
 
+  // Assignment filters and sorting hook (includes data fetching and presenter logic)
+  const {
+    filters,
+    sortBy,
+    showFilterModal,
+    assignmentsViewModel,
+    isLoading: isAssignmentsLoading,
+    sortedAndFilteredAssignments,
+    availableStatuses,
+    availableCourses,
+    availableModules,
+    availableLessons,
+    handleApplyFilters,
+    handleSortChange,
+    handleOpenFilterModal,
+    handleCloseFilterModal,
+    resetFilters,
+  } = useAssignmentFilters({
+    courseSlug,
+    groupId,
+    initialFilters: {},
+  });
+
+  // Group members hook (includes data fetching, presenter logic, and search)
+  const {
+    search,
+    setSearch,
+    membersViewModel,
+    isLoading: isMembersLoading,
+    filteredMembers,
+    allMembers,
+    clearSearch,
+  } = useGroupMembers({
+    courseSlug,
+    groupId,
+    requestType: 'requestForStudent',
+  });
+
+  // Sort options for dropdown
+  const sortOptions = [
+    { value: 'title', label: t('assignments.sortOptions.title') },
+    { value: 'status', label: t('assignments.sortOptions.status') },
+    { value: 'date', label: t('assignments.sortOptions.date') },
+    { value: 'student', label: t('assignments.sortOptions.student') },
+  ];
+
+  const session = sessionDTO.data;
+  const isStudent = session?.user?.roles?.includes('student');
+
+  if (!isStudent) {
+    return (
+      <DefaultError
+        locale={currentLocale}
+        title={t('error.accessDenied.title')}
+        description={t('error.accessDenied.description')}
+      />
+    );
+  }
 
   // @ts-ignore
   groupIntroductionPresenter.present(groupIntroductionResponse, groupIntroductionViewModel);
@@ -165,32 +146,11 @@ export default function GroupWorkspaceStudent({
   notesPresenter.present(groupNotesResponse, groupNotesViewModel);
   // @ts-ignore
   nextSessionPresenter.present(nextSessionResponse, nextSessionViewModel);
-  // @ts-ignore
-  assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
-  // @ts-ignore
-  membersPresenter.present(membersResponse, membersViewModel);
 
 
-  // Loading state - TODO: Implement proper loading state once ViewModels are added
-  const isLoading = false; // Replace with: !groupNotesViewModel || !assignmentsViewModel || !membersViewModel || !nextSessionViewModel
-
-  if (isLoading || !groupIntroductionViewModel || !groupNotesViewModel || !nextSessionViewModel || !assignmentsViewModel || !membersViewModel) {
+  if (!groupIntroductionViewModel || !groupNotesViewModel || !nextSessionViewModel || !membersViewModel || !assignmentsViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
   }
-
-  // Error handling - TODO: Implement error handling based on ViewModel modes
-  // Example:
-  // if (groupNotesViewModel?.mode === 'kaboom') {
-  //   const errorData = groupNotesViewModel.data;
-  //   console.error(errorData);
-  //   return (
-  //     <DefaultError
-  //       locale={currentLocale}
-  //       title={t('error.title')}
-  //       description={t('error.description')}
-  //     />
-  //   );
-  // }
 
   if (groupIntroductionViewModel.mode === 'kaboom' || groupNotesViewModel.mode === 'kaboom' || nextSessionViewModel.mode === 'kaboom' || assignmentsViewModel.mode === 'kaboom' || membersViewModel.mode === 'kaboom') {
     return (
@@ -212,99 +172,12 @@ export default function GroupWorkspaceStudent({
     );
   }
 
-  // if (groupNotesViewModel?.mode === 'not-found') {
-  //   const errorData = groupNotesViewModel.data;
-  //   console.error(errorData);
-  //   return (
-  //     <DefaultNotFound
-  //       locale={currentLocale}
-  //       title={t('error.notFound.title')}
-  //       description={t('error.notFound.description')}
-  //     />
-  //   );
-  // }
-
-  // Success state - TODO: Extract data from ViewModels
+  // Success state 
   const introductionData = groupIntroductionViewModel.data;
   const notesData = groupNotesViewModel.data;
   const nextSessionData = nextSessionViewModel.data;
-  const assignmentsData = assignmentsViewModel.data;
-  const membersData = membersViewModel.data;
 
-  // Filter assignments based on filter criteria
-  const filteredAssignments = assignmentsData.assignments.filter((assignment) => {
-    // Title filter
-    if (filters.title && !assignment.title.toLowerCase().includes(filters.title.toLowerCase())) {
-      return false;
-    }
-
-    // Status filter
-    if (filters.status && filters.status.length > 0 && !filters.status.includes(assignment.status)) {
-      return false;
-    }
-
-    // Course filter
-    if (filters.course && !assignment.course.title.toLowerCase().includes(filters.course.toLowerCase())) {
-      return false;
-    }
-
-    // Module filter (assuming module is a number/ID)
-    if (filters.module && !assignment.module.toString().toLowerCase().includes(filters.module.toLowerCase())) {
-      return false;
-    }
-
-    // Lesson filter (assuming lesson is a number/ID)
-    if (filters.lesson && !assignment.lesson.toString().toLowerCase().includes(filters.lesson.toLowerCase())) {
-      return false;
-    }
-
-    // Student filter
-    const studentFullName = `${assignment.student.name} ${assignment.student.surname}`.toLowerCase();
-    if (filters.student && !studentFullName.includes(filters.student.toLowerCase())) {
-      return false;
-    }
-
-    // Group filter
-    if (filters.groupName && !assignment.groupName.toLowerCase().includes(filters.groupName.toLowerCase())) {
-      return false;
-    }
-
-    return true;
-  });
-
-  // Sort assignments based on selected criteria
-  const sortedAssignments = [...filteredAssignments].sort((a, b) => {
-    switch (sortBy) {
-      case 'title':
-        return a.title.localeCompare(b.title);
-      case 'status':
-        // Sort by status priority: waiting-feedback, long-wait, course-completed
-        const statusOrder = { 'waiting-feedback': 1, 'long-wait': 2, 'course-completed': 3 };
-        return (statusOrder[a.status as keyof typeof statusOrder] || 999) - (statusOrder[b.status as keyof typeof statusOrder] || 999);
-      case 'date':
-        // Sort by latest activity (properly handle different lastReply types)
-        const getReplyDate = (lastReply: typeof a.lastReply) => {
-          if (!lastReply) return '';
-          if (lastReply.replyType === 'reply') {
-            return lastReply.sentAt;
-          } else if (lastReply.replyType === 'passed') {
-            return lastReply.passedAt;
-          }
-          return '';
-        };
-
-        const aDate = getReplyDate(a.lastReply);
-        const bDate = getReplyDate(b.lastReply);
-        return new Date(bDate).getTime() - new Date(aDate).getTime();
-      case 'student':
-        const aStudent = `${a.student.name} ${a.student.surname}`;
-        const bStudent = `${b.student.name} ${b.student.surname}`;
-        return aStudent.localeCompare(bStudent);
-      default:
-        return 0;
-    }
-  });
-
+  // Breadcrumb items for navigation
   const breadcrumbItems = [
     {
       label: breadcrumbsTranslations('home'),
@@ -333,7 +206,7 @@ export default function GroupWorkspaceStudent({
   ];
 
   // Function to render StudentCard based on member data and status
-  const renderStudentCard = (member: typeof membersData.members[0]) => {
+  const renderStudentCard = (member: typeof allMembers[0]) => {
     // Base props common to all student card variants
     const baseProps = {
       locale: locale,
@@ -405,110 +278,6 @@ export default function GroupWorkspaceStudent({
     );
   };
 
-  // Filter members based on search input
-  const filteredMembers = membersData.members.filter((member) => {
-    if (!search) return true; // Show all members if no search term
-
-    const studentFullName = `${member.name} ${member.surname}`.toLowerCase();
-    return studentFullName.includes(search.toLowerCase());
-  });
-
-  const statusMap: Record<string, "AwaitingReview" | "AwaitingForLongTime" | "Passed"> = {
-    "waiting-feedback": "AwaitingReview",
-    "long-wait": "AwaitingForLongTime",
-    "course-completed": "Passed",
-  };
-
-  // Transform lastReply to replies array format
-  const transformLastReplyToReplies = (lastReply: typeof assignmentsData.assignments[0]['lastReply']) => {
-    if (!lastReply) return undefined;
-
-    if (lastReply.replyType === "reply") {
-      // Map reply type to resources type with files and links
-      const transformedFiles = lastReply.files?.map(file => {
-        const baseFile = {
-          name: file.name,
-          id: file.id,
-          size: file.size,
-          status: 'available' as const,
-          url: file.downloadUrl,
-        };
-
-        if (file.category === 'image') {
-          return {
-            ...baseFile,
-            category: 'image' as const,
-            thumbnailUrl: file.thumbnailUrl,
-          };
-        } else if (file.category === 'video') {
-          return {
-            ...baseFile,
-            category: 'video' as const,
-            videoId: null,
-            thumbnailUrl: file.thumbnailUrl,
-          };
-        } else if (file.category === 'document') {
-          return {
-            ...baseFile,
-            category: 'document' as const,
-          };
-        } else {
-          return {
-            ...baseFile,
-            category: 'generic' as const,
-          };
-        }
-      });
-
-      return [{
-        type: "resources" as const,
-        timestamp: lastReply.sentAt,
-        sender: {
-          name: lastReply.sender.name || lastReply.sender.username,
-          email: lastReply.sender.username, // Using username as email fallback
-          image: lastReply.sender.avatarUrl || '',
-          id: lastReply.sender.id.toString(),
-          role: lastReply.sender.role === 'coach' ? 'coach' as const : 'student' as const,
-          isCurrentUser: false, // TODO: Determine if current user
-        },
-        comment: lastReply.comment,
-        replyId: Date.now(), // Generate temporary ID since not provided
-        links: lastReply.links?.map((link, index) => ({
-          title: link.title,
-          url: link.url,
-          linkId: index, // Generate temporary ID
-          customIcon: link.iconFile ? {
-            name: link.iconFile.name,
-            id: link.iconFile.id,
-            size: link.iconFile.size,
-            status: 'available' as const,
-            category: link.iconFile.category,
-            url: link.iconFile.downloadUrl,
-            thumbnailUrl: null,
-          } : undefined,
-        })),
-        files: transformedFiles,
-      }];
-    } else if (lastReply.replyType === "passed") {
-      // Map passed type
-      return [{
-        type: "passed" as const,
-        timestamp: lastReply.passedAt,
-        sender: {
-          name: lastReply.sender.name || lastReply.sender.username,
-          email: lastReply.sender.username, // Using username as email fallback
-          image: lastReply.sender.avatarUrl || '',
-          id: lastReply.sender.id.toString(),
-          role: lastReply.sender.role === 'coach' ? 'coach' as const : 'student' as const,
-          isCurrentUser: false, // TODO: Determine if current user
-        },
-        replyId: Date.now(), // Generate temporary ID since not provided
-      }];
-    }
-
-    return undefined;
-  };
-
   return (
     <div className="flex flex-col space-y-10">
       {/* Section: Group Introduction */}
@@ -536,27 +305,18 @@ export default function GroupWorkspaceStudent({
           onClickCourse={() => router.push(`/${locale}/workspace/courses/${courseSlug}`)}
           onClickUser={() => {
             // TODO: Navigate to coach profile page
+            console.log('Naveigate to user')
           }}
         />
       </div>
 
-      {/* TODO: Implement sections based on Notion features */}
-
       {/* Section: Group Notes (saveGroupNotes, getGroupNotes) */}
-      {/* <section> */}
-      {/* <h2>{t('notes.title')}</h2> */}
-      {/* TODO: Implement notes editor with save functionality */}
-      {/* TODO: Use saveGroupNotes usecase for saving */}
-      {/* TODO: Display notes from getGroupNotes usecase */}
-      {/* Example save button: */}
-      {/* <button onClick={handleSaveNotes}>{t('notes.saveButton')}</button> */}
-      {/* </section> */}
       <div className="flex gap-4 items-start w-full flex-col md:flex-row lg:flex-row">
         {/* Notes section*/}
         <div className='flex flex-col gap-4 w-full'>
-        <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%] text-left'>
+          <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%] text-left'>
             {t('notes.title')}
-        </h3>
+          </h3>
           <CoachNotesView
             noteDescription={notesData.notes}
             // TODO: Change this mapping once notesData.links structure matches with CoachNotesView props
@@ -589,18 +349,15 @@ export default function GroupWorkspaceStudent({
               text={t('nextCoachingSession.closedSessionsButton')}
               onClick={() => {
                 // TODO: Implement view closed sessions functionality
+                console.log("View closed sessions clicked");
               }}
             />
           </div>
           {/* Group Coaching Sessions */}
           {nextSessionData.nextSession ? (
-            <CoachingSessionGroupOverviewCard 
+            <CoachingSessionGroupOverviewCard
               userType='student'
               status='unscheduled'
-              withinCourse={false}
-              creatorName=''
-              creatorImageUrl=''
-              onClickCreator={() => console.log('Click creator')}
               locale={locale}
               title={nextSessionData.nextSession.coachingOfferingTitle}
               duration={nextSessionData.nextSession.coachingOfferingDuration}
@@ -622,7 +379,7 @@ export default function GroupWorkspaceStudent({
             {t('assignments.title')}
           </h3>
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-2 md:w-fit lg:w-fit w-full justify-between">
+            <div className="flex items-center gap-2">
               <p className="text-sm text-text-primary">
                 {t('assignments.sortBy')}
               </p>
@@ -636,83 +393,47 @@ export default function GroupWorkspaceStudent({
                 />
               </div>
             </div>
-            <div className="flex items-center gap-2 md:w-fit lg:w-fit w-full justify-between">
-              <Button
-                variant="secondary"
-                size="medium"
-                text={t('assignments.filterButton')}
-                onClick={() => setShowFilterModal(true)}
-                hasIconLeft
-                iconLeft={<IconFilter />}
-                className="w-auto"
-              />
-              <Button
-                variant="primary"
-                size="medium"
-                text={t('assignments.downloadAllButton')}
-                onClick={() => console.log('Download all button clicked')}
-                className="w-auto"
-              />
-            </div>
+            <Button
+              variant="secondary"
+              size="medium"
+              text={t('assignments.filterButton')}
+              onClick={handleOpenFilterModal}
+              hasIconLeft
+              iconLeft={<IconFilter />}
+              className="w-auto"
+            />
           </div>
         </div>
-        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full'>
-          {sortedAssignments.map((assignment) => (
-            <AssignmentCard
-              key={assignment.id}
-              role='coach'
-              assignmentId={assignment.id}
-              title={assignment.title}
-              // TODO: Add description field in listGroupAssignments usecase response
-              description={assignment.title}
-              // TODO: Add files field (Files uploaded by coach) if no reply is available in listGroupAssignments usecase response
-              // files={assignment.files}
-              // TODO: Add links field (Links uploaded by coach) if no reply is available in listGroupAssignments usecase response
-              // links={assignment.links}
-              // TODO: There is type difference between assignment.course in usecase and AssignmentCard props
-              // @ts-ignore
-              course={assignment.course}
-              module={assignment.module}
-              lesson={assignment.lesson}
-              // TODO: There is type difference between assignment.reply in usecase and AssignmentCard props
-              status={statusMap[assignment.status]}
-              student={{
-                role: 'student',
-                id: assignment.student.id.toString(),
-                name: `${assignment.student.name} ${assignment.student.surname}`,
-                image: assignment.student.avatarUrl || '',
-                // TODO: Add email field in listGroupAssignments usecase response
-                email: '',
-                isCurrentUser: false,
-              }}
-              groupName={assignment.groupName}
-              // TODO: There is type difference between assignment.lastReply in usecase and AssignmentCard props
-              replies={transformLastReplyToReplies(assignment.lastReply)}
-              locale={locale}
-              onFileDelete={(assignmentId, fileId) => console.log("File deleted:", assignmentId, fileId)}
-              onLinkDelete={(assignmentId, linkId) => console.log("Link deleted:", assignmentId, linkId)}
-              onFileDownload={(id) => console.log("Download file:", id)}
-              linkEditIndex={0}
-              // onImageChange={(fileRequest, abortSignal) => {
-              //   // TODO: Implement image change functionality
-              // }}
-              onDeleteIcon={(id) => console.log("Delete Icon", id)}
-              // onChange={() => {
-              //   // TODO: Implement onchange functionality
-              // }}
-              onClickCourse={() => router.push(`/${locale}/workspace/courses/${courseSlug}`)}
-              onClickUser={() => {
-                // TODO: Implement routing for user click
-              }}
-              onClickGroup={() => {
-                // TODO: Implement routing for group click
-              }}
-              onClickView={() => {
-                // TODO: Implement handle click
-              }}
-            />
-          ))}
-        </div>
+        <AssignmentOverviewList locale={locale}>
+          {sortedAndFilteredAssignments.map((assignment) => {
+            // Transform assignment to add missing isCurrentUser property
+            const transformedAssignment = {
+              ...assignment,
+              lastReply: assignment.lastReply ? {
+                ...assignment.lastReply,
+                sender: {
+                  ...assignment.lastReply.sender,
+                  // TODO: Replace with actual current user check once backend provides this field
+                  isCurrentUser: false // Hardcoded as requested
+                }
+              } : assignment.lastReply
+            };
+
+            return (
+              <AssignmentOverview
+                key={assignment.id}
+                {...transformedAssignment}
+                locale={locale}
+                role="coach"
+                onClickCourse={() => console.log("Course is clicked")}
+                onClickUser={() => console.log("User is clicked")}
+                onClickView={() => console.log("View assignment clicked")}
+                onClickGroup={() => console.log("Group is clicked")}
+                onFileDownload={(downloadUrl: string) => console.log("Download file:", downloadUrl)}
+              />
+            );
+          })}
+        </AssignmentOverviewList>
       </div>
 
       {/* Section: Group Members (listGroupMembers) */}
@@ -746,12 +467,12 @@ export default function GroupWorkspaceStudent({
       {showFilterModal && (
         <AssignmentCardFilterModal
           onApplyFilters={handleApplyFilters}
-          onClose={() => setShowFilterModal(false)}
+          onClose={handleCloseFilterModal}
           initialFilters={filters}
-          availableStatuses={['waiting-feedback', 'long-wait', 'course-completed']}
-          availableCourses={[...new Set(assignmentsData.assignments.map(a => a.course.title))]}
-          availableModules={[...new Set(assignmentsData.assignments.map(a => a.module.toString()))]}
-          availableLessons={[...new Set(assignmentsData.assignments.map(a => a.lesson.toString()))]}
+          availableStatuses={availableStatuses}
+          availableCourses={availableCourses}
+          availableModules={availableModules}
+          availableLessons={availableLessons}
           locale={locale}
         />
       )}
