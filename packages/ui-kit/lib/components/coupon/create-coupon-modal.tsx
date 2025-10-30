@@ -11,6 +11,7 @@ import { RadioButton } from '../radio-button';
 import { CheckBox } from '../checkbox';
 import { Dropdown } from '../dropdown';
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
+import { COUPON_NAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 
 // Types for form data
 type CouponType = 'freeCourses' | 'freeBundles' | 'freeCoachingSession' | 'discountOnEverything' | 'groupCourse';
@@ -47,7 +48,7 @@ interface SelectedPackage {
 export interface CreateCouponModalProps extends isLocalAware {
   onClose: () => void;
   onSuccess: (couponName: string) => void;
-  // TRPC hooks will be passed from parent component
+  
   coursesQuery?: {
     data?: any;
     isLoading: boolean;
@@ -135,6 +136,28 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
 
   // Validation state
   const [showValidationErrors, setShowValidationErrors] = useState<boolean>(false);
+  const [couponNameTouched, setCouponNameTouched] = useState<boolean>(false);
+  const [usagesAllowedTouched, setUsagesAllowedTouched] = useState<boolean>(false);
+  const [usagesAllowedInput, setUsagesAllowedInput] = useState<string>('');
+
+  // Coupon name validation
+  const validateCouponName = (): string | null => {
+    if (!couponName.trim()) {
+      return dictionary.validationErrors.nameRequired;
+    }
+    if (!COUPON_NAME_REGEX.test(couponName)) {
+      return 'Coupon name can only contain letters and numbers (no spaces or special characters)';
+    }
+    return null;
+  };
+
+  // Usages allowed validation
+  const validateUsagesAllowed = (): string | null => {
+    if (usagesAllowedInput && /[^0-9]/.test(usagesAllowedInput)) {
+      return 'Only numbers are allowed';
+    }
+    return null;
+  };
 
   // Validation function
   const validateForm = (): string[] => {
@@ -142,6 +165,12 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
 
     if (!couponName.trim()) {
       errors.push(dictionary.validationErrors.nameRequired);
+    } else if (!COUPON_NAME_REGEX.test(couponName)) {
+      errors.push('Coupon name can only contain letters and numbers (no spaces or special characters)');
+    }
+
+    if (usagesAllowedInput && /[^0-9]/.test(usagesAllowedInput)) {
+      errors.push('Only numbers are allowed for usages');
     }
 
     if (!selectedType) {
@@ -217,6 +246,9 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
         };
         break;
       case 'freeCoachingSession':
+        if (!selectedCoachingOffering) {
+          throw new Error('Coaching offering ID is required for free coaching session coupon');
+        }
         couponContent = {
           type: 'freeCoachingSession',
           coachingOfferingId: selectedCoachingOffering,
@@ -224,15 +256,21 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
         };
         break;
       case 'discountOnEverything':
+        if (!discountPercentage) {
+          throw new Error('Discount percentage is required for discount on everything coupon');
+        }
         couponContent = {
           type: 'discountOnEverything',
           percentage: discountPercentage
         };
         break;
       case 'groupCourse':
+        if (!selectedGroupCourse) {
+          throw new Error('Course ID is required for group course coupon');
+        }
         couponContent = {
           type: 'groupCourse',
-          groupId: selectedGroupCourse, // Note: API expects groupId, may need clarification
+          courseId: selectedGroupCourse,
           groupName: groupName
         };
         break;
@@ -310,24 +348,46 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
       <div className="flex flex-col gap-4">
         {/* Common Fields */}
         <div className="flex flex-col gap-4">
-          <TextInput
-            label={dictionary.couponName}
-            inputField={{
-              value: couponName,
-              setValue: setCouponName,
-              inputText: "Ex: FREECOURSE",
-            }}
-          />
+          <div className="flex flex-col gap-1">
+            <TextInput
+              label={dictionary.couponName}
+              inputField={{
+                value: couponName,
+                setValue: (value) => {
+                  setCouponName(value);
+                  setCouponNameTouched(true);
+                },
+                inputText: "Ex: FREECOURSE",
+              }}
+            />
+            {couponNameTouched && validateCouponName() && (
+              <p className="text-red-600 text-sm">{validateCouponName()}</p>
+            )}
+          </div>
           
-          <TextInput
-            label={dictionary.usagesAllowed}
-            inputField={{
-              value: usagesAllowed?.toString() || '',
-              setValue: (value) => setUsagesAllowed(value ? parseInt(value) : null),
-              inputText: dictionary.usagesAllowedPlaceholder,
-              type: 'number',
-            }}
-          />
+          <div className="flex flex-col gap-1">
+            <TextInput
+              label={dictionary.usagesAllowed}
+              inputField={{
+                value: usagesAllowedInput,
+                setValue: (value) => {
+                  setUsagesAllowedTouched(true);
+                  setUsagesAllowedInput(value);
+                  // Only set the actual number if it's valid
+                  if (value === '' || value === null) {
+                    setUsagesAllowed(null);
+                  } else if (/^[0-9]+$/.test(value)) {
+                    setUsagesAllowed(parseInt(value));
+                  }
+                },
+                inputText: dictionary.usagesAllowedPlaceholder,
+                type: 'text',
+              }}
+            />
+            {usagesAllowedTouched && validateUsagesAllowed() && (
+              <p className="text-red-600 text-sm">{validateUsagesAllowed()}</p>
+            )}
+          </div>
           
           <DateInput
             label={dictionary.expirationDate}
@@ -651,16 +711,24 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
         <p className="text-text-primary">
           {dictionary.nameConflictMessage.replace('{couponName}', couponName)}
         </p>
-        
-        <TextInput
-          label={dictionary.couponName}
-          inputField={{
-            value: couponName,
-            setValue: setCouponName,
-            inputText: dictionary.couponNamePlaceholder,
-          }}
-        />
-        
+
+        <div className="flex flex-col gap-1">
+          <TextInput
+            label={dictionary.couponName}
+            inputField={{
+              value: couponName,
+              setValue: (value) => {
+                setCouponName(value);
+                setCouponNameTouched(true);
+              },
+              inputText: dictionary.couponNamePlaceholder,
+            }}
+          />
+          {couponNameTouched && validateCouponName() && (
+            <p className="text-red-600 text-sm">{validateCouponName()}</p>
+          )}
+        </div>
+
         {errorMessage && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-md">
             <p className="text-red-800 text-sm">{errorMessage}</p>
@@ -745,7 +813,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                 onClick={handleCreateCoupon}
                 className="flex-1"
                 text={isCreating ? dictionary.creating : dictionary.createCoupon}
-                disabled={!couponName.trim() || isCreating}
+                disabled={!!validateCouponName() || isCreating}
               />
             </div>
           </>
