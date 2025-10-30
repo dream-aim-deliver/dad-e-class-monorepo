@@ -1749,6 +1749,22 @@ export const DE: TDictionary = {
         urlInvalid: 'Bitte geben Sie eine gültige URL ein',
       },
     },
+    orderHistoryCard: {
+      orderIdLabel: 'Bestellnummer:',
+      course: 'Kurs (ohne Coaching enthalten)',
+      at: 'am',
+      invoice: 'Rechnung (PDF)',
+      total: 'Gesamt:',
+      coachingSession: 'Coaching-Sitzung(en)',
+      minutes: 'min',
+      package: 'Paket:',
+      coursesIncluded: 'Enthaltene Kurse',
+      scheduleButton: 'Planen',
+      emptyState: 'Noch keine Bestellungen',
+    },
+    coachingSessionSnippet: {
+      minutes: 'min',
+    },
   },
   pages: {
     home: Home_DE,
@@ -2545,6 +2561,7 @@ export const DE: TDictionary = {
       },
     },
     orderHistory: {
+      ordersAndPayments: 'Bestellungen und Zahlungen',
       title: 'Bestellverlauf',
       description: 'Sieh dir deinen Transaktionsverlauf an und verwalte Rechnungen',
       transactionsTab: 'Transaktionen',

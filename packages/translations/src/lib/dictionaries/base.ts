@@ -1738,6 +1738,22 @@ export const DictionarySchema = z.object({
         urlInvalid: z.string(),
       }),
     }),
+    orderHistoryCard: z.object({
+      orderIdLabel: z.string(),
+      course: z.string(),
+      at: z.string(),
+      invoice: z.string(),
+      total: z.string(),
+      coachingSession: z.string(),
+      minutes: z.string(),
+      package: z.string(),
+      coursesIncluded: z.string(),
+      scheduleButton: z.string(),
+      emptyState: z.string(),
+    }),
+    coachingSessionSnippet: z.object({
+      minutes: z.string(),
+    }),
   }),
   pages: z.object({
     profile: z.object({
@@ -2580,6 +2596,7 @@ export const DictionarySchema = z.object({
       }),
     }),
     orderHistory: z.object({
+      ordersAndPayments: z.string(),
       title: z.string(),
       description: z.string(),
       transactionsTab: z.string(),

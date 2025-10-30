@@ -223,6 +223,10 @@ export { CoachingSessionList } from "./components/coaching-sessions/coaching-ses
 export { ConfirmationModal } from './components/confirmation-modal';
 export { DeleteConfirmationModal } from './components/delete-confirmation-modal/delete-confirmation-modal';
 
+export { OrderHistoryCard, type OrderHistoryCardProps, type OrderHistoryType, type CourseOrderHistoryProps, type CoachingOrderHistoryProps, type PackageOrderHistoryProps } from './components/order-history/order-history-card';
+export { OrderHistoryCardList, type OrderHistoryCardListProps } from './components/order-history/order-history-card-list';
+export { CoachingSessionSnippet, type CoachingSessionSnippetProps } from './components/order-history/coaching-session-snippet';
+
 export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
 export { Message } from './components/assignment/message';
 export { ReplyPanel } from './components/assignment/reply-panel';
