@@ -1112,6 +1112,7 @@ export const DictionarySchema = z.object({
       groups: z.string(),
       coachingSessionReviews: z.string(),
       cmsSettings: z.string(),
+      transactions: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1453,6 +1454,36 @@ export const DictionarySchema = z.object({
       }),
       error: z.object({
         createFailed: z.string()
+      }),
+    }),
+    addTransactionModal: z.object({
+      title: z.string(),
+      coachLabel: z.string(),
+      coachPlaceholder: z.string(),
+      removeCoach: z.string(),
+      paymentDateLabel: z.string(),
+      amountLabel: z.string(),
+      amountPlaceholder: z.string(),
+      descriptionLabel: z.string(),
+      descriptionPlaceholder: z.string(),
+      invoiceUrlLabel: z.string(),
+      invoiceUrlPlaceholder: z.string(),
+      tagsLabel: z.string(),
+      tagsPlaceholder: z.string(),
+      addTag: z.string(),
+      goBack: z.string(),
+      add: z.string(),
+      adding: z.string(),
+      successTitle: z.string(),
+      close: z.string(),
+      validationErrors: z.object({
+        coachRequired: z.string(),
+        paymentDateRequired: z.string(),
+        amountRequired: z.string(),
+        amountInvalid: z.string(),
+      }),
+      error: z.object({
+        createFailed: z.string(),
       }),
     }),
     transactionsGrid: z.object({
