@@ -1121,6 +1121,7 @@ export const EN: TDictionary = {
       groups: 'Groups',
       coachingSessionReviews: 'Coaching Session Reviews',
       cmsSettings: 'Settings',
+      transactions: 'Transactions',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1464,6 +1465,34 @@ export const EN: TDictionary = {
       error: {
         createFailed: 'Failed to create coupon. Please try again.'
       },
+    },
+    addTransactionModal: {
+      title: 'Add transaction',
+      coachLabel: 'Coach',
+      coachPlaceholder: 'Choose Coach',
+      removeCoach: 'Remove',
+      paymentDateLabel: 'Payment Date',
+      amountLabel: 'Paid amount',
+      amountPlaceholder: 'e.g. 800.00 CHF',
+      descriptionLabel: 'Description',
+      descriptionPlaceholder: 'e.g. 2x 40min coaching sessions',
+      invoiceUrlLabel: 'Invoice URL',
+      invoiceUrlPlaceholder: 'e.g. https://bexio.com/dashboard/?invoice=12345',
+      tagsLabel: 'Tags',
+      tagsPlaceholder: 'Choose Transaction Tags',
+      addTag: 'Add Tag',
+      goBack: 'Go back',
+      add: 'Add',
+      adding: 'Adding...',
+      successTitle: 'Transaction added successfully!',
+      close: 'Close',
+      validationErrors: {
+        coachRequired: 'Coach is required',
+        paymentDateRequired: 'Payment date is required',
+        amountRequired: 'Amount is required',
+        amountInvalid: 'Amount must be a positive number',
+      },
+      error: { createFailed: 'Failed to add transaction. Please try again.' },
     },
     transactionsGrid: {
       userColumn: 'User',

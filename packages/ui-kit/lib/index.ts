@@ -234,10 +234,13 @@ export { ManageCoachingOfferingItem } from './components/manage-coaching-offerin
 export { ManageCoachingOfferingList } from './components/manage-coaching-offering/manage-coaching-offering-list';
 export { CoachStudentInteractionCard } from './components/coach-student-interaction-card';
 export { UserAvatar } from './components/avatar/user-avatar';
-export { CouponGrid, type CouponRow, type CouponGridProps } from './components/grids/coupon-grid';
-export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterModalProps } from './components/grids/coupon-grid-filter-modal';
+
 export { ReviewFilterModal, type ReviewFilterModel } from './components/grids/review-filter-modal';
 export { default as CoachReviewCard, type ReviewCardProps as CoachReviewCardProps } from './components/review/coach-review-card';
+
+// Coupons
+export { CouponGrid, type CouponRow, type CouponGridProps } from './components/grids/coupon-grid';
+export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterModalProps } from './components/grids/coupon-grid-filter-modal';
 export { RevokeCouponModal, type RevokeCouponModalProps } from './components/coupon/revoke-coupon-modal';
 export { CreateCouponModal, type CreateCouponModalProps } from './components/coupon/create-coupon-modal';
 export { CoachingSessionGroupOverviewList, CoachingSessionFilterModal, type CoachingSessionFilterModel } from './components/coaching-session-group-overview';
@@ -245,6 +248,11 @@ export { CoachingSessionGroupOverviewCard } from './components/coaching-session-
 export { CoachReviewFilterModal, type CoachReviewFilterModel } from './components/review/coach-review-filter-modal';
 export { GroupCoachingSessionBanner } from './components/group-coaching-session-banner';
 export { GroupCoachingSessionReviewsBanner } from './components/group-coaching-session-reviews-banner';
+
+// Transactions
+export { TransactionsGrid, type TransactionRow, type TransactionsGridProps } from './components/grids/transactions-grid';
+export { TransactionsGridFilterModal, type TransactionFilterModel, type TransactionsGridFilterModalProps } from './components/grids/transactions-grid-filter-modal';
+export { AddTransactionModal, type AddTransactionModalProps } from './components/transactions/add-transaction-modal';
 
 
 export * from "./components/cms"

@@ -1125,6 +1125,7 @@ export const DE: TDictionary = {
       groups: 'Gruppen',
       coachingSessionReviews: 'Coaching-Sitzungsbewertungen',
       cmsSettings: 'Einstellungen',
+      transactions: 'Transaktionen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1467,6 +1468,34 @@ export const DE: TDictionary = {
       error: {
         createFailed: 'Gutschein konnte nicht erstellt werden. Bitte versuchen Sie es erneut.'
       },
+    },
+    addTransactionModal: {
+      title: 'Transaktion hinzufügen',
+      coachLabel: 'Coach',
+      coachPlaceholder: 'Coach auswählen',
+      removeCoach: 'Entfernen',
+      paymentDateLabel: 'Zahlungsdatum',
+      amountLabel: 'Bezahlter Betrag',
+      amountPlaceholder: 'z.B. 800.00 CHF',
+      descriptionLabel: 'Beschreibung',
+      descriptionPlaceholder: 'z.B. 2x 40min Coaching-Sitzungen',
+      invoiceUrlLabel: 'Rechnungs-URL',
+      invoiceUrlPlaceholder: 'z.B. https://bexio.com/dashboard/?invoice=12345',
+      tagsLabel: 'Tags',
+      tagsPlaceholder: 'Transaktion-Tags auswählen',
+      addTag: 'Tag hinzufügen',
+      goBack: 'Zurück',
+      add: 'Hinzufügen',
+      adding: 'Wird hinzugefügt...',
+      successTitle: 'Transaktion erfolgreich hinzugefügt!',
+      close: 'Schliessen',
+      validationErrors: {
+        coachRequired: 'Coach ist erforderlich',
+        paymentDateRequired: 'Zahlungsdatum ist erforderlich',
+        amountRequired: 'Betrag ist erforderlich',
+        amountInvalid: 'Betrag muss eine positive Zahl sein',
+      },
+      error: { createFailed: 'Transaktion konnte nicht hinzugefügt werden. Bitte versuche es erneut.' },
     },
     transactionsGrid: {
       userColumn: 'Benutzer',

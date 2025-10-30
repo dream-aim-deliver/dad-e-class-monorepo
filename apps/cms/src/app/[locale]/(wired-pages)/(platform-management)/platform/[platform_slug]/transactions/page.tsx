@@ -2,6 +2,8 @@
 // Notion: https://www.notion.so/CMS-Transactions-22d5a7432d018022a18cc0587107aece
 
 import TransactionsServerComponent from '../../../../../../../lib/infrastructure/server/pages/transactions-rsc';
+import { Suspense } from 'react';
+import DefaultLoadingWrapper from '../../../../../../../lib/infrastructure/client/wrappers/default-loading';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 export default async function TransactionsPage({
@@ -15,9 +17,11 @@ export default async function TransactionsPage({
   const params = await paramsPromise;
 
   return (
-    <TransactionsServerComponent
-      locale={params.locale}
-      platformSlug={params.platform_slug}
-    />
+    <Suspense fallback={<DefaultLoadingWrapper />}> 
+      <TransactionsServerComponent
+        locale={params.locale}
+        platformSlug={params.platform_slug}
+      />
+    </Suspense>
   );
 }
