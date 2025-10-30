@@ -63,29 +63,34 @@ const CMSSidebar = ({
         }
     };
 
-    // Base path for all CMS routes
-    const basePath = `/${locale}/platform/${platformSlug}/${platformLocale}`;
+    // Base paths
+    const platformBase = `/${locale}/platform/${platformSlug}`;
+    const platformLocaleBase = `${platformBase}/${platformLocale}`;
 
     const routeMap = {
-        allCourses: `${basePath}/manage-courses`,
-        packages: `${basePath}/packages`,
-        categories: `${basePath}/manage-categories`,
-        topics: `${basePath}/manage-topics`,
-        preCourseAssessment: `${basePath}/pre-course-assessment-form`,
-        legalTexts: `${basePath}/manage-legal-texts`,
-        coachingOffering: `${basePath}/coaching-offering`,
-        coachingSessions: `${basePath}/coaching-sessions`,
-        coachSkills: `${basePath}/coach-skills-form`,
-        coupons: `${basePath}/coupons`,
-        users: `${basePath}/manage-users`,
-        transactions: `${basePath}/transactions`,
-        notifications: `/${locale}/platform/${platformSlug}/notifications`,
-        settings: `${basePath}/settings`,
-        homepage: `${basePath}/manage-homepage`,
-        offers: `${basePath}/manage-offers-page`,
-        coaching: `${basePath}/manage-coaching-page`,
-        aboutPage: `${basePath}/manage-about-page`,
-        footer: `${basePath}/manage-footer`,
+        // Locale-scoped pages (no platformLocale in the path)
+        allCourses: `${platformBase}/courses`,
+        users: `${platformBase}/users`,
+        transactions: `${platformBase}/transactions`,
+        notifications: `${platformBase}/notifications`,
+
+        // Platform-locale scoped pages
+        packages: `${platformLocaleBase}/packages`,
+        categories: `${platformLocaleBase}/manage-categories`,
+        topics: `${platformLocaleBase}/manage-topics`,
+        preCourseAssessment: `${platformLocaleBase}/pre-course-assessment-form`,
+        legalTexts: `${platformLocaleBase}/manage-legal-texts`,
+        coachingOffering: `${platformLocaleBase}/coaching-offering`,
+        coachingSessions: `${platformLocaleBase}/coaching-sessions`,
+        coachSkills: `${platformLocaleBase}/coach-skills-form`,
+        coupons: `${platformLocaleBase}/coupons`,
+        sendNotification: `${platformLocaleBase}/send-notification`,
+        settings: `${platformLocaleBase}/settings`,
+        homepage: `${platformLocaleBase}/manage-homepage`,
+        offers: `${platformLocaleBase}/manage-offers-page`,
+        coaching: `${platformLocaleBase}/manage-coaching-page`,
+        aboutPage: `${platformLocaleBase}/manage-about-page`,
+        footer: `${platformLocaleBase}/manage-footer`,
     };
 
     // Create dynamic route to label mapping
