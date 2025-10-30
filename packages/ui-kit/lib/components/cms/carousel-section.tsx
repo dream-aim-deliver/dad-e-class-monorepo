@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useCallback } from 'react';
 import { TextAreaInput } from '../text-areaInput';
 import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
@@ -12,22 +12,24 @@ import { IconTrashAlt } from '../icons/icon-trash-alt';
 import { IconChevronUp } from '../icons/icon-chevron-up';
 import { IconChevronDown } from '../icons/icon-chevron-down';
 import { downloadFile } from '../../utils/file-utils';
+import { isLocalAware, getDictionary } from '@maany_shr/e-class-translations';
 
 type CarouselType = z.infer<typeof viewModels.HomePageSchema>['carousel'];
 type CarouselItemType = CarouselType extends Array<infer T> ? T : never;
-type UploadType="upload_offers_page_carousel_card_image" |"upload_home_page_carousel_item_image"
-interface CarouselSectionProps {
+type UploadType = "upload_offers_page_carousel_card_image" | "upload_home_page_carousel_item_image"
+interface CarouselSectionProps extends isLocalAware {
     value: CarouselType;
     onChange: (value: CarouselType) => void;
     onFileUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
-        uploadType:UploadType,
+        uploadType: UploadType,
         abortSignal?: AbortSignal
     ) => Promise<fileMetadata.TFileMetadata>;
     onFileDelete: (id: string) => void;
     onFileDownload: (id: string) => void;
     uploadProgress?: number;
     uploadType: UploadType;
+
 }
 
 export default function CarouselSection({
@@ -37,60 +39,45 @@ export default function CarouselSection({
     onFileDelete,
     onFileDownload,
     uploadProgress,
-    uploadType
+    uploadType,
+    locale
 }: CarouselSectionProps) {
-    const [uploadedFiles, setUploadedFiles] = useState<Map<number, fileMetadata.TFileMetadata>>(new Map());
-
-    // Sync uploadedFiles with value prop when images are loaded from server
-    // Only update if the image IDs have actually changed (not just object recreation)
-    useEffect(() => {
-        const newUploadedFiles = new Map<number, fileMetadata.TFileMetadata>();
-        let hasChanges = false;
+    const dictionary = getDictionary(locale);
+    // Derive uploadedFiles from value prop - single source of truth
+    const uploadedFiles = useMemo(() => {
+        const files = new Map<number, fileMetadata.TFileMetadataImage>();
 
         (value || []).forEach((item, index) => {
             if (item.image) {
-                const existingFile = uploadedFiles.get(index);
-                // Only update if image ID changed or file didn't exist
-                if (!existingFile || existingFile.id !== item.image.id) {
-                    hasChanges = true;
-                }
-                newUploadedFiles.set(index, {
+                files.set(index, {
                     id: item.image.id,
                     name: item.image.name,
                     size: item.image.size,
-                    category: item.image.category,
+                    category: item.image.category as 'image',
                     url: item.image.downloadUrl,
-                } as fileMetadata.TFileMetadata);
-            } else if (uploadedFiles.get(index)) {
-                // Image was removed
-                hasChanges = true;
+                    thumbnailUrl: item.image.downloadUrl, // Add thumbnailUrl for proper preview
+                    status: "available" as const
+                } as fileMetadata.TFileMetadataImage);
             }
         });
 
-        // Check if count changed (items added/removed)
-        if (newUploadedFiles.size !== uploadedFiles.size) {
-            hasChanges = true;
-        }
-
-        if (hasChanges) {
-            setUploadedFiles(newUploadedFiles);
-        }
+        return files;
     }, [value]);
 
-    const handleCarouselChange = (newCarouselData: CarouselType) => {
+    const handleCarouselChange = useCallback((newCarouselData: CarouselType) => {
         onChange?.(newCarouselData);
-    };
+    }, [onChange]);
 
-    const handleItemFieldChange = (index: number, field: keyof CarouselItemType, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
+    const handleItemFieldChange = useCallback((index: number, field: keyof CarouselItemType, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newCarouselData = [...(value || [])];
         newCarouselData[index] = {
             ...newCarouselData[index],
             [field]: fieldValue
         };
         handleCarouselChange(newCarouselData);
-    };
+    }, [value, handleCarouselChange]);
 
-    const addCarouselItem = () => {
+    const addCarouselItem = useCallback(() => {
         const newItem = {
             title: '',
             description: '',
@@ -100,70 +87,38 @@ export default function CarouselSection({
             badge: ''
         } as CarouselItemType;
         handleCarouselChange([...(value || []), newItem]);
-    };
+    }, [value, handleCarouselChange]);
 
-    const removeCarouselItem = (index: number) => {
+    const removeCarouselItem = useCallback((index: number) => {
         const newCarouselData = (value || []).filter((_, i) => i !== index);
 
         // Clean up uploaded file for this item
         const fileForItem = uploadedFiles.get(index);
         if (fileForItem) {
             onFileDelete(fileForItem.id as string);
-            const newUploadedFiles = new Map(uploadedFiles);
-            newUploadedFiles.delete(index);
-            setUploadedFiles(newUploadedFiles);
         }
 
+        // No need to update uploadedFiles state - it derives from value
         handleCarouselChange(newCarouselData);
-    };
+    }, [value, uploadedFiles, onFileDelete]);
 
-    const moveCarouselItemUp = (index: number) => {
+    const moveCarouselItemUp = useCallback((index: number) => {
         if (value && index > 0) {
             const newCarouselData = [...value];
             [newCarouselData[index - 1], newCarouselData[index]] = [newCarouselData[index], newCarouselData[index - 1]];
+            // No need to manually swap uploadedFiles - it derives from value and will recompute
             handleCarouselChange(newCarouselData);
-
-            // Swap uploaded files
-            const newUploadedFiles = new Map(uploadedFiles);
-            const temp = newUploadedFiles.get(index - 1);
-            const current = newUploadedFiles.get(index);
-            if (current) {
-                newUploadedFiles.set(index - 1, current);
-            } else {
-                newUploadedFiles.delete(index - 1);
-            }
-            if (temp) {
-                newUploadedFiles.set(index, temp);
-            } else {
-                newUploadedFiles.delete(index);
-            }
-            setUploadedFiles(newUploadedFiles);
         }
-    };
+    }, [value]);
 
-    const moveCarouselItemDown = (index: number) => {
+    const moveCarouselItemDown = useCallback((index: number) => {
         if (value && index < value.length - 1) {
             const newCarouselData = [...value];
             [newCarouselData[index], newCarouselData[index + 1]] = [newCarouselData[index + 1], newCarouselData[index]];
+            // No need to manually swap uploadedFiles - it derives from value and will recompute
             handleCarouselChange(newCarouselData);
-
-            // Swap uploaded files
-            const newUploadedFiles = new Map(uploadedFiles);
-            const temp = newUploadedFiles.get(index + 1);
-            const current = newUploadedFiles.get(index);
-            if (current) {
-                newUploadedFiles.set(index + 1, current);
-            } else {
-                newUploadedFiles.delete(index + 1);
-            }
-            if (temp) {
-                newUploadedFiles.set(index, temp);
-            } else {
-                newUploadedFiles.delete(index);
-            }
-            setUploadedFiles(newUploadedFiles);
         }
-    };
+    }, [value]);
 
     const handleOnFilesChange = async (
         file: fileMetadata.TFileUploadRequest,
@@ -172,10 +127,9 @@ export default function CarouselSection({
         return onFileUpload(file, uploadType, abortSignal);
     };
 
-    const handleUploadComplete = (index: number, file: fileMetadata.TFileMetadata) => {
-        const newUploadedFiles = new Map(uploadedFiles);
-        newUploadedFiles.set(index, file);
-        setUploadedFiles(newUploadedFiles);
+    const handleUploadComplete = useCallback((index: number, file: fileMetadata.TFileMetadata) => {
+        // No need to update uploadedFiles state - just update parent value
+        // uploadedFiles will recompute from the new value
         const imageObject = {
             id: file.id?.toString() ?? '',
             name: file.name ?? '',
@@ -184,15 +138,13 @@ export default function CarouselSection({
             downloadUrl: file.url ?? ''
         };
         handleItemFieldChange(index, 'image', imageObject);
-    };
+    }, [handleItemFieldChange]);
 
-    const handleFileDelete = (index: number, id: string) => {
-        const newUploadedFiles = new Map(uploadedFiles);
-        newUploadedFiles.delete(index);
-        setUploadedFiles(newUploadedFiles);
+    const handleFileDelete = useCallback((index: number, id: string) => {
+        // No need to update uploadedFiles state - just update parent value
         handleItemFieldChange(index, 'image', null);
         onFileDelete(id);
-    };
+    }, [handleItemFieldChange, onFileDelete]);
 
     const handleFileDownload = (index: number) => (id: string) => {
         const file = uploadedFiles.get(index);
@@ -204,7 +156,7 @@ export default function CarouselSection({
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
             <div className="flex justify-between items-center   ">
-                <h3>Carousel Section</h3>
+                <h3>{dictionary.components.cmsSections.carouselSection.heading}</h3>
 
             </div>
 
@@ -216,7 +168,7 @@ export default function CarouselSection({
                                    transition-all duration-300 ease-in-out"
                     >
                         <div className="flex justify-between items-center border-b border-b-divider pb-2">
-                            <h3 className="text-lg font-semibold transition-colors duration-200">Carousel Item {index + 1}</h3>
+                            <h3 className="text-lg font-semibold transition-colors duration-200">{dictionary.components.cmsSections.carouselSection.itemHeadingPrefix} {index + 1}</h3>
                             <div className="flex gap-2">
                                 <IconButton
                                     icon={<IconTrashAlt />}
@@ -242,59 +194,59 @@ export default function CarouselSection({
 
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-2 w-full">
-                                <label className="text-sm text-text-secondary">Upload Image</label>
+                                <label className="text-sm text-text-secondary">{dictionary.components.cmsSections.carouselSection.uploadImageLabel}</label>
                                 <Uploader
                                     type="single"
                                     variant="image"
                                     file={uploadedFiles.get(index) || null}
                                     onDelete={(id) => handleFileDelete(index, id)}
                                     onDownload={handleFileDownload(index)}
-                                    onFilesChange={(file, abortSignal) => handleOnFilesChange(file,  abortSignal)}
+                                    onFilesChange={(file, abortSignal) => handleOnFilesChange(file, abortSignal)}
                                     onUploadComplete={(file) => handleUploadComplete(index, file)}
-                                    locale="en"
+                                    locale={locale}
                                     maxSize={10}
                                     uploadProgress={uploadProgress}
                                 />
                             </div>
                             <TextInput
-                                label="Title"
+                                label={dictionary.components.cmsSections.carouselSection.titleLabel}
 
                                 inputField={{
-                                    inputText: "Enter the title",
+                                    inputText: dictionary.components.cmsSections.carouselSection.titlePlaceholder,
                                     value: item.title,
                                     setValue: (value) => handleItemFieldChange(index, 'title', value)
                                 }}
                             />
 
                             <TextAreaInput
-                                label="Description"
+                                label={dictionary.components.cmsSections.carouselSection.descriptionLabel}
                                 value={item.description || ''}
                                 setValue={(value) => handleItemFieldChange(index, 'description', value)}
-                                placeholder="Enter the description"
+                                placeholder={dictionary.components.cmsSections.carouselSection.descriptionPlaceholder}
                             />
 
                             <TextInput
-                                label="Badge (Optional)"
+                                label={dictionary.components.cmsSections.carouselSection.badgeLabel}
                                 inputField={{
-                                    inputText: "Enter badge text",
+                                    inputText: dictionary.components.cmsSections.carouselSection.badgePlaceholder,
                                     value: item.badge || '',
                                     setValue: (value) => handleItemFieldChange(index, 'badge', value || null)
                                 }}
                             />
 
                             <TextInput
-                                label="Button Text"
+                                label={dictionary.components.cmsSections.carouselSection.buttonTextLabel}
                                 inputField={{
-                                    inputText: "Enter button text",
+                                    inputText: dictionary.components.cmsSections.carouselSection.buttonTextPlaceholder,
                                     value: item.buttonText,
                                     setValue: (value) => handleItemFieldChange(index, 'buttonText', value)
                                 }}
                             />
 
                             <TextInput
-                                label="Card Link"
+                                label={dictionary.components.cmsSections.carouselSection.buttonLinkLabel}
                                 inputField={{
-                                    inputText: "Enter button URL",
+                                    inputText: dictionary.components.cmsSections.carouselSection.buttonLinkPlaceholder,
                                     value: item.buttonUrl,
                                     setValue: (value) => handleItemFieldChange(index, 'buttonUrl', value)
                                 }}

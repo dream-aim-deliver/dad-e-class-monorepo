@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useCallback } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
 import { downloadFile } from '../../../utils/file-utils';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 type BannerType = z.infer<typeof viewModels.HomePageSchema>['banner'];
 
-interface HeroSectionProps {
+interface HeroSectionProps extends isLocalAware {
     value: BannerType;
     onChange: (value: BannerType) => void;
     onFileUpload: (
@@ -36,51 +37,53 @@ export default function HeroSection({
     onFileDownload,
     uploadProgress,
     videoUploadProgress,
+    locale
 }: HeroSectionProps) {
-    const [uploadedThumbnail, setUploadedThumbnail] = useState<fileMetadata.TFileMetadata | null>(null);
-    const [uploadedVideo, setUploadedVideo] = useState<fileMetadata.TFileMetadataVideo | null>(null);
+    const dictionary = getDictionary(locale);
+    const t = dictionary.components.cmsSections.heroSection;
+    const uploadedThumbnail = useMemo(() => {
+        if (!value.thumbnailImage) return null;
 
-    // Sync uploaded files with value prop when data is loaded from server
-    // Only update if the image ID has actually changed (not just object recreation)
-    useEffect(() => {
-        const thumbnailImageId = value.thumbnailImage?.id;
-        const currentThumbnailId = uploadedThumbnail?.id;
+        const thumbnail = {
+            id: value.thumbnailImage.id,
+            name: value.thumbnailImage.name,
+            size: value.thumbnailImage.size,
+            category: value.thumbnailImage.category as 'image',
+            url: value.thumbnailImage.downloadUrl,
+            thumbnailUrl: value.thumbnailImage.downloadUrl, // Use same URL for thumbnail
+            status: "available" as const
+        } as fileMetadata.TFileMetadataImage;
 
-        if (value.thumbnailImage && thumbnailImageId !== currentThumbnailId) {
-            // Image ID changed or didn't exist - update state
-            setUploadedThumbnail({
-                id: value.thumbnailImage.id,
-                name: value.thumbnailImage.name,
-                size: value.thumbnailImage.size,
-                category: value.thumbnailImage.category,
-                url: value.thumbnailImage.downloadUrl,
-            } as fileMetadata.TFileMetadata);
-        } else if (!value.thumbnailImage && uploadedThumbnail) {
-            // Thumbnail was removed
-            setUploadedThumbnail(null);
-        }
+        console.log('Hero: Computed uploadedThumbnail from value.thumbnailImage:', thumbnail);
+        return thumbnail;
+    }, [value.thumbnailImage]);
 
-        // Note: videoId is stored as string, not a full video object in the schema
-        // Video state is handled differently - we don't pre-populate it from server
-    }, [value.thumbnailImage?.id]);
+    // For video, we don't pre-populate from server as videoId is just a string
+    // Video state is only used during upload/display in this session
+    const uploadedVideo = useMemo(() => {
+        // Video metadata is not stored in value prop, only videoId string
+        // So we return null - video will only show if uploaded in current session
+        return null;
+    }, []);
 
-    const handleFieldChange = (field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
+    const handleFieldChange = useCallback((field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newBannerData = {
             ...value,
             [field]: fieldValue
         } as BannerType;
         onChange?.(newBannerData);
-    };
+    }, [value, onChange]);
 
-    const handleOnThumbnailChange = async (
+    const handleOnThumbnailChange = useCallback(async (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
         return onFileUpload(file, "upload_home_page_hero_image", abortSignal);
-    };
+    }, [onFileUpload]);
 
-    const handleThumbnailUploadComplete = (file: fileMetadata.TFileMetadata) => {
-        setUploadedThumbnail(file);
+    const handleThumbnailUploadComplete = useCallback((file: fileMetadata.TFileMetadata) => {
+        // No local state update needed - just notify parent
+        // Parent will update value prop → useMemo recomputes uploadedThumbnail
         const imageObject = {
             id: file.id?.toString() ?? '',
             name: file.name ?? '',
@@ -89,69 +92,66 @@ export default function HeroSection({
             downloadUrl: file.url ?? ''
         };
         handleFieldChange('thumbnailImage', imageObject);
-    };
+    }, [handleFieldChange]);
 
-    const handleThumbnailDelete = (id: string) => {
-        setUploadedThumbnail(null);
+    const handleThumbnailDelete = useCallback((id: string) => {
+        // No local state update needed - just notify parent
         handleFieldChange('thumbnailImage', null);
         onFileDelete(id);
-    };
+    }, [handleFieldChange, onFileDelete]);
 
-    const handleOnVideoChange = async (
+    const handleOnVideoChange = useCallback(async (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
         return onVideoUpload(file, abortSignal);
-    };
+    }, [onVideoUpload]);
 
-    const handleVideoUploadComplete = (file: fileMetadata.TFileMetadata) => {
+    const handleVideoUploadComplete = useCallback((file: fileMetadata.TFileMetadata) => {
         const videoFile = file as fileMetadata.TFileMetadataVideo;
-        setUploadedVideo(videoFile);
-        // Store the video file ID as the videoId
         if (videoFile.id) {
             handleFieldChange('videoId', videoFile.id);
         }
-    };
 
-    const handleVideoDelete = (id: string) => {
-        setUploadedVideo(null);
+    }, [handleFieldChange]);
+
+    const handleVideoDelete = useCallback((id: string) => {
+
         handleFieldChange('videoId', '');
         onFileDelete(id);
-    };
+    }, [handleFieldChange, onFileDelete]);
 
-    const handleThumbnailDownload = (id: string) => {
+    const handleThumbnailDownload = useCallback((id: string) => {
         if (uploadedThumbnail?.id === id && uploadedThumbnail.url && uploadedThumbnail.name) {
             downloadFile(uploadedThumbnail.url, uploadedThumbnail.name);
         }
-    };
+    }, [uploadedThumbnail]);
 
-    const handleVideoDownload = (id: string) => {
-        if (uploadedVideo?.id === id && uploadedVideo.url && uploadedVideo.name) {
-            downloadFile(uploadedVideo.url, uploadedVideo.name);
-        }
-    };
+    const handleVideoDownload = useCallback((id: string) => {
+        // if (value.videoId === id) {
+        //     downloadFile(uploadedVideo.url, uploadedVideo.name);
+        // }
+    }, [uploadedVideo]);
 
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
-            <h2>
-                Hero section
-            </h2>
+            <h2>{t.heading}</h2>
             <div className="flex flex-col gap-4">
                 <TextAreaInput
-                    label="Title"
+                    label={t.titleLabel}
                     value={value?.title || ''}
                     setValue={(v) => handleFieldChange('title', v)}
-                    placeholder="Enter the title"
+                    placeholder={t.titlePlaceholder}
                 />
                 <TextAreaInput
-                    label="Description"
+                    label={t.descriptionLabel}
                     value={value?.description || ''}
                     setValue={(v) => handleFieldChange('description', v)}
-                    placeholder="Enter the description"
+                    placeholder={t.descriptionPlaceholder}
                 />
 
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm text-text-secondary">Upload Thumbnail</label>
+                    <label className="text-sm text-text-secondary">{t.uploadThumbnailLabel}</label>
                     <Uploader
                         type="single"
                         variant="image"
@@ -167,12 +167,8 @@ export default function HeroSection({
                 </div>
 
                 <div className="flex flex-col gap-2 bg-card-fill border-1 border-card-stroke rounded-md p-4">
-                    <h6 className="text-sm font-semibold text-text-primary">
-                        Hero Video
-                    </h6>
-                    <p className="text-sm text-text-secondary mb-2">
-                        Upload a video for the hero section. The video will be displayed prominently on the homepage.
-                    </p>
+                    <h6 className="text-sm font-semibold text-text-primary">{t.heroVideoTitle}</h6>
+                    <p className="text-sm text-text-secondary mb-2">{t.heroVideoDescription}</p>
                     <Uploader
                         type="single"
                         variant="video"

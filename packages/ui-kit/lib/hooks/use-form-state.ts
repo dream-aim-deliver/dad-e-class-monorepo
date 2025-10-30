@@ -37,6 +37,9 @@ export interface UseFormStateOptions {
   enableReloadProtection?: boolean;
 }
 
+// SetState action type - similar to React.SetStateAction
+export type SetValueAction<T> = T | null | ((prevState: T | null) => T | null);
+
 export function useFormState<T>(
   initialValue: T | null | undefined,
   options: UseFormStateOptions = {}
@@ -69,29 +72,34 @@ export function useFormState<T>(
     return !deepEqual(state.current, state.original);
   }, [state.current, state.original, deepEqual]);
 
-  // Update form value
-  const setValue = (newValue: T | null) => {
-    setState(prev => ({
-      ...prev,
-      current: newValue,
-    }));
-  }
+  const setValue = useCallback((newValue: SetValueAction<T>) => {
+    setState(prev => {
+      const nextValue = typeof newValue === 'function'
+        ? (newValue as (prevState: T | null) => T | null)(prev.current)
+        : newValue;
+
+      return {
+        ...prev,
+        current: nextValue,
+      };
+    });
+  }, []);
 
   // Mark current state as saved (makes it the new baseline)
-  const markAsSaved =() => {
+  const markAsSaved = useCallback(() => {
     setState(prev => ({
       current: prev.current,
       original: prev.current,
     }));
-  };
+  }, []);
 
   // Reset to original value
-  const reset =() => {
+  const reset = useCallback(() => {
     setState(prev => ({
       ...prev,
       current: prev.original,
     }));
-  }
+  }, []);
 
   // Update both current and original when initial value changes from parent
   useEffect(() => {
@@ -121,7 +129,7 @@ export function useFormState<T>(
     value: state.current,
     originalValue: state.original,
     isDirty,
-    setValue,
+    setValue: setValue as (newValue: SetValueAction<T>) => void,
     markAsSaved,
     reset,
   };

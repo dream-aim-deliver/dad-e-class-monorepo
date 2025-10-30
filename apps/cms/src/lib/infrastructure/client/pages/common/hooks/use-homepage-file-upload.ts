@@ -152,7 +152,7 @@ export const useHomePageFileUpload = (
 
     const handleFileDownload = async (id: string) => {
         // Download functionality would require fetching the file metadata first
-        console.log('Download file:', id);
+
     };
 
     return {
