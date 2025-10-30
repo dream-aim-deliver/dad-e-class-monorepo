@@ -148,7 +148,7 @@ export default function BannerSection({
                                 onDownload={handleFileDownload}
                                 onFilesChange={handleOnFilesChange}
                                 onUploadComplete={handleUploadComplete}
-                                locale="en"
+                                locale={locale}
                                 maxSize={10}
                                 uploadProgress={uploadProgress}
                             />

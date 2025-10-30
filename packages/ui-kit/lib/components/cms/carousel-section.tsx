@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { TextAreaInput } from '../text-areaInput';
 import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
@@ -64,32 +64,32 @@ export default function CarouselSection({
         return files;
     }, [value]);
 
-    const handleCarouselChange = useCallback((newCarouselData: CarouselType) => {
+    const handleCarouselChange = (newCarouselData: CarouselType) => {
         onChange?.(newCarouselData);
-    }, [onChange]);
+    };
 
-    const handleItemFieldChange = useCallback((index: number, field: keyof CarouselItemType, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
+    const handleItemFieldChange = (index: number, field: keyof CarouselItemType, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newCarouselData = [...(value || [])];
         newCarouselData[index] = {
             ...newCarouselData[index],
             [field]: fieldValue
         };
         handleCarouselChange(newCarouselData);
-    }, [value, handleCarouselChange]);
+    };
 
-    const addCarouselItem = useCallback(() => {
+    const addCarouselItem = () => {
         const newItem = {
             title: '',
             description: '',
             image: null,
             buttonText: '',
             buttonUrl: '',
-            badge: ''
+            badge: null  // Changed from '' to null for consistency
         } as CarouselItemType;
         handleCarouselChange([...(value || []), newItem]);
-    }, [value, handleCarouselChange]);
+    };
 
-    const removeCarouselItem = useCallback((index: number) => {
+    const removeCarouselItem = (index: number) => {
         const newCarouselData = (value || []).filter((_, i) => i !== index);
 
         // Clean up uploaded file for this item
@@ -100,25 +100,25 @@ export default function CarouselSection({
 
         // No need to update uploadedFiles state - it derives from value
         handleCarouselChange(newCarouselData);
-    }, [value, uploadedFiles, onFileDelete]);
+    };
 
-    const moveCarouselItemUp = useCallback((index: number) => {
+    const moveCarouselItemUp = (index: number) => {
         if (value && index > 0) {
             const newCarouselData = [...value];
             [newCarouselData[index - 1], newCarouselData[index]] = [newCarouselData[index], newCarouselData[index - 1]];
             // No need to manually swap uploadedFiles - it derives from value and will recompute
             handleCarouselChange(newCarouselData);
         }
-    }, [value]);
+    };
 
-    const moveCarouselItemDown = useCallback((index: number) => {
+    const moveCarouselItemDown = (index: number) => {
         if (value && index < value.length - 1) {
             const newCarouselData = [...value];
             [newCarouselData[index], newCarouselData[index + 1]] = [newCarouselData[index + 1], newCarouselData[index]];
             // No need to manually swap uploadedFiles - it derives from value and will recompute
             handleCarouselChange(newCarouselData);
         }
-    }, [value]);
+    };
 
     const handleOnFilesChange = async (
         file: fileMetadata.TFileUploadRequest,
@@ -127,7 +127,7 @@ export default function CarouselSection({
         return onFileUpload(file, uploadType, abortSignal);
     };
 
-    const handleUploadComplete = useCallback((index: number, file: fileMetadata.TFileMetadata) => {
+    const handleUploadComplete = (index: number, file: fileMetadata.TFileMetadata) => {
         // No need to update uploadedFiles state - just update parent value
         // uploadedFiles will recompute from the new value
         const imageObject = {
@@ -138,13 +138,13 @@ export default function CarouselSection({
             downloadUrl: file.url ?? ''
         };
         handleItemFieldChange(index, 'image', imageObject);
-    }, [handleItemFieldChange]);
+    };
 
-    const handleFileDelete = useCallback((index: number, id: string) => {
+    const handleFileDelete = (index: number, id: string) => {
         // No need to update uploadedFiles state - just update parent value
         handleItemFieldChange(index, 'image', null);
         onFileDelete(id);
-    }, [handleItemFieldChange, onFileDelete]);
+    };
 
     const handleFileDownload = (index: number) => (id: string) => {
         const file = uploadedFiles.get(index);
@@ -229,7 +229,7 @@ export default function CarouselSection({
                                 label={dictionary.components.cmsSections.carouselSection.badgeLabel}
                                 inputField={{
                                     inputText: dictionary.components.cmsSections.carouselSection.badgePlaceholder,
-                                    value: item.badge || '',
+                                    value: item.badge ?? '',
                                     setValue: (value) => handleItemFieldChange(index, 'badge', value || null)
                                 }}
                             />
