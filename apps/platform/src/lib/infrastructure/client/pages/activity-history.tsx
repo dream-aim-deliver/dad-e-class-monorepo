@@ -12,7 +12,20 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useSession } from 'next-auth/react';
-import { DefaultError } from '@maany_shr/e-class-ui-kit';
+import { useState, useEffect, useRef } from 'react';
+import { viewModels } from '@maany_shr/e-class-models';
+import { trpc } from '../trpc/cms-client';
+import { useListNotificationsPresenter } from '../hooks/use-list-notifications-presenter';
+import { useMarkNotificationsAsReadPresenter } from '../hooks/use-mark-notifications-as-read-presenter';
+import {
+    DefaultError,
+    DefaultLoading,
+    DefaultNotFound,
+    NotificationGrid,
+    ExtendedNotification,
+    AgGridReact,
+} from '@maany_shr/e-class-ui-kit';
+import { useRouter } from 'next/navigation';
 
 interface ActivityHistoryProps {
   locale: TLocale;
@@ -24,6 +37,89 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
   const sessionDTO = useSession();
   const session = sessionDTO.data;
   const isLoggedIn = !!session;
+  const router = useRouter();
+
+  // Add state for error message
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+
+  // State for notifications
+  const [notificationsResponse] = trpc.listNotifications.useSuspenseQuery({
+    userId: session?.user?.id ? parseInt(String(session.user.id), 10) : 1,
+    // Get all notifications without pagination - handle all data at once in the Grid
+  });
+  const [listNotificationsViewModel, setListNotificationsViewModel] = useState<
+    viewModels.TListNotificationsViewModel | undefined
+  >(undefined);
+  const { presenter: listNotificationsPresenter } = useListNotificationsPresenter(
+    setListNotificationsViewModel,
+  );
+
+  // State for mark notifications as read
+  const [markNotificationsViewModel, setMarkNotificationsViewModel] = useState<
+    viewModels.TMarkNotificationsAsReadViewModel | undefined
+  >(undefined);
+  const { presenter: markNotificationsPresenter } = useMarkNotificationsAsReadPresenter(
+    setMarkNotificationsViewModel,
+  );
+
+  // Ref for NotificationGrid
+  const gridRef = useRef<AgGridReact>(null!) as React.RefObject<AgGridReact>;
+
+  // TRPC mutation for marking notifications as read with proper callbacks
+  const markNotificationsAsReadMutation = trpc.markNotificationsAsRead.useMutation({
+    onMutate: () => {
+      setErrorMessage(undefined);
+    },
+    onSuccess: (data) => {
+      setErrorMessage(undefined);
+      // @ts-ignore
+      markNotificationsPresenter.present(data, markNotificationsViewModel);
+      // Refetch notifications to get updated data
+      window.location.reload(); // Simple approach for now
+    },
+    onError: (error) => {
+      setErrorMessage(error.message);
+    }
+  });
+
+  // Present the notifications data when available
+  useEffect(() => {
+    if (notificationsResponse && listNotificationsPresenter) {
+      // @ts-ignore
+      listNotificationsPresenter.present(notificationsResponse, listNotificationsViewModel);
+    }
+  }, [notificationsResponse, listNotificationsPresenter, listNotificationsViewModel]);
+
+  // Authentication check based on discovered patterns
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push('/login');
+    }
+  }, [isLoggedIn, router]);
+
+  // Handle notification click
+  const handleNotificationClick = (notification: ExtendedNotification) => {
+    if (notification.action?.url && notification.action.url !== '#') {
+      window.open(notification.action.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  // Handle mark all as read
+  const handleMarkAllAsRead = () => {
+    if (listNotificationsViewModel?.mode === 'default') {
+      const notifications = listNotificationsViewModel.data.notifications;
+      const unreadNotificationIds: number[] = notifications
+        .filter(n => !n.isRead)
+        .map(n => Number(n.id))
+        .filter((id): id is number => !Number.isNaN(id));
+
+      if (unreadNotificationIds.length > 0) {
+        markNotificationsAsReadMutation.mutate({
+          notificationIds: unreadNotificationIds
+        });
+      }
+    }
+  };
 
   // Authentication check - require logged-in user (any role)
   if (!isLoggedIn) {
@@ -36,6 +132,38 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
     );
   }
 
+  // Loading state using discovered patterns
+  if (!listNotificationsViewModel) {
+    return <DefaultLoading locale={locale} variant="minimal" />;
+  }
+
+  if (listNotificationsViewModel.mode === 'not-found') {
+    return <DefaultNotFound locale={locale} />;
+  }
+
+  // Error handling - kaboom
+  if (listNotificationsViewModel.mode === 'kaboom') {
+    return <DefaultError locale={locale} />;
+  }
+
+  // Extract notifications data and convert to ExtendedNotification format
+  const notificationsData = listNotificationsViewModel.data;
+
+  const extendedNotifications: ExtendedNotification[] = notificationsData.notifications
+    .filter(notification => notification.actionTitle && notification.actionUrl)
+    .map(notification => ({
+      message: notification.message,
+      isRead: notification.isRead,
+      platform: 'platform', // Default platform name for now
+      timestamp: typeof notification.createdAt === 'string' 
+        ? notification.createdAt 
+        : new Date(notification.createdAt).toISOString(), // Backend sends string, handle as string primarily
+      action: {
+        title: notification.actionTitle,
+        url: notification.actionUrl
+      },
+    }));
+
   return (
     <div className="flex flex-col space-y-5 px-30">
       <div>
@@ -47,9 +175,19 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
         - FEAT-5 (listNotifications)
         - FEAT-95 (markNotificationsAsRead)
       */}
-      {/* UI Components from Notion:
-        - NotificationGrid (already exists)
-      */}
+      <div className="h-96 theme-just-do-ad">
+        <NotificationGrid
+          locale={locale}
+          notifications={extendedNotifications}
+          onNotificationClick={handleNotificationClick}
+          onMarkAllRead={handleMarkAllAsRead}
+          gridRef={gridRef}
+          variant="student"
+          loading={markNotificationsAsReadMutation.isPending}
+        />
+      </div>
+      
+      {errorMessage && <DefaultError locale={locale} title={errorMessage} />}
     </div>
   );
 }

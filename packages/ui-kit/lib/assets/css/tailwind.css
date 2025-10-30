@@ -151,10 +151,12 @@
   /* AG Grid */
   --ag-header-row-border: none;
   /* TODO: ensure styling matching Figma */
-  --ag-background-color: var(--color-base-neutral-900);
-  --ag-foreground-color: var(--color-base-neutral-50);
-  --ag-header-background-color: var(--color-base-neutral-900);
-  --ag-accent-color: var(--color-base-brand-500);
+  --ag-background-color: var(--ag-background-color);
+  --ag-foreground-color: var(--ag-foreground-color);
+  --ag-header-background-color: var(--ag-header-background-color);
+  --ag-accent-color: var(--ag-accent-color);
+  --ag-header-text-color: var(--ag-header-text-color);
+  --ag-header-font-weight: var(--ag-header-font-weight);
 }
 
 @layer base {
