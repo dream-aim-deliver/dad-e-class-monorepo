@@ -15,66 +15,87 @@ import OrderHistoryTab from './order-history-tab';
 import ReceivedPaymentsTab from './received-payments-tab';
 
 interface BillingProps {
-  locale: TLocale;
-  tab?: string;
+    locale: TLocale;
+    tab?: string;
 }
 
 export default function Billing({ locale, tab }: BillingProps) {
-  const t = useTranslations('pages.orderHistory');
-  const tReceivedPayments = useTranslations('pages.receivedPayments');
-  const sessionDTO = useSession();
-  const session = sessionDTO.data;
-  const isCoach = session?.user?.roles?.includes('coach');
+    const t = useTranslations('pages.orderHistory');
+    const tReceivedPayments = useTranslations('pages.receivedPayments');
+    const sessionDTO = useSession();
+    const session = sessionDTO.data;
+    const isCoach = session?.user?.roles?.includes('coach');
 
-  // Students see only order history without tabs
-  if (!isCoach) {
+    // Students see only order history without tabs
+    if (!isCoach) {
+        return (
+            <div className="flex flex-col space-y-5 px-30">
+                {/* Page header with translations */}
+                <div>
+                    <h1>{t('title')}</h1>
+                    <p className="text-text-primary">{t('description')}</p>
+                </div>
+
+                {/* Order history content for students (no tabs) */}
+                <OrderHistoryTab locale={locale} />
+            </div>
+        );
+    }
+
+    // Coaches see tabs: Order History and Received Payments
+    const defaultTab = tab || BillingTab.ORDER_HISTORY;
+    const tabContentClass = 'mt-10';
+
     return (
-      <div className="flex flex-col space-y-5 px-30">
-        {/* Page header with translations */}
-        <div>
-          <h1>{t('title')}</h1>
-          <p>{t('description')}</p>
+        <div className="flex flex-col space-y-5 px-30">
+            {/* Page header */}
+            <div>
+                <h1>{t('ordersAndPayments')}</h1>
+            </div>
+
+            {/* Tab navigation for coaches */}
+            <Tabs.Root defaultTab={defaultTab}>
+                <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2 mb-4">
+                    <Tabs.Trigger
+                        value={BillingTab.ORDER_HISTORY}
+                        isLast={false}
+                    >
+                        {t('title')}
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={BillingTab.RECEIVED_PAYMENTS}
+                        isLast={true}
+                    >
+                        {tReceivedPayments('title')}
+                    </Tabs.Trigger>
+                </Tabs.List>
+
+                <Tabs.Content
+                    value={BillingTab.ORDER_HISTORY}
+                    className={tabContentClass}
+                >
+                    <Suspense
+                        fallback={
+                            <DefaultLoading locale={locale} variant="minimal" />
+                        }
+                    >
+                        <OrderHistoryTab locale={locale} />
+                    </Suspense>
+                </Tabs.Content>
+
+                <Tabs.Content
+                    value={BillingTab.RECEIVED_PAYMENTS}
+                    className={tabContentClass}
+                >
+                    <Suspense
+                        fallback={
+                            <DefaultLoading locale={locale} variant="minimal" />
+                        }
+                    >
+                        <ReceivedPaymentsTab locale={locale} />
+                    </Suspense>
+                </Tabs.Content>
+            </Tabs.Root>
         </div>
-
-        {/* Order history content for students (no tabs) */}
-        <OrderHistoryTab locale={locale} />
-      </div>
     );
-  }
-
-  // Coaches see tabs: Order History and Received Payments
-  const defaultTab = tab || BillingTab.ORDER_HISTORY;
-  const tabContentClass = 'mt-10';
-
-  return (
-    <div className="flex flex-col space-y-5 px-30">
-      {/* Page header */}
-      <div>
-        <h1>{t('title')}</h1>
-        <p>{t('description')}</p>
-      </div>
-
-      {/* Tab navigation for coaches */}
-      <Tabs.Root defaultTab={defaultTab}>
-        <Tabs.Trigger value={BillingTab.ORDER_HISTORY} isLast={false}>
-          {t('transactionsTab')}
-        </Tabs.Trigger>
-        <Tabs.Trigger value={BillingTab.RECEIVED_PAYMENTS} isLast={true}>
-          {tReceivedPayments('title')}
-        </Tabs.Trigger>
-
-        <Tabs.Content value={BillingTab.ORDER_HISTORY} className={tabContentClass}>
-          <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-            <OrderHistoryTab locale={locale} />
-          </Suspense>
-        </Tabs.Content>
-
-        <Tabs.Content value={BillingTab.RECEIVED_PAYMENTS} className={tabContentClass}>
-          <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-            <ReceivedPaymentsTab locale={locale} />
-          </Suspense>
-        </Tabs.Content>
-      </Tabs.Root>
-    </div>
-  );
 }
