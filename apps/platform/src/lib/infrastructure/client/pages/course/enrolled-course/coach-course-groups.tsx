@@ -15,6 +15,7 @@ import { trpc } from '../../../trpc/cms-client';
 import { useListCourseGroupsPresenter } from '../../../hooks/use-list-course-groups-presenter';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import { useTranslations } from 'next-intl';
+import type { TListCourseGroupsUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 interface EnrolledCourseGroupsProps {
     courseSlug: string;
@@ -144,11 +145,8 @@ export default function CoachCourseGroups({
     // Enhanced load more handler with loading state
     const handleLoadMore = useCallback(() => {
         setIsLoadingMore(true);
-        // Add a small delay to show loading state
-        setTimeout(() => {
-            originalHandleLoadMore();
-            setIsLoadingMore(false);
-        }, 200);
+        originalHandleLoadMore();
+        setIsLoadingMore(false);
     }, [originalHandleLoadMore]);
 
     // Determine if user is admin/coach
