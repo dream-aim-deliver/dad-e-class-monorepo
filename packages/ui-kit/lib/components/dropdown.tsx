@@ -9,10 +9,19 @@ import { IconChevronDown } from './icons/icon-chevron-down';
 import { InputField } from './input-field';
 import { IconSearch } from './icons/icon-search';
 import { cn } from '../utils/style-utils';
+import { Button } from './button';
+import { UserAvatar } from './avatar/user-avatar';
+
+export interface DropdownOption {
+  label: React.ReactNode;
+  value: string;
+  avatarUrl?: string;
+  searchText?: string;
+}
 
 export interface DropdownProps {
-  type: 'simple' | 'choose-color' | 'multiple-choice-and-search';
-  options: { label: React.ReactNode; value: string }[];
+  type: 'simple' | 'choose-color' | 'multiple-choice-and-search' | 'single-choice-and-search-avatars' | 'multiple-choice-and-search-with-action';
+  options: DropdownOption[];
   onSelectionChange: (selected: string | string[] | null) => void;
   className?: string;
   buttonClassName?: string;
@@ -21,9 +30,16 @@ export interface DropdownProps {
     simpleText?: string;
     colorText?: string;
     multiText?: string;
+    searchTextPlaceholder?: string;
   };
   position?: 'top' | 'bottom';
   absolutePosition?: boolean;
+  action?: {
+    label: string;
+    onClick: (query: string) => void;
+    isLoading?: boolean;
+    disabled?: boolean;
+  };
 }
 
 /**
@@ -85,6 +101,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   text,
   position = 'bottom',
   absolutePosition = true,
+  action,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -97,7 +114,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const getInitialState = () => {
-    const isMultiple = type === 'multiple-choice-and-search';
+    const isMultiple = type === 'multiple-choice-and-search' || type === 'multiple-choice-and-search-with-action';
     const isValidSingleValue = !isMultiple && typeof defaultValue === 'string';
     const isValidMultipleValue = isMultiple && Array.isArray(defaultValue);
 
@@ -122,12 +139,18 @@ export const Dropdown: React.FC<DropdownProps> = ({
     setSelectedOptions(newState.selectedOptions);
   }, [defaultValue, type, options]);
 
-  const buttonText =
-    type === 'simple'
-      ? selectedLabel || text?.simpleText
-      : type === 'choose-color'
-        ? selectedLabel || text?.colorText
-        : text?.multiText;
+  let buttonText: React.ReactNode;
+  if (type === 'simple') {
+    buttonText = selectedLabel || text?.simpleText;
+  } else if (type === 'choose-color') {
+    buttonText = selectedLabel || text?.colorText;
+  } else if (type === 'multiple-choice-and-search' || type === 'multiple-choice-and-search-with-action') {
+    buttonText = text?.multiText;
+  } else if (type === 'single-choice-and-search-avatars') {
+    buttonText = selectedLabel || text?.simpleText;
+  } else {
+    buttonText = text?.multiText;
+  }
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -183,11 +206,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
     onSelectionChange(updatedSelections);
   };
 
-  const filteredOptions = options.filter((option) =>
-    typeof option.label === 'string'
-      ? option.label.toLowerCase().includes(searchQuery.toLowerCase())
-      : true,
-  );
+  const filteredOptions = options.filter((option) => {
+    const base = option.searchText ?? (typeof option.label === 'string' ? option.label : '');
+    return base.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   const dropdownClassName = cn(
     'mt-2',
@@ -316,16 +338,35 @@ export const Dropdown: React.FC<DropdownProps> = ({
               </ul>
             </div>
           )}
-          {/* MultiSelect Dropdown */}
-          {type === 'multiple-choice-and-search' && (
+          {/* MultiSelect Dropdowns */}
+          {(type === 'multiple-choice-and-search' || type === 'multiple-choice-and-search-with-action') && (
             <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">
-              <InputField
-                value={searchQuery}
-                setValue={(value: string) => setSearchQuery(value)}
-                hasLeftContent={true}
-                inputText="Search..."
-                leftContent={<IconSearch />}
-              />
+              <div className="flex items-center gap-2">
+                <div className="flex-1">
+                  <InputField
+                    value={searchQuery}
+                    setValue={(value: string) => setSearchQuery(value)}
+                    hasLeftContent={true}
+                    inputText={text?.searchTextPlaceholder || "Search..."}
+                    leftContent={<IconSearch />}
+                  />
+                </div>
+                {type === 'multiple-choice-and-search-with-action' && action && (
+                  <div onMouseDown={(e) => e.stopPropagation()}>
+                    <Button
+                      variant="primary"
+                      size="medium"
+                      className="whitespace-nowrap"
+                      text={action.label}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        action.onClick(searchQuery.trim());
+                      }}
+                      disabled={action.disabled || !searchQuery.trim() || options.some(o => (o.searchText ?? (typeof o.label === 'string' ? o.label : '')).toLowerCase().trim() === searchQuery.toLowerCase().trim())}
+                    />
+                  </div>
+                )}
+              </div>
               <ul className="flex flex-col gap-2">
                 {(searchQuery ? filteredOptions : options).map((option) => (
                   <li
@@ -364,6 +405,50 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         {option.label}
                       </span>
                     )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {/* Single select with avatars and search */}
+          {type === 'single-choice-and-search-avatars' && (
+            <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">
+              <InputField
+                value={searchQuery}
+                setValue={(value: string) => setSearchQuery(value)}
+                hasLeftContent={true}
+                inputText={text?.searchTextPlaceholder || 'Search...'}
+                leftContent={<IconSearch />}
+              />
+              <ul className="flex flex-col gap-2 max-h-70 overflow-y-auto pr-1">
+                {(searchQuery ? filteredOptions : options).map((option) => (
+                  <li key={option.value}>
+                    <button
+                      className="w-full text-left p-2 rounded-md hover:bg-base-neutral-700 flex items-center gap-3"
+                      onClick={() => handleSelect(option.value, option.label)}
+                    >
+                      <UserAvatar
+                        fullName={
+                          typeof option.label === 'string'
+                            ? option.label
+                            : (option.searchText || '')
+                        }
+                        size="small"
+                        imageUrl={option.avatarUrl}
+                      />
+                      <div
+                        ref={(el) => {
+                          if (el) {
+                            optionRefs.current.set(option.value, el);
+                          } else {
+                            optionRefs.current.delete(option.value);
+                          }
+                        }}
+                        className="truncate max-w-[220px] text-sm text-text-primary"
+                      >
+                        {option.label}
+                      </div>
+                    </button>
                   </li>
                 ))}
               </ul>
