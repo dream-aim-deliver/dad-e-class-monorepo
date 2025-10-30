@@ -63,47 +63,20 @@ export interface CMSNotificationGridProps extends isLocalAware {
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const NotificationMessageRenderer = (props: { value: string }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [isTruncated, setIsTruncated] = useState(false);
     const spanRef = useRef<HTMLSpanElement>(null);
     const message = props.value || '';
 
-    useEffect(() => {
-        const el = spanRef.current;
-        if (!el) return;
-
-        const update = () => {
-            if (!isExpanded) {
-                setIsTruncated(el.scrollWidth > el.clientWidth);
-            }
-        };
-
-        update();
-
-        const resizeObserver = new ResizeObserver(update);
-        resizeObserver.observe(el);
-
-        return () => resizeObserver.disconnect();
-    }, [message, isExpanded]);
 
     return (
         <div
             className="flex items-center text-sm my-2.5 space-x-2"
-            onClick={() => isTruncated && setIsExpanded(prev => !prev)}
-            style={{ cursor: isTruncated ? 'pointer' : 'default' }}
         >
             <span
                 ref={spanRef}
-                className={isExpanded ? 'whitespace-normal' : 'truncate'}
+                className={'truncate'}
             >
                 {message}
             </span>
-            {isTruncated &&
-                (isExpanded ? (
-                    <ChevronUp className="flex-shrink-0 w-4 h-4" />
-                ) : (
-                    <ChevronDown className="flex-shrink-0 w-4 h-4" />
-                ))}
         </div>
     );
 };
@@ -119,27 +92,27 @@ const NotificationStatusRenderer = (props: { value: boolean }) => {
     );
 };
 
-    const RecipientsRenderer =(props: { value: { name: string }[] }) => {
-        const recipients = props.value || [];
-        const count = recipients.length;
-        if (count === 0) return <span>-</span>;
-        const formatCount = (num: number): string => {
-            if (num >= 100000) {
-                const lakhs = Math.floor(num / 100000);
-                return `${lakhs}L`;
-            } else if (num >= 1000) {
-                const thousands = Math.floor(num / 1000);
-                return `${thousands}K`;
-            }
-            return num.toString();
-        };
+const RecipientsRenderer = (props: { value: { name: string }[] }) => {
+    const recipients = props.value || [];
+    const count = recipients.length;
+    if (count === 0) return <span>-</span>;
+    const formatCount = (num: number): string => {
+        if (num >= 100000) {
+            const lakhs = Math.floor(num / 100000);
+            return `${lakhs}L`;
+        } else if (num >= 1000) {
+            const thousands = Math.floor(num / 1000);
+            return `${thousands}K`;
+        }
+        return num.toString();
+    };
 
-        return (
-            <span title={`${count}`}>
-                {formatCount(count)}
-            </span>
-        );
-    }
+    return (
+        <span title={`${count}`}>
+            {formatCount(count)}
+        </span>
+    );
+}
 export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     const {
         receivedNotifications,
@@ -191,27 +164,28 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             field: 'message',
             headerName: dictionary.message,
             wrapText: true,
-            autoHeight: true,
             cellRenderer: NotificationMessageRenderer,
             filter: 'agTextColumnFilter',
+            tooltipField: 'message',
+            minWidth: 500,
         },
         {
             field: 'type',
             headerName: dictionary.type,
-            valueFormatter: (params: { value: string }) => params.value === 'received' ? dictionary.received : dictionary.sent,
+            valueFormatter: (params: { value: string }) => params.value === 'received' ? dictionary.received : dictionary.sent
         },
         {
             field: 'recipients',
             headerName: dictionary.recipientsHeader,
             cellRenderer: RecipientsRenderer,
-            hide: false,
+            hide: false
         },
         {
             field: 'timestamp',
             headerName: dictionary.dateTime,
             valueFormatter: (params: { value: string | number | Date; }) => (params.value ? formatDate(new Date(params.value)) : ''),
             filter: 'agDateColumnFilter',
-            sort: 'desc' as 'asc' | 'desc' | null,
+            sort: 'desc' as 'asc' | 'desc' | null
         },
         {
             field: 'platform',
@@ -271,36 +245,37 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
 
     return (
         <div className="flex flex-col space-y-5">
-            <div className="flex items-center justify-between mb-4 gap-2">
-            <div className="flex items-center gap-2 w-full ">
-                <InputField
-                    className="flex-1 relative h-10"
-                    setValue={setSearchTerm}
-                    value={searchTerm}
-                    inputText={dictionary.searchPlaceholder}
-                    hasLeftContent
-                    leftContent={<IconSearch />}
-                />
-                <Dropdown
-                    type="simple"
-                    options={[
-                        { value: 'all', label: dictionary.all },
-                        { value: 'received', label: dictionary.received },
-                        { value: 'sent', label: dictionary.sent },
-                    ]}
-                    onSelectionChange={(selected) => setFilterType(selected as 'all' | 'received' | 'sent')}
-                    defaultValue={filterType}
-                    text={{ simpleText: dictionary.filterByType }}
-                    className="w-40"
-                />
-            </div>
-                <div className="flex flex-row gap-2">
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-4">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center w-full">
+                    <InputField
+                        className="flex-1 relative h-10"
+                        setValue={setSearchTerm}
+                        value={searchTerm}
+                        inputText={dictionary.searchPlaceholder}
+                        hasLeftContent
+                        leftContent={<IconSearch />}
+                    />
+                    <Dropdown
+                        type="simple"
+                        options={[
+                            { value: 'all', label: dictionary.all },
+                            { value: 'received', label: dictionary.received },
+                            { value: 'sent', label: dictionary.sent },
+                        ]}
+                        onSelectionChange={(selected) => setFilterType(selected as 'all' | 'received' | 'sent')}
+                        defaultValue={filterType}
+                        text={{ simpleText: dictionary.filterByType }}
+                        className="w-full md:w-40"
+                    />
+                </div>
+                <div className="flex flex-col gap-2 md:flex-row">
                     <Button
                         variant="secondary"
                         size="medium"
                         text={dictionary.markSelectedAsRead}
                         onClick={handleMarkSelectedAsRead}
                         disabled={loading || selectedRows.filter(row => row.type === 'received').length === 0}
+                        className="w-full md:w-auto"
                     />
                     <Button
                         variant="primary"
@@ -308,6 +283,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                         text={dictionary.markAllAsRead}
                         onClick={onMarkAllRead}
                         disabled={loading}
+                        className="w-full md:w-auto"
                     />
                 </div>
             </div>
