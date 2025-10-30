@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
@@ -54,7 +54,6 @@ export default function HeroSection({
             status: "available" as const
         } as fileMetadata.TFileMetadataImage;
 
-        console.log('Hero: Computed uploadedThumbnail from value.thumbnailImage:', thumbnail);
         return thumbnail;
     }, [value.thumbnailImage]);
 
@@ -66,22 +65,22 @@ export default function HeroSection({
         return null;
     }, []);
 
-    const handleFieldChange = useCallback((field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
+    const handleFieldChange = (field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newBannerData = {
             ...value,
             [field]: fieldValue
         } as BannerType;
         onChange?.(newBannerData);
-    }, [value, onChange]);
+    };
 
-    const handleOnThumbnailChange = useCallback(async (
+    const handleOnThumbnailChange = async (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
         return onFileUpload(file, "upload_home_page_hero_image", abortSignal);
-    }, [onFileUpload]);
+    };
 
-    const handleThumbnailUploadComplete = useCallback((file: fileMetadata.TFileMetadata) => {
+    const handleThumbnailUploadComplete = (file: fileMetadata.TFileMetadata) => {
         // No local state update needed - just notify parent
         // Parent will update value prop → useMemo recomputes uploadedThumbnail
         const imageObject = {
@@ -92,46 +91,46 @@ export default function HeroSection({
             downloadUrl: file.url ?? ''
         };
         handleFieldChange('thumbnailImage', imageObject);
-    }, [handleFieldChange]);
+    };
 
-    const handleThumbnailDelete = useCallback((id: string) => {
+    const handleThumbnailDelete = (id: string) => {
         // No local state update needed - just notify parent
         handleFieldChange('thumbnailImage', null);
         onFileDelete(id);
-    }, [handleFieldChange, onFileDelete]);
+    };
 
-    const handleOnVideoChange = useCallback(async (
+    const handleOnVideoChange = async (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
         return onVideoUpload(file, abortSignal);
-    }, [onVideoUpload]);
+    };
 
-    const handleVideoUploadComplete = useCallback((file: fileMetadata.TFileMetadata) => {
+    const handleVideoUploadComplete = (file: fileMetadata.TFileMetadata) => {
         const videoFile = file as fileMetadata.TFileMetadataVideo;
         if (videoFile.id) {
             handleFieldChange('videoId', videoFile.id);
         }
 
-    }, [handleFieldChange]);
+    };
 
-    const handleVideoDelete = useCallback((id: string) => {
+    const handleVideoDelete = (id: string) => {
 
         handleFieldChange('videoId', '');
         onFileDelete(id);
-    }, [handleFieldChange, onFileDelete]);
+    };
 
-    const handleThumbnailDownload = useCallback((id: string) => {
+    const handleThumbnailDownload = (id: string) => {
         if (uploadedThumbnail?.id === id && uploadedThumbnail.url && uploadedThumbnail.name) {
             downloadFile(uploadedThumbnail.url, uploadedThumbnail.name);
         }
-    }, [uploadedThumbnail]);
+    };
 
-    const handleVideoDownload = useCallback((id: string) => {
+    const handleVideoDownload = (id: string) => {
         // if (value.videoId === id) {
         //     downloadFile(uploadedVideo.url, uploadedVideo.name);
         // }
-    }, [uploadedVideo]);
+    };
 
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
@@ -160,7 +159,7 @@ export default function HeroSection({
                         onDownload={handleThumbnailDownload}
                         onFilesChange={handleOnThumbnailChange}
                         onUploadComplete={handleThumbnailUploadComplete}
-                        locale="en"
+                        locale={locale}
                         maxSize={10}
                         uploadProgress={uploadProgress}
                     />

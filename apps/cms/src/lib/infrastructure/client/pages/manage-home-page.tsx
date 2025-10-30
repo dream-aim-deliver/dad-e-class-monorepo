@@ -296,7 +296,7 @@ export default function ManageHomepage() {
 
 					<Tabs.Content value="carousel">
 						<CarouselSection
-							value={editableHomePageData.carousel.map(item => ({ ...item, badge: item.badge ?? undefined }))}
+							value={editableHomePageData.carousel}
 							onChange={handleCarouselChange}
 							onFileUpload={handleFileUpload}
 							onFileDelete={handleFileDelete}
