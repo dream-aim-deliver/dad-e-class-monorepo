@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CMSNotificationGrid } from '../lib/components/grids/cms-notification-grid';
 import type { ReceivedNotification, SentNotification } from '../lib/components/grids/cms-notification-grid';
 import { AgGridReact } from 'ag-grid-react';
 import { NextIntlClientProvider } from 'next-intl';
 import { useRef } from 'react';
+import { CMSNotificationGrid } from '../lib/components/grids/cms-notification-grid';
 
 const mockMessages = {
   en: {
@@ -92,7 +92,7 @@ type Story = StoryObj<typeof CMSNotificationGrid>;
 const mockReceivedNotifications: ReceivedNotification[] = [
   {
     id: '1',
-    message: 'Coach Emma Richards accepted your coaching session request.',
+    message: 'Coach Emma Richards accepted your coaching session request.Coach Emma Richards accepted your coaching session request.Coach Emma Richards accepted your coaching session request.Coach Emma Richards accepted your coaching session request.',
     isRead: false,
     state: 'created',
     createdAt: new Date('2025-04-07T21:30:00.000Z'),
@@ -176,7 +176,6 @@ export const Default: Story = {
     locale: 'en',
     receivedNotifications: mockReceivedNotifications,
     sentNotifications: mockSentNotifications,
-    onNotificationClick: mockOnNotificationClick,
     onMarkAllRead: mockOnMarkAllRead,
     onMarkSelectedAsRead: mockOnMarkSelectedAsRead,
     loading: false,
@@ -188,7 +187,6 @@ export const GermanLocale: Story = {
     locale: 'de',
     receivedNotifications: mockReceivedNotifications,
     sentNotifications: mockSentNotifications,
-    onNotificationClick: mockOnNotificationClick,
     onMarkAllRead: mockOnMarkAllRead,
     onMarkSelectedAsRead: mockOnMarkSelectedAsRead,
     loading: false,
@@ -200,7 +198,6 @@ export const OnlyReceived: Story = {
     locale: 'en',
     receivedNotifications: mockReceivedNotifications,
     sentNotifications: [],
-    onNotificationClick: mockOnNotificationClick,
     onMarkAllRead: mockOnMarkAllRead,
     onMarkSelectedAsRead: mockOnMarkSelectedAsRead,
     loading: false,
@@ -212,7 +209,6 @@ export const OnlySent: Story = {
     locale: 'en',
     receivedNotifications: [],
     sentNotifications: mockSentNotifications,
-    onNotificationClick: mockOnNotificationClick,
     onMarkAllRead: mockOnMarkAllRead,
     onMarkSelectedAsRead: mockOnMarkSelectedAsRead,
     loading: false,
@@ -224,7 +220,6 @@ export const Empty: Story = {
     locale: 'en',
     receivedNotifications: [],
     sentNotifications: [],
-    onNotificationClick: mockOnNotificationClick,
     onMarkAllRead: mockOnMarkAllRead,
     onMarkSelectedAsRead: mockOnMarkSelectedAsRead,
     loading: false,
@@ -236,7 +231,6 @@ export const Loading: Story = {
     locale: 'en',
     receivedNotifications: mockReceivedNotifications,
     sentNotifications: mockSentNotifications,
-    onNotificationClick: mockOnNotificationClick,
     onMarkAllRead: mockOnMarkAllRead,
     onMarkSelectedAsRead: mockOnMarkSelectedAsRead,
     loading: true,
