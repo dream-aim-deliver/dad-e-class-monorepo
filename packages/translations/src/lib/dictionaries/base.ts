@@ -2219,6 +2219,8 @@ export const DictionarySchema = z.object({
       activeFilters: z.string(),
       clearFilters: z.string(),
       loadMore: z.string(),
+      errorMessage: z.string(),
+      defaultError: z.string(),
     }),
   }),
 });

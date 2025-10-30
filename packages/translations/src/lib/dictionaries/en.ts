@@ -2184,6 +2184,8 @@ export const EN: TDictionary = {
       activeFilters: "Active filters:",
       clearFilters: "Clear all",
       loadMore: "Load more",
+      errorMessage: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
+      defaultError: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
      },
   },
 };
