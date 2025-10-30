@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
 import { downloadFile } from '../../../utils/file-utils';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 type CoachingOnDemandType = z.infer<typeof viewModels.HomePageSchema>['coachingOnDemand'];
 
-interface CoachingDemandSectionProps {
+interface CoachingDemandSectionProps extends isLocalAware {
     value: CoachingOnDemandType;
     onChange: (value: CoachingOnDemandType) => void;
     onFileUpload: (
@@ -29,72 +30,55 @@ export default function CoachingDemandSection({
     onFileDelete,
     onFileDownload,
     uploadProgress,
+    locale
 }: CoachingDemandSectionProps) {
-    const [uploadedFiles, setUploadedFiles] = useState<{
-        desktop?: fileMetadata.TFileMetadata;
-        tablet?: fileMetadata.TFileMetadata;
-        mobile?: fileMetadata.TFileMetadata;
-    }>({});
-
-    // Sync uploadedFiles with value prop when images are loaded from server
-    // Only update if the image IDs have actually changed (not just object recreation)
-    useEffect(() => {
-        const newUploadedFiles: {
-            desktop?: fileMetadata.TFileMetadata;
-            tablet?: fileMetadata.TFileMetadata;
-            mobile?: fileMetadata.TFileMetadata;
+    const dictionary = getDictionary(locale)
+    const t = dictionary.components.cmsSections.coachingDemandSection;
+    const uploadedFiles = useMemo(() => {
+        const files: {
+            desktop?: fileMetadata.TFileMetadataImage;
+            tablet?: fileMetadata.TFileMetadataImage;
+            mobile?: fileMetadata.TFileMetadataImage;
         } = {};
-        let hasChanges = false;
 
         if (value.desktopImage) {
-            if (!uploadedFiles.desktop || uploadedFiles.desktop.id !== value.desktopImage.id) {
-                hasChanges = true;
-            }
-            newUploadedFiles.desktop = {
+            files.desktop = {
                 id: value.desktopImage.id,
                 name: value.desktopImage.name,
                 size: value.desktopImage.size,
-                category: value.desktopImage.category,
+                category: value.desktopImage.category as 'image',
                 url: value.desktopImage.downloadUrl,
-            } as fileMetadata.TFileMetadata;
-        } else if (uploadedFiles.desktop) {
-            hasChanges = true;
+                thumbnailUrl: value.desktopImage.downloadUrl,
+                status: "available" as const
+            } as fileMetadata.TFileMetadataImage;
         }
 
         if (value.tabletImage) {
-            if (!uploadedFiles.tablet || uploadedFiles.tablet.id !== value.tabletImage.id) {
-                hasChanges = true;
-            }
-            newUploadedFiles.tablet = {
+            files.tablet = {
                 id: value.tabletImage.id,
                 name: value.tabletImage.name,
                 size: value.tabletImage.size,
-                category: value.tabletImage.category,
+                category: value.tabletImage.category as 'image',
                 url: value.tabletImage.downloadUrl,
-            } as fileMetadata.TFileMetadata;
-        } else if (uploadedFiles.tablet) {
-            hasChanges = true;
+                thumbnailUrl: value.tabletImage.downloadUrl,
+                status: "available" as const
+            } as fileMetadata.TFileMetadataImage;
         }
 
         if (value.mobileImage) {
-            if (!uploadedFiles.mobile || uploadedFiles.mobile.id !== value.mobileImage.id) {
-                hasChanges = true;
-            }
-            newUploadedFiles.mobile = {
+            files.mobile = {
                 id: value.mobileImage.id,
                 name: value.mobileImage.name,
                 size: value.mobileImage.size,
-                category: value.mobileImage.category,
+                category: value.mobileImage.category as 'image',
                 url: value.mobileImage.downloadUrl,
-            } as fileMetadata.TFileMetadata;
-        } else if (uploadedFiles.mobile) {
-            hasChanges = true;
+                thumbnailUrl: value.mobileImage.downloadUrl,
+                status: "available" as const
+            } as fileMetadata.TFileMetadataImage;
         }
 
-        if (hasChanges) {
-            setUploadedFiles(newUploadedFiles);
-        }
-    }, [value.desktopImage?.id, value.tabletImage?.id, value.mobileImage?.id]);
+        return files;
+    }, [value.desktopImage, value.tabletImage, value.mobileImage]);
 
     const handleCoachingChange = (newCoachingData: CoachingOnDemandType) => {
         onChange?.(newCoachingData);
@@ -122,11 +106,6 @@ export default function CoachingDemandSection({
     };
 
     const handleUploadComplete = (deviceType: 'desktop' | 'tablet' | 'mobile', file: fileMetadata.TFileMetadata) => {
-        setUploadedFiles(prev => ({
-            ...prev,
-            [deviceType]: file
-        }));
-
         const imageField = `${deviceType}Image` as keyof CoachingOnDemandType;
         const imageObject = {
             id: file.id?.toString() ?? '',
@@ -139,12 +118,6 @@ export default function CoachingDemandSection({
     };
 
     const handleFileDelete = (deviceType: 'desktop' | 'tablet' | 'mobile', id: string) => {
-        setUploadedFiles(prev => {
-            const newFiles = { ...prev };
-            delete newFiles[deviceType];
-            return newFiles;
-        });
-
         const imageField = `${deviceType}Image` as keyof CoachingOnDemandType;
         handleFieldChange(imageField, null);
         onFileDelete(id);
@@ -159,27 +132,27 @@ export default function CoachingDemandSection({
 
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
-            <h2>Coaching On Demand Section</h2>
+            <h2>{t.heading}</h2>
 
             <div className="flex flex-col gap-6 transition-all duration-300 ease-in-out">
                 <div className="flex flex-col gap-4">
                     <TextAreaInput
-                        label="Title"
+                        label={t.titleLabel}
                         value={value?.title || ''}
                         setValue={(v) => handleFieldChange('title', v)}
-                        placeholder="Enter the coaching section title"
+                        placeholder={t.titlePlaceholder}
                     />
 
                     <TextAreaInput
-                        label="Description"
+                        label={t.descriptionLabel}
                         value={value?.description || ''}
                         setValue={(v) => handleFieldChange('description', v)}
-                        placeholder="Enter the coaching section description"
+                        placeholder={t.descriptionPlaceholder}
                     />
 
                     {/* Desktop Image Upload */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm text-text-secondary">Desktop Image</label>
+                        <label className="text-sm text-text-secondary">{t.desktopImageLabel}</label>
                         <Uploader
                             type="single"
                             variant="image"
@@ -196,7 +169,7 @@ export default function CoachingDemandSection({
 
                     {/* Tablet Image Upload */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm text-text-secondary">Tablet Image</label>
+                        <label className="text-sm text-text-secondary">{t.tabletImageLabel}</label>
                         <Uploader
                             type="single"
                             variant="image"
@@ -213,7 +186,7 @@ export default function CoachingDemandSection({
 
                     {/* Mobile Image Upload */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm text-text-secondary">Mobile Image</label>
+                        <label className="text-sm text-text-secondary">{t.mobileImageLabel}</label>
                         <Uploader
                             type="single"
                             variant="image"
@@ -222,7 +195,7 @@ export default function CoachingDemandSection({
                             onDownload={handleFileDownload('mobile')}
                             onFilesChange={(file, abortSignal) => handleOnFilesChange('mobile', file, abortSignal)}
                             onUploadComplete={(file) => handleUploadComplete('mobile', file)}
-                            locale="en"
+                            locale={locale}
                             maxSize={10}
                             uploadProgress={uploadProgress}
                         />

@@ -7,7 +7,7 @@
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=5664-69581&t=GjW3V89mle6BrGgh-4
 
 import { trpc } from '../trpc/cms-client';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import {
 	DefaultError,
@@ -19,7 +19,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
@@ -28,6 +28,28 @@ import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
 import { useHomePageVideoUpload } from './common/hooks/use-homepage-video-upload';
 import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
 
+// Static default data - moved outside component for better performance
+const DEFAULT_HOME_PAGE_DATA: viewModels.TGetHomePageSuccess = {
+	banner: {
+		title: '',
+		description: '',
+		video: null,
+		thumbnailImage: null,
+	},
+	carousel: [],
+	coachingOnDemand: {
+		title: '',
+		description: '',
+		desktopImage: null,
+		tabletImage: null,
+		mobileImage: null,
+	},
+	accordion: {
+		title: '',
+		showNumbers: true,
+		items: [],
+	},
+} as const;
 
 /**
  * ManageHomepage component for CMS
@@ -41,6 +63,9 @@ export default function ManageHomepage() {
 	// App locale - used for UI elements
 	const appLocale = useLocale() as TLocale;
 
+	// Translations for this page
+	const t = useTranslations('pages.manageHomePage');
+
 	// Platform context
 	const platformContext = useRequiredPlatformLocale();
 	const contentLocale = useContentLocale();
@@ -53,7 +78,7 @@ export default function ManageHomepage() {
 
 	const { presenter: homePagePresenter } = useGetHomePagePresenter(setHomePageViewModel);
 
-	// Present data on mount and when response changes
+	// Present the data when it changes (moved to useEffect to avoid side effects during render)
 	useEffect(() => {
 		// @ts-ignore - Presenter doesn't handle progress states
 		homePagePresenter.present(getHomePageResponse, homePageViewModel);
@@ -64,89 +89,87 @@ export default function ManageHomepage() {
 	const [videoUploadProgress, setVideoUploadProgress] = useState<number | undefined>(undefined);
 
 
-	const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
-	const [saveMessage, setSaveMessage] = useState<string | null>(null);
+	const [saveState, setSaveState] = useState<{
+		status: 'idle' | 'success' | 'error';
+		message: string | null;
+	}>({ status: 'idle', message: null });
+
 	const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
 	const videoUpload = useHomePageVideoUpload(setVideoUploadProgress);
 
-	// Create default homepage data when it doesn't exist (for upsert functionality)
-	const defaultHomePageData: viewModels.TGetHomePageSuccess = {
-		banner: {
-			title: '',
-			description: '',
-			video: {
-				name: '',
-				thumbnailUrl: '',
-				id: '',
-				size: 0,
-				downloadUrl: '',
-				category: "video",
-				playbackId: ''
-			},
-			thumbnailImage: null,
-		},
-		carousel: [],
-		coachingOnDemand: {
-			title: '',
-			description: '',
-			desktopImage: null,
-			tabletImage: null,
-			mobileImage: null,
-		},
-		accordion: {
-			title: '',
-			showNumbers: true,
-			items: [],
-		},
-	};
-
-	// Use actual data if available (mode is 'default'), otherwise use default
-	const initialHomePageData = homePageViewModel?.mode === 'default'
-		? homePageViewModel.data
-		: defaultHomePageData;
+	const initialHomePageData = useMemo(() =>
+		homePageViewModel?.mode === 'default'
+			? homePageViewModel.data
+			: DEFAULT_HOME_PAGE_DATA,
+		[homePageViewModel]
+	);
 
 	const formState = useFormState<viewModels.TGetHomePageSuccess>(initialHomePageData, { enableReloadProtection: true });
-	const isInitializedRef = useRef(false);
+	const { setValue: setFormValue } = formState;
+
+
+	useEffect(() => {
+		if (homePageViewModel?.mode === 'default') {
+			setFormValue(homePageViewModel.data);
+		}
+	}, [homePageViewModel?.mode, homePageViewModel?.data, setFormValue]);
+
+	// Define all callbacks before any conditional returns (Rules of Hooks)
+	const handleBannerChange = (banner: viewModels.TGetHomePageSuccess['banner']) => {
+		console.log('Banner changed:', banner);
+		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => ({
+			...prev!,
+			banner,
+		}));
+	};
+
+	const handleCarouselChange = (carousel: viewModels.TGetHomePageSuccess['carousel']) => {
+		console.log('Carousel changed:', carousel);
+		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => ({
+			...prev!,
+			carousel,
+		}));
+	};
+
+	const handleCoachingDemandChange = (coachingOnDemand: viewModels.TGetHomePageSuccess['coachingOnDemand']) => {
+		console.log('Coaching On Demand changed:', coachingOnDemand);
+		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => ({
+			...prev!,
+			coachingOnDemand,
+		}));
+	};
+
+	const handleAccordionChange = (accordion: viewModels.TGetHomePageSuccess['accordion']) => {
+		console.log(accordion);
+		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => ({
+			...prev!,
+			accordion,
+		}));
+	};
 
 	const saveHomePageMutation = trpc.saveHomePage.useMutation({
 		onSuccess: (data) => {
 			if (data.success) {
-				setSaveStatus('success');
-				setSaveMessage('Homepage saved successfully!');
+				setSaveState({ status: 'success', message: t('savedBanner') });
 				formState.markAsSaved();
-				// Don't refetch immediately after save to prevent flickering
-				// The form already has the correct data
-				// refetchHomePage();
 			} else {
-				setSaveStatus('error');
-				setSaveMessage('Failed to save homepage');
+				setSaveState({ status: 'error', message: t('failedBanner') });
 			}
 		},
 		onError: (error) => {
-			setSaveStatus('error');
-			setSaveMessage(error.message ?? 'An error occurred while saving');
+			setSaveState({ status: 'error', message: error.message ?? t('failedBanner') });
 			console.error('Error saving homepage:', error);
 		},
 
 	});
 
-	// Update form state when homepage data loads ONLY on initial load
-	// Don't reset form after save to prevent showing stale data
-	useEffect(() => {
-		if (homePageViewModel?.mode === 'default' && !isInitializedRef.current) {
-			formState.setValue(homePageViewModel.data);
-			isInitializedRef.current = true;
-		}
-	}, [homePageViewModel?.mode]);
-
-	// Loading state
+	// All hooks must be called before any conditional returns
 	if (!homePageViewModel) {
 		return <DefaultLoading locale={appLocale} variant="minimal" />;
 	}
 
 	// Error handling - only kaboom errors should prevent rendering
 	// Note: 'not-found' is acceptable since save mutation supports upsert
-
 	if (homePageViewModel.mode === 'kaboom') {
 		return (
 			<DefaultError
@@ -158,40 +181,15 @@ export default function ManageHomepage() {
 		);
 	}
 
-	// Single state for all homepage data
-	const editableHomePageData: viewModels.TGetHomePageSuccess = formState.value!;
+	// Single state for all homepage data - ensure it's defined before proceeding
+	if (!formState.value) {
+		return <DefaultLoading locale={appLocale} variant="minimal" />;
+	}
 
-	const handleBannerChange = (banner: typeof editableHomePageData.banner) => {
-		formState.setValue({
-			...editableHomePageData,
-			banner,
-		});
-	};
-
-	const handleCarouselChange = (carousel: typeof editableHomePageData.carousel) => {
-		formState.setValue({
-			...editableHomePageData,
-			carousel,
-		});
-	};
-
-	const handleCoachingDemandChange = (coachingOnDemand: typeof editableHomePageData.coachingOnDemand) => {
-		formState.setValue({
-			...editableHomePageData,
-			coachingOnDemand,
-		});
-	};
-
-	const handleAccordionChange = (accordion: typeof editableHomePageData.accordion) => {
-		formState.setValue({
-			...editableHomePageData,
-			accordion,
-		});
-	};
+	const editableHomePageData: viewModels.TGetHomePageSuccess = formState.value;
 
 	const handleSaveHomePage = () => {
-		setSaveStatus('idle');
-		setSaveMessage(null);
+		setSaveState({ status: 'idle', message: null });
 
 		saveHomePageMutation.mutate({
 			banner: {
@@ -234,7 +232,7 @@ export default function ManageHomepage() {
 			<div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6 rounded-lg shadow-lg">
 				<div className="flex justify-between items-center">
 					<div>
-						<h1 className="text-3xl font-bold mb-2">Manage Homepage</h1>
+						<h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
 						<p className="text-lg opacity-90">
 							Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
 						</p>
@@ -242,26 +240,25 @@ export default function ManageHomepage() {
 					<Button
 						variant="primary"
 						size="medium"
-						text="Save Changes"
+						text={t('save')}
 						onClick={handleSaveHomePage}
-						disabled={saveHomePageMutation.isPending}
+						disabled={saveHomePageMutation.isPending || !formState.isDirty}
 
 					/>
 				</div>
 			</div>
 
 			{saveHomePageMutation.isPending && (
-				<Banner style="success" title="Saving homepage changes..." />
-
+				<Banner style="success" title={t('savingBanner')} />
 
 			)}
-			{saveStatus === 'success' && saveMessage && (
-				<Banner style="success" title={saveMessage} />
+			{saveState.status === 'success' && saveState.message && (
+				<Banner style="success" title={saveState.message} />
 			)
 			}
 			{
-				saveStatus === 'error' && saveMessage && (
-					<Banner style="error" title={saveMessage} />
+				saveState.status === 'error' && saveState.message && (
+					<Banner style="error" title={saveState.message} />
 				)
 			}
 
@@ -269,16 +266,16 @@ export default function ManageHomepage() {
 			<Tabs.Root defaultTab="hero" className="w-full">
 				<Tabs.List variant="default">
 					<Tabs.Trigger value="hero" isLast={false}>
-						Hero Section
+						{t('tabs.hero')}
 					</Tabs.Trigger>
 					<Tabs.Trigger value="carousel" isLast={false}>
-						Carousel
+						{t('tabs.carousel')}
 					</Tabs.Trigger>
 					<Tabs.Trigger value="coaching" isLast={false}>
-						Coaching On Demand
+						{t('tabs.coaching')}
 					</Tabs.Trigger>
 					<Tabs.Trigger value="accordion" isLast={true}>
-						Accordion
+						{t('tabs.accordion')}
 					</Tabs.Trigger>
 				</Tabs.List>
 
@@ -293,6 +290,7 @@ export default function ManageHomepage() {
 							onFileDownload={handleFileDownload}
 							uploadProgress={uploadProgress}
 							videoUploadProgress={videoUploadProgress}
+							locale={appLocale}
 						/>
 					</Tabs.Content>
 
@@ -305,6 +303,7 @@ export default function ManageHomepage() {
 							onFileDownload={handleFileDownload}
 							uploadProgress={uploadProgress}
 							uploadType='upload_home_page_carousel_item_image'
+							locale={appLocale}
 						/>
 					</Tabs.Content>
 
@@ -316,6 +315,7 @@ export default function ManageHomepage() {
 							onFileDelete={handleFileDelete}
 							onFileDownload={handleFileDownload}
 							uploadProgress={uploadProgress}
+							locale={appLocale}
 						/>
 					</Tabs.Content>
 
@@ -327,6 +327,7 @@ export default function ManageHomepage() {
 							onFileDelete={handleFileDelete}
 							onFileDownload={handleFileDownload}
 							uploadProgress={uploadProgress}
+							locale={appLocale}
 						/>
 					</Tabs.Content>
 				</div>

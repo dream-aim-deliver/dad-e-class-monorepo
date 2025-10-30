@@ -6,17 +6,20 @@ import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { downloadFile } from '../../utils/file-utils';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 interface BannerItemType {
     title: string;
     description: string;
     imageUrl: string | null;
     imageId: number | null;
+    imageName?: string | null;
+    imageSize?: number | null;
     buttonText: string;
     buttonUrl: string;
 }
 
-interface BannerSectionProps {
+interface BannerSectionProps extends isLocalAware {
     value: BannerItemType;
     onChange: (value: BannerItemType) => void;
     onFileUpload: (
@@ -38,7 +41,10 @@ export default function BannerSection({
     onFileDownload,
     onImageUploadComplete,
     uploadProgress,
+    locale
 }: BannerSectionProps) {
+    const dictionary = getDictionary(locale);
+    const t = dictionary.components.cmsSections.bannerSection;
     const [uploadedFile, setUploadedFile] = useState<fileMetadata.TFileMetadata | null>(null);
 
     // Sync uploadedFile with value prop when image is loaded from server
@@ -50,17 +56,18 @@ export default function BannerSection({
         if (currentImageUrl && currentImageUrl !== uploadedFileUrl) {
             // URL changed or file didn't exist - update state
             setUploadedFile({
-                id: '', // ID is not available from imageUrl alone
-                name: currentImageUrl.split('/').pop() || 'banner-image',
-                size: 0,
+                id: value.imageId?.toString() || '',
+                name: value.imageName || currentImageUrl.split('/').pop() || 'banner-image',
+                size: value.imageSize || 0,
                 category: 'image',
                 url: currentImageUrl,
+                thumbnailUrl: currentImageUrl,
             } as fileMetadata.TFileMetadata);
         } else if (!currentImageUrl && uploadedFile) {
             // Image was removed
             setUploadedFile(null);
         }
-    }, [value.imageUrl]);
+    }, [value.imageUrl, value.imageName, value.imageSize, value.imageId, uploadedFile]);
 
     const handleBannerChange = (newBannerData: BannerItemType) => {
         onChange?.(newBannerData);
@@ -83,14 +90,30 @@ export default function BannerSection({
 
     const handleUploadComplete = (file: fileMetadata.TFileMetadata) => {
         setUploadedFile(file);
-        handleFieldChange('imageUrl', file.url as string | null);
+        // Update all image fields including name and size
+        const newBannerData = {
+            ...value,
+            imageUrl: file.url as string | null,
+            imageId: file.id ? Number(file.id) : null,
+            imageName: file.name || null,
+            imageSize: file.size || null,
+        };
+        onChange?.(newBannerData);
         // Notify parent component of the file ID
         onImageUploadComplete?.(file.id as string);
     };
 
     const handleFileDelete = (id: string) => {
         setUploadedFile(null);
-        handleFieldChange('imageUrl', null);
+        // Clear all image fields
+        const newBannerData = {
+            ...value,
+            imageUrl: null,
+            imageId: null,
+            imageName: null,
+            imageSize: null,
+        };
+        onChange?.(newBannerData);
         onFileDelete(id);
         // Notify parent that image was deleted
         onImageUploadComplete?.(null as any);
@@ -105,7 +128,7 @@ export default function BannerSection({
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
             <div className="flex justify-between items-center">
-                <h3>Banner Section</h3>
+                <h3>{t.heading}</h3>
             </div>
 
             <div className="flex flex-col gap-6 transition-all duration-300 ease-in-out">
@@ -116,7 +139,7 @@ export default function BannerSection({
 
                     <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
                         <div className="flex flex-col gap-2 w-full">
-                            <label className="text-sm text-text-secondary">Upload Banner Image</label>
+                            <label className="text-sm text-text-secondary">{t.uploadBannerImageLabel}</label>
                             <Uploader
                                 type="single"
                                 variant="image"
@@ -132,34 +155,34 @@ export default function BannerSection({
                         </div>
 
                         <TextInput
-                            label="Title"
+                            label={t.titleLabel}
                             inputField={{
-                                inputText: "Enter the title",
+                                inputText: t.titlePlaceholder,
                                 value: value.title,
                                 setValue: (v) => handleFieldChange('title', v)
                             }}
                         />
 
                         <TextAreaInput
-                            label="Description"
+                            label={t.descriptionLabel}
                             value={value.description}
                             setValue={(v) => handleFieldChange('description', v)}
-                            placeholder="Enter the description"
+                            placeholder={t.descriptionPlaceholder}
                         />
 
                         <TextInput
-                            label="Button Text"
+                            label={t.buttonTextLabel}
                             inputField={{
-                                inputText: "Enter button text",
+                                inputText: t.buttonTextPlaceholder,
                                 value: value.buttonText,
                                 setValue: (v) => handleFieldChange('buttonText', v)
                             }}
                         />
 
                         <TextInput
-                            label="Button Link"
+                            label={t.buttonLinkLabel}
                             inputField={{
-                                inputText: "Enter button URL",
+                                inputText: t.buttonLinkPlaceholder,
                                 value: value.buttonUrl,
                                 setValue: (v) => handleFieldChange('buttonUrl', v)
                             }}

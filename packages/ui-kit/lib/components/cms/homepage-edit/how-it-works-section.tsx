@@ -6,10 +6,11 @@ import { CheckBox } from '../../checkbox';
 import { AccordionBuilder, AccordionBuilderItem } from '../../accordion-builder';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 type AccordionType = z.infer<typeof viewModels.HomePageSchema>['accordion'];
 
-interface HowItWorksSectionProps {
+interface HowItWorksSectionProps extends isLocalAware {
     value: AccordionType;
     onChange: (value: AccordionType) => void;
     onFileUpload: (
@@ -29,7 +30,10 @@ export default function HowItWorksSection({
     onFileDelete,
     onFileDownload,
     uploadProgress,
+    locale
 }: HowItWorksSectionProps) {
+    const dictionary = getDictionary(locale);
+    const t = dictionary.components.cmsSections.howItWorksSection;
     const handleAccordionChange = (newAccordionData: AccordionType) => {
         onChange?.(newAccordionData);
     };
@@ -128,20 +132,20 @@ export default function HowItWorksSection({
 
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
-            <h2>How It Works Section</h2>
+            <h2>{t.heading}</h2>
 
             <div className="flex flex-col gap-4">
                 <TextAreaInput
-                    label="Title"
+                    label={t.titleLabel}
                     value={value?.title || ''}
                     setValue={(v) => handleFieldChange('title', v)}
-                    placeholder="Enter the how it works section title"
+                    placeholder={t.titlePlaceholder}
                 />
 
                 <CheckBox
                     name="showNumbers"
                     value="showNumbers"
-                    label="Show Numbers"
+                    label={t.showNumbersLabel}
                     className="text-base-white"
                     checked={value?.showNumbers ?? true}
                     withText={true}
