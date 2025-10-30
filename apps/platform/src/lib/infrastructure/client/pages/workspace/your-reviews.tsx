@@ -13,9 +13,9 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { trpc } from '../../trpc/cms-client';
-import { viewModels, useCaseModels, role } from '@maany_shr/e-class-models';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import { useListCoachReviewsPresenter } from '../../hooks/use-list-coach-reviews-presenter';
-import { TListCoachReviewsResponse } from '@dream-aim-deliver/e-class-cms-rest';
+import { TEClassRole } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     Breadcrumbs,
     Button,
@@ -37,7 +37,7 @@ import { useSession } from 'next-auth/react';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 
 interface YourReviewsProps {
-    roles: role.TRole[];
+    roles: TEClassRole[];
 }
 
 type SortOption = 'most-recent' | 'oldest' | 'best' | 'worst';
@@ -84,9 +84,10 @@ export default function YourReviews({ roles }: YourReviewsProps) {
     }, [coachReviewsResponse, presenter, coachReviewsViewModel]);
 
     // Extract reviews data - safe access before early returns
-    const reviewsData = coachReviewsViewModel?.mode === 'default'
-        ? (coachReviewsViewModel.data as viewModels.TListCoachReviewsSuccess)
-        : null;
+    const reviewsData =
+        coachReviewsViewModel?.mode === 'default'
+            ? (coachReviewsViewModel.data as viewModels.TListCoachReviewsSuccess)
+            : null;
     const allReviews = reviewsData?.reviews || [];
 
     // Apply filters and sorting using useMemo
@@ -95,17 +96,22 @@ export default function YourReviews({ roles }: YourReviewsProps) {
 
         // Filter by rating
         if (appliedFilters.minRating !== undefined) {
-            filtered = filtered.filter((review) => review.rating >= appliedFilters.minRating!);
+            filtered = filtered.filter(
+                (review) => review.rating >= appliedFilters.minRating!,
+            );
         }
         if (appliedFilters.maxRating !== undefined) {
-            filtered = filtered.filter((review) => review.rating <= appliedFilters.maxRating!);
+            filtered = filtered.filter(
+                (review) => review.rating <= appliedFilters.maxRating!,
+            );
         }
 
         // Filter by student name
         if (appliedFilters.studentName && appliedFilters.studentName.trim()) {
             const searchTerm = appliedFilters.studentName.toLowerCase().trim();
             filtered = filtered.filter((review) => {
-                const fullName = `${review.student.name} ${review.student.surname}`.toLowerCase();
+                const fullName =
+                    `${review.student.name} ${review.student.surname}`.toLowerCase();
                 return fullName.includes(searchTerm);
             });
         }
@@ -114,7 +120,7 @@ export default function YourReviews({ roles }: YourReviewsProps) {
         if (appliedFilters.courseName && appliedFilters.courseName.trim()) {
             const searchTerm = appliedFilters.courseName.toLowerCase().trim();
             filtered = filtered.filter((review) =>
-                review.course.title.toLowerCase().includes(searchTerm)
+                review.course.title.toLowerCase().includes(searchTerm),
             );
         }
 
@@ -139,15 +145,23 @@ export default function YourReviews({ roles }: YourReviewsProps) {
         switch (sortBy) {
             case 'most-recent':
                 sorted.sort((a, b) => {
-                    const dateA = new Date(a.coachingSession.startTime).getTime();
-                    const dateB = new Date(b.coachingSession.startTime).getTime();
+                    const dateA = new Date(
+                        a.coachingSession.startTime,
+                    ).getTime();
+                    const dateB = new Date(
+                        b.coachingSession.startTime,
+                    ).getTime();
                     return dateB - dateA; // Newest first
                 });
                 break;
             case 'oldest':
                 sorted.sort((a, b) => {
-                    const dateA = new Date(a.coachingSession.startTime).getTime();
-                    const dateB = new Date(b.coachingSession.startTime).getTime();
+                    const dateA = new Date(
+                        a.coachingSession.startTime,
+                    ).getTime();
+                    const dateB = new Date(
+                        b.coachingSession.startTime,
+                    ).getTime();
                     return dateA - dateB; // Oldest first
                 });
                 break;
@@ -170,8 +184,8 @@ export default function YourReviews({ roles }: YourReviewsProps) {
         handleLoadMore,
     } = useClientSidePagination({
         items: sortedAndFilteredReviews,
-        itemsPerPage: 8,      // 4 cards x 2 lines for smaller screens
-        itemsPerPage2xl: 8,   // 4 cards x 2 lines for 2xl screens
+        itemsPerPage: 8, // 4 cards x 2 lines for smaller screens
+        itemsPerPage2xl: 8, // 4 cards x 2 lines for 2xl screens
     });
 
     // Loading state
@@ -181,14 +195,7 @@ export default function YourReviews({ roles }: YourReviewsProps) {
 
     // Error handling - kaboom (hard error)
     if (coachReviewsViewModel.mode === 'kaboom') {
-        return (
-            <DefaultError
-                locale={locale}
-                description={
-                    "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support."
-                }
-            />
-        );
+        return <DefaultError locale={locale} description={t('defaultError')} />;
     }
 
     // Error handling - not found
@@ -200,8 +207,10 @@ export default function YourReviews({ roles }: YourReviewsProps) {
     const hasActiveFilters =
         appliedFilters.minRating !== undefined ||
         appliedFilters.maxRating !== undefined ||
-        (appliedFilters.studentName && appliedFilters.studentName.trim() !== '') ||
-        (appliedFilters.courseName && appliedFilters.courseName.trim() !== '') ||
+        (appliedFilters.studentName &&
+            appliedFilters.studentName.trim() !== '') ||
+        (appliedFilters.courseName &&
+            appliedFilters.courseName.trim() !== '') ||
         appliedFilters.dateAfter ||
         appliedFilters.dateBefore;
 
@@ -226,10 +235,8 @@ export default function YourReviews({ roles }: YourReviewsProps) {
             onClick: () => router.push('/'),
         },
         {
-            label: breadcrumbsTranslations('workspace'),
-            onClick: () => {
-                // TODO: Implement navigation to workspace
-            },
+            label: breadcrumbsTranslations('dashboard'),
+            onClick: () => router.push('/workspace/dashboard'),
         },
         {
             label: breadcrumbsTranslations('yourReviews'),
@@ -259,13 +266,15 @@ export default function YourReviews({ roles }: YourReviewsProps) {
                     )}
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                    <p className='text-text-primary text-sm'> {t('sortBy')} </p>
+                    <p className="text-text-primary text-sm"> {t('sortBy')} </p>
                     <div className="min-w-[200px]">
                         <Dropdown
                             type="simple"
                             options={sortOptions}
-                            onSelectionChange={(selected) => setSortBy(selected as SortOption)}
-                            text={{ simpleText: t('sortBy')}}
+                            onSelectionChange={(selected) =>
+                                setSortBy(selected as SortOption)
+                            }
+                            text={{ simpleText: t('sortBy') }}
                             defaultValue={sortBy}
                         />
                     </div>
@@ -292,7 +301,9 @@ export default function YourReviews({ roles }: YourReviewsProps) {
                                     <ReviewFilterModal
                                         locale={locale}
                                         onApplyFilters={handleApplyFilters}
-                                        onClose={() => setIsFilterModalOpen(false)}
+                                        onClose={() =>
+                                            setIsFilterModalOpen(false)
+                                        }
                                         initialFilters={appliedFilters}
                                     />
                                 </DialogBody>
@@ -306,8 +317,10 @@ export default function YourReviews({ roles }: YourReviewsProps) {
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
                     <p className="text-text-primary text-md">
                         {hasActiveFilters
-                            ? t('noReviewsFiltered') || 'No reviews match your filters.'
-                            : t('noReviews') || 'No reviews yet. Reviews from your coaching sessions will appear here.'}
+                            ? t('noReviewsFiltered') ||
+                              'No reviews match your filters.'
+                            : t('noReviews') ||
+                              'No reviews yet. Reviews from your coaching sessions will appear here.'}
                     </p>
                 </div>
             ) : (
@@ -319,13 +332,26 @@ export default function YourReviews({ roles }: YourReviewsProps) {
                                 locale={locale}
                                 rating={review.rating}
                                 reviewerName={`${review.student.name} ${review.student.surname}`}
-                                reviewerAvatar={review.student.avatarImage?.downloadUrl}
+                                reviewerAvatar={
+                                    review.student.avatarImage?.downloadUrl
+                                }
                                 reviewText={review.notes || ''}
-                                workshopTitle={review.coachingSession.coachingOfferingTitle}
-                                date={new Date(review.coachingSession.startTime)}
-                                time={new Date(review.coachingSession.startTime).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
+                                workshopTitle={
+                                    review.coachingSession.coachingOfferingTitle
+                                }
+                                date={
+                                    new Date(review.coachingSession.startTime)
+                                }
+                                time={new Date(
+                                    review.coachingSession.startTime,
+                                ).toLocaleTimeString(locale, {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                })}
                                 courseTitle={review.course?.title || ''}
-                                courseImage={review.course?.image?.downloadUrl || ''}
+                                courseImage={
+                                    review.course?.image?.downloadUrl || ''
+                                }
                             />
                         ))}
                     </CardListLayout>

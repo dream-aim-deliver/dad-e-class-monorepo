@@ -11,9 +11,11 @@ import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import YourReviews from '../../../client/pages/workspace/your-reviews';
 import { HydrateClient, prefetch, trpc } from '../../config/trpc/cms-server';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
-export default async function YourReviewsServerComponent() {
+export default async function YourReviewsServerComponent({ locale }: { locale: TLocale }) {
     const session = await getSession();
+    const dictionary = getDictionary(locale);
 
     if (!session || !session.user || !session.user.name || !session.user.roles) {
         redirect('/auth/login');
@@ -31,9 +33,8 @@ export default async function YourReviewsServerComponent() {
             ),
         ]);
     } catch (error) {
-        // TODO: fill in localized error message
         throw new Error(
-            "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
+            dictionary.pages.yourReviews.errorMessage,
         );
     }
 

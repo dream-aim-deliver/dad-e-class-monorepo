@@ -2,15 +2,18 @@
 // Notion: https://www.notion.so/Reviews-Coach-Workspace-bd0adcab71d04c1abc9a71852b879d9c
 // TSK: TSK-1451
 
+import { TLocale } from '@maany_shr/e-class-translations';
 import YourReviewsServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/your-reviews-rsc';
 
 export default async function YourReviewsPage({
+    params: paramsPromise,
     searchParams: searchParamsPromise,
 }: {
+    params: Promise<{ locale: TLocale }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const params = await paramsPromise;
     const searchParams = await searchParamsPromise;
-    // TODO: handle searchParams if needed
 
-    return <YourReviewsServerComponent />;
+    return <YourReviewsServerComponent locale={params.locale} />;
 }

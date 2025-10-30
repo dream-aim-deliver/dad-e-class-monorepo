@@ -2187,6 +2187,8 @@ export const DE: TDictionary = {
       activeFilters: "Aktive Filter:",
       clearFilters: "Alle löschen",
       loadMore: "Mehr laden",
+      errorMessage: "Die Bewertungen der Coaching-Sitzung konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
+      defaultError: "Die Bewertungen der Coaching-Sitzungen konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
      },
   },
 };
