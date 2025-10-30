@@ -120,7 +120,7 @@ export default function YourReviews({ roles }: YourReviewsProps) {
         if (appliedFilters.courseName && appliedFilters.courseName.trim()) {
             const searchTerm = appliedFilters.courseName.toLowerCase().trim();
             filtered = filtered.filter((review) =>
-                review.course.title.toLowerCase().includes(searchTerm),
+                review.course?.title?.toLowerCase().includes(searchTerm),
             );
         }
 
