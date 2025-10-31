@@ -8,7 +8,7 @@ import { Button } from '../button';
 import { UserGridFilterModal, UserFilterModel } from './user-grid-filter-modal';
 import { profile } from '@maany_shr/e-class-models';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
-import { dictionaryFormat, getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { IconAdmin } from '../icons/icon-admin';
 import { IconCourseCreator } from '../icons/icon-course-creator';
@@ -302,10 +302,9 @@ export const UserGrid = (props: UserGridProps) => {
         }
 
         if (props.onSendNotifications) {
-            alert(dictionaryFormat(dictionary.sendingNotifications, { count: selectedUserIds.length }));
             props.onSendNotifications(selectedUserIds);
         }
-    }, [getSelectedUserIds, props.onSendNotifications]);
+    }, [getSelectedUserIds, props.onSendNotifications, dictionary]);
 
     // Export current view to CSV
     const handleExportCurrentView = useCallback(() => {
@@ -569,6 +568,7 @@ export const UserGrid = (props: UserGridProps) => {
                     locale={props.locale}
                     columnDefs={columnDefs}
                     rowData={roleUsers}
+                    getRowId={(params) => String(params.data.userId)}
                     enableCellTextSelection={true}
                     onSortChanged={props.onSortChanged}
                     pagination={true}
