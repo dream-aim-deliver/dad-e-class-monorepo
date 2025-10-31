@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    CreateCoachingSessionReviewUseCaseResponseSchema,
+    TCreateCoachingSessionReviewUseCaseResponse,
+    TCreateCoachingSessionReviewErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TCreateCoachingSessionReviewPresenterUtilities = {};
 
 export const CreateCoachingSessionReviewResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TCreateCoachingSessionReviewUseCaseResponse,
+        TCreateCoachingSessionReviewUseCaseResponse,
         viewModels.TCreateCoachingSessionReviewViewModel,
         TCreateCoachingSessionReviewPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const CreateCoachingSessionReviewResponseMiddleware =
 type TCreateCoachingSessionReviewResponseMiddleware = typeof CreateCoachingSessionReviewResponseMiddleware;
 
 export default class CreateCoachingSessionReviewPresenter extends BasePresenter<
-    useCaseModels.TCreateCoachingSessionReviewUseCaseResponse,
+    TCreateCoachingSessionReviewUseCaseResponse,
     viewModels.TCreateCoachingSessionReviewViewModel,
     TCreateCoachingSessionReviewPresenterUtilities,
     TCreateCoachingSessionReviewResponseMiddleware
@@ -29,7 +34,7 @@ export default class CreateCoachingSessionReviewPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.CreateCoachingSessionReviewUseCaseResponseSchema,
+                responseModel: CreateCoachingSessionReviewUseCaseResponseSchema,
                 viewModel: viewModels.CreateCoachingSessionReviewViewModelSchema
             },
             middleware: CreateCoachingSessionReviewResponseMiddleware,
@@ -40,7 +45,7 @@ export default class CreateCoachingSessionReviewPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TCreateCoachingSessionReviewUseCaseResponse,
+            TCreateCoachingSessionReviewUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCreateCoachingSessionReviewViewModel {
@@ -54,7 +59,7 @@ export default class CreateCoachingSessionReviewPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TCreateCoachingSessionReviewUseCaseErrorResponse,
+            TCreateCoachingSessionReviewErrorResponse,
             TCreateCoachingSessionReviewResponseMiddleware
         >,
     ): viewModels.TCreateCoachingSessionReviewViewModel {

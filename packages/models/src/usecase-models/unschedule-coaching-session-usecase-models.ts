@@ -1,34 +1,11 @@
-import { z } from 'zod';
-import {
-    BaseErrorDiscriminatedUnionSchemaFactory,
-    BaseStatusDiscriminatedUnionSchemaFactory,
-    BaseSuccessSchemaFactory
-} from '@dream-aim-deliver/dad-cats';
-
-export const UnscheduleCoachingSessionRequestSchema = z.object({
-    coachingSessionId: z.number(),
-});
-export type TUnscheduleCoachingSessionRequest = z.infer<typeof UnscheduleCoachingSessionRequestSchema>;
-
-const UnscheduledCoachingSessionSchema = z.object({
-    id: z.number(),
-    coachingOfferingTitle: z.string(),
-    coachingOfferingDuration: z.number(),  // minutes
-    status: z.literal('unscheduled'),
-});
-
-export const UnscheduleCoachingSessionSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
-    coachingSession: UnscheduledCoachingSessionSchema,
-}));
-
-export type TUnscheduleCoachingSessionSuccessResponse = z.infer<typeof UnscheduleCoachingSessionSuccessResponseSchema>;
-
-const UnscheduleCoachingSessionUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
-export type TUnscheduleCoachingSessionUseCaseErrorResponse = z.infer<typeof UnscheduleCoachingSessionUseCaseErrorResponseSchema>;
-
-export const UnscheduleCoachingSessionUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
+// Re-export from backend package - these are the source of truth
+export {
+    UnscheduleCoachingSessionRequestSchema,
+    type TUnscheduleCoachingSessionRequest,
     UnscheduleCoachingSessionSuccessResponseSchema,
-    UnscheduleCoachingSessionUseCaseErrorResponseSchema,
-]);
-
-export type TUnscheduleCoachingSessionUseCaseResponse = z.infer<typeof UnscheduleCoachingSessionUseCaseResponseSchema>;
+    type TUnscheduleCoachingSessionSuccessResponse,
+    UnscheduleCoachingSessionErrorResponseSchema as UnscheduleCoachingSessionUseCaseErrorResponseSchema,
+    type TUnscheduleCoachingSessionErrorResponse as TUnscheduleCoachingSessionUseCaseErrorResponse,
+    UnscheduleCoachingSessionUseCaseResponseSchema,
+    type TUnscheduleCoachingSessionUseCaseResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
