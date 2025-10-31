@@ -23,7 +23,6 @@ import {
     DefaultNotFound,
     NotificationGrid,
     ExtendedNotification,
-    AgGridReact,
 } from '@maany_shr/e-class-ui-kit';
 import { useRouter } from 'next/navigation';
 
@@ -75,8 +74,7 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
     setMarkNotificationsViewModel,
   );
 
-  // Ref for NotificationGrid
-  const gridRef = useRef<AgGridReact>(null!) as React.RefObject<AgGridReact>;
+  const gridRef = useRef<any>(null);
 
   // TRPC mutation for marking notifications as read with proper callbacks
   const markNotificationsAsReadMutation = trpc.markNotificationsAsRead.useMutation({
