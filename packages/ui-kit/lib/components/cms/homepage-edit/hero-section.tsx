@@ -81,8 +81,6 @@ export default function HeroSection({
     };
 
     const handleThumbnailUploadComplete = (file: fileMetadata.TFileMetadata) => {
-        // No local state update needed - just notify parent
-        // Parent will update value prop → useMemo recomputes uploadedThumbnail
         const imageObject = {
             id: file.id?.toString() ?? '',
             name: file.name ?? '',

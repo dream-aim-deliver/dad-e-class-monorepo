@@ -120,7 +120,7 @@ export default function ManageOffersPage({
                     description: item.description,
                     buttonText: item.buttonText,
                     buttonUrl: item.buttonUrl,
-                    badge: item.badge ?? null,
+                    badge: item.badge ?? undefined,
                     imageUrl: item.image?.downloadUrl ?? null,
                     imageId: item.image?.id ? Number(item.image.id) : null,
                     imageName: item.image?.name ?? null,
@@ -135,19 +135,25 @@ export default function ManageOffersPage({
 
     // Handlers must be defined before conditional returns (Rules of Hooks)
     const handlePageTitleChange = (newValue: { title: string; description: string }) => {
-        setFormValue((prev) => ({
-            ...(prev as OffersPageFormData),
-            title: newValue.title,
-            description: newValue.description
-        }));
+        setFormValue((prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                title: newValue.title,
+                description: newValue.description
+            };
+        });
     };
 
     const handlePackagesChange = (newSelected: any[]) => {
         const newPackageIds = newSelected.map((pkg: any) => Number(pkg.id));
-        setFormValue((prev) => ({
-            ...(prev as OffersPageFormData),
-            packageIds: newPackageIds
-        }));
+        setFormValue((prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                packageIds: newPackageIds
+            };
+        });
     };
 
     const handleCarouselChange = (newCarousel: Array<{
@@ -163,27 +169,26 @@ export default function ManageOffersPage({
             description: item.description,
             buttonText: item.buttonText,
             buttonUrl: item.buttonUrl,
-            badge: item.badge ?? null,
+            badge: item.badge ?? undefined,
             imageUrl: item.image?.downloadUrl ?? null,
             imageId: item.image?.id ? Number(item.image.id) : null,
             imageName: item.image?.name ?? null,
             imageSize: item.image?.size ?? null,
         }));
-        setFormValue((prev) => ({
-            ...(prev as OffersPageFormData),
-            carousel: transformedCarousel
-        }));
+        setFormValue((prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                carousel: transformedCarousel
+            };
+        });
     };
 
     const saveOffersPageMutation = trpc.saveOffersPage.useMutation({
-        onMutate: () => {
-            setSaveStatus('idle');
-        },
         onSuccess: async (data) => {
             if (data.success) {
-                formState.markAsSaved();
                 setSaveStatus('success');
-                // Refetch to get server-confirmed data
+                // Refetch to get fresh data - useFormState will auto-sync when new data arrives
                 await Promise.all([
                     refetchOffersPageOutline(),
                     refetchPackagesShort(),
@@ -279,7 +284,7 @@ export default function ManageOffersPage({
         description: item.description,
         buttonText: item.buttonText,
         buttonUrl: item.buttonUrl,
-        badge: item.badge ?? null,
+        badge: item.badge,
         image: item.imageUrl && item.imageId ? {
             id: String(item.imageId),
             name: item.imageName || '',
@@ -310,7 +315,7 @@ export default function ManageOffersPage({
                 </div>
             </div>
 
-            {saveOffersPageMutation.isPending && (
+            {saveOffersPageMutation.isPending && saveStatus === 'idle' && (
                 <Banner style="success" title={t('savingBanner')} />
             )}
             {saveStatus === 'success' && (
