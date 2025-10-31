@@ -75,6 +75,11 @@ export default function BannerSection({
     };
 
     const handleUploadComplete = (file: fileMetadata.TFileMetadata) => {
+        // Validate required fields before updating
+        if (!file.id || !file.name || file.size === undefined || !file.url) {
+            return;
+        }
+
         // Update image object with uploaded file metadata
         const newBannerData = {
             ...value,
@@ -83,12 +88,14 @@ export default function BannerSection({
                 name: file.name,
                 size: file.size,
                 category: 'image' as const,
-                downloadUrl: file.url as string,
+                downloadUrl: file.url,
             },
         };
         onChange?.(newBannerData);
         // Notify parent component of the file ID
-        onImageUploadComplete?.(file.id);
+        if (onImageUploadComplete) {
+            onImageUploadComplete(file.id);
+        }
     };
 
     const handleFileDelete = (id: string) => {
