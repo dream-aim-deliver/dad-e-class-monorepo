@@ -18,9 +18,9 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetGroupIntroductionPresenter } from '../hooks/use-get-group-introduction-presenter';
 import { useGetGroupNotesPresenter } from '../hooks/use-get-group-notes-presenter';
 import { useGetGroupNextCoachingSessionPresenter } from '../hooks/use-get-group-next-coaching-session-presenter';
-import { useCourseImageUpload } from './common/hooks/use-course-image-upload';
 import { useAssignmentFilters } from './workspace/hooks/use-assignment-filters';
 import { useGroupMembers } from './workspace/hooks/use-group-members';
+import { useGroupNotesFileUpload } from './common/hooks/use-group-notes-image-upload';
 
 interface GroupWorkspaceCoachProps {
   locale: TLocale;
@@ -50,14 +50,7 @@ export default function GroupWorkspaceCoach({
   }[]>([]);
   const [includeInMaterials, setIncludeInMaterials] = useState(false);
 
-  const {
-    courseImage,
-    uploadError,
-    handleFileChange,
-    handleUploadComplete,
-    handleDelete,
-    handleDownload,
-  } = useCourseImageUpload(null);
+  const { handleFileUpload, handleFileDelete, handleFileDownload } = useGroupNotesFileUpload();
 
   // Edit notes dialog state
   const [isEditNotesDialogOpen, setIsEditNotesDialogOpen] = useState(false);
@@ -75,7 +68,6 @@ export default function GroupWorkspaceCoach({
   >(undefined);
 
   // TRPC queries for page data
-  // TODO: Replace with actual usecases from: saveGroupNotes, getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
 
   // Fetch group introduction from getGroupIntroduction usecase
   const [groupIntroductionResponse] = trpc.getGroupIntroduction.useSuspenseQuery({
@@ -158,22 +150,58 @@ export default function GroupWorkspaceCoach({
 
   // Notes handlers
   const handleEditNotesClick = () => {
+    // Initialize state with current notes data when opening edit dialog
+    setNoteDescription(notesData.notes);
+    setNoteLinks(notesData.links?.map(link => ({
+      url: link.url || '',
+      title: link.title,
+      customIconMetadata: link.icon ? {
+        id: link.icon.id,
+        name: link.icon.name,
+        size: link.icon.size,
+        status: 'available' as const,
+        category: link.icon.category,
+        url: link.icon.downloadUrl,
+        thumbnailUrl: null,
+      } : undefined,
+    })) || []);
+    setIncludeInMaterials(false); // TODO: Get this from notesData when backend provides it
     setIsEditNotesDialogOpen(true);
   };
 
   const handlePublishNotes = (description: string, links: any[], includeInMaterials: boolean) => {
-    //  saveNotesMutation with the data
-    saveNotesMutation.mutate({
-      notes: description,
-      links: links.map(link => ({
-        title: link.title,
-        url: link.url,
-        state: 'draft' as const,
-        iconFileId: link.customIconMetadata?.id ? Number(link.customIconMetadata.id) : null
-      }))
-    });
-    setIsEditNotesDialogOpen(false);
-    refetchGroupNotesResponse();
+    console.log('Publishing notes:', { description, links, includeInMaterials });
+    
+    // Prevent publishing if already in progress
+    if (saveNotesMutation.isPending) {
+      return;
+    }
+
+    saveNotesMutation.mutate(
+      {
+        notes: description,
+        links: links.map(link => ({
+          title: link.title,
+          url: link.url,
+          state: 'draft' as const,
+          // TODO: Please pass complete customIconMetadata object if needed
+          iconFileId: link.customIconMetadata?.id ? Number(link.customIconMetadata.id) : null
+        }))
+      },
+      {
+        onSuccess: () => {
+          // Refetch to get updated notes data
+          refetchGroupNotesResponse();
+          // Close the dialog after successful save and refetch
+          setIsEditNotesDialogOpen(false);
+        },
+        onError: (error) => {
+          // TODO: Handle error - show error message to user
+          console.error('Failed to save notes:', error);
+          // Keep dialog open so user can retry
+        }
+      }
+    );
   };
 
   const handleBackFromEdit = () => {
@@ -181,8 +209,9 @@ export default function GroupWorkspaceCoach({
   };
 
   const handleImageChange = async (index: number, fileRequest: any, abortSignal?: AbortSignal) => {
-    // TODO: Replace handleFileChange with notes image upload logic if different
-    const result = await handleFileChange(fileRequest, abortSignal);
+    // TODO: please uncomment and use correct upload type 
+    // const result = await handleFileUpload(fileRequest, 'upload_group_note_icon', groupId, abortSignal);
+    const result = await handleFileUpload(fileRequest, 'upload_home_page_accordion_item', groupId, abortSignal);
     return result;
   };
 
@@ -328,7 +357,7 @@ export default function GroupWorkspaceCoach({
         <StudentCard
           {...baseProps}
           status="course-completed"
-          completedCourseDate={new Date()} // TODO: Add completion date from member data when available
+          completedCourseDate={new Date()} // TODO: Add course-completed from member data when available
         />
       );
     }
@@ -411,7 +440,6 @@ export default function GroupWorkspaceCoach({
           ) :
             <CoachNotesView
               noteDescription={notesData.notes}
-              // TODO: Change this mapping once notesData.links structure matches with CoachNotesView props
               noteLinks={notesData.links?.map(link => ({
                 url: link.url || '',
                 title: link.title,
@@ -592,20 +620,8 @@ export default function GroupWorkspaceCoach({
       <CoachNotesEditDialog
         isOpen={isEditNotesDialogOpen}
         onOpenChange={setIsEditNotesDialogOpen}
-        noteDescription={notesData.notes}
-        noteLinks={notesData.links?.map(link => ({
-          url: link.url || '',
-          title: link.title,
-          customIconMetadata: link.icon ? {
-            id: link.icon.id,
-            name: link.icon.name,
-            size: link.icon.size,
-            status: 'available' as const,
-            category: link.icon.category,
-            url: link.icon.downloadUrl,
-            thumbnailUrl: null,
-          } : undefined,
-        })) || []}
+        noteDescription={noteDescription}
+        noteLinks={noteLinks}
         includeInMaterials={includeInMaterials}
         locale={locale}
         onPublish={handlePublishNotes}
