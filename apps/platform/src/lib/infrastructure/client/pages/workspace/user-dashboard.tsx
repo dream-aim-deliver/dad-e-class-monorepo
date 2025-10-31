@@ -313,6 +313,11 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     const router = useRouter();
     const locale = useLocale() as TLocale;
 
+    if (!session) {
+        // TODO: Handle unauthenticated state appropriately
+        return null; // Or a loading state, or redirect to login
+    }
+
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const t = useTranslations('pages.userDashboard');
 
@@ -508,7 +513,9 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                     // Coach Dashboard Layout
                     <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
                         <div className="xl:col-span-3 lg:col-span-2 space-y-6">
-                            <UserCoachingSessions />
+                            <UserCoachingSessions
+                                studentId={session?.user?.id ? Number(session.user.id) : undefined}
+                            />
 
                             {/* Your courses and Create course button and modal */}
                             <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
@@ -542,7 +549,9 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         <div className="xl:col-span-3 lg:col-span-2 space-y-6">
                             <h3> {t('yourCourses')} </h3>
                             <UserCoursesList maxItems={3} />
-                            <UserCoachingSessions />
+                            <UserCoachingSessions
+                                studentId={session?.user?.id ? Number(session.user.id) : undefined}
+                            />
                         </div>
                         <div className="xl:col-span-1 lg:col-span-1">
                             <UserNotifications />

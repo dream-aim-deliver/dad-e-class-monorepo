@@ -2209,6 +2209,11 @@ export const DictionarySchema = z.object({
       workspace: z.string(),
       coachingSessions: z.string(),
     }),
+    userDashboard: z.object({
+      editProfile: z.string(),
+      viewCalendar: z.string(),
+      defaultDisplayName: z.string(),
+    }),
     manageTopics: z.object({
       title: z.string(),
       description: z.string(),
