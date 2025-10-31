@@ -2,8 +2,7 @@
 
 import { trpc } from '../trpc/cms-client';
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { DefaultLoading, DefaultError, UserGrid, Breadcrumbs, SendNotificationModal } from '@maany_shr/e-class-ui-kit';
-import type { UserRow } from '../../../../../../../packages/ui-kit/lib/components/grids/user-grid';
+import { DefaultLoading, DefaultError, UserGrid, Breadcrumbs, SendNotificationModal, type UserRow } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
