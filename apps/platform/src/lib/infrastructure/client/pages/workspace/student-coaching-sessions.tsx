@@ -218,7 +218,6 @@ export default function StudentCoachingSessions() {
         // This is IMPORTANT: It refreshes the UI so the session card shows 
         // "has review" instead of "add review" and displays the new review data
         utils.listStudentCoachingSessions.invalidate();
-        // Note: Modal will stay open in success state until user clicks "Close" button
     };
 
     const handleReviewSkip = () => {
