@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ListCoachesUseCaseResponseSchema,
+    TListCoachesUseCaseResponse,
+    TListCoachesErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TCoachesPresenterUtilities = {};
 
 export const ListCoachesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListCoachesUseCaseResponse,
+        TListCoachesUseCaseResponse,
         viewModels.TCoachListViewModel,
         TCoachesPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const ListCoachesResponseMiddleware =
 type TListCoachesResponseMiddleware = typeof ListCoachesResponseMiddleware;
 
 export default class CoachesPresenter extends BasePresenter<
-    useCaseModels.TListCoachesUseCaseResponse,
+    TListCoachesUseCaseResponse,
     viewModels.TCoachListViewModel,
     TCoachesPresenterUtilities,
     TListCoachesResponseMiddleware
@@ -29,8 +34,8 @@ export default class CoachesPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
-                viewModel: viewModels.HomePageViewModelSchema
+                responseModel: ListCoachesUseCaseResponseSchema,
+                viewModel: viewModels.CoachListViewModelSchema
             },
             middleware: ListCoachesResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -40,7 +45,7 @@ export default class CoachesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListCoachesUseCaseResponse,
+            TListCoachesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCoachListViewModel {
@@ -53,7 +58,7 @@ export default class CoachesPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListCoachesUseCaseErrorResponse,
+            TListCoachesErrorResponse,
             TListCoachesResponseMiddleware
         >,
     ): viewModels.TCoachListViewModel {
