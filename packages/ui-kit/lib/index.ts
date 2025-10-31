@@ -38,7 +38,7 @@ export { NotificationGrid, type ExtendedNotification } from './components/grids/
 export { Activity } from './components/notifications/activity';
 export { RecentActivity } from './components/notifications/recent-activity';
 export { SendNotificationModal, type SendNotificationModalProps } from './components/notifications/send-notification-modal';
-export { UserGrid } from './components/grids/user-grid';
+export { UserGrid, type UserRow } from './components/grids/user-grid';
 export { Hero } from './components/home-banner/hero';
 export { Carousel } from './components/carousel/carousel';
 export { GeneralCard } from './components/carousel/general-card';
