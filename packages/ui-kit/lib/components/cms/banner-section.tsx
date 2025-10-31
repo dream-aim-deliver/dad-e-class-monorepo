@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { TextAreaInput } from '../text-areaInput';
 import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
@@ -11,12 +10,15 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 interface BannerItemType {
     title: string;
     description: string;
-    imageUrl: string | null;
-    imageId: number | null;
-    imageName?: string | null;
-    imageSize?: number | null;
+    image: {
+        id: string;
+        name: string;
+        size: number;
+        category: 'image';
+        downloadUrl: string;
+    } | null;
     buttonText: string;
-    buttonUrl: string;
+    buttonLink: string;
 }
 
 interface BannerSectionProps extends isLocalAware {
@@ -29,7 +31,7 @@ interface BannerSectionProps extends isLocalAware {
     ) => Promise<fileMetadata.TFileMetadata>;
     onFileDelete: (id: string) => void;
     onFileDownload: (id: string) => void;
-    onImageUploadComplete?: (fileId: string) => void;
+    onImageUploadComplete?: (fileId: string | null) => void;
     uploadProgress?: number;
 }
 
@@ -45,40 +47,24 @@ export default function BannerSection({
 }: BannerSectionProps) {
     const dictionary = getDictionary(locale);
     const t = dictionary.components.cmsSections.bannerSection;
-    const [uploadedFile, setUploadedFile] = useState<fileMetadata.TFileMetadata | null>(null);
 
-    // Sync uploadedFile with value prop when image is loaded from server
-    // Only update if the imageUrl has actually changed (not just object recreation)
-    useEffect(() => {
-        const currentImageUrl = value.imageUrl;
-        const uploadedFileUrl = uploadedFile?.url;
-
-        if (currentImageUrl && currentImageUrl !== uploadedFileUrl) {
-            // URL changed or file didn't exist - update state
-            setUploadedFile({
-                id: value.imageId?.toString() || '',
-                name: value.imageName || currentImageUrl.split('/').pop() || 'banner-image',
-                size: value.imageSize || 0,
-                category: 'image',
-                url: currentImageUrl,
-                thumbnailUrl: currentImageUrl,
-            } as fileMetadata.TFileMetadata);
-        } else if (!currentImageUrl && uploadedFile) {
-            // Image was removed
-            setUploadedFile(null);
-        }
-    }, [value.imageUrl, value.imageName, value.imageSize, value.imageId, uploadedFile]);
-
-    const handleBannerChange = (newBannerData: BannerItemType) => {
-        onChange?.(newBannerData);
-    };
+    // Derive uploadedFile from value prop - single source of truth
+    const uploadedFile: fileMetadata.TFileMetadata | null = value.image ? {
+        id: value.image.id,
+        name: value.image.name,
+        size: value.image.size,
+        category: value.image.category,
+        url: value.image.downloadUrl,
+        thumbnailUrl: value.image.downloadUrl,
+        status: "available" as const
+    } : null;
 
     const handleFieldChange = (field: keyof BannerItemType, fieldValue: string | null) => {
         const newBannerData = {
             ...value,
             [field]: fieldValue
         };
-        handleBannerChange(newBannerData);
+        onChange?.(newBannerData);
     };
 
     const handleOnFilesChange = async (
@@ -89,34 +75,32 @@ export default function BannerSection({
     };
 
     const handleUploadComplete = (file: fileMetadata.TFileMetadata) => {
-        setUploadedFile(file);
-        // Update all image fields including name and size
+        // Update image object with uploaded file metadata
         const newBannerData = {
             ...value,
-            imageUrl: file.url as string | null,
-            imageId: file.id ? Number(file.id) : null,
-            imageName: file.name || null,
-            imageSize: file.size || null,
+            image: {
+                id: file.id,
+                name: file.name,
+                size: file.size,
+                category: 'image' as const,
+                downloadUrl: file.url as string,
+            },
         };
         onChange?.(newBannerData);
         // Notify parent component of the file ID
-        onImageUploadComplete?.(file.id as string);
+        onImageUploadComplete?.(file.id);
     };
 
     const handleFileDelete = (id: string) => {
-        setUploadedFile(null);
-        // Clear all image fields
+        // Clear image object
         const newBannerData = {
             ...value,
-            imageUrl: null,
-            imageId: null,
-            imageName: null,
-            imageSize: null,
+            image: null,
         };
         onChange?.(newBannerData);
         onFileDelete(id);
         // Notify parent that image was deleted
-        onImageUploadComplete?.(null as any);
+        onImageUploadComplete?.(null);
     };
 
     const handleFileDownload = (id: string) => {
@@ -183,8 +167,8 @@ export default function BannerSection({
                             label={t.buttonLinkLabel}
                             inputField={{
                                 inputText: t.buttonLinkPlaceholder,
-                                value: value.buttonUrl,
-                                setValue: (v) => handleFieldChange('buttonUrl', v)
+                                value: value.buttonLink,
+                                setValue: (v) => handleFieldChange('buttonLink', v)
                             }}
                         />
                     </form>

@@ -22,27 +22,21 @@ import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
 type BannerItemType = {
   title: string;
   description: string;
-  imageUrl: string | null;
-  imageId: number | null;
-  imageName?: string | null;
-  imageSize?: number | null;
+  image: {
+    id: string;
+    name: string;
+    size: number;
+    category: 'image';
+    downloadUrl: string;
+  } | null;
   buttonText: string;
-  buttonUrl: string;
+  buttonLink: string;
 };
 
 type CoachingPageFormData = {
   title: string;
   description: string;
-  banner: {
-    title: string;
-    description: string;
-    imageUrl: string | null;
-    imageId: number | null;
-    imageName: string | null;
-    imageSize: number | null;
-    buttonText: string;
-    buttonUrl: string;
-  };
+  banner: BannerItemType;
 };
 
 // Static default data - moved outside component for better performance
@@ -52,12 +46,9 @@ const DEFAULT_COACHING_PAGE_DATA: CoachingPageFormData = {
   banner: {
     title: '',
     description: '',
-    imageUrl: null,
-    imageId: null,
-    imageName: null,
-    imageSize: null,
+    image: null,
     buttonText: '',
-    buttonUrl: '',
+    buttonLink: '',
   },
 } as const;
 
@@ -75,7 +66,6 @@ export default function ManageCoachingPage({
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.manageCoachingPage');
 
-  // All hooks must be called at the top level before any conditional returns
   const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [coachingPageViewModel, setCoachingPageViewModel] = useState<
@@ -104,12 +94,9 @@ export default function ManageCoachingPage({
         banner: {
           title: coachingPageViewModel.data.banner?.title || '',
           description: coachingPageViewModel.data.banner?.description || '',
-          imageUrl: coachingPageViewModel.data.banner?.image?.downloadUrl || null,
-          imageId: coachingPageViewModel.data.banner?.image?.id ? Number(coachingPageViewModel.data.banner.image.id) : null,
-          imageName: coachingPageViewModel.data.banner?.image?.name || null,
-          imageSize: coachingPageViewModel.data.banner?.image?.size || null,
+          image: coachingPageViewModel.data.banner?.image || null,
           buttonText: coachingPageViewModel.data.banner?.buttonText || '',
-          buttonUrl: coachingPageViewModel.data.banner?.buttonLink || '',
+          buttonLink: coachingPageViewModel.data.banner?.buttonLink || '',
         },
       }
       : DEFAULT_COACHING_PAGE_DATA
@@ -120,28 +107,29 @@ export default function ManageCoachingPage({
   const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
 
   const handlePageTitleChange = (newValue: { title: string; description: string }) => {
-    setFormValue((prev) => ({
-      ...(prev as CoachingPageFormData),
-      title: newValue.title,
-      description: newValue.description
-    }));
+    setFormValue((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        title: newValue.title,
+        description: newValue.description
+      };
+    });
   };
 
   const handleBannerChange = (newBanner: BannerItemType) => {
-    setFormValue((prev) => ({
-      ...(prev as CoachingPageFormData),
-      banner: {
-        ...newBanner,
-        imageName: newBanner.imageName || null,
-        imageSize: newBanner.imageSize || null,
-      }
-    }));
+    setFormValue((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        banner: newBanner,
+      };
+    });
   };
 
   const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation({
     onSuccess: async (data) => {
       if (data.success) {
-        formState.markAsSaved();
         setSaveStatus('success');
         await refetchCoachingPage();
       }
@@ -204,9 +192,9 @@ export default function ManageCoachingPage({
       banner: {
         title: formState.value.banner.title,
         description: formState.value.banner.description,
-        imageId: formState.value.banner.imageId,
+        imageId: Number(formState.value.banner.image?.id) || null,
         buttonText: formState.value.banner.buttonText,
-        buttonLink: formState.value.banner.buttonUrl,
+        buttonLink: formState.value.banner.buttonLink,
       },
     });
   };
@@ -232,7 +220,7 @@ export default function ManageCoachingPage({
         </div>
       </div>
 
-      {saveCoachingPageMutation.isPending && (
+      {saveCoachingPageMutation.isPending && saveStatus === 'idle' && (
         <Banner style="success" title={t('savingBanner')} />
       )}
       {saveStatus === 'success' && (
@@ -256,15 +244,6 @@ export default function ManageCoachingPage({
         onFileUpload={handleFileUpload}
         onFileDelete={handleFileDelete}
         onFileDownload={handleFileDownload}
-        onImageUploadComplete={(fileId) => {
-          setFormValue((prev) => ({
-            ...(prev as CoachingPageFormData),
-            banner: {
-              ...(prev as CoachingPageFormData).banner,
-              imageId: fileId ? Number(fileId) : null,
-            },
-          }));
-        }}
         uploadProgress={uploadProgress}
         locale={locale}
       />

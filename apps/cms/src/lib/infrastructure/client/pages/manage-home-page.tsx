@@ -82,7 +82,7 @@ export default function ManageHomepage() {
 	useEffect(() => {
 		// @ts-ignore - Presenter doesn't handle progress states
 		homePagePresenter.present(getHomePageResponse, homePageViewModel);
-	}, [getHomePageResponse, homePagePresenter, homePageViewModel]);
+	}, [getHomePageResponse, homePagePresenter]);
 
 	// Track upload progress
 	const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
@@ -107,51 +107,52 @@ export default function ManageHomepage() {
 	const formState = useFormState<viewModels.TGetHomePageSuccess>(initialHomePageData, { enableReloadProtection: true });
 	const { setValue: setFormValue } = formState;
 
-
-	useEffect(() => {
-		if (homePageViewModel?.mode === 'default') {
-			setFormValue(homePageViewModel.data);
-		}
-	}, [homePageViewModel?.mode, homePageViewModel?.data, setFormValue]);
-
-	// Define all callbacks before any conditional returns (Rules of Hooks)
 	const handleBannerChange = (banner: viewModels.TGetHomePageSuccess['banner']) => {
-		console.log('Banner changed:', banner);
-		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => ({
-			...prev!,
-			banner,
-		}));
+		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => {
+			if (!prev) return prev;
+			return {
+				...prev,
+				banner,
+			};
+		});
 	};
 
 	const handleCarouselChange = (carousel: viewModels.TGetHomePageSuccess['carousel']) => {
-		console.log('Carousel changed:', carousel);
-		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => ({
-			...prev!,
-			carousel,
-		}));
+		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => {
+			if (!prev) return prev;
+			return {
+				...prev,
+				carousel,
+			};
+		});
 	};
 
 	const handleCoachingDemandChange = (coachingOnDemand: viewModels.TGetHomePageSuccess['coachingOnDemand']) => {
-		console.log('Coaching On Demand changed:', coachingOnDemand);
-		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => ({
-			...prev!,
-			coachingOnDemand,
-		}));
+		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => {
+			if (!prev) return prev;
+			return {
+				...prev,
+				coachingOnDemand,
+			};
+		});
 	};
 
 	const handleAccordionChange = (accordion: viewModels.TGetHomePageSuccess['accordion']) => {
-		console.log(accordion);
-		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => ({
-			...prev!,
-			accordion,
-		}));
+		setFormValue((prev: viewModels.TGetHomePageSuccess | null) => {
+			if (!prev) return prev;
+			return {
+				...prev,
+				accordion,
+			};
+		});
 	};
 
 	const saveHomePageMutation = trpc.saveHomePage.useMutation({
-		onSuccess: (data) => {
+		onSuccess: async (data) => {
 			if (data.success) {
 				setSaveState({ status: 'success', message: t('savedBanner') });
-				formState.markAsSaved();
+				// Refetch to get fresh data - useFormState will auto-sync when new data arrives
+				await refetchHomePage();
 			} else {
 				setSaveState({ status: 'error', message: t('failedBanner') });
 			}
@@ -248,7 +249,7 @@ export default function ManageHomepage() {
 				</div>
 			</div>
 
-			{saveHomePageMutation.isPending && (
+			{saveHomePageMutation.isPending && saveState.status === 'idle' && (
 				<Banner style="success" title={t('savingBanner')} />
 
 			)}

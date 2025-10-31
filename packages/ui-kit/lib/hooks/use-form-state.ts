@@ -72,7 +72,7 @@ export function useFormState<T>(
     return !deepEqual(state.current, state.original);
   }, [state.current, state.original, deepEqual]);
 
-  const setValue = useCallback((newValue: SetValueAction<T>) => {
+  const setValue = (newValue: SetValueAction<T>) => {
     setState(prev => {
       const nextValue = typeof newValue === 'function'
         ? (newValue as (prevState: T | null) => T | null)(prev.current)
@@ -83,23 +83,23 @@ export function useFormState<T>(
         current: nextValue,
       };
     });
-  }, []);
+  }
 
   // Mark current state as saved (makes it the new baseline)
-  const markAsSaved = useCallback(() => {
+  const markAsSaved = () => {
     setState(prev => ({
       current: prev.current,
       original: prev.current,
     }));
-  }, []);
+  }
 
   // Reset to original value
-  const reset = useCallback(() => {
+  const reset =() => {
     setState(prev => ({
       ...prev,
       current: prev.original,
     }));
-  }, []);
+  }
 
   // Update both current and original when initial value changes from parent
   useEffect(() => {
