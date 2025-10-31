@@ -38,6 +38,19 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
   const session = sessionDTO.data;
   const isLoggedIn = !!session;
   const router = useRouter();
+  
+  // Determine user type from session roles (following platform patterns)
+  const getUserType = (): 'student' | 'coach' => {
+    const roles = session?.user?.roles || [];
+    
+    if (roles.includes('coach')) {
+      return 'coach';
+    }
+    // Default to student for students and visitors
+    return 'student';
+  };
+  
+  const userType = getUserType();
 
   // Add state for error message
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
@@ -165,10 +178,10 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
     }));
 
   return (
-    <div className="flex flex-col space-y-5 px-30">
+    <div className="flex flex-col space-y-5">
       <div>
         <h1>{t('title')}</h1>
-        <p>{t('description')}</p>
+        <div className="text-white">{t('description')}</div>
       </div>
 
       {/* Features from Notion:
@@ -182,7 +195,7 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
           onNotificationClick={handleNotificationClick}
           onMarkAllRead={handleMarkAllAsRead}
           gridRef={gridRef}
-          variant="student"
+          variant={userType}
           loading={markNotificationsAsReadMutation.isPending}
         />
       </div>
