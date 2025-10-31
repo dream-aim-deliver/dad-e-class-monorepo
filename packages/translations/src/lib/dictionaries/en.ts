@@ -2171,6 +2171,11 @@ export const EN: TDictionary = {
       workspace: 'Workspace',
       coachingSessions: 'Coaching Sessions',
     },
+    userDashboard: {
+      editProfile: 'Edit Profile',
+      viewCalendar: 'View Calendar',
+      defaultDisplayName: 'Student',
+    },
     manageTopics: {
       title: 'Manage Topics (aka Skills)',
       description: 'Maximum 25 topics for each platform',

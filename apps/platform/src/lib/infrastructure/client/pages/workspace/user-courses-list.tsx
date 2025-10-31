@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useListUserCoursesPresenter } from '../../hooks/use-user-courses-presenter';
+import { useListUserCoursesPresenter } from '../../hooks/use-list-user-courses-presenter';
 import { useSession } from 'next-auth/react';
 
 import {
@@ -21,6 +21,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
+
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 import { trpc } from '../../trpc/cms-client';
 
@@ -77,16 +78,14 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     const isAdmin = userRoles?.includes('admin');
     const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
     const [coursesViewModel, setCoursesViewModel] = useState<
-        viewModels.TUserCourseListViewModel | undefined
+        viewModels.TListUserCoursesViewModel | undefined
     >(undefined);
     const { presenter } = useListUserCoursesPresenter(setCoursesViewModel);
 
     // Present data when available
     useEffect(() => {
         if (coursesResponse && presenter) {
-            // TRPC useSuspenseQuery returns the raw procedure response
-            // which already has the TBaseResult structure the presenter expects
-            // @ts-ignore - Type mismatch between TRPC response wrapper and presenter input
+            // @ts-ignore
             presenter.present(coursesResponse, coursesViewModel);
         }
     }, [coursesResponse, presenter, coursesViewModel]);
@@ -162,7 +161,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     return (
         <div className="flex flex-col space-y-2 mt-6 pb-15">
             <CardListLayout>
-                {limitedCourses.map((course: viewModels.TUserCourseListSuccess['courses'][number]) => {
+                {limitedCourses.map((course: viewModels.TListUserCoursesSuccess['courses'][number]) => {
                     // Leaving some fields empty as neither response provides them, nor the view uses them
 
                     const language = {

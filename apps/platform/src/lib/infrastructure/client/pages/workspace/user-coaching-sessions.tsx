@@ -1,67 +1,54 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { viewModels } from '@maany_shr/e-class-models';
+import { TUpcomingStudentCoachingSession } from '@dream-aim-deliver/e-class-cms-rest';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { Button, CoachingSessionCard, Tabs } from '@maany_shr/e-class-ui-kit';
-import { useTranslations } from 'next-intl';
-
+import { useListUpcomingStudentCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-student-coaching-sessions-presenter';
 import { trpc } from '../../trpc/cms-client';
-import { useListUpcomingCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-coaching-sessions-presenter';
-
 interface UserCoachingSessionsProps {
-    emptyStateTranslationsNamespace?: string;
+    studentId: number | undefined;
 }
 
- 
+function isUpcomingSession(session: TUpcomingStudentCoachingSession): session is TUpcomingStudentCoachingSession {
+    return session.status === 'scheduled';
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const router = useRouter();
     const locale = useLocale() as TLocale;
-    const [viewModel, setViewModel] =
-        useState<viewModels.TUpcomingCoachingSessionsListViewModel | null>(
-            null,
-        );
+    const t = useTranslations('pages.studentCoachingSessions');
+    const paginationT = useTranslations('components.paginationButton');
 
-    const { presenter } =
-        useListUpcomingCoachingSessionsPresenter(setViewModel);
+    const { studentId } = props;
+
+    if (!studentId) {
+        return null;
+    }
+    const [viewModel, setViewModel] = useState<viewModels.TListUpcomingStudentCoachingSessionsViewModel | null>(null);
+
+    const { presenter } = useListUpcomingStudentCoachingSessionsPresenter(setViewModel);
 
     const [activeTab, setActiveTab] = useState<string>('upcoming');
 
-    const {
-        data: upcomingSessionsResponse,
-        isLoading: isUpcomingSessionsLoading,
-        error: upcomingSessionsError,
-    } = trpc.listUpcomingStudentCoachingSessions.useQuery(
-        {}, // No studentId needed - backend infers from session
+    const [upcomingSessionsResponse] = trpc.listUpcomingStudentCoachingSessions.useSuspenseQuery(
+        { studentId: studentId },
         {
-            retry: false,
-        },
+            retry: false
+        }
     );
 
-    const t = useTranslations('pages.userCoachingSessions');
-
     useEffect(() => {
-        if (upcomingSessionsResponse) {
-            // @ts-ignore
-            presenter.present(upcomingSessionsResponse, viewModel ?? undefined);
-        }
-        if (upcomingSessionsError) {
-            presenter.present(
-                {
-                    success: false,
-                    data: {
-                        errorType: 'UnknownError' as const,
-                        message: upcomingSessionsError.message,
-                        operation: 'list-upcoming-coaching-sessions',
-                        context: {},
-                    },
-                },
-                viewModel ?? undefined,
-            );
-        }
-    }, [upcomingSessionsResponse, upcomingSessionsError, presenter, viewModel]);
+
+        // @ts-ignore
+        presenter.present(upcomingSessionsResponse, viewModel);
+
+    }, [upcomingSessionsResponse, presenter, viewModel]);
 
     const handleViewAllCoachingSessions = useCallback(() => {
         router.push(`/${locale}/workspace/coaching-sessions`);
@@ -77,10 +64,10 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
         handleViewAllCoachingSessions();
     }, [handleViewAllCoachingSessions]);
 
-    if (isUpcomingSessionsLoading) {
+    if (!viewModel) {
         return (
             <div className="flex flex-col space-y-4">
-                <h3>{t('loadingTitle')}</h3>
+                <h2 className="text-xl font-semibold">{t('yourCoachingSessions')}</h2>
                 <div className="animate-pulse">
                     <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
                     <div className="h-32 bg-gray-200 rounded"></div>
@@ -89,19 +76,20 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
         );
     }
 
-    if (viewModel?.mode === 'kaboom') {
+    if (viewModel.mode === 'kaboom') {
         return (
             <div className="flex flex-col space-y-4">
-                <h3> {t('title')} </h3>
-                <div className="text-red-500">{viewModel.data?.message || 'An error occurred'}</div>
+                <h2 className="text-xl font-semibold">{t('yourCoachingSessions')}</h2>
+                <div className="text-red-500">
+                    {viewModel.data.message}
+                </div>
             </div>
         );
     }
 
-    // Backend already filters to return only scheduled sessions
-    const allSessions =
-        viewModel?.mode === 'default' && viewModel.data ? viewModel.data.sessions : [];
-    const upcomingSessions = allSessions || [];
+    // Filter only upcoming sessions (scheduled) that have required properties
+    const allSessions = viewModel.mode === 'default' ? viewModel.data.sessions : [];
+    const upcomingSessions = allSessions.filter(isUpcomingSession);
     const hasUpcomingSessions = upcomingSessions.length > 0;
 
     return (
@@ -109,27 +97,28 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
             <Tabs.Root defaultTab="upcoming" onValueChange={setActiveTab}>
                 <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4">
                     <div className="w-full flex gap-4 items-center justify-between">
-                        <div className='flex flex-row items-center'>
-                            <h3>{t('title')}</h3>
+                        <p className="text-2xl font-semibold text-white">
+                            {t('yourCoachingSessions')}
+                        </p>
+                        <div className="flex items-center gap-4">
+                            <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
+                                <Tabs.Trigger value="upcoming" isLast={false}>
+                                    {t('upcoming')}
+                                </Tabs.Trigger>
+                                <Tabs.Trigger value="ended" isLast={false}>
+                                    {t('ended')}
+                                </Tabs.Trigger>
+                                <Tabs.Trigger value="available" isLast={true}>
+                                    {t('available')}
+                                </Tabs.Trigger>
+                            </Tabs.List>
                             <Button
                                 variant="text"
                                 size="small"
                                 onClick={handleViewAllCoachingSessions}
-                                text={t('viewAllSessions')}
-                            />
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
-                                <Tabs.Trigger value="upcoming" isLast={false}>
-                                    {t('tabUpcoming')}
-                                </Tabs.Trigger>
-                                <Tabs.Trigger value="ended" isLast={false}>
-                                    {t('tabEnded')}
-                                </Tabs.Trigger>
-                                <Tabs.Trigger value="available" isLast={true}>
-                                    {t('tabAvailable')}
-                                </Tabs.Trigger>
-                            </Tabs.List>
+                            >
+                                {paginationT('viewAll')}
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -138,14 +127,20 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                     {hasUpcomingSessions ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {upcomingSessions.slice(0, 3).map((session) => {
-                                // Ensure all required fields are present
-                                if (!session.coachingOfferingTitle ||
-                                    !session.coachingOfferingDuration ||
-                                    !session.startTime ||
-                                    !session.endTime ||
-                                    !session.coach) {
-                                    return null;
-                                }
+                                const safeDate = (iso?: string | null) => {
+                                    if (!iso) return null;
+                                    const d = new Date(iso);
+                                    return Number.isNaN(d.getTime()) ? null : d;
+                                };
+
+                                const start = safeDate(session.startTime);
+                                const end = safeDate(session.endTime);
+                                if (!start || !end) return null;
+
+                                const formatTime = (date: Date) => date.toLocaleTimeString(locale, {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                });
 
                                 return (
                                     <CoachingSessionCard
@@ -155,82 +150,63 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                                         status="upcoming-locked"
                                         title={session.coachingOfferingTitle}
                                         duration={session.coachingOfferingDuration}
-                                        date={new Date(session.startTime)}
-                                        startTime={new Date(
-                                            session.startTime,
-                                        ).toLocaleTimeString('en-US', {
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            hour12: false,
-                                        })}
-                                        endTime={new Date(
-                                            session.endTime,
-                                        ).toLocaleTimeString('en-US', {
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            hour12: false,
-                                        })}
-                                        creatorName={
-                                            `${session.coach.name || ''} ${session.coach.surname || ''}`.trim() ||
-                                            session.coach.username || 'Unknown'
-                                        }
-                                        creatorImageUrl={
-                                            session.coach.avatarUrl || ''
-                                        }
+                                        date={start}
+                                        startTime={formatTime(start)}
+                                        endTime={formatTime(end)}
+                                        creatorName={`${session.coach.name || ''} ${session.coach.surname || ''}`.trim() || session.coach.username}
+                                        creatorImageUrl={session.coach.avatarUrl || ''}
                                         courseName={session.course?.title}
                                         onClickCreator={() => {
-                                            if (session.coach?.username) {
-                                                console.log(
-                                                    'View coach profile',
-                                                    session.coach.username,
-                                                );
-                                            }
+                                            console.log('View coach profile', session.coach.username);
                                         }}
                                         onClickJoinMeeting={() => {
-                                            console.log(
-                                                'Join meeting for session',
-                                                session.id,
-                                            );
+                                            console.log('Join meeting for session', session.id);
                                             // TODO: Implement meeting join functionality
                                         }}
-                                        onClickCourse={
-                                            session.course
-                                                ? () => {
-                                                    router.push(
-                                                        `/${locale}/course/${session.course?.slug || ''}`,
-                                                    );
-                                                }
-                                                : undefined
-                                        }
+                                        onClickCourse={session.course ? () => {
+                                            router.push(`/${locale}/workspace/course/${session.course?.slug || ''}`);
+                                        } : undefined}
                                     />
                                 );
                             })}
                         </div>
                     ) : (
-                        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
-                            <p className="text-text-secondary text-md">
-                                {' '}
-                                {t('noUpcoming')}{' '}
+                        <div className="text-center py-8">
+                            <h3 className="text-lg font-medium text-white mb-2">
+                                {t('noSessionsFound')}
+                            </h3>
+                            <p className="text-gray-400 mb-4">
+                                {t('noSessionsFound')}
                             </p>
+                            <Button
+                                variant="primary"
+                                onClick={handleViewAllCoachingSessions}
+                            >
+                                {paginationT('viewAll')}
+                            </Button>
                         </div>
                     )}
                 </Tabs.Content>
 
                 <Tabs.Content value="ended" className="mt-6">
-                    <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
-                        <p className="text-text-secondary text-md">
-                            {' '}
-                            {t('noEnded')}{' '}
-                        </p>
+                    <div className="text-center py-8">
+                        <Button
+                            variant="primary"
+                            onClick={handleEndedClick}
+                        >
+                            {paginationT('viewAll')}
+                        </Button>
                     </div>
                 </Tabs.Content>
 
                 <Tabs.Content value="available" className="mt-6">
-                    <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
-                        <p className="text-text-secondary text-md">
-                            {' '}
-                            {t('noAvailable')}{' '}
-                        </p>
+                    <div className="text-center py-8">
+                        <Button
+                            variant="primary"
+                            onClick={handleAvailableClick}
+                        >
+                            {paginationT('viewAll')}
+                        </Button>
                     </div>
                 </Tabs.Content>
             </Tabs.Root>

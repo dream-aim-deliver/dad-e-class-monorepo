@@ -20,7 +20,6 @@ export * from './get-course-introduction-usecase-models';
 export * from './get-course-outline-usecase-models';
 export * from './list-assessment-progresses-usecase-models';
 export * from './common';
-export * from './list-user-courses-usecase-models';
 export * from './search-courses-usecase-models';
 export * from './upload-course-image-usecase-models';
 export * from './verify-file-usecase-models';
@@ -61,7 +60,6 @@ export * from './add-availability-usecase-models';
 
 export * from './create-coaching-session-review-usecase-models';
 export * from './unschedule-coaching-session-usecase-models';
-export * from './list-upcoming-student-coaching-sessions-usecase-models';
 
 export * from "./schedule-coaching-session-usecase-models";
 export * from "./request-coaching-session-usecase-models";
