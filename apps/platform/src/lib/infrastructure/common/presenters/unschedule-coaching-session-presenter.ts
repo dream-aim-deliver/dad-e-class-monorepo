@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    UnscheduleCoachingSessionUseCaseResponseSchema,
+    TUnscheduleCoachingSessionUseCaseResponse,
+    TUnscheduleCoachingSessionErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TUnscheduleCoachingSessionPresenterUtilities = {};
 
 export const UnscheduleCoachingSessionResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TUnscheduleCoachingSessionUseCaseResponse,
+        TUnscheduleCoachingSessionUseCaseResponse,
         viewModels.TUnscheduleCoachingSessionViewModel,
         TUnscheduleCoachingSessionPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TUnscheduleCoachingSessionResponseMiddleware =
     typeof UnscheduleCoachingSessionResponseMiddleware;
 
 export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
-    useCaseModels.TUnscheduleCoachingSessionUseCaseResponse,
+    TUnscheduleCoachingSessionUseCaseResponse,
     viewModels.TUnscheduleCoachingSessionViewModel,
     TUnscheduleCoachingSessionPresenterUtilities,
     TUnscheduleCoachingSessionResponseMiddleware
@@ -33,7 +38,7 @@ export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.UnscheduleCoachingSessionUseCaseResponseSchema,
+                    UnscheduleCoachingSessionUseCaseResponseSchema,
                 viewModel: viewModels.UnscheduleCoachingSessionViewModelSchema
             },
             middleware: UnscheduleCoachingSessionResponseMiddleware,
@@ -44,7 +49,7 @@ export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TUnscheduleCoachingSessionUseCaseResponse,
+            TUnscheduleCoachingSessionUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TUnscheduleCoachingSessionViewModel {
@@ -58,7 +63,7 @@ export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TUnscheduleCoachingSessionUseCaseErrorResponse,
+            TUnscheduleCoachingSessionErrorResponse,
             TUnscheduleCoachingSessionResponseMiddleware
         >,
     ): viewModels.TUnscheduleCoachingSessionViewModel {

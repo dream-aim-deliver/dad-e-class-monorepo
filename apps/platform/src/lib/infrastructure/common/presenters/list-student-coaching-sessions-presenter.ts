@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ListStudentCoachingSessionsUseCaseResponseSchema,
+    TListStudentCoachingSessionsUseCaseResponse,
+    TListStudentCoachingSessionsErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TStudentCoachingSessionsPresenterUtilities = {};
 
 export const ListStudentCoachingSessionsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListStudentCoachingSessionsUseCaseResponse,
+        TListStudentCoachingSessionsUseCaseResponse,
         viewModels.TStudentCoachingSessionsListViewModel,
         TStudentCoachingSessionsPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const ListStudentCoachingSessionsResponseMiddleware =
 type TListStudentCoachingSessionsResponseMiddleware = typeof ListStudentCoachingSessionsResponseMiddleware;
 
 export default class ListStudentCoachingSessionsPresenter extends BasePresenter<
-    useCaseModels.TListStudentCoachingSessionsUseCaseResponse,
+    TListStudentCoachingSessionsUseCaseResponse,
     viewModels.TStudentCoachingSessionsListViewModel,
     TStudentCoachingSessionsPresenterUtilities,
     TListStudentCoachingSessionsResponseMiddleware
@@ -29,7 +34,7 @@ export default class ListStudentCoachingSessionsPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.ListStudentCoachingSessionsUseCaseResponseSchema,
+                responseModel: ListStudentCoachingSessionsUseCaseResponseSchema,
                 viewModel: viewModels.StudentCoachingSessionsListViewModelSchema
             },
             middleware: ListStudentCoachingSessionsResponseMiddleware,
@@ -40,7 +45,7 @@ export default class ListStudentCoachingSessionsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListStudentCoachingSessionsUseCaseResponse,
+            TListStudentCoachingSessionsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TStudentCoachingSessionsListViewModel {
@@ -54,7 +59,7 @@ export default class ListStudentCoachingSessionsPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListStudentCoachingSessionsUseCaseErrorResponse,
+            TListStudentCoachingSessionsErrorResponse,
             TListStudentCoachingSessionsResponseMiddleware
         >,
     ): viewModels.TStudentCoachingSessionsListViewModel {
