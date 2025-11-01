@@ -1,8 +1,8 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import PublicCourseDetailsPresenter from '../../common/presenters/public-course-details-presenter';
+import GetPublicCourseDetailsPresenter from '../../common/presenters/get-public-course-details-presenter';
 
 export function createGetPublicCourseDetailsPresenter(
-    setViewModel: (viewModel: viewModels.TPublicCourseDetailsViewModel) => void,
+    setViewModel: (viewModel: viewModels.TGetPublicCourseDetailsViewModel) => void,
 ) {
-    return new PublicCourseDetailsPresenter(setViewModel, {});
+    return new GetPublicCourseDetailsPresenter(setViewModel, {});
 }
