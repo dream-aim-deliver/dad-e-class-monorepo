@@ -16,15 +16,18 @@ interface Creator {
     image?: string;
 }
 
+interface Coach {
+    name: string;
+    isCurrentUser: boolean;
+    avatarUrl?: string;
+}
+
 export interface GroupOverviewCardDetails {
     groupName: string;
     currentStudents: number;
     totalStudents: number;
     course: Course;
-    coach: {
-        name: string;
-        isCurrentUser: boolean;
-    };
+    coaches: Coach[];
     creator: Creator;
 }
 
@@ -33,7 +36,6 @@ type BaseGroupOverviewCardProps = {
     onClickCourse?: (slug: string) => void;
     className?: string;
     locale: TLocale;
-    isAdmin?: boolean;
 };
 
 type GroupOverviewCardProps = BaseGroupOverviewCardProps & {
@@ -44,10 +46,9 @@ export type { GroupOverviewCardProps };
 
 /**
  * GroupOverviewCard component for displaying group information
- * 
+ *
  * @param cardDetails - The details of the group to be displayed
- * @param isAdmin - Whether the current user is an admin (shows manage button and sets coach as "You")
- * @param onClickManage - Callback for admin manage action
+ * @param onClickManage - Callback for manage action (shown if current user is a coach)
  * @param onClickCourse - Callback for clicking on course
  * @param className - Additional CSS classes
  * @param locale - The locale for translations
@@ -57,7 +58,6 @@ const GroupOverviewCard: FC<GroupOverviewCardProps> = ({
     onClickCourse,
     className,
     locale,
-    isAdmin = false,
     onClickManage,
 }) => {
     if (!cardDetails) return null;
@@ -110,39 +110,40 @@ const GroupOverviewCard: FC<GroupOverviewCardProps> = ({
                 />
             </div>
 
-            {/* Coach Information - only show if admin */}
-            {isAdmin && (
-                <div className="flex items-center gap-2">
-                    <span className="text-text-secondary text-sm">
-                        {dictionary.components.groupCard.coach}
-                    </span>
-                    <span className="text-text-primary text-md">
-                        {dictionary.components.groupCard.you}
-                    </span>
-                </div>
-            )}
-
-            {/* Creator Information - only show if not admin */}
-            {!isAdmin && (
-                <div className="flex items-center gap-2">
-                    <IconAccountInformation size="4" className="flex-shrink-0" />
-                    <span className="text-text-secondary text-sm">{dictionary.components.groupCard.createdBy}</span>
-                    <div className="flex items-center gap-1">
-                        <UserAvatar
-                            fullName={cardDetails.creator.name}
-                            imageUrl={cardDetails.creator.image}
-                            className="rounded-small"
-                            size="small"
-                        />
-                        <span className="text-text-secondary text-sm font-medium">
-                            {cardDetails.creator.name}
+            {/* Coaches Information */}
+            {cardDetails.coaches && cardDetails.coaches.length > 0 && (
+                <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                        <IconAccountInformation size="4" className="flex-shrink-0" />
+                        <span className="text-text-secondary text-sm">
+                            {cardDetails.coaches.length === 1
+                                ? dictionary.components.groupCard.coach
+                                : dictionary.components.groupCard.coaches}
                         </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 ml-6">
+                        {cardDetails.coaches.map((coach, index) => (
+                            <div key={index} className="flex items-center gap-1">
+                                <UserAvatar
+                                    fullName={coach.name}
+                                    imageUrl={coach.avatarUrl}
+                                    className="rounded-small"
+                                    size="small"
+                                />
+                                <span className={cn(
+                                    "text-sm font-medium",
+                                    coach.isCurrentUser ? "text-text-primary" : "text-text-secondary"
+                                )}>
+                                    {coach.isCurrentUser ? dictionary.components.groupCard.you : coach.name}
+                                </span>
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
 
-            {/* Action Button - only Manage button for admin */}
-            {isAdmin && onClickManage && (
+            {/* Action Button - only Manage button if current user is a coach */}
+            {cardDetails.coaches?.some(coach => coach.isCurrentUser) && onClickManage && (
                 <div className="mt-2">
                     <Button
                         variant="secondary"

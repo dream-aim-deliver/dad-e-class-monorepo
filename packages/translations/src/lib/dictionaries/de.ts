@@ -458,6 +458,7 @@ export const DE: TDictionary = {
       students: 'Studenten',
       course: 'Kurs',
       coach: 'Coach',
+      coaches: 'Coaches',
       you: 'Sie',
       createdBy: 'Erstellt von',
       manage: 'Verwalten',
@@ -1570,6 +1571,10 @@ export const DE: TDictionary = {
         noGroupsFound: 'Keine Gruppen für diesen Kurs gefunden.',
         searchPlaceholder: 'Gruppen suchen...',
         createGroupButton: 'Gruppe erstellen',
+        noCoach: 'Kein Coach',
+        unknownCreator: 'Unbekannt',
+        loadMoreButton: 'Mehr laden...',
+        loading: 'Lädt...',
         error: {
           title: 'Fehler beim Laden der Gruppen',
           description: 'Beim Laden der Kursgruppen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
