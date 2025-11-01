@@ -6,13 +6,13 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TCourseStudentsPresenterUtilities = {};
+export type TListCourseStudentsPresenterUtilities = {};
 
 export const ListCourseStudentsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         useCaseModels.TListCourseStudentsUseCaseResponse,
         viewModels.TCourseStudentsListViewModel,
-        TCourseStudentsPresenterUtilities
+        TListCourseStudentsPresenterUtilities
     >;
 
 type TListCourseStudentsResponseMiddleware = typeof ListCourseStudentsResponseMiddleware;
@@ -20,12 +20,12 @@ type TListCourseStudentsResponseMiddleware = typeof ListCourseStudentsResponseMi
 export default class ListCourseStudentsPresenter extends BasePresenter<
     useCaseModels.TListCourseStudentsUseCaseResponse,
     viewModels.TCourseStudentsListViewModel,
-    TCourseStudentsPresenterUtilities,
+    TListCourseStudentsPresenterUtilities,
     TListCourseStudentsResponseMiddleware
 > {
     constructor(
         setViewModel: (viewModel: viewModels.TCourseStudentsListViewModel) => void,
-        viewUtilities: TCourseStudentsPresenterUtilities,
+        viewUtilities: TListCourseStudentsPresenterUtilities,
     ) {
         super({
             schemas: {
@@ -51,6 +51,7 @@ export default class ListCourseStudentsPresenter extends BasePresenter<
             }
         };
     }
+
     presentError(
         response: UnhandledErrorResponse<
             useCaseModels.TListCourseStudentsUseCaseErrorResponse,
