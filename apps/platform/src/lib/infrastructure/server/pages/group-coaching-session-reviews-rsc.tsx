@@ -8,7 +8,7 @@ import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import GroupCoachingSessionReviews from '../../client/pages/group-coaching-session-reviews';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { redirect } from 'next/navigation';
 import getSession from '../config/auth/get-session';
 
@@ -30,9 +30,10 @@ export default async function GroupCoachingSessionReviewsServerComponent(
 
     const roles = session.user.roles;
     const isCoach = roles && roles.includes('coach');
+    const dictionary = getDictionary(props.locale);
 
     if (!isCoach) {
-        throw new Error('Access denied. Only coaches can access coaching session reviews.');
+        throw new Error(dictionary.pages.groupCoachingSessionReviews.error.accessDenied);
     }
 
     await Promise.all([

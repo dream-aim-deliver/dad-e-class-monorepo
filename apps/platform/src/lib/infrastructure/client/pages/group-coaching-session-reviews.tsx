@@ -224,7 +224,7 @@ export default function GroupCoachingSessionReviews({
                 <div className="w-full flex items-center justify-between gap-4">
                     <GroupCoachingSessionReviewsBanner
                         reviewCount={reviewsData.reviewCount}
-                        averageRating={reviewsData.averageRating || 0}
+                        averageRating={Math.round((reviewsData.averageRating || 0) * 100) / 100}
                         studentCount={reviewsData.studentCount}
                         locale={localeProp}
                     />
@@ -273,7 +273,9 @@ export default function GroupCoachingSessionReviews({
                     </>
                 ) : (
                     <div className="flex items-center justify-center py-16">
-                        <p className="text-text-secondary md:text-xl text-lg">{t('noReviewsFound')}</p>
+                        <p className="text-text-secondary md:text-xl text-lg">
+                            {allReviews.length === 0 ? t('groupHasNoReviews') : t('noReviewsFound')}
+                        </p>
                     </div>
                 )}
             </div>
