@@ -134,3 +134,4 @@ export * from './duplicate-lesson-view-model';
 export * from './duplicate-course-view-model';
 export * from './save-course-admin-details-view-model';
 export * from './publish-course-view-model';
+export * from './archive-course-view-model';
