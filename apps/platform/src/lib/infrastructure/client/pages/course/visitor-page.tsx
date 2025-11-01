@@ -322,12 +322,11 @@ export default function VisitorPage({
                                 <PackageCard
                                     key={pkg.id}
                                     {...pkg}
-                                    courseCount={pkg.courseCount}
                                     onClickPurchase={() =>
-                                        handlePackagePurchase(pkg.id)
+                                        handlePackagePurchase(String(pkg.id))
                                     }
                                     onClickDetails={() =>
-                                        handlePackageDetails(pkg.id)
+                                        handlePackageDetails(String(pkg.id))
                                     }
                                     locale={locale}
                                 />

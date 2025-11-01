@@ -11,30 +11,26 @@ export type TCoursePackagesPresenterUtilities = {};
 export const GetCoursePackagesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         useCaseModels.TGetCoursePackagesUseCaseResponse,
-        viewModels.TCoursePackagesViewModel,
+        viewModels.TGetCoursePackagesViewModel,
         TCoursePackagesPresenterUtilities
     >;
 
-type TGetCoursePackagesResponseMiddleware =
-    typeof GetCoursePackagesResponseMiddleware;
+type TGetCoursePackagesResponseMiddleware = typeof GetCoursePackagesResponseMiddleware;
 
 export default class CoursePackagesPresenter extends BasePresenter<
     useCaseModels.TGetCoursePackagesUseCaseResponse,
-    viewModels.TCoursePackagesViewModel,
+    viewModels.TGetCoursePackagesViewModel,
     TCoursePackagesPresenterUtilities,
     TGetCoursePackagesResponseMiddleware
 > {
     constructor(
-        setViewModel: (
-            viewModel: viewModels.TCoursePackagesViewModel,
-        ) => void,
+        setViewModel: (viewModel: viewModels.TGetCoursePackagesViewModel) => void,
         viewUtilities: TCoursePackagesPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel:
-                    useCaseModels.GetCoursePackagesUseCaseResponseSchema,
-                viewModel: viewModels.CoursePackagesViewModelSchema
+                responseModel: useCaseModels.GetCoursePackagesUseCaseResponseSchema,
+                viewModel: viewModels.GetCoursePackagesViewModelSchema
             },
             middleware: GetCoursePackagesResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -47,7 +43,7 @@ export default class CoursePackagesPresenter extends BasePresenter<
             useCaseModels.TGetCoursePackagesUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TCoursePackagesViewModel {
+    ): viewModels.TGetCoursePackagesViewModel {
         return {
             mode: 'default',
             data: {
@@ -61,15 +57,23 @@ export default class CoursePackagesPresenter extends BasePresenter<
             useCaseModels.TGetCoursePackagesUseCaseErrorResponse,
             TGetCoursePackagesResponseMiddleware
         >,
-    ): viewModels.TCoursePackagesViewModel {
+    ): viewModels.TGetCoursePackagesViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {
-
                 message: response.data.message,
                 operation: response.data.operation,
                 context: response.data.context
-
             }
         };
     }
