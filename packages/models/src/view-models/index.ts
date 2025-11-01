@@ -38,7 +38,6 @@ export * from './category-list-view-model';
 export * from './platform-language-view-model';
 export * from './assessment-component-view-model';
 
-export * from './course-students-list-view-model';
 export * from './list-coach-student-courses-view-model';
 export * from './course-materials-view-model';
 export * from './student-notes-view-model';
@@ -147,3 +146,4 @@ export * from './remove-course-coach-view-model';
 export * from './add-course-coach-view-model';
 export * from './list-upcoming-student-coaching-sessions-view-model';
 export * from './list-user-courses-view-model';
+export * from './list-course-students-view-model';

@@ -21,8 +21,8 @@ export function CourseStudents(
     const locale = useLocale() as TLocale;
 
     // Search state
-    const [filteredAllStudents, setFilteredAllStudents] = useState<viewModels.TCourseStudentsListSuccess['students']>([]);
-    const [filteredYourStudents, setFilteredYourStudents] = useState<viewModels.TCourseStudentsListSuccess['students']>([]);
+    const [filteredAllStudents, setFilteredAllStudents] = useState<viewModels.TListCourseStudentsSuccess['students']>([]);
+    const [filteredYourStudents, setFilteredYourStudents] = useState<viewModels.TListCourseStudentsSuccess['students']>([]);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all-students');
@@ -40,7 +40,7 @@ export function CourseStudents(
     });
 
     const [courseStudentsListViewModel, setCourseStudentsListViewModel] = useState<
-        viewModels.TCourseStudentsListViewModel | undefined
+        viewModels.TListCourseStudentsViewModel | undefined
     >(undefined);
 
     const { presenter } = useListCourseStudentsPresenter(
@@ -100,7 +100,7 @@ export function CourseStudents(
     }
 
     // Helper to render content based on students and search state
-    const renderStudentContent = (students: viewModels.TCourseStudentsListSuccess['students'], displayedStudents: viewModels.TCourseStudentsListSuccess['students'], hasMore: boolean, handleLoadMore: () => void) => {
+    const renderStudentContent = (students: viewModels.TListCourseStudentsSuccess['students'], displayedStudents: viewModels.TListCourseStudentsSuccess['students'], hasMore: boolean, handleLoadMore: () => void) => {
         // If there's a search query and no results, show "No students found"
         if (searchQuery.trim() !== '' && students.length === 0) {
             return (
@@ -132,7 +132,7 @@ export function CourseStudents(
     };
 
     // Helper to render student cards (extracted to avoid duplication)
-    const renderStudentCards = (students: viewModels.TCourseStudentsListSuccess['students']) => {
+    const renderStudentCards = (students: viewModels.TListCourseStudentsSuccess['students']) => {
         return students.map((student, index) => {
             // Determine status based on whether assignment exists and its status
             let status: StudentCardProps["status"] = "no-assignment";
