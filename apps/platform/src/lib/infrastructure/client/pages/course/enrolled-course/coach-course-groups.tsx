@@ -15,7 +15,7 @@ import { trpc } from '../../../trpc/cms-client';
 import { useListCourseGroupsPresenter } from '../../../hooks/use-list-course-groups-presenter';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import { useTranslations } from 'next-intl';
-import type { TListCourseGroupsUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
+
 
 interface EnrolledCourseGroupsProps {
     courseSlug: string;
@@ -49,6 +49,9 @@ export default function CoachCourseGroups({
     currentRole,
 }: EnrolledCourseGroupsProps) {
     const locale = useLocale() as TLocale;
+
+    // Add translations
+    const t = useTranslations('pages.course.groups');
 
     const [groupsResponse] = trpc.listCourseGroups.useSuspenseQuery({
         courseSlug,
@@ -91,13 +94,6 @@ export default function CoachCourseGroups({
         if (!Array.isArray(groups)) return [];
 
         return (groups as BackendGroup[]).map((group: BackendGroup) => {
-            // Find the current user coach and check if current user is a coach in this group
-            const currentUserCoach = group.coaches?.find(coach => coach.isCurrentUser);
-            const isCurrentUserCoach = !!currentUserCoach;
-            
-            // For display, show current user coach if they exist, otherwise show first coach
-            const displayCoach = currentUserCoach || (group.coaches && group.coaches[0]);
-            
             // For creator, use the first coach as creator (or could be a separate field)
             const creator = group.coaches && group.coaches[0];
 
@@ -110,26 +106,21 @@ export default function CoachCourseGroups({
                     title: group.course.title,
                     slug: group.course.slug,
                 },
-                coach: displayCoach ? {
-                    name: `${displayCoach.name} ${displayCoach.surname}`,
-                    isCurrentUser: isCurrentUserCoach, // This should be true if current user is ANY coach in this group
-                } : {
-                    name: 'No Coach',
-                    isCurrentUser: false,
-                },
+                coaches: group.coaches?.map(coach => ({
+                    name: `${coach.name} ${coach.surname}`,
+                    isCurrentUser: coach.isCurrentUser,
+                    avatarUrl: coach.avatarUrl || undefined,
+                })) || [],
                 creator: creator ? {
                     name: `${creator.name} ${creator.surname}`,
                     image: creator.avatarUrl || undefined,
                 } : {
-                    name: 'Unknown',
+                    name: t('unknownCreator'),
                     image: undefined,
                 },
             };
         });
-    }, [groupsResponse]);
-
-    // Add translations for load more button
-    const t = useTranslations('pages.course.enrolledCoaches');
+    }, [groupsResponse, t]);
 
     // Use client-side pagination for groups
     const {
@@ -148,9 +139,6 @@ export default function CoachCourseGroups({
         originalHandleLoadMore();
         setIsLoadingMore(false);
     }, [originalHandleLoadMore]);
-
-    // Determine if user is admin/coach
-    const isAdmin = currentRole === 'coach' || currentRole === 'course_creator' || currentRole === 'admin';
 
     // Handle coupon code changes
     const handleCouponCodeChange = useCallback((value: string) => {
@@ -197,7 +185,6 @@ export default function CoachCourseGroups({
             <GroupsList
                 locale={locale}
                 allGroups={displayedGroups}
-                isAdmin={isAdmin}
                 couponCode={couponCode}
                 onCouponCodeChange={handleCouponCodeChange}
                 onValidateCode={handleValidateCode}

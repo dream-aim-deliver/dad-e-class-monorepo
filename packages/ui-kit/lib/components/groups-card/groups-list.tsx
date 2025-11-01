@@ -8,14 +8,13 @@ import { GroupOverviewCard, GroupOverviewCardDetails } from './groups-overview-c
 import { Tabs } from '../tabs/tab';
 
 export interface GroupsListProps {
-  isAdmin?: boolean;
   locale: TLocale;
   className?: string;
-  
+
   // All Groups data - shows ALL groups in "All Groups" tab, filters for "Your Groups" tab
   allGroups?: GroupOverviewCardDetails[];
-  
-  // Your Groups data - DEPRECATED: now auto-filtered from allGroups based on coach.isCurrentUser
+
+  // Your Groups data - DEPRECATED: now auto-filtered from allGroups based on coaches.isCurrentUser
   yourGroups?: GroupOverviewCardDetails[];
   
   // Join Group props
@@ -37,12 +36,11 @@ export interface GroupsListProps {
 
 /**
  * GroupsList component displaying groups with tabs for "All groups" and "Your groups"
- * 
+ *
  * The component filters groups as follows:
  * - "All groups" tab: Shows ALL groups from the allGroups array
- * - "Your groups" tab: Shows only groups where the current user is the coach (coach.isCurrentUser === true)
- * 
- * @param isAdmin - Whether the current user is an admin (shows manage buttons)
+ * - "Your groups" tab: Shows only groups where the current user is a coach (coaches array contains isCurrentUser === true)
+ *
  * @param locale - The locale for translations
  * @param allGroups - Array of all available groups
  * @param yourGroups - Array of user's groups (deprecated - now auto-filtered from allGroups)
@@ -53,13 +51,12 @@ export interface GroupsListProps {
  * @param hasValidationMessage - Whether there is a validation message
  * @param validationMessage - Validation message to display
  * @param onClickCourse - Callback for clicking on course
- * @param onClickManage - Callback for manage action (admin only)
+ * @param onClickManage - Callback for manage action (shown if current user is a coach)
  * @param onClickViewProfile - Callback for view profile action
  * @param isLoading - Whether data is loading
  * @param className - Additional CSS classes
  */
 export const GroupsList: FC<GroupsListProps> = ({
-  isAdmin = false,
   locale,
   className,
   allGroups = [],
@@ -78,19 +75,17 @@ export const GroupsList: FC<GroupsListProps> = ({
   const dictionary = getDictionary(locale);
   const [activeTab, setActiveTab] = useState('all-groups');
 
-  // "Your Groups" shows only where user is coach, "All Groups" shows ALL groups
-  const filteredYourGroups = allGroups.filter(group => group.coach?.isCurrentUser === true);
+  // "Your Groups" shows only where user is a coach, "All Groups" shows ALL groups
+  const filteredYourGroups = allGroups.filter(group =>
+    group.coaches?.some(coach => coach.isCurrentUser === true)
+  );
   const filteredAllGroups = allGroups; // Show ALL groups in "All Groups" tab
 
   const renderGroupCard = (group: GroupOverviewCardDetails, index: number, isYourGroup = false) => {
-    // Show admin view when user is admin AND is the coach of this group (regardless of tab)
-    const showAsAdmin = isAdmin && group.coach?.isCurrentUser;
-    
     return (
       <GroupOverviewCard
         key={`${group.groupName}-${index}`}
         cardDetails={group}
-        isAdmin={showAsAdmin}
         locale={locale}
         onClickCourse={onClickCourse}
         onClickManage={() => onClickManage?.(group.groupName)}

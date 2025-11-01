@@ -461,6 +461,7 @@ export const DictionarySchema = z.object({
       students: z.string(),
       course: z.string(),
       coach: z.string(),
+      coaches: z.string(),
       you: z.string(),
       createdBy: z.string(),
       manage: z.string(),
@@ -1623,6 +1624,10 @@ export const DictionarySchema = z.object({
         noGroupsFound: z.string(),
         searchPlaceholder: z.string(),
         createGroupButton: z.string(),
+        noCoach: z.string(),
+        unknownCreator: z.string(),
+        loadMoreButton: z.string(),
+        loading: z.string(),
         error: z.object({
           title: z.string(),
           description: z.string(),

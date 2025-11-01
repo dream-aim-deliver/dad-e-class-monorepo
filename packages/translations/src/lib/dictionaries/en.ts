@@ -455,6 +455,7 @@ export const EN: TDictionary = {
       students: 'students',
       course: 'Course',
       coach: 'Coach',
+      coaches: 'Coaches',
       you: 'You',
       createdBy: 'Created by',
       manage: 'Manage',
@@ -1567,6 +1568,10 @@ export const EN: TDictionary = {
         noGroupsFound: 'No groups found for this course.',
         searchPlaceholder: 'Search groups...',
         createGroupButton: 'Create Group',
+        noCoach: 'No Coach',
+        unknownCreator: 'Unknown',
+        loadMoreButton: 'Load More...',
+        loading: 'Loading...',
         error: {
           title: 'Failed to load groups',
           description: 'An error occurred while loading course groups. Please try again.',
