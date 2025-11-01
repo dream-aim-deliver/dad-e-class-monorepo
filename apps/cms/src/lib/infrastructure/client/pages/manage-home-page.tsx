@@ -74,7 +74,15 @@ export default function ManageHomepage() {
 		banner: {
 			title: '',
 			description: '',
-			videoId: null,
+			video: {
+				name: '',
+				thumbnailUrl: '',
+				id: '',
+				size: 0,
+				downloadUrl: '',
+				category: "video",
+				playbackId: ''
+			},
 			thumbnailImage: null,
 		},
 		carousel: [],
@@ -189,7 +197,7 @@ export default function ManageHomepage() {
 			banner: {
 				title: editableHomePageData.banner.title,
 				description: editableHomePageData.banner.description,
-				videoId: editableHomePageData.banner.videoId ? Number(editableHomePageData.banner.videoId) : null,
+				videoId: editableHomePageData.banner.video?.id ? Number(editableHomePageData.banner.video.id) : null,
 				thumbnailImageId: editableHomePageData.banner.thumbnailImage?.id ? Number(editableHomePageData.banner.thumbnailImage.id) : null,
 			},
 			carousel: editableHomePageData.carousel.map(item => ({
