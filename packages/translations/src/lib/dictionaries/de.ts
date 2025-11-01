@@ -1894,6 +1894,7 @@ export const DE: TDictionary = {
       },
       showingResults: 'Zeige {count} von {total} Sitzungen',
       noSessionsFound: 'Keine Sitzungen gefunden, die deinen Kriterien entsprechen',
+      groupHasNoSessions: 'Diese Gruppe hat keine beendeten Coaching-Sitzungen',
       clearFilters: 'Filter löschen',
       error: {
         title: 'Sitzungen konnten nicht geladen werden',

@@ -1926,6 +1926,7 @@ export const DictionarySchema = z.object({
       }),
       showingResults: z.string(),
       noSessionsFound: z.string(),
+      groupHasNoSessions: z.string(),
       clearFilters: z.string(),
       error: z.object({
         title: z.string(),

@@ -381,7 +381,7 @@ export default function EndedGroupCoachingSessions({
                     </>
                 ) : (
                     <div className="flex items-center justify-center py-16">
-                        <p className="text-text-secondary md:text-xl text-lg">{t('noSessionsFound')}</p>
+                        <p className="text-text-secondary md:text-xl text-lg">{t('groupHasNoSessions')}</p>
                     </div>
                 )}
             </div>
