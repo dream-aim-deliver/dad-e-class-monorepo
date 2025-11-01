@@ -150,3 +150,4 @@ export * from './get-student-course-review-view-model';
 export * from './list-upcoming-student-coaching-sessions-view-model';
 export * from './list-user-courses-view-model';
 export * from './list-course-students-view-model';
+export * from './get-course-packages-view-model';
