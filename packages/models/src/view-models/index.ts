@@ -130,3 +130,4 @@ export * from './list-platform-coaches-view-model';
 export * from './redeem-standalone-coupon-view-model';
 export * from './create-transaction-tag-view-model';
 export * from './list-transaction-tags-view-model';
+export * from './duplicate-lesson-view-model';
