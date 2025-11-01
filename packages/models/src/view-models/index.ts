@@ -132,3 +132,4 @@ export * from './create-transaction-tag-view-model';
 export * from './list-transaction-tags-view-model';
 export * from './duplicate-lesson-view-model';
 export * from './duplicate-course-view-model';
+export * from './save-course-admin-details-view-model';
