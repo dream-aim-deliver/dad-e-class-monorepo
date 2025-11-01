@@ -1885,6 +1885,7 @@ export const EN: TDictionary = {
       title: 'Group Coaching Session Reviews',
       description: 'View and manage reviews for this group coaching session',
       noReviewsFound: 'No reviews found matching your criteria',
+      groupHasNoReviews: 'This coaching session has no reviews yet.',
       error: {
         title: 'Failed to load reviews',
         description: 'An error occurred while loading the coaching session reviews. Please try again.',

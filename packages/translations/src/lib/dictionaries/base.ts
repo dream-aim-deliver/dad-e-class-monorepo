@@ -1920,6 +1920,7 @@ export const DictionarySchema = z.object({
       title: z.string(),
       description: z.string(),
       noReviewsFound: z.string(),
+      groupHasNoReviews: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),

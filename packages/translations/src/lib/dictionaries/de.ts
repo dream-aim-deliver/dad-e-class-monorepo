@@ -1888,6 +1888,7 @@ export const DE: TDictionary = {
       title: 'Gruppenkurs Bewertungen',
       description: 'Bewertungen für diese Gruppenkurs-Sitzung anzeigen und verwalten',
       noReviewsFound: 'Keine Bewertungen gefunden, die deinen Kriterien entsprechen',
+      groupHasNoReviews: 'Diese Coaching-Sitzung hat noch keine Bewertungen.',
       error: {
         title: 'Bewertungen konnten nicht geladen werden',
         description: 'Beim Laden der Coaching-Sitzungsbewertungen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
