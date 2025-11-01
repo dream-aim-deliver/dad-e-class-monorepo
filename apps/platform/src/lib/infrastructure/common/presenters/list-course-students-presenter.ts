@@ -1,19 +1,14 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import {
     ListCourseStudentsResponseSchema,
-    ListCourseStudentsSuccessResponseSchema,
-    ListCourseStudentsErrorResponseSchema,
+    TListCourseStudentsResponse,
+    TListCourseStudentsErrorResponse,
 } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
-import { z } from 'zod';
-
-// Type definitions from cms-rest schemas
-type TListCourseStudentsResponse = z.infer<typeof ListCourseStudentsResponseSchema>;
-type TListCourseStudentsErrorResponse = z.infer<typeof ListCourseStudentsErrorResponseSchema>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TListCourseStudentsPresenterUtilities = {};
