@@ -232,7 +232,6 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
       <Breadcrumbs items={breadcrumbItems} />
 
       <div className="flex flex-col space-y-2">
-        <h1>{t('title')}</h1>
         <p className="text-text-secondary text-sm">
           Platform: {platformContext.platformSlug} | Content Language: {platformLocale.toUpperCase()}
         </p>
