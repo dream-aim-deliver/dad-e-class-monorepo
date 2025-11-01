@@ -10,9 +10,9 @@
 
 import { trpc } from '../trpc/cms-client';
 import { useState } from 'react';
-import { 
-  DefaultLoading, 
-  DefaultError, 
+import {
+  DefaultLoading,
+  DefaultError,
   DefaultNotFound,
   PackageGeneralInformation,
   DefaultAccordion,
@@ -31,6 +31,7 @@ import { useSession } from 'next-auth/react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetPackageWithCoursesPresenter } from '../hooks/use-get-package-with-courses-presenter';
 import { useListPackageRelatedPackagesPresenter } from '../hooks/use-list-package-related-packages-presenter';
+import { useRequiredPlatform } from '../context/platform-context';
 
 interface PackageProps {
   locale: TLocale;
@@ -44,7 +45,8 @@ export default function Package({ locale, packageId }: PackageProps) {
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
   const sessionDTO = useSession();
 
-  
+  const { platform } = useRequiredPlatform();
+
   const [coachingIncluded, setCoachingIncluded] = useState(false);
   const [excludedCourseIds, setExcludedCourseIds] = useState<number[]>([]);
 
@@ -110,8 +112,8 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   // Success state - extract data from view model
   const packageData = packageViewModel.data.package;
-  const relatedPackagesData = relatedPackagesViewModel.mode === 'default' 
-    ? relatedPackagesViewModel.data.packages 
+  const relatedPackagesData = relatedPackagesViewModel.mode === 'default'
+    ? relatedPackagesViewModel.data.packages
     : [];
 
   // Session check for purchase action (non-blocking)
@@ -126,36 +128,36 @@ export default function Package({ locale, packageId }: PackageProps) {
   // Calculate pricing with partial discounts
   const calculatePackageWithCoursesPricing = () => {
     const roundToTwoDecimals = (value: number) => Math.round(value * 100) / 100;
-    
+
     const courseCount = displayedCourses.length;
     const totalCoursesInPackage = packageData.courses.length;
     const allCoursesSelected = courseCount === totalCoursesInPackage;
-    
+
     // Calculate sum of individual course prices for displayed courses
     const sumOfCoursePrices = roundToTwoDecimals(
-      displayedCourses.reduce((sum, course) => 
-        sum + (coachingIncluded ? course.priceIncludingCoachings : course.basePrice), 
+      displayedCourses.reduce((sum, course) =>
+        sum + (coachingIncluded ? course.priceIncludingCoachings : course.basePrice),
         0
       )
     );
-    
+
     // If all courses are selected, use the same logic as calculatePackagePricing
     if (allCoursesSelected) {
       const packagePrice = roundToTwoDecimals(
         coachingIncluded ? packageData.priceWithCoachings : packageData.price
       );
-      
+
       return {
         fullPrice: sumOfCoursePrices,
         partialPrice: packagePrice,
       };
     }
-    
+
     // For partial selection, find the applicable discount based on number of courses
     const applicableDiscount = packageData.partialDiscounts
       .sort((a, b) => b.courseAmount - a.courseAmount) // Sort descending
       .find(discount => courseCount >= discount.courseAmount);
-    
+
     if (!applicableDiscount) {
       // No discount available for this course count - no discount applied
       return {
@@ -163,13 +165,13 @@ export default function Package({ locale, packageId }: PackageProps) {
         partialPrice: sumOfCoursePrices,
       };
     }
-    
+
     // Apply the partial discount to the sum of selected courses
     const discountPercent = applicableDiscount.discountPercent;
     const discountedPrice = roundToTwoDecimals(
       sumOfCoursePrices * (1 - discountPercent / 100)
     );
-    
+
     return {
       fullPrice: sumOfCoursePrices,
       partialPrice: discountedPrice,
@@ -181,16 +183,16 @@ export default function Package({ locale, packageId }: PackageProps) {
   // Calculate pricing for the Package (all courses, no exclusions)
   const calculatePackagePricing = () => {
     const roundToTwoDecimals = (value: number) => Math.round(value * 100) / 100;
-    
+
     // Sum of ALL courses in the package (no exclusions)
-    const sumOfAllCourses = roundToTwoDecimals(packageData.courses.reduce((sum, course) => 
+    const sumOfAllCourses = roundToTwoDecimals(packageData.courses.reduce((sum, course) =>
       sum + (coachingIncluded ? course.priceIncludingCoachings : course.basePrice), 0
     ));
-    
+
     // Package price (with or without coaching) which is the discounted price
     const packagePrice = roundToTwoDecimals(coachingIncluded ? packageData.priceWithCoachings : packageData.price);
 
-    
+
     return {
       fullPrice: sumOfAllCourses,
       partialPrice: packagePrice
@@ -263,7 +265,7 @@ export default function Package({ locale, packageId }: PackageProps) {
           description={packageData.description}
           duration={packageData.courses.reduce((sum, c) => sum + c.duration, 0)}
           pricing={{
-            currency: 'CHF', // TODO: Get the right platform currency
+            currency: platform.currency,
             fullPrice: packagePricing.fullPrice,
             partialPrice: packagePricing.partialPrice
           }}
@@ -301,7 +303,7 @@ export default function Package({ locale, packageId }: PackageProps) {
           description={packageData.description}
           coachingIncluded={coachingIncluded}
           pricing={{
-            currency: 'CHF', // TODO: Get the right platform currency
+            currency: platform.currency,
             fullPrice: pricing.fullPrice,
             partialPrice: pricing.partialPrice
           }}
@@ -323,7 +325,8 @@ export default function Package({ locale, packageId }: PackageProps) {
                     name: course.creator.name,
                     image: course.creator.avatarUrl || ''
                   },
-                  imageUrl: '', // TODO: Get course image
+                  //imageUrl: course.imageUrl, // TODO: Get course image once this branch is updated
+                  imageUrl: '',
                   rating: course.averageRating,
                   duration: {
                     video: course.duration,
@@ -333,7 +336,7 @@ export default function Package({ locale, packageId }: PackageProps) {
                   pricing: {
                     fullPrice: course.basePrice,
                     partialPrice: course.priceIncludingCoachings,
-                    currency: 'CHF'// TODO: Get the right platform currency
+                    currency: platform.currency
                   },
                   language: course.language,
                 }}
@@ -345,7 +348,7 @@ export default function Package({ locale, packageId }: PackageProps) {
               />
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-text-primary">
-                  CHF {coachingIncluded ? course.priceIncludingCoachings : course.basePrice}
+                  {platform.currency} {coachingIncluded ? course.priceIncludingCoachings : course.basePrice}
                 </span>
                 <div className="flex gap-2">
                   <Button
@@ -377,7 +380,7 @@ export default function Package({ locale, packageId }: PackageProps) {
           description={packageData.description}
           duration={packageData.courses.reduce((sum, c) => sum + c.duration, 0)}
           pricing={{
-            currency: 'CHF', // TODO: Get the right platform currency
+            currency: platform.currency,
             fullPrice: packagePricing.fullPrice,
             partialPrice: packagePricing.partialPrice
           }}
@@ -398,7 +401,7 @@ export default function Package({ locale, packageId }: PackageProps) {
               </h2>
               <p className="text-text-secondary">
                 {t('relatedPackages.subtitle').split(t('relatedPackages.findAllOffers'))[0]}
-                <button 
+                <button
                   className="text-primary hover:underline"
                   onClick={() => router.push(`/${currentLocale}/packages`)}
                 >
@@ -407,7 +410,7 @@ export default function Package({ locale, packageId }: PackageProps) {
                 {t('relatedPackages.subtitle').split(t('relatedPackages.findAllOffers'))[1]}
               </p>
             </div>
-            
+
             <PackageCardList locale={currentLocale}>
               {relatedPackagesData.map((relatedPackage) => (
                 <PackageCard
@@ -418,7 +421,7 @@ export default function Package({ locale, packageId }: PackageProps) {
                   duration={relatedPackage.duration}
                   courseCount={relatedPackage.courseCount}
                   pricing={{
-                    currency: 'CHF', // TODO: Get the right platform currency
+                    currency: platform.currency,
                     fullPrice: relatedPackage.price,
                     partialPrice: relatedPackage.priceWithCoachings
                   }}
