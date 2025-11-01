@@ -1,36 +1,46 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ListCourseStudentsResponseSchema,
+    ListCourseStudentsSuccessResponseSchema,
+    ListCourseStudentsErrorResponseSchema,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import { z } from 'zod';
+
+// Type definitions from cms-rest schemas
+type TListCourseStudentsResponse = z.infer<typeof ListCourseStudentsResponseSchema>;
+type TListCourseStudentsErrorResponse = z.infer<typeof ListCourseStudentsErrorResponseSchema>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TCourseStudentsPresenterUtilities = {};
+export type TListCourseStudentsPresenterUtilities = {};
 
 export const ListCourseStudentsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListCourseStudentsUseCaseResponse,
-        viewModels.TCourseStudentsListViewModel,
-        TCourseStudentsPresenterUtilities
+        TListCourseStudentsResponse,
+        viewModels.TListCourseStudentsViewModel,
+        TListCourseStudentsPresenterUtilities
     >;
 
 type TListCourseStudentsResponseMiddleware = typeof ListCourseStudentsResponseMiddleware;
 
 export default class ListCourseStudentsPresenter extends BasePresenter<
-    useCaseModels.TListCourseStudentsUseCaseResponse,
-    viewModels.TCourseStudentsListViewModel,
-    TCourseStudentsPresenterUtilities,
+    TListCourseStudentsResponse,
+    viewModels.TListCourseStudentsViewModel,
+    TListCourseStudentsPresenterUtilities,
     TListCourseStudentsResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TCourseStudentsListViewModel) => void,
-        viewUtilities: TCourseStudentsPresenterUtilities,
+        setViewModel: (viewModel: viewModels.TListCourseStudentsViewModel) => void,
+        viewUtilities: TListCourseStudentsPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.ListCourseStudentsUseCaseResponseSchema,
-                viewModel: viewModels.CourseStudentsListViewModelSchema
+                responseModel: ListCourseStudentsResponseSchema,
+                viewModel: viewModels.ListCourseStudentsViewModelSchema
             },
             middleware: ListCourseStudentsResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -40,10 +50,10 @@ export default class ListCourseStudentsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListCourseStudentsUseCaseResponse,
+            TListCourseStudentsResponse,
             { success: true }
         >,
-    ): viewModels.TCourseStudentsListViewModel {
+    ): viewModels.TListCourseStudentsViewModel {
         return {
             mode: 'default',
             data: {
@@ -51,12 +61,13 @@ export default class ListCourseStudentsPresenter extends BasePresenter<
             }
         };
     }
+
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListCourseStudentsUseCaseErrorResponse,
+            TListCourseStudentsErrorResponse,
             TListCourseStudentsResponseMiddleware
         >,
-    ): viewModels.TCourseStudentsListViewModel {
+    ): viewModels.TListCourseStudentsViewModel {
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
