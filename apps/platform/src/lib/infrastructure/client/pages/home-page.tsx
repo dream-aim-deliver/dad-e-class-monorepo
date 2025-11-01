@@ -102,7 +102,7 @@ export default function HomePage() {
                     title={homePage.banner.title}
                     description={homePage.banner.description}
                     thumbnailUrl={homePage.banner.thumbnailImage?.downloadUrl ?? ''}
-                    videoId={homePage.banner.videoId ?? ''}
+                    videoId={homePage.banner.video?.playbackId ?? ''}
                 />
                 <Divider />
                 <Carousel locale={locale}>
