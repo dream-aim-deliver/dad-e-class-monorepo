@@ -8,7 +8,7 @@ import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import EndedGroupCoachingSessions from '../../client/pages/ended-group-coaching-sessions';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { redirect } from 'next/navigation';
 import getSession from '../config/auth/get-session';
 
@@ -31,9 +31,10 @@ export default async function EndedGroupCoachingSessionsServerComponent(
     const roles = session.user.roles;
     const isCoach = roles && roles.includes('coach');
 
+    const dictionary = getDictionary(props.locale);
+
     if (!isCoach) {
-        // Localized error will be handled by error boundary
-        throw new Error('pages.endedGroupCoachingSessions.error.accessDenied');
+        throw new Error(dictionary.pages.endedGroupCoachingSessions.error.accessDenied);
     }
 
     await Promise.all([

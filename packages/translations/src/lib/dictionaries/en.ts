@@ -1891,6 +1891,7 @@ export const EN: TDictionary = {
       },
       showingResults: 'Showing {count} of {total} sessions',
       noSessionsFound: 'No sessions found matching your criteria',
+      groupHasNoSessions: 'This group has no ended coaching sessions.',
       clearFilters: 'Clear Filters',
       error: {
         title: 'Failed to load sessions',
