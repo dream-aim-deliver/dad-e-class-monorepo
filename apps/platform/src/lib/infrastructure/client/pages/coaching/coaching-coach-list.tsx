@@ -69,9 +69,11 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
 
     if (coachesViewModel.mode === 'not-found') {
         return (
-            <p className="text-center text-gray-500 py-8 w-full">
-                {coachingT('noCoachesFound')}
-            </p>
+            <div className="flex-1 flex items-center justify-center">
+                <p className="text-center text-gray-500 py-8">
+                    {coachingT('noCoachesFound')}
+                </p>
+            </div>
         );
     }
 
@@ -81,9 +83,11 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
 
     if (displayedCoaches.length === 0) {
         return (
-            <p className="text-center text-gray-500 py-8 w-full">
-                {coachingT('noCoachesFound')}
-            </p>
+            <div className="flex-1 flex items-center justify-center">
+                <p className="text-center text-gray-500 py-8">
+                    {coachingT('noCoachesFound')}
+                </p>
+            </div>
         );
     }
 
