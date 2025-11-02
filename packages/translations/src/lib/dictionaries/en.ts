@@ -90,17 +90,6 @@ export const EN: TDictionary = {
       resetFilters: "Reset filters",
       applyFilters: "Apply filters",
     },
-    coachReviewFilterModal: {
-      filterReviews: "Filter reviews",
-      ratingFilter: "Rating Filter",
-      maxRating: "Max rating",
-      minRating: "Min rating",
-      dateFilter: "Date Filter",
-      beforeDate: "Before date",
-      afterDate: "After date",
-      resetFilters: "Reset filters",
-      applyFilters: "Apply filters",
-    },
     studentCardFilterModal: {
       title: 'Student Card Filters',
       studentNameFilter: 'Student Name',
