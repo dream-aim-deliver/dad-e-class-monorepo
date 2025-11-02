@@ -2356,6 +2356,7 @@ export const EN: TDictionary = {
         companyUuidPlaceholder: 'Enter company UUID',
         logo: 'Platform Logo',
         backgroundImage: 'Background Image',
+        readOnly: 'Read-only',
       },
       error: {
         title: 'Error',
