@@ -2329,6 +2329,22 @@ export const DE: TDictionary = {
         },
       },
     },
+    cmsSettings: {
+      title: 'Plattform-Einstellungen',
+      description: 'Verwalte Plattform-Konfiguration und Erscheinungsbild',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Plattform-Einstellungen ist ein Fehler aufgetreten.',
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die angeforderten Einstellungen konnten nicht gefunden werden.',
+        },
+        unauthorized: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, auf die Plattform-Einstellungen zuzugreifen.',
+        },
+      },
+    },
     preCourseAssessmentForm: {
       title: "Vorkurs-Bewertungsformular",
       description: "Dieses Formular wird automatisch zu Beginn jedes Kurses angezeigt.",

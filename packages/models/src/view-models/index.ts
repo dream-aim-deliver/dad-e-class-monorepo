@@ -1,4 +1,3 @@
-export * from './platform-view-model';
 export * from './list-platforms-view-model';
 export * from './list-languages-view-model';
 export * from './topic-list-view-model';
@@ -136,3 +135,4 @@ export * from './save-course-admin-details-view-model';
 export * from './publish-course-view-model';
 export * from './archive-course-view-model';
 export * from './update-platform-view-model';
+export * from './get-platform-view-model';

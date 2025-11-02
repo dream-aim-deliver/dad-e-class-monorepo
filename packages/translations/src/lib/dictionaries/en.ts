@@ -2326,6 +2326,22 @@ export const EN: TDictionary = {
         },
       },
     },
+    cmsSettings: {
+      title: 'Platform Settings',
+      description: 'Manage platform configuration and appearance',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading platform settings.',
+        notFound: {
+          title: 'Not Found',
+          description: 'The requested settings could not be found.',
+        },
+        unauthorized: {
+          title: 'Access Denied',
+          description: 'You do not have permission to access platform settings.',
+        },
+      },
+    },
     preCourseAssessmentForm: {
       title: "Pre-Course Assessment Form",
       description: "This form is displayed automatically at the beginning of each course",
