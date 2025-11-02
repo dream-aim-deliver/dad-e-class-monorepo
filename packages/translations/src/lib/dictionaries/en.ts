@@ -1147,6 +1147,7 @@ export const EN: TDictionary = {
       coachingSessionReviews: 'Coaching Session Reviews',
       cmsSettings: 'Settings',
       transactions: 'Transactions',
+      ordersAndPayments: 'Orders & Payments',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1752,7 +1753,7 @@ export const EN: TDictionary = {
       at: 'at',
       invoice: 'Invoice (PDF)',
       total: 'Tot:',
-      coachingSession: 'Coachin session (s)',
+      coachingSession: 'Coachin session(s)',
       minutes: 'min',
       package: 'Package:',
       coursesIncluded: 'Courses included',
@@ -2570,6 +2571,7 @@ export const EN: TDictionary = {
       amount: 'Amount',
       status: 'Status',
       type: 'Type',
+      loadMore: 'Load more...',
       error: {
         title: 'Error',
         description: 'An error occurred while loading your order history.',

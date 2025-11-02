@@ -35,7 +35,6 @@ export interface CoachingOrderHistoryProps extends BaseOrderHistoryCardProps {
         durationMinutes: number; // e.g. 20
         count: number; // e.g. 4
     }[];
-    onSchedule: () => void;
 }
 
 /* Package Variant */
@@ -99,7 +98,6 @@ export type OrderHistoryCardProps =
  *     { sessionName: 'Quick sprint', durationMinutes: 20, count: 4 },
  *     { sessionName: 'Full immersion', durationMinutes: 60, count: 1 },
  *   ]}
- *   onSchedule={() => alert('Schedule clicked')}
  *   onInvoiceClick={() => alert('Invoice clicked')}
  * />
  * ```
@@ -134,7 +132,6 @@ export type OrderHistoryCardProps =
  * @param {string} [props.courseTitle] - For course variant, title of the course.
  * @param {() => void} [props.onClickCourse] - For course variant, click handler.
  * @param {Array} [props.sessions] - For coaching variant, list of session details.
- * @param {() => void} [props.onSchedule] - For coaching variant, click handler for scheduling.
  * @param {string} [props.packageTitle] - For package variant, title of the package.
  * @param {Array} [props.coursesIncluded] - For package variant, list of included courses.
  */
@@ -143,7 +140,7 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
     const dictionary = getDictionary(props.locale).components.orderHistoryCard;
 
     return (
-        <div className="flex flex-col w-full rounded-medium border border-card-stroke bg-card-fill p-4 gap-3">
+        <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full min-w-0">
             {/* Header */}
             <div className="flex justify-between items-center gap-8">
                 <p className="text-text-primary text-md">
@@ -212,14 +209,6 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
                             />
                         ))}
                     </div>
-                    <div className="flex items-start">
-                        <Button
-                            variant="secondary"
-                            size="small"
-                            text={dictionary.scheduleButton}
-                            onClick={props.onSchedule}
-                        />
-                    </div>
                 </div>
             )}
 
@@ -234,17 +223,17 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
                             />
                         </div>
                         <div className="flex flex-row gap-4 items-center">
-                            <p className="text-text-secondary text-sm md:text-md">
+                            <p className="text-text-secondary text-sm md:text-md flex-shrink-0">
                                 {dictionary.package}
                             </p>
                             <Button
                                 variant="text"
                                 size="small"
-                                className="p-0 gap-2 truncate"
+                                className="p-0 gap-2 text-left whitespace-normal break-words"
                                 hasIconLeft
                                 iconLeft={
                                     <UserAvatar
-                                        className="rounded-small"
+                                        className="rounded-small flex-shrink-0"
                                         fullName={props.packageTitle}
                                         size="xSmall"
                                         imageUrl={props.packageImageUrl}

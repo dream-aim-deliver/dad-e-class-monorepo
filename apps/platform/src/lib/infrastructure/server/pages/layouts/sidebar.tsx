@@ -38,7 +38,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
         students: '/workspace/students',
         reviews: '/workspace/your-reviews',
         profile: '/workspace/profile',
-        orderPayments: '/workspace/orders',
+        orderPayments: '/workspace/billing',
     };
 
     // Create dynamic route mapping based on current locale
@@ -57,6 +57,8 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             '/workspace/your-reviews': sidebarTranslations('yourReviews'),
             '/profile': sidebarTranslations('yourProfile'),
             '/orders': sidebarTranslations('orderPayments'),
+            '/billing': sidebarTranslations('orderPayments'),
+            '/workspace/pre-course-assessment': 'Pre-Course Assessment',
         };
 
         // Create mapping with and without locale prefix
@@ -103,17 +105,17 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                 },
                 ...(!isStudent
                     ? [
-                          {
-                              icon: <IconGroup />,
-                              label: sidebarTranslations('yourStudents'),
-                              onClick: () => router.push(routeMap.students),
-                          },
-                          {
-                              icon: <IconStar />,
-                              label: sidebarTranslations('yourReviews'),
-                              onClick: () => router.push(routeMap.reviews),
-                          },
-                      ]
+                        {
+                            icon: <IconGroup />,
+                            label: sidebarTranslations('yourStudents'),
+                            onClick: () => router.push(routeMap.students),
+                        },
+                        {
+                            icon: <IconStar />,
+                            label: sidebarTranslations('yourReviews'),
+                            onClick: () => router.push(routeMap.reviews),
+                        },
+                    ]
                     : []),
             ],
             [
