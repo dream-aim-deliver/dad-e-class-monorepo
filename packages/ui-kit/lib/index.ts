@@ -214,7 +214,6 @@ export { type CoachingSessionData } from './components/available-coaching-sessio
 export { CoachingAvailabilityCard } from './components/available-coaching-sessions/coaching-availability-card';
 
 export { ReviewModal, ReviewDialog, ReviewCard } from './components/review/review-modal';
-export { default as CoachReviewCard } from './components/review/coach-review-card';
 export { CancelCoachingSessionModal } from './components/coaching-sessions/cancel-coaching-session-modal';
 export { CoachingSessionList } from "./components/coaching-sessions/coaching-session-list"
 export { ConfirmationModal } from './components/confirmation-modal';
