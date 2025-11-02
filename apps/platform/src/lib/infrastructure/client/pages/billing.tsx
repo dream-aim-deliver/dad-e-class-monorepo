@@ -7,12 +7,13 @@
 
 import { useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { DefaultLoading, Tabs } from '@maany_shr/e-class-ui-kit';
+import { Breadcrumbs, DefaultLoading, Tabs } from '@maany_shr/e-class-ui-kit';
 import { useSession } from 'next-auth/react';
 import { Suspense } from 'react';
 import { BillingTab } from '../utils/billing-tabs';
 import OrderHistoryTab from './order-history-tab';
 import ReceivedPaymentsTab from './received-payments-tab';
+import { useRouter } from 'next/navigation';
 
 interface BillingProps {
     locale: TLocale;
@@ -22,14 +23,35 @@ interface BillingProps {
 export default function Billing({ locale, tab }: BillingProps) {
     const t = useTranslations('pages.orderHistory');
     const tReceivedPayments = useTranslations('pages.receivedPayments');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const sessionDTO = useSession();
     const session = sessionDTO.data;
     const isCoach = session?.user?.roles?.includes('coach');
+    const router = useRouter();
+
+    // Breadcrumb navigation items
+    const breadcrumbItems = [
+        {
+            label: breadcrumbsTranslations('home'),
+            onClick: () => router.push(`/${locale}`),
+        },
+        {
+            label: breadcrumbsTranslations('dashboard'),
+            onClick: () => router.push(`/${locale}/workspace/dashboard`),
+        },
+        {
+            label: breadcrumbsTranslations('ordersAndPayments'),
+            onClick: () => {},
+        },
+    ];
 
     // Students see only order history without tabs
     if (!isCoach) {
         return (
-            <div className="flex flex-col space-y-5 px-30">
+            <div className="flex flex-col space-y-5">
+                {/* Breadcrumbs */}
+                <Breadcrumbs items={breadcrumbItems} />
+
                 {/* Page header with translations */}
                 <div>
                     <h1>{t('title')}</h1>
@@ -47,7 +69,10 @@ export default function Billing({ locale, tab }: BillingProps) {
     const tabContentClass = 'mt-10';
 
     return (
-        <div className="flex flex-col space-y-5 px-30">
+        <div className="flex flex-col space-y-5">
+            {/* Breadcrumbs */}
+            <Breadcrumbs items={breadcrumbItems} />
+
             {/* Page header */}
             <div>
                 <h1>{t('ordersAndPayments')}</h1>

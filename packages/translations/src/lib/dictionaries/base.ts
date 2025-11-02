@@ -1138,6 +1138,7 @@ export const DictionarySchema = z.object({
       coachingSessionReviews: z.string(),
       cmsSettings: z.string(),
       transactions: z.string(),
+      ordersAndPayments: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -2608,6 +2609,7 @@ export const DictionarySchema = z.object({
       amount: z.string(),
       status: z.string(),
       type: z.string(),
+      loadMore: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),

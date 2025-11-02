@@ -1151,6 +1151,7 @@ export const DE: TDictionary = {
       coachingSessionReviews: 'Coaching-Sitzungsbewertungen',
       cmsSettings: 'Einstellungen',
       transactions: 'Transaktionen',
+      ordersAndPayments: 'Bestellungen und Zahlungen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -2573,6 +2574,7 @@ export const DE: TDictionary = {
       amount: 'Betrag',
       status: 'Status',
       type: 'Typ',
+      loadMore: 'Mehr laden...',
       error: {
         title: 'Fehler',
         description: 'Beim Laden deines Bestellverlaufs ist ein Fehler aufgetreten.',

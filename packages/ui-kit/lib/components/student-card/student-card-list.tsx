@@ -40,9 +40,9 @@ export function StudentCardList({ children, locale }: StudentCardListProps) {
     }
 
     return (
-        <div className="flex flex-col gap-4 justify-center items-center w-full">
+        <div className="w-full">
             <div
-                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 w-full"
+                className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 w-full"
                 role="list"
             >
                 {Array.isArray(children) ? (
@@ -50,12 +50,13 @@ export function StudentCardList({ children, locale }: StudentCardListProps) {
                         <div
                             key={child?.key ?? `student-card-${index}`}
                             role="listitem"
+                            className="min-w-0"
                         >
                             {child}
                         </div>
                     ))
                 ) : (
-                    <div key="single-student-card" role="listitem">
+                    <div key="single-student-card" role="listitem" className="min-w-0">
                         {children}
                     </div>
                 )}

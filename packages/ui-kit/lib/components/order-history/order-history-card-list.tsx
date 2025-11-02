@@ -34,7 +34,7 @@ export function OrderHistoryCardList({
 
     if (isEmpty) {
         return (
-            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:max-w-[22rem]">
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
                 <p className="text-text-primary text-md">
                     {dictionary.emptyState}
                 </p>
@@ -43,19 +43,23 @@ export function OrderHistoryCardList({
     }
 
     return (
-        <div className="flex flex-col justify-center items-center w-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full">
+            <div
+                className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 w-full"
+                role="list"
+            >
                 {Array.isArray(children) ? (
                     children.map((child, index) => (
                         <div
                             key={child?.key ?? `order-history-card-${index}`}
                             role="listitem"
+                            className="min-w-0 w-full"
                         >
                             {child}
                         </div>
                     ))
                 ) : (
-                    <div key="single-order-history-card" role="listitem">
+                    <div key="single-order-history-card" role="listitem" className="min-w-0 w-full">
                         {children}
                     </div>
                 )}
