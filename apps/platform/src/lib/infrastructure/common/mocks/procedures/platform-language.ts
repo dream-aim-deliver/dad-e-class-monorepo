@@ -8,6 +8,8 @@ const getPlatformLanguageMock: useCaseModels.TGetPlatformLanguageSuccessResponse
     termsOfUseContent: 'Terms of use content',
     aboutPageContent: 'About page content',
     enablePreCourseAssessment: false,
+    rules: 'Rules content',
+    offerInformation: 'Offer information content',
 };
 
 export const getPlatformLanguage = t.procedure

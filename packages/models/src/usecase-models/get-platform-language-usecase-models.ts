@@ -14,6 +14,8 @@ export const GetPlatformLanguageSuccessResponseSchema = BaseSuccessSchemaFactory
   privacyPolicyContent: z.string().nullable(),
   termsOfUseContent: z.string().nullable(),
   aboutPageContent: z.string().nullable(),
+  rules: z.string().nullable(),
+  offerInformation: z.string().nullable(),
   enablePreCourseAssessment: z.boolean(),
 }));
 

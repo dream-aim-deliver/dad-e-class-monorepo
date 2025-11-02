@@ -38,7 +38,7 @@ const FooterLinks = () => {
             <Link href="/rules">
                 <span className={linkClass}>{t('rules')}</span>
             </Link>
-            <Link href="/courses-information">
+            <Link href="/offer-information">
                 <span className={linkClass}>{t('coursesInformation')}</span>
             </Link>
         </>
