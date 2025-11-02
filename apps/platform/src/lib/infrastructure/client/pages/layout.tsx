@@ -5,8 +5,8 @@ import Header from './header';
 import Footer from './footer';
 import { useState, useEffect, useRef } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useGetPlatformPresenter } from '../hooks/use-platform-presenter';
-import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { useGetPlatformPresenter } from '../hooks/use-get-platform-presenter';
+import { DefaultError, DefaultLoading, DefaultNotFound } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
@@ -45,7 +45,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
 
     const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
     const [platformViewModel, setPlatformViewModel] = useState<
-        viewModels.TPlatformViewModel | undefined
+        viewModels.TGetPlatformViewModel | undefined
     >(undefined);
     const { presenter: platformPresenter } =
         useGetPlatformPresenter(setPlatformViewModel);
@@ -54,8 +54,14 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
 
     if (!platformViewModel)
         return <DefaultLoading locale={locale} variant="minimal" />;
+
     if (platformViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
+    }
+
+    if (platformViewModel.mode === 'not-found')
+    {
+        return <DefaultNotFound locale={locale} />;
     }
 
     return (
@@ -63,9 +69,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
             className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
             style={{
                 // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                // TODO: remove hardcoded background image URL and use platformViewModel data when CMS Settings page is implemented
-                //backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImageUrl})`,
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(https://res.cloudinary.com/dsyephqpf/image/upload/v1747650265/background-eln_mhvipu.jpg)`,
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImage?.downloadUrl ?? ''})`,
                 backgroundSize: '100% auto',
                 // TODO: have a fallback color
                 backgroundColor: '#141414',

@@ -1,7 +1,7 @@
 'use client';
 
 import { auth, viewModels } from '@maany_shr/e-class-models';
-import { Navbar } from '@maany_shr/e-class-ui-kit';
+import { DefaultError, Navbar } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -9,10 +9,9 @@ import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface HeaderProps {
-    platformViewModel: viewModels.TPlatformViewModel;
+    platformViewModel: viewModels.TGetPlatformViewModel;
     availableLocales: TLocale[];
     locale: TLocale;
     // TODO: implement session context
@@ -129,11 +128,10 @@ export default function Header({
     };
 
     // TODO: remove this and wire logo properly once CMS Settings page is implemented
-    const runtimeConfig = useRuntimeConfig();
-    const logoUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL ??
-        (platformViewModel.mode === 'default' ? platformViewModel.data.logoUrl : null) ?? '';
 
-    if (platformViewModel.mode !== 'default') return null;
+    if (platformViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     return (
         <Navbar
@@ -143,7 +141,7 @@ export default function Header({
             logo={
                 <Image
                     priority
-                    src={logoUrl}
+                    src={platformViewModel.data.logo?.downloadUrl ?? ''}
                     alt={platformViewModel.data.name}
                     width={48}
                     height={48}

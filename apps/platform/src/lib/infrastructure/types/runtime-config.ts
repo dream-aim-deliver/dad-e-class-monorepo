@@ -10,7 +10,5 @@ export interface RuntimeConfig {
     NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: string;
     NEXT_PUBLIC_APP_URL: string;
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: string;
-    // TODO: remove this and wire logo properly once CMS Settings page is implemented
-    NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL: string | null | undefined;
     defaultTheme: 'just-do-ad' | 'job-brand-me' | 'bewerbeagentur' | 'cms';
 }
