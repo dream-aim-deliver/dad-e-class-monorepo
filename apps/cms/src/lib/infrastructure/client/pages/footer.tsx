@@ -12,7 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface FooterProps {
-    platformViewModel: viewModels.TPlatformViewModel;
+    platformViewModel: viewModels.TGetPlatformViewModel;
     availableLocales: TLocale[];
     locale: TLocale;
 }
@@ -66,7 +66,7 @@ export default function Footer({
             logo={
                 <Image
                     priority
-                    src={platformViewModel.data.logoUrl || ''}
+                    src={platformViewModel.data.logo?.downloadUrl || ''}
                     alt={platformViewModel.data.name}
                     width={48}
                     height={48}

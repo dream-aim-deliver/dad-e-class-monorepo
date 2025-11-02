@@ -127,8 +127,6 @@ export default function Header({
         // logout is handled by the Navbar component itself
     };
 
-    // TODO: remove this and wire logo properly once CMS Settings page is implemented
-
     if (platformViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }

@@ -14,7 +14,7 @@ import { useRequiredPlatform } from '../context/platform-context';
 import { useState, useEffect, useCallback } from 'react';
 import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useGetPlatformPresenter } from '../hooks/use-platform-presenter';
+import { useGetPlatformPresenter } from '../hooks/use-get-platform-presenter';
 import { useSavePlatformFooterPresenter } from '../hooks/use-save-platform-footer-presenter';
 import {
 	DefaultLoading,
@@ -26,6 +26,7 @@ import {
 	FeedBackMessage,
 	Banner,
 	Breadcrumbs,
+	DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -45,7 +46,7 @@ export default function ManageFooter() {
 	const [platformResponse, { refetch: refetchPlatform }] = trpc.getPlatform.useSuspenseQuery({});
 
 	const [platformViewModel, setPlatformViewModel] = useState<
-		viewModels.TPlatformViewModel | undefined
+		viewModels.TGetPlatformViewModel | undefined
 	>(undefined);
 
 	// Query presenter
@@ -150,6 +151,10 @@ export default function ManageFooter() {
 				onRetry={() => refetchPlatform()}
 			/>
 		);
+	}
+
+	if (platformViewModel?.mode === 'not-found') {
+		return <DefaultNotFound locale={locale} />;
 	}
 
 	// Loading state - show loading animation while data is being fetched or initialized
