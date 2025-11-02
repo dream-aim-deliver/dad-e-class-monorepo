@@ -46,6 +46,11 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
   const platformContext = useRequiredPlatformLocale();
   const { platform } = useRequiredPlatform();
 
+  // No-op for disabled fields
+  const noOp = () => {
+    // Intentionally empty - used for disabled read-only fields
+  };
+
   // Fetch platform data
   const [getPlatformResponse, { refetch: refetchPlatform }] = trpc.getPlatform.useSuspenseQuery({});
 
@@ -124,6 +129,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
           category: data.logo.category,
           url: data.logo.downloadUrl,
           thumbnailUrl: data.logo.downloadUrl,
+          status: 'available',
         });
       }
 
@@ -135,6 +141,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
           category: data.backgroundImage.category,
           url: data.backgroundImage.downloadUrl,
           thumbnailUrl: data.backgroundImage.downloadUrl,
+          status: 'available',
         });
       }
 
@@ -288,7 +295,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
             <InputField
               inputText={t('fields.slugPlaceholder') ?? 'Platform slug'}
               value={slug}
-              setValue={() => {}}
+              setValue={noOp}
               state="disabled"
             />
           </div>
@@ -300,7 +307,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
             <InputField
               inputText={t('fields.currencyPlaceholder') ?? 'Currency code'}
               value={currency}
-              setValue={() => {}}
+              setValue={noOp}
               state="disabled"
             />
           </div>
@@ -312,7 +319,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
             <InputField
               inputText={t('fields.domainNamePlaceholder') ?? 'Platform domain'}
               value={domainName}
-              setValue={() => {}}
+              setValue={noOp}
               state="disabled"
             />
           </div>

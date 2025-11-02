@@ -18,8 +18,6 @@ export default async function LoginServerComponent() {
         NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME,
         NEXT_PUBLIC_APP_URL: env.NEXT_PUBLIC_APP_URL,
         NEXT_PUBLIC_E_CLASS_CMS_REST_URL: env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
-        // TODO: remove this and wire logo properly once CMS Settings page is implemented
-        NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL: env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL,
         defaultTheme: env.DEFAULT_THEME,
     };
 

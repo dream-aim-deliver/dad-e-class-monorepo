@@ -48,7 +48,7 @@ export default async function PlatformLayout({
                     >
                         <CMSSidebarLayout
                             platformName={platform.name}
-                            platformLogoUrl={platform.logoUrl ?? undefined}
+                            platformLogoUrl={platform.logo?.downloadUrl ?? undefined}
                             platformSlug={platformSlug}
                             platformLocale={platformLocale}
                             locale={appLocale}
