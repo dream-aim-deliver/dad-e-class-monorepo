@@ -1770,6 +1770,12 @@ export const DE: TDictionary = {
     privacyPolicy: {
       title: 'Datenschutzerklärung',
     },
+    rules: {
+      title: 'Regeln',
+    },
+    offerInformation: {
+      title: 'Angebotsinformationen',
+    },
     student: {
       tabs: {
         assignments: 'Aufgaben',
@@ -2221,6 +2227,8 @@ export const DE: TDictionary = {
         impressum: 'Impressum',
         privacyPolicy: 'Datenschutzerklärung',
         termsOfUse: 'Nutzungsbedingungen',
+        rules: 'Regeln',
+        offerInformation: 'Angebotsinformationen',
       },
       saveButton: 'Änderungen speichern',
       saving: 'Änderungen werden gespeichert...',

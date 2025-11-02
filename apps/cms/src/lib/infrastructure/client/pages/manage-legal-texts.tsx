@@ -65,6 +65,8 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
   const [impressumContent, setImpressumContent] = useState<string>('');
   const [privacyPolicyContent, setPrivacyPolicyContent] = useState<string>('');
   const [termsOfUseContent, setTermsOfUseContent] = useState<string>('');
+  const [rulesContent, setRulesContent] = useState<string>('');
+  const [offerInformationContent, setOfferInformationContent] = useState<string>('');
   const [isContentInitialized, setIsContentInitialized] = useState(false);
 
   // Track the locale for which data was loaded to prevent race conditions
@@ -101,6 +103,8 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
         setImpressumContent(platformLanguageViewModel.data.impressumContent || '');
         setPrivacyPolicyContent(platformLanguageViewModel.data.privacyPolicyContent || '');
         setTermsOfUseContent(platformLanguageViewModel.data.termsOfUseContent || '');
+        setRulesContent(platformLanguageViewModel.data.rules || '');
+        setOfferInformationContent(platformLanguageViewModel.data.offerInformation || '');
         loadedForLocaleRef.current = contentLocale;
         lastDataHashRef.current = dataHash;
         setIsContentInitialized(true);
@@ -126,6 +130,8 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
       impressumContent,
       privacyPolicyContent,
       termsOfUse: termsOfUseContent,
+      rules: rulesContent,
+      offerInformation: offerInformationContent,
     });
   };
 
@@ -205,8 +211,14 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
           <Tabs.Trigger value="privacy-policy" isLast={false}>
             {t('tabs.privacyPolicy')}
           </Tabs.Trigger>
-          <Tabs.Trigger value="terms-of-use" isLast={true}>
+          <Tabs.Trigger value="terms-of-use" isLast={false}>
             {t('tabs.termsOfUse')}
+          </Tabs.Trigger>
+          <Tabs.Trigger value="rules" isLast={false}>
+            {t('tabs.rules')}
+          </Tabs.Trigger>
+          <Tabs.Trigger value="offer-information" isLast={true}>
+            {t('tabs.offerInformation')}
           </Tabs.Trigger>
         </Tabs.List>
 
@@ -262,6 +274,44 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
                 locale={currentLocale}
                 onContentChange={(value: string) => {
                   setTermsOfUseContent(value);
+                }}
+                isCourseBuilder={false}
+              />
+            </div>
+          </Tabs.Content>
+
+          <Tabs.Content value="rules">
+            <div className="flex flex-col gap-4">
+              <h2 className="text-xl font-semibold text-white">{t('tabs.rules')}</h2>
+              <RichTextDesignerComponent
+                key={`rules-${updateCounter}`}
+                elementInstance={{
+                  id: 'rules-content',
+                  type: FormElementType.RichText,
+                  content: rulesContent || '',
+                } as RichTextElement}
+                locale={currentLocale}
+                onContentChange={(value: string) => {
+                  setRulesContent(value);
+                }}
+                isCourseBuilder={false}
+              />
+            </div>
+          </Tabs.Content>
+
+          <Tabs.Content value="offer-information">
+            <div className="flex flex-col gap-4">
+              <h2 className="text-xl font-semibold text-white">{t('tabs.offerInformation')}</h2>
+              <RichTextDesignerComponent
+                key={`offer-information-${updateCounter}`}
+                elementInstance={{
+                  id: 'offer-information-content',
+                  type: FormElementType.RichText,
+                  content: offerInformationContent || '',
+                } as RichTextElement}
+                locale={currentLocale}
+                onContentChange={(value: string) => {
+                  setOfferInformationContent(value);
                 }}
                 isCourseBuilder={false}
               />

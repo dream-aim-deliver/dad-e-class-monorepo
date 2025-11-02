@@ -52,7 +52,7 @@ const FooterLinks = ({ locale }: { locale: TLocale }) => {
       <a href="/rules">
         <span className={linkClass}>{t.rules}</span>
       </a>
-      <a href="/courses-information">
+      <a href="/offer-information">
         <span className={linkClass}>{t.coursesInformation}</span>
       </a>
     </>

@@ -1802,6 +1802,12 @@ export const DictionarySchema = z.object({
     privacyPolicy: z.object({
       title: z.string(),
     }),
+    rules: z.object({
+      title: z.string(),
+    }),
+    offerInformation: z.object({
+      title: z.string(),
+    }),
     student: z.object({
       tabs: z.object({
         assignments: z.string(),
@@ -2253,6 +2259,8 @@ export const DictionarySchema = z.object({
         impressum: z.string(),
         privacyPolicy: z.string(),
         termsOfUse: z.string(),
+        rules: z.string(),
+        offerInformation: z.string(),
       }),
       saveButton: z.string(),
       saving: z.string(),
