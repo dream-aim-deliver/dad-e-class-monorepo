@@ -1,38 +1,41 @@
 import { z } from 'zod';
 import {
     BaseErrorDiscriminatedUnionSchemaFactory,
+    BasePartialSchemaFactory,
     BaseStatusDiscriminatedUnionSchemaFactory,
-    BaseSuccessSchemaFactory
+    BaseSuccessSchemaFactory,
+    CommonErrorSchemaMap
 } from '@dream-aim-deliver/dad-cats';
 import { DefaultPaginationSchema } from '../utils/pagination';
+import {
+    CourseStatusSchema,
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 export const ListUserCoursesRequestSchema = DefaultPaginationSchema.extend({
-  userId: z.number().optional(),
+    userId: z.number().optional().nullable(),
 });
 export type TListUserCoursesRequest = z.infer<typeof ListUserCoursesRequestSchema>;
-
-export const CourseStateSchema = z.enum(['draft', 'review', 'live']);
-export type TCourseState = z.infer<typeof CourseStateSchema>;
 
 const BaseCourseSchema = z.object({
     id: z.number(),
     slug: z.string(),
     title: z.string(),
-    state: z.string(),
     description: z.string(),
+    status: CourseStatusSchema,
     imageUrl: z.string().nullable(),
     averageRating: z.number(),
     reviewCount: z.number(),
     author: z.object({
-        name: z.string().nullable(),
-        surname: z.string().nullable(),
+        name: z.string(),
+        surname: z.string(),
         username: z.string(),
         avatarUrl: z.string().nullable(),
     }),
     language: z.string(),
-    coachingSessionCount: z.number().optional(),
+    coachingSessionCount: z.number().optional().nullable(),
     salesCount: z.number(),
     fullDuration: z.number(),
+    createdAt: z.string().datetime({ offset: true }),
 });
 
 const StudentCourseSchema = BaseCourseSchema.extend({
@@ -45,8 +48,7 @@ const CoachCourseSchema = BaseCourseSchema.extend({
 });
 
 const OwnerAdminCourseSchema = BaseCourseSchema.extend({
-    role: z.enum(['course_creator', 'admin']),
-    state: CourseStateSchema,
+    role: z.enum(['course_creator', 'admin', 'superadmin']),
 });
 
 const CourseSchema = z.discriminatedUnion('role', [
@@ -61,12 +63,22 @@ export const ListUserCoursesSuccessResponseSchema = BaseSuccessSchemaFactory(z.o
 
 export type TListUserCoursesSuccessResponse = z.infer<typeof ListUserCoursesSuccessResponseSchema>;
 
-const ListUserCoursesUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+export const ListUserCoursesUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
 export type TListUserCoursesUseCaseErrorResponse = z.infer<typeof ListUserCoursesUseCaseErrorResponseSchema>;
 
+// TODO: Update factory to support discriminated unions
+export const ListUserCoursesUseCasePartialResponseSchema = BasePartialSchemaFactory(
+    // @ts-expect-error The factory expects only ZodRawShape, while discriminated union is not supported
+    CourseSchema,
+    CommonErrorSchemaMap
+)
+export type TListUserCoursesUseCasePartialResponse = z.infer<typeof ListUserCoursesUseCasePartialResponseSchema>;
+
+
 export const ListUserCoursesUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
-  ListUserCoursesSuccessResponseSchema,
-  ListUserCoursesUseCaseErrorResponseSchema,
+    ListUserCoursesSuccessResponseSchema,
+    ListUserCoursesUseCaseErrorResponseSchema,
+    ListUserCoursesUseCasePartialResponseSchema,
 ]);
 
 export type TListUserCoursesUseCaseResponse = z.infer<typeof ListUserCoursesUseCaseResponseSchema>;

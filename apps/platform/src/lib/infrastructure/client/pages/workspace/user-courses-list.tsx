@@ -47,7 +47,7 @@ export default function UserCoursesList() {
         viewModels.TUserCourseListViewModel | undefined
     >(undefined);
     const { presenter } = useListUserCoursesPresenter(setCoursesViewModel);
-    
+
     // Present data when available
     useEffect(() => {
         if (coursesResponse && presenter) {
@@ -134,10 +134,13 @@ export default function UserCoursesList() {
                         fullPrice: 0,
                     };
                     if (course.role === 'course_creator') {
+                        // TODO: sort out this mess -- ui-kit is out of date w.r.t course status
                         const stateToStatus: Record<string, CourseStatus> = {
                             draft: 'draft',
                             review: 'under-review',
                             live: 'published',
+                            // TODO: in particular, we need some sort of badge to show that a course is archived
+                            archived: 'published',
                         };
                         return (
                             <CourseCreatorCard
@@ -146,7 +149,8 @@ export default function UserCoursesList() {
                                 reviewCount={course.reviewCount}
                                 sessions={course.coachingSessionCount ?? 0}
                                 sales={course.salesCount}
-                                status={stateToStatus[course.state] || 'draft'}
+                                // TODO: get rid of this mapping once ui-kit is updated
+                                status={stateToStatus[course.status] || 'draft'}
                                 locale={locale}
                                 title={course.title}
                                 description={course.description}
