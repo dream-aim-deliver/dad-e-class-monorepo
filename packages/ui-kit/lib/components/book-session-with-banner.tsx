@@ -48,7 +48,7 @@ export const BookSessionWith = ({
     const dictionary = getDictionary(locale).components.bookSessionWithBanner;
 
     return (
-        <div className="flex flex-col w-full p-3 items-start gap-2">
+        <div className="flex flex-col w-full items-start gap-2">
             <UserAvatar
                 fullName={coachName}
                 size="medium"

@@ -90,6 +90,17 @@ export const DE: TDictionary = {
       resetFilters: "Filter zurücksetzen",
       applyFilters: "Filter anwenden",
     },
+    coachReviewFilterModal: {
+      filterReviews: "Bewertungen filtern",
+      ratingFilter: "Bewertungsfilter",
+      maxRating: "Max. Bewertung",
+      minRating: "Min. Bewertung",
+      dateFilter: "Datumsfilter",
+      beforeDate: "Vor Datum",
+      afterDate: "Nach Datum",
+      resetFilters: "Filter zurücksetzen",
+      applyFilters: "Filter anwenden",
+    },
     studentCardFilterModal: {
       title: 'Studentenkarten-Filter',
       studentNameFilter: 'Studentenname',
@@ -357,6 +368,7 @@ export const DE: TDictionary = {
     coachReview: {
       by: 'von',
       group: 'Gruppe',
+      emptyState: 'Für diesen Trainer liegen noch keine Bewertungen vor.',
     },
     coachCard: {
       coachingSession: "Coaching-Sitzung",
@@ -717,6 +729,10 @@ export const DE: TDictionary = {
       by: 'von',
       readMore: 'Mehr lesen',
       readLess: 'Weniger lesen',
+    },
+    reviewDisplay: {
+      yourReview: 'Ihre Bewertung',
+      close: 'Schließen',
     },
     moduleCompletionModal: {
       moduleCompletedText: 'Modul abgeschlossen – grossartig gemacht!',
@@ -1109,6 +1125,7 @@ export const DE: TDictionary = {
       groups: 'Gruppen',
       coachingSessionReviews: 'Coaching-Sitzungsbewertungen',
       cmsSettings: 'Einstellungen',
+      coaches: 'Trainer',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -2402,6 +2419,20 @@ export const DE: TDictionary = {
       loadMore: "Mehr laden",
       errorMessage: "Die Bewertungen der Coaching-Sitzung konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
       defaultError: "Die Bewertungen der Coaching-Sitzungen konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
+    },
+    coachProfile: {
+      back: "Zurück",
+      coachCourses: "Kurse des Trainers",
+      coachReviews: "Rezensionen des Trainers",
+      sortBy: "Sortieren nach",
+      selectSort: "Sortieroption wählen",
+      filterButton: "Filter",
+      mostRecentFirst: "Neueste zuerst",
+      oldestFirst: "Älteste zuerst",
+      bestFirst: "Beste zuerst",
+      worstFirst: "Schlechteste zuerst",
+      emptyStateCourses: "Bei diesem Trainer sind keine Kurse verfügbar.",
+      exploreCourses: "Entdecken Sie Kurse",
     },
   },
 };

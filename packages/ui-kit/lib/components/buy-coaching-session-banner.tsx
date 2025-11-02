@@ -54,7 +54,7 @@ export const BuyCoachingSessionBanner = ({
         getDictionary(locale).components.buyCoachingSessionBanner;
 
     return (
-        <div className="flex flex-col w-full p-3 items-start gap-4">
+        <div className="flex flex-col w-full items-start gap-4">
             <div className="flex flex-col md:flex-row w-full gap-5">
                 <div>
                     <UserAvatar

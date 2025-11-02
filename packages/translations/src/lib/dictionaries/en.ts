@@ -90,6 +90,17 @@ export const EN: TDictionary = {
       resetFilters: "Reset filters",
       applyFilters: "Apply filters",
     },
+    coachReviewFilterModal: {
+      filterReviews: "Filter reviews",
+      ratingFilter: "Rating Filter",
+      maxRating: "Max rating",
+      minRating: "Min rating",
+      dateFilter: "Date Filter",
+      beforeDate: "Before date",
+      afterDate: "After date",
+      resetFilters: "Reset filters",
+      applyFilters: "Apply filters",
+    },
     studentCardFilterModal: {
       title: 'Student Card Filters',
       studentNameFilter: 'Student Name',
@@ -354,6 +365,7 @@ export const EN: TDictionary = {
     coachReview: {
       by: 'by',
       group: 'Group',
+      emptyState: 'No reviews are available for this coach',
     },
     coachCard: {
       coachingSession: "Coaching Session",
@@ -727,6 +739,10 @@ export const EN: TDictionary = {
       by: 'by',
       readMore: 'Read more',
       readLess: 'Read less',
+    },
+    reviewDisplay: {
+      yourReview: 'Your Review',
+      close: 'Close',
     },
     moduleCompletionModal: {
       moduleCompletedText: 'Module complete — awesome job!',
@@ -1105,6 +1121,7 @@ export const EN: TDictionary = {
       groups: 'Groups',
       coachingSessionReviews: 'Coaching Session Reviews',
       cmsSettings: 'Settings',
+      coaches: 'Coaches',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -2399,6 +2416,20 @@ export const EN: TDictionary = {
       loadMore: "Load more",
       errorMessage: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
       defaultError: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
+    },
+    coachProfile: {
+      back: "Back",
+      coachCourses: "Coach's courses",
+      coachReviews: "Coach's reviews",
+      sortBy: "Sort by",
+      selectSort: "Select sorting option",
+      filterButton: "Filter",
+      mostRecentFirst: "Most recent first",
+      oldestFirst: "Oldest first", 
+      bestFirst: "Best first",
+      worstFirst: "Worst first",
+      emptyStateCourses: "No courses available from this coach",
+      exploreCourses: "Explore courses",
     },
   },
 };

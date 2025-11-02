@@ -238,6 +238,7 @@ export const DictionarySchema = z.object({
     coachReview: z.object({
       by: z.string(),
       group: z.string(),
+      emptyState: z.string(),
     }),
     calendar: z.object({
       yourMeeting: z.string(),
@@ -719,6 +720,10 @@ export const DictionarySchema = z.object({
       readMore: z.string(),
       readLess: z.string(),
     }),
+    reviewDisplay: z.object({
+      yourReview: z.string(),
+      close: z.string(),
+    }),
     moduleCompletionModal: z.object({
       moduleCompletedText: z.string(),
       moduleText: z.string(),
@@ -1096,6 +1101,7 @@ export const DictionarySchema = z.object({
       groups: z.string(),
       coachingSessionReviews: z.string(),
       cmsSettings: z.string(),
+      coaches: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -2434,6 +2440,20 @@ export const DictionarySchema = z.object({
       loadMore: z.string(),
       errorMessage: z.string(),
       defaultError: z.string(),
+    }),
+    coachProfile: z.object({
+      back: z.string(),
+      coachCourses: z.string(),
+      coachReviews: z.string(),
+      sortBy: z.string(),
+      selectSort: z.string(),
+      filterButton: z.string(),
+      mostRecentFirst: z.string(),
+      oldestFirst: z.string(),
+      bestFirst: z.string(),
+      worstFirst: z.string(),
+      emptyStateCourses: z.string(),
+      exploreCourses: z.string(),
     }),
   }),
 });

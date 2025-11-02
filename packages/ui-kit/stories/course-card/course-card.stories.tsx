@@ -248,6 +248,21 @@ export const StudentInProgressView: Story = {
   },
 };
 
+export const StudentNotPurchasedView: Story = {
+  ...Template,
+  args: {
+    userType: 'student',
+    reviewCount: 328,
+    locale: 'en', 
+    language: sampleCourseData.language,
+    course: sampleCourseData,
+    sales: 1850,
+    progress: 100,
+    isPurchased: false,
+    className: 'max-w-[352px]',
+  },  
+};
+
 export const StudentCompletedView: Story = {
   ...Template,
   args: {

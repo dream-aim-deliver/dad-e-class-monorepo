@@ -16,6 +16,8 @@ export interface CourseCardProps {
   creatorStatus?: CourseStatus;
   course?: course.TCourseMetadata;
   progress?: number;
+  isPurchased?: boolean;
+  coachingIncluded?: boolean;
   sessions?: number;
   sales?: number;
   groupName?: string;
@@ -52,6 +54,8 @@ export interface CourseCardProps {
  * @param onClickUser Callback for clicking the author's name (for all user types).
  * @param onBuy Callback for purchasing the course (for visitor user type).
  * @param className Optional CSS class for custom styling.
+ * @param isPurchased Indicates if the course has been purchased (for student user type).
+ * @param coachingIncluded Indicates if coaching is included in the course pricing.
  *
  * @returns A course card component specific to the user type, or null if invalid props are provided.
  *
@@ -94,6 +98,8 @@ export interface CourseCardProps {
  *     rating: 4.5,
  *   }}
  *   progress={46}
+ *   isPurchased={true}
+ *   coachingIncluded={true}
  *   sessions={15}
  *   sales={980}
  *   onResume={() => console.log('Resume course')}
@@ -111,6 +117,8 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     creatorStatus,
     course,
     progress,
+    isPurchased,
+    coachingIncluded,
     sessions = 0,
     sales = 0,
     groupName,
@@ -198,6 +206,9 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             sales={sales}
             reviewCount={reviewCount}
             progress={progress}
+            coachingIncluded={coachingIncluded}
+            isPurchased={isPurchased}
+            onBuy={onBuy}
             onBegin={onBegin}
             onResume={onResume}
             onReview={onReview}
