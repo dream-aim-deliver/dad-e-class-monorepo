@@ -18,6 +18,7 @@ interface BaseModalProps {
     message: string;
     locale: TLocale;
     declineReasonPlaceholder?: string;
+    cancelText?: string;
 }
 interface AcceptanceModalProps extends BaseModalProps {
     onConfirm: () => void;
@@ -46,7 +47,8 @@ export const ConfirmationModal: React.FC<ModalProps> = ({
     isLoading = false,
     viewModel,
     locale,
-    declineReasonPlaceholder="placeholder..."
+    declineReasonPlaceholder="placeholder...",
+    cancelText
 }) => {
     const [declineReason, setDeclineReason] = useState('');
 
@@ -55,16 +57,23 @@ export const ConfirmationModal: React.FC<ModalProps> = ({
             setDeclineReason('');
         }
     }, [isOpen]);
+    // Prevent closing the dialog when loading
+    const handleOpenChange = (_open: boolean) => {
+        if (!isLoading) {
+            onClose();
+        }
+    };
+
     return (
-        <Dialog open={isOpen} onOpenChange={onClose} defaultOpen={false}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange} defaultOpen={false}>
             <DialogContent
-                showCloseButton={true}
-                closeOnOverlayClick={true}
-                closeOnEscape={true}
+                showCloseButton={!isLoading}
+                closeOnOverlayClick={!isLoading}
+                closeOnEscape={!isLoading}
                 className="max-w-md"
             >
                 <DialogBody>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col">
                         <h2 className="text-xl font-semibold text-text-primary">
                             {title}
                         </h2>
@@ -80,7 +89,15 @@ export const ConfirmationModal: React.FC<ModalProps> = ({
                                 className="mt-2"
                             />
                         )}
-                        <div className="flex gap-3 justify-end mt-6">
+                        <div className="flex gap-3 justify-between mt-6">
+                            {cancelText && (
+                                <Button
+                                    variant="text"
+                                    text={cancelText}
+                                    onClick={onClose}
+                                    disabled={isLoading}
+                                />
+                            )}
                             {isLoading ? (
                                 <IconButton
                                     size="medium"

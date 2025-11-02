@@ -12,10 +12,8 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import UserCoursesList from './user-courses-list';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useEffect, useState } from 'react';
-import { viewModels } from '@maany_shr/e-class-models';
-import { useSearchCoursesPresenter } from '../../hooks/use-search-courses-presenter';
 import { useRouter } from 'next/navigation';
 
 interface UserCoursesProps {
@@ -48,31 +46,34 @@ function CreateCourseDialogContent() {
     const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
     const {
-        data: searchResponse,
+        data: coursesResponse,
         isFetching,
         error,
-    } = trpc.searchCourses.useQuery(
-        {
-            titleContains: debouncedSearchQuery,
-            pagination: {
-                page: 1,
-                pageSize: 4,
-            },
-        },
-        {},
-    );
-    const [searchViewModel, setSearchViewModel] = useState<
-        viewModels.TCourseSearchViewModel | undefined
-    >(undefined);
-    const { presenter } = useSearchCoursesPresenter(setSearchViewModel);
-    useEffect(() => {
-        if (searchResponse) {
-            presenter.present(searchResponse, searchViewModel);
-        }
-    }, [searchResponse, setSearchViewModel]);
+    } = trpc.listPlatformCoursesShort.useQuery({});
 
-    const courses =
-        searchViewModel?.mode === 'default' ? searchViewModel.data.courses : [];
+    const courses = coursesResponse?.success && (coursesResponse as any).data.courses
+        ? (coursesResponse as any).data.courses.filter((course: any) =>
+              course.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+          )
+        : [];
+
+    const utils = trpc.useUtils();
+    const duplicateCourseMutation = trpc.duplicateCourse.useMutation({
+        onSuccess: () => {
+            // Invalidate the user courses list to refetch and show the new duplicated course
+            utils.listUserCourses.invalidate();
+            setIsOpen(false);
+        },
+        onError: (error) => {
+            console.error('Duplication failed:', error);
+        },
+    });
+
+    const handleDuplicate = async (course: any) => {
+        await duplicateCourseMutation.mutateAsync({
+            sourceCourseSlug: course.slug,
+        });
+    };
 
     return (
         <div className="p-6">
@@ -83,21 +84,20 @@ function CreateCourseDialogContent() {
                     router.push('/create/course');
                     setIsOpen(false);
                 }}
-                onDuplicate={(course) => {
-                    router.push(`/create/course?duplicate=${course.slug}`);
-                    setIsOpen(false);
-                }}
+                onDuplicate={handleDuplicate}
                 onQueryChange={(query) => setSearchQuery(query)}
-                courses={courses.map((course) => ({
-                    ...course,
+                courses={courses.map((course: any) => ({
+                    id: course.id,
+                    slug: course.slug,
+                    title: course.title,
                     author: {
-                        ...course.author,
+                        name: '',
+                        surname: '',
                         isYou: false,
-                        avatarUrl: course.author.avatarUrl ?? '',
                     },
                 }))}
                 onClose={() => setIsOpen(false)}
-                hasSearchError={!!error || searchViewModel?.mode === 'kaboom'}
+                hasSearchError={!!error || (coursesResponse?.success === false)}
             />
         </div>
     );

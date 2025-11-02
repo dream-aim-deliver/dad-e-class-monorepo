@@ -28,6 +28,7 @@ export interface CourseCreatorCardProps
     onEdit?: () => void;
     onManage?: () => void;
     onClickUser?: () => void;
+    onDuplicate?: () => void;
 }
 
 const StatusBadge: React.FC<{ status: CourseStatus; locale: TLocale }> = ({
@@ -116,6 +117,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     onEdit,
     onManage,
     onClickUser,
+    onDuplicate,
 }) => {
     const [isImageError, setIsImageError] = React.useState(false);
     // Calculate total course duration in minutes and convert to hours
@@ -227,19 +229,47 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                                             .editCourseButton
                                     }
                                 />
+
+                                {onDuplicate && (
+                                    <Button
+                                        onClick={onDuplicate}
+                                        className="w-full"
+                                        variant="text"
+                                        size="medium"
+                                        text={
+                                            dictionary.components.courseCard
+                                                .duplicateButton
+                                        }
+                                    />
+                                )}
                             </>
                         ) : (
-                            <Button
-                                onClick={onEdit}
-                                disabled={status === 'under-review'}
-                                className="w-full"
-                                variant="primary"
-                                size="medium"
-                                text={
-                                    dictionary.components.courseCard
-                                        .editCourseButton
-                                }
-                            />
+                            <>
+                                <Button
+                                    onClick={onEdit}
+                                    disabled={status === 'under-review'}
+                                    className="w-full"
+                                    variant="primary"
+                                    size="medium"
+                                    text={
+                                        dictionary.components.courseCard
+                                            .editCourseButton
+                                    }
+                                />
+
+                                {onDuplicate && (
+                                    <Button
+                                        onClick={onDuplicate}
+                                        className="w-full"
+                                        variant="text"
+                                        size="medium"
+                                        text={
+                                            dictionary.components.courseCard
+                                                .duplicateButton
+                                        }
+                                    />
+                                )}
+                            </>
                         )}
                     </div>
                 </div>

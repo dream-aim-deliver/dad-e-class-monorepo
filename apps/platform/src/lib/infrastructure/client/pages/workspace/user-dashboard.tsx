@@ -27,10 +27,7 @@ import UserNotifications from './user-notifications';
 import CoachDashboardStudents from './coach-dashboard-students';
 import CoachDashboardReviews from './coach-dashboard-reviews';
 import { trpc } from '../../trpc/cms-client';
-// TODO: Change back to cms-client once searchCourses is available in the CMS REST API
-import { trpc as trpcMock } from '../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useSearchCoursesPresenter } from '../../hooks/use-search-courses-presenter';
 import { useGetPersonalProfilePresenter } from '../../hooks/use-get-personal-profile-presenter';
 
 interface UserDashboardProps {
@@ -63,31 +60,16 @@ function CreateCourseDialogContent() {
     const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
     const {
-        data: searchResponse,
+        data: coursesResponse,
         isFetching,
         error,
-    } = trpcMock.searchCourses.useQuery(
-        {
-            titleContains: debouncedSearchQuery,
-            pagination: {
-                page: 1,
-                pageSize: 4,
-            },
-        },
-        {},
-    );
-    const [searchViewModel, setSearchViewModel] = useState<
-        viewModels.TCourseSearchViewModel | undefined
-    >(undefined);
-    const { presenter } = useSearchCoursesPresenter(setSearchViewModel);
-    useEffect(() => {
-        if (searchResponse) {
-            presenter.present(searchResponse, searchViewModel);
-        }
-    }, [searchResponse, setSearchViewModel]);
+    } = trpc.listPlatformCoursesShort.useQuery({});
 
-    const courses =
-        searchViewModel?.mode === 'default' ? searchViewModel.data.courses : [];
+    const courses = coursesResponse?.success && (coursesResponse as any).data.courses
+        ? (coursesResponse as any).data.courses.filter((course: any) =>
+              course.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+          )
+        : [];
 
     return (
         <div className="p-6">
@@ -102,17 +84,21 @@ function CreateCourseDialogContent() {
                     router.push(`/create/course?duplicate=${course.slug}`);
                     setIsOpen(false);
                 }}
-                onQueryChange={(query) => setSearchQuery(query)}
-                courses={courses.map((course) => ({
-                    ...course,
+                onQueryChange={(query) => {
+                    setSearchQuery(query);
+                }}
+                courses={courses.map((course: any) => ({
+                    id: course.id,
+                    slug: course.slug,
+                    title: course.title,
                     author: {
-                        ...course.author,
+                        name: '',
+                        surname: '',
                         isYou: false,
-                        avatarUrl: course.author.avatarUrl ?? '',
                     },
                 }))}
                 onClose={() => setIsOpen(false)}
-                hasSearchError={!!error || searchViewModel?.mode === 'kaboom'}
+                hasSearchError={!!error || (coursesResponse?.success === false)}
             />
         </div>
     );
