@@ -7,22 +7,18 @@ import { Button } from '../button';
 import { IconPlus } from '../icons/icon-plus';
 import { IconSearch } from '../icons/icon-search';
 import { InputField } from '../input-field';
-import { StarRating } from '../star-rating';
-import { UserAvatar } from '../avatar/user-avatar';
 import DefaultError from '../default-error';
+import { ConfirmationModal } from '../confirmation-modal';
 
 interface DuplicationCourse {
     id: number;
     slug: string;
     title: string;
-    averageRating: number;
-    reviewCount: number;
     author: {
-        username: string;
         name: string;
         surname: string;
         isYou: boolean;
-        avatarUrl: string;
+        avatarUrl?: string;
     };
 }
 
@@ -30,7 +26,7 @@ interface CreateCourseModalProps extends isLocalAware {
     courses?: DuplicationCourse[];
     isLoading: boolean;
     onCreateNew: () => void;
-    onDuplicate: (course: DuplicationCourse) => void;
+    onDuplicate: (course: DuplicationCourse) => void | Promise<void>;
     onQueryChange: (query: string) => void;
     onClose: () => void;
     hasSearchError?: boolean;
@@ -80,35 +76,11 @@ function DuplicationCourseCard({
             className={`p-4 cursor-pointer rounded-lg hover:bg-base-neutral-800`}
             onClick={() => onSelect(course)}
         >
-            <div className="flex justify-between items-center mt-2 mb-2">
+            <div className="flex justify-between items-center">
                 <div className="flex flex-col items-start">
                     <h6 className="text-text-primary">{course.title}</h6>
-                    <div className="flex items-center gap-2 mt-1">
-                        <StarRating
-                            totalStars={5}
-                            size={'4'}
-                            rating={course.averageRating}
-                        />
-                        <p className="text-text-primary text-sm font-important">
-                            {course.averageRating}
-                        </p>
-                        <p className="text-xs text-text-secondary font-important">
-                            ({course.reviewCount})
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-end gap-2 ml-4 ">
-                    <UserAvatar
-                        fullName={
-                            course.author.name + ' ' + course.author.surname
-                        }
-                        size="xSmall"
-                        imageUrl={course.author.avatarUrl}
-                    />
-                    <p className="text-sm text-text-secondary font-important">
-                        {course.author.isYou
-                            ? dictionary.you
-                            : course.author.name + ' ' + course.author.surname}
+                    <p className="text-sm text-text-secondary">
+                        {dictionary.slug} {course.slug}
                     </p>
                 </div>
             </div>
@@ -124,8 +96,36 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
         CreateCourseModalTab.CREATE_NEW,
     );
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [selectedCourse, setSelectedCourse] = useState<DuplicationCourse | null>(null);
+    const [isDuplicating, setIsDuplicating] = useState(false);
 
     const isQuerySuccessful = !props.isLoading && !props.hasSearchError;
+
+    const handleCourseClick = (course: DuplicationCourse) => {
+        setSelectedCourse(course);
+        setShowConfirmModal(true);
+    };
+
+    const handleConfirmDuplicate = async () => {
+        if (selectedCourse) {
+            setIsDuplicating(true);
+            try {
+                await props.onDuplicate(selectedCourse);
+            } finally {
+                setIsDuplicating(false);
+                setShowConfirmModal(false);
+                setSelectedCourse(null);
+            }
+        }
+    };
+
+    const handleCancelDuplicate = () => {
+        if (!isDuplicating) {
+            setShowConfirmModal(false);
+            setSelectedCourse(null);
+        }
+    };
 
     const tabs = [
         {
@@ -140,26 +140,7 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-col items-start gap-4 w-full">
-                <h4 className="text-xl font-bold text-text-primary">
-                    {dictionary.titleCourse}
-                </h4>
-                <p className="text-md text-text-primary">
-                    {dictionary.descriptionCourse}
-                </p>
-            </div>
-            <div className="flex justify-center items-center px-6 py-8 w-full rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700">
-                <Button
-                    className="w-full"
-                    variant="primary"
-                    size="big"
-                    text={dictionary.createNewCourse}
-                    onClick={props.onCreateNew}
-                    hasIconLeft
-                    iconLeft={<IconPlus size="6" />}
-                />
-            </div>
-            {/* <Tabs.Root
+            <Tabs.Root
                 defaultTab={CreateCourseModalTab.CREATE_NEW}
                 defaultValue={activeTab}
                 onValueChange={(value) =>
@@ -167,7 +148,7 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                 }
                 className="w-full"
             >
-                <TabList className="mb-4">
+                <TabList className="mb-4 bg-base-neutral-800 border border-base-neutral-700">
                     {tabs.map((tab, index) => (
                         <TabTrigger
                             key={tab.value}
@@ -219,20 +200,20 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                         {isQuerySuccessful &&
                             props.courses &&
                             props.courses.length > 0 && (
-                                <ul className="flex flex-col gap-4 max-h-70 overflow-y-auto">
+                                <ul className="flex flex-col max-h-70 overflow-y-auto">
                                     {props.courses.map((course) => (
                                         <DuplicationCourseCard
                                             key={course.id}
                                             course={course}
                                             locale={props.locale}
-                                            onSelect={props.onDuplicate}
+                                            onSelect={handleCourseClick}
                                         />
                                     ))}
                                 </ul>
                             )}
                     </div>
                 </TabContent>
-            </Tabs.Root> */}
+            </Tabs.Root>
 
             <Button
                 className="w-full"
@@ -240,6 +221,19 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                 size="medium"
                 text={dictionary.close}
                 onClick={props.onClose}
+            />
+
+            <ConfirmationModal
+                type="accept"
+                isOpen={showConfirmModal}
+                onClose={handleCancelDuplicate}
+                onConfirm={handleConfirmDuplicate}
+                title={dictionary.confirmDuplicateTitle}
+                message={`${dictionary.confirmDuplicateMessage} "${selectedCourse?.title}"`}
+                confirmText={dictionary.confirmDuplicateButton}
+                cancelText={dictionary.goBack}
+                locale={props.locale}
+                isLoading={isDuplicating}
             />
         </div>
     );

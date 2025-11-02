@@ -1,143 +1,190 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { CreateContentModal } from '../lib/components/create-content-modal';
+import { useState } from 'react';
+import CreateCourseModal from '../lib/components/create-modal/create-course-modal';
 
 export default {
     title: 'Components/CreateContentModal',
-    component: CreateContentModal,
+    component: CreateCourseModal,
     tags: ['autodocs'],
     parameters: {
         layout: 'centered',
     },
     argTypes: {
-        variant: {
-            control: 'radio',
-            options: ['course', 'lesson'],
-        },
         locale: {
             control: 'select',
             options: ['en', 'de'],
+        },
+        isLoading: {
+            control: 'boolean',
+            description: 'Whether the course search is loading',
+        },
+        hasSearchError: {
+            control: 'boolean',
+            description: 'Whether there was an error searching for courses',
         },
         onClose: {
             action: 'closed',
             description: 'Function to call when the modal is closed',
         },
-        onCreateNewContentDraft: {
-            action: 'createNewCourseDraft',
-            description: 'Function to call when creating a new draft',
+        onCreateNew: {
+            action: 'createNew',
+            description: 'Function to call when creating a new course',
         },
-        onDuplicateContent: {
-            action: 'duplicateCourse',
-            description: 'Function to call when duplicating a course or lesson',
+        onDuplicate: {
+            action: 'duplicate',
+            description: 'Function to call when duplicating a course',
+        },
+        onQueryChange: {
+            action: 'queryChange',
+            description: 'Function to call when the search query changes',
         },
     },
-} satisfies Meta<typeof CreateContentModal>;
+} satisfies Meta<typeof CreateCourseModal>;
 
-type Story = StoryObj<typeof CreateContentModal>;
+type Story = StoryObj<typeof CreateCourseModal>;
 
 const mockCourses = [
     {
+        id: 1,
+        slug: 'react-basics',
         title: 'React Basics',
-        ownerName: 'John Doe',
-        ownerAvatarUrl:
-            'https://img.lalr.co/cms/2018/08/16181927/Mini-pig.jpg?r=1_1',
-        isYou: false,
-        totalRating: 12,
-        rating: 4.5,
-        id: 'course-1',
+        author: {
+            name: 'John',
+            surname: 'Doe',
+            isYou: true,
+        },
     },
     {
+        id: 2,
+        slug: 'advanced-typescript',
         title: 'Advanced TypeScript',
-        ownerName: 'Jane Smith',
-        ownerAvatarUrl:
-            'https://s.abcnews.com/images/Lifestyle/AP_micro_pigs_1_sr_140319_14x11_1600.jpg?w=1600',
-        isYou: true,
-        totalRating: 8,
-        rating: 4.8,
-        id: 'course-2',
+        author: {
+            name: 'Jane',
+            surname: 'Smith',
+            isYou: false,
+        },
     },
     {
+        id: 3,
+        slug: 'basics-of-css',
         title: 'Basics of CSS',
-        ownerName: 'Alice Johnson',
-        ownerAvatarUrl:
-            'https://kessenvetclinic.com/wp-content/uploads/2019/02/Mini-pig.png',
-        isYou: false,
-        totalRating: 8,
-        rating: 4.8,
-        id: 'course-3',
+        author: {
+            name: 'Alice',
+            surname: 'Johnson',
+            isYou: false,
+        },
     },
     {
+        id: 4,
+        slug: 'intro-to-web-dev',
         title: 'Introduction to Web Development',
-        ownerName: 'Bob Brown',
-        ownerAvatarUrl:
-            'https://www.elperiodista.cl/wp-content/uploads/2021/03/Minipig.jpeg',
-        isYou: false,
-        totalRating: 5,
-        rating: 4.2,
-        id: 'course-4',
+        author: {
+            name: 'Bob',
+            surname: 'Brown',
+            isYou: false,
+        },
     },
 ];
 
-const mockLessons = [
-    {
-        title: 'Intro to JSX',
-        ownerName: 'Jane Smith',
-        ownerAvatarUrl:
-            'https://s.abcnews.com/images/Lifestyle/AP_micro_pigs_1_sr_140319_14x11_1600.jpg?w=1600',
-        isYou: true,
-        totalRating: 6,
-        rating: 4.6,
-        id: 'lesson-1',
-    },
-    {
-        title: 'Understanding React Hooks',
-        ownerName: 'Alice Johnson',
-        ownerAvatarUrl:
-            'https://kessenvetclinic.com/wp-content/uploads/2019/02/Mini-pig.png',
-        isYou: false,
-        totalRating: 10,
-        rating: 4.9,
-        id: 'lesson-2',
-    },
-    {
-        title: 'CSS Flexbox Fundamentals',
-        ownerName: 'Bob Brown',
-        ownerAvatarUrl:
-            'https://www.elperiodista.cl/wp-content/uploads/2021/03/Minipig.jpeg',
-        isYou: false,
-        totalRating: 7,
-        rating: 4.3,
-        id: 'lesson-3',
-    },
-    {
-        title: 'JavaScript ES6 Features',
-        ownerName: 'John Doe',
-        ownerAvatarUrl:
-            'https://img.lalr.co/cms/2018/08/16181927/Mini-pig.jpg?r=1_1',
-        isYou: false,
-        totalRating: 9,
-        rating: 4.7,
-        id: 'lesson-4',
-    },
-];
-
-export const CourseVariant: Story = {
+export const Default: Story = {
     args: {
-        variant: 'course',
         locale: 'en',
-        onClose: () => alert('Modal closed'),
-        onCreateNewContentDraft: () => alert('Create new course draft'),
-        onDuplicateContent: (id) => alert(`Duplicate course with ID: ${id}`),
-        content: mockCourses,
+        courses: mockCourses,
+        isLoading: false,
+        hasSearchError: false,
+        onClose: () => console.log('Modal closed'),
+        onCreateNew: () => console.log('Create new course'),
+        onDuplicate: (course) => console.log('Duplicate course:', course),
+        onQueryChange: (query) => console.log('Search query:', query),
     },
 };
 
-export const LessonVariant: Story = {
+export const Loading: Story = {
     args: {
-        variant: 'lesson',
         locale: 'en',
-        onClose: () => alert('Modal closed'),
-        onCreateNewContentDraft: () => alert('Create new lesson draft'),
-        onDuplicateContent: (id) => alert(`Duplicate lesson with ID: ${id}`),
-        content: mockLessons,
+        courses: [],
+        isLoading: true,
+        hasSearchError: false,
+        onClose: () => console.log('Modal closed'),
+        onCreateNew: () => console.log('Create new course'),
+        onDuplicate: (course) => console.log('Duplicate course:', course),
+        onQueryChange: (query) => console.log('Search query:', query),
     },
+};
+
+export const EmptyResults: Story = {
+    args: {
+        locale: 'en',
+        courses: [],
+        isLoading: false,
+        hasSearchError: false,
+        onClose: () => console.log('Modal closed'),
+        onCreateNew: () => console.log('Create new course'),
+        onDuplicate: (course) => console.log('Duplicate course:', course),
+        onQueryChange: (query) => console.log('Search query:', query),
+    },
+};
+
+export const WithError: Story = {
+    args: {
+        locale: 'en',
+        courses: [],
+        isLoading: false,
+        hasSearchError: true,
+        onClose: () => console.log('Modal closed'),
+        onCreateNew: () => console.log('Create new course'),
+        onDuplicate: (course) => console.log('Duplicate course:', course),
+        onQueryChange: (query) => console.log('Search query:', query),
+    },
+};
+
+// Interactive story with working search
+const InteractiveSearchComponent = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    console.log('=== RENDER ===');
+    console.log('searchQuery:', searchQuery);
+    console.log('mockCourses:', mockCourses);
+
+    // Filter courses - this recalculates every time searchQuery changes
+    const filteredCourses = searchQuery
+        ? mockCourses.filter((course) => {
+            const matchesTitle = course.title.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSlug = course.slug.toLowerCase().includes(searchQuery.toLowerCase());
+            console.log(`Course "${course.title}": title match=${matchesTitle}, slug match=${matchesSlug}`);
+            return matchesTitle || matchesSlug;
+        })
+        : mockCourses;
+
+    console.log('filteredCourses:', filteredCourses);
+    console.log('filteredCourses.length:', filteredCourses.length);
+
+    const handleQueryChange = (query: string) => {
+        console.log('=== QUERY CHANGE ===');
+        console.log('New query:', query);
+        setSearchQuery(query);
+        // Simulate API loading
+        setIsLoading(true);
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 300);
+    };
+
+    return (
+        <CreateCourseModal
+            locale="en"
+            courses={filteredCourses}
+            isLoading={isLoading}
+            hasSearchError={false}
+            onClose={() => console.log('Modal closed')}
+            onCreateNew={() => console.log('Create new course')}
+            onDuplicate={(course) => console.log('Duplicate course:', course)}
+            onQueryChange={handleQueryChange}
+        />
+    );
+};
+
+export const InteractiveSearch: Story = {
+    render: () => <InteractiveSearchComponent />,
 };
