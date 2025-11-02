@@ -247,7 +247,6 @@ export { GroupCoachingSessionBanner } from './components/group-coaching-session-
 export { GroupCoachingSessionReviewsBanner } from './components/group-coaching-session-reviews-banner';
 
 export { CourseCardList } from './components/course-card/course-card-list';
-export { CoachReviewFilterModal, type CoachReviewFilterModel } from './components/review/coach-review-filter-modal';
 export { ReviewDisplay } from './components/review/review-display';
 export { CoachReviewCardList } from './components/review/coach-review-card-list';
 
