@@ -2,6 +2,7 @@
 
 import { viewModels } from '@maany_shr/e-class-models';
 import {
+    DefaultError,
     Footer as FooterComponent,
     RichTextRenderer,
 } from '@maany_shr/e-class-ui-kit';
@@ -10,10 +11,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface FooterProps {
-    platformViewModel: viewModels.TPlatformViewModel;
+    platformViewModel: viewModels.TGetPlatformViewModel;
     availableLocales: TLocale[];
     locale: TLocale;
 }
@@ -58,12 +58,9 @@ export default function Footer({
         router.push(newUrl);
     };
 
-    // TODO: remove this and wire logo properly once CMS Settings page is implemented
-    const runtimeConfig = useRuntimeConfig();
-    const logoUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL ??
-        (platformViewModel.mode === 'default' ? platformViewModel.data.logoUrl : null) ?? '';
-
-    if (platformViewModel.mode !== 'default') return null;
+    if (platformViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     return (
         <FooterComponent
@@ -72,7 +69,7 @@ export default function Footer({
             logo={
                 <Image
                     priority
-                    src={logoUrl}
+                    src={platformViewModel.data.logo?.downloadUrl ?? ''}
                     alt={platformViewModel.data.name}
                     width={48}
                     height={48}
