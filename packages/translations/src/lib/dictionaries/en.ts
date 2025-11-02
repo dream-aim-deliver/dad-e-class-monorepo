@@ -1802,6 +1802,7 @@ export const EN: TDictionary = {
     },
     categoryTopics: {
       allText: 'All',
+      noTopicsFound: 'No topics found',
     },
     userCoursesList: {
       emptyState: 'You don’t have any offers yet.',

@@ -11,6 +11,7 @@ export default async function OffersServerComponent(props: OffersProps) {
     await Promise.all([
         prefetch(trpc.getOffersPageOutline.queryOptions({})),
         prefetch(trpc.listTopicsByCategory.queryOptions({})),
+        prefetch(trpc.listOffersPagePackages.queryOptions({})),
     ]);
 
     return (

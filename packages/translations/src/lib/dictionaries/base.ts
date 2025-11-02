@@ -1616,6 +1616,7 @@ export const DictionarySchema = z.object({
     coaching: z.object({
       chooseCategory: z.string(),
       filterByTopic: z.string(),
+      noCoachesFound: z.string(),
     }),
     login: z.object({
       title: z.string(),
@@ -1858,6 +1859,7 @@ export const DictionarySchema = z.object({
     }),
     categoryTopics: z.object({
       allText: z.string(),
+      noTopicsFound: z.string(),
     }),
     userCoursesList: z.object({
       emptyState: z.string(),

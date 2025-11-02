@@ -31,6 +31,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
     presenter.present(coachesResponse, coachesViewModel);
 
     const t = useTranslations('components.paginationButton');
+    const coachingT = useTranslations('pages.coaching');
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
@@ -67,7 +68,11 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
     }
 
     if (coachesViewModel.mode === 'not-found') {
-        return <DefaultNotFound locale={locale} />;
+        return (
+            <p className="text-center text-gray-500 py-8 w-full">
+                {coachingT('noCoachesFound')}
+            </p>
+        );
     }
 
     if (coachesViewModel.mode === 'kaboom') {
@@ -75,7 +80,11 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
     }
 
     if (displayedCoaches.length === 0) {
-        return <DefaultNotFound locale={locale} />;
+        return (
+            <p className="text-center text-gray-500 py-8 w-full">
+                {coachingT('noCoachesFound')}
+            </p>
+        );
     }
 
     return (
