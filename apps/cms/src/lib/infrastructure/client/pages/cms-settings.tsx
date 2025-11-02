@@ -221,7 +221,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
       onClick: () => router.push('/'),
     },
     {
-      label: platformContext.platformSlug,
+      label: platform.name,
       onClick: () => {
         // TODO: Implement navigation to platform
       },
@@ -289,38 +289,41 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
 
           {/* Read-only fields */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-text-primary">
-              {t('fields.slug') ?? 'Slug'}
+            <label className="text-sm font-medium text-text-secondary">
+              {t('fields.slug') ?? 'Slug'} ({t('fields.readOnly') ?? 'Read-only'})
             </label>
             <InputField
               inputText={t('fields.slugPlaceholder') ?? 'Platform slug'}
               value={slug}
               setValue={noOp}
-              state="disabled"
+              state="filled"
+              className="opacity-70 cursor-not-allowed"
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-text-primary">
-              {t('fields.currency') ?? 'Currency'}
+            <label className="text-sm font-medium text-text-secondary">
+              {t('fields.currency') ?? 'Currency'} ({t('fields.readOnly') ?? 'Read-only'})
             </label>
             <InputField
               inputText={t('fields.currencyPlaceholder') ?? 'Currency code'}
               value={currency}
               setValue={noOp}
-              state="disabled"
+              state="filled"
+              className="opacity-70 cursor-not-allowed"
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-text-primary">
-              {t('fields.domainName') ?? 'Domain Name'}
+            <label className="text-sm font-medium text-text-secondary">
+              {t('fields.domainName') ?? 'Domain Name'} ({t('fields.readOnly') ?? 'Read-only'})
             </label>
             <InputField
               inputText={t('fields.domainNamePlaceholder') ?? 'Platform domain'}
               value={domainName}
               setValue={noOp}
-              state="disabled"
+              state="filled"
+              className="opacity-70 cursor-not-allowed"
             />
           </div>
         </div>

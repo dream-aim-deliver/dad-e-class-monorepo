@@ -2359,6 +2359,7 @@ export const DE: TDictionary = {
         companyUuidPlaceholder: 'Unternehmens-UUID eingeben',
         logo: 'Plattform-Logo',
         backgroundImage: 'Hintergrundbild',
+        readOnly: 'Schreibgeschützt',
       },
       error: {
         title: 'Fehler',
