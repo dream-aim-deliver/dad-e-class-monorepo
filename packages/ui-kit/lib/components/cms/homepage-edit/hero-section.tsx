@@ -65,21 +65,25 @@ export default function HeroSection({
 
         // Backend returns video object with downloadUrl and playbackId
         // Transform to TFileMetadataVideo for UI components
-        const video: fileMetadata.TFileMetadataVideo = {
+        return {
             id: value.video.id,
             name: value.video.name,
             size: value.video.size,
             category: 'video' as const,
-            url: value.video.url || value.video.downloadUrl,
+            url: value.video.downloadUrl,
             thumbnailUrl: value.video.thumbnailUrl || value.video.downloadUrl,
-            videoId: value.video.videoId || value.video.playbackId || null,
+            videoId: value.video.playbackId ?? null,
             status: "available" as const
-        };
-
-        return video;
+        } as fileMetadata.TFileMetadataVideo;
     }, [value.video]);
 
-    const handleFieldChange = (field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
+    const handleFieldChange = (
+        field: string,
+        fieldValue: string |
+            { id: string; name: string; size: number; category: 'image'; downloadUrl: string } |
+            { id: string; name: string; size: number; category: 'video'; downloadUrl: string; thumbnailUrl: string | null; playbackId: string | null } |
+            null
+    ) => {
         const newBannerData = {
             ...value,
             [field]: fieldValue
@@ -120,8 +124,18 @@ export default function HeroSection({
 
     const handleVideoUploadComplete = (file: fileMetadata.TFileMetadata) => {
         const videoFile = file as fileMetadata.TFileMetadataVideo;
-        // Store the full video object in the banner state
-        handleFieldChange('video', videoFile);
+        // Transform TFileMetadataVideo back to backend format for storage
+        // Assert non-null since these fields are required after successful upload
+        const backendVideo = {
+            id: videoFile.id!,
+            name: videoFile.name!,
+            size: videoFile.size!,
+            category: 'video' as const,
+            downloadUrl: videoFile.url!,
+            thumbnailUrl: videoFile.thumbnailUrl || videoFile.url!,
+            playbackId: videoFile.videoId || null,
+        };
+        handleFieldChange('video', backendVideo);
     };
 
     const handleVideoDelete = (id: string) => {
