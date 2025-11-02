@@ -2361,6 +2361,22 @@ export const DictionarySchema = z.object({
         }),
       }),
     }),
+    cmsSettings: z.object({
+      title: z.string(),
+      description: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        unauthorized: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
     preCourseAssessmentForm: z.object({
       title: z.string(),
       description: z.string(),
