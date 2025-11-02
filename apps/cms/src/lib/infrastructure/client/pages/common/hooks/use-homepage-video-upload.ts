@@ -99,17 +99,23 @@ export const useHomePageVideoUpload = (
             throw new Error('Failed to verify video upload');
         }
 
-        // Type assertion for verify result
-        const verifyData = verifyResult.data as { downloadUrl: string };
+        // Type assertion for verify result - includes playbackId for videos
+        const verifyData = verifyResult.data as {
+            downloadUrl: string;
+            playbackId?: string;
+            thumbnailUrl?: string;
+        };
 
         return {
             id: data.file.id,
             name: data.file.name,
             url: verifyData.downloadUrl,
-            thumbnailUrl: verifyData.downloadUrl,
+            thumbnailUrl: verifyData.thumbnailUrl || verifyData.downloadUrl,
+            videoId: verifyData.playbackId || null,
             size: data.file.size,
-            category: data.file.category,
-        } as fileMetadata.TFileMetadata;
+            category: 'video',
+            status: 'available',
+        } as fileMetadata.TFileMetadataVideo;
     };
 
     const handleFileChange = async (

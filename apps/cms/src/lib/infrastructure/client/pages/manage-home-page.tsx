@@ -97,12 +97,94 @@ export default function ManageHomepage() {
 	const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
 	const videoUpload = useHomePageVideoUpload(setVideoUploadProgress);
 
-	const initialHomePageData = useMemo(() =>
-		homePageViewModel?.mode === 'default'
-			? homePageViewModel.data
-			: DEFAULT_HOME_PAGE_DATA,
-		[homePageViewModel]
-	);
+	const initialHomePageData = useMemo(() => {
+		if (homePageViewModel?.mode !== 'default') {
+			return DEFAULT_HOME_PAGE_DATA;
+		}
+
+		// Transform backend data to frontend format
+		const backendData = homePageViewModel.data;
+
+		return {
+			banner: {
+				title: backendData.banner.title,
+				description: backendData.banner.description,
+				// Transform video: map downloadUrl→url, playbackId→videoId, add status
+				video: backendData.banner.video
+					? {
+						...backendData.banner.video,
+						url: backendData.banner.video.downloadUrl,
+						thumbnailUrl: backendData.banner.video.thumbnailUrl || backendData.banner.video.downloadUrl,
+						videoId: backendData.banner.video.playbackId || null,
+						status: 'available' as const,
+					}
+					: null,
+				// Transform thumbnail image: map downloadUrl→url and thumbnailUrl
+				thumbnailImage: backendData.banner.thumbnailImage
+					? {
+						...backendData.banner.thumbnailImage,
+						url: backendData.banner.thumbnailImage.downloadUrl,
+						thumbnailUrl: backendData.banner.thumbnailImage.downloadUrl,
+						status: 'available' as const,
+					}
+					: null,
+			},
+			carousel: backendData.carousel.map(item => ({
+				...item,
+				image: item.image
+					? {
+						...item.image,
+						url: item.image.downloadUrl,
+						thumbnailUrl: item.image.downloadUrl,
+						status: 'available' as const,
+					}
+					: null,
+			})),
+			coachingOnDemand: {
+				title: backendData.coachingOnDemand.title,
+				description: backendData.coachingOnDemand.description,
+				desktopImage: backendData.coachingOnDemand.desktopImage
+					? {
+						...backendData.coachingOnDemand.desktopImage,
+						url: backendData.coachingOnDemand.desktopImage.downloadUrl,
+						thumbnailUrl: backendData.coachingOnDemand.desktopImage.downloadUrl,
+						status: 'available' as const,
+					}
+					: null,
+				tabletImage: backendData.coachingOnDemand.tabletImage
+					? {
+						...backendData.coachingOnDemand.tabletImage,
+						url: backendData.coachingOnDemand.tabletImage.downloadUrl,
+						thumbnailUrl: backendData.coachingOnDemand.tabletImage.downloadUrl,
+						status: 'available' as const,
+					}
+					: null,
+				mobileImage: backendData.coachingOnDemand.mobileImage
+					? {
+						...backendData.coachingOnDemand.mobileImage,
+						url: backendData.coachingOnDemand.mobileImage.downloadUrl,
+						thumbnailUrl: backendData.coachingOnDemand.mobileImage.downloadUrl,
+						status: 'available' as const,
+					}
+					: null,
+			},
+			accordion: {
+				title: backendData.accordion.title,
+				showNumbers: backendData.accordion.showNumbers,
+				items: backendData.accordion.items.map(item => ({
+					...item,
+					iconImage: item.iconImage
+						? {
+							...item.iconImage,
+							url: item.iconImage.downloadUrl,
+							thumbnailUrl: item.iconImage.downloadUrl,
+							status: 'available' as const,
+						}
+						: null,
+				})),
+			},
+		} as viewModels.TGetHomePageSuccess;
+	}, [homePageViewModel]);
 
 	const formState = useFormState<viewModels.TGetHomePageSuccess>(initialHomePageData, { enableReloadProtection: true });
 	const { setValue: setFormValue } = formState;
