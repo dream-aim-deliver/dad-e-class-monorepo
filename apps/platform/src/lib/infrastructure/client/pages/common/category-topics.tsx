@@ -119,6 +119,21 @@ export default function CategoryTopics({
         return <DefaultError locale={locale} />;
     }
 
+    // Not found state - show title with graceful message
+    if (
+        topicsByCategoryViewModel.mode === 'not-found' ||
+        topicsViewModel.mode === 'not-found'
+    ) {
+        return (
+            <div className="flex flex-col gap-4">
+                <h2>{chooseCategoryText}</h2>
+                <p className="text-center text-gray-500 py-8">
+                    {categoryTopicsTranslations('noTopicsFound')}
+                </p>
+            </div>
+        );
+    }
+
     // Event handlers
     const handleTabChange = () => {
         setSelectedTopics([]);
@@ -162,7 +177,16 @@ export default function CategoryTopics({
         );
     };
 
-    if (categories.length === 0 && allTopics.length === 0) return null;
+    if (categories.length === 0 && allTopics.length === 0) {
+        return (
+            <div className="flex flex-col gap-4">
+                <h2>{chooseCategoryText}</h2>
+                <p className="text-center text-gray-500 py-8">
+                    {categoryTopicsTranslations('noTopicsFound')}
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-4">

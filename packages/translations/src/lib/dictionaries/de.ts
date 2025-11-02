@@ -1805,6 +1805,7 @@ export const DE: TDictionary = {
     },
     categoryTopics: {
       allText: 'Alle',
+      noTopicsFound: 'Keine Themen gefunden',
     },
     userCoursesList: {
       emptyState: 'Du hast noch keine Angebote.'
