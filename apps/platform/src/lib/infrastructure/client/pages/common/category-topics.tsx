@@ -119,20 +119,9 @@ export default function CategoryTopics({
         return <DefaultError locale={locale} />;
     }
 
-    // Not found state - show title with graceful message
-    if (
-        topicsByCategoryViewModel.mode === 'not-found' ||
-        topicsViewModel.mode === 'not-found'
-    ) {
-        return (
-            <div className="flex flex-col gap-4">
-                <h2>{chooseCategoryText}</h2>
-                <p className="text-center text-gray-500 py-8">
-                    {categoryTopicsTranslations('noTopicsFound')}
-                </p>
-            </div>
-        );
-    }
+    // Note: There is no 'not-found' mode in these view models
+    // They only have 'default' and 'kaboom' modes
+    // Empty state is handled in the UI when arrays are empty
 
     // Event handlers
     const handleTabChange = () => {
