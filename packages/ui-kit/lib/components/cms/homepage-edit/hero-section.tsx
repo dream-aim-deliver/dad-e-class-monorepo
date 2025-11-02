@@ -57,13 +57,27 @@ export default function HeroSection({
         return thumbnail;
     }, [value.thumbnailImage]);
 
-    // For video, we don't pre-populate from server as videoId is just a string
-    // Video state is only used during upload/display in this session
+    // Transform backend video object to TFileMetadataVideo for display
     const uploadedVideo = useMemo(() => {
-        // Video metadata is not stored in value prop, only videoId string
-        // So we return null - video will only show if uploaded in current session
-        return null;
-    }, []);
+        if (!value.video) {
+            return null;
+        }
+
+        // Backend returns video object with downloadUrl and playbackId
+        // Transform to TFileMetadataVideo for UI components
+        const video: fileMetadata.TFileMetadataVideo = {
+            id: value.video.id,
+            name: value.video.name,
+            size: value.video.size,
+            category: 'video' as const,
+            url: value.video.url || value.video.downloadUrl,
+            thumbnailUrl: value.video.thumbnailUrl || value.video.downloadUrl,
+            videoId: value.video.videoId || value.video.playbackId || null,
+            status: "available" as const
+        };
+
+        return video;
+    }, [value.video]);
 
     const handleFieldChange = (field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newBannerData = {
@@ -106,15 +120,13 @@ export default function HeroSection({
 
     const handleVideoUploadComplete = (file: fileMetadata.TFileMetadata) => {
         const videoFile = file as fileMetadata.TFileMetadataVideo;
-        if (videoFile.id) {
-            handleFieldChange('videoId', videoFile.id);
-        }
-
+        // Store the full video object in the banner state
+        handleFieldChange('video', videoFile);
     };
 
     const handleVideoDelete = (id: string) => {
-
-        handleFieldChange('videoId', '');
+        // Clear the video object from banner state
+        handleFieldChange('video', null);
         onFileDelete(id);
     };
 
@@ -125,9 +137,9 @@ export default function HeroSection({
     };
 
     const handleVideoDownload = (id: string) => {
-        // if (value.videoId === id) {
-        //     downloadFile(uploadedVideo.url, uploadedVideo.name);
-        // }
+        if (uploadedVideo?.id === id && uploadedVideo.url && uploadedVideo.name) {
+            downloadFile(uploadedVideo.url, uploadedVideo.name);
+        }
     };
 
     return (
