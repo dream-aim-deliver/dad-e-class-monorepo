@@ -50,7 +50,13 @@ function useDebounce(value: any, delay: number): any {
     return debouncedValue;
 }
 
-function CreateCourseDialogContent() {
+interface CreateCourseDialogContentProps {
+    onDuplicationSuccess: () => void;
+}
+
+function CreateCourseDialogContent({
+    onDuplicationSuccess,
+}: CreateCourseDialogContentProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
@@ -64,6 +70,8 @@ function CreateCourseDialogContent() {
         isFetching,
         error,
     } = trpc.listPlatformCoursesShort.useQuery({});
+
+    const duplicateCourseMutation = trpc.duplicateCourse.useMutation();
 
     const courses = coursesResponse?.success && (coursesResponse as any).data.courses
         ? (coursesResponse as any).data.courses.filter((course: any) =>
@@ -80,9 +88,12 @@ function CreateCourseDialogContent() {
                     router.push('/create/course');
                     setIsOpen(false);
                 }}
-                onDuplicate={(course) => {
-                    router.push(`/create/course?duplicate=${course.slug}`);
+                onDuplicate={async (course) => {
+                    await duplicateCourseMutation.mutateAsync({
+                        sourceCourseSlug: course.slug,
+                    });
                     setIsOpen(false);
+                    onDuplicationSuccess();
                 }}
                 onQueryChange={(query) => {
                     setSearchQuery(query);
@@ -104,7 +115,13 @@ function CreateCourseDialogContent() {
     );
 }
 
-function CreateCourseDialog() {
+interface CreateCourseDialogProps {
+    onDuplicationSuccess: () => void;
+}
+
+function CreateCourseDialog({
+    onDuplicationSuccess,
+}: CreateCourseDialogProps) {
     const t = useTranslations('pages.userCourses');
 
     return (
@@ -119,7 +136,9 @@ function CreateCourseDialog() {
                 <Button text={t('createCourse')} />
             </DialogTrigger>
             <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
-                <CreateCourseDialogContent />
+                <CreateCourseDialogContent
+                    onDuplicationSuccess={onDuplicationSuccess}
+                />
             </DialogContent>
         </Dialog>
     );
@@ -133,6 +152,14 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
 
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const t = useTranslations('pages.userDashboard');
+
+    const utils = trpc.useUtils();
+
+    // Duplication handler
+    const handleDuplicationSuccess = useCallback(() => {
+        // Invalidate and refetch user courses
+        utils.listUserCourses.invalidate();
+    }, [utils]);
 
     // Determine if user is a coach
     const isCoach = useMemo(() => roles.includes('coach'), [roles]);
@@ -322,7 +349,11 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                                         text={t('viewAllCourses')}
                                     />
                                 </div>
-                                {isAdmin && <CreateCourseDialog />}
+                                {isAdmin && (
+                                    <CreateCourseDialog
+                                        onDuplicationSuccess={handleDuplicationSuccess}
+                                    />
+                                )}
                             </div>
                             <UserCoursesList maxItems={3} />
 

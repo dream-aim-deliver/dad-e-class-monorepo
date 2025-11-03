@@ -2087,6 +2087,9 @@ export const EN: TDictionary = {
       viewAllCourses: "View All Courses",
       errorAccess: "Access denied. You do not have permission to access the dashboard.",
       errorFailed: "Failed to load dashboard data, please try again later.",
+      duplicatingCourse: "Duplicating course, please wait...",
+      duplicateSuccess: "Course duplicated successfully!",
+      duplicateError: "Failed to duplicate course. Please try again.",
     },
     userCoachingSessions: {
       title: "Your Coaching Sessions",

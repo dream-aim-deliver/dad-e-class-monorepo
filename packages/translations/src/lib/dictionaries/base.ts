@@ -2123,6 +2123,9 @@ export const DictionarySchema = z.object({
       viewAllCourses: z.string(),
       errorAccess: z.string(),
       errorFailed: z.string(),
+      duplicatingCourse: z.string(),
+      duplicateSuccess: z.string(),
+      duplicateError: z.string(),
     }),
     userCoachingSessions: z.object({
       title: z.string(),
