@@ -71,7 +71,12 @@ export default function ManageHomepage() {
 	const contentLocale = useContentLocale();
 
 	// Fetch homepage data (refetch retained for future integration)
-	const [getHomePageResponse, { refetch: refetchHomePage }] = trpc.getHomePage.useSuspenseQuery({});
+	const [getHomePageResponse, { refetch: refetchHomePage }] = trpc.getHomePage.useSuspenseQuery(
+		{},
+		{
+			refetchOnWindowFocus: false,
+		}
+	);
 	const [homePageViewModel, setHomePageViewModel] = useState<
 		viewModels.TGetHomePageViewModel | undefined
 	>(undefined);
