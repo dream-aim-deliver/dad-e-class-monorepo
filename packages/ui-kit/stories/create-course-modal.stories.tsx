@@ -3,7 +3,7 @@ import { useState } from 'react';
 import CreateCourseModal from '../lib/components/create-modal/create-course-modal';
 
 export default {
-    title: 'Components/CreateContentModal',
+    title: 'Components/CreateCourseModal',
     component: CreateCourseModal,
     tags: ['autodocs'],
     parameters: {

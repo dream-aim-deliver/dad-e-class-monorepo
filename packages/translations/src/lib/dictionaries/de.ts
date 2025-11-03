@@ -2090,6 +2090,9 @@ manageHomePage: {
       viewAllCourses: "Alle Kurse anzeigen",
       errorAccess: "Zugriff verweigert. Sie haben keine Berechtigung, auf das Dashboard zuzugreifen.",
       errorFailed: "Fehler beim Laden der Dashboard-Daten. Bitte versuchen Sie es später erneut.",
+      duplicatingCourse: "Kurs wird dupliziert, bitte warten...",
+      duplicateSuccess: "Kurs erfolgreich dupliziert!",
+      duplicateError: "Fehler beim Duplizieren des Kurses. Bitte versuchen Sie es erneut.",
     },
     userCoachingSessions: {
       title: "Deine Coaching-Sitzungen",

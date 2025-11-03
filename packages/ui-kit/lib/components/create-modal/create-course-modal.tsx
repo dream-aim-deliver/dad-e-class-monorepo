@@ -102,6 +102,17 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
 
     const isQuerySuccessful = !props.isLoading && !props.hasSearchError;
 
+    // Filter courses locally based on search query
+    const filteredCourses = props.courses?.filter((course) => {
+        if (!searchQuery.trim()) return true;
+        const query = searchQuery.toLowerCase();
+        return (
+            course.title.toLowerCase().includes(query) ||
+            course.slug.toLowerCase().includes(query) ||
+            `${course.author.name} ${course.author.surname}`.toLowerCase().includes(query)
+        );
+    });
+
     const handleCourseClick = (course: DuplicationCourse) => {
         setSelectedCourse(course);
         setShowConfirmModal(true);
@@ -188,8 +199,8 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                         />
                         {props.isLoading && <CourseSearchSkeleton />}
                         {isQuerySuccessful &&
-                            props.courses &&
-                            props.courses.length === 0 && (
+                            filteredCourses &&
+                            filteredCourses.length === 0 && (
                                 <h6 className="text-text-primary">
                                     {dictionary.noCourseFound}
                                 </h6>
@@ -198,10 +209,10 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                             <DefaultError locale={props.locale} />
                         )}
                         {isQuerySuccessful &&
-                            props.courses &&
-                            props.courses.length > 0 && (
+                            filteredCourses &&
+                            filteredCourses.length > 0 && (
                                 <ul className="flex flex-col max-h-70 overflow-y-auto">
-                                    {props.courses.map((course) => (
+                                    {filteredCourses.map((course) => (
                                         <DuplicationCourseCard
                                             key={course.id}
                                             course={course}
