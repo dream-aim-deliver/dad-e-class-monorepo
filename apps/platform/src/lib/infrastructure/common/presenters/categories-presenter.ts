@@ -29,8 +29,8 @@ export default class CategoriesPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
-                viewModel: viewModels.HomePageViewModelSchema
+                responseModel: useCaseModels.ListCategoriesUseCaseResponseSchema,
+                viewModel: viewModels.CategoryListViewModelSchema
             },
             middleware: ListCategoriesResponseMiddleware,
             viewUtilities: viewUtilities,

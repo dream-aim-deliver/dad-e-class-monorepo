@@ -15,21 +15,21 @@ const CategorySchema = z.object({
     name: z.string(),
 });
 
-const ListCategoriesSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+export const ListCategoriesSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     categories: z.array(CategorySchema)
 }));
 export type TListCategoriesSuccessResponse = z.infer<typeof ListCategoriesSuccessResponseSchema>;
 
-const ListCategoriesErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+export const ListCategoriesErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
 export type TListCategoriesErrorResponse = z.infer<typeof ListCategoriesErrorResponseSchema>;
 
-const ListCategoriesUseCasePartialResponseSchema = BasePartialSchemaFactory(
+export const ListCategoriesUseCasePartialResponseSchema = BasePartialSchemaFactory(
     CategorySchema,
     CommonErrorSchemaMap
 )
 export type TListCategoriesUseCasePartialResponse = z.infer<typeof ListCategoriesUseCasePartialResponseSchema>;
 
-const ListCategoriesUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
+export const ListCategoriesUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
     ListCategoriesSuccessResponseSchema,
     ListCategoriesErrorResponseSchema,
     ListCategoriesUseCasePartialResponseSchema
