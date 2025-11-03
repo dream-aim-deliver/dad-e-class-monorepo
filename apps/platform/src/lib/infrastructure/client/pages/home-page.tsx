@@ -134,6 +134,7 @@ export default function HomePage() {
                         <>
                             {homePage.coachingOnDemand.mobileImage?.downloadUrl && (
                                 <Image
+                                    unoptimized={true}
                                     src={
                                         homePage.coachingOnDemand.mobileImage.downloadUrl
                                     }
@@ -145,6 +146,7 @@ export default function HomePage() {
                             )}
                             {homePage.coachingOnDemand.tabletImage?.downloadUrl && (
                                 <Image
+                                    unoptimized={true}
                                     src={
                                         homePage.coachingOnDemand.tabletImage.downloadUrl
                                     }
@@ -157,6 +159,7 @@ export default function HomePage() {
                             )}
                             {homePage.coachingOnDemand.desktopImage?.downloadUrl && (
                                 <Image
+                                    unoptimized={true}
                                     src={
                                         homePage.coachingOnDemand
                                             .desktopImage.downloadUrl
