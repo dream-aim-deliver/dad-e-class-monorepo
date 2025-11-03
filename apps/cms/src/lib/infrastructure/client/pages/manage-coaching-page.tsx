@@ -80,7 +80,12 @@ export default function ManageCoachingPage({
     session?.user?.roles?.includes('superadmin');
 
   // TRPC query for page data - using EXACT usecase name from Notion
-  const [coachingPageResponse, { refetch: refetchCoachingPage }] = trpc.getCoachingPage.useSuspenseQuery({});
+  const [coachingPageResponse, { refetch: refetchCoachingPage }] = trpc.getCoachingPage.useSuspenseQuery(
+    {},
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const { presenter: coachingPagePresenter } = useGetCoachingPagePresenter(
     setCoachingPageViewModel

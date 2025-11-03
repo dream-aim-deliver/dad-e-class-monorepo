@@ -80,9 +80,24 @@ export default function ManageOffersPage({
     const isAdmin = session?.user?.roles?.includes('admin') || session?.user?.roles?.includes('superadmin');
 
 
-    const [offersPageOutlineResponse, { refetch: refetchOffersPageOutline }] = trpc.getOffersPageOutline.useSuspenseQuery({});
-    const [packagesShortResponse, { refetch: refetchPackagesShort }] = trpc.listOffersPagePackagesShort.useSuspenseQuery({});
-    const [packagesResponse, { refetch: refetchPackages }] = trpc.listPackages.useSuspenseQuery({});
+    const [offersPageOutlineResponse, { refetch: refetchOffersPageOutline }] = trpc.getOffersPageOutline.useSuspenseQuery(
+        {},
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
+    const [packagesShortResponse, { refetch: refetchPackagesShort }] = trpc.listOffersPagePackagesShort.useSuspenseQuery(
+        {},
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
+    const [packagesResponse, { refetch: refetchPackages }] = trpc.listPackages.useSuspenseQuery(
+        {},
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
 
     const { presenter: manageOffersPagePresenter } = useGetOffersPageOutlinePresenter(setOffersPageViewModel);
     const { presenter: packagesPresenter } = useListPackagesPresenter(setPackagesViewModel);
