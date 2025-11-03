@@ -104,12 +104,19 @@ export function useFormState<T>(
   // Update both current and original when initial value changes from parent
   useEffect(() => {
     if (!deepEqual(state.original, initialValue)) {
-      setState({
-        current: initialValue ?? null,
-        original: initialValue ?? null,
-      });
+      if (!isDirty) {
+        setState({
+          current: initialValue ?? null,
+          original: initialValue ?? null,
+        });
+      } else {
+        setState(prev => ({
+          current: prev.current,
+          original: initialValue ?? null,
+        }));
+      }
     }
-  }, [initialValue, deepEqual, state.original]);
+  }, [initialValue, deepEqual, state.original, isDirty]);
 
   // Browser reload protection
   useEffect(() => {
