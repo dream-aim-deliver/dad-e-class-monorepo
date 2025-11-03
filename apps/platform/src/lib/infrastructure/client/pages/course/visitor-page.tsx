@@ -274,14 +274,14 @@ export default function VisitorPage({
                 return (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {reviewsData.data.reviews
-                            .sort((a, b) =>
+                            .sort((a: any, b: any) =>
                                 sortOrder === 'newest'
                                     ? new Date(b.createdAt).getTime() -
                                     new Date(a.createdAt).getTime()
                                     : new Date(a.createdAt).getTime() -
                                     new Date(b.createdAt).getTime(),
                             )
-                            .map((review) => (
+                            .map((review: any) => (
                                 <ReviewSnippet
                                     key={review.id}
                                     reviewText={review.comment}

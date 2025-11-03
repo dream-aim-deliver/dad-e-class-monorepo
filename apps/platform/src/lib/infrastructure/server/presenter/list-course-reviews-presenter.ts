@@ -1,8 +1,8 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import CourseReviewsPresenter from '../../common/presenters/course-reviews-presenter';
+import ListCourseReviewsPresenter from '../../common/presenters/list-course-reviews-presenter';
 
 export function createListCourseReviewsPresenter(
-    setViewModel: (viewModel: viewModels.TCourseReviewsViewModel) => void,
+    setViewModel: (viewModel: viewModels.TListCourseReviewsViewModel) => void,
 ) {
-    return new CourseReviewsPresenter(setViewModel, {});
+    return new ListCourseReviewsPresenter(setViewModel, {});
 }
