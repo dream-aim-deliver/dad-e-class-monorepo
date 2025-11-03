@@ -58,22 +58,7 @@ function CreateCourseDialogContent() {
         : [];
 
     const utils = trpc.useUtils();
-    const duplicateCourseMutation = trpc.duplicateCourse.useMutation({
-        onSuccess: () => {
-            // Invalidate the user courses list to refetch and show the new duplicated course
-            utils.listUserCourses.invalidate();
-            setIsOpen(false);
-        },
-        onError: (error) => {
-            console.error('Duplication failed:', error);
-        },
-    });
-
-    const handleDuplicate = async (course: any) => {
-        await duplicateCourseMutation.mutateAsync({
-            sourceCourseSlug: course.slug,
-        });
-    };
+    const duplicateCourseMutation = trpc.duplicateCourse.useMutation();
 
     return (
         <div className="p-6">
@@ -84,7 +69,14 @@ function CreateCourseDialogContent() {
                     router.push('/create/course');
                     setIsOpen(false);
                 }}
-                onDuplicate={handleDuplicate}
+                onDuplicate={async (course) => {
+                    await duplicateCourseMutation.mutateAsync({
+                        sourceCourseSlug: course.slug,
+                    });
+                    setIsOpen(false);
+                    // Invalidate the user courses list to refetch and show the new duplicated course
+                    utils.listUserCourses.invalidate();
+                }}
                 onQueryChange={(query) => setSearchQuery(query)}
                 courses={courses.map((course: any) => ({
                     id: course.id,

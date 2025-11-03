@@ -147,7 +147,7 @@ function transformVideo(
     return {
         type: LessonElementType.VideoFile,
         id: component.id,
-        file: {
+        file: component.videoFile ? {
             id: component.videoFile.id,
             name: component.videoFile.name,
             size: component.videoFile.size,
@@ -156,7 +156,7 @@ function transformVideo(
             status: 'available',
             videoId: component.videoFile.playbackId,
             thumbnailUrl: component.videoFile.thumbnailUrl,
-        },
+        } : null,
     };
 }
 
@@ -166,7 +166,7 @@ function transformImage(
     return {
         type: LessonElementType.ImageFile,
         id: component.id,
-        file: {
+        file: component.imageFile ? {
             id: component.imageFile.id,
             name: component.imageFile.name,
             size: component.imageFile.size,
@@ -174,7 +174,7 @@ function transformImage(
             url: component.imageFile.downloadUrl,
             status: 'available',
             thumbnailUrl: component.imageFile.downloadUrl,
-        },
+        } : null,
     };
 }
 
@@ -187,15 +187,19 @@ function transformImageCarousel(
     return {
         type: LessonElementType.ImageGallery,
         id: component.id,
-        images: component.imageFiles.map((image) => ({
-            id: image.id,
-            name: image.name,
-            size: image.size,
-            category: 'image',
-            url: image.downloadUrl,
-            status: 'available',
-            thumbnailUrl: image.downloadUrl,
-        })),
+        images: component.imageFiles && component.imageFiles.length > 0
+            ? component.imageFiles
+                .filter((image) => image !== null)
+                .map((image) => ({
+                    id: image.id,
+                    name: image.name,
+                    size: image.size,
+                    category: 'image',
+                    url: image.downloadUrl,
+                    status: 'available',
+                    thumbnailUrl: image.downloadUrl,
+                }))
+            : null,
     };
 }
 
@@ -208,15 +212,19 @@ function transformDownloadFiles(
     return {
         type: LessonElementType.DownloadFiles,
         id: component.id,
-        files: component.files.map((file) => ({
-            id: file.id,
-            name: file.name,
-            size: file.size,
-            category: 'generic', // TODO: find a way to pass category
-            url: file.downloadUrl,
-            status: 'available',
-            thumbnailUrl: file.downloadUrl,
-        })),
+        files: component.files && component.files.length > 0
+            ? component.files
+                .filter((file) => file !== null)
+                .map((file) => ({
+                    id: file.id,
+                    name: file.name,
+                    size: file.size,
+                    category: 'generic', // TODO: find a way to pass category
+                    url: file.downloadUrl,
+                    status: 'available',
+                    thumbnailUrl: file.downloadUrl,
+                }))
+            : null,
     };
 }
 
@@ -251,12 +259,12 @@ function transformQuizTypeOne(
             name: option.name,
             correct: option.id === component.correctOptionId,
         })),
-        imageFile: {
+        imageFile: component.imageFile ? {
             ...component.imageFile,
             url: component.imageFile.downloadUrl,
             status: 'available',
             thumbnailUrl: component.imageFile.downloadUrl,
-        },
+        } : null,
         correctOptionId: component.correctOptionId,
     };
 }
@@ -269,12 +277,12 @@ function transformQuizTypeTwo(
         id: component.id,
         title: component.title,
         description: component.description,
-        imageFile: {
+        imageFile: component.imageFile ? {
             ...component.imageFile,
             url: component.imageFile.downloadUrl,
             status: 'available',
             thumbnailUrl: component.imageFile.downloadUrl,
-        },
+        } : null,
         groups: component.groups.map((group) => ({
             id: group.id,
             title: group.title,
@@ -301,12 +309,12 @@ function transformQuizTypeThree(
         description: component.description,
         options: component.options.map((option) => ({
             id: option.id,
-            imageFile: {
+            imageFile: option.imageFile ? {
                 ...option.imageFile,
                 url: option.imageFile.downloadUrl,
                 status: 'available',
                 thumbnailUrl: option.imageFile.downloadUrl,
-            },
+            } : null,
             description: option.description,
             correct: option.id === component.correctOptionId,
         })),
@@ -330,12 +338,12 @@ function transformQuizTypeFour(
         title: component.title,
         description: component.description,
         images: component.options.map((option, idx) => ({
-            imageFile: {
+            imageFile: option.imageFile ? {
                 ...option.imageFile,
                 url: option.imageFile.downloadUrl,
                 status: 'available',
                 thumbnailUrl: option.imageFile.downloadUrl,
-            },
+            } : null,
             correctLetter: getLetterByIndex(idx),
         })),
         labels: component.options.map((option, idx) => ({
