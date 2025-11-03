@@ -247,11 +247,10 @@ export interface OneOutOfThreePreviewProps  {
    return (
      <div className="flex flex-col gap-4">
        <div className="flex flex-col gap-4">
-         <p className="text-[24px] text-text-primary font-bold leading-[120%]">
+         <h3>
            {dataWithColumns.tableTitle}
            {required && <span className="text-feedback-error-primary ml-1 text-sm">*</span>}
-         </p>
-         <div className="h-[1px] bg-divider" />
+         </h3>
          <div className="flex flex-col gap-[18px]">
            {/* Headers */}
            <div className="grid grid-cols-[repeat(4,_1fr)_0.2fr] gap-2 w-full">

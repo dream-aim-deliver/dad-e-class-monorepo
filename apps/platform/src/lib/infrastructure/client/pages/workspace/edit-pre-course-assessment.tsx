@@ -6,6 +6,7 @@ import {
     ComponentCard,
     DefaultError,
     DefaultLoading,
+    Divider,
     FormElementType,
     HeadingElement,
     IconHeading,
@@ -343,8 +344,13 @@ function PreviewRenderer({
     };
 
     return (
-        <div className="flex flex-col gap-4">
-            {components.map(renderComponent)}
+        <div className="flex flex-col gap-5">
+            {components.map((component, index) => (
+                <div key={component.id}>
+                    {renderComponent(component)}
+                    {index < components.length - 1 && <Divider className='mb-5 mt-5' />}
+                </div>
+            ))}
         </div>
     );
 }

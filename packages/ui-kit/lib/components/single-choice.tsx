@@ -31,9 +31,9 @@ export default function SingleChoicePreview({
 }: SingleChoicePreviewProps) {
     return (
         <div className="flex flex-col gap-4 text-text-primary">
-            <h5 className="">{title}
+            <h3 className="">{title}
                 {required && <span className="text-feedback-error-primary ml-1 text-sm">*</span>}
-            </h5>
+            </h3>
             <div className='flex flex-col gap-4'>
                 {options?.map((option) => (
                     <div key={option.name} className="flex items-center">
