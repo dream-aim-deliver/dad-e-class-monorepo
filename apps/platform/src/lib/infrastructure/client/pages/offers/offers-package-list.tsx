@@ -5,24 +5,27 @@ import {
     DefaultNotFound,
     PackageCard,
 } from '@maany_shr/e-class-ui-kit';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useListOffersPagePackagesPresenter } from '../../hooks/use-offers-page-packages-presenterr';
+import { useListOffersPagePackagesPresenter } from '../../hooks/use-list-offers-page-packages-presenter';
 import { useRouter } from 'next/navigation';
+import { useRequiredPlatform } from '../../context/platform-context';
 
 export default function PackageList() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.offers');
+    const { platform } = useRequiredPlatform();
 
     const [packagesResponse] = trpc.listOffersPagePackages.useSuspenseQuery({});
     const [packagesViewModel, setPackagesViewModel] = useState<
-        viewModels.TOffersPagePackageListViewModel | undefined
+        viewModels.TListOffersPagePackagesViewModel | undefined
     >(undefined);
     const { presenter } =
         useListOffersPagePackagesPresenter(setPackagesViewModel);
+    // @ts-ignore
     presenter.present(packagesResponse, packagesViewModel);
     const router = useRouter();
 
@@ -63,15 +66,15 @@ export default function PackageList() {
                         pricing={{
                             fullPrice: pkg.pricing.allCourses,
                             partialPrice: pkg.pricing.actual,
-                            currency: pkg.pricing.currency,
+                            currency: platform.currency,
                         }}
                         duration={pkg.duration}
                         locale={locale}
                         onClickDetails={() => {
-                            router.push(`/packages/${pkg.slug}`);
+                            router.push(`/packages/${pkg.id}`);
                         }}
                         onClickPurchase={() => {
-                            router.push(`/checkout/${pkg.slug}`);
+                            router.push(`/checkout/${pkg.id}`);
                         }}
                     />
                 );

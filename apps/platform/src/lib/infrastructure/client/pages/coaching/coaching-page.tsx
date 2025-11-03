@@ -80,12 +80,14 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
                 </Suspense>
             </div>
             {!isLoggedIn && (
-                <CoachesSkeleton
-                    onRegister={() => {
-                        router.push('/signup');
-                    }}
-                    locale={locale}
-                />
+                <div className="flex justify-center w-full">
+                    <CoachesSkeleton
+                        onRegister={() => {
+                            router.push('/signup');
+                        }}
+                        locale={locale}
+                    />
+                </div>
             )}
             <CoachBanner
                 locale={locale}
