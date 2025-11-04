@@ -80,12 +80,19 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
 
   const shouldShowPlaceholder = !imageUrl || isImageError;
 
-  // Calculate total course duration in minutes and convert to hours
+  // Calculate total course duration in minutes and format as "Xh Ym"
   const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
-  const totalDurationInHours = totalDurationInMinutes / 60;
-  const formattedDuration = Number.isInteger(totalDurationInHours)
-    ? totalDurationInHours.toString()
-    : totalDurationInHours.toFixed(2);
+  
+  // Format duration as "Xh Ym" or just "Ym" if less than an hour
+  const formatDuration = (minutes: number): string => {
+    if (minutes <= 0) return '0m';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours === 0) return `${mins}m`;
+    if (mins === 0) return `${hours}h`;
+    return `${hours}h ${mins}m`;
+  };
+  const formattedDuration = formatDuration(totalDurationInMinutes);
 
   return (
     <div className="w-full mx-auto">
@@ -136,7 +143,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
               locale={locale as TLocale}
               language={(language as any).name as string}
               sessions={sessions}
-              duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
+              duration={formattedDuration}
               sales={sales}
             />
           </div>
