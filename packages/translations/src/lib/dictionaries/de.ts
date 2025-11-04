@@ -2556,5 +2556,20 @@ manageHomePage: {
       errorMessage: "Die Bewertungen der Coaching-Sitzung konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
       defaultError: "Die Bewertungen der Coaching-Sitzungen konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
     },
+    becomeACoach: {
+      title: 'Coach werden',
+      description: 'Bewirb dich als Coach und teile dein Wissen mit Teilnehmenden',
+      formTitle: 'Coach-Bewerbung',
+      formDescription: 'Fülle das Formular unten aus, um dich als Coach zu bewerben. Wir werden deine Bewerbung prüfen und uns in Kürze bei dir melden.',
+      submitButton: 'Bewerbung absenden',
+      submitting: 'Wird gesendet...',
+      successTitle: 'Bewerbung eingereicht!',
+      successDescription: 'Vielen Dank für dein Interesse, Coach zu werden. Wir haben deine Bewerbung erhalten und werden sie in Kürze prüfen.',
+      mailtoNote: 'Hinweis: Aktuell öffnet sich beim Absenden dein E-Mail-Programm mit einer vorausgefüllten Nachricht, die deine Formulardaten enthält. Die automatisierte E-Mail-Versand-Funktion wird in Kürze verfügbar sein.',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Absenden deiner Bewerbung ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
+      },
+    },
   },
 };
