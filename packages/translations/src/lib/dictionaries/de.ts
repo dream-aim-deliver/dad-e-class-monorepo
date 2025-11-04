@@ -2259,6 +2259,7 @@ manageHomePage: {
       },
       packageDetails: 'Paket-Details',
       excludeButton: 'Ausschließen',
+      includeButton: 'Einschließen',
       detailsButton: 'Details',
       completePackage: 'Komplettes Paket',
       getAllCoursesTogether: 'Alle Kurse zusammen erhalten',

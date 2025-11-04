@@ -2256,6 +2256,7 @@ export const EN: TDictionary = {
       },
       packageDetails: 'Package Details',
       excludeButton: 'Exclude',
+      includeButton: 'Include',
       detailsButton: 'Details',
       completePackage: 'Complete Package',
       getAllCoursesTogether: 'Get all courses together',
