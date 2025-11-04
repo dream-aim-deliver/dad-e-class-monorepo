@@ -2292,6 +2292,7 @@ export const DictionarySchema = z.object({
       }),
       packageDetails: z.string(),
       excludeButton: z.string(),
+      includeButton: z.string(),
       detailsButton: z.string(),
       completePackage: z.string(),
       getAllCoursesTogether: z.string(),
