@@ -429,7 +429,8 @@ export const EN: TDictionary = {
       markAllAsRead: 'Mark all as read',
       viewAll: 'View all...',
       searchText: 'Search activity',
-      activityHistory: 'Activity history'
+      activityHistory: 'Activity history',
+      emptyState: 'No notifications yet'
     },
     packages: {
       purchasePackageText: 'Purchase Package',

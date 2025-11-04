@@ -160,7 +160,7 @@ export default function ManageFooter() {
 	// Loading state - show loading animation while data is being fetched or initialized
 	if (!platformViewModel || !isContentInitialized) {
 		return (
-			<div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
+			<div className="flex flex-col space-y-2 p-5 gap-4">
 				<div className="flex flex-col space-y-2">
 					<h1>{t('title')}</h1>
 					<p className="text-text-secondary text-sm">
@@ -199,7 +199,7 @@ export default function ManageFooter() {
 	];
 
 	return (
-		<div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
+		<div className="flex flex-col space-y-2 gap-4">
 			<Breadcrumbs items={breadcrumbItems} />
 
 			<div className="flex flex-col space-y-2">
@@ -207,6 +207,16 @@ export default function ManageFooter() {
 				<p className="text-text-secondary text-sm">
 					Platform: {platform.name}
 				</p>
+			</div>
+			<div className="sticky top-18 z-50 flex justify-end"> 
+				<Button
+					onClick={handleSave}
+					disabled={savePlatformFooterMutation.isPending}
+					variant="primary"
+					size="medium"
+					text={savePlatformFooterMutation.isPending ? t('saving') : t('saveButton')}
+					className='shadow-lg'
+				/>
 			</div>
 
 			{/* Success Banner - Course builder style */}
@@ -229,19 +239,12 @@ export default function ManageFooter() {
 			)}
 
 			{/* Footer Content Editor */}
-			<div className="flex flex-col gap-4">
+			<div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
 				<div className="flex justify-between items-center">
 					<div className="flex flex-col gap-1">
-						<h2 className="text-xl font-semibold text-white">{t('footerContentTitle')}</h2>
+						<h2>{t('footerContentTitle')}</h2>
 						<p className="text-sm text-text-secondary italic">{t('languageIndependentNote')}</p>
 					</div>
-					<Button
-						onClick={handleSave}
-						disabled={savePlatformFooterMutation.isPending}
-						variant="primary"
-						size="medium"
-						text={savePlatformFooterMutation.isPending ? t('saving') : t('saveButton')}
-					/>
 				</div>
 
 				<RichTextDesignerComponent

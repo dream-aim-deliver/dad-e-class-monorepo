@@ -370,7 +370,7 @@ export default function ManageCategories({
     ];
 
     return (
-        <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
+        <div className="flex flex-col space-y-2 gap-4">
             <Breadcrumbs items={breadcrumbItems} />
 
             <div className="flex flex-col space-y-2">
@@ -397,10 +397,8 @@ export default function ManageCategories({
                 </p>
             </div>
 
-            <p className="text-text-primary"> {t('description')} </p>
-
-            <div className="flex flex-col items-start gap-6">
-
+            <div className="flex flex-col items-start gap-6 bg-card-fill p-5 border border-card-stroke rounded-medium">
+                <p className="text-text-primary"> {t('description')} </p>
                 <ManageCategoryTopicList locale={appLocale}>
                     {categories.map((category) => {
                         // Get counts from view model

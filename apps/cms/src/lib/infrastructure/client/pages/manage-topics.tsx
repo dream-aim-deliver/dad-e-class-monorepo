@@ -319,7 +319,9 @@ export default function ManageTopics({
     }
 
     // Success state - extract data using discovered pattern
-    const topics = topicsViewModel.data.topics;
+    const topics = topicsViewModel.data.topics.sort((a, b) =>
+        a.name.localeCompare(b.name)
+    );
 
     // Handler to open edit modal
     const handleOpenEditModal = (topic: { id: number; name: string; slug: string }) => {
@@ -389,7 +391,7 @@ export default function ManageTopics({
     ];
 
     return (
-        <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
+        <div className="flex flex-col space-y-2 gap-4">
             <Breadcrumbs items={breadcrumbItems} />
 
             <div className="flex flex-col space-y-2">
@@ -416,15 +418,13 @@ export default function ManageTopics({
                 </p>
             </div>
 
-            <p className="text-text-primary"> {t('description')} </p>
-
-            <div className="flex flex-col items-start gap-6">
-
+            <div className="flex flex-col items-start gap-6 bg-card-fill p-5 border border-card-stroke rounded-medium">
+                <p className="text-text-primary"> {t('description')} </p>
                 <ManageCategoryTopicList locale={appLocale}>
                     {topics.map((topic) => {
-                        // Get counts from view model
-                        const courseCount = 'courseCount' in topic ? topic.courseCount ?? 0 : 0;
-                        const coachCount = 'coachCount' in topic ? topic.coachCount ?? 0 : 0;
+                        // Get counts from view model - ensure they are numbers
+                        const courseCount = 'courseCount' in topic && typeof topic.courseCount === 'number' ? topic.courseCount : 0;
+                        const coachCount = 'coachCount' in topic && typeof topic.coachCount === 'number' ? topic.coachCount : 0;
 
                         return (
                             <ManageCategoryTopicItem

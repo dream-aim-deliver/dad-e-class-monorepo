@@ -228,7 +228,7 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   ];
 
   return (
-    <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4 h-screen">
+    <div className="flex flex-col space-y-2 gap-4 h-screen">
       <Breadcrumbs items={breadcrumbItems} />
 
       <div className="flex flex-col space-y-2">
@@ -239,7 +239,7 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
       </div>
 
       {/* Coupons Grid */}
-      <div className="flex flex-col grow bg-transparent">
+      <div className="flex flex-col grow bg-card-fill p-5 border border-card-stroke rounded-medium">
         <CouponGrid
           gridRef={gridRef}
           coupons={listCouponsViewModel.data.coupons}
