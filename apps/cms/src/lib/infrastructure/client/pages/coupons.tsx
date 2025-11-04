@@ -14,6 +14,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCouponsPresenter } from '../hooks/use-list-coupons-presenter';
+import { useRevokeCouponPresenter } from '../hooks/use-revoke-coupon-presenter';
+import { useCreateCouponPresenter } from '../hooks/use-create-coupon-presenter';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { useRequiredPlatform } from '../context/platform-context';
 import { useRouter } from 'next/navigation';
@@ -28,50 +30,45 @@ function RevokeCouponModalContent({
   couponId,
   couponName,
   locale,
-  onSuccess,
   onClose,
 }: {
   couponId: string;
   couponName: string;
   locale: TLocale;
-  onSuccess: () => void;
   onClose: () => void;
 }) {
   const t = useTranslations('pages.coupons');
   const utils = trpc.useUtils();
 
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [revokeCouponViewModel, setRevokeCouponViewModel] = useState<
+    viewModels.TRevokeCouponViewModel | undefined
+  >(undefined);
+  const { presenter } = useRevokeCouponPresenter(setRevokeCouponViewModel);
 
-  const revokeCouponMutation = trpc.revokeCoupon.useMutation({
-    onSuccess: () => {
-      setIsSuccess(true);
-      setErrorMessage(null);
+  const revokeCouponMutation = trpc.revokeCoupon.useMutation();
+
+  useEffect(() => {
+    if (revokeCouponMutation.isSuccess && revokeCouponMutation.data) {
+      // @ts-ignore
+      presenter.present(revokeCouponMutation.data, revokeCouponViewModel);
       utils.listCoupons.invalidate();
-    },
-    onError: (error) => {
-      setIsSuccess(false);
-      setErrorMessage(null);
-      if ((error as any)?.data?.code === 'UNAUTHORIZED') {
-        setErrorMessage(t('error.unauthorized'));
-      } else if ((error as any)?.data?.code === 'NOT_FOUND') {
-        setErrorMessage(t('error.notFound'));
-      } else {
-        setErrorMessage(t('error.revokeFailed'));
-      }
-    },
-  });
+    }
+  }, [revokeCouponMutation.isSuccess, revokeCouponMutation.data, presenter, revokeCouponViewModel, utils]);
 
   const handleClose = () => {
-    if (isSuccess) {
-      onSuccess();
-    }
     onClose();
   };
 
   const handleConfirm = () => {
     revokeCouponMutation.mutate({ couponId });
   };
+
+  const isSuccess = revokeCouponViewModel?.mode === 'default';
+  const errorMessage = revokeCouponViewModel?.mode === 'kaboom' 
+    ? revokeCouponViewModel.data.message 
+    : revokeCouponViewModel?.mode === 'not-found'
+    ? revokeCouponViewModel.data.message
+    : null;
 
   return (
     <RevokeCouponModal
@@ -105,54 +102,62 @@ function CreateCouponModalContent({
   const packagesQuery = trpc.listPackagesShort.useQuery({});
   const coachingQuery = trpc.listPlatformCoachingOfferings.useQuery({});
 
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [createdCouponName, setCreatedCouponName] = useState('');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [createCouponViewModel, setCreateCouponViewModel] = useState<
+    viewModels.TCreateCouponViewModel | undefined
+  >(undefined);
+  const { presenter } = useCreateCouponPresenter(setCreateCouponViewModel);
 
-  const createCouponMutation = trpc.createCoupon.useMutation({
-    onSuccess: (data) => {
+  const [clientValidationError, setClientValidationError] = useState<string | null>(null);
+
+  const createCouponMutation = trpc.createCoupon.useMutation();
+
+  useEffect(() => {
+    if (createCouponMutation.isSuccess && createCouponMutation.data) {
+      // @ts-ignore
+      presenter.present(createCouponMutation.data, createCouponViewModel);
       utils.listCoupons.invalidate();
-      setIsSuccess(true);
-      const name = (data as any)?.data?.coupon?.name || '';
-      setCreatedCouponName(name);
-      setErrorMessage(null);
-    },
-    onError: (error) => {
-      setIsSuccess(false);
-      const errorData = (error as any)?.data;
-      if (errorData?.errorType === 'name_already_exists') {
-        setErrorMessage(errorData?.message);
-      } else {
-        setErrorMessage(tCreate('error.createFailed'));
-      }
-    },
-  });
-
-  // Handle close: if in success state, notify parent; otherwise just close
-  const handleClose = () => {
-    if (isSuccess && createdCouponName) {
-      onSuccess(createdCouponName);
     }
+  }, [createCouponMutation.isSuccess, createCouponMutation.data, presenter, createCouponViewModel, utils]);
+
+  useEffect(() => {
+    if (createCouponViewModel?.mode === 'default') {
+      const couponName = createCouponViewModel.data.coupon.name;
+      onSuccess(couponName);
+    }
+  }, [createCouponViewModel, onSuccess]);
+
+  const handleClose = () => {
     onClose();
   };
 
-  const handleCreateCoupon = (data: any) => {
-    const newName: string | undefined = data?.name?.trim();
+  const handleCreateCoupon = (data: unknown) => {
+    const couponData = data as { name?: string; [key: string]: unknown };
+    const newName: string | undefined = couponData?.name?.trim();
+    setClientValidationError(null);
     if (newName) {
       // Check if there's an active coupon with the same name
       const activeCouponWithSameName = existingCoupons.find(
         (c) => c.name.toLowerCase() === newName.toLowerCase() && c.status === 'active'
       );
       if (activeCouponWithSameName) {
-        setIsSuccess(false);
-        setErrorMessage(tCreate('nameConflictMessage', { couponName: newName }));
+        // Client-side validation error
+        setClientValidationError(tCreate('nameConflictMessage', { couponName: newName }));
         return;
       }
       // If coupon exists but is revoked, allow creating with same name
     }
-    setErrorMessage(null);
-    createCouponMutation.mutate(data);
+    createCouponMutation.mutate(data as Parameters<typeof createCouponMutation.mutate>[0]);
   };
+
+  const isSuccess = createCouponViewModel?.mode === 'default';
+  const createdCouponName = createCouponViewModel?.mode === 'default' 
+    ? createCouponViewModel.data.coupon.name 
+    : '';
+  const errorMessage = clientValidationError 
+    ? clientValidationError
+    : createCouponViewModel?.mode === 'kaboom'
+    ? createCouponViewModel.data.message
+    : null;
 
   return (
     <CreateCouponModal
@@ -301,7 +306,6 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
           couponId={revokingCouponId}
           couponName={revokingCouponName}
           locale={locale}
-          onSuccess={() => {}}
           onClose={() => {
             setRevokingCouponId(null);
             setRevokingCouponName('');
