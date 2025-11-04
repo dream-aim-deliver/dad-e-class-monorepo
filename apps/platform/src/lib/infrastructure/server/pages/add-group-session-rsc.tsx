@@ -23,8 +23,9 @@ export default async function AddGroupSessionServerComponent(
   await Promise.all([
     prefetch(trpc.listGroupCoachingSessions.queryOptions({
       groupId: parseInt(props.groupId),
-    })), // listGroupCoachingSessions
-    prefetch(trpc.listCoachingOfferings.queryOptions({})), // listCoachingOfferings
+    })),
+    prefetch(trpc.listCoachCoachingSessions.queryOptions({})),
+    prefetch(trpc.listCoachingOfferings.queryOptions({})),
   ]);
 
   return (
