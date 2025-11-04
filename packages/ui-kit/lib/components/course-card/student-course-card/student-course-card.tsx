@@ -15,8 +15,8 @@ export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
 
 interface StudentCourseCardProps extends TCourseMetadata {
   locale: TLocale;
-  sales: number;
   reviewCount: number;
+  sales: number;
   progress?: number;
   onBegin?: () => void;
   onResume?: () => void;
@@ -106,7 +106,6 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   };
 
   const shouldShowPlaceholder = !imageUrl || isImageError;
-  // Determine study progress based on progress value
   const studyProgress =
     progress === 100
       ? 'completed'
@@ -119,7 +118,6 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
       <div className="flex flex-col flex-1 w-auto h-fit rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative">
           {shouldShowPlaceholder ? (
-            // Placeholder for broken image (matching CoachBanner styling)
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
               <span className="text-text-secondary text-md">
                 {dictionary.components.coachBanner.placeHolderText}
@@ -130,7 +128,9 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               loading="lazy"
               src={imageUrl}
               alt={title}
-              className="w-full aspect-[2.15] object-cover"
+              width={430}
+              height={200}
+              className="w-full h-[200px] object-cover"
               onError={handleImageError}
             />
           )}

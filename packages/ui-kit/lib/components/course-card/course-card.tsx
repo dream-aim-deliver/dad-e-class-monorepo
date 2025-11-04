@@ -6,63 +6,89 @@ import { VisitorCourseCard } from './visitor-course-card/visitor-course-card';
 import { course, language } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 
-export type UserType = 'creator' | 'coach' | 'student' | 'visitor';
-
-export interface CourseCardProps {
-  userType: UserType;
+// Base props shared by all card types
+type BaseCourseCardProps = {
   reviewCount: number;
   locale: TLocale;
   language: language.TLanguage;
-  creatorStatus?: CourseStatus;
-  course?: course.TCourseMetadata;
-  progress?: number;
-  sessions?: number;
-  sales?: number;
-  groupName?: string;
+  course: course.TCourseMetadata;
+  onClickUser?: () => void;
+  className?: string;
+};
+
+// Creator-specific props
+type CreatorCourseCardProps = BaseCourseCardProps & {
+  userType: 'course_creator';
+  creatorStatus: CourseStatus;
+  sessions: number;
+  sales: number;
   onEdit?: () => void;
-  onManage?: () => void;
+};
+
+// Student-specific props
+type StudentCourseCardProps = BaseCourseCardProps & {
+  userType: 'student';
+  sales: number;
+  progress: number;
   onBegin?: () => void;
   onResume?: () => void;
   onReview?: () => void;
   onDetails?: () => void;
+};
+
+// Coach-specific props
+type CoachCourseCardProps = BaseCourseCardProps & {
+  userType: 'coach';
+  sessions: number;
+  sales: number;
+  groupName?: string;
+  onManage?: () => void;
+};
+
+// Visitor-specific props
+type VisitorCourseCardProps = BaseCourseCardProps & {
+  userType: 'visitor';
+  sessions: number;
+  sales: number;
+  onDetails?: () => void;
   onBuy?: () => void;
-  onClickUser?: () => void;
-  className?: string;
-}
+};
+
+// Discriminated union type for type-safe props
+export type CourseCardProps =
+  | CreatorCourseCardProps
+  | StudentCourseCardProps
+  | CoachCourseCardProps
+  | VisitorCourseCardProps;
 
 /**
  * A versatile component that renders a course card tailored to different user types.
+ * Uses discriminated union types for type-safe prop validation.
  *
- * @param userType The type of user viewing the card ('creator', 'coach', 'student', 'visitor').
- * @param reviewCount The number of reviews for the course.
- * @param locale The locale for translations (e.g., 'en', 'de').
- * @param language The language of the course (e.g., { code: 'ENG', name: 'English' }).
- * @param creatorStatus The status of the course for creators ('published', 'draft', 'under-review').
- * @param course The course metadata, including title, description, author, etc.
- * @param progress The student's progress percentage (0-100, for student user type).
- * @param sessions The number of sessions in the course.
- * @param sales The number of sales for the course.
- * @param groupName The name of the coaching group (for coach user type).
- * @param onEdit Callback for editing the course (for creator user type).
- * @param onManage Callback for managing the course (for creator or coach user type).
- * @param onBegin Callback for starting the course (for student user type, progress 0).
- * @param onResume Callback for resuming the course (for student user type, progress 1-99).
- * @param onReview Callback for reviewing the course (for student user type, progress 100).
- * @param onDetails Callback for viewing course details (for student or visitor user type).
- * @param onClickUser Callback for clicking the author's name (for all user types).
- * @param onBuy Callback for purchasing the course (for visitor user type).
- * @param className Optional CSS class for custom styling.
+ * @param userType The type of user viewing the card ('course_creator', 'coach', 'student', 'visitor').
+ * @param reviewCount The number of reviews for the course (required for all types).
+ * @param locale The locale for translations (e.g., 'en', 'de') (required for all types).
+ * @param language The language of the course (required for all types).
+ * @param course The course metadata, including title, description, author, etc. (required for all types).
+ * @param onClickUser Callback for clicking the author's name (optional for all types).
+ * @param className Optional CSS class for custom styling (optional for all types).
  *
- * @returns A course card component specific to the user type, or null if invalid props are provided.
+ * Type-specific props:
+ * - course_creator: creatorStatus (required), sessions (required), sales (required), onEdit, onManage
+ * - student: progress, onBegin, onResume, onReview, onDetails (NO sales)
+ * - coach: sessions (required), sales (required), groupName, onManage
+ * - visitor: sessions (required), sales (required), onDetails, onBuy
+ *
+ * @returns A course card component specific to the user type.
  *
  * @example
- * // Creator card
+ * // Course Creator card - requires creatorStatus, sessions, sales
  * <CourseCard
- *   userType="creator"
+ *   userType="course_creator"
  *   reviewCount={328}
  *   locale="en"
  *   language={{ code: 'ENG', name: 'English' }}
- *   creatorStatus="published"
+ *   creatorStatus="live"
  *   course={{
  *     title: 'Advanced Brand Identity Design',
  *     description: 'Learn to create powerful brand identities.',
@@ -76,10 +102,10 @@ export interface CourseCardProps {
  *   sales={1850}
  *   onEdit={() => console.log('Edit course')}
  *   onManage={() => console.log('Manage course')}
- *  onClickUser={() => console.log('Author clicked')}
+ *   onClickUser={() => console.log('Author clicked')}
  * />
  *
- * // Student card
+ * // Student card - NO sales, only progress
  * <CourseCard
  *   userType="student"
  *   reviewCount={156}
@@ -94,44 +120,45 @@ export interface CourseCardProps {
  *     rating: 4.5,
  *   }}
  *   progress={46}
- *   sessions={15}
- *   sales={980}
  *   onResume={() => console.log('Resume course')}
  *   onDetails={() => console.log('View details')}
- *  onClickUser={() => console.log('Author clicked')}
+ *   onClickUser={() => console.log('Author clicked')}
+ * />
+ *
+ * // Coach card
+ * <CourseCard
+ *   userType="coach"
+ *   reviewCount={200}
+ *   locale="en"
+ *   language={{ code: 'ENG', name: 'English' }}
+ *   course={{ ... }}
+ *   sessions={15}
+ *   sales={500}
+ *   groupName="Advanced Group"
+ *   onManage={() => console.log('Manage course')}
+ * />
+ *
+ * // Visitor card
+ * <CourseCard
+ *   userType="visitor"
+ *   reviewCount={100}
+ *   locale="en"
+ *   language={{ code: 'ENG', name: 'English' }}
+ *   course={{ ... }}
+ *   sessions={10}
+ *   sales={250}
+ *   onDetails={() => console.log('View details')}
+ *   onBuy={() => console.log('Buy course')}
  * />
  */
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
-  const {
-    className,
-    userType,
-    reviewCount,
-    locale,
-    language,
-    creatorStatus,
-    course,
-    progress,
-    sessions = 0,
-    sales = 0,
-    groupName,
-    onEdit,
-    onManage,
-    onBegin,
-    onResume,
-    onReview,
-    onDetails,
-    onClickUser,
-    onBuy,
-  } = props;
+  const { className, userType, reviewCount, locale, language, course, onClickUser } = props;
 
-  const cardComponents = {
-    creator: {
-      render: () => {
-        if (!course || !creatorStatus) {
-          console.error('Course and creatorStatus are required for creator view');
-          return null;
-        }
-        return (
+  switch (userType) {
+    case 'course_creator': {
+      const { creatorStatus, sessions, sales, onEdit} = props;
+      return (
+        <div className={className}>
           <CourseCreatorCard
             title={course.title}
             author={course.author}
@@ -142,24 +169,19 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             reviewCount={reviewCount}
             sessions={sessions}
             sales={sales}
-            description={course.description}
-            pricing={course.pricing}
             status={creatorStatus}
             locale={locale}
             onEdit={onEdit}
-            onManage={onManage}
             onClickUser={onClickUser}
           />
-        );
-      },
-    },
-    coach: {
-      render: () => {
-        if (!course) {
-          console.error('Course is required for coach view');
-          return null;
-        }
-        return (
+        </div>
+      );
+    }
+
+    case 'coach': {
+      const { sessions, sales, groupName, onManage } = props;
+      return (
+        <div className={className}>
           <CoachCourseCard
             title={course.title}
             rating={course.rating}
@@ -169,34 +191,32 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             sessions={sessions}
             duration={course.duration}
             sales={sales}
-            groupName={groupName} // Pass groupName explicitly if provided
+            groupName={groupName}
             imageUrl={course.imageUrl}
             onManage={onManage}
             locale={locale}
             onClickUser={onClickUser}
           />
-        );
-      },
-    },
-    student: {
-      render: () => {
-        if (!course) {
-          console.error('Course is required for student view');
-          return null;
-        }
-        return (
+        </div>
+      );
+    }
+
+    case 'student': {
+      const { sales, progress, onBegin, onResume, onReview, onDetails } = props;
+      return (
+        <div className={className}>
           <StudentCourseCard
             title={course.title}
             description={course.description}
+            pricing={course.pricing}
             rating={course.rating}
             author={course.author}
             imageUrl={course.imageUrl}
             language={language}
             duration={course.duration}
-            pricing={course.pricing}
             locale={locale}
-            sales={sales}
             reviewCount={reviewCount}
+            sales={sales}
             progress={progress}
             onBegin={onBegin}
             onResume={onResume}
@@ -204,16 +224,14 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             onDetails={onDetails}
             onClickUser={onClickUser}
           />
-        );
-      },
-    },
-    visitor: {
-      render: () => {
-        if (!course) {
-          console.error('Course is required for visitor view');
-          return null;
-        }
-        return (
+        </div>
+      );
+    }
+
+    case 'visitor': {
+      const { sessions, sales, onDetails, onBuy } = props;
+      return (
+        <div className={className}>
           <VisitorCourseCard
             title={course.title}
             description={course.description}
@@ -231,17 +249,13 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             locale={locale}
             onClickUser={onClickUser}
           />
-        );
-      },
-    },
-  };
+        </div>
+      );
+    }
 
-  const cardConfig = cardComponents[userType];
-
-  if (!cardConfig) {
-    console.error(`Invalid userType: ${userType}`);
-    return null;
+    default: {
+      const exhaustiveCheck: never = userType;
+      return null;
+    }
   }
-
-  return <div className={className}>{cardConfig.render()}</div>;
 };

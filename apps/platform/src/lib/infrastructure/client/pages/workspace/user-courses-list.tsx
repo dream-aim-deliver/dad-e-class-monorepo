@@ -20,8 +20,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
-import { trpc } from '../../trpc/cms-client';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
+import { trpc } from '../../trpc/cms-client';
 
 interface UserCoursesListProps {
     maxItems?: number;
@@ -145,13 +145,10 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                         fullPrice: 0,
                     };
                     if (course.role === 'course_creator') {
-                        // TODO: sort out this mess -- ui-kit is out of date w.r.t course status
                         const stateToStatus: Record<string, CourseStatus> = {
                             draft: 'draft',
-                            review: 'under-review',
-                            live: 'published',
-                            // TODO: in particular, we need some sort of badge to show that a course is archived
-                            archived: 'published',
+                            live: 'live',
+                            archived: 'archived',
                         };
                         return (
                             <CourseCreatorCard
