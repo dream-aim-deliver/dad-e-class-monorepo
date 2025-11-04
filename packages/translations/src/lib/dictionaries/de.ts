@@ -2571,5 +2571,20 @@ manageHomePage: {
         description: 'Beim Absenden deiner Bewerbung ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
       },
     },
+    addGroupSession: {
+      title: 'Gruppen-Session hinzufügen',
+      description: 'Plane eine neue Coaching-Session für deine Gruppe',
+      selectOffering: 'Coaching-Angebot auswählen',
+      selectDateTime: 'Datum & Uhrzeit auswählen',
+      createSession: 'Session erstellen',
+      creating: 'Session wird erstellt...',
+      loading: 'Lädt...',
+      successMessage: 'Gruppen-Session erfolgreich erstellt!',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Erstellen der Session ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
+        unauthorized: 'Du musst Coach sein, um Gruppen-Sessions zu erstellen.',
+      },
+    },
   },
 };

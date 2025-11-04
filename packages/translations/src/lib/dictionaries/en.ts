@@ -2568,5 +2568,20 @@ export const EN: TDictionary = {
         description: 'An error occurred while submitting your application. Please try again later.',
       },
     },
+    addGroupSession: {
+      title: 'Add Group Session',
+      description: 'Schedule a new coaching session for your group',
+      selectOffering: 'Select Coaching Offering',
+      selectDateTime: 'Select Date & Time',
+      createSession: 'Create Session',
+      creating: 'Creating session...',
+      loading: 'Loading...',
+      successMessage: 'Group session created successfully!',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while creating the session. Please try again later.',
+        unauthorized: 'You must be a coach to create group sessions.',
+      },
+    },
   },
 };

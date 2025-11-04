@@ -2604,6 +2604,21 @@ export const DictionarySchema = z.object({
         description: z.string(),
       }),
     }),
+    addGroupSession: z.object({
+      title: z.string(),
+      description: z.string(),
+      selectOffering: z.string(),
+      selectDateTime: z.string(),
+      createSession: z.string(),
+      creating: z.string(),
+      loading: z.string(),
+      successMessage: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        unauthorized: z.string(),
+      }),
+    }),
   }),
 });
 
