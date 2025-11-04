@@ -10,6 +10,9 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
+import { ReceivedPaymentsCard, ReceivedPaymentsCardList, Button } from '@maany_shr/e-class-ui-kit';
+import { useState } from 'react';
+import { generateInvoicePdf } from '../utils/generate-invoice-pdf';
 
 interface ReceivedPaymentsTabProps {
   locale: TLocale;
@@ -19,24 +22,209 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
   const t = useTranslations('pages.receivedPayments');
   const currentLocale = useLocale() as TLocale;
 
+  // Pagination state - show 8 cards initially (2 rows on desktop with 4 cols)
+  const [visibleCount, setVisibleCount] = useState(8);
+  const ITEMS_PER_PAGE = 8;
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState<string | null>(null);
+
+  // Fetch platform data for invoice branding
+  const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
+
+  // Fetch personal profile for company details in invoice (coach details)
+  const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
+
   // TRPC query for listUserOutgoingTransactions usecase
   const [transactionsResponse] = trpc.listUserOutgoingTransactions.useSuspenseQuery({});
 
-  return (
-    <div className="flex flex-col space-y-5">
-      {/* Page header with translations */}
-      <div>
-        <h2 className="text-2xl font-semibold">{t('title')}</h2>
-        <p className="text-gray-600">{t('description')}</p>
-      </div>
+  // Handle error states
+  if (!transactionsResponse.success) {
+    const mode = (transactionsResponse as any).mode;
 
-      {/* Features from Notion:
-        - View received payments from students
-        - Generate/Download invoices
-      */}
-      {/* TODO: Implement client-side generateInvoicePdf */}
-      {/* TODO: Add transaction table/grid with columns: transactionId, date, amount, status, type, from */}
-      {/* TODO: Add generate/download invoice buttons */}
+    // Determine which error message to show based on mode
+    let errorTitle = t('error.title');
+    let errorDescription = t('error.description');
+
+    if (mode === 'kaboom') {
+      errorTitle = t('error.kaboom.title');
+      errorDescription = t('error.kaboom.description');
+    } else if (mode === 'not-found') {
+      errorTitle = t('error.notFound.title');
+      errorDescription = t('error.notFound.description');
+    } else if (mode === 'unauthorized') {
+      errorTitle = t('error.unauthorized.title');
+      errorDescription = t('error.unauthorized.description');
+    }
+
+    return (
+      <div className="flex flex-col space-y-3">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <h3 className="text-lg font-semibold text-red-800">{errorTitle}</h3>
+          <p className="text-sm text-red-600 mt-1">{errorDescription}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Get all transactions
+  const getAllTransactions = () => {
+    const responseData = transactionsResponse.data as { transactions: any[] };
+    return responseData.transactions || [];
+  };
+
+  // Handler for invoice download/generation
+  const handleInvoiceClick = async (transactionId: string | number) => {
+    const allTransactions = getAllTransactions();
+    const transaction = allTransactions.find((t: any) => t.id === transactionId);
+
+    if (!transaction) {
+      alert(t('transactionNotFound'));
+      return;
+    }
+
+    // Get platform data
+    const platformData = (platformResponse as any)?.success ? (platformResponse as any).data : null;
+
+    // Get coach's own profile data (the person receiving the payment and issuing the invoice)
+    const personalProfile = (personalProfileResponse as any)?.success
+      ? (personalProfileResponse as any).data?.profile
+      : null;
+
+    setIsGeneratingPdf(String(transactionId));
+
+    try {
+      // Transform the outgoing transaction to match the invoice PDF generator format
+      // For outgoing transactions (coach receiving payment), we need to adapt the data structure
+      const transformedTransaction = {
+        id: transaction.id,
+        createdAt: transaction.createdAt,
+        currency: transaction.currency,
+        content: {
+          type: 'coachingOffers' as const, // Outgoing transactions are coaching payments
+          unitPrice: 0, // Will be calculated from items
+          items: transaction.content.items.map((item: any) => ({
+            title: item.description,
+            duration: '30min', // Default duration, adjust if available
+            unitPrice: item.unitPrice,
+            quantity: item.quantity,
+          })),
+        },
+      };
+
+      // Use the reusable invoice PDF generator utility
+      // For received payments (coach perspective), show the coach's information
+      await generateInvoicePdf({
+        transaction: transformedTransaction,
+        platformData: {
+          name: platformData?.name || t('platformNameFallback'),
+          logoUrl: platformData?.logoUrl,
+          domainName: platformData?.domainName,
+        },
+        customerData: {
+          name: personalProfile?.name,
+          surname: personalProfile?.surname,
+          email: personalProfile?.email,
+          phone: personalProfile?.phone,
+          companyDetails: personalProfile?.companyDetails,
+        },
+        locale: currentLocale,
+        translations: {
+          invoiceNo: t('invoice.invoiceNo'),
+          invoiceDate: t('invoice.invoiceDate'),
+          customerDetails: t('invoice.customerDetails'),
+          fullName: t('invoice.fullName'),
+          email: t('invoice.email'),
+          phoneNumber: t('invoice.phoneNumber'),
+          companyName: t('invoice.companyName'),
+          companyUidVat: t('invoice.companyUidVat'),
+          companyEmail: t('invoice.companyEmail'),
+          companyAddress: t('invoice.companyAddress'),
+          orderId: t('invoice.orderId'),
+          pricePerUnit: t('invoice.pricePerUnit'),
+          units: t('invoice.units'),
+          total: t('invoice.total'),
+          course: t('invoice.course'),
+          coachingSession: t('invoice.coachingSession'),
+          package: t('invoice.package'),
+          totalLabel: t('invoice.totalLabel'),
+          paymentMethod: t('invoice.paymentMethod'),
+        },
+      });
+    } catch (error: any) {
+      alert(`${t('invoiceGenerationFailed')}: ${error?.message || t('unknownError')}`);
+    } finally {
+      setIsGeneratingPdf(null);
+    }
+  };
+
+  // Transform transactions data to ReceivedPaymentsCard props
+  const renderPaymentCards = () => {
+    const transactions = getAllTransactions();
+
+    if (transactions.length === 0) {
+      return null;
+    }
+
+    // Only render the visible transactions based on pagination
+    const visibleTransactions = transactions.slice(0, visibleCount);
+
+    return visibleTransactions.map((transaction: any) => {
+      // Calculate total from items
+      const total = transaction.content.items.reduce((sum: number, item: any) =>
+        sum + (item.unitPrice * item.quantity), 0
+      );
+
+      // Format items for display
+      const items = transaction.content.items.map((item: any) =>
+        `${item.quantity}x ${item.description} (${item.unitPrice} ${transaction.currency})`
+      );
+
+      // Format date
+      const dateLocale = currentLocale === 'de' ? 'de-DE' : 'en-GB';
+      const formattedDate = new Date(transaction.createdAt).toLocaleDateString(dateLocale);
+
+      // For display purposes, use the tag name which describes the payment type
+      // (e.g., "monthly coach payment", "course purchase", etc.)
+      const paymentDescription = transaction.tag?.name || t('paymentReceivedFallback');
+
+      return (
+        <ReceivedPaymentsCard
+          key={transaction.id}
+          locale={currentLocale}
+          transactionId={String(transaction.id)}
+          transactionDate={formattedDate}
+          total={`${total.toFixed(2)} ${transaction.currency}`}
+          fromStudentName={paymentDescription}
+          items={items}
+          tags={transaction.tag ? [transaction.tag.name] : []}
+          onInvoiceClick={() => handleInvoiceClick(transaction.id)}
+        />
+      );
+    });
+  };
+
+  const allTransactions = getAllTransactions();
+  const hasMore = visibleCount < allTransactions.length;
+
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + ITEMS_PER_PAGE);
+  };
+
+  return (
+    <div className="flex flex-col gap-6">
+      <ReceivedPaymentsCardList locale={currentLocale}>
+        {renderPaymentCards()}
+      </ReceivedPaymentsCardList>
+
+      {hasMore && (
+        <div className="flex justify-center">
+          <Button
+            variant="secondary"
+            size="medium"
+            text={t('loadMore')}
+            onClick={handleLoadMore}
+          />
+        </div>
+      )}
     </div>
   );
 }

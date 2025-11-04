@@ -41,7 +41,9 @@ export default function Billing({ locale, tab }: BillingProps) {
         },
         {
             label: breadcrumbsTranslations('ordersAndPayments'),
-            onClick: () => {},
+            onClick: () => {
+                // Nothing should happen on clicking the current page
+            },
         },
     ];
 
@@ -80,7 +82,7 @@ export default function Billing({ locale, tab }: BillingProps) {
 
             {/* Tab navigation for coaches */}
             <Tabs.Root defaultTab={defaultTab}>
-                <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2 mb-4">
+                <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium border border-base-neutral-700 gap-2 mb-4">
                     <Tabs.Trigger
                         value={BillingTab.ORDER_HISTORY}
                         isLast={false}

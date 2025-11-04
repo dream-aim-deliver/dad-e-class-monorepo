@@ -227,6 +227,9 @@ export { OrderHistoryCard, type OrderHistoryCardProps, type OrderHistoryType, ty
 export { OrderHistoryCardList, type OrderHistoryCardListProps } from './components/order-history/order-history-card-list';
 export { CoachingSessionSnippet, type CoachingSessionSnippetProps } from './components/order-history/coaching-session-snippet';
 
+export { ReceivedPaymentsCard, type ReceivedPaymentsCardProps } from './components/received-payments/received-payments-card';
+export { ReceivedPaymentsCardList, type ReceivedPaymentsCardListProps } from './components/received-payments/received-payments-card-list';
+
 export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
 export { Message } from './components/assignment/message';
 export { ReplyPanel } from './components/assignment/reply-panel';
