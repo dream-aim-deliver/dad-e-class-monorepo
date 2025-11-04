@@ -2,7 +2,7 @@
 // Notion: https://www.notion.so/Add-Group-Session-View-coach-workspace-11136e9f772641f297768fb72282218a
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import AddGroupSessionServerComponent from 'apps/platform/src/lib/infrastructure/server/pages/add-group-session-rsc';
+import AddGroupSessionServerComponent from '../../../../../../../../../lib/infrastructure/server/pages/add-group-session-rsc';
 
 export default async function AddGroupSessionPage({
   params: paramsPromise,
