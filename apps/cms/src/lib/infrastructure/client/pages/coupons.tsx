@@ -48,13 +48,6 @@ function RevokeCouponModalContent({
       setIsSuccess(true);
       setErrorMessage(null);
       utils.listCoupons.invalidate();
-      const timer = setTimeout(() => {
-        onSuccess();
-        onClose();
-        setIsSuccess(false);
-        setErrorMessage(null);
-      }, 5000);
-      return () => clearTimeout(timer);
     },
     onError: (error) => {
       setIsSuccess(false);
@@ -69,6 +62,13 @@ function RevokeCouponModalContent({
     },
   });
 
+  const handleClose = () => {
+    if (isSuccess) {
+      onSuccess();
+    }
+    onClose();
+  };
+
   const handleConfirm = () => {
     revokeCouponMutation.mutate({ couponId });
   };
@@ -78,7 +78,7 @@ function RevokeCouponModalContent({
       couponName={couponName}
       locale={locale}
       onConfirm={handleConfirm}
-      onCancel={onClose}
+      onCancel={handleClose}
       isRevoking={revokeCouponMutation.isPending}
       isSuccess={isSuccess}
       errorMessage={errorMessage}
