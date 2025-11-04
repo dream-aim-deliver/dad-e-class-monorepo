@@ -53,6 +53,27 @@ export const RecentActivity: FC<RecentActivityProps> = ({
   const allChildren = React.Children.toArray(children).filter(React.isValidElement);
   const displayedChildren = allChildren.slice(0, maxActivities);
 
+  const isEmpty = !children || (Array.isArray(children) && children.length === 0);
+
+  if (isEmpty) {
+    return (
+      <div className={`flex flex-col gap-2 items-center ${className || ''}`}>
+        {variation === 'Feed' && (
+          <div className="flex w-full items-start justify-between gap-2 sm:items-center">
+            <p className="text-xl text-base-white font-bold text-left min-w-0 flex-1">
+              {dictionary?.components?.recentActivity?.recentActivity}
+            </p>
+          </div>
+        )}
+        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
+          <p className="text-text-primary text-md">
+            {dictionary?.components?.recentActivity?.emptyState}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex flex-col gap-2 items-center ${className || ''}`}>
       {variation === 'Feed' && (

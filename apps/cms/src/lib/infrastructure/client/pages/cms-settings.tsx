@@ -18,6 +18,7 @@ import {
   Button,
   DefaultError,
   DefaultLoading,
+  Divider,
   InputField,
   Uploader,
 } from '@maany_shr/e-class-ui-kit';
@@ -235,12 +236,16 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
   ];
 
   return (
-    <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
+    <div className="flex flex-col space-y-2 gap-4">
       <Breadcrumbs items={breadcrumbItems} />
 
       <div className="flex flex-col space-y-2">
-        <div className="flex flex-col sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
           <h1>{t('title')}</h1>
+        <p className="text-text-secondary text-sm">
+          {t('description')} | Platform: {platform.name}
+        </p>
+      </div>
+      <div className="sticky top-18 z-50 flex justify-end"> 
           <Button
             variant="primary"
             size="medium"
@@ -251,11 +256,8 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
             }
             onClick={handleSave}
             disabled={updatePlatformMutation.isPending}
+            className='shadow-lg'
           />
-        </div>
-        <p className="text-text-secondary text-sm">
-          {t('description')} | Platform: {platform.name}
-        </p>
       </div>
 
       {/* Save Status Banner */}
@@ -268,10 +270,10 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
       {backgroundUpload.uploadError && <Banner style="error" title={backgroundUpload.uploadError} />}
 
       {/* Settings Form */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-8 bg-card-fill p-5 border border-card-stroke rounded-medium">
         {/* Basic Information Section */}
         <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold text-white">
+          <h2>
             {t('sections.basicInfo') ?? 'Basic Information'}
           </h2>
 
@@ -328,9 +330,11 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
           </div>
         </div>
 
+        <Divider className='my-1'/>
+
         {/* Company Information Section */}
         <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold text-white">
+          <h2>
             {t('sections.companyInfo') ?? 'Company Information'}
           </h2>
 
@@ -368,9 +372,11 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
           </div>
         </div>
 
+        <Divider className='my-1'/>
+
         {/* Branding Section */}
         <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold text-white">
+          <h2>
             {t('sections.branding') ?? 'Branding'}
           </h2>
 

@@ -184,3 +184,43 @@ export const WithExcessActivities: Story = {
     variation: 'Feed',
   },
 };
+
+export const EmptyStatePopup: Story = {
+  args: {
+    locale: 'en',
+    maxActivities: 3,
+    variation: 'Pop-up',
+  },
+  render: (args) => (
+    <RecentActivity {...args}>
+      {[]}
+    </RecentActivity>
+  ),
+};
+
+export const EmptyStateFeed: Story = {
+  args: {
+    locale: 'en',
+    maxActivities: 3,
+    onClickMarkAllAsRead: () => alert('Mark all as read clicked'),
+    variation: 'Feed',
+  },
+  render: (args) => (
+    <RecentActivity {...args}>
+      {[]}
+    </RecentActivity>
+  ),
+};
+
+export const EmptyStateGerman: Story = {
+  args: {
+    locale: 'de',
+    maxActivities: 3,
+    variation: 'Feed',
+  },
+  render: (args) => (
+    <RecentActivity {...args}>
+      {[]}
+    </RecentActivity>
+  ),
+};

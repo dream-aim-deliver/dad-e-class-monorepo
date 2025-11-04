@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import EditCourse from '../../../client/pages/workspace/edit/edit-course';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
-import { getQueryClient, HydrateClient, trpc } from '../../config/trpc/cms-server';
+import { getQueryClient, HydrateClient, trpc, prefetch } from '../../config/trpc/cms-server';
 
 interface CourseServerComponentProps {
     slug: string;
@@ -32,7 +32,28 @@ export default async function EditCourseServerComponent({
         throw new Error('You can\'t edit this course');
     }
 
-    // TODO: prefetch any necessary data
+    // Prefetch all data needed across all tabs to improve initial load performance
+    await Promise.all([
+        // General Tab data
+        prefetch(trpc.getEnrolledCourseDetails.queryOptions({
+            courseSlug: slug,
+        })),
+        prefetch(trpc.listTopics.queryOptions({})),
+        prefetch(trpc.listCategories.queryOptions({})),
+
+        // Intro/Outline Tab data
+        prefetch(trpc.getCourseIntroduction.queryOptions({
+            courseSlug: slug,
+        })),
+        prefetch(trpc.getCourseOutline.queryOptions({
+            courseSlug: slug,
+        })),
+
+        // Course Content Tab data
+        prefetch(trpc.getCourseStructure.queryOptions({
+            courseSlug: slug,
+        })),
+    ]);
 
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>

@@ -196,7 +196,7 @@ export default function ManageAboutPage() {
 	];
 
 	return (
-		<div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
+		<div className="flex flex-col space-y-2 gap-4">
 			<Breadcrumbs items={breadcrumbItems} />
 
 			<div className="flex flex-col space-y-2">
@@ -204,6 +204,16 @@ export default function ManageAboutPage() {
 				<p className="text-text-secondary text-sm">
 					Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
 				</p>
+			</div>
+			<div className="sticky top-18 z-50 flex justify-end">
+				<Button
+					onClick={handleSave}
+					disabled={saveAboutPageMutation.isPending}
+					variant="primary"
+					size="medium"
+					text={saveAboutPageMutation.isPending ? 'Saving...' : 'Save Changes'}
+					className='shadow-lg'
+				/>
 			</div>
 
 			{/* Success Banner - Course builder style */}
@@ -226,16 +236,11 @@ export default function ManageAboutPage() {
 			)}
 
 			{/* About Page Content Editor */}
-			<div className="flex flex-col gap-4">
-				<div className="flex justify-between items-center">
-					<h2 className="text-xl font-semibold text-white">About page content</h2>
-					<Button
-						onClick={handleSave}
-						disabled={saveAboutPageMutation.isPending}
-						variant="primary"
-						size="medium"
-						text={saveAboutPageMutation.isPending ? 'Saving...' : 'Save Changes'}
-					/>
+			<div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+
+					<div className='flex flex-row justify-between items-center'>
+					<h3>About page content</h3>
+
 				</div>
 
 				<RichTextDesignerComponent

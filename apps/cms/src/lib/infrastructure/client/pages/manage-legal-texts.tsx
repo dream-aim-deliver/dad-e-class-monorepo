@@ -170,24 +170,27 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
   ];
 
   return (
-    <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
+    <div className="flex flex-col space-y-2 gap-4">
       <Breadcrumbs items={breadcrumbItems} />
 
       <div className="flex flex-col space-y-2">
         <div className="flex flex-col sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
           <h1>{t('title')}</h1>
-          <Button
-            variant="primary"
-            size="medium"
-            text={saveLegalTextsMutation.isPending ? t('saving') : t('saveButton')}
-            onClick={handleSave}
-            disabled={saveLegalTextsMutation.isPending}
-          />
         </div>
         <p className="text-text-secondary text-sm">
           Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
         </p>
       </div>
+          <div className="sticky top-18 z-50 flex justify-end">
+            <Button
+              variant="primary"
+              size="medium"
+              text={saveLegalTextsMutation.isPending ? t('saving') : t('saveButton')}
+              onClick={handleSave}
+              disabled={saveLegalTextsMutation.isPending}
+              className="shadow-lg"
+            />
+          </div>
 
       <p className="text-text-primary">{t('description')}</p>
 
@@ -224,8 +227,8 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
 
         <div className="mt-6">
           <Tabs.Content value="impressum">
-            <div className="flex flex-col gap-4">
-              <h2 className="text-xl font-semibold text-white">{t('tabs.impressum')}</h2>
+            <div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+              <h2>{t('tabs.impressum')}</h2>
               <RichTextDesignerComponent
                 key={`impressum-${updateCounter}`}
                 elementInstance={{
@@ -244,7 +247,7 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
 
           <Tabs.Content value="privacy-policy">
             <div className="flex flex-col gap-4">
-              <h2 className="text-xl font-semibold text-white">{t('tabs.privacyPolicy')}</h2>
+              <h2>{t('tabs.privacyPolicy')}</h2>
               <RichTextDesignerComponent
                 key={`privacy-policy-${updateCounter}`}
                 elementInstance={{
