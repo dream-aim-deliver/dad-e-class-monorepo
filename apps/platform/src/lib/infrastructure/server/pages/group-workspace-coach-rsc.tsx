@@ -10,6 +10,8 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import GroupWorkspaceCoach from '../../client/pages/group-workspace-coach';
 import { TLocale } from '@maany_shr/e-class-translations';
+import GroupWorkspaceStudent from '../../client/pages/group-workspace-student';
+import getSession from '../config/auth/get-session';
 
 interface GroupWorkspaceCoachServerComponentProps {
   locale: TLocale;
@@ -20,48 +22,94 @@ interface GroupWorkspaceCoachServerComponentProps {
 export default async function GroupWorkspaceCoachServerComponent(
   props: GroupWorkspaceCoachServerComponentProps
 ) {
-  // TRPC prefetching for page data
-  // Usecases: saveGroupNotes, getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
-  await Promise.all([
-    prefetch(trpc.getGroupNotes.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: {
-        requestType: 'requestForCoach',
-        groupId: props.groupId,
-      },
-    })),
-    prefetch(trpc.listGroupAssignments.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: {
-        requestType: 'requestForCoach',
-        groupId: props.groupId,
-      },
-    })),
-    prefetch(trpc.listGroupMembers.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: {
-        requestType: 'requestForCoach',
-        groupId: props.groupId,
-      },
-    })),
-    prefetch(trpc.getGroupNextCoachingSession.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: {
-        requestType: 'requestForCoach',
-        groupId: props.groupId,
-      },
-    })),
-  ]);
+  const session = await getSession();
+  const isCoach = session?.user?.roles?.includes('coach');
 
-  return (
-    <HydrateClient>
-      <Suspense fallback={<DefaultLoadingWrapper />}>
-        <GroupWorkspaceCoach
-          locale={props.locale}
-          courseSlug={props.courseSlug}
-          groupId={props.groupId}
-        />
-      </Suspense>
-    </HydrateClient>
-  );
+  if(isCoach) {
+    // TRPC prefetching for page data
+    // Usecases: saveGroupNotes, getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
+    await Promise.all([
+      prefetch(trpc.getGroupNotes.queryOptions({
+        courseSlug: props.courseSlug,
+        additionalParams: {
+          requestType: 'requestForCoach',
+          groupId: props.groupId,
+        },
+      })),
+      prefetch(trpc.listGroupAssignments.queryOptions({
+        courseSlug: props.courseSlug,
+        additionalParams: {
+          requestType: 'requestForCoach',
+          groupId: props.groupId,
+        },
+      })),
+      prefetch(trpc.listGroupMembers.queryOptions({
+        courseSlug: props.courseSlug,
+        additionalParams: {
+          requestType: 'requestForCoach',
+          groupId: props.groupId,
+        },
+      })),
+      prefetch(trpc.getGroupNextCoachingSession.queryOptions({
+        courseSlug: props.courseSlug,
+        additionalParams: {
+          requestType: 'requestForCoach',
+          groupId: props.groupId,
+        },
+      })),
+    ]);
+  
+    return (
+      <HydrateClient>
+        <Suspense fallback={<DefaultLoadingWrapper />}>
+          <GroupWorkspaceCoach
+            locale={props.locale}
+            courseSlug={props.courseSlug}
+            groupId={props.groupId}
+          />
+        </Suspense>
+      </HydrateClient>
+    );
+  } else {
+      // TRPC prefetching for page data
+      // Usecases: getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
+      await Promise.all([
+        prefetch(trpc.getGroupNotes.queryOptions({
+          courseSlug: props.courseSlug,
+          additionalParams: {
+            requestType: 'requestForStudent',
+          },
+        })),
+        prefetch(trpc.listGroupAssignments.queryOptions({
+          courseSlug: props.courseSlug,
+          additionalParams: {
+            requestType: 'requestForStudent',
+          },
+        })),
+        prefetch(trpc.listGroupMembers.queryOptions({
+          courseSlug: props.courseSlug,
+          additionalParams: {
+            requestType: 'requestForStudent',
+          },
+        })),
+        prefetch(trpc.getGroupNextCoachingSession.queryOptions({
+          courseSlug: props.courseSlug,
+          additionalParams: {
+            requestType: 'requestForStudent',
+          },
+        })),
+      ]);
+    
+      return (
+        <HydrateClient>
+          <Suspense fallback={<DefaultLoadingWrapper />}>
+            <GroupWorkspaceStudent
+              locale={props.locale}
+              courseSlug={props.courseSlug}
+              groupId={props.groupId}
+            />
+          </Suspense>
+        </HydrateClient>
+      );
+  }
 }

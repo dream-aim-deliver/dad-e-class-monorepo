@@ -264,3 +264,10 @@ export { GroupOverviewCard, type GroupOverviewCardDetails, type GroupOverviewCar
 export { GroupsList, type GroupsListProps } from './components/groups-card/groups-list';
 export { CMSNotificationGrid } from './components/grids/cms-notification-grid';
 export { default as RedeemStandaloneCoupon } from './components/redeem-standalone-coupon';
+
+export { GroupIntroduction } from './components/group-introduction';
+export { CoachNotesView, CoachNotesCreate } from './components/coach/coach-notes';
+export { CoachNotesEditDialog } from './components/coach/coach-notes-edit-dialog';
+export { AssignmentCardFilterModal } from './components/assignment/assignment-card-filter-modal';
+export { AssignmentOverview } from './components/assignment/assignment-overview';
+export { AssignmentOverviewList } from './components/assignment/assignment-overview-list';

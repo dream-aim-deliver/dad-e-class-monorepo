@@ -724,6 +724,12 @@ export const DE: TDictionary = {
       takenAlsoBy: 'Ebenfalls belegt von',
       groupWorkspaceButton: 'Gruppenarbeitsbereich',
     },
+    groupIntroduction: {
+      students: 'Studenten',
+      course: 'Kurs',
+      coach: 'Trainer',
+      you: 'Du',
+    },
     reviewSnippet: {
       by: 'von',
       readMore: 'Mehr lesen',
@@ -1091,6 +1097,9 @@ export const DE: TDictionary = {
         date: 'Datum',
       },
       defaultSortBy: 'Titel',
+    },
+    assignmentOverviewList: {
+      emptyState: 'Noch keine Aufgaben eingereicht.',
     },
     userAvatarReel: {
       andLabel: 'und',
@@ -2329,17 +2338,29 @@ export const DE: TDictionary = {
         title: 'Gruppenvorstellung',
       },
       assignments: {
-        title: 'Gruppenaufgaben',
+        title: 'Aufgaben',
+        sortBy: 'Sortieren nach',
+        selectSort: 'Sortieroption auswählen',
+        filterButton: 'Filter',
+        sortOptions: {
+          title: 'Titel (A-Z)',
+          status: 'Status',
+          date: 'Datum (Neueste)',
+          student: 'Schülername',
+        },
       },
       nextCoachingSession: {
-        title: 'Nächste Coaching-Sitzung',
+        title: 'Nächste Sitzung',
         noSession: 'Keine bevorstehende Coaching-Sitzung geplant',
+        closedSessionsButton: 'Geschlossene Sitzungen',
       },
       members: {
         title: 'Gruppenmitglieder',
+        searchstudent: 'Suche Student',
       },
       notes: {
         title: 'Gruppennotizen',
+        editButton: 'Bearbeiten',
         saveButton: 'Notizen speichern',
         saving: 'Wird gespeichert...',
         saved: 'Notizen erfolgreich gespeichert',

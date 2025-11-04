@@ -725,6 +725,12 @@ export const DictionarySchema = z.object({
       takenAlsoBy: z.string(),
       groupWorkspaceButton: z.string(),
     }),
+    groupIntroduction: z.object({
+      students: z.string(),
+      course: z.string(),
+      coach: z.string(),
+      you: z.string(),
+    }),
     reviewSnippet: z.object({
       by: z.string(),
       readMore: z.string(),
@@ -1083,6 +1089,9 @@ export const DictionarySchema = z.object({
         date: z.string(),
       }),
       defaultSortBy: z.string(),
+    }),
+    assignmentOverviewList: z.object({
+      emptyState: z.string(),
     }),
     breadcrumbs: z.object({
       home: z.string(),
@@ -2365,16 +2374,28 @@ export const DictionarySchema = z.object({
       }),
       assignments: z.object({
         title: z.string(),
+        sortBy: z.string(),
+        selectSort: z.string(),
+        filterButton: z.string(),
+        sortOptions: z.object({
+          title: z.string(),
+          status: z.string(),
+          date: z.string(),
+          student: z.string(),
+        }),
       }),
       nextCoachingSession: z.object({
         title: z.string(),
         noSession: z.string(),
+        closedSessionsButton: z.string(),
       }),
       members: z.object({
         title: z.string(),
+        searchstudent: z.string(),
       }),
       notes: z.object({
         title: z.string(),
+        editButton: z.string(),
         saveButton: z.string(),
         saving: z.string(),
         saved: z.string(),
