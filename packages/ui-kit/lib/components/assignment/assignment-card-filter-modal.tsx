@@ -109,8 +109,8 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
     };
 
     return (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50 px-2 sm:px-0" onClick={onClose}>
-            <div className="relative flex flex-col gap-2 p-3 sm:p-6 bg-card-fill text-text-primary w-full max-w-full sm:max-w-[450px] h-full max-h-[100vh] sm:max-h-[90vh] overflow-y-auto rounded-none sm:rounded-md" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50 mt-12"  onClick={onClose}>
+            <div className="relative flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-full max-w-[530px] max-h-[85vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
                 <div className="absolute top-2 right-2 sm:top-0 sm:right-0">
                     <Button variant="text" size="medium" hasIconLeft iconLeft={<IconClose size="8" />} onClick={onClose} />
                 </div>
