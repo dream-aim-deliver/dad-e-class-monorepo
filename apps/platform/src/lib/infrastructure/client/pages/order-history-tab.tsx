@@ -13,6 +13,7 @@ import { trpc } from '../trpc/cms-client';
 import { OrderHistoryCard, OrderHistoryCardList, Button } from '@maany_shr/e-class-ui-kit';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { generateInvoicePdf } from '../utils/generate-invoice-pdf';
 
 interface OrderHistoryTabProps {
   locale: TLocale;
@@ -22,37 +23,6 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
   const t = useTranslations('pages.orderHistory');
   const currentLocale = useLocale() as TLocale;
   const { data: session } = useSession();
-
-  // Helper to safely get translations (with fallback for invoice keys not yet in type system)
-  const tInvoice = (key: string) => {
-    try {
-      return (t as any)(key);
-    } catch {
-      // Fallback to English if translation missing
-      const fallbacks: Record<string, string> = {
-        'invoice.invoiceNo': 'Invoice no.',
-        'invoice.invoiceDate': 'Invoice date',
-        'invoice.customerDetails': 'Customer details',
-        'invoice.fullName': 'Full Name',
-        'invoice.email': 'Email',
-        'invoice.phoneNumber': 'Phone number',
-        'invoice.companyName': 'Company Name',
-        'invoice.companyUidVat': 'Company UID/VAT',
-        'invoice.companyEmail': 'Company Email',
-        'invoice.companyAddress': 'Company Address',
-        'invoice.orderId': 'Order ID',
-        'invoice.pricePerUnit': 'Price/unit',
-        'invoice.units': 'Units',
-        'invoice.total': 'Total',
-        'invoice.course': 'Course',
-        'invoice.coachingSession': 'Coaching Session',
-        'invoice.package': 'Package',
-        'invoice.totalLabel': 'Tot.',
-        'invoice.paymentMethod': 'Payment method',
-      };
-      return fallbacks[key] || key;
-    }
-  };
 
   // Pagination state - show 8 cards initially (2 rows on desktop with 4 cols)
   const [visibleCount, setVisibleCount] = useState(8);
@@ -70,9 +40,29 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
 
   // Handle error states
   if (!transactionsResponse.success) {
+    const mode = (transactionsResponse as any).mode;
+
+    // Determine which error message to show based on mode
+    let errorTitle = t('error.title');
+    let errorDescription = t('error.description');
+
+    if (mode === 'kaboom') {
+      errorTitle = t('error.kaboom.title');
+      errorDescription = t('error.kaboom.description');
+    } else if (mode === 'not-found') {
+      errorTitle = t('error.notFound.title');
+      errorDescription = t('error.notFound.description');
+    } else if (mode === 'unauthorized') {
+      errorTitle = t('error.unauthorized.title');
+      errorDescription = t('error.unauthorized.description');
+    }
+
     return (
-      <div className="flex flex-col space-y-5">
-        <p className="text-red-500">Error loading transactions</p>
+      <div className="flex flex-col space-y-3">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <h3 className="text-lg font-semibold text-red-800">{errorTitle}</h3>
+          <p className="text-sm text-red-600 mt-1">{errorDescription}</p>
+        </div>
       </div>
     );
   }
@@ -89,439 +79,61 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
     const transaction = allTransactions.find((t: any) => t.id === transactionId);
 
     if (!transaction) {
-      alert('Transaction not found');
+      alert(t('transactionNotFound'));
       return;
     }
 
-    // Get platform data from TRPC response
-    // TRPC wraps the response, so we need to check success and extract data
+    // Get platform data
     const platformData = (platformResponse as any)?.success ? (platformResponse as any).data : null;
-    const platformName = platformData?.name || 'Platform Name';
-    const platformLogoUrl = platformData?.logoUrl || null;
-    const platformDomain = platformData?.domainName || 'platform.com';
+
+    // Get customer data
+    const personalProfile = (personalProfileResponse as any)?.success
+      ? (personalProfileResponse as any).data?.profile
+      : null;
 
     setIsGeneratingPdf(String(transactionId));
 
-    // Helper function to format price with 2 decimal places
-    const formatPrice = (price: number) => {
-      return price.toFixed(2);
-    };
-
     try {
-      // Dynamically import html2pdf only when needed (client-side only)
-      const html2pdf = (await import('html2pdf.js')).default;
-
-      // Create invoice content wrapper
-      const wrapper = document.createElement('div');
-      wrapper.style.width = '794px'; // A4 width in pixels
-      wrapper.style.margin = '0 auto';
-      wrapper.style.padding = '48px';
-      wrapper.style.backgroundColor = '#ffffff';
-      wrapper.style.color = '#000000';
-      wrapper.style.fontFamily = '"Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-      wrapper.style.lineHeight = '1.5';
-
-      // Top Header: Logo + Platform Name | Invoice Info
-      const topHeader = document.createElement('div');
-      topHeader.style.display = 'flex';
-      topHeader.style.justifyContent = 'space-between';
-      topHeader.style.alignItems = 'flex-start';
-      topHeader.style.marginBottom = '48px';
-
-      // Left: Logo and Platform Name
-      const brandingContainer = document.createElement('div');
-      brandingContainer.style.display = 'flex';
-      brandingContainer.style.alignItems = 'center';
-      brandingContainer.style.gap = '12px';
-
-      if (platformLogoUrl) {
-        const logo = document.createElement('img');
-        logo.src = platformLogoUrl;
-        logo.style.width = '48px';
-        logo.style.height = '48px';
-        logo.style.objectFit = 'contain';
-        brandingContainer.appendChild(logo);
-      }
-
-      const platformTitle = document.createElement('h1');
-      platformTitle.textContent = platformName;
-      platformTitle.style.fontSize = '20px';
-      platformTitle.style.fontWeight = '700';
-      platformTitle.style.color = '#000000';
-      platformTitle.style.margin = '0';
-      brandingContainer.appendChild(platformTitle);
-
-      topHeader.appendChild(brandingContainer);
-
-      // Right: Invoice Info
-      const invoiceInfo = document.createElement('div');
-      invoiceInfo.style.textAlign = 'right';
-
-      const invoiceNoLabel = document.createElement('div');
-      invoiceNoLabel.style.fontSize = '12px';
-      invoiceNoLabel.style.color = '#666666';
-      invoiceNoLabel.style.marginBottom = '4px';
-      invoiceNoLabel.textContent = tInvoice('invoice.invoiceNo');
-      invoiceInfo.appendChild(invoiceNoLabel);
-
-      const invoiceNo = document.createElement('div');
-      invoiceNo.style.fontSize = '14px';
-      invoiceNo.style.fontWeight = '600';
-      invoiceNo.style.color = '#000000';
-      invoiceNo.style.marginBottom = '12px';
-      invoiceNo.textContent = `NN/YYYY`;
-      invoiceInfo.appendChild(invoiceNo);
-
-      const invoiceDateLabel = document.createElement('div');
-      invoiceDateLabel.style.fontSize = '12px';
-      invoiceDateLabel.style.color = '#666666';
-      invoiceDateLabel.style.marginBottom = '4px';
-      invoiceDateLabel.textContent = tInvoice('invoice.invoiceDate');
-      invoiceInfo.appendChild(invoiceDateLabel);
-
-      const invoiceDate = document.createElement('div');
-      invoiceDate.style.fontSize = '14px';
-      invoiceDate.style.fontWeight = '600';
-      invoiceDate.style.color = '#000000';
-      // Format date according to locale (en-GB for English, de-DE for German, etc.)
-      const dateLocale = currentLocale === 'de' ? 'de-DE' : 'en-GB';
-      invoiceDate.textContent = new Date(transaction.createdAt).toLocaleDateString(dateLocale);
-      invoiceInfo.appendChild(invoiceDate);
-
-      topHeader.appendChild(invoiceInfo);
-      wrapper.appendChild(topHeader);
-
-      // Customer Details Section
-      const customerSection = document.createElement('div');
-      customerSection.style.marginBottom = '32px';
-
-      const customerTitle = document.createElement('h2');
-      customerTitle.textContent = tInvoice('invoice.customerDetails');
-      customerTitle.style.fontSize = '16px';
-      customerTitle.style.fontWeight = '600';
-      customerTitle.style.color = '#000000';
-      customerTitle.style.marginBottom = '16px';
-      customerSection.appendChild(customerTitle);
-
-      // Customer details grid - only show fields with real data
-      const customerGrid = document.createElement('div');
-      customerGrid.style.display = 'grid';
-      customerGrid.style.gridTemplateColumns = '1fr 1fr 1fr';
-      customerGrid.style.gap = '16px';
-      customerGrid.style.fontSize = '12px';
-
-      // Helper function to create customer detail field - only if value exists
-      const createDetailField = (label: string, value: string | null | undefined) => {
-        if (!value) return null;
-
-        const field = document.createElement('div');
-        const fieldLabel = document.createElement('div');
-        fieldLabel.textContent = label;
-        fieldLabel.style.color = '#666666';
-        fieldLabel.style.marginBottom = '4px';
-        field.appendChild(fieldLabel);
-
-        const fieldValue = document.createElement('div');
-        fieldValue.textContent = value;
-        fieldValue.style.color = '#000000';
-        fieldValue.style.fontWeight = '500';
-        field.appendChild(fieldValue);
-
-        return field;
-      };
-
-      // Get user data from personal profile (has complete info including name, surname, company details)
-      const personalProfile = (personalProfileResponse as any)?.success
-        ? (personalProfileResponse as any).data?.profile
-        : null;
-
-      // Build full name from profile
-      const firstName = personalProfile?.name;
-      const lastName = personalProfile?.surname;
-      const fullName = firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName;
-
-      const userEmail = personalProfile?.email;
-      const phoneNumber = personalProfile?.phone;
-
-      // Company details from profile
-      const companyDetails = personalProfile?.companyDetails;
-      const isRepresentingCompany = companyDetails?.isRepresentingCompany === true;
-      const companyName = isRepresentingCompany ? companyDetails?.companyName : null;
-      const companyVat = isRepresentingCompany ? companyDetails?.companyUid : null;
-      const companyAddress = isRepresentingCompany ? companyDetails?.companyAddress : null;
-      const companyEmail = isRepresentingCompany ? userEmail : null; // Use user email as company email if representing company
-
-      // Only add fields that have real data
-      const nameField = createDetailField(tInvoice('invoice.fullName'), fullName);
-      if (nameField) customerGrid.appendChild(nameField);
-
-      const emailField = createDetailField(tInvoice('invoice.email'), userEmail);
-      if (emailField) customerGrid.appendChild(emailField);
-
-      const phoneField = createDetailField(tInvoice('invoice.phoneNumber'), phoneNumber);
-      if (phoneField) customerGrid.appendChild(phoneField);
-
-      const companyNameField = createDetailField(tInvoice('invoice.companyName'), companyName);
-      if (companyNameField) customerGrid.appendChild(companyNameField);
-
-      const vatField = createDetailField(tInvoice('invoice.companyUidVat'), companyVat);
-      if (vatField) customerGrid.appendChild(vatField);
-
-      const companyEmailField = createDetailField(tInvoice('invoice.companyEmail'), companyEmail);
-      if (companyEmailField) customerGrid.appendChild(companyEmailField);
-
-      // Address field spans full width if it exists
-      if (companyAddress) {
-        const addressField = document.createElement('div');
-        addressField.style.gridColumn = 'span 3';
-        const addressLabel = document.createElement('div');
-        addressLabel.textContent = tInvoice('invoice.companyAddress');
-        addressLabel.style.color = '#666666';
-        addressLabel.style.marginBottom = '4px';
-        addressField.appendChild(addressLabel);
-        const addressValue = document.createElement('div');
-        addressValue.textContent = companyAddress;
-        addressValue.style.color = '#000000';
-        addressValue.style.fontWeight = '500';
-        addressField.appendChild(addressValue);
-        customerGrid.appendChild(addressField);
-      }
-
-      // Only append customer section if there's at least some data
-      if (customerGrid.children.length > 0) {
-        customerSection.appendChild(customerGrid);
-        wrapper.appendChild(customerSection);
-      }
-
-      // Order Details Section
-      const orderSection = document.createElement('div');
-      orderSection.style.marginBottom = '32px';
-
-      const orderTitle = document.createElement('h2');
-      orderTitle.textContent = `${tInvoice('invoice.orderId')}: ${transaction.id}`;
-      orderTitle.style.fontSize = '14px';
-      orderTitle.style.fontWeight = '600';
-      orderTitle.style.color = '#000000';
-      orderTitle.style.marginBottom = '4px';
-      orderSection.appendChild(orderTitle);
-
-      const orderDate = document.createElement('div');
-      orderDate.style.fontSize = '12px';
-      orderDate.style.color = '#666666';
-      orderDate.style.marginBottom = '16px';
-      // Format date and time according to locale
-      const dateTimeLocale = currentLocale === 'de' ? 'de-DE' : 'en-GB';
-      const formattedDateTime = new Date(transaction.createdAt).toLocaleString(dateTimeLocale, {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
+      // Use the reusable invoice PDF generator utility
+      await generateInvoicePdf({
+        transaction,
+        platformData: {
+          name: platformData?.name || t('platformNameFallback'),
+          logoUrl: platformData?.logoUrl,
+          domainName: platformData?.domainName,
+        },
+        customerData: {
+          name: personalProfile?.name,
+          surname: personalProfile?.surname,
+          email: personalProfile?.email,
+          phone: personalProfile?.phone,
+          companyDetails: personalProfile?.companyDetails,
+        },
+        locale: currentLocale,
+        translations: {
+          invoiceNo: t('invoice.invoiceNo'),
+          invoiceDate: t('invoice.invoiceDate'),
+          customerDetails: t('invoice.customerDetails'),
+          fullName: t('invoice.fullName'),
+          email: t('invoice.email'),
+          phoneNumber: t('invoice.phoneNumber'),
+          companyName: t('invoice.companyName'),
+          companyUidVat: t('invoice.companyUidVat'),
+          companyEmail: t('invoice.companyEmail'),
+          companyAddress: t('invoice.companyAddress'),
+          orderId: t('invoice.orderId'),
+          pricePerUnit: t('invoice.pricePerUnit'),
+          units: t('invoice.units'),
+          total: t('invoice.total'),
+          course: t('invoice.course'),
+          coachingSession: t('invoice.coachingSession'),
+          package: t('invoice.package'),
+          totalLabel: t('invoice.totalLabel'),
+          paymentMethod: t('invoice.paymentMethod'),
+        },
       });
-      orderDate.textContent = formattedDateTime.replace(',', currentLocale === 'de' ? ' um' : ' at');
-      orderSection.appendChild(orderDate);
-
-      // Order Items Table
-      const table = document.createElement('table');
-      table.style.width = '100%';
-      table.style.borderCollapse = 'collapse';
-      table.style.fontSize = '12px';
-
-      // Helper to create table row
-      const orderType = transaction.content.type;
-
-      const createOrderRow = (label: string, itemTitle: string, price: string, units: string, total: string) => {
-        const row = document.createElement('div');
-        row.style.display = 'grid';
-        row.style.gridTemplateColumns = '80px 1fr 100px 80px 100px';
-        row.style.gap = '12px';
-        row.style.padding = '12px 0';
-        row.style.borderBottom = '1px solid #f0f0f0';
-
-        const labelCell = document.createElement('div');
-        labelCell.textContent = label;
-        labelCell.style.color = '#666666';
-        labelCell.style.fontSize = '12px';
-        row.appendChild(labelCell);
-
-        const titleCell = document.createElement('div');
-        titleCell.textContent = itemTitle;
-        titleCell.style.color = '#000000';
-        titleCell.style.fontSize = '12px';
-        titleCell.style.fontWeight = '500';
-        row.appendChild(titleCell);
-
-        const priceCell = document.createElement('div');
-        priceCell.textContent = price;
-        priceCell.style.color = '#666666';
-        priceCell.style.fontSize = '12px';
-        priceCell.style.textAlign = 'right';
-        row.appendChild(priceCell);
-
-        const unitsCell = document.createElement('div');
-        unitsCell.textContent = units;
-        unitsCell.style.color = '#666666';
-        unitsCell.style.fontSize = '12px';
-        unitsCell.style.textAlign = 'right';
-        row.appendChild(unitsCell);
-
-        const totalCell = document.createElement('div');
-        totalCell.textContent = total;
-        totalCell.style.color = '#000000';
-        totalCell.style.fontSize = '12px';
-        totalCell.style.fontWeight = '600';
-        totalCell.style.textAlign = 'right';
-        row.appendChild(totalCell);
-
-        return row;
-      };
-
-      // Table header row
-      const headerRow = createOrderRow('', '', tInvoice('invoice.pricePerUnit'), tInvoice('invoice.units'), tInvoice('invoice.total'));
-      headerRow.style.borderBottom = '2px solid #e0e0e0';
-      headerRow.style.fontWeight = '600';
-      orderSection.appendChild(headerRow);
-
-      // Add order items based on type
-      let grandTotal = 0;
-
-      if (orderType === 'course') {
-        const course = transaction.content.course;
-        const price = transaction.content.unitPrice;
-        orderSection.appendChild(createOrderRow(
-          tInvoice('invoice.course'),
-          course.title,
-          `${formatPrice(price)} ${transaction.currency}`,
-          '1',
-          `${formatPrice(price)} ${transaction.currency}`
-        ));
-        grandTotal = price;
-      } else if (orderType === 'coachingOffers') {
-        transaction.content.items.forEach((item: any, index: number) => {
-          const itemTotal = item.unitPrice * item.quantity;
-          orderSection.appendChild(createOrderRow(
-            tInvoice('invoice.coachingSession'),
-            `${item.title} (${item.duration})`,
-            `${formatPrice(item.unitPrice)} ${transaction.currency}`,
-            String(item.quantity),
-            `${formatPrice(itemTotal)} ${transaction.currency}`
-          ));
-          grandTotal += itemTotal;
-        });
-      } else if (orderType === 'package') {
-        const pkg = transaction.content.package;
-        const price = transaction.content.unitPrice;
-        orderSection.appendChild(createOrderRow(
-          tInvoice('invoice.package'),
-          pkg.title,
-          `${formatPrice(price)} ${transaction.currency}`,
-          '1',
-          `${formatPrice(price)} ${transaction.currency}`
-        ));
-        grandTotal = price;
-      }
-
-      wrapper.appendChild(orderSection);
-
-      // Total Section
-      const totalRow = document.createElement('div');
-      totalRow.style.display = 'flex';
-      totalRow.style.justifyContent = 'flex-end';
-      totalRow.style.padding = '16px 0';
-      totalRow.style.marginTop = '16px';
-      totalRow.style.borderTop = '2px solid #e0e0e0';
-
-      const totalLabel = document.createElement('span');
-      totalLabel.textContent = tInvoice('invoice.totalLabel') + ' ';
-      totalLabel.style.fontSize = '14px';
-      totalLabel.style.fontWeight = '600';
-      totalLabel.style.color = '#000000';
-      totalLabel.style.marginRight = '8px';
-
-      const totalValue = document.createElement('span');
-      totalValue.textContent = `${formatPrice(grandTotal)} ${transaction.currency}`;
-      totalValue.style.fontSize = '14px';
-      totalValue.style.fontWeight = '700';
-      totalValue.style.color = '#000000';
-
-      totalRow.appendChild(totalLabel);
-      totalRow.appendChild(totalValue);
-      wrapper.appendChild(totalRow);
-
-      // Payment method
-      const paymentRow = document.createElement('div');
-      paymentRow.style.display = 'flex';
-      paymentRow.style.justifyContent = 'flex-end';
-      paymentRow.style.fontSize = '12px';
-      paymentRow.style.color = '#666666';
-      paymentRow.style.marginBottom = '48px';
-
-      const paymentLabel = document.createElement('span');
-      paymentLabel.textContent = tInvoice('invoice.paymentMethod') + ': ';
-      paymentLabel.style.marginRight = '4px';
-
-      const paymentMethod = document.createElement('span');
-      paymentMethod.textContent = 'Paypal';
-      paymentMethod.style.fontWeight = '500';
-
-      paymentRow.appendChild(paymentLabel);
-      paymentRow.appendChild(paymentMethod);
-      wrapper.appendChild(paymentRow);
-
-      // Footer with company info
-      const footer = document.createElement('div');
-      footer.style.display = 'flex';
-      footer.style.flexDirection = 'column';
-      footer.style.alignItems = 'center';
-      footer.style.marginTop = 'auto';
-      footer.style.paddingTop = '32px';
-      footer.style.borderTop = '1px solid #e0e0e0';
-
-      if (platformLogoUrl) {
-        const footerLogo = document.createElement('img');
-        footerLogo.src = platformLogoUrl;
-        footerLogo.style.width = '32px';
-        footerLogo.style.height = '32px';
-        footerLogo.style.objectFit = 'contain';
-        footerLogo.style.marginBottom = '12px';
-        footer.appendChild(footerLogo);
-      }
-
-      const footerText = document.createElement('div');
-      footerText.textContent = `${platformName} Company Name, ${platformName} Company Address, ${platformName} Company UID`;
-      footerText.style.fontSize = '10px';
-      footerText.style.color = '#999999';
-      footerText.style.textAlign = 'center';
-      footer.appendChild(footerText);
-
-      wrapper.appendChild(footer);
-
-      // Generate PDF
-      const options = {
-        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
-        filename: `invoice-${transaction.id}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          letterRendering: true,
-          backgroundColor: '#ffffff',
-          width: 794,
-        },
-        jsPDF: {
-          unit: 'in' as const,
-          format: 'a4' as const,
-          orientation: 'portrait' as const,
-        },
-      };
-
-      await html2pdf()
-        .set(options)
-        .from(wrapper)
-        .save();
-
     } catch (error: any) {
-      alert(`Failed to generate invoice: ${error?.message || 'Unknown error'}`);
+      alert(`${t('invoiceGenerationFailed')}: ${error?.message || t('unknownError')}`);
     } finally {
       setIsGeneratingPdf(null);
     }
@@ -550,7 +162,13 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             locale={currentLocale}
             type="course"
             orderId={transaction.id}
-            orderDate={new Date(transaction.createdAt).toLocaleString()}
+            orderDate={new Date(transaction.createdAt).toLocaleString(currentLocale === 'de' ? 'de-DE' : 'en-GB', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
             total={`${transaction.content.unitPrice} ${transaction.currency}`}
             courseTitle={course.title}
             courseImageUrl={course.imageUrl || ''}
@@ -582,7 +200,13 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             locale={currentLocale}
             type="coaching"
             orderId={transaction.id}
-            orderDate={new Date(transaction.createdAt).toLocaleString()}
+            orderDate={new Date(transaction.createdAt).toLocaleString(currentLocale === 'de' ? 'de-DE' : 'en-GB', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
             total={`${totalPrice} ${transaction.currency}`}
             sessions={sessions}
             onInvoiceClick={() => handleInvoiceClick(transaction.id)}
@@ -607,7 +231,13 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             locale={currentLocale}
             type="package"
             orderId={transaction.id}
-            orderDate={new Date(transaction.createdAt).toLocaleString()}
+            orderDate={new Date(transaction.createdAt).toLocaleString(currentLocale === 'de' ? 'de-DE' : 'en-GB', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
             total={`${transaction.content.unitPrice} ${transaction.currency}`}
             packageTitle={pkg.title}
             packageImageUrl={pkg.imageUrl || ''}

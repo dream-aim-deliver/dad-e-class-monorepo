@@ -275,17 +275,17 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
 
             {/* Footer */}
             <Divider className="my-1" />
-            <div className="flex flex-row w-full justify-between items-center">
+            <div className="flex flex-row w-full justify-between items-center gap-2">
                 <Button
                     variant="text"
-                    className="p-0 gap-1 text-sm truncate"
+                    className="p-0 gap-1 text-xs md:text-sm truncate"
                     size="small"
                     text={dictionary.invoice}
                     onClick={props.onInvoiceClick}
                     hasIconLeft
                     iconLeft={<IconFile size="6" />}
                 />
-                <p className="text-text-primary font-important ml-auto">
+                <p className="text-text-primary font-important text-sm md:text-md ml-auto">
                     {dictionary.total} {props.total}
                 </p>
             </div>
