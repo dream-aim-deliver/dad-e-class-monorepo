@@ -12,21 +12,38 @@ import {
     TLocale,
 } from '@maany_shr/e-class-translations';
 import { IconCheck } from '../../icons/icon-check';
-import { IconHourglass } from '../../icons/icon-hourglass';
 import { IconEdit } from '../../icons/icon-edit';
 
-export type CourseStatus = 'published' | 'under-review' | 'draft';
+export type CourseStatus = 'live' | 'draft' | 'archived';
 
-export interface CourseCreatorCardProps
-    extends isLocalAware,
-        course.TCourseMetadata {
+export interface CourseCreatorCardProps extends isLocalAware {
+    title: string;
+    imageUrl: string;
     rating: number;
     reviewCount: number;
     sessions: number;
     sales: number;
     status: CourseStatus;
+    duration: {
+        video: number;
+        coaching: number;
+        selfStudy: number;
+    };
+    language: {
+        code: string;
+        name: string;
+    };
+    author: {
+        name: string;
+        image?: string;
+    };
+    description?: string;
+    pricing?: {
+        fullPrice: number;
+        partialPrice: number;
+        currency: string;
+    };
     onEdit?: () => void;
-    onManage?: () => void;
     onClickUser?: () => void;
     onDuplicate?: () => void;
 }
@@ -37,23 +54,21 @@ const StatusBadge: React.FC<{ status: CourseStatus; locale: TLocale }> = ({
 }) => {
     const dictionary = getDictionary(locale);
     const variants = {
-        published: 'successprimary',
-        'under-review': 'warningprimary',
+        live: 'successprimary',
         draft: 'info',
+        archived: 'errorprimary',
     } as const;
 
     const labels = {
-        published:
-            dictionary.components.courseCard.publishedBadge || 'Published',
-        'under-review':
-            dictionary.components.courseCard.underReviewBadge || 'Under Review',
+        live: dictionary.components.courseCard.publishedBadge || 'Live',
         draft: dictionary.components.courseCard.draftBadge || 'Draft',
+        archived: 'Archived',
     };
 
     const icons = {
-        published: <IconCheck size="5" />,
-        'under-review': <IconHourglass size="5" />,
+        live: <IconCheck size="5" />,
         draft: <IconEdit size="5" />,
+        archived: <IconEdit size="5" />,
     };
 
     return (
@@ -115,7 +130,6 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     status,
     locale,
     onEdit,
-    onManage,
     onClickUser,
     onDuplicate,
 }) => {
@@ -160,7 +174,9 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             loading="lazy"
                             src={imageUrl}
                             alt={title}
-                            className="w-full aspect-[2.15] object-cover"
+                            width={430}
+                            height={200}
+                            className="w-full h-[200px] object-cover"
                             onError={handleImageError}
                         />
                     )}
@@ -176,7 +192,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             </h6>
                         </div>
 
-                        {status === 'published' && (
+                        {status === 'live' && (
                             <div className="flex gap-1 items-end">
                                 <StarRating totalStars={5} rating={rating} />
                                 <span className="text-xs text-text-primary leading-[100%]">
@@ -212,35 +228,13 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             locale={locale as TLocale}
                         />
 
-                        {status === 'published' ? (
+                        {status === 'archived' ? (
                             <>
-                                <Button
-                                    onClick={onManage}
-                                    className="w-full"
-                                    variant="secondary"
-                                    size="medium"
-                                    text={
-                                        dictionary.components.courseCard
-                                            .manageButton
-                                    }
-                                />
-
-                                <Button
-                                    onClick={onEdit}
-                                    className="w-full"
-                                    variant="text"
-                                    size="medium"
-                                    text={
-                                        dictionary.components.courseCard
-                                            .editCourseButton
-                                    }
-                                />
-
                                 {onDuplicate && (
                                     <Button
                                         onClick={onDuplicate}
                                         className="w-full"
-                                        variant="text"
+                                        variant="primary"
                                         size="medium"
                                         text={
                                             dictionary.components.courseCard
@@ -253,7 +247,6 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             <>
                                 <Button
                                     onClick={onEdit}
-                                    disabled={status === 'under-review'}
                                     className="w-full"
                                     variant="primary"
                                     size="medium"

@@ -10,24 +10,24 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { Tabs, CourseCard, CourseCardList, DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
-import { useState } from 'react';
+import { Tabs, CourseCard, CourseCardList, DefaultError, DefaultLoading, SearchInput, CourseCardListSkeleton, Dropdown } from '@maany_shr/e-class-ui-kit';
+import { useState, useMemo } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCmsCoursesPresenter } from '../hooks/use-list-cms-courses-presenter';
-import { z } from 'zod';
 
 interface CoursesProps {
   locale: TLocale;
   platformSlug: string;
 }
 
-
-type TCourse = z.infer<typeof viewModels.ListCmsCoursesSuccessSchema>['courses'][number];
-
 export default function Courses({ locale, platformSlug }: CoursesProps) {
   const t = useTranslations('pages.cmsCourses');
   const currentLocale = useLocale() as TLocale;
-  const [activeTab, setActiveTab] = useState<'all' | 'draft' | 'review' | 'live'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'draft' | 'archived' | 'live'>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isSearchLoading, setIsSearchLoading] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [sortOrder, setSortOrder] = useState('desc');
 
   // Fetch courses data
   const [coursesResponse] = trpc.listCmsCourses.useSuspenseQuery({});
@@ -42,6 +42,41 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
 
   // @ts-ignore
   presenter.present(coursesResponse, listCoursesViewModel);
+
+  const courses = listCoursesViewModel?.data?.courses || [];
+
+  // Filter courses based on active tab
+  const filteredCourses = useMemo(() => {
+    return activeTab === 'all'
+      ? courses
+      : courses.filter((course) => course.status === activeTab);
+  }, [activeTab, courses]);
+
+  // Memoized sorted filtered courses
+  const sortedFilteredCourses = useMemo(() => {
+    return [...filteredCourses].sort((a, b) => {
+      const aVal = a.rating || 0;
+      const bVal = b.rating || 0;
+      return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+  }, [filteredCourses, sortOrder]);
+
+  // Memoized sorted search results
+  const sortedSearchResults = useMemo(() => {
+    if (searchResults.length === 0 && !searchQuery.trim()) {
+      return [];
+    }
+    return [...searchResults].sort((a, b) => {
+      const aVal = a.rating || 0;
+      const bVal = b.rating || 0;
+      return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+  }, [searchResults, sortOrder, searchQuery]);
+
+  // Determine which courses to display
+  const displayCourses = searchResults.length > 0 || searchQuery.trim()
+    ? sortedSearchResults
+    : sortedFilteredCourses;
 
   // Loading state
   if (!listCoursesViewModel) {
@@ -70,22 +105,15 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
     );
   }
 
-  const courses = listCoursesViewModel.data.courses || [];
-
-  // Filter courses based on active tab
-  const filteredCourses = activeTab === 'all'
-    ? courses
-    : courses.filter(course => course.status === activeTab);
-
   const tabs = [
     { value: 'all', label: 'All' },
     { value: 'draft', label: 'Draft' },
-    { value: 'review', label: 'Review' },
     { value: 'live', label: 'Live' },
+    { value: 'archived', label: 'Archived' },
   ];
 
   return (
-    <div className="flex flex-col space-y-5 px-30">
+    <div className="flex flex-col space-y-5 ">
       <div>
         <h1>{t('title')}</h1>
         <p>{t('description')}</p>
@@ -104,36 +132,70 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
           ))}
         </Tabs.List>
 
+        <div className="mt-5 space-y-4">
+          <div className="flex flex-col md:flex-row gap-2 p-2 bg-card-fill rounded-medium border border-card-stroke">
+            <div className="flex-1">
+              <SearchInput
+                key={activeTab}
+                items={filteredCourses}
+                keys={['title']}
+                onResults={(results) => setSearchResults(results)}
+                onLoading={(loading) => setIsSearchLoading(loading)}
+                onQueryChange={(query) => setSearchQuery(query)}
+                placeholder="Search courses..."
+              />
+            </div>
+            <div className="flex gap-2 items-center">
+              <label className="text-sm md:text-md text-base-white">
+                Sort by:
+              </label>
+              <Dropdown
+                type="simple"
+                options={[
+                  {
+                    label: 'Rating: High to Low',
+                    value: 'rating-desc',
+                  },
+                  {
+                    label: 'Rating: Low to High',
+                    value: 'rating-asc',
+                  },
+                ]}
+                defaultValue={`rating-${sortOrder}`}
+                onSelectionChange={(selected) => {
+                  if (typeof selected === 'string') {
+                    const order = selected.split('-')[1];
+                    setSortOrder(order);
+                  }
+                }}
+                text={{ simpleText: 'Sort by Rating' }}
+              />
+            </div>
+          </div>
+        </div>
+
         {tabs.map((tab) => (
           <Tabs.Content key={tab.value} value={tab.value}>
-            <CourseCardList
-              locale={currentLocale}
-              emptyStateMessage={'No courses found'}
-              emptyStateButtonText={'Create Course'}
-            >
-              {filteredCourses.map((course) => {
-                // Map status to CourseCreatorCard expected format
-                const statusMap = {
-                  review: 'under-review' as const,
-                  draft: 'draft' as const,
-                  live: 'published' as const,
-                };
+            <div className="mt-5">
+              {isSearchLoading ? (
+                <CourseCardListSkeleton />
+              ) : (
+                <CourseCardList
+                locale={currentLocale}
+                emptyStateMessage={'No courses found'}
+                emptyStateButtonText={'Create Course'}
+              >
+                {displayCourses.map((course) => {
 
-                // Map course data to CourseMetadata format
                 const courseMetadata = {
                   title: course.title,
-                  description: '', // Not available in the API response
-                  duration: {
-                    video: course.duration,
-                    coaching: course.coachingSessionCount,
-                    selfStudy: 0,
-                  },
+                  imageUrl: course.imageUrl || '',
+                  description: "",
                   pricing: {
+                    currency: '',
                     fullPrice: 0,
                     partialPrice: 0,
-                    currency: 'USD',
                   },
-                  imageUrl: course.imageUrl || '',
                   author: {
                     name: `${course.creator.name} ${course.creator.surname}`,
                     image: course.creator.avatarUrl || '',
@@ -143,23 +205,30 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
                     code: course.language,
                     name: course.language,
                   },
+                  duration: {
+                    video: 0,
+                    coaching: course.duration || 0,
+                    selfStudy: 0,
+                  },
                 };
 
                 return (
                   <CourseCard
                     key={course.id}
-                    userType="creator"
+                    userType="course_creator"
                     reviewCount={course.ratingCount}
                     locale={currentLocale}
                     language={{ code: course.language, name: course.language }}
-                    creatorStatus={statusMap[course.status]}
+                    creatorStatus={course.status}
                     course={courseMetadata}
                     sessions={course.coachingSessionCount}
                     sales={course.salesCount}
                   />
                 );
               })}
-            </CourseCardList>
+              </CourseCardList>
+              )}
+            </div>
           </Tabs.Content>
         ))}
       </Tabs.Root>

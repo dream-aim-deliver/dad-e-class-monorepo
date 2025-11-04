@@ -109,7 +109,9 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
               loading="lazy"
               src={imageUrl}
               alt={title}
-              className="w-full aspect-[2.15] object-cover"
+              width={430}
+              height={200}
+              className="w-full h-[200px] object-cover"
               onError={handleImageError}
             />
           )}

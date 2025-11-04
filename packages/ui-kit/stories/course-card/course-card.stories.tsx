@@ -4,7 +4,14 @@ import { CourseCard } from '../../lib/components/course-card/course-card';
 const sampleCourseData = {
   id: 'course-123',
   title: 'Advanced Brand Identity Design',
-  description: 'This course teaches you how to create powerful, cohesive brand identities that resonate with audiences and stand out in the marketplace.',
+  description: [
+    {
+      type: 'paragraph',
+      children: [
+        { text: 'This course teaches you how to create powerful, cohesive brand identities that resonate with audiences and stand out in the marketplace.' }
+      ],
+    },
+  ],
   duration: {
     video: 240,
     coaching: 120,
@@ -40,7 +47,7 @@ const meta: Meta<typeof CourseCard> = {
   argTypes: {
     userType: {
       control: 'select',
-      options: ['creator', 'coach', 'student', 'visitor'],
+      options: ['course_creator', 'coach', 'student', 'visitor'],
       description: 'Type of user viewing the course card',
     },
     course: {
@@ -62,8 +69,8 @@ const meta: Meta<typeof CourseCard> = {
     },
     creatorStatus: {
       control: 'select',
-      options: ['draft', 'under-review', 'published'],
-      if: { arg: 'userType', eq: 'creator' },
+      options: ['live', 'draft', 'archived'],
+      if: { arg: 'userType', eq: 'course_creator' },
       description: 'Status of the course for creator view',
     },
     progress: {
@@ -71,19 +78,19 @@ const meta: Meta<typeof CourseCard> = {
       min: 0,
       max: 100,
       if: { arg: 'userType', eq: 'student' },
-      description: 'Progress percentage for student view',
+      description: 'Progress percentage (0-100) - Controls studyProgress state: 0=yet-to-start, 1-99=in-progress, 100=completed',
     },
     sessions: {
       control: 'number',
-      description: 'Number of sessions in the course',
+      description: 'Number of sessions (required for creator, coach, visitor)',
     },
     sales: {
       control: 'number',
-      description: 'Number of course sales',
+      description: 'Number of course sales (required for all user types)',
     },
     groupName: {
       control: 'text',
-      description: 'Name of the group/cohort',
+      description: 'Name of the group/cohort (optional for coach)',
     },
     className: {
       control: 'text',
@@ -91,31 +98,27 @@ const meta: Meta<typeof CourseCard> = {
     },
     onEdit: {
       action: 'edit-clicked',
-      description: 'Callback for edit action',
-    },
-    onManage: {
-      action: 'manage-clicked',
-      description: 'Callback for manage action',
+      description: 'Callback for edit action (creator)',
     },
     onBegin: {
       action: 'begin-clicked',
-      description: 'Callback for begin action',
+      description: 'Callback for begin action (student)',
     },
     onResume: {
       action: 'resume-clicked',
-      description: 'Callback for resume action',
+      description: 'Callback for resume action (student)',
     },
     onReview: {
       action: 'review-clicked',
-      description: 'Callback for review action',
+      description: 'Callback for review action (student)',
     },
     onDetails: {
       action: 'details-clicked',
-      description: 'Callback for details action',
+      description: 'Callback for details action (student, visitor)',
     },
     onBuy: {
       action: 'buy-clicked',
-      description: 'Callback for buy action',
+      description: 'Callback for buy action (visitor)',
     },
   },
 };
@@ -129,7 +132,6 @@ const Template: StoryObj<typeof CourseCard> = {
       <CourseCard
         {...args}
         onEdit={createCallback('Edit clicked')}
-        onManage={createCallback('Manage clicked')}
         onBegin={createCallback('Begin clicked')}
         onResume={createCallback('Resume clicked')}
         onReview={createCallback('Review clicked')}
@@ -145,14 +147,14 @@ const Template: StoryObj<typeof CourseCard> = {
 type Story = StoryObj<typeof CourseCard>;
 
 // Creator view stories
-export const CreatorPublishedView: Story = {
+export const CreatorLiveView: Story = {
   ...Template,
   args: {
-    userType: 'creator',
+    userType: 'course_creator',
     reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
-    creatorStatus: 'published',
+    creatorStatus: 'live',
     course: sampleCourseData,
     sessions: 24,
     sales: 1850,
@@ -161,7 +163,7 @@ export const CreatorPublishedView: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'A published course card for a creator with sample course data.',
+        story: 'A live/published course card for a creator with sample course data.',
       },
     },
   },
@@ -170,7 +172,7 @@ export const CreatorPublishedView: Story = {
 export const CreatorDraftView: Story = {
   ...Template,
   args: {
-    userType: 'creator',
+    userType: 'course_creator',
     reviewCount: 250,
     locale: 'en',
     language: sampleCourseData.language,
@@ -185,18 +187,19 @@ export const CreatorDraftView: Story = {
   },
 };
 
-export const CreatorUnderReviewView: Story = {
+export const CreatorArchivedView: Story = {
   ...Template,
   args: {
-    userType: 'creator',
+    userType: 'course_creator',
     reviewCount: 10,
     locale: 'en',
     language: sampleCourseData.language,
-    creatorStatus: 'under-review',
+    creatorStatus: 'archived',
     course: {
       ...sampleCourseData,
-      title: 'Course Under Review',
+      title: 'Archived Course',
     },
+    sessions: 15,
     sales: 10,
     className: 'max-w-[352px]',
   },
@@ -220,17 +223,25 @@ export const CoachView: Story = {
 };
 
 // Student view stories
+// studyProgress is computed from progress: 0 = 'yet-to-start', 1-99 = 'in-progress', 100 = 'completed'
 export const StudentYetToStartedView: Story = {
   ...Template,
   args: {
     userType: 'student',
     reviewCount: 328,
+    sales: 1850,
     locale: 'en',
     language: sampleCourseData.language,
     course: sampleCourseData,
-    sales: 1850,
-    progress: 0,
+    progress: 0, // studyProgress: 'yet-to-start' - shows description and "Begin" button
     className: 'max-w-[352px]',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Student view with progress=0. StudyProgress: "yet-to-start". Shows course description and "Begin Course" button.',
+      },
+    },
   },
 };
 
@@ -239,12 +250,19 @@ export const StudentInProgressView: Story = {
   args: {
     userType: 'student',
     reviewCount: 328,
+    sales: 1850,
     locale: 'en',
     language: sampleCourseData.language,
     course: sampleCourseData,
-    sales: 1850,
-    progress: 42,
+    progress: 42, // studyProgress: 'in-progress' - shows progress bar and "Resume" button
     className: 'max-w-[352px]',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Student view with progress=42 (1-99). StudyProgress: "in-progress". Shows progress bar and "Resume Course" button.',
+      },
+    },
   },
 };
 
@@ -253,12 +271,19 @@ export const StudentCompletedView: Story = {
   args: {
     userType: 'student',
     reviewCount: 328,
+    sales: 1850,
     locale: 'en',
     language: sampleCourseData.language,
     course: sampleCourseData,
-    sales: 1850,
-    progress: 100,
+    progress: 100, // studyProgress: 'completed' - shows "Review" button
     className: 'max-w-[352px]',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Student view with progress=100. StudyProgress: "completed". Shows "Review Course" button.',
+      },
+    },
   },
 };
 
@@ -282,7 +307,7 @@ export const VisitorView: Story = {
 export const GermanCreatorView: Story = {
   ...Template,
   args: {
-    ...CreatorPublishedView.args,
+    ...CreatorLiveView.args,
     locale: 'de',
   },
 };

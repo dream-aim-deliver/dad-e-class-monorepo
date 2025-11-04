@@ -50,7 +50,9 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
   locale
 }) => {
   const dictionary = getDictionary(locale);
-  const stats = [
+
+  // First row: Language and Coaching Session
+  const firstRowStats = [
     {
       icon: <IconLanguage classNames="fill-text-secondary" size="5" />,
       text: language,
@@ -59,6 +61,10 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
       icon: <IconCoachingSession classNames="text-text-secondary" size="5" />,
       text: `${sessions} ${dictionary.components.courseCard.cochingSession}`,
     },
+  ];
+
+  // Second row: Duration and Sales
+  const secondRowStats = [
     {
       icon: <IconClock classNames="text-text-secondary" size="5" />,
       text: duration,
@@ -70,10 +76,20 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
   ];
 
   return (
-    <div className="flex flex-wrap gap-x-[15px] gap-y-[13px]">
-      {stats.map((stat, index) => (
-        <StatItem key={index} {...stat} />
-      ))}
+    <div className="flex flex-col gap-y-[13px]">
+      {/* First row: Language and Coaching Session */}
+      <div className="flex gap-x-[15px]">
+        {firstRowStats.map((stat, index) => (
+          <StatItem key={index} {...stat} />
+        ))}
+      </div>
+
+      {/* Second row: Duration and Sales */}
+      <div className="flex gap-x-[15px]">
+        {secondRowStats.map((stat, index) => (
+          <StatItem key={index} {...stat} />
+        ))}
+      </div>
     </div>
   );
 };

@@ -119,6 +119,8 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             loading="lazy"
                             src={imageUrl}
                             alt={title}
+                            width={430}
+                            height={200}
                             className="w-full h-[200px] object-cover"
                             onError={handleImageError}
                         />
