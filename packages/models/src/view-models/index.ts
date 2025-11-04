@@ -137,3 +137,4 @@ export * from './archive-course-view-model';
 export * from './update-platform-view-model';
 export * from './get-platform-view-model';
 export * from './list-offers-page-packages-view-model';
+export * from './list-student-courses-view-model';
