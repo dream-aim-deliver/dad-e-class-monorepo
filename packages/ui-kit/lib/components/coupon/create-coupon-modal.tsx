@@ -743,17 +743,15 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
       <div className="flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-full max-w-[600px] max-h-[85vh] overflow-y-auto rounded-md mx-4 my-8" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">{dictionary.title}</h2>
-          {!isSuccess && (
-            <Button 
-              variant="text" 
-              size="small" 
-              hasIconLeft 
-              iconLeft={<IconClose size="6" />} 
-              onClick={onClose}
-              disabled={isCreating}
-            />
-          )}
+          <h2 className="text-2xl font-bold">{isSuccess ? dictionary.successTitle : dictionary.title}</h2>
+          <Button 
+            variant="text" 
+            size="small" 
+            hasIconLeft 
+            iconLeft={<IconClose size="6" />} 
+            onClick={onClose}
+            disabled={isCreating}
+          />
         </div>
 
         {/* Divider */}
