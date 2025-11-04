@@ -1,7 +1,7 @@
 'use client';
 
 import { trpc } from '../trpc/cms-client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DefaultLoading,
   DefaultError,
@@ -71,6 +71,21 @@ export default function Package({ locale, packageId }: PackageProps) {
   // @ts-ignore
   relatedPackagesPresenter.present(relatedPackagesResponse, relatedPackagesViewModel);
 
+  // Track selected courses 
+  // Initialize with empty array - will be set in useEffect when data is available
+  const [selectedCourseIds, setSelectedCourseIds] = useState<number[]>([]);
+
+  // Initialize selectedCourseIds with all course IDs when data is available
+  // This must be before any conditional returns
+  useEffect(() => {
+    if (packageViewModel?.mode === 'default' && relatedPackagesViewModel) {
+      const packageData = packageViewModel.data.package;
+      if (selectedCourseIds.length === 0 && packageData.courses.length > 0) {
+        setSelectedCourseIds(packageData.courses.map(course => course.id));
+      }
+    }
+  }, [packageViewModel, relatedPackagesViewModel, selectedCourseIds.length]);
+
   // Loading state
   if (!packageViewModel || !relatedPackagesViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
@@ -110,12 +125,6 @@ export default function Package({ locale, packageId }: PackageProps) {
   // Session check for purchase action (non-blocking)
   const session = sessionDTO.data;
   const isLoggedIn = !!session;
-
-  // Track selected courses (positive tracking - like storybook example)
-  // Initialize with all courses selected
-  const [selectedCourseIds, setSelectedCourseIds] = useState<number[]>(() => 
-    packageData.courses.map(course => course.id)
-  );
 
   // Filter courses based on selection (only for pricing calculation)
   const displayedCourses = packageData.courses.filter(
