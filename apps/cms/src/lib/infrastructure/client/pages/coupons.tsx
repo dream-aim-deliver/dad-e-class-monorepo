@@ -1,8 +1,15 @@
 'use client';
 
 import { trpc } from '../trpc/cms-client';
-import { useState, useRef } from 'react';
-import { DefaultLoading, DefaultError, CouponGrid, Breadcrumbs, RevokeCouponModal, CreateCouponModal } from '@maany_shr/e-class-ui-kit';
+import { useState, useRef, useEffect } from 'react';
+import { 
+  DefaultLoading, 
+  DefaultError,
+  CouponGrid, 
+  Breadcrumbs, 
+  RevokeCouponModal, 
+  CreateCouponModal 
+} from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -17,10 +24,156 @@ interface CouponsProps {
   platformLocale: string;
 }
 
+function RevokeCouponModalContent({
+  couponId,
+  couponName,
+  locale,
+  onSuccess,
+  onClose,
+}: {
+  couponId: string;
+  couponName: string;
+  locale: TLocale;
+  onSuccess: () => void;
+  onClose: () => void;
+}) {
+  const t = useTranslations('pages.coupons');
+  const utils = trpc.useUtils();
+
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const revokeCouponMutation = trpc.revokeCoupon.useMutation({
+    onSuccess: () => {
+      setIsSuccess(true);
+      setErrorMessage(null);
+      utils.listCoupons.invalidate();
+      const timer = setTimeout(() => {
+        onSuccess();
+        onClose();
+        setIsSuccess(false);
+        setErrorMessage(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    },
+    onError: (error) => {
+      setIsSuccess(false);
+      setErrorMessage(null);
+      if ((error as any)?.data?.code === 'UNAUTHORIZED') {
+        setErrorMessage(t('error.unauthorized'));
+      } else if ((error as any)?.data?.code === 'NOT_FOUND') {
+        setErrorMessage(t('error.notFound'));
+      } else {
+        setErrorMessage(t('error.revokeFailed'));
+      }
+    },
+  });
+
+  const handleConfirm = () => {
+    revokeCouponMutation.mutate({ couponId });
+  };
+
+  return (
+    <RevokeCouponModal
+      couponName={couponName}
+      locale={locale}
+      onConfirm={handleConfirm}
+      onCancel={onClose}
+      isRevoking={revokeCouponMutation.isPending}
+      isSuccess={isSuccess}
+      errorMessage={errorMessage}
+    />
+  );
+}
+
+function CreateCouponModalContent({
+  locale,
+  onSuccess,
+  onClose,
+  existingCoupons,
+}: {
+  locale: TLocale;
+  onSuccess: (couponName: string) => void;
+  onClose: () => void;
+  existingCoupons: Array<{ name: string; status: 'active' | 'revoked' }>;
+}) {
+  const tCreate = useTranslations('components.createCouponModal');
+  const utils = trpc.useUtils();
+
+  // background queries for modal
+  const coursesQuery = trpc.listPlatformCoursesShort.useQuery({});
+  const packagesQuery = trpc.listPackagesShort.useQuery({});
+  const coachingQuery = trpc.listPlatformCoachingOfferings.useQuery({});
+
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [createdCouponName, setCreatedCouponName] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const createCouponMutation = trpc.createCoupon.useMutation({
+    onSuccess: (data) => {
+      utils.listCoupons.invalidate();
+      setIsSuccess(true);
+      const name = (data as any)?.data?.coupon?.name || '';
+      setCreatedCouponName(name);
+      setErrorMessage(null);
+    },
+    onError: (error) => {
+      setIsSuccess(false);
+      const errorData = (error as any)?.data;
+      if (errorData?.errorType === 'name_already_exists') {
+        setErrorMessage(errorData?.message);
+      } else {
+        setErrorMessage(tCreate('error.createFailed'));
+      }
+    },
+  });
+
+  // Handle close: if in success state, notify parent; otherwise just close
+  const handleClose = () => {
+    if (isSuccess && createdCouponName) {
+      onSuccess(createdCouponName);
+    }
+    onClose();
+  };
+
+  const handleCreateCoupon = (data: any) => {
+    const newName: string | undefined = data?.name?.trim();
+    if (newName) {
+      // Check if there's an active coupon with the same name
+      const activeCouponWithSameName = existingCoupons.find(
+        (c) => c.name.toLowerCase() === newName.toLowerCase() && c.status === 'active'
+      );
+      if (activeCouponWithSameName) {
+        setIsSuccess(false);
+        setErrorMessage(tCreate('nameConflictMessage', { couponName: newName }));
+        return;
+      }
+      // If coupon exists but is revoked, allow creating with same name
+    }
+    setErrorMessage(null);
+    createCouponMutation.mutate(data);
+  };
+
+  return (
+    <CreateCouponModal
+      locale={locale}
+      onClose={handleClose}
+      onSuccess={onSuccess}
+      coursesQuery={{ data: coursesQuery.data, isLoading: coursesQuery.isLoading, error: coursesQuery.error }}
+      packagesQuery={{ data: packagesQuery.data, isLoading: packagesQuery.isLoading, error: packagesQuery.error }}
+      coachingQuery={{ data: coachingQuery.data, isLoading: coachingQuery.isLoading, error: coachingQuery.error }}
+      onCreateCoupon={handleCreateCoupon}
+      isCreating={createCouponMutation.isPending}
+      isSuccess={isSuccess}
+      createdCouponName={createdCouponName}
+      errorMessage={errorMessage}
+    />
+  );
+}
+
 export default function Coupons({ platformSlug, platformLocale }: CouponsProps) {
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.coupons');
-  const tCreate = useTranslations('components.createCouponModal');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
   // Platform context
@@ -34,71 +187,9 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   // Revoke Modal state
   const [revokingCouponId, setRevokingCouponId] = useState<string | null>(null);
   const [revokingCouponName, setRevokingCouponName] = useState<string>('');
-  const [revokeSuccess, setRevokeSuccess] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Create Modal state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
-  const [createSuccess, setCreateSuccess] = useState<boolean>(false);
-  const [createdCouponName, setCreatedCouponName] = useState<string>('');
-  const [createErrorMessage, setCreateErrorMessage] = useState<string | null>(null);
-
-  // TRPC mutation for revoking coupons
-  const revokeCouponMutation = trpc.revokeCoupon.useMutation({
-    onSuccess: () => {
-      setRevokeSuccess(true);
-      setErrorMessage(null);
-      utils.listCoupons.invalidate();
-      // Auto-close modal after 5 seconds
-      const timer = setTimeout(() => {
-        setRevokingCouponId(null);
-        setRevokingCouponName('');
-        setRevokeSuccess(false);
-        setErrorMessage(null);
-      }, 5000);
-      return () => clearTimeout(timer);
-    },
-    onError: (error) => {
-      setRevokeSuccess(false);
-      setErrorMessage(null);
-      // Set appropriate error message based on error type
-      if (error?.data?.code === 'UNAUTHORIZED') {
-        setErrorMessage(t('error.unauthorized'));
-      } else if (error?.data?.code === 'NOT_FOUND') {
-        setErrorMessage(t('error.notFound'));
-      } else {
-        setErrorMessage(t('error.revokeFailed'));
-      }
-    },
-  });
-
-  const utils = trpc.useUtils();
-
-  // TRPC queries for Create Coupon Modal
-  const coursesQuery = trpc.listPlatformCoursesShort.useQuery({});
-  const packagesQuery = trpc.listPackagesShort.useQuery({});
-  const coachingQuery = trpc.listPlatformCoachingOfferings.useQuery({});
-
-  // TRPC mutation for creating coupons
-  const createCouponMutation = trpc.createCoupon.useMutation({
-    onSuccess: (data) => {
-      utils.listCoupons.invalidate();
-      setCreateSuccess(true);
-      setCreatedCouponName((data as any)?.data?.coupon?.name || '');
-      setCreateErrorMessage(null); // Clear any previous errors
-    },
-    onError: (error) => {
-      setCreateSuccess(false);
-      
-      // Set appropriate error message based on error type
-      const errorData = (error as any)?.data;
-      if (errorData?.errorType === 'name_already_exists') {
-        setCreateErrorMessage(errorData?.message);
-      } else {
-        setCreateErrorMessage(t('error.createFailed'));
-      }
-    },
-  });
 
   // ViewModel state
   const [listCouponsViewModel, setListCouponsViewModel] = useState<
@@ -111,8 +202,6 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   // TRPC query for page data
   const [couponsResponse] = trpc.listCoupons.useSuspenseQuery({});
 
-  //console.log('couponsResponse', couponsResponse);
-  
   // @ts-ignore
   presenter.present(couponsResponse, listCouponsViewModel);
 
@@ -146,65 +235,22 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
     );
   }
 
-  // Success state - extract data from ViewModel
-  const couponsData = listCouponsViewModel.data;
-
-  console.log('couponsData', listCouponsViewModel.data.coupons);
-
-  // Revoke coupon handlers
+  // Revoke coupon handler
   const handleRevokeCoupon = (couponId: string) => {
     const coupon = listCouponsViewModel.data.coupons.find(c => c.id === couponId);
     if (coupon) {
       setRevokingCouponId(coupon.id);
       setRevokingCouponName(coupon.name);
-      setRevokeSuccess(false);
-      setErrorMessage(null); // Clear any previous errors
     }
   };
 
-  const handleConfirmRevoke = async () => {
-    if (!revokingCouponId) return;
-    
-    revokeCouponMutation.mutate({couponId: revokingCouponId});
-  };
-
-  const handleCancelRevoke = () => {
-    setRevokingCouponId(null);
-    setRevokingCouponName('');
-    setRevokeSuccess(false);
-    setErrorMessage(null);
-  };
-
-  // Create coupon handlers
+  // Create coupon handler
   const handleOpenCreateModal = () => {
     setIsCreateModalOpen(true);
   };
 
   const handleCloseCreateModal = () => {
     setIsCreateModalOpen(false);
-    setCreateSuccess(false);
-    setCreatedCouponName('');
-    setCreateErrorMessage(null); // Clear error state
-  };
-
-  const handleCreateCoupon = (data: any) => {
-    const newName: string | undefined = data?.name?.trim();
-    if (newName) {
-      const exists = listCouponsViewModel?.data?.coupons?.some(
-        (c) => (c.name || '').toLowerCase() === newName.toLowerCase()
-      );
-      if (exists) {
-        setCreateSuccess(false);
-        setCreateErrorMessage(tCreate('nameConflictMessage', { couponName: newName }));
-        return;
-      }
-    }
-    setCreateErrorMessage(null);
-    createCouponMutation.mutate(data);
-  };
-
-  const handleCreateCouponSuccess = (_couponName: string) => {
-    // The modal will be closed by the mutation's onSuccess callback
   };
 
   // Breadcrumbs following the standard pattern
@@ -250,31 +296,30 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
 
       {/* Revoke Coupon Modal */}
       {revokingCouponId && (
-        <RevokeCouponModal
+        <RevokeCouponModalContent
+          couponId={revokingCouponId}
           couponName={revokingCouponName}
           locale={locale}
-          onConfirm={handleConfirmRevoke}
-          onCancel={handleCancelRevoke}
-          isRevoking={revokeCouponMutation.isPending}
-          isSuccess={revokeSuccess}
-          errorMessage={errorMessage}
+          onSuccess={() => {}}
+          onClose={() => {
+            setRevokingCouponId(null);
+            setRevokingCouponName('');
+          }}
         />
       )}
 
       {/* Create Coupon Modal */}
       {isCreateModalOpen && (
-        <CreateCouponModal
+        <CreateCouponModalContent
           locale={locale}
           onClose={handleCloseCreateModal}
-          onSuccess={handleCreateCouponSuccess}
-          coursesQuery={coursesQuery}
-          packagesQuery={packagesQuery}
-          coachingQuery={coachingQuery}
-          onCreateCoupon={handleCreateCoupon}
-          isCreating={createCouponMutation.isPending}
-          isSuccess={createSuccess}
-          createdCouponName={createdCouponName}
-          errorMessage={createErrorMessage}
+          onSuccess={() => {
+            setIsCreateModalOpen(false);
+          }}
+          existingCoupons={(listCouponsViewModel.data.coupons || []).map((c) => ({
+            name: c.name || '',
+            status: c.status,
+          }))}
         />
       )}
     </div>
