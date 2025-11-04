@@ -2553,5 +2553,20 @@ export const EN: TDictionary = {
       errorMessage: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
       defaultError: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
     },
+    becomeACoach: {
+      title: 'Become a Coach',
+      description: 'Apply to become a coach and share your expertise with students',
+      formTitle: 'Coach Application',
+      formDescription: 'Fill out the form below to apply as a coach. We will review your application and get back to you soon.',
+      submitButton: 'Submit Application',
+      submitting: 'Submitting...',
+      successTitle: 'Application Submitted!',
+      successDescription: 'Thank you for your interest in becoming a coach. We have received your application and will review it shortly.',
+      mailtoNote: 'Note: For now, clicking submit will open your email client with a pre-populated message containing your form data. The automated email submission feature is coming soon.',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while submitting your application. Please try again later.',
+      },
+    },
   },
 };

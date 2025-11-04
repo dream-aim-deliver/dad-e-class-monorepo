@@ -2589,6 +2589,21 @@ export const DictionarySchema = z.object({
       errorMessage: z.string(),
       defaultError: z.string(),
     }),
+    becomeACoach: z.object({
+      title: z.string(),
+      description: z.string(),
+      formTitle: z.string(),
+      formDescription: z.string(),
+      submitButton: z.string(),
+      submitting: z.string(),
+      successTitle: z.string(),
+      successDescription: z.string(),
+      mailtoNote: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    }),
   }),
 });
 
