@@ -6,7 +6,6 @@ import { VisitorCourseCard } from './visitor-course-card/visitor-course-card';
 import { course, language } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 
-// Base props shared by all card types
 type BaseCourseCardProps = {
   reviewCount: number;
   locale: TLocale;

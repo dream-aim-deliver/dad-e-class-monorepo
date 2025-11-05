@@ -130,7 +130,7 @@ export default function Package({ locale, packageId }: PackageProps) {
   const displayedCourses = packageData.courses.filter(
     course => selectedCourseIds.includes(course.id)
   );
-  
+
   // Show all courses in the UI (for selection/deselection)
   const allCourses = packageData.courses;
 
@@ -257,7 +257,7 @@ export default function Package({ locale, packageId }: PackageProps) {
   const handleRelatedPackageDetails = (packageId: string | number) => {
     router.push(`/${currentLocale}/packages/${packageId}`);
   };
-  
+
   const handleRelatedPackagePurchase = (packageId: string | number) => {
     if (!isLoggedIn) {
       router.push(`/${currentLocale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
@@ -345,60 +345,77 @@ export default function Package({ locale, packageId }: PackageProps) {
         >
           {allCourses.map((course) => {
             const courseIncluded = selectedCourseIds.includes(course.id);
+            const courseData = {
+              title: course.title,
+              description: course.description,
+              author: {
+                name: course.creator.name,
+                image: course.creator.avatarUrl || ''
+              },
+              imageUrl: course.imageUrl || '',
+              rating: course.averageRating,
+              duration: {
+                video: 100, // TODO: Get course video duration once backend is updated
+                coaching: 200, // TODO: Get course coaching duration once backend is updated
+                selfStudy: 300 // TODO: Get course self-study duration once backend is updated
+              },
+              pricing: {
+                fullPrice: course.priceIncludingCoachings,
+                partialPrice: course.basePrice,
+                currency: platform.currency
+              },
+              language: course.language,
+            };
+
             return (
-            <div key={course.id} className={`w-full ${!courseIncluded ? 'opacity-60' : ''}`}>
-              <CourseCard
-                userType={isLoggedIn ? "student" : "visitor"}
-                reviewCount={course.ratingCount}
-                locale={currentLocale}
-                language={course.language}
-                course={{
-                  title: course.title,
-                  description: course.description,
-                  author: {
-                    name: course.creator.name,
-                    image: course.creator.avatarUrl || ''
-                  },
-                  imageUrl: course.imageUrl || '',
-                  rating: course.averageRating,
-                  duration: {
-                    video: 100, // TODO: Get course video duration once backend is updated
-                    coaching: 200, // TODO: Get course coaching duration once backend is updated
-                    selfStudy: 300 // TODO: Get course self-study duration once backend is updated
-                  },
-                  pricing: {
-                    fullPrice: course.priceIncludingCoachings,
-                    partialPrice: course.basePrice,
-                    currency: platform.currency
-                  },
-                  language: course.language,
-                }}
-                sessions={course.coachingSessionCount}
-                sales={course.salesCount}
-                onDetails={() => handleCourseDetails(course.id.toString())}
-                onClickUser={() => handleCourseAuthorClick(course.id.toString())}
-                className="mb-3"
-              />
-              <div className="flex items-center justify-between">
-                <span className={`font-semibold ${!courseIncluded ? 'text-text-secondary line-through' : 'text-text-primary'}`}>
-                  {platform.currency} {coachingIncluded ? course.priceIncludingCoachings : course.basePrice}
-                </span>
-                <div className="flex gap-2">
-                  <Button
-                    variant={courseIncluded ? "secondary" : "primary"}
-                    size="small"
-                    text={courseIncluded ? t('excludeButton') : (t as any)('includeButton') || 'Include'}
-                    onClick={() => handleIncludeExclude(course.id.toString())}
+              <div key={course.id} className={`w-full ${!courseIncluded ? 'opacity-60' : ''}`}>
+                {isLoggedIn ? (
+                  <CourseCard
+                    userType="student"
+                    reviewCount={course.ratingCount}
+                    locale={currentLocale}
+                    language={course.language}
+                    course={courseData}
+                    sales={course.salesCount}
+                    progress={0}
+                    onDetails={() => handleCourseDetails(course.id.toString())}
+                    onClickUser={() => handleCourseAuthorClick(course.id.toString())}
+                    className="mb-3"
                   />
-                  <Button
-                    variant="text"
-                    size="small"
-                    text={t('detailsButton')}
-                    onClick={() => handleCourseDetails(course.id.toString())}
+                ) : (
+                  <CourseCard
+                    userType="visitor"
+                    reviewCount={course.ratingCount}
+                    locale={currentLocale}
+                    language={course.language}
+                    course={courseData}
+                    sessions={course.coachingSessionCount}
+                    sales={course.salesCount}
+                    onDetails={() => handleCourseDetails(course.id.toString())}
+                    onClickUser={() => handleCourseAuthorClick(course.id.toString())}
+                    className="mb-3"
                   />
+                )}
+                <div className="flex items-center justify-between">
+                  <span className={`font-semibold ${!courseIncluded ? 'text-text-secondary line-through' : 'text-text-primary'}`}>
+                    {platform.currency} {coachingIncluded ? course.priceIncludingCoachings : course.basePrice}
+                  </span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={courseIncluded ? "secondary" : "primary"}
+                      size="small"
+                      text={courseIncluded ? t('excludeButton') : (t as any)('includeButton') || 'Include'}
+                      onClick={() => handleIncludeExclude(course.id.toString())}
+                    />
+                    <Button
+                      variant="text"
+                      size="small"
+                      text={t('detailsButton')}
+                      onClick={() => handleCourseDetails(course.id.toString())}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
             );
           })}
         </PackageCourseSelector>
