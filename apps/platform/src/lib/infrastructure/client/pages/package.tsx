@@ -362,13 +362,13 @@ export default function Package({ locale, packageId }: PackageProps) {
                   imageUrl: course.imageUrl || '',
                   rating: course.averageRating,
                   duration: {
-                    video: 100, // TODO: Get course video duration once backend is updated  
+                    video: 100, // TODO: Get course video duration once backend is updated
                     coaching: 200, // TODO: Get course coaching duration once backend is updated
                     selfStudy: 300 // TODO: Get course self-study duration once backend is updated
                   },
                   pricing: {
-                    fullPrice: course.basePrice,
-                    partialPrice: course.priceIncludingCoachings,
+                    fullPrice: course.priceIncludingCoachings,
+                    partialPrice: course.basePrice,
                     currency: platform.currency
                   },
                   language: course.language,
@@ -456,7 +456,7 @@ export default function Package({ locale, packageId }: PackageProps) {
                   courseCount={relatedPackage.courseCount}
                   pricing={{
                     currency: platform.currency,
-                    fullPrice: relatedPackage.price,
+                    fullPrice: relatedPackage.priceWithCoachings * 1.5,  // TODO: Refactor once backend sends sum of courses' prices
                     partialPrice: relatedPackage.priceWithCoachings
                   }}
                   locale={currentLocale}
