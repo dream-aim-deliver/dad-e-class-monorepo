@@ -21,6 +21,7 @@ import {
   FeedBackMessage
 } from '@maany_shr/e-class-ui-kit';
 import { idToNumber } from '../utils/id-to-number';
+import { useRequiredPlatform } from '../context/platform-context';
 
 interface PackageImage {
   id: string;
@@ -53,8 +54,9 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   const router = useRouter();
   const t = useTranslations('pages.allPackages');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+  const { platform } = useRequiredPlatform();
 
-  // TRPC query for listPackages usecase (FEAT-164)
+  // TRPC query for listPackages usecase 
   const [listPackagesResponse] = trpc.listPackages.useSuspenseQuery({
     platformSlug,
     platformLocale,
@@ -191,6 +193,16 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     }
   };
 
+  // Calculates pricing for a package card
+  // TODO: Replace hardcoded fullPrice with sum of courses' priceIncludingCoachings
+  // once backend starts returning per-course pricing for packages.
+  const calculatePackagePricing = (pkg: any) => {
+    const partialPrice = pkg.priceWithCoachings;
+    // const fullPrice = pkg.courses.reduce((sum: number, c: { priceIncludingCoachings: number }) => sum + c.priceIncludingCoachings, 0);
+    const fullPrice = pkg.priceWithCoachings * 1.5; // TODO: Replace with sum(priceIncludingCoachings) of courses
+    return { fullPrice, partialPrice};
+  };
+
   // Breadcrumbs following the standard pattern
   const breadcrumbItems = [
     {
@@ -230,9 +242,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   // Success state - extract data using discovered pattern
   const packagesData = listPackagesViewModel.data;
   const packages = packagesData.packages;
-  // Always show all packages regardless of archived status
-
-
+  
   return (
     <div className="flex flex-col space-y-4">
       {/* Breadcrumbs */}
@@ -265,6 +275,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
         onCreatePackage={handleCreatePackage}
       >
         {packages.map((pkg: any) => {
+          const calculatedPricing = calculatePackagePricing(pkg);
           const baseProps = {
             title: pkg.title,
             description: pkg.description,
@@ -272,10 +283,9 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
             duration: pkg.duration,
             courseCount: pkg.courseCount || 0,
             pricing: {
-              // TODO: Replace with actual currency from backend
-              currency: 'CHF',
-              fullPrice: pkg.price,
-              partialPrice: pkg.priceWithCoachings,
+              currency: platform.currency,
+              fullPrice: calculatedPricing.fullPrice,
+              partialPrice: calculatedPricing.partialPrice,
             },
             locale: currentLocale,
             onClickEdit: () => handleEditPackage(pkg.id),
