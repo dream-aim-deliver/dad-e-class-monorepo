@@ -21,6 +21,7 @@ export default async function TransactionsServerComponent(
   await Promise.all([
     prefetch(trpc.listTransactions.queryOptions({})),
     prefetch(trpc.listPlatformCoaches.queryOptions({})),
+    prefetch(trpc.listTransactionTags.queryOptions({})),
   ]);
 
   return (

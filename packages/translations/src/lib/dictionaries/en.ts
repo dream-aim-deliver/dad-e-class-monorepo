@@ -2597,6 +2597,7 @@ export const EN: TDictionary = {
       error: {
         title: 'Error',
         description: 'An error occurred while loading transactions.',
+        createFailed: 'Failed to create transaction. Please try again.',
         notFound: {
           title: 'Not Found',
           description: 'The requested transactions could not be found.',

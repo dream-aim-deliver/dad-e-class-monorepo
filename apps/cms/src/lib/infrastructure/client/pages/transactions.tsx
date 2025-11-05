@@ -77,7 +77,7 @@ export default function Transactions(_props: TransactionsProps) {
       }, 2000);
       return () => clearTimeout(timer);
     },
-    onError: () => {
+    onError: (error) => {
       setCreateSuccess(false);
       setCreateErrorMessage(t('error.createFailed'));
     },
@@ -153,7 +153,21 @@ export default function Transactions(_props: TransactionsProps) {
 
   const handleCreateTransaction = (data: any) => {
     setCreateErrorMessage(null);
-    createTransactionMutation.mutate(data);
+    const payload = {
+      currency: platform.currency,
+      items: [
+        {
+          description: (data?.description ?? '').toString(),
+          unitPrice: Number(data?.amount),
+          quantity: 1,
+        },
+      ],
+      coachId: Number(data?.coachId),
+      tagIds: (data?.tagIds ?? []).map((x: any) => String(x)),
+      settledAt: data?.paidAt ? new Date(data.paidAt).toISOString() : null,
+      invoiceUrl: data?.invoiceUrl ?? null,
+    };
+    createTransactionMutation.mutate(payload as any);
   };
 
   const handleDeleteTransaction = (transactionId: string | number) => {

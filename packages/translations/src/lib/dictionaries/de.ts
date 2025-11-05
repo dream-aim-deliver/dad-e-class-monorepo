@@ -2600,6 +2600,7 @@ manageHomePage: {
       error: {
         title: 'Fehler',
         description: 'Beim Laden der Transaktionen ist ein Fehler aufgetreten.',
+        createFailed: 'Fehler beim Erstellen der Transaktion. Bitte versuchen Sie es erneut.',
         notFound: {
           title: 'Nicht gefunden',
           description: 'Die angeforderten Transaktionen konnten nicht gefunden werden.',
