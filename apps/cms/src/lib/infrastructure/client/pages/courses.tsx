@@ -10,24 +10,51 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { Tabs, CourseCard, CourseCardList, DefaultError, DefaultLoading, SearchInput, CourseCardListSkeleton, Dropdown } from '@maany_shr/e-class-ui-kit';
-import { useState, useMemo } from 'react';
+import { Tabs, CourseCard, CourseCardList, DefaultError, DefaultLoading, SearchInput, CourseCardListSkeleton, Dropdown, Button } from '@maany_shr/e-class-ui-kit';
+import { useState, useMemo, useEffect } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCmsCoursesPresenter } from '../hooks/use-list-cms-courses-presenter';
-
+import useClientSidePagination from '../utils/use-client-side-pagination';
+import { TListCmsCoursesSuccess } from 'packages/models/src/view-models';
+import { useRouter, useSearchParams } from 'next/navigation';
 interface CoursesProps {
   locale: TLocale;
   platformSlug: string;
 }
 
+type Course = TListCmsCoursesSuccess['courses'][number];
+
 export default function Courses({ locale, platformSlug }: CoursesProps) {
   const t = useTranslations('pages.cmsCourses');
   const currentLocale = useLocale() as TLocale;
-  const [activeTab, setActiveTab] = useState<'all' | 'draft' | 'archived' | 'live'>('all');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get tab from URL or default to 'all'
+  const tabFromUrl = searchParams.get('tab') as 'all' | 'draft' | 'archived' | 'live' | null;
+  const [activeTab, setActiveTab] = useState<'all' | 'draft' | 'archived' | 'live'>(
+    tabFromUrl && ['all', 'draft', 'archived', 'live'].includes(tabFromUrl) ? tabFromUrl : 'all'
+  );
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearchLoading, setIsSearchLoading] = useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<Course[]>([]);
   const [sortOrder, setSortOrder] = useState('desc');
+
+
+  useEffect(() => {
+    if (tabFromUrl && ['all', 'draft', 'archived', 'live'].includes(tabFromUrl)) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [tabFromUrl]);
+
+
+  const handleTabChange = (newTab: 'all' | 'draft' | 'archived' | 'live') => {
+    setActiveTab(newTab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', newTab);
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
 
   // Fetch courses data
   const [coursesResponse] = trpc.listCmsCourses.useSuspenseQuery({});
@@ -43,13 +70,15 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
   // @ts-ignore
   presenter.present(coursesResponse, listCoursesViewModel);
 
-  const courses = listCoursesViewModel?.data?.courses || [];
+  const courses: Course[] = listCoursesViewModel?.mode === 'default'
+    ? listCoursesViewModel.data.courses
+    : [];
 
   // Filter courses based on active tab
   const filteredCourses = useMemo(() => {
     return activeTab === 'all'
       ? courses
-      : courses.filter((course) => course.status === activeTab);
+      : courses.filter((course: Course) => course.status === activeTab);
   }, [activeTab, courses]);
 
   // Memoized sorted filtered courses
@@ -77,6 +106,13 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
   const displayCourses = searchResults.length > 0 || searchQuery.trim()
     ? sortedSearchResults
     : sortedFilteredCourses;
+
+  // Pagination
+  const { displayedItems, hasMoreItems, handleLoadMore } = useClientSidePagination({
+    items: displayCourses,
+    itemsPerPage: 6,
+    itemsPerPage2xl: 8,
+  });
 
   // Loading state
   if (!listCoursesViewModel) {
@@ -119,7 +155,7 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
         <p>{t('description')}</p>
       </div>
 
-      <Tabs.Root defaultTab="all" onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
+      <Tabs.Root key={activeTab} defaultTab={activeTab} onValueChange={(value) => handleTabChange(value as typeof activeTab)}>
         <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
           {tabs.map((tab, index) => (
             <Tabs.Trigger
@@ -180,53 +216,66 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
               {isSearchLoading ? (
                 <CourseCardListSkeleton />
               ) : (
-                <CourseCardList
-                locale={currentLocale}
-                emptyStateMessage={'No courses found'}
-                emptyStateButtonText={'Create Course'}
-              >
-                {displayCourses.map((course) => {
-
-                const courseMetadata = {
-                  title: course.title,
-                  imageUrl: course.imageUrl || '',
-                  description: "",
-                  pricing: {
-                    currency: '',
-                    fullPrice: 0,
-                    partialPrice: 0,
-                  },
-                  author: {
-                    name: `${course.creator.name} ${course.creator.surname}`,
-                    image: course.creator.avatarUrl || '',
-                  },
-                  rating: course.rating || 0,
-                  language: {
-                    code: course.language,
-                    name: course.language,
-                  },
-                  duration: {
-                    video: 0,
-                    coaching: course.duration || 0,
-                    selfStudy: 0,
-                  },
-                };
-
-                return (
-                  <CourseCard
-                    key={course.id}
-                    userType="course_creator"
-                    reviewCount={course.ratingCount}
+                <>
+                  <CourseCardList
                     locale={currentLocale}
-                    language={{ code: course.language, name: course.language }}
-                    creatorStatus={course.status}
-                    course={courseMetadata}
-                    sessions={course.coachingSessionCount}
-                    sales={course.salesCount}
-                  />
-                );
-              })}
-              </CourseCardList>
+                    emptyStateMessage={'No courses found'}
+                    emptyStateButtonText={'Create Course'}
+                  >
+                    {displayedItems.map((course) => {
+
+                      const courseMetadata = {
+                        title: course.title,
+                        imageUrl: course.imageUrl || '',
+                        description: "",
+                        pricing: {
+                          currency: '',
+                          fullPrice: 0,
+                          partialPrice: 0,
+                        },
+                        author: {
+                          name: `${course.creator.name} ${course.creator.surname}`,
+                          image: course.creator.avatarUrl || '',
+                        },
+                        rating: course.rating || 0,
+                        language: {
+                          code: course.language,
+                          name: course.language,
+                        },
+                        duration: {
+                          video: 0,
+                          coaching: course.duration || 0,
+                          selfStudy: 0,
+                        },
+                      };
+
+                      return (
+                        <CourseCard
+                          key={course.id}
+                          userType="course_creator"
+                          reviewCount={course.ratingCount}
+                          locale={currentLocale}
+                          language={{ code: course.language, name: course.language }}
+                          creatorStatus={course.status}
+                          course={courseMetadata}
+                          sessions={course.coachingSessionCount}
+                          sales={course.salesCount}
+                        />
+                      );
+                    })}
+                  </CourseCardList>
+
+                  {hasMoreItems && (
+                    <div className="flex justify-center mt-6">
+                      <Button
+                        onClick={handleLoadMore}
+                        variant="text"
+                        size="medium"
+                        text="Load More"
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </Tabs.Content>
