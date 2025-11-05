@@ -67,15 +67,23 @@ export default function Footer({
             availableLocales={availableLocales}
             locale={locale}
             logo={
-                <Image
-                    priority
-                    unoptimized={true}
-                    src={platformViewModel.data.logo?.downloadUrl ?? ''}
-                    alt={platformViewModel.data.name}
-                    width={48}
-                    height={48}
-                    className="w-auto h-full"
-                />
+                platformViewModel.data.logo?.downloadUrl ? (
+                    <Image
+                        priority
+                        unoptimized={true}
+                        src={platformViewModel.data.logo.downloadUrl}
+                        alt={platformViewModel.data.name}
+                        width={48}
+                        height={48}
+                        className="w-auto h-full"
+                    />
+                ) : (
+                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-xl font-bold text-gray-600">
+                            {platformViewModel.data.name[0]?.toUpperCase() || 'P'}
+                        </span>
+                    </div>
+                )
             }
             onChangeLanguage={changeLanguage}
             footerChildren={
