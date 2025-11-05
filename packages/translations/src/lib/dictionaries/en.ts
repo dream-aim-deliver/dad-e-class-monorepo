@@ -2583,5 +2583,27 @@ export const EN: TDictionary = {
         unauthorized: 'You must be a coach to create group sessions.',
       },
     },
+    singleUser: {
+      title: 'User Profile',
+      description: 'View and manage user information',
+      personalProfile: 'Personal Profile',
+      professionalProfile: 'Professional Profile',
+      studentCourses: 'Student Courses',
+      coachCourses: 'Coach Courses',
+      coachReviews: 'Coach Reviews',
+      roles: 'Roles',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading user information.',
+        notFound: {
+          title: 'User Not Found',
+          description: 'The requested user could not be found.',
+        },
+        unauthorized: {
+          title: 'Access Denied',
+          description: 'You do not have permission to view this user.',
+        },
+      },
+    },
   },
 };

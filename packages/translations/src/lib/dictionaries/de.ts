@@ -2586,5 +2586,27 @@ manageHomePage: {
         unauthorized: 'Du musst Coach sein, um Gruppen-Sessions zu erstellen.',
       },
     },
+    singleUser: {
+      title: 'Benutzerprofil',
+      description: 'Benutzerinformationen ansehen und verwalten',
+      personalProfile: 'Persönliches Profil',
+      professionalProfile: 'Berufliches Profil',
+      studentCourses: 'Studierende-Kurse',
+      coachCourses: 'Coach-Kurse',
+      coachReviews: 'Coach-Bewertungen',
+      roles: 'Rollen',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Benutzerinformationen ist ein Fehler aufgetreten.',
+        notFound: {
+          title: 'Benutzer nicht gefunden',
+          description: 'Der angeforderte Benutzer konnte nicht gefunden werden.',
+        },
+        unauthorized: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, diesen Benutzer anzusehen.',
+        },
+      },
+    },
   },
 };
