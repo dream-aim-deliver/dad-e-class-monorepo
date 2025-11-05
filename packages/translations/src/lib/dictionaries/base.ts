@@ -2619,6 +2619,28 @@ export const DictionarySchema = z.object({
         unauthorized: z.string(),
       }),
     }),
+    singleUser: z.object({
+      title: z.string(),
+      description: z.string(),
+      personalProfile: z.string(),
+      professionalProfile: z.string(),
+      studentCourses: z.string(),
+      coachCourses: z.string(),
+      coachReviews: z.string(),
+      roles: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        unauthorized: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
   }),
 });
 
