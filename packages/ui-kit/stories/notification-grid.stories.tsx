@@ -86,6 +86,7 @@ const longActionText =
 
 const mockNotificationsBase = [
   {
+    id: 1,
     message: longMessage,
     action: {
       title: 'Session details',
@@ -96,6 +97,7 @@ const mockNotificationsBase = [
     platform: 'justdoad',
   },
   {
+    id: 2,
     message: 'Coach Michael Johnson suggested a new date for the coaching session',
     action: {
       title: longActionText,
@@ -106,6 +108,7 @@ const mockNotificationsBase = [
     platform: 'justdoad',
   },
   {
+    id: 3,
     message: longMessage,
     action: {
       title: longActionText,
@@ -116,6 +119,7 @@ const mockNotificationsBase = [
     platform: 'justdoad',
   },
   {
+    id: 4,
     message: 'Coaching session canceled by you',
     action: {
       title: 'Session details',
@@ -126,6 +130,7 @@ const mockNotificationsBase = [
     platform: 'justdoad',
   },
   {
+    id: 5,
     message: 'Coaching session canceled by Coach David Martinez',
     action: {
       title: 'Session details',
@@ -136,6 +141,7 @@ const mockNotificationsBase = [
     platform: 'justdoad',
   },
   {
+    id: 6,
     message: 'Coach Jennifer Lee replied to your assignment in Advanced Leadership Skills',
     action: {
       title: 'View assignment',
@@ -146,6 +152,7 @@ const mockNotificationsBase = [
     platform: 'bewerbeagentur',
   },
   {
+    id: 7,
     message: 'Coach Robert Chen marked your assignment in Data Science Fundamentals as passed',
     action: {
       title: 'View assignment',
@@ -156,6 +163,7 @@ const mockNotificationsBase = [
     platform: 'bewerbeagentur',
   },
   {
+    id: 8,
     message: 'Coach Priya Patel has updated the shared workspaces for the group Marketing Team',
     action: {
       title: 'Group workspace',
@@ -166,6 +174,7 @@ const mockNotificationsBase = [
     platform: 'jobbrandme',
   },
   {
+    id: 9,
     message: 'Coach Thomas Wilson has updated the shared workspaces for the group Product Development',
     action: {
       title: 'Group workspace',
@@ -176,6 +185,7 @@ const mockNotificationsBase = [
     platform: 'jobbrandme',
   },
   {
+    id: 10,
     message: 'Coaching session ended',
     action: {
       title: 'Rate coach',

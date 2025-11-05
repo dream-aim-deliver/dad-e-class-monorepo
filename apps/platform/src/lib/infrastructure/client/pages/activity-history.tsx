@@ -18,13 +18,13 @@ import { trpc } from '../trpc/cms-client';
 import { useListNotificationsPresenter } from '../hooks/use-list-notifications-presenter';
 import { useMarkNotificationsAsReadPresenter } from '../hooks/use-mark-notifications-as-read-presenter';
 import {
-    DefaultError,
-    DefaultLoading,
-    DefaultNotFound,
-    NotificationGrid,
-    ExtendedNotification,
+  DefaultError,
+  DefaultLoading,
+  DefaultNotFound,
+  NotificationGrid,
+  ExtendedNotification,
 } from '@maany_shr/e-class-ui-kit';
-import { useRouter } from 'next/navigation';
+import { useRequiredPlatform } from '../context/platform-context';
 
 interface ActivityHistoryProps {
   locale: TLocale;
@@ -33,35 +33,30 @@ interface ActivityHistoryProps {
 export default function ActivityHistory({ locale }: ActivityHistoryProps) {
   const t = useTranslations('pages.activityHistory');
   const currentLocale = useLocale() as TLocale;
-  const sessionDTO = useSession();
-  const session = sessionDTO.data;
-  const isLoggedIn = !!session;
-  const router = useRouter();
-  
-  // Determine user type from session roles (following platform patterns)
+  const session = useSession();
+  const { platform } = useRequiredPlatform();
+
+  // Determine user type from session roles
   const getUserType = (): 'student' | 'coach' => {
-    const roles = session?.user?.roles || [];
-    
-    if (roles.includes('coach')) {
-      return 'coach';
-    }
-    // Default to student for students and visitors
-    return 'student';
+    const roles = session.data?.user?.roles || [];
+    return roles.includes('coach') ? 'coach' : 'student';
   };
-  
+
   const userType = getUserType();
 
   // Add state for error message
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
+  // TRPC utils for cache invalidation
+  const utils = trpc.useUtils();
+
   // State for notifications
-  const [notificationsResponse] = trpc.listNotifications.useSuspenseQuery({
-    userId: session?.user?.id ? parseInt(String(session.user.id), 10) : 1,
-    // Get all notifications without pagination - handle all data at once in the Grid
-  });
+  const [notificationsResponse, { refetch: refetchNotifications }] = trpc.listNotifications.useSuspenseQuery({});
+
   const [listNotificationsViewModel, setListNotificationsViewModel] = useState<
     viewModels.TListNotificationsViewModel | undefined
   >(undefined);
+
   const { presenter: listNotificationsPresenter } = useListNotificationsPresenter(
     setListNotificationsViewModel,
   );
@@ -70,43 +65,37 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
   const [markNotificationsViewModel, setMarkNotificationsViewModel] = useState<
     viewModels.TMarkNotificationsAsReadViewModel | undefined
   >(undefined);
+
   const { presenter: markNotificationsPresenter } = useMarkNotificationsAsReadPresenter(
     setMarkNotificationsViewModel,
   );
 
   const gridRef = useRef<any>(null);
 
+  // Present the notifications data when response changes
+  // Using useEffect with ONLY response dependency ensures presentation happens once per data fetch
+  useEffect(() => {
+    // @ts-ignore
+    listNotificationsPresenter.present(notificationsResponse, listNotificationsViewModel);
+  }, [notificationsResponse, listNotificationsPresenter]);
+
   // TRPC mutation for marking notifications as read with proper callbacks
   const markNotificationsAsReadMutation = trpc.markNotificationsAsRead.useMutation({
     onMutate: () => {
       setErrorMessage(undefined);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setErrorMessage(undefined);
       // @ts-ignore
       markNotificationsPresenter.present(data, markNotificationsViewModel);
-      // Refetch notifications to get updated data
-      window.location.reload(); // Simple approach for now
+      // Invalidate cache and refetch to get updated data from backend
+      await utils.listNotifications.invalidate();
     },
+
     onError: (error) => {
       setErrorMessage(error.message);
     }
   });
-
-  // Present the notifications data when available
-  useEffect(() => {
-    if (notificationsResponse && listNotificationsPresenter) {
-      // @ts-ignore
-      listNotificationsPresenter.present(notificationsResponse, listNotificationsViewModel);
-    }
-  }, [notificationsResponse, listNotificationsPresenter, listNotificationsViewModel]);
-
-  // Authentication check based on discovered patterns
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push('/login');
-    }
-  }, [isLoggedIn, router]);
 
   // Handle notification click
   const handleNotificationClick = (notification: ExtendedNotification) => {
@@ -115,35 +104,18 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
     }
   };
 
-  // Handle mark all as read
-  const handleMarkAllAsRead = () => {
-    if (listNotificationsViewModel?.mode === 'default') {
-      const notifications = listNotificationsViewModel.data.notifications;
-      const unreadNotificationIds: number[] = notifications
-        .filter(n => !n.isRead)
-        .map(n => Number(n.id))
-        .filter((id): id is number => !Number.isNaN(id));
+  // Handle mark selected notifications as read
+  const handleMarkAllAsRead = (notificationIds: (number | string)[]) => {
+    const numericIds = notificationIds.map(id => Number(id)).filter(id => !Number.isNaN(id));
 
-      if (unreadNotificationIds.length > 0) {
-        markNotificationsAsReadMutation.mutate({
-          notificationIds: unreadNotificationIds
-        });
-      }
+    if (numericIds.length > 0) {
+      markNotificationsAsReadMutation.mutate({
+        notificationIds: numericIds
+      });
     }
   };
 
-  // Authentication check - require logged-in user (any role)
-  if (!isLoggedIn) {
-    return (
-      <DefaultError
-        locale={locale}
-        title={t('error.unauthorized.title')}
-        description={t('error.unauthorized.description')}
-      />
-    );
-  }
-
-  // Loading state using discovered patterns
+  // Loading state - auth is handled in server component
   if (!listNotificationsViewModel) {
     return <DefaultLoading locale={locale} variant="minimal" />;
   }
@@ -163,11 +135,12 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
   const extendedNotifications: ExtendedNotification[] = notificationsData.notifications
     .filter(notification => notification.actionTitle && notification.actionUrl)
     .map(notification => ({
+      id: notification.id,
       message: notification.message,
       isRead: notification.isRead,
-      platform: 'platform', // Default platform name for now
-      timestamp: typeof notification.createdAt === 'string' 
-        ? notification.createdAt 
+      platform: platform.name, // Use platform name from context
+      timestamp: typeof notification.createdAt === 'string'
+        ? notification.createdAt
         : new Date(notification.createdAt).toISOString(), // Backend sends string, handle as string primarily
       action: {
         title: notification.actionTitle,
@@ -176,17 +149,17 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
     }));
 
   return (
-    <div className="flex flex-col space-y-5">
-      <div>
+    <div className="flex flex-col h-[calc(100vh-200px)] space-y-5">
+      <div className="flex-shrink-0">
         <h1>{t('title')}</h1>
-        <div className="text-white">{t('description')}</div>
+        <p className="text-text-secondary">{t('description')}</p>
       </div>
 
       {/* Features from Notion:
         - FEAT-5 (listNotifications)
         - FEAT-95 (markNotificationsAsRead)
       */}
-      <div className="h-96 theme-just-do-ad">
+      <div className="flex-1 min-h-0">
         <NotificationGrid
           locale={locale}
           notifications={extendedNotifications}
@@ -197,7 +170,7 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
           loading={markNotificationsAsReadMutation.isPending}
         />
       </div>
-      
+
       {errorMessage && <DefaultError locale={locale} title={errorMessage} />}
     </div>
   );

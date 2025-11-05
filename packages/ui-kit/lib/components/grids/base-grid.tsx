@@ -12,6 +12,7 @@ export interface BaseTableProps extends AgGridReactProps {
   gridRef: RefObject<AgGridReact | null>;
   shouldDelayRender?: boolean;
   locale: TLocale;
+  noRowsMessage?: string;
 }
 
 /**
@@ -64,7 +65,7 @@ export const SimplePaginationPanel = (props: {
   );
 };
 
-export const BaseGrid = ({ gridRef, shouldDelayRender, locale, ...props }: BaseTableProps) => {
+export const BaseGrid = ({ gridRef, shouldDelayRender, locale, noRowsMessage, ...props }: BaseTableProps) => {
   const currentPageRef = useRef<HTMLSpanElement>(null);
   const totalPagesRef = useRef<HTMLSpanElement>(null);
   const previousPageRef = useRef<HTMLButtonElement>(null);
@@ -166,7 +167,7 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, locale, ...props }: BaseT
           onGridReady={onGridReady}
           onPaginationChanged={onPaginationChanged}
           loadingOverlayComponent={() => <div>{dictionary.loading}</div>}
-          noRowsOverlayComponent={() => <div>{dictionary.noRows}</div>}
+          noRowsOverlayComponent={() => <div>{noRowsMessage || dictionary.noRows}</div>}
         />
       </div>
       <SimplePaginationPanel

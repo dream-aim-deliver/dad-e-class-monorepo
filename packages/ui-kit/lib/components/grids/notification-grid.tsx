@@ -2,7 +2,7 @@
 import { notification } from '@maany_shr/e-class-models';
 import { AllCommunityModule, IRowNode, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import { RefObject, useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { RefObject, useState, useCallback, useMemo, useEffect, useRef, useLayoutEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
@@ -16,13 +16,14 @@ import { InputField } from '../input-field';
 
 
 export interface ExtendedNotification extends notification.TNotification {
+  id: number | string;
   platform: string;
 }
 
 export interface PlatformNotificationGridProps extends isLocalAware {
   notifications: ExtendedNotification[];
   onNotificationClick: (notification: ExtendedNotification) => void;
-  onMarkAllRead: () => void;
+  onMarkAllRead: (notificationIds: (number | string)[]) => void;
   gridRef: RefObject<AgGridReact>;
   variant: 'student' | 'coach';
   loading: boolean;
@@ -31,7 +32,7 @@ export interface PlatformNotificationGridProps extends isLocalAware {
 export interface CMSNotificationGridProps extends isLocalAware {
   notifications: ExtendedNotification[];
   onNotificationClick: (notification: ExtendedNotification) => void;
-  onMarkAllRead: () => void;
+  onMarkAllRead: (notificationIds: (number | string)[]) => void;
   gridRef: RefObject<AgGridReact>;
   variant: 'cms';
   platforms: string[];
@@ -137,6 +138,9 @@ export const NotificationGrid = (props: NotificationGridProps) => {
   // Modal and filter state
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [filters, setFilters] = useState<Partial<NotificationFilterModel>>({});
+
+  // Track selected IDs during loading to restore selection after data refresh
+  const [selectedIdsBeforeLoading, setSelectedIdsBeforeLoading] = useState<(number | string)[]>([]);
 
   const handleClearAllFilters = useCallback(() => {
     setSearchTerm(''); // Clear search input
@@ -272,6 +276,20 @@ export const NotificationGrid = (props: NotificationGridProps) => {
     refreshGrid();
   }, [notifications, refreshGrid]);
 
+  // Restore selection after loading completes and data refreshes
+  // Using useLayoutEffect to run synchronously before browser paint
+  useLayoutEffect(() => {
+    if (!loading && selectedIdsBeforeLoading.length > 0 && gridRef.current?.api) {
+      // Restore selection immediately after data update
+      gridRef.current.api.forEachNode((node) => {
+        if (node.data && selectedIdsBeforeLoading.includes(node.data.id)) {
+          node.setSelected(true);
+        }
+      });
+      setSelectedIdsBeforeLoading([]); // Clear stored IDs after restoration
+    }
+  }, [loading, selectedIdsBeforeLoading, gridRef, modifiedNotifications]);
+
   // Render grid with actions
   const renderGridWithActions = (notificationsToShow = modifiedNotifications) => {
     return (
@@ -307,8 +325,16 @@ export const NotificationGrid = (props: NotificationGridProps) => {
             <Button
               variant="primary"
               size="medium"
-              text={dictionary.markAllAsRead}
-              onClick={onMarkAllRead}
+              text={loading ? 'Marking as read...' : dictionary.markAllAsRead}
+              onClick={() => {
+                if (!gridRef.current?.api) return;
+                const selectedRows: ExtendedNotification[] = gridRef.current.api.getSelectedRows();
+                const selectedIds = selectedRows.map(row => row.id);
+                if (selectedIds.length > 0) {
+                  setSelectedIdsBeforeLoading(selectedIds); // Store IDs before mutation
+                  onMarkAllRead(selectedIds);
+                }
+              }}
               disabled={loading}
             />
           </div>
@@ -327,6 +353,8 @@ export const NotificationGrid = (props: NotificationGridProps) => {
           domLayout="normal"
           isExternalFilterPresent={() => true}
           doesExternalFilterPass={doesExternalFilterPass}
+          rowSelection={{ mode: 'multiRow' }}
+          noRowsMessage={dictionary.noNotifications}
           getRowStyle={(params) => {
             if (!params.data) return undefined;
             return params.data.isRead

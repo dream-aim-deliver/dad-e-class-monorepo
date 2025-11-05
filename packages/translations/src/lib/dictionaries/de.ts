@@ -144,11 +144,12 @@ export const DE: TDictionary = {
       message: 'Nachricht',
       action: 'Aktion',
       dateTime: 'Datum & Uhrzeit',
-      markAllAsRead: 'Alle als gelesen markieren',
+      markAllAsRead: 'Ausgewählte als gelesen markieren',
       searchPlaceholder: 'Suchaktivität',
       all: 'Alle',
       clearFilters: 'Filter zurücksetzen',
       filterButton: 'Filter',
+      noNotifications: 'Keine Benachrichtigungen gefunden',
     },
     calendar: {
       coachAvailability: 'Coach-Verfügbarkeit',
