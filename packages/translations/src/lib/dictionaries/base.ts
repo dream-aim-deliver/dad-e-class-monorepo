@@ -1511,6 +1511,13 @@ export const DictionarySchema = z.object({
     transactionsGridFilterModal: z.object({
       title: z.string(),
       statusFilter: z.string(),
+      stateFilter: z.string(),
+      typeFilter: z.string(),
+      directionFilter: z.string(),
+      currencyFilter: z.string(),
+      currenciesLabel: z.string(),
+      currenciesPlaceholder: z.string(),
+      amountFilter: z.string(),
       creationDateFilter: z.string(),
       settledDateFilter: z.string(),
       createdAfter: z.string(),

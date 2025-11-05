@@ -1522,6 +1522,13 @@ export const DE: TDictionary = {
     transactionsGridFilterModal: {
       title: 'Transaktionen filtern',
       statusFilter: 'Status',
+      stateFilter: 'Zustand',
+      typeFilter: 'Typ',
+      directionFilter: 'Richtung',
+      currencyFilter: 'Währung',
+      currenciesLabel: 'Währungen (kommagetrennt)',
+      currenciesPlaceholder: 'z.B. EUR, USD',
+      amountFilter: 'Betrag',
       creationDateFilter: 'Erstellungsdatum',
       settledDateFilter: 'Abrechnungsdatum',
       createdAfter: 'Erstellt nach',

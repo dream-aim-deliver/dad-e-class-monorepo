@@ -148,7 +148,7 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
 
                 {/* State Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">State</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.stateFilter}</h3>
                     <div className="grid grid-cols-2 gap-3">
                         <CheckBox
                             name="state-created"
@@ -165,7 +165,7 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
 
                 {/* Type Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Type</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.typeFilter}</h3>
                     <div className="grid grid-cols-2 gap-3">
                         {(['coachPayment', 'course', 'coachingOffers', 'package'] as const).map((type) => (
                             <CheckBox
@@ -185,7 +185,7 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
 
                 {/* Direction Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Direction</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.directionFilter}</h3>
                     <div className="grid grid-cols-2 gap-3">
                         {(['incoming', 'outgoing'] as const).map((d) => (
                             <CheckBox
@@ -205,16 +205,16 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
 
                 {/* Currency Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Currency</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.currencyFilter}</h3>
                     <TextInput
-                        label="Currencies (comma-separated)"
+                        label={dictionary.currenciesLabel}
                         key={`currencies-${resetKey}`}
                         inputField={{
                             id: 'currencies',
                             className: 'w-full text-white border-input-stroke',
                             defaultValue: (filters.currencies || []).join(', '),
                             setValue: (value: string) => handleChange('currencies', value ? value.split(',').map((s) => s.trim()).filter(Boolean) : []),
-                            inputText: 'e.g. EUR, USD',
+                            inputText: dictionary.currenciesPlaceholder,
                         }}
                     />
                 </div>
@@ -222,7 +222,7 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
 
                 {/* Amount Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Amount</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.amountFilter}</h3>
                     <div className="flex gap-2">
                         <TextInput
                             label={dictionary.min}
@@ -270,15 +270,15 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
 
                 {/* Settlement Date Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Settlement</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.settledDateFilter}</h3>
                     <DateInput
-                        label="Settled After"
+                        label={dictionary.settledAfter}
                         value={filters.settledAfter || ''}
                         onChange={(value: string) => handleChange('settledAfter', value)}
                         locale={locale}
                     />
                     <DateInput
-                        label="Settled Before"
+                        label={dictionary.settledBefore}
                         value={filters.settledBefore || ''}
                         onChange={(value: string) => handleChange('settledBefore', value)}
                         locale={locale}
