@@ -11,6 +11,8 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import ActivityHistory from '../../client/pages/activity-history';
 import { TLocale } from '@maany_shr/e-class-translations';
+import getSession from '../config/auth/get-session';
+import { redirect } from 'next/navigation';
 
 interface ActivityHistoryServerComponentProps {
   locale: TLocale;
@@ -19,6 +21,12 @@ interface ActivityHistoryServerComponentProps {
 export default async function ActivityHistoryServerComponent(
   props: ActivityHistoryServerComponentProps
 ) {
+  const session = await getSession();
+
+  if (!session || !session.user) {
+    redirect('/auth/login');
+  }
+
   await Promise.all([
     prefetch(trpc.listNotifications.queryOptions({})),
   ]);

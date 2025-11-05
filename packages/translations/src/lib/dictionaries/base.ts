@@ -157,6 +157,7 @@ export const DictionarySchema = z.object({
       dateTime: z.string(),
       filterButton: z.string(),
       clearFilters: z.string(),
+      noNotifications: z.string(),
     }),
     modulePagination: z.object({
       previous: z.string(),

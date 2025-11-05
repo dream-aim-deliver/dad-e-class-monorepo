@@ -140,7 +140,7 @@ export const EN: TDictionary = {
       of: 'of',
     },
     notificationGrid: {
-      markAllAsRead: 'Mark all as read',
+      markAllAsRead: 'Mark selected as read',
       searchPlaceholder: 'Search activity',
       all: 'All',
       new: 'New',
@@ -149,6 +149,7 @@ export const EN: TDictionary = {
       dateTime: 'Date & Time',
       clearFilters: 'Clear Filters',
       filterButton: 'Filters',
+      noNotifications: 'No notifications found',
     },
     calendar: {
       coachAvailability: 'Coach Availability',
