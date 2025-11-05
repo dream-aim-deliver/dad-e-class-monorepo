@@ -2,6 +2,37 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { CourseCard, CourseCardProps } from '../lib/components/course-card/course-card';
 
+// Mock translations
+const mockDictionary = {
+  components: {
+    courseCard: {
+      publishedBadge: 'Live',
+      draftBadge: 'Draft',
+      editCourseButton: 'Edit Course',
+      duplicateButton: 'Duplicate',
+      manageButton: 'Manage',
+      beginCourseButton: 'Begin Course',
+      resumeCourseButton: 'Resume Course',
+      reviewCourseButton: 'Review Course',
+      viewDetailsButton: 'View Details',
+      buyButton: 'Buy',
+      cochingSession: 'coaching sessions',
+      sales: 'sales',
+      creatorText: 'by',
+      you: 'You',
+      createdBy: 'by'
+    },
+    coachBanner: {
+      placeHolderText: 'Image not available'
+    }
+  }
+};
+
+vi.mock('@maany_shr/e-class-translations', () => ({
+  getDictionary: () => mockDictionary,
+  TLocale: String
+}));
+
 // Define mock data with specific literal types to match CourseCardProps
 const mockLocale = 'en';
 const mockLanguage = { code: 'ENG' as const, name: 'English' as const };
@@ -15,37 +46,23 @@ describe('CourseCard', () => {
   const mockOnReview = vi.fn();
   const mockOnDetails = vi.fn();
   const mockOnBuy = vi.fn();
-  const mockOnBrowseCourses = vi.fn();
 
-  const baseProps: Omit<CourseCardProps, 'userType'> = {
-    course: {
-      title: 'React for Beginners',
-      duration: {
-        video: 60,
-        coaching: 30,
-        selfStudy: 45,
-      },
-      author: mockAuthor,
-      imageUrl: 'https://example.com/course-image.jpg',
-      rating: 4.5,
-      pricing: {
-        fullPrice: 99.99,
-        partialPrice: 79.99,
-        currency: 'USD'
-      },
-      language: mockLanguage
+  const baseCourse = {
+    title: 'React for Beginners',
+    duration: {
+      video: 60,
+      coaching: 30,
+      selfStudy: 45,
     },
-    reviewCount: 120,
-    locale: mockLocale,
-    language: mockLanguage,
-    onEdit: mockOnEdit,
-    onManage: mockOnManage,
-    onBegin: mockOnBegin,
-    onResume: mockOnResume,
-    onReview: mockOnReview,
-    onDetails: mockOnDetails,
-    onBuy: mockOnBuy,
-    onBrowseCourses: mockOnBrowseCourses,
+    author: mockAuthor,
+    imageUrl: 'https://example.com/course-image.jpg',
+    rating: 4.5,
+    pricing: {
+      fullPrice: 99.99,
+      partialPrice: 79.99,
+      currency: 'USD'
+    },
+    language: mockLanguage
   };
 
   beforeEach(() => {
@@ -55,9 +72,15 @@ describe('CourseCard', () => {
   it('renders CoachCourseCard for coach user type', async () => {
     render(
       <CourseCard
-        {...baseProps}
         userType="coach"
+        course={baseCourse}
+        reviewCount={120}
+        locale={mockLocale}
+        language={mockLanguage}
+        sessions={24}
+        sales={1850}
         groupName="React Group"
+        onManage={mockOnManage}
       />
     );
 
@@ -76,15 +99,19 @@ describe('CourseCard', () => {
   it('renders VisitorCourseCard for visitor user type', async () => {
     render(
       <CourseCard
-        {...baseProps}
         userType="visitor"
+        course={baseCourse}
+        reviewCount={120}
+        locale={mockLocale}
+        language={mockLanguage}
+        sessions={24}
+        sales={1850}
+        onBuy={mockOnBuy}
       />
     );
 
     await waitFor(() => {
       expect(screen.getByText(/React for Beginners/i)).toBeInTheDocument();
-      // Don't check for creator name or group name since they're not being passed
-      // to VisitorCourseCard in the component implementation
     });
 
     // Check for Buy button instead of Manage button for visitor card
@@ -92,26 +119,47 @@ describe('CourseCard', () => {
     expect(mockOnBuy).toHaveBeenCalled();
   });
 
-  it('logs an error if required props are missing for creator user type', () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error');
-    render(<CourseCard userType="creator" locale={mockLocale} language={mockLanguage} reviewCount={120} />);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Course and creatorStatus are required for creator view'
+  it('renders CourseCreatorCard for course_creator user type', async () => {
+    render(
+      <CourseCard
+        userType="course_creator"
+        course={baseCourse}
+        reviewCount={120}
+        locale={mockLocale}
+        language={mockLanguage}
+        creatorStatus="live"
+        sessions={24}
+        sales={1850}
+        onEdit={mockOnEdit}
+      />
     );
-    consoleErrorSpy.mockRestore();
+
+    await waitFor(() => {
+      expect(screen.getByText(/React for Beginners/i)).toBeInTheDocument();
+      // CourseCreatorCard always shows "You" because you={true} is hardcoded
+      expect(screen.getByText(/You/i)).toBeInTheDocument();
+    });
+
+    expect(screen.getAllByLabelText('filled star')).toHaveLength(4);
   });
 
-  it('logs an error if required props are missing for student user type', () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error');
-
-    // Create a modified version of baseProps without course to trigger the error
-    const { course, ...propsWithoutCourse } = baseProps;
-
-    render(<CourseCard {...propsWithoutCourse} userType="student" />);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Course is required for student view'
+  it('renders StudentCourseCard for student user type', async () => {
+    render(
+      <CourseCard
+        userType="student"
+        course={baseCourse}
+        reviewCount={120}
+        locale={mockLocale}
+        language={mockLanguage}
+        sales={1850}
+        progress={42}
+        onResume={mockOnResume}
+      />
     );
-    consoleErrorSpy.mockRestore();
+
+    await waitFor(() => {
+      expect(screen.getByText(/React for Beginners/i)).toBeInTheDocument();
+    });
   });
 
 });
