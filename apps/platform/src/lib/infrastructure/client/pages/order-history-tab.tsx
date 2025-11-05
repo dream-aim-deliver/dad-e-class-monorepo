@@ -10,10 +10,12 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { OrderHistoryCard, OrderHistoryCardList, Button } from '@maany_shr/e-class-ui-kit';
+import { OrderHistoryCard, OrderHistoryCardList, Button, ConfirmationModal } from '@maany_shr/e-class-ui-kit';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { generateInvoicePdf } from '../utils/generate-invoice-pdf';
+import { getLocaleCountryCode } from '../utils/locale-mapping';
 
 interface OrderHistoryTabProps {
   locale: TLocale;
@@ -23,11 +25,23 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
   const t = useTranslations('pages.orderHistory');
   const currentLocale = useLocale() as TLocale;
   const { data: session } = useSession();
+  const router = useRouter();
 
   // Pagination state - show 8 cards initially (2 rows on desktop with 4 cols)
   const [visibleCount, setVisibleCount] = useState(8);
   const ITEMS_PER_PAGE = 8;
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<string | null>(null);
+
+  // Error modal state
+  const [errorModal, setErrorModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+  });
 
   // Fetch platform data for invoice branding
   const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
@@ -79,17 +93,49 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
     const transaction = allTransactions.find((t: any) => t.id === transactionId);
 
     if (!transaction) {
-      alert(t('transactionNotFound'));
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('transactionNotFound'),
+      });
       return;
     }
 
-    // Get platform data
-    const platformData = (platformResponse as any)?.success ? (platformResponse as any).data : null;
+    // Check if platform API call was successful
+    if (!(platformResponse as any)?.success) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('platformDataFetchFailed'),
+      });
+      return;
+    }
 
-    // Get customer data
-    const personalProfile = (personalProfileResponse as any)?.success
-      ? (personalProfileResponse as any).data?.profile
-      : null;
+    // Check if personal profile API call was successful
+    if (!(personalProfileResponse as any)?.success) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('customerDataFetchFailed'),
+      });
+      return;
+    }
+
+    // Get platform data (guaranteed to exist after success check)
+    const platformData = (platformResponse as any).data;
+
+    // Get customer data (guaranteed to exist after success check)
+    const personalProfile = (personalProfileResponse as any).data?.profile;
+
+    // Validate that customer has filled in required profile fields
+    if (!personalProfile?.name || !personalProfile?.surname) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('customerDataMissing'),
+      });
+      return;
+    }
 
     setIsGeneratingPdf(String(transactionId));
 
@@ -98,13 +144,13 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
       await generateInvoicePdf({
         transaction,
         platformData: {
-          name: platformData?.name || t('platformNameFallback'),
-          logoUrl: platformData?.logoUrl,
-          domainName: platformData?.domainName,
+          name: platformData.name,
+          logoUrl: platformData.logoUrl,
+          domainName: platformData.domainName,
         },
         customerData: {
-          name: personalProfile?.name,
-          surname: personalProfile?.surname,
+          name: personalProfile.name,
+          surname: personalProfile.surname,
           email: personalProfile?.email,
           phone: personalProfile?.phone,
           companyDetails: personalProfile?.companyDetails,
@@ -133,7 +179,11 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
         },
       });
     } catch (error: any) {
-      alert(`${t('invoiceGenerationFailed')}: ${error?.message || t('unknownError')}`);
+      setErrorModal({
+        isOpen: true,
+        title: t('invoiceGenerationFailed'),
+        message: t('invoiceGenerationError'),
+      });
     } finally {
       setIsGeneratingPdf(null);
     }
@@ -162,7 +212,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             locale={currentLocale}
             type="course"
             orderId={transaction.id}
-            orderDate={new Date(transaction.createdAt).toLocaleString(currentLocale === 'de' ? 'de-DE' : 'en-GB', {
+            orderDate={new Date(transaction.createdAt).toLocaleString(getLocaleCountryCode(currentLocale), {
               year: 'numeric',
               month: '2-digit',
               day: '2-digit',
@@ -173,8 +223,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             courseTitle={course.title}
             courseImageUrl={course.imageUrl || ''}
             onClickCourse={() => {
-              // TODO: Navigate to course
-              console.log('Navigate to course:', course.id);
+              router.push(`/courses/${course.slug}`);
             }}
             onInvoiceClick={() => handleInvoiceClick(transaction.id)}
           />
@@ -190,7 +239,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
         // Transform coaching items from the API to match our component structure
         const sessions = coachingContent.items.map((item: any) => ({
           sessionName: item.title,
-          durationMinutes: parseInt(item.duration) || 30,
+          durationMinutes: parseInt(item.duration) || 0,
           count: item.quantity,
         }));
 
@@ -200,7 +249,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             locale={currentLocale}
             type="coaching"
             orderId={transaction.id}
-            orderDate={new Date(transaction.createdAt).toLocaleString(currentLocale === 'de' ? 'de-DE' : 'en-GB', {
+            orderDate={new Date(transaction.createdAt).toLocaleString(getLocaleCountryCode(currentLocale), {
               year: 'numeric',
               month: '2-digit',
               day: '2-digit',
@@ -231,7 +280,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             locale={currentLocale}
             type="package"
             orderId={transaction.id}
-            orderDate={new Date(transaction.createdAt).toLocaleString(currentLocale === 'de' ? 'de-DE' : 'en-GB', {
+            orderDate={new Date(transaction.createdAt).toLocaleString(getLocaleCountryCode(currentLocale), {
               year: 'numeric',
               month: '2-digit',
               day: '2-digit',
@@ -259,21 +308,34 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <OrderHistoryCardList locale={currentLocale}>
-        {renderOrderCards()}
-      </OrderHistoryCardList>
+    <>
+      <div className="flex flex-col gap-6">
+        <OrderHistoryCardList locale={currentLocale}>
+          {renderOrderCards()}
+        </OrderHistoryCardList>
 
-      {hasMore && (
-        <div className="flex justify-center">
-          <Button
-            variant="secondary"
-            size="medium"
-            text={t('loadMore')}
-            onClick={handleLoadMore}
-          />
-        </div>
-      )}
-    </div>
+        {hasMore && (
+          <div className="flex justify-center">
+            <Button
+              variant="secondary"
+              size="medium"
+              text={t('loadMore')}
+              onClick={handleLoadMore}
+            />
+          </div>
+        )}
+      </div>
+
+      <ConfirmationModal
+        type="accept"
+        isOpen={errorModal.isOpen}
+        onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+        onConfirm={() => setErrorModal({ ...errorModal, isOpen: false })}
+        title={errorModal.title}
+        message={errorModal.message}
+        confirmText="OK"
+        locale={currentLocale}
+      />
+    </>
   );
 }

@@ -10,9 +10,10 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { ReceivedPaymentsCard, ReceivedPaymentsCardList, Button } from '@maany_shr/e-class-ui-kit';
+import { ReceivedPaymentsCard, ReceivedPaymentsCardList, Button, ConfirmationModal } from '@maany_shr/e-class-ui-kit';
 import { useState } from 'react';
 import { generateInvoicePdf } from '../utils/generate-invoice-pdf';
+import { getLocaleCountryCode } from '../utils/locale-mapping';
 
 interface ReceivedPaymentsTabProps {
   locale: TLocale;
@@ -26,6 +27,17 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
   const [visibleCount, setVisibleCount] = useState(8);
   const ITEMS_PER_PAGE = 8;
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<string | null>(null);
+
+  // Error modal state
+  const [errorModal, setErrorModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+  });
 
   // Fetch platform data for invoice branding
   const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
@@ -77,17 +89,49 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
     const transaction = allTransactions.find((t: any) => t.id === transactionId);
 
     if (!transaction) {
-      alert(t('transactionNotFound'));
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('transactionNotFound'),
+      });
       return;
     }
 
-    // Get platform data
-    const platformData = (platformResponse as any)?.success ? (platformResponse as any).data : null;
+    // Check if platform API call was successful
+    if (!(platformResponse as any)?.success) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('platformDataFetchFailed'),
+      });
+      return;
+    }
 
-    // Get coach's own profile data (the person receiving the payment and issuing the invoice)
-    const personalProfile = (personalProfileResponse as any)?.success
-      ? (personalProfileResponse as any).data?.profile
-      : null;
+    // Check if personal profile API call was successful
+    if (!(personalProfileResponse as any)?.success) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('customerDataFetchFailed'),
+      });
+      return;
+    }
+
+    // Get platform data (guaranteed to exist after success check)
+    const platformData = (platformResponse as any).data;
+
+    // Get coach's own profile data (guaranteed to exist after success check)
+    const personalProfile = (personalProfileResponse as any).data?.profile;
+
+    // Validate that customer has filled in required profile fields
+    if (!personalProfile?.name || !personalProfile?.surname) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('customerDataMissing'),
+      });
+      return;
+    }
 
     setIsGeneratingPdf(String(transactionId));
 
@@ -103,7 +147,7 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
           unitPrice: 0, // Will be calculated from items
           items: transaction.content.items.map((item: any) => ({
             title: item.description,
-            duration: '30min', // Default duration, adjust if available
+            duration: item.duration || '0',
             unitPrice: item.unitPrice,
             quantity: item.quantity,
           })),
@@ -115,13 +159,13 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
       await generateInvoicePdf({
         transaction: transformedTransaction,
         platformData: {
-          name: platformData?.name || t('platformNameFallback'),
-          logoUrl: platformData?.logoUrl,
-          domainName: platformData?.domainName,
+          name: platformData.name,
+          logoUrl: platformData.logoUrl,
+          domainName: platformData.domainName,
         },
         customerData: {
-          name: personalProfile?.name,
-          surname: personalProfile?.surname,
+          name: personalProfile.name,
+          surname: personalProfile.surname,
           email: personalProfile?.email,
           phone: personalProfile?.phone,
           companyDetails: personalProfile?.companyDetails,
@@ -150,7 +194,11 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
         },
       });
     } catch (error: any) {
-      alert(`${t('invoiceGenerationFailed')}: ${error?.message || t('unknownError')}`);
+      setErrorModal({
+        isOpen: true,
+        title: t('invoiceGenerationFailed'),
+        message: t('invoiceGenerationError'),
+      });
     } finally {
       setIsGeneratingPdf(null);
     }
@@ -179,12 +227,7 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
       );
 
       // Format date
-      const dateLocale = currentLocale === 'de' ? 'de-DE' : 'en-GB';
-      const formattedDate = new Date(transaction.createdAt).toLocaleDateString(dateLocale);
-
-      // For display purposes, use the tag name which describes the payment type
-      // (e.g., "monthly coach payment", "course purchase", etc.)
-      const paymentDescription = transaction.tag?.name || t('paymentReceivedFallback');
+      const formattedDate = new Date(transaction.createdAt).toLocaleDateString(getLocaleCountryCode(currentLocale));
 
       return (
         <ReceivedPaymentsCard
@@ -193,7 +236,6 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
           transactionId={String(transaction.id)}
           transactionDate={formattedDate}
           total={`${total.toFixed(2)} ${transaction.currency}`}
-          fromStudentName={paymentDescription}
           items={items}
           tags={transaction.tag ? [transaction.tag.name] : []}
           onInvoiceClick={() => handleInvoiceClick(transaction.id)}
@@ -210,21 +252,34 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <ReceivedPaymentsCardList locale={currentLocale}>
-        {renderPaymentCards()}
-      </ReceivedPaymentsCardList>
+    <>
+      <div className="flex flex-col gap-6">
+        <ReceivedPaymentsCardList locale={currentLocale}>
+          {renderPaymentCards()}
+        </ReceivedPaymentsCardList>
 
-      {hasMore && (
-        <div className="flex justify-center">
-          <Button
-            variant="secondary"
-            size="medium"
-            text={t('loadMore')}
-            onClick={handleLoadMore}
-          />
-        </div>
-      )}
-    </div>
+        {hasMore && (
+          <div className="flex justify-center">
+            <Button
+              variant="secondary"
+              size="medium"
+              text={t('loadMore')}
+              onClick={handleLoadMore}
+            />
+          </div>
+        )}
+      </div>
+
+      <ConfirmationModal
+        type="accept"
+        isOpen={errorModal.isOpen}
+        onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+        onConfirm={() => setErrorModal({ ...errorModal, isOpen: false })}
+        title={errorModal.title}
+        message={errorModal.message}
+        confirmText="OK"
+        locale={currentLocale}
+      />
+    </>
   );
 }
