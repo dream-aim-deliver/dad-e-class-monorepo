@@ -192,7 +192,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
 
                     {/* Duration & Courses Badges */}
                     <div className="flex flex-row gap-2">
-                        {duration && duration > 0 && (
+                        {typeof duration === 'number' && (
                             <Badge
                                 hasIconLeft
                                 iconLeft={<IconClock size="4" />}
@@ -220,26 +220,29 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
 
                 {/* Prices */}
                 {pricing && (
-                    <div className="flex gap-2 items-center">
-                        <h6 className="text-text-primary lg:text-lg">
-                            {pricing.currency} {pricing.fullPrice}
-                        </h6>
-                        <p className="text-feedback-success-primary lg:text-md text-sm font-important">
-                            {dictionary.saveText} {pricing.currency}{' '}
-                            {pricing.partialPrice}
-                        </p>
+                    <div className="flex flex-col gap-1">
+                        <div className="flex gap-2 items-center">
+                            <h6 className="text-text-primary lg:text-lg">
+                                {pricing.currency} {pricing.fullPrice}
+                            </h6>
+                            <p className="text-feedback-success-primary lg:text-md text-sm font-important">
+                                {dictionary.saveText} {pricing.currency}{' '}
+                                {pricing.partialPrice}
+                            </p>
+                        </div>
+                        <p className="italic text-text-secondary text-sm">incl. coachings</p>
                     </div>
                 )}
 
                 {/* Buttons */}
-                <div className="flex flex-row w-full justify-center gap-4">
+                <div className="flex flex-col md:flex-row flex-wrap w-full justify-center gap-3 md:gap-4">
                     {props.status === 'archived' && (
                         <Button
                             variant="secondary"
                             size="big"
                             text={dictionary.publishButton}
                             onClick={props.onClickPublished}
-                            className="text-md lg:text-lg w-full"
+                            className="text-md lg:text-lg w-full md:flex-1"
                         />
                     )}
 
@@ -251,7 +254,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                             iconLeft={<IconTrashAlt size="5" />}
                             text={dictionary.archiveButton}
                             onClick={props.onClickArchive}
-                            className="text-md lg:text-lg w-full"
+                            className="text-md lg:text-lg w-full md:flex-1"
                         />
                     )}
 
@@ -262,7 +265,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                         onClick={onClickEdit}
                         hasIconLeft
                         iconLeft={<IconEdit size="5" />}
-                        className="text-md lg:text-lg w-full"
+                        className="text-md lg:text-lg w-full md:flex-1"
                     />
                 </div>
             </div>

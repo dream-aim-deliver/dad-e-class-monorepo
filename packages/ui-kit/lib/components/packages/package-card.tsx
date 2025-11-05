@@ -142,7 +142,7 @@ export const PackageCard = ({
 
                     {/* Duration & Courses Badges */}
                     <div className="flex gap-2">
-                        {(duration as number) > 0 && (
+                        {typeof duration === 'number' && (
                             <Badge
                                 hasIconLeft
                                 iconLeft={<IconClock size="5" />}
@@ -169,7 +169,7 @@ export const PackageCard = ({
                 <p className="text-text-secondary lg:text-lg">{description}</p>
 
                 <div className="flex flex-col md:pt-4 gap-4">
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4 items-stretch">
                         <Button
                             variant="primary"
                             size="big"
@@ -178,16 +178,18 @@ export const PackageCard = ({
                                     .purchasePackageText
                             }
                             onClick={onClickPurchase}
+                            className="w-full md:flex-1"
                         />
                         <Button
                             variant="secondary"
                             size="big"
                             text={dictionary.components.packages.detailsText}
                             onClick={onClickDetails}
+                            className="w-full md:flex-1"
                         />
 
                         {/* Prices */}
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center w-full md:w-auto">
                             <h6 className="text-text-primary lg:text-lg">
                                 {(pricing as any).currency} {(pricing as any).fullPrice}
                             </h6>
