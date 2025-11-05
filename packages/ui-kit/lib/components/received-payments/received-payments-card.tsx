@@ -9,7 +9,7 @@ export interface ReceivedPaymentsCardProps extends isLocalAware {
     transactionId: string;
     transactionDate: string;
     total: string;
-    fromStudentName: string;
+    fromStudentName?: string;
     items: string[];
     tags?: string[];
     onInvoiceClick: () => void;
