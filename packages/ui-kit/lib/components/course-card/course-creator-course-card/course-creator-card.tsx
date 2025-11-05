@@ -5,7 +5,6 @@ import { Button } from '../../button';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
-import { course } from '@maany_shr/e-class-models';
 import {
     getDictionary,
     isLocalAware,
@@ -17,24 +16,24 @@ import { IconEdit } from '../../icons/icon-edit';
 export type CourseStatus = 'live' | 'draft' | 'archived';
 
 export interface CourseCreatorCardProps extends isLocalAware {
-    title: string;
-    imageUrl: string;
+    title?: string;
+    imageUrl?: string;
     rating: number;
     reviewCount: number;
     sessions: number;
     sales: number;
     status: CourseStatus;
-    duration: {
-        video: number;
-        coaching: number;
-        selfStudy: number;
+    duration?: {
+        video?: number;
+        coaching?: number;
+        selfStudy?: number;
     };
-    language: {
-        code: string;
-        name: string;
+    language?: {
+        code?: string;
+        name?: string;
     };
-    author: {
-        name: string;
+    author?: {
+        name?: string;
         image?: string;
     };
     description?: string;
@@ -118,12 +117,12 @@ const StatusBadge: React.FC<{ status: CourseStatus; locale: TLocale }> = ({
  * />
  */
 export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
-    title,
-    duration,
+    title = '',
+    duration = {},
     imageUrl,
     rating,
     author,
-    language,
+    language = {},
     reviewCount,
     sessions,
     sales,
@@ -135,8 +134,8 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
 }) => {
     const [isImageError, setIsImageError] = React.useState(false);
     // Calculate total course duration in minutes and format as "Xh Ym"
-    const totalDurationInMinutes =
-        (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
+    const { video = 0, coaching = 0, selfStudy = 0 } = duration;
+    const totalDurationInMinutes = video + coaching + selfStudy;
     
     // Format duration as "Xh Ym" or just "Ym" if less than an hour
     const formatDuration = (minutes: number): string => {
@@ -153,7 +152,9 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     const handleImageError = () => {
         setIsImageError(true);
     };
-    const shouldShowPlaceholder = !imageUrl || isImageError;
+
+    const hasValidImageUrl = imageUrl && imageUrl.trim() !== '';
+    const shouldShowPlaceholder = !hasValidImageUrl || isImageError;
 
     return (
         <div className="w-full mx-auto">
@@ -172,7 +173,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                     ) : (
                         <img
                             loading="lazy"
-                            src={imageUrl}
+                            src={imageUrl || ''}
                             alt={title}
                             width={430}
                             height={200}
@@ -214,7 +215,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
 
                         <CourseStats
                             locale={locale as TLocale}
-                            language={(language as any).name as string}
+                            language={language?.name || ''}
                             sessions={sessions}
                             duration={formattedDuration}
                             sales={sales}
