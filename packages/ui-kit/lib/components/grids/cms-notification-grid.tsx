@@ -92,7 +92,7 @@ const NotificationStatusRenderer = (props: { value: boolean; data: any }) => {
     if (type === 'sent') {
         return (
             <div className="flex items-center justify-center h-full">
-                <IconSent size={"4"}  classNames="text-neutral-500" />
+                <IconSent size={"4"} classNames="text-neutral-500" />
             </div>
         );
     }
@@ -169,6 +169,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     } = props;
 
     const dictionary = getDictionary(locale).components.notificationGrid;
+    const baseGridDictionary = getDictionary(locale).components.baseGrid;
 
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [filterType, setFilterType] = useState<'all' | 'received' | 'sent'>('all');
@@ -202,7 +203,10 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             minWidth: 100,
             maxWidth: 100,
             checkboxSelection: (params: any) => params.data?.type === 'received' && !!params.data?.id && !params.data?.isRead,
-            headerCheckboxSelection: false,
+            headerCheckboxSelection: (params: any) => {
+                const unreadReceived = receivedNotifications.filter(n => !n.isRead);
+                return unreadReceived.length > 0;
+            },
         },
         {
             flex: 1,
@@ -245,7 +249,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             field: 'platform',
             hide: true,
         },
-    ], [dictionary]);
+    ], [dictionary, receivedNotifications]);
 
     const doesExternalFilterPass = useCallback(
         (node: IRowNode<NotificationRow>) => {
@@ -301,19 +305,51 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
         }
     }, [rowData, selectedRowIds]);
 
-    const handleMarkSelectedAsRead = () => {
-        const receivedIds = selectedRows.filter(row => row.type === 'received' && row.id).map(row => row.id!);
-        onMarkSelectedAsRead(receivedIds);
-        
+    // Smart mark as read handler - marks selected if any are selected, otherwise marks all
+    const handleSmartMarkAsRead = () => {
+        const selectedUnreadReceived = selectedRows.filter(row => row.type === 'received' && !row.isRead);
+
+        if (selectedUnreadReceived.length > 0) {
+            // Mark selected as read
+            const receivedIds = selectedUnreadReceived
+                .map(row => String(row.id))
+                .filter(id => id && id !== 'undefined');
+
+            if (receivedIds.length > 0) {
+                onMarkSelectedAsRead(receivedIds);
+            }
+        } else {
+            // Mark all as read
+            onMarkAllRead();
+        }
+
         // Clear selections after marking as read since they will become unselectable
         setSelectedRowIds(new Set());
         setSelectedRows([]);
+    };
+
+    // Get button text based on selection state
+    const getButtonText = () => {
+        const selectedUnreadReceived = selectedRows.filter(row => row.type === 'received' && !row.isRead);
+
+        if (selectedUnreadReceived.length > 0) {
+            return `${dictionary.markSelectedAsRead} (${selectedUnreadReceived.length})`;
+        }
+        return dictionary.markAllAsRead;
+    };
+
+    // Check if button should be disabled
+    const isButtonDisabled = () => {
+        const selectedUnreadReceived = selectedRows.filter(row => row.type === 'received' && !row.isRead);
+        const hasUnreadReceived = receivedNotifications.some(n => !n.isRead);
+
+        return loading || (!hasUnreadReceived && selectedUnreadReceived.length === 0);
     };
     const onSelectionChanged = () => {
         if (gridRef.current?.api) {
             const selected = gridRef.current.api.getSelectedRows();
             setSelectedRows(selected);
-            
+
             // Update the set of selected IDs for persistence
             const newSelectedIds = new Set(
                 selected
@@ -351,19 +387,11 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                 </div>
                 <div className="flex flex-col gap-2 md:flex-row">
                     <Button
-                        variant="secondary"
-                        size="medium"
-                        text={dictionary.markSelectedAsRead}
-                        onClick={handleMarkSelectedAsRead}
-                        disabled={loading || selectedRows.filter(row => row.type === 'received').length === 0 || receivedNotifications.length === 0}
-                        className="w-full md:w-auto"
-                    />
-                    <Button
                         variant="primary"
                         size="medium"
-                        text={dictionary.markAllAsRead}
-                        onClick={onMarkAllRead}
-                        disabled={loading || receivedNotifications.length === 0 || receivedNotifications.every(n => n.isRead)}
+                        text={loading ? baseGridDictionary.loading : getButtonText()}
+                        onClick={handleSmartMarkAsRead}
+                        disabled={isButtonDisabled()}
                         className="w-full md:w-auto"
                     />
                 </div>
