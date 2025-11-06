@@ -12,6 +12,8 @@ import {
     SectionHeading,
     Tabs,
     validatorPerType,
+    Banner,
+    FeedBackMessage,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/cms-client';
 import { Suspense, useEffect, useState } from 'react';
@@ -24,6 +26,8 @@ import { useListAssessmentComponentsPresenter } from '../hooks/use-assessment-co
 import { transformLessonComponents } from '../utils/transform-lesson-components';
 import { useLessonToRequest } from './common/hooks/use-lesson-to-request';
 import { useRouter } from 'next/navigation';
+import { useRequiredPlatform } from '../context/platform-context';
+import { useContentLocale } from '../hooks/use-platform-translations';
 
 interface UsePreCourseAssessmentToggleProps {
     platformLanguageViewModel:
@@ -269,6 +273,10 @@ function PreCourseAssessmentContent({
     const router = useRouter();
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const t = useTranslations('pages.preCourseAssessmentForm');
+    
+    // Platform context
+    const { platform } = useRequiredPlatform();
+    const contentLocale = useContentLocale();
 
     const [components, setComponents] = useState<LessonElement[]>([]);
 
@@ -279,6 +287,7 @@ function PreCourseAssessmentContent({
     const savePreCourseAssessmentComponents =
         trpc.savePreCourseAssessmentComponents.useMutation();
     const [saveError, setSaveError] = useState<string | undefined>(undefined);
+    const [saveSuccessMessage, setSaveSuccessMessage] = useState<string | null>(null);
     const { transformLessonToRequest } = useLessonToRequest();
 
     const validateComponents = () => {
@@ -303,18 +312,45 @@ function PreCourseAssessmentContent({
         if (!validateComponents()) {
             return;
         }
-        const transformedComponents = transformLessonToRequest(components);
-        const response = await savePreCourseAssessmentComponents.mutateAsync({
-            components:
-                transformedComponents as useCaseModels.TAssessmentComponentRequest[],
-        });
-        if (response.success === true) {
-            // @ts-ignore
-            setComponents(transformLessonComponents(response.data.components));
-        } else {
+        // Clear previous messages
+        setSaveError(undefined);
+        setSaveSuccessMessage(null);
+
+        try {
+            const transformedComponents = transformLessonToRequest(components);
+            const response = await savePreCourseAssessmentComponents.mutateAsync({
+                components:
+                    transformedComponents as useCaseModels.TAssessmentComponentRequest[],
+            });
+            if (response.success === true) {
+                // @ts-ignore
+                setComponents(transformLessonComponents(response.data.components));
+                setSaveSuccessMessage(t('saveSuccess'));
+            } else {
+                setSaveError(t('saveError'));
+            }
+        } catch (error) {
             setSaveError(t('saveError'));
         }
     };
+
+    // Handle mutation error state
+    useEffect(() => {
+        if (savePreCourseAssessmentComponents.isError) {
+            setSaveError(
+                savePreCourseAssessmentComponents.error?.message || t('saveError')
+            );
+            setSaveSuccessMessage(null);
+        }
+    }, [savePreCourseAssessmentComponents.isError, savePreCourseAssessmentComponents.error, t]);
+
+    // Auto-dismiss success message after 5 seconds
+    useEffect(() => {
+        if (saveSuccessMessage) {
+            const timer = setTimeout(() => setSaveSuccessMessage(null), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [saveSuccessMessage]);
 
     if (!platformLanguageViewModel || isPlatformRefetching) {
         return <DefaultLoading locale={locale} />;
@@ -345,7 +381,12 @@ function PreCourseAssessmentContent({
             />
             <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
                 <div className="w-full flex sm:flex-row gap-2 flex-col sm:gap-0 justify-between items-start sm:items-center">
-                    <h1> {t('title')} </h1>
+                    <div className="flex flex-col space-y-2">
+                        <h1> {t('title')} </h1>
+                        <p className="text-text-secondary text-sm">
+                            Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
+                        </p>
+                    </div>
                 {isEnabled && (
                     <PreCourseAssessmentEnabledControls
                         onDisable={() => onToggle(false)}
@@ -358,6 +399,26 @@ function PreCourseAssessmentContent({
             <span className="text-sm text-text-secondary">
                 {t('description')}
             </span>
+
+            {/* Success Banner */}
+            {saveSuccessMessage && (
+                <Banner
+                    title="Success!"
+                    description={saveSuccessMessage}
+                    style="success"
+                    closeable={true}
+                    onClose={() => setSaveSuccessMessage(null)}
+                />
+            )}
+
+            {/* Error Message */}
+            {saveError && (
+                <FeedBackMessage
+                    type="error"
+                    message={saveError}
+                />
+            )}
+
             {error && <DefaultError locale={locale} description={error} />}
 
             {!isEnabled && (
@@ -382,7 +443,6 @@ function PreCourseAssessmentContent({
 }
 
 export default function PreCourseAssessment() {
-    const locale = useLocale() as TLocale;
     const t = useTranslations('pages.preCourseAssessmentForm');
     const [toggleError, setToggleError] = useState<string | undefined>(
         undefined,
