@@ -2800,7 +2800,8 @@ export const EN: TDictionary = {
       disable: "Disable",
       disabling: "Disabling...",
       toggleError: "An error occurred while toggling the form.",
-      saveError: "Failed to save components. Please try again."
+      saveError: "Failed to save components. Please try again.",
+      saveSuccess: "Pre-course assessment components saved successfully!"
     },
     yourReviews: {
       title: 'Your reviews',
