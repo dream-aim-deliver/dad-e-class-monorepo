@@ -2801,7 +2801,9 @@ export const DE: TDictionary = {
       save: "Speichern",
       saving: "Wird gespeichert...",
       disable: "Deaktivieren",
-      disabling: "Wird deaktiviert..."
+      disabling: "Wird deaktiviert...",
+      toggleError: "Beim Umschalten des Formulars ist ein Fehler aufgetreten.",
+      saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut."
     },
     yourReviews: {
       title: 'Deine Bewertungen',

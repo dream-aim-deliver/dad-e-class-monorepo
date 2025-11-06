@@ -2798,7 +2798,9 @@ export const EN: TDictionary = {
       save: "Save",
       saving: "Saving...",
       disable: "Disable",
-      disabling: "Disabling..."
+      disabling: "Disabling...",
+      toggleError: "An error occurred while toggling the form.",
+      saveError: "Failed to save components. Please try again."
     },
     yourReviews: {
       title: 'Your reviews',

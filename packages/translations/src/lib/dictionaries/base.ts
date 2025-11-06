@@ -2837,6 +2837,8 @@ export const DictionarySchema = z.object({
       saving: z.string(),
       disable: z.string(),
       disabling: z.string(),
+      toggleError: z.string(),
+      saveError: z.string(),
     }),
     yourReviews: z.object({
       title: z.string(),
