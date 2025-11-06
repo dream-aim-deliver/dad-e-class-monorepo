@@ -7,7 +7,6 @@ import {
     IconDashboard,
     IconGroup,
     IconLogOut,
-    IconPreCourseAssessmentForm,
     IconSales,
     IconStar,
     SideMenu,
@@ -34,7 +33,6 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     const routeMap = {
         dashboard: '/workspace/dashboard',
         courses: '/workspace/courses',
-        preCourseAssessment: '/workspace/pre-course-assessment',
         coachingSessions: '/workspace/coaching-sessions',
         calendar: '/workspace/calendar',
         students: '/workspace/students',
@@ -59,7 +57,6 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             '/workspace/your-reviews': sidebarTranslations('yourReviews'),
             '/profile': sidebarTranslations('yourProfile'),
             '/orders': sidebarTranslations('orderPayments'),
-            '/workspace/pre-course-assessment': 'Pre-Course Assessment',
         };
 
         // Create mapping with and without locale prefix
@@ -92,16 +89,6 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                         : sidebarTranslations('yourCourses'),
                     onClick: () => router.push(routeMap.courses),
                 },
-                ...(isAdmin
-                    ? [
-                          {
-                              icon: <IconPreCourseAssessmentForm />,
-                              label: 'Pre-Course Assessment',
-                              onClick: () =>
-                                  router.push(routeMap.preCourseAssessment),
-                          },
-                      ]
-                    : []),
                 {
                     icon: <IconCoachingSession />,
                     label: isStudent
