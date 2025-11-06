@@ -289,7 +289,7 @@ function VideoComponent({
     validationError,
 }: LessonComponentProps) {
     const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
-    
+
     const updateComponent = (
         comp: LessonElement,
         updated: Partial<LessonElement>,
@@ -383,7 +383,7 @@ function ImageComponent({
     validationError,
 }: LessonComponentProps) {
     const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
-    
+
     const updateComponent = (
         comp: LessonElement,
         updated: Partial<LessonElement>,
@@ -1577,6 +1577,8 @@ function CoachingSessionComponent({
     const { presenter } = useListCoachingOfferingsPresenter(
         setCoachingOfferingsViewModel,
     );
+
+    // @ts-ignore
     presenter.present(coachingOfferingsResponse, coachingOfferingsViewModel);
 
     if (!coachingOfferingsViewModel) {

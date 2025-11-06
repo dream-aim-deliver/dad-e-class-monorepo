@@ -1,4 +1,6 @@
-import { useCaseModels } from '@maany_shr/e-class-models';
+import {
+    TLessonComponent
+} from "@dream-aim-deliver/e-class-cms-rest";
 import {
     LessonElement,
     LessonElementType,
@@ -27,7 +29,7 @@ import {
 import { TPreCourseAssessmentProgress } from 'packages/models/src/usecase-models';
 
 function transformRichText(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'richText' }>,
+    component: Extract<TLessonComponent, { type: 'richText' }>,
 ): RichTextElement {
     return {
         type: LessonElementType.RichText,
@@ -38,7 +40,7 @@ function transformRichText(
 }
 
 function transformHeading(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'heading' }>,
+    component: Extract<TLessonComponent, { type: 'heading' }>,
 ): HeadingElement {
     return {
         type: LessonElementType.HeadingText,
@@ -50,7 +52,7 @@ function transformHeading(
 
 function transformSingleChoice(
     component: Extract<
-        useCaseModels.TLessonComponent,
+        TLessonComponent,
         { type: 'singleChoice' }
     >,
 ): SingleChoiceElement {
@@ -71,7 +73,7 @@ function transformSingleChoice(
 
 function transformMultipleChoice(
     component: Extract<
-        useCaseModels.TLessonComponent,
+        TLessonComponent,
         { type: 'multipleChoice' }
     >,
 ): MultiCheckElement {
@@ -92,7 +94,7 @@ function transformMultipleChoice(
 }
 
 function transformTextInput(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'textInput' }>,
+    component: Extract<TLessonComponent, { type: 'textInput' }>,
 ): TextInputElement {
     return {
         type: LessonElementType.TextInput,
@@ -105,7 +107,7 @@ function transformTextInput(
 
 function transformOneOutOfThree(
     component: Extract<
-        useCaseModels.TLessonComponent,
+        TLessonComponent,
         { type: 'oneOutOfThree' }
     >,
 ): OneOutOfThreeElement {
@@ -142,7 +144,7 @@ function transformOneOutOfThree(
 };
 
 function transformVideo(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'video' }>,
+    component: Extract<TLessonComponent, { type: 'video' }>,
 ): VideoElement {
     return {
         type: LessonElementType.VideoFile,
@@ -161,7 +163,7 @@ function transformVideo(
 }
 
 function transformImage(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'image' }>,
+    component: Extract<TLessonComponent, { type: 'image' }>,
 ): ImageElement {
     return {
         type: LessonElementType.ImageFile,
@@ -180,7 +182,7 @@ function transformImage(
 
 function transformImageCarousel(
     component: Extract<
-        useCaseModels.TLessonComponent,
+        TLessonComponent,
         { type: 'imageCarousel' }
     >,
 ): ImageGalleryElement {
@@ -205,7 +207,7 @@ function transformImageCarousel(
 
 function transformDownloadFiles(
     component: Extract<
-        useCaseModels.TLessonComponent,
+        TLessonComponent,
         { type: 'downloadFiles' }
     >,
 ): DownloadFilesElement {
@@ -229,7 +231,7 @@ function transformDownloadFiles(
 }
 
 function transformUploadFiles(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'uploadFiles' }>,
+    component: Extract<TLessonComponent, { type: 'uploadFiles' }>,
 ): UploadFilesElement {
     return {
         type: LessonElementType.UploadFiles,
@@ -247,7 +249,7 @@ function transformUploadFiles(
 }
 
 function transformQuizTypeOne(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'quizTypeOne' }>,
+    component: Extract<TLessonComponent, { type: 'quizTypeOne' }>,
 ): QuizTypeOneElement {
     return {
         type: LessonElementType.QuizTypeOne,
@@ -270,7 +272,7 @@ function transformQuizTypeOne(
 }
 
 function transformQuizTypeTwo(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'quizTypeTwo' }>,
+    component: Extract<TLessonComponent, { type: 'quizTypeTwo' }>,
 ): QuizTypeTwoElement {
     return {
         type: LessonElementType.QuizTypeTwo,
@@ -298,7 +300,7 @@ function transformQuizTypeTwo(
 
 function transformQuizTypeThree(
     component: Extract<
-        useCaseModels.TLessonComponent,
+        TLessonComponent,
         { type: 'quizTypeThree' }
     >,
 ): QuizTypeThreeElement {
@@ -328,7 +330,7 @@ const getLetterByIndex = (index: number) => {
 
 function transformQuizTypeFour(
     component: Extract<
-        useCaseModels.TLessonComponent,
+        TLessonComponent,
         { type: 'quizTypeFour' }
     >,
 ): QuizTypeFourElement {
@@ -354,7 +356,7 @@ function transformQuizTypeFour(
 }
 
 function transformLinks(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'links' }>,
+    component: Extract<TLessonComponent, { type: 'links' }>,
 ): LinksElement {
     return {
         type: LessonElementType.Links,
@@ -377,7 +379,7 @@ function transformLinks(
 
 function transformCoachingSession(
     component: Extract<
-        useCaseModels.TLessonComponent,
+        TLessonComponent,
         { type: 'coachingSession' }
     >,
 ): CoachingSessionElement {
@@ -385,7 +387,7 @@ function transformCoachingSession(
         type: LessonElementType.CoachingSession,
         id: component.id,
         coachingSession: {
-            id: component.courseCoachingOfferingId,
+            id: component.id,
             name: component.name,
             duration: component.duration,
         },
@@ -399,7 +401,7 @@ function transformCoachingSession(
 }
 
 function transformAssignment(
-    component: Extract<useCaseModels.TLessonComponent, { type: 'assignment' }>,
+    component: Extract<TLessonComponent, { type: 'assignment' }>,
 ): AssignmentElement {
     const getReplyRole = (): 'student' | 'coach' => {
         if (component.progress?.lastActivity?.sender.role === 'student') {
@@ -479,7 +481,7 @@ const transformers = {
 } as const;
 
 export function getLessonComponentsMap(
-    components: useCaseModels.TLessonComponent[],
+    components: TLessonComponent[],
 ): Map<string, LessonElement> {
     const map = new Map<string, LessonElement>();
 
@@ -497,7 +499,7 @@ export function getLessonComponentsMap(
 }
 
 export function transformLessonComponents(
-    components: useCaseModels.TLessonComponent[],
+    components: TLessonComponent[],
 ): LessonElement[] {
     const elements: LessonElement[] = [];
 
@@ -607,7 +609,7 @@ export function applyProgressToElements(
 }
 
 export function transformLessonComponentsWithProgress(
-    components: useCaseModels.TLessonComponent[],
+    components: TLessonComponent[],
     answers: TPreCourseAssessmentProgress[],
 ): LessonElement[] {
     const elements = transformLessonComponents(components);

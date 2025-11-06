@@ -1,4 +1,8 @@
-import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    TLessonComponent,
+    TLessonProgress
+} from "@dream-aim-deliver/e-class-cms-rest";
 import {
     Button,
     FormElement,
@@ -13,20 +17,20 @@ import {
     ComponentRendererProps,
     typeToRendererMap,
 } from '../../common/component-renderers';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import { FileUploadProvider } from '../utils/file-upload';
 import { idToNumber } from '../../workspace/edit/utils/id-to-number';
 import { AssignmentViewProvider } from '../utils/assignment-view';
 
 interface LessonFormProps {
     lessonId: number;
-    data: viewModels.TLessonComponentListSuccess;
+    data: viewModels.TListLessonComponentsSuccess;
     enableSubmit?: boolean;
 }
 
 const transformTextInput = (
     element: LessonElement,
-): useCaseModels.TLessonProgress | undefined => {
+): TLessonProgress | undefined => {
     if (element.type !== 'textInput') {
         throw new Error('Invalid element type for text input transformation');
     }
@@ -48,7 +52,7 @@ const transformTextInput = (
 
 const transformSingleChoice = (
     element: LessonElement,
-): useCaseModels.TLessonProgress | undefined => {
+): TLessonProgress | undefined => {
     if (element.type !== 'singleChoice') {
         throw new Error(
             'Invalid element type for single choice transformation',
@@ -72,7 +76,7 @@ const transformSingleChoice = (
 
 const transformMultiCheck = (
     element: LessonElement,
-): useCaseModels.TLessonProgress | undefined => {
+): TLessonProgress | undefined => {
     if (element.type !== 'multiCheck') {
         throw new Error(
             'Invalid element type for multiple choice transformation',
@@ -98,7 +102,7 @@ const transformMultiCheck = (
 
 const transformOneOutOfThree = (
     element: LessonElement,
-): useCaseModels.TLessonProgress | undefined => {
+): TLessonProgress | undefined => {
     if (element.type !== 'oneOutOfThree') {
         throw new Error(
             'Invalid element type for one out of three transformation',
@@ -130,7 +134,7 @@ const transformOneOutOfThree = (
 
 const transformFileUpload = (
     element: LessonElement,
-): useCaseModels.TLessonProgress | undefined => {
+): TLessonProgress | undefined => {
     if (element.type !== 'uploadFiles') {
         throw new Error('Invalid element type for file upload transformation');
     }
@@ -152,7 +156,7 @@ const transformFileUpload = (
 
 const typeToProgressTransformers: Record<
     string,
-    (element: LessonElement) => useCaseModels.TLessonProgress | undefined
+    (element: LessonElement) => TLessonProgress | undefined
 > = {
     textInput: transformTextInput,
     singleChoice: transformSingleChoice,
@@ -197,7 +201,7 @@ export default function LessonForm({
     });
     // When implementing student submission, this will be used to track progress
 
-    const renderComponent = (component: useCaseModels.TLessonComponent) => {
+    const renderComponent = (component: TLessonComponent) => {
         const formElement = formElements.get(component.id) as
             | FormElement
             | undefined;
@@ -222,7 +226,7 @@ export default function LessonForm({
     };
 
     const submitProgress = async () => {
-        const progress: useCaseModels.TLessonProgress[] = [];
+        const progress: TLessonProgress[] = [];
         for (const [_, element] of elementProgress.current) {
             try {
                 const transformer = typeToProgressTransformers[element.type];

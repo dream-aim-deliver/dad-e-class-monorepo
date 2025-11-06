@@ -6,7 +6,7 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { SaveLessonComponentsSuccessResponseSchema } from '../usecase-models/save-lesson-components-usecase-models';
+import { SaveLessonComponentsSuccessResponseSchema } from "@dream-aim-deliver/e-class-cms-rest";
 
 export const SaveLessonComponentsSuccessSchema = SaveLessonComponentsSuccessResponseSchema.shape.data;
 
@@ -26,5 +26,7 @@ export const SaveLessonComponentsViewModelSchemaMap = {
     conflict: SaveLessonComponentConflictViewModelSchema,
 };
 export type TSaveLessonComponentsViewModelSchemaMap = typeof SaveLessonComponentsViewModelSchemaMap;
+
 export const SaveLessonComponentsViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(SaveLessonComponentsViewModelSchemaMap);
+
 export type TSaveLessonComponentsViewModel = z.infer<typeof SaveLessonComponentsViewModelSchema>;

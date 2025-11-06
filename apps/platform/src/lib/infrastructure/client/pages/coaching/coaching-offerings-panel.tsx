@@ -80,6 +80,7 @@ export default function CoachingOfferingsPanel() {
     const { presenter } = useListCoachingOfferingsPresenter(
         setCoachingOfferingsViewModel,
     );
+    // @ts-ignore
     presenter.present(coachingOfferingsResponse, coachingOfferingsViewModel);
 
     const locale = useLocale() as TLocale;

@@ -382,7 +382,7 @@ function LinksComponent({
     );
 }
 
-function CourseCoachList({ sessionId }: { sessionId: number }) {
+function CourseCoachList({ sessionId }: { sessionId: number | string }) {
     const courseSlug = useCourseSlug();
     const session = useSession();
     const locale = useLocale() as TLocale;
