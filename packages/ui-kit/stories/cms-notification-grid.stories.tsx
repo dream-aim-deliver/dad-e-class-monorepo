@@ -11,6 +11,7 @@ const mockMessages = {
       notificationGrid: {
         searchPlaceholder: 'Search notifications...',
         markAllAsRead: 'Mark All Read',
+        markSelectedAsRead: 'Mark Selected as Read',
         loading: 'Loading...',
         noRows: 'No notifications found',
         message: 'Message',
@@ -19,10 +20,18 @@ const mockMessages = {
         new: 'New',
         page: 'Page',
         of: 'of',
+        filterByType: 'Filter by type',
+        all: 'All',
+        received: 'Received',
+        sent: 'Sent',
+        type: 'Type',
+        recipientsHeader: 'Recipients',
       },
       baseGrid: {
         loading: 'Loading...',
         noRows: 'No notifications found',
+        page: 'Page',
+        of: 'of',
       },
     },
   },
@@ -31,6 +40,7 @@ const mockMessages = {
       notificationGrid: {
         searchPlaceholder: 'Benachrichtigungen suchen...',
         markAllAsRead: 'Alle als gelesen markieren',
+        markSelectedAsRead: 'Ausgewählte als gelesen markieren',
         loading: 'Laden...',
         noRows: 'Keine Benachrichtigungen gefunden',
         message: 'Nachricht',
@@ -39,10 +49,18 @@ const mockMessages = {
         new: 'Neu',
         page: 'Seite',
         of: 'von',
+        filterByType: 'Nach Typ filtern',
+        all: 'Alle',
+        received: 'Empfangen',
+        sent: 'Gesendet',
+        type: 'Typ',
+        recipientsHeader: 'Empfänger',
       },
       baseGrid: {
         loading: 'Laden...',
         noRows: 'Keine Benachrichtigungen gefunden',
+        page: 'Seite',
+        of: 'von',
       },
     },
   },
@@ -89,41 +107,34 @@ const meta: Meta<typeof CMSNotificationGrid> = {
 export default meta;
 type Story = StoryObj<typeof CMSNotificationGrid>;
 
-const mockReceivedNotifications: ReceivedNotification[] = [
-  {
-    id: '1',
-    message: 'Coach Emma Richards accepted your coaching session request.Coach Emma Richards accepted your coaching session request.Coach Emma Richards accepted your coaching session request.Coach Emma Richards accepted your coaching session request.',
-    isRead: false,
-    state: 'created',
-    createdAt: new Date('2025-04-07T21:30:00.000Z'),
-    updatedAt: new Date('2025-04-07T21:30:00.000Z'),
+const generateMockReceivedNotifications = (count: number): ReceivedNotification[] => {
+  const messages = [
+    'Coach Emma Richards accepted your coaching session request.',
+    'Coach Michael Johnson suggested a new date for the coaching session',
+    'Coaching session canceled by you',
+    'New assignment posted: Complete the project proposal',
+    'Your submission has been graded',
+    'Reminder: Upcoming exam on Friday',
+    'Class schedule has been updated',
+    'New course material available',
+    'Discussion forum response from instructor',
+    'Your attendance has been marked',
+  ];
+
+  return Array.from({ length: count }, (_, i) => ({
+    id: String(i + 1),
+    message: messages[i % messages.length],
+    isRead: i % 3 === 0, // Every 3rd notification is read
+    state: 'created' as const,
+    createdAt: new Date(Date.now() - i * 3600000), // Each notification 1 hour apart
+    updatedAt: new Date(Date.now() - i * 3600000),
     actionTitle: 'View Details',
-    actionUrl: 'https://cms.example.com/notifications/1',
-    sendEmail: true,
-  },
-  {
-    id: '2',
-    message: 'Coach Michael Johnson suggested a new date for the coaching session',
-    isRead: true,
-    state: 'created',
-    createdAt: new Date('2025-04-10T21:17:00.000Z'),
-    updatedAt: new Date('2025-04-10T21:17:00.000Z'),
-    actionTitle: 'View Details',
-    actionUrl: 'https://cms.example.com/notifications/2',
-    sendEmail: false,
-  },
-  {
-    id: '3',
-    message: 'Coaching session canceled by you',
-    isRead: true,
-    state: 'created',
-    createdAt: new Date('2025-04-15T21:17:00.000Z'),
-    updatedAt: new Date('2025-04-15T21:17:00.000Z'),
-    actionTitle: 'View Details',
-    actionUrl: 'https://cms.example.com/notifications/3',
-    sendEmail: false,
-  },
-];
+    actionUrl: `https://cms.example.com/notifications/${i + 1}`,
+    sendEmail: i % 2 === 0,
+  }));
+};
+
+const mockReceivedNotifications: ReceivedNotification[] = generateMockReceivedNotifications(25);
 
 const mockSentNotifications: SentNotification[] = [
   {
@@ -155,11 +166,6 @@ const mockSentNotifications: SentNotification[] = [
     ],
   },
 ];
-
-const mockOnNotificationClick = (notification: any) => {
-  console.log('Notification clicked:', notification);
-  alert(`Notification clicked. Recipients: ${notification.recipients?.length || 0}`);
-};
 
 const mockOnMarkAllRead = () => {
   console.log('Mark all as read clicked');

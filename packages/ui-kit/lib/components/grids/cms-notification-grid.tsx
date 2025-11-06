@@ -2,7 +2,7 @@
 import { AllCommunityModule, IRowNode, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { RefObject, useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { MailOpen } from 'lucide-react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 import { Button } from '../button';
@@ -10,6 +10,7 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconSearch } from '../icons/icon-search';
 import { InputField } from '../input-field';
 import { Dropdown } from '../dropdown';
+import { IconSent } from '../icons';
 
 export type SentNotification = {
     message: string;
@@ -83,11 +84,32 @@ const NotificationMessageRenderer = (props: { value: string }) => {
 
 
 
-const NotificationStatusRenderer = (props: { value: boolean }) => {
+const NotificationStatusRenderer = (props: { value: boolean; data: any }) => {
     const isRead = props.value;
-    return isRead ? null : (
+    const type = props.data?.type;
+
+    // Sent notifications - show send icon
+    if (type === 'sent') {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <IconSent size={"4"}  classNames="text-neutral-500" />
+            </div>
+        );
+    }
+
+    // Received unread - show blue dot
+    if (!isRead) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div className="rounded-full bg-button-primary-fill w-2 h-2"></div>
+            </div>
+        );
+    }
+
+    // Received read - show mail open icon
+    return (
         <div className="flex items-center justify-center h-full">
-            <div className="rounded-full bg-button-primary-fill w-2 h-2"></div>
+            <MailOpen className="w-4 h-4 text-neutral-600" />
         </div>
     );
 };
@@ -112,7 +134,29 @@ const RecipientsRenderer = (props: { value: { name: string }[] }) => {
             {formatCount(count)}
         </span>
     );
-}
+};
+
+const ActionRenderer = (props: { value: { title: string; url?: string } }) => {
+    const action = props.value;
+
+    if (!action?.url || !action?.title) {
+        return <span>-</span>;
+    }
+
+    return (
+        <div className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <a
+                href={action.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-button-primary-fill hover:text-button-primary-hover-fill underline text-sm"
+            >
+                {action.title}
+            </a>
+        </div>
+    );
+};
+
 export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     const {
         receivedNotifications,
@@ -181,6 +225,15 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             hide: false
         },
         {
+            field: 'action',
+            headerName: dictionary.action,
+            cellRenderer: ActionRenderer,
+            minWidth: 150,
+            maxWidth: 200,
+            headerClass: 'ag-header-cell-center',
+            cellClass: 'ag-cell-center',
+        },
+        {
             field: 'timestamp',
             headerName: dictionary.dateTime,
             valueFormatter: (params: { value: string | number | Date; }) => (params.value ? formatDate(new Date(params.value)) : ''),
@@ -237,7 +290,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
         const receivedIds = selectedRows.filter(row => row.type === 'received' && row.id).map(row => row.id!);
         onMarkSelectedAsRead(receivedIds);
     };
-     const onSelectionChanged = () => {
+    const onSelectionChanged = () => {
         if (gridRef.current?.api) {
             const selected = gridRef.current.api.getSelectedRows();
             setSelectedRows(selected);
