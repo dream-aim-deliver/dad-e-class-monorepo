@@ -137,7 +137,6 @@ export { generateCertificatePDF, type CertificateData } from './utils/course-cer
 
 export { LessonHeader } from './components/lesson-header';
 
-export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';
 
 export { FormComponent as RichTextFormComponent } from './components/lesson-components/rich-text';
 export { FormComponent as HeadingFormComponent } from './components/lesson-components/heading-lesson';
@@ -258,6 +257,10 @@ export { CoachingSessionGrid } from './components/grids/coaching-session-grid';
 export { TransactionsGrid, type TransactionRow, type TransactionsGridProps } from './components/grids/transactions-grid';
 export { TransactionsGridFilterModal, type TransactionFilterModel, type TransactionsGridFilterModalProps } from './components/grids/transactions-grid-filter-modal';
 export { AddTransactionModal, type AddTransactionModalProps } from './components/transactions/add-transaction-modal';
+
+export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';
+export { PreCourseAssessmentBuilder, type PreCourseAssessmentBuilderProps } from './components/pre-assessment/pre-course-assessment-builder';
+export { PreCourseAssessmentPreviewer, type PreCourseAssessmentPreviewerProps } from './components/pre-assessment/pre-course-assessment-previewer';
 
 
 export * from "./components/cms"
