@@ -261,7 +261,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                 const searchLower = searchTerm.toLowerCase();
                 const messageMatch = notification.message?.toLowerCase().includes(searchLower);
                 const actionMatch = notification.action?.title?.toLowerCase().includes(searchLower);
-                const recipientsMatch = notification.recipients?.some(r => r.name.toLowerCase().includes(searchLower));
+                const recipientsMatch = notification.recipients?.some(r => r.name?.toLowerCase().includes(searchLower));
 
                 if (!(messageMatch || actionMatch || recipientsMatch)) {
                     return false;
@@ -336,7 +336,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                         size="medium"
                         text={dictionary.markAllAsRead}
                         onClick={onMarkAllRead}
-                        disabled={loading || receivedNotifications.length === 0}
+                        disabled={loading || receivedNotifications.length === 0 || receivedNotifications.every(n => n.isRead)}
                         className="w-full md:w-auto"
                     />
                 </div>
