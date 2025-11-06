@@ -23,7 +23,9 @@ export default async function ManageTopicsServerComponent(props: ManageTopicsPro
 
     // Prefetch topics data for better performance
     await Promise.all([
-        prefetch(trpc.listTopics.queryOptions({})),
+        prefetch(trpc.listTopics.queryOptions({
+            withCounts: true,
+        })),
     ]);
 
     return (

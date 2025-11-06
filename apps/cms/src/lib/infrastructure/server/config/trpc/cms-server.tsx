@@ -35,11 +35,15 @@ async function createServerHeaders(platformContext?: PlatformContext): Promise<R
         if (session?.user?.idToken) {
             headers['Authorization'] = `Bearer ${session.user.idToken}`;
         }
+        // Add session ID header (defaults to "public" if no session)
+        headers['x-eclass-session-id'] = session?.user?.sessionId || 'public';
     } catch (error) {
         console.warn(
             'Failed to get NextAuth session for server-side TRPC:',
             error,
         );
+        // Still set session ID to "public" on error
+        headers['x-eclass-session-id'] = 'public';
     }
 
     // Add locale header
@@ -66,8 +70,20 @@ async function createServerHeaders(platformContext?: PlatformContext): Promise<R
     if (platformContext?.platformSlug && platformContext?.platformLanguageCode) {
         headers['x-eclass-platform'] = platformContext.platformSlug;
         headers['x-eclass-platform-language'] = platformContext.platformLanguageCode;
+
+        console.log('[createServerHeaders] Added platform context headers:', {
+            'x-eclass-platform': platformContext.platformSlug,
+            'x-eclass-platform-language': platformContext.platformLanguageCode
+        });
+    } else {
+        console.log('[createServerHeaders] Platform context not complete:', {
+            hasSlug: !!platformContext?.platformSlug,
+            hasLanguage: !!platformContext?.platformLanguageCode,
+            platformContext
+        });
     }
 
+    console.log('[createServerHeaders] Final headers:', headers);
     return headers;
 }
 
@@ -141,9 +157,9 @@ export async function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(
 ) {
     const queryClient = getQueryClient();
     if (queryOptions.queryKey[1]?.type === 'infinite') {
-        await queryClient.prefetchInfiniteQuery(queryOptions as any);
+         queryClient.prefetchInfiniteQuery(queryOptions as any);
     } else {
-        await queryClient.prefetchQuery(queryOptions);
+         queryClient.prefetchQuery(queryOptions);
     }
 }
 

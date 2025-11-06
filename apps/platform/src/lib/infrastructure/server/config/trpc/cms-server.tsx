@@ -31,11 +31,15 @@ async function createServerHeaders(): Promise<Record<string, string>> {
         if (session?.user?.idToken) {
             headers['Authorization'] = `Bearer ${session.user.idToken}`;
         }
+        // Add session ID header (defaults to "public" if no session)
+        headers['x-eclass-session-id'] = session?.user?.sessionId || 'public';
     } catch (error) {
         console.warn(
             'Failed to get NextAuth session for server-side TRPC:',
             error,
         );
+        // Still set session ID to "public" on error
+        headers['x-eclass-session-id'] = 'public';
     }
 
     // Add locale header

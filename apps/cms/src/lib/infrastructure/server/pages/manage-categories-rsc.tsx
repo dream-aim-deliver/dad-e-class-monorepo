@@ -21,10 +21,11 @@ export default async function ManageCategoriesServerComponent(props: ManageCateg
         platform_locale: props.platformLocale,
     });
 
-    // Prefetch categories data for better performance
-    await Promise.all([
-        prefetch(trpc.listCategories.queryOptions({})),
-    ]);
+    // Prefetch categories data for better performance (non-blocking for streaming)
+    prefetch(trpc.listCategories.queryOptions({
+        withCounts: true,
+    }));
+
 
     return (
         <HydrateClient>
