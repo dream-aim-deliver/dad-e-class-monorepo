@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TGetEnrolledCourseDetailsResponse,
+    GetEnrolledCourseDetailsResponseSchema,
+    TGetEnrolledCourseDetailsErrorResponse
+} from "@dream-aim-deliver/e-class-cms-rest";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TEnrolledCourseDetailsPresenterUtilities = {};
 
 export const GetEnrolledCourseDetailsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetEnrolledCourseDetailsUseCaseResponse,
+        TGetEnrolledCourseDetailsResponse,
         viewModels.TEnrolledCourseDetailsViewModel,
         TEnrolledCourseDetailsPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TGetEnrolledCourseDetailsResponseMiddleware =
     typeof GetEnrolledCourseDetailsResponseMiddleware;
 
 export default class EnrolledCourseDetailsPresenter extends BasePresenter<
-    useCaseModels.TGetEnrolledCourseDetailsUseCaseResponse,
+    TGetEnrolledCourseDetailsResponse,
     viewModels.TEnrolledCourseDetailsViewModel,
     TEnrolledCourseDetailsPresenterUtilities,
     TGetEnrolledCourseDetailsResponseMiddleware
@@ -33,7 +38,7 @@ export default class EnrolledCourseDetailsPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.GetEnrolledCourseDetailsUseCaseResponseSchema,
+                    GetEnrolledCourseDetailsResponseSchema,
                 viewModel: viewModels.EnrolledCourseDetailsViewModelSchema
             },
             middleware: GetEnrolledCourseDetailsResponseMiddleware,
@@ -44,7 +49,7 @@ export default class EnrolledCourseDetailsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetEnrolledCourseDetailsUseCaseResponse,
+            TGetEnrolledCourseDetailsResponse,
             { success: true }
         >,
     ): viewModels.TEnrolledCourseDetailsViewModel {
@@ -58,7 +63,7 @@ export default class EnrolledCourseDetailsPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetEnrolledCourseDetailsUseCaseErrorResponse,
+            TGetEnrolledCourseDetailsErrorResponse,
             TGetEnrolledCourseDetailsResponseMiddleware
         >,
     ): viewModels.TEnrolledCourseDetailsViewModel {
