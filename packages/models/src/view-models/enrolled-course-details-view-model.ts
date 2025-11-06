@@ -6,7 +6,7 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { GetEnrolledCourseDetailsSuccessResponseSchema } from '../usecase-models/get-enrolled-course-details-usecase-models';
+import { GetEnrolledCourseDetailsSuccessResponseSchema } from "@dream-aim-deliver/e-class-cms-rest";
 
 export const EnrolledCourseDetailsSuccessSchema = GetEnrolledCourseDetailsSuccessResponseSchema.shape.data;
 

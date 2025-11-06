@@ -117,7 +117,7 @@ function CreateCourseDialog() {
 }
 
 export default function UserCourses(props: UserCoursesProps) {
-    const canCreateCourse = props.roles.includes('admin') || props.roles.includes('course_creator');
+    const canCreateCourse = props.roles.includes('superadmin') || props.roles.includes('admin') || props.roles.includes('course_creator');
     const isStudent = props.roles.includes('student');
     const router = useRouter();
 
