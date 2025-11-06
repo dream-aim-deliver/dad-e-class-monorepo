@@ -14,7 +14,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Suspense, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
-import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
+import { useListLessonComponentsPresenter } from '../../../hooks/use-list-lesson-components-presenter';
 import LessonForm from './lesson-form';
 import LessonNotesPanel from './lesson-notes-panel';
 import { trpc } from '../../../trpc/cms-client';
@@ -43,7 +43,7 @@ function CoursePreviewLesson(props: {
             },
         );
     const [componentsViewModel, setLessonComponentsViewModel] = useState<
-        viewModels.TLessonComponentListViewModel | undefined
+        viewModels.TListLessonComponentsViewModel | undefined
     >(undefined);
     const { presenter } = useListLessonComponentsPresenter(
         setLessonComponentsViewModel,

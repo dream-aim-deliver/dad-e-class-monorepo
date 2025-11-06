@@ -1,7 +1,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../../../trpc/cms-client';
 import { useState } from 'react';
-import { useListLessonComponentsPresenter } from '../../../../hooks/use-lesson-components-presenter';
+import { useListLessonComponentsPresenter } from '../../../../hooks/use-list-lesson-components-presenter';
 
 export function useLessonComponents(id: number) {
     const [lessonComponentsResponse] =
@@ -16,7 +16,7 @@ export function useLessonComponents(id: number) {
         );
 
     const [lessonComponentsViewModel, setLessonComponentsViewModel] = useState<
-        viewModels.TLessonComponentListViewModel | undefined
+        viewModels.TListLessonComponentsViewModel | undefined
     >(undefined);
 
     const { presenter } = useListLessonComponentsPresenter(

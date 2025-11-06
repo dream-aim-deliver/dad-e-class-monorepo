@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    TListCoachingOfferingsUseCaseResponse,
+    ListCoachingOfferingsUseCaseResponseSchema,
+    TListCoachingOfferingsErrorResponse
+} from "@dream-aim-deliver/e-class-cms-rest";
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TCoachingOfferingsPresenterUtilities = {};
 
 export const ListCoachingOfferingsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListCoachingOfferingsUseCaseResponse,
+        TListCoachingOfferingsUseCaseResponse,
         viewModels.TCoachingOfferingListViewModel,
         TCoachingOfferingsPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TListCoachingOfferingsResponseMiddleware =
     typeof ListCoachingOfferingsResponseMiddleware;
 
 export default class CoachingOfferingsPresenter extends BasePresenter<
-    useCaseModels.TListCoachingOfferingsUseCaseResponse,
+    TListCoachingOfferingsUseCaseResponse,
     viewModels.TCoachingOfferingListViewModel,
     TCoachingOfferingsPresenterUtilities,
     TListCoachingOfferingsResponseMiddleware
@@ -32,8 +37,8 @@ export default class CoachingOfferingsPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
-                viewModel: viewModels.HomePageViewModelSchema
+                responseModel: ListCoachingOfferingsUseCaseResponseSchema,
+                viewModel: viewModels.ListPlatformCoachingOfferingsViewModelSchema
             },
             middleware: ListCoachingOfferingsResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -43,7 +48,7 @@ export default class CoachingOfferingsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListCoachingOfferingsUseCaseResponse,
+            TListCoachingOfferingsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCoachingOfferingListViewModel {
@@ -56,7 +61,7 @@ export default class CoachingOfferingsPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListCoachingOfferingsUseCaseErrorResponse,
+            TListCoachingOfferingsErrorResponse,
             TListCoachingOfferingsResponseMiddleware
         >,
     ): viewModels.TCoachingOfferingListViewModel {

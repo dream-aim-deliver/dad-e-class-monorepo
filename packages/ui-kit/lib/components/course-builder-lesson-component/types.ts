@@ -9,7 +9,7 @@ interface BaseCourseFormElement {
 }
 
 export interface CoachingSession {
-    id?: number;
+    id?: number | string;
     name: string;
     duration: number;
 }
@@ -19,7 +19,7 @@ export interface CoachingSessionElement extends BaseCourseFormElement {
     coachingSession?: CoachingSession;
     progress?: {
         session: {
-            id: number;
+            id: number | string;
             status: string;
         }
     }
@@ -108,7 +108,7 @@ export interface UploadFilesElement extends BaseCourseFormElement {
     type: CourseElementType.UploadFiles;
     description?: string;
     files: fileMetadata.TFileMetadata[] | null;
-    userComment?: string;
+    userComment?: string | null;
 }
 
 interface AssignmentReply {

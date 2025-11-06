@@ -4,6 +4,9 @@ import LessonComponentsPresenter, {
     TLessonComponentsPresenterUtilities,
 } from '../../common/presenters/lesson-components-presenter';
 
+/**
+ * DEPRECATED: replaced by use-list-lesson-components
+ */
 export function useListLessonComponentsPresenter(
     setViewModel: (viewModel: viewModels.TLessonComponentListViewModel) => void,
 ) {

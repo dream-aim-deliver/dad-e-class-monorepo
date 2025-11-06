@@ -1,4 +1,6 @@
-import { useCaseModels } from '@maany_shr/e-class-models';
+import {
+    TSaveLessonComponentsRequest
+} from "@dream-aim-deliver/e-class-cms-rest";
 import {
     CourseElementType,
     FormElementType,
@@ -8,7 +10,7 @@ import { extractId } from './generate-temp-id';
 import { idToNumber } from './id-to-number';
 
 type RequestComponent =
-    useCaseModels.TSaveLessonComponentsRequest['components'][number];
+    TSaveLessonComponentsRequest['components'][number];
 
 function transformRichText(
     component: LessonElement,
@@ -249,7 +251,7 @@ function transformQuizTypeOne(
         title: component.title,
         description: component.description,
         imageFileId: idToNumber(component.imageFile!.id)!,
-        options: component.options.map((option,index) => ({
+        options: component.options.map((option, index) => ({
             id: String(index + 1),
             name: option.name,
         })),
@@ -340,11 +342,15 @@ function transformCoachingSession(
         throw new Error('Invalid component type');
     }
 
+    const maybeCoachingSessionId = component.coachingSession?.id
+
+    const parsedId = maybeCoachingSessionId ? parseInt(`${maybeCoachingSessionId}`) : undefined;
+
     return {
         id: extractId(component.id),
         type: 'coachingSession',
         position: order,
-        coachingOfferingId: component.coachingSession!.id!,
+        coachingOfferingId: parsedId,
     };
 }
 
@@ -384,7 +390,7 @@ const transformerPerType: Record<
     (
         component: LessonElement,
         order: number,
-    ) => useCaseModels.TSaveLessonComponentsRequest['components'][number]
+    ) => TSaveLessonComponentsRequest['components'][number]
 > = {
     [CourseElementType.CoachingSession]: transformCoachingSession,
     [CourseElementType.ImageFile]: transformImage,

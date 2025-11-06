@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    TSaveLessonComponentsUseCaseResponse,
+    SaveLessonComponentsUseCaseResponseSchema,
+    TSaveLessonComponentsUseCaseErrorResponse
+} from "@dream-aim-deliver/e-class-cms-rest";
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TLessonComponentsPresenterUtilities = {};
 
 export const SaveLessonComponentsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TSaveLessonComponentsUseCaseResponse,
+        TSaveLessonComponentsUseCaseResponse,
         viewModels.TSaveLessonComponentsViewModel,
         TLessonComponentsPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TSaveLessonComponentsResponseMiddleware =
     typeof SaveLessonComponentsResponseMiddleware;
 
 export default class LessonComponentsPresenter extends BasePresenter<
-    useCaseModels.TSaveLessonComponentsUseCaseResponse,
+    TSaveLessonComponentsUseCaseResponse,
     viewModels.TSaveLessonComponentsViewModel,
     TLessonComponentsPresenterUtilities,
     TSaveLessonComponentsResponseMiddleware
@@ -33,7 +38,7 @@ export default class LessonComponentsPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.SaveLessonComponentsUseCaseResponseSchema,
+                    SaveLessonComponentsUseCaseResponseSchema,
                 viewModel: viewModels.SaveLessonComponentsViewModelSchema
             },
             middleware: SaveLessonComponentsResponseMiddleware,
@@ -44,7 +49,7 @@ export default class LessonComponentsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TSaveLessonComponentsUseCaseResponse,
+            TSaveLessonComponentsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TSaveLessonComponentsViewModel {
@@ -58,7 +63,7 @@ export default class LessonComponentsPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TSaveLessonComponentsUseCaseErrorResponse,
+            TSaveLessonComponentsUseCaseErrorResponse,
             TSaveLessonComponentsResponseMiddleware
         >,
     ): viewModels.TSaveLessonComponentsViewModel {
