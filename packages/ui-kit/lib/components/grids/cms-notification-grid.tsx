@@ -173,6 +173,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [filterType, setFilterType] = useState<'all' | 'received' | 'sent'>('all');
     const [selectedRows, setSelectedRows] = useState<NotificationRow[]>([]);
+    const [selectedRowIds, setSelectedRowIds] = useState<Set<string>>(new Set());
 
     const rowData = useMemo(() => [
         ...receivedNotifications.map(n => ({
@@ -286,14 +287,40 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
         refreshGrid();
     }, [refreshGrid, searchTerm, filterType, rowData]);
 
+    // Effect to restore selections after data changes
+    useEffect(() => {
+        if (gridRef.current?.api && selectedRowIds.size > 0) {
+            // Small delay to ensure grid has rendered with new data
+            setTimeout(() => {
+                gridRef.current?.api?.forEachNode((node) => {
+                    if (node.data?.id && selectedRowIds.has(node.data.id)) {
+                        node.setSelected(true);
+                    }
+                });
+            }, 100);
+        }
+    }, [rowData, selectedRowIds]);
+
     const handleMarkSelectedAsRead = () => {
         const receivedIds = selectedRows.filter(row => row.type === 'received' && row.id).map(row => row.id!);
         onMarkSelectedAsRead(receivedIds);
+        
+        // Clear selections after marking as read since they will become unselectable
+        setSelectedRowIds(new Set());
+        setSelectedRows([]);
     };
     const onSelectionChanged = () => {
         if (gridRef.current?.api) {
             const selected = gridRef.current.api.getSelectedRows();
             setSelectedRows(selected);
+            
+            // Update the set of selected IDs for persistence
+            const newSelectedIds = new Set(
+                selected
+                    .filter(row => row.type === 'received' && row.id)
+                    .map(row => row.id!)
+            );
+            setSelectedRowIds(newSelectedIds);
         }
     };
 
