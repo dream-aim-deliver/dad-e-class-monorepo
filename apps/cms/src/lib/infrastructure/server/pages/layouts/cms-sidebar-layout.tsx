@@ -1,4 +1,8 @@
+'use client';
+
+import { Suspense } from 'react';
 import CMSSidebar from './cms-sidebar';
+import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 export interface CMSSidebarLayoutProps {
@@ -33,7 +37,9 @@ export default function CMSSidebarLayout({
                 />
             </div>
             <div id="content" className="w-full min-w-0 px-5">
-                {children}
+                <Suspense fallback={<DefaultLoadingWrapper />}>
+                    {children}
+                </Suspense>
             </div>
         </div>
     );

@@ -58,6 +58,9 @@ export default function CMSTRPCClientProviders({
                                 });
                             }
 
+                            // Add session ID header (defaults to "public" if no session)
+                            headers['x-eclass-session-id'] = session?.user?.sessionId || 'public';
+                            // Session ID header added
                             // Add locale header
                             if (locale) {
                                 headers['Accept-Language'] = locale;
@@ -70,7 +73,7 @@ export default function CMSTRPCClientProviders({
                             if (runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME) {
                                 headers['x-eclass-runtime'] =
                                     runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
-                                console.log('[TRPC Headers] ✅ Platform header added:', runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME);
+                                // console.log('[TRPC Headers] ✅ Platform header added:', runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME);
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing platform header');
                             }

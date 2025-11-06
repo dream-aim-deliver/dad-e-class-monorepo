@@ -25,9 +25,9 @@ export default async function ManageLegalTextsServerComponent(
     platform_locale: props.platformLocale,
   });
 
-  await Promise.all([
-    prefetch(trpc.getPlatformLanguage.queryOptions({})),
-  ]);
+  // await Promise.all([
+    prefetch(trpc.getPlatformLanguage.queryOptions({}))
+  // ]);
 
   return (
     <HydrateClient>

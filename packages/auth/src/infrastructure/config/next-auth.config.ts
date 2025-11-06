@@ -112,15 +112,26 @@ export const generateNextAuthConfig = (config: {
                 if (account) {
                     token.account = account;
                 }
+                // Store the JWT ID (jti) for session tracking
+                if (token.jti) {
+                    token.sessionId = token.jti;
+                }
                 return token;
             },
             session: async ({ session, token }) => {
+                // console.log('[Auth Session] 🔄 Invoking session callback. Token:', token.jti);
                 const defaultSessionRoles: ("visitor" | "student" | "coach" | "course_creator" | "admin" | "superadmin")[] = ["visitor", "student"]
 
                 // Get the token for authorization
                 const nextAuthToken = token as DefaultJWT & {
                     user: TAuthProviderProfileDTO,
-                    account: Account
+                    account: Account,
+                    sessionId?: string
+                }
+
+                // Set the session ID from JWT token ID (jti)
+                if (nextAuthToken.sessionId) {
+                    session.user.sessionId = nextAuthToken.sessionId;
                 }
 
                 // Create TRPC client with authorization header
@@ -135,6 +146,7 @@ export const generateNextAuthConfig = (config: {
                                 // Add Authorization header if we have an ID token
                                 if (nextAuthToken.account?.id_token) {
                                     headers['Authorization'] = `Bearer ${nextAuthToken.account.id_token}`;
+                                    headers['x-eclass-session-id'] = nextAuthToken.jti? nextAuthToken.jti : 'public';
                                 } else {
                                     console.warn('[Auth TRPC] ⚠️ Missing ID token in NextAuth session callback', {
                                         hasAccount: !!nextAuthToken.account,
@@ -158,9 +170,9 @@ export const generateNextAuthConfig = (config: {
                 });
 
                 try {
-                    console.log("[Auth Session] 🚀 Requesting User Roles for session callback");
+                    // console.log("[Auth Session] 🚀 Requesting User Roles for session callback");
                     const userRolesDTO = await trpcClient.listUserRoles.query({});
-                    console.log("[Auth Session] 📦 User Roles Response:", JSON.stringify(userRolesDTO, null, 2));
+                    // console.log("[Auth Session] 📦 User Roles Response:", JSON.stringify(userRolesDTO, null, 2));
                     if (userRolesDTO.success && userRolesDTO.data) {
                         const allowedRoles = ["visitor", "student", "coach", "course_creator", "admin", "superadmin"] as const;
                         // The response has data.roles, not data as an array
@@ -194,19 +206,19 @@ export const generateNextAuthConfig = (config: {
                 }
 
                 try {
-                    console.log("[Auth Session] 🚀 Requesting User Details for session callback");
+                    // console.log("[Auth Session] 🚀 Requesting User Details for session callback");
                     const getUserForSessionDTO = await trpcClient.getUserDetailsForSession.query({
                         userSub: nextAuthToken.user.sub,
                         defaultImage: nextAuthToken.user.image
                     });
-                    console.log("[Auth Session] 📦 User Details Response:", JSON.stringify(getUserForSessionDTO, null, 2));
+                    // console.log("[Auth Session] 📦 User Details Response:", JSON.stringify(getUserForSessionDTO, null, 2));
                     if (getUserForSessionDTO.success == true && getUserForSessionDTO.data) {
                         const responseData = getUserForSessionDTO.data as unknown as typeof getUserForSessionDTO.data.data; // getting around the type issue temporarily
                         session.user.id = responseData.id.toString();
                         session.user.email = responseData.email;
                         session.user.name = responseData.username;
                         session.user.image = responseData.avatarImage || undefined;
-                        console.log("[Auth Session] ✅ User details populated successfully");
+                        // console.log("[Auth Session] ✅ User details populated successfully");
                     }
                 } catch (error) {
                     console.error('[Auth Session] ❌ Failed to fetch user details in session callback:', error);
@@ -218,15 +230,15 @@ export const generateNextAuthConfig = (config: {
                     }
                 }
 
-                console.log('[Auth Session] ✅ Session prepared with:', {
-                    hasIdToken: !!session.user.idToken,
-                    hasAccessToken: !!session.user.accessToken,
-                    roles: session.user.roles,
-                    userId: session.user.id,
-                    email: session.user.email,
-                    name: session.user.name,
-                    hasImage: !!session.user.image,
-                });
+                // console.log('[Auth Session] ✅ Session prepared with:', {
+                //     hasIdToken: !!session.user.idToken,
+                //     hasAccessToken: !!session.user.accessToken,
+                //     roles: session.user.roles,
+                //     userId: session.user.id,
+                //     email: session.user.email,
+                //     name: session.user.name,
+                //     hasImage: !!session.user.image,
+                // });
 
                 return session;
             }
