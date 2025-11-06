@@ -100,13 +100,13 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
   
 
   const handleMarkAllRead = () => {
-    // Mark all received notifications as read
-    const receivedIds = receivedNotificationsData.map(n => Number(n.id)).filter((id) => !Number.isNaN(id));
+    const receivedIds = receivedNotificationsData
+      .filter(n => !n.isRead)
+      .map(n => Number(n.id))
+      .filter((id) => !Number.isNaN(id));
     if (receivedIds.length > 0) {
       markNotificationsAsReadMutation.mutate({ notificationIds: receivedIds });
     }
-
-
   };
 
   const handleMarkSelectedAsRead = (ids: string[]) => {
@@ -121,21 +121,23 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
 
 
   return (
-    <div className="flex flex-col space-y-5 px-10">
+    <div className="flex flex-col h-full space-y-5">
       <div>
         <h1>{t('title')}</h1>
         <p>{t('description')}</p>
       </div>
 
-      <CMSNotificationGrid
-        receivedNotifications={receivedNotificationsData}
-        sentNotifications={sentNotificationsData}
-        onMarkAllRead={handleMarkAllRead}
-        onMarkSelectedAsRead={handleMarkSelectedAsRead}
-        gridRef={gridRef}
-        locale={currentLocale}
-        loading={markNotificationsAsReadMutation.isPending}
-      />
+      <div className="flex-1 min-h-0">
+        <CMSNotificationGrid
+          receivedNotifications={receivedNotificationsData}
+          sentNotifications={sentNotificationsData}
+          onMarkAllRead={handleMarkAllRead}
+          onMarkSelectedAsRead={handleMarkSelectedAsRead}
+          gridRef={gridRef}
+          locale={currentLocale}
+          loading={markNotificationsAsReadMutation.isPending}
+        />
+      </div>
 
       {mutationError && (
         <Banner

@@ -156,7 +156,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             cellRenderer: NotificationStatusRenderer,
             minWidth: 100,
             maxWidth: 100,
-            checkboxSelection: (params: any) => params.data?.type === 'received' && !!params.data?.id,
+            checkboxSelection: (params: any) => params.data?.type === 'received' && !!params.data?.id && !params.data?.isRead,
             headerCheckboxSelection: false,
         },
         {
@@ -236,7 +236,8 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     const handleMarkSelectedAsRead = () => {
         const receivedIds = selectedRows.filter(row => row.type === 'received' && row.id).map(row => row.id!);
         onMarkSelectedAsRead(receivedIds);
-    }; const onSelectionChanged = () => {
+    };
+     const onSelectionChanged = () => {
         if (gridRef.current?.api) {
             const selected = gridRef.current.api.getSelectedRows();
             setSelectedRows(selected);
@@ -244,7 +245,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     };
 
     return (
-        <div className="flex flex-col space-y-5">
+        <div className="flex flex-col h-full space-y-5">
             <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-4">
                 <div className="flex flex-col gap-2 md:flex-row md:items-center w-full">
                     <InputField
@@ -274,7 +275,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                         size="medium"
                         text={dictionary.markSelectedAsRead}
                         onClick={handleMarkSelectedAsRead}
-                        disabled={loading || selectedRows.filter(row => row.type === 'received').length === 0}
+                        disabled={loading || selectedRows.filter(row => row.type === 'received').length === 0 || receivedNotifications.length === 0}
                         className="w-full md:w-auto"
                     />
                     <Button
@@ -282,7 +283,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                         size="medium"
                         text={dictionary.markAllAsRead}
                         onClick={onMarkAllRead}
-                        disabled={loading}
+                        disabled={loading || receivedNotifications.length === 0}
                         className="w-full md:w-auto"
                     />
                 </div>
