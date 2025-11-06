@@ -10,6 +10,16 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import ProfessionalInfo from 'packages/ui-kit/lib/components/profile/professional-info';
+import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
+import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
+import { useState } from 'react';
+import { trpc } from '../trpc/cms-client';
+import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
+import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+
+// Types
+type TSkill = { id: number; name: string; slug: string };
 
 interface BecomeACoachProps {
   locale: TLocale;
@@ -19,31 +29,215 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   const t = useTranslations('pages.becomeACoach');
   const currentLocale = useLocale() as TLocale;
 
+  // TRPC query for topics
+  const [listTopicsResponse] = trpc.listTopics.useSuspenseQuery({});
+
+  // State management
+  const [listTopicsViewModel, setListTopicsViewModel] = useState<
+    viewModels.TTopicListViewModel | undefined
+  >(undefined);
+  const [isSaving, setIsSaving] = useState(false);
+  const [curriculumVitaeUploadProgress, setCurriculumVitaeUploadProgress] = useState<number>(0);
+  const [curriculumVitaeFile, setCurriculumVitaeFile] = useState<fileMetadata.TFileMetadata | null>(null);
+
+  const { presenter: listTopicsPresenter } = useListTopicsPresenter(setListTopicsViewModel);
+
+  // Empty default professional profile data for new users
+  const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
+    id: 0,
+    bio: '',
+    linkedinUrl: null,
+    curriculumVitae: null,
+    skills: [],
+    private: true,
+    portfolioWebsite: null,
+    companyName: null,
+    companyRole: null,
+    companyIndustry: null,
+  };
+
+  const professionalForm = useFormState(defaultProfessionalProfile, {
+    enableReloadProtection: true,
+  });
+
+  // Present topics data
+  // @ts-ignore
+  listTopicsPresenter.present(listTopicsResponse, listTopicsViewModel);
+
+  // Client-side CV file upload handler
+  // TODO: Implement server-side upload in the future
+  const handleCVFileUpload = async (
+    fileRequest: fileMetadata.TFileUploadRequest,
+    abortSignal?: AbortSignal
+  ): Promise<fileMetadata.TFileMetadata> => {
+    return new Promise((resolve) => {
+      // Simulate upload progress for UX feedback
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += 10;
+        setCurriculumVitaeUploadProgress(progress);
+
+        if (progress >= 100) {
+          clearInterval(progressInterval);
+
+          // Create file metadata object for client-side storage
+          const cvFileMetadata: fileMetadata.TFileMetadata = {
+            id: `cv_${Date.now()}`,
+            name: fileRequest.file.name,
+            size: fileRequest.file.size,
+            category: 'document',
+            status: 'available',
+            url: URL.createObjectURL(fileRequest.file), // Create blob URL for client-side access
+          };
+
+          resolve(cvFileMetadata);
+        }
+      }, 100);
+    });
+  };
+
+  const handleCVUploadComplete = (uploadedFile: fileMetadata.TFileMetadata) => {
+    setCurriculumVitaeFile(uploadedFile);
+    setCurriculumVitaeUploadProgress(0);
+
+    // Sync uploaded file with form state
+    if (professionalForm.value) {
+      professionalForm.setValue({
+        ...professionalForm.value,
+        curriculumVitae: {
+          id: uploadedFile.id,
+          name: uploadedFile.name,
+          size: uploadedFile.size,
+          category: 'document',
+          downloadUrl: uploadedFile.url,
+        }
+      });
+    }
+  };
+
+  const handleCVFileDelete = (fileId: string) => {
+    // Clean up blob URL to prevent memory leaks
+    if (curriculumVitaeFile?.url) {
+      URL.revokeObjectURL(curriculumVitaeFile.url);
+    }
+
+    setCurriculumVitaeFile(null);
+
+    // Remove file from form state
+    if (professionalForm.value) {
+      professionalForm.setValue({
+        ...professionalForm.value,
+        curriculumVitae: null
+      });
+    }
+  };
+
+  const handleCVFileDownload = (fileId: string) => {
+    if (curriculumVitaeFile?.url) {
+      // Create a temporary download link for client-side files
+      const downloadLink = document.createElement('a');
+      downloadLink.href = curriculumVitaeFile.url;
+      downloadLink.download = curriculumVitaeFile.name;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  };
+
+  // Handle form submission and email generation
+  // TODO: Implement server-side email sending in the future
+  const handleProfessionalSave = async (profile: viewModels.TGetProfessionalProfileSuccess['profile']) => {
+    setIsSaving(true);
+    try {
+      // Generate localized email subject
+      const bioPreview = profile.bio ? profile.bio.substring(0, 40) + '...' : t('email.notProvided');
+      const emailSubject = t('email.subject');
+
+      // Generate localized CV file info
+      const cvFileInfo = curriculumVitaeFile
+        ? `${t('email.fileName')}: ${curriculumVitaeFile.name}\n${t('email.fileSize')}: ${(curriculumVitaeFile.size / 1024).toFixed(2)} KB\n${t('email.attachmentNote')}`
+        : t('email.noCvUploaded');
+
+      // Create localized comprehensive email body
+      const emailBody = `
+        ${t('email.headerTitle')}
+        ================================
+
+        ${t('email.personalInformation')}
+        - ${t('email.bio')}: ${profile.bio || t('email.notProvided')}
+        - ${t('email.linkedinProfile')}: ${profile.linkedinUrl || t('email.notProvided')}
+        - ${t('email.portfolioWebsite')}: ${profile.portfolioWebsite || t('email.notProvided')}
+
+        ${t('email.companyInformation')}
+        - ${t('email.companyName')}: ${profile.companyName || t('email.notProvided')}
+        - ${t('email.jobRole')}: ${profile.companyRole || t('email.notProvided')}
+        - ${t('email.industry')}: ${profile.companyIndustry || t('email.notProvided')}
+
+        ${t('email.professionalDetails')}
+        - ${t('email.skillsExpertise')}: ${profile.skills.map(skill => skill.name).join(', ') || t('email.notProvided')}
+        - ${t('email.profileVisibility')}: ${profile.private ? t('email.private') : t('email.public')}
+
+        ${t('email.curriculumVitae')}
+        ${cvFileInfo}
+
+        ================================
+        ${t('email.footerNote')}
+      `.trim();
+
+      // Generate mailto link with encoded parameters
+      const mailtoLink = `mailto:coaches@example.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+      // Open email client with pre-filled data
+      window.open(mailtoLink, '_blank');
+
+    } catch (error) {
+      console.error('Error preparing coach application email:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Loading state
+  if (!listTopicsViewModel) {
+    return <DefaultLoading locale={locale} variant="minimal" />;
+  }
+
+  // Error handling - kaboom (hard error)
+  if (listTopicsViewModel.mode === 'kaboom') {
+    return <DefaultError locale={locale} />;
+  }
+
+  // Extract topics data and convert to TSkill format
+  const listTopicsData = listTopicsViewModel.data.topics;
+  const availableSkills: TSkill[] = listTopicsData.map(topic => ({
+    id: topic.id,
+    name: topic.name,
+    slug: topic.slug
+  }));
+
   return (
-    <div className="flex flex-col space-y-5 px-30">
-      <div>
-        <h1>{t('title')}</h1>
-        <p>{t('description')}</p>
+    <div className="flex flex-col gap-10 md:flex-row lg:flex-row justify-center px-4">
+      <div className='flex flex-col gap-4'>
+        <h1 className='text-text-primary text-4xl font-bold'>{t('title')}</h1>
+        <p className='text-text-primary text-md'>{t('description')}</p>
       </div>
-
-      {/* Features from Notion:
-        - listTopics
-        - sendBecomeACoachEmail (client-side only - NOT YET IMPLEMENTED - use mailto link)
-      */}
-      {/* UI Components from Notion:
-        - UserProfile (Personal information Form)
-        - UserProfile (Professional Information Form)
-        - Become a Coach Form (variant of UserProfile just with professional information form)
-        - Professional Information Sent Modal
-      */}
-
-      {/* IMPORTANT NOTE from requirements:
-        The feature SendBecomeACoachEmail is not there yet, but in the meanwhile
-        put a note somewhere saying that for now we'll just do a mail-to link that
-        pre-populates a message with all the data inputted in the form
-      */}
-      <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4">
-        <p className="text-sm">{t('mailtoNote')}</p>
+      <div className='flex flex-col gap-4'>
+        <p className='text-text-primary text-2xl font-bold'>{t('formTitle')}</p>
+        <ProfessionalInfo
+          initialData={professionalForm.value!}
+          onChange={professionalForm.setValue}
+          availableSkills={availableSkills}
+          onSave={handleProfessionalSave}
+          onFileUpload={handleCVFileUpload}
+          curriculumVitaeFile={curriculumVitaeFile}
+          onUploadComplete={handleCVUploadComplete}
+          onFileDelete={handleCVFileDelete}
+          onFileDownload={handleCVFileDownload}
+          locale={locale as TLocale}
+          uploadProgress={curriculumVitaeUploadProgress}
+          isSaving={isSaving}
+          variant="becomeACoach"
+        />
       </div>
     </div>
   );

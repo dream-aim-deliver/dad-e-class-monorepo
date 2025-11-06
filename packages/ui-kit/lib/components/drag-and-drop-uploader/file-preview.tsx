@@ -282,6 +282,7 @@ export const FilePreview = (props: FilePreviewProps) => {
                             onClick={() =>
                                 onDownload(uploadResponse.id as string)
                             }
+                            type="button"
                         />
                         {props.deletion.isAllowed === true && (
                             <IconButton
@@ -299,6 +300,7 @@ export const FilePreview = (props: FilePreviewProps) => {
                                         );
                                     }
                                 }}
+                                type="button"
                             />
                         )}
                     </div>
