@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ProfileTabs } from '../lib/components/profile-tabs';
 import { fileMetadata } from '@maany_shr/e-class-models';
@@ -157,6 +157,8 @@ describe('ProfileTabs', () => {
   const mockOnSaveProfessional = vi.fn();
   const mockOnProfilePictureDelete = vi.fn();
   const mockOnCurriculumVitaeDelete = vi.fn();
+  const mockOnProfilePictureUploadComplete = vi.fn();
+  const mockOnCurriculumVitaeUploadComplete = vi.fn();
 
   beforeEach(() => {
     mockOnSavePersonal.mockClear();
@@ -164,6 +166,8 @@ describe('ProfileTabs', () => {
     mockFileUpload.mockClear();
     mockOnProfilePictureDelete.mockClear();
     mockOnCurriculumVitaeDelete.mockClear();
+    mockOnProfilePictureUploadComplete.mockClear();
+    mockOnCurriculumVitaeUploadComplete.mockClear();
   });
 
   it('renders personal profile tab by default', () => {
@@ -177,6 +181,8 @@ describe('ProfileTabs', () => {
         onProfessionalFileUpload={mockFileUpload}
         onProfilePictureDelete={mockOnProfilePictureDelete}
         onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        onProfilePictureUploadComplete={mockOnProfilePictureUploadComplete}
+        onCurriculumVitaeUploadComplete={mockOnCurriculumVitaeUploadComplete}
         hasProfessionalProfile={true}
         locale="en"
       />
@@ -207,6 +213,8 @@ describe('ProfileTabs', () => {
         onProfessionalFileUpload={mockFileUpload}
         onProfilePictureDelete={mockOnProfilePictureDelete}
         onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        onProfilePictureUploadComplete={mockOnProfilePictureUploadComplete}
+        onCurriculumVitaeUploadComplete={mockOnCurriculumVitaeUploadComplete}
         hasProfessionalProfile={true}
         locale="en"
       />
@@ -242,6 +250,8 @@ describe('ProfileTabs', () => {
         onProfessionalFileUpload={mockFileUpload}
         onProfilePictureDelete={mockOnProfilePictureDelete}
         onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        onProfilePictureUploadComplete={mockOnProfilePictureUploadComplete}
+        onCurriculumVitaeUploadComplete={mockOnCurriculumVitaeUploadComplete}
         onSavePersonal={mockOnSavePersonal}
         locale="en"
       />,
@@ -267,6 +277,8 @@ describe('ProfileTabs', () => {
         onProfessionalFileUpload={mockFileUpload}
         onProfilePictureDelete={mockOnProfilePictureDelete}
         onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        onProfilePictureUploadComplete={mockOnProfilePictureUploadComplete}
+        onCurriculumVitaeUploadComplete={mockOnCurriculumVitaeUploadComplete}
         hasProfessionalProfile={true}
         locale="en"
         onSavePersonal={onSavePersonalMock}
@@ -279,14 +291,24 @@ describe('ProfileTabs', () => {
     const visiblePanel = tabpanels.find(panel => !panel.classList.contains('hidden'));
     expect(visiblePanel).toBeTruthy(); // Ensure you found the visible panel
 
+    const nameInput = within(visiblePanel!).getByDisplayValue('John');
+    act(() => {
+      fireEvent.change(nameInput, { target: { value: 'Jane' } });
+    });
+
     const saveButton = within(visiblePanel!).getByText(/save/i);
     expect(saveButton).toBeVisible();
+    expect(saveButton).not.toBeDisabled();
 
-    fireEvent.click(saveButton);
+    act(() => {
+      fireEvent.click(saveButton);
+    });
     expect(onSavePersonalMock).toHaveBeenCalled();
 
     // Simulate saving professional profile
-    fireEvent.click(screen.getByRole('tab', { name: /professional/i }));
+    act(() => {
+      fireEvent.click(screen.getByRole('tab', { name: /professional/i }));
+    });
 
     const professionalPanel = screen
       .getAllByRole('tabpanel')
@@ -294,10 +316,18 @@ describe('ProfileTabs', () => {
 
     expect(professionalPanel).toBeTruthy();
 
+    const bioTextarea = within(professionalPanel!).getByDisplayValue(/Experienced software engineer/i);
+    act(() => {
+      fireEvent.change(bioTextarea, { target: { value: 'Updated bio' } });
+    });
+
     const professionalVisibleSaveButton = within(professionalPanel!).getByText(/save/i);
     expect(professionalVisibleSaveButton).toBeVisible();
+    expect(professionalVisibleSaveButton).not.toBeDisabled();
 
-    fireEvent.click(professionalVisibleSaveButton);
+    act(() => {
+      fireEvent.click(professionalVisibleSaveButton);
+    });
     expect(onSaveProfessionalMock).toHaveBeenCalled();
   });
 
