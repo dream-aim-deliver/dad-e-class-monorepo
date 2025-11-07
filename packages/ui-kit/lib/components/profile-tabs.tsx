@@ -48,7 +48,6 @@ export interface ProfileTabsProps extends isLocalAware {
   isSaving?: boolean;
   hasProfessionalProfile?: boolean;
   onTabChange?: (tab: string) => boolean;
-  defaultTab?: 'personal' | 'professional';
 }
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
@@ -74,7 +73,6 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   isSaving = false,
   hasProfessionalProfile = false,
   onTabChange,
-  defaultTab = 'personal',
 }) => {
   const personalForm = useFormState(personalProfile, {
     enableReloadProtection: true
@@ -184,7 +182,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   return (
     <div className="w-full mx-auto">
       <Tabs.Root
-        defaultTab={defaultTab}
+        defaultTab="personal"
         onValueChange={handleTabChange}
         className="w-full"
       >
