@@ -236,3 +236,5 @@ export interface FormElementTemplate {
 export type FormElementRegistry = {
     [key in FormElementType]: FormElementTemplate;
 };
+
+export type { OneOutOfThreeData };

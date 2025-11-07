@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { FormElementType } from './types';
+import { FormElementType, OneOutOfThreeData } from '../pre-assessment/types';
+import { LessonElement } from '../lesson/types';
 import {
     HeadingElement,
     MultiCheckElement,
@@ -10,8 +11,6 @@ import {
     SingleChoiceElement,
     TextInputElement,
 } from '../lesson-components/types';
-import { LessonElement } from '../lesson/types';
-import { OneOutOfThreeData } from '../out-of-three/one-out-of-three';
 import { DesignerComponent as RichTextDesignerComponent } from '../lesson-components/rich-text';
 import { DesignerComponent as HeadingDesignerComponent } from '../lesson-components/heading-lesson';
 import { DesignerComponent as TextInputDesignerComponent } from '../lesson-components/text-input';
@@ -20,7 +19,12 @@ import { DesignerComponent as MultiCheckDesignerComponent } from '../lesson-comp
 import { DesignerComponent as OneOutOfThreeDesignerComponent } from '../lesson-components/one-out-of-three';
 import { ComponentCard } from '../course-builder/component-card';
 import { SubsectionHeading } from '../text';
-import { IconRichText, IconHeading, IconTextInput, IconSingleChoice, IconMultiChoice, IconOneOutOfThree } from '../icons';
+import { IconRichText } from '../icons/icon-rich-text';
+import { IconHeading } from '../icons/icon-heading';
+import { IconTextInput } from '../icons/icon-text-input';
+import { IconSingleChoice } from '../icons/icon-single-choice';
+import { IconMultiChoice } from '../icons/icon-multi-choice';
+import { IconOneOutOfThree } from '../icons/icon-one-out-of-three';
 import { optionsType } from '../single-choice';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { FormElementType } from './types';
+import { FormElementType } from '../pre-assessment/types';
 import { LessonElement } from '../lesson/types';
 import { FormComponent as RichTextFormComponent } from '../lesson-components/rich-text';
 import { FormComponent as HeadingFormComponent } from '../lesson-components/heading-lesson';
