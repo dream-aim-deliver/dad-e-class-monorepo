@@ -18,7 +18,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
@@ -69,6 +69,7 @@ const professionalProfileValidationSchema = z.object({
 export default function Profile({ locale: localeStr, userEmail, username, roles }: ProfileProps) {
 	const locale = useLocale() as TLocale;
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const t = useTranslations('pages.profile');
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 	const utils = trpc.useUtils();
@@ -82,7 +83,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
 	// Track which tab is active to control data fetching
-	const [activeTab, setActiveTab] = useState<'personal' | 'professional'>('personal');
+	const [activeTab, setActiveTab] = useState<'personal' | 'professional'>(() => {
+		const tabFromUrl = searchParams.get('tab');
+		return (tabFromUrl === 'professional' || tabFromUrl === 'personal') ? tabFromUrl : 'personal';
+	});
+
 
 	// Always fetch personal profile data and languages (needed for default tab)
 	const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
@@ -91,8 +96,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	// Lazy fetch professional profile data and topics only when needed
 	const professionalProfileQuery = trpc.getProfessionalProfile.useQuery({}, {
 		refetchOnWindowFocus: false,
-		refetchOnReconnect: false,
-		retry: false,
 		staleTime: 5 * 60 * 1000,
 	});
 	const topicsQuery = trpc.listTopics.useQuery({}, {
@@ -100,7 +103,16 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		staleTime: 10 * 60 * 1000,
 	});
 
-	// View model state management
+	
+	useEffect(() => {
+		const tabFromUrl = searchParams.get('tab');
+		const validTab = (tabFromUrl === 'professional' || tabFromUrl === 'personal') ? tabFromUrl : 'personal';
+		if (validTab !== activeTab) {
+			setActiveTab(validTab);
+		}
+	}, [searchParams]);
+
+
 	const [professionalProfileViewModel, setProfessionalProfileViewModel] = useState<
 		viewModels.TGetProfessionalProfileViewModel | undefined
 	>(undefined);
@@ -128,10 +140,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		setLanguagesViewModel
 	);
 
-	// Handle tab changes and trigger data fetching
 	const handleTabChange = (newTab: string) => {
 		const tabValue = newTab as 'personal' | 'professional';
-		setActiveTab(tabValue);
+		const currentParams = new URLSearchParams(searchParams.toString());
+		currentParams.set('tab', tabValue);
+		router.push(`?${currentParams.toString()}`);
 		return true;
 	};
 
@@ -201,7 +214,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		onSuccess: async (data) => {
 			setSuccessMessage(t('personalProfileSaved'));
 			setErrorMessage(null);
-			// Invalidate and refetch the personal profile to sync with server state
 			await utils.getPersonalProfile.invalidate();
 		},
 		onError: (error) => {
@@ -447,7 +459,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 					)}
 
 					{/* Display success message */}
-					{successMessage && (
+					{successMessage && !(savePersonalMutation.isPending || saveProfessionalMutation.isPending) && (
 						<Banner style="success" description={successMessage} />
 					)}
 

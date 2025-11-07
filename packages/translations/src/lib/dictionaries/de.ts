@@ -328,7 +328,7 @@ export const DE: TDictionary = {
         'Eine überzeugende Biografie hilft dir, dich von anderen Coaches abzuheben. Dies wird für alle Studierenden sichtbar sein.',
 
       linkedinUrl: 'LinkedIn-URL',
-      linkedinPlaceholder: 'https://www.linkedin.com/company/bewerbeagentur/',
+      linkedinPlaceholder: 'https://www.linkedin.com/in/company/bewerbeagentur/',
 
       curriculumVitae: 'Lebenslauf (CV)',
       portfolioWebsite: 'Portfolio-Webseite-URL (optional)',
