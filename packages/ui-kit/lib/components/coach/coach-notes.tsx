@@ -8,6 +8,7 @@ import { IconLink } from '../icons/icon-link';
 import { CheckBox } from '../checkbox';
 import { LinkEdit, LinkPreview } from '../links';
 import { IconPlus } from '../icons/icon-plus';
+import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../rich-text-element/renderer';
@@ -24,6 +25,7 @@ type noteLink = {
     url: string;
     title: string;
     customIconMetadata?: fileMetadata.TFileMetadata; // Add metadata for file upload status
+    id?: number;
 };
 export interface coachNotesProps extends isLocalAware {
     noteDescription: string;
@@ -45,6 +47,7 @@ export interface coachNotesProps extends isLocalAware {
     onNoteDescriptionChange: (noteDescription: string) => void;
     isEditMode: boolean;
     onBack: () => void;
+    isLoading?: boolean;
 }
 
 export interface coachNotesViewProps extends isLocalAware {
@@ -65,6 +68,7 @@ function CoachNotesCreate({
     onNoteDescriptionChange,
     isEditMode,
     onBack,
+    isLoading = false,
 }: coachNotesProps) {
     const dictionary = getDictionary(locale);
 
@@ -95,6 +99,7 @@ function CoachNotesCreate({
         title: string,
         url: string,
         customIcon?: fileMetadata.TFileMetadata,
+        id?: number,
     ) => {
         if (index === initialNoteLinks.length) {
             // This is a new link being saved
@@ -104,7 +109,7 @@ function CoachNotesCreate({
             }
             onNoteLinksChange([
                 ...initialNoteLinks,
-                { title, url, customIconMetadata: customIcon },
+                { title, url, customIconMetadata: customIcon, id },
             ]);
         } else {
             // This is an existing link being updated
@@ -215,6 +220,7 @@ function CoachNotesCreate({
                                                 title,
                                                 url,
                                                 customIcon,
+                                                link.id,
                                             )
                                         }
                                         onDiscard={() => handleDiscard(index)}
@@ -304,26 +310,33 @@ function CoachNotesCreate({
                         onClick={onBack}
                         variant="secondary"
                         className="w-full"
-                        disabled={editingLinkIndex !== null}
+                        disabled={editingLinkIndex !== null || isLoading}
                     />
                 )}
-                <Button
-                    text={
-                        isEditMode
-                            ? dictionary.components.coachNotes.publishEditNotes
-                            : dictionary.components.coachNotes.publishNotes
-                    }
-                    onClick={() =>
-                        onPublish(
-                            serialize(noteDescription),
-                            initialNoteLinks,
-                            initialIncludeInMaterials,
-                        )
-                    }
-                    disabled={editingLinkIndex !== null}
-                    className="w-full"
-                    variant="primary"
-                />
+                <div className="relative w-full">
+                    <Button
+                        text={
+                            isEditMode
+                                ? dictionary.components.coachNotes.publishEditNotes
+                                : dictionary.components.coachNotes.publishNotes
+                        }
+                        onClick={() =>
+                            onPublish(
+                                serialize(noteDescription),
+                                initialNoteLinks,
+                                initialIncludeInMaterials,
+                            )
+                        }
+                        disabled={editingLinkIndex !== null || isLoading}
+                        className="w-full"
+                        variant="primary"
+                    />
+                    {isLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <IconLoaderSpinner classNames="animate-spin h-5 w-5 text-white" />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

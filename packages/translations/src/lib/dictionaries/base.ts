@@ -1002,6 +1002,9 @@ export const DictionarySchema = z.object({
       editCoachNotes: z.string(),
       exploreCourses: z.string(),
       description: z.string(),
+      errorMessage: z.string(),
+      successMessage: z.string(),
+      closeButton: z.string(),
     }),
     userAvatarReel: z.object({
       andLabel: z.string(),

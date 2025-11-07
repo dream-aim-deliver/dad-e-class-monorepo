@@ -26,7 +26,7 @@ export interface AssignmentDescriptionProps extends isLocalAware {
         category: "video" | "image" | "generic" | "document";
         downloadUrl: string;
     }[];
-    onFileDownload: (downloadUrl: string) => void;
+    onFileDownload: (url: string, name: string) => void;
 };
 
 /**
@@ -119,7 +119,7 @@ export const AssignmentDescription: React.FC<AssignmentDescriptionProps> = (prop
                         deletion={{
                             isAllowed: false,
                         }}
-                        onDownload={() => props.onFileDownload(file.downloadUrl)}
+                        onDownload={() => props.onFileDownload(file.downloadUrl, file.name)}
                         locale={props.locale}
                         readOnly={true}
                     />

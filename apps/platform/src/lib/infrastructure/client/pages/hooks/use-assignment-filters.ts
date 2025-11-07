@@ -1,7 +1,7 @@
 /**
  * Custom hook for managing assignment filtering, sorting, and data fetching.
  * 
- * This hook follows the clean code architecture pattern similar to save-hooks.ts:
+ * This hook follows the clean code architecture pattern similar to use-group-members:
  * - Encapsulates TRPC query for fetching assignments
  * - Manages presenter logic for transforming response to ViewModel
  * - Handles filtering and sorting logic internally
@@ -9,7 +9,8 @@
  * - Self-contained with no external data dependencies
  * 
  * @param courseSlug - The course slug identifier
- * @param groupId - The group identifier
+ * @param groupId - The group identifier (required when requestType is 'requestForCoach')
+ * @param requestType - Type of request ('requestForCoach' or 'requestForStudent')
  * @param initialFilters - Optional initial filter state
  * 
  * @returns Object containing:
@@ -36,7 +37,8 @@ interface AssignmentFilters {
 
 interface UseAssignmentFiltersProps {
     courseSlug: string;
-    groupId: number;
+    groupId?: number;
+    requestType: 'requestForCoach' | 'requestForStudent';
     initialFilters?: AssignmentFilters;
 }
 
@@ -45,6 +47,7 @@ type SortByOption = 'title' | 'status' | 'date' | 'student';
 export function useAssignmentFilters({
     courseSlug,
     groupId,
+    requestType,
     initialFilters = {},
 }: UseAssignmentFiltersProps) {
     const [filters, setFilters] = useState<AssignmentFilters>(initialFilters);
@@ -56,13 +59,19 @@ export function useAssignmentFilters({
         viewModels.TListGroupAssignmentsViewModel | undefined
     >(undefined);
 
+    // Build additional params based on request type
+    const additionalParams = useMemo(() => {
+        const params: any = { requestType };
+        if (requestType === 'requestForCoach' && groupId) {
+            params.groupId = groupId;
+        }
+        return params;
+    }, [requestType, groupId]);
+
     // Fetch group assignments from listGroupAssignments usecase
     const [assignmentsResponse] = trpc.listGroupAssignments.useSuspenseQuery({
         courseSlug: courseSlug,
-        additionalParams: {
-            groupId: groupId,
-            requestType: 'requestForCoach',
-        },
+        additionalParams,
     });
 
     const { presenter: assignmentsPresenter } =

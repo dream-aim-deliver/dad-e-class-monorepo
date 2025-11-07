@@ -56,7 +56,7 @@ export interface MessageCardProps extends isLocalAware {
         replyType: "passed";
         passedAt: number;
     };
-    onFileDownload: (downloadUrl: string) => void;
+    onFileDownload: (url: string, name: string) => void;
 };
 
 /**
@@ -112,7 +112,7 @@ export interface MessageCardProps extends isLocalAware {
  *     ],
  *     sentAt: 1698765432
  *   }}
- *   onFileDownload={(url) => window.open(url, '_blank')}
+ *   onFileDownload={(url, name) => window.open(url, '_blank')}
  *   locale="en"
  * />
  * 
@@ -205,7 +205,7 @@ export const MessageCard: FC<MessageCardProps> = (props) => {
                             deletion={{
                                 isAllowed: false,
                             }}
-                            onDownload={() => props.onFileDownload(file.downloadUrl)}
+                            onDownload={() => props.onFileDownload(file.downloadUrl, file.name)}
                             locale={props.locale}
                             readOnly={true}
                         />

@@ -25,7 +25,7 @@ export interface AssignmentOverviewBaseProps extends isLocalAware {
     onClickCourse: () => void;
     onClickGroup?: () => void;
     onClickView: () => void;
-    onFileDownload: (downloadUrl: string) => void;
+    onFileDownload: (url: string, name: string) => void;
 };
 
 /**
