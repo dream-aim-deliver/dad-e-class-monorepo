@@ -104,7 +104,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
     return (
-        <div className={cn(`flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]`, courseIncluded && 'border-[2px] border-action-default')}>
+        <div className={cn(`flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]`, courseIncluded ? 'border-[2px] border-action-default' : 'opacity-60')}>
             <div className="relative">
                 {shouldShowPlaceholder ? (
                     // Placeholder for broken image (matching CoachBanner styling)
