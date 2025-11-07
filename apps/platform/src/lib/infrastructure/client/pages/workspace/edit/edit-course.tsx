@@ -5,6 +5,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 import {
     AccordionBuilderItem,
+    Banner,
     Breadcrumbs,
     CourseDetailsState,
     CourseIntroductionForm,
@@ -75,6 +76,7 @@ function EditCourseContent({
     roles,
 }: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
+    const editCourseTranslations = useTranslations('pages.editCourse');
 
     const courseViewModel = useCourseDetails(slug);
     // Fetch course status from listUserCourses filtered by slug
@@ -92,7 +94,7 @@ function EditCourseContent({
         editWrap,
     } = useEditCourseState(defaultTab);
 
-    const { courseVersion, setCourseVersion, errorMessage, setErrorMessage } =
+    const { courseVersion, setCourseVersion, errorMessage, setErrorMessage, successMessage, setSuccessMessage } =
         useCourseVersionState();
 
     // General Tab State
@@ -155,6 +157,9 @@ function EditCourseContent({
     const courseStatus = courseViewModel?.data.status
 
     const handleSave = async () => {
+        setErrorMessage(null);
+        setSuccessMessage(null);
+
         let result;
         if (activeTab === TabTypes.General) {
             result = await saveCourseDetails();
@@ -168,9 +173,9 @@ function EditCourseContent({
         }
         if (result) {
             setIsEdited(false);
-            if (activeTab !== TabTypes.CourseContent) {
-                window.location.reload();
-            }
+            setSuccessMessage(editCourseTranslations('saveSuccess'));
+            // Auto-dismiss success message after 5 seconds
+            setTimeout(() => setSuccessMessage(null), 5000);
         }
     };
 
@@ -190,6 +195,7 @@ function EditCourseContent({
             isPreviewing={isPreviewing}
             activeTab={activeTab}
             errorMessage={errorMessage}
+            successMessage={successMessage}
             locale={locale}
             courseDetails={courseDetails}
             courseStatus={courseStatus}
@@ -276,12 +282,15 @@ function useEditCourseState(defaultTab: TabTypes) {
 function useCourseVersionState() {
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     return {
         courseVersion,
         setCourseVersion,
         errorMessage,
         setErrorMessage,
+        successMessage,
+        setSuccessMessage,
     };
 }
 
@@ -294,6 +303,7 @@ interface EditCourseLayoutProps {
     isPreviewing: boolean;
     activeTab: TabTypes;
     errorMessage: string | null;
+    successMessage: string | null;
     locale: TLocale;
     courseDetails: CourseDetailsState;
     courseStatus?: 'draft' | 'live' | 'archived';
@@ -310,6 +320,7 @@ function EditCourseLayout({
     isSaving,
     isPreviewing,
     errorMessage,
+    successMessage,
     locale,
     courseDetails,
     courseStatus,
@@ -389,12 +400,23 @@ function EditCourseLayout({
                         {editCourseTranslations('courseContent')}
                     </Tabs.Trigger>
                 </Tabs.List>
-                {errorMessage && (
-                    <DefaultError
-                        locale={locale}
+                {successMessage && (
+                    <Banner
+                        style="success"
+                        title={successMessage}
+                        closeable
+                        onClose={() => {}}
                         className={tabContentClass}
+                    />
+                )}
+                {errorMessage && (
+                    <Banner
+                        style="error"
                         title={editCourseTranslations('errorSaving')}
                         description={errorMessage}
+                        closeable
+                        onClose={() => {}}
+                        className={tabContentClass}
                     />
                 )}
                 {children}

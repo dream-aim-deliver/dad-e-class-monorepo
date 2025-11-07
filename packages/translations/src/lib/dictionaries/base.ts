@@ -1858,6 +1858,7 @@ export const DictionarySchema = z.object({
       errorDuration: z.string(),
       errorImage: z.string(),
       errorSaving: z.string(),
+      saveSuccess: z.string(),
       notImplementedTitle: z.string(),
       notImplementedDescription: z.string(),
       publishCourseButton: z.string(),

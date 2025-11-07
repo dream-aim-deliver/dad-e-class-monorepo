@@ -1804,6 +1804,7 @@ export const DE: TDictionary = {
       errorDuration: 'Kursdauer ist ungültig.',
       errorImage: 'Kursbild ist erforderlich',
       errorSaving: 'Fehler beim Speichern des Kurses',
+      saveSuccess: 'Änderungen erfolgreich gespeichert!',
       notImplementedTitle: 'Noch nicht implementiert',
       notImplementedDescription: 'Diese Funktion ist noch nicht implementiert.',
       publishCourseButton: 'Kurs veröffentlichen',
