@@ -173,7 +173,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           availableLanguages={availableLanguages}
           locale={locale as TLocale}
           uploadProgress={profilePictureUploadProgress}
-          isSaving={isSaving}
+          isSaving={isSaving ||personalForm.isDirty}
         />
       </div>
     );
@@ -208,7 +208,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             availableLanguages={availableLanguages}
             locale={locale as TLocale}
             uploadProgress={profilePictureUploadProgress}
-            isSaving={isSaving}
+            isSaving={isSaving || personalForm.isDirty}
           />
         </TabContent>
 
@@ -225,7 +225,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onFileDownload={onCurriculumVitaeDownload}
             locale={locale as TLocale}
             uploadProgress={curriculumVitaeUploadProgress}
-            isSaving={isSaving}
+            isSaving={isSaving || professionalForm.isDirty}
           />
         </TabContent>
       </Tabs.Root>
