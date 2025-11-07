@@ -149,6 +149,14 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
       setCurrentTab(unsavedGuard.pendingTab as 'personal' | 'professional');
     }
   };
+  const transformSkills = useMemo(() => {
+    return availableSkills.map((skill) => ({
+     id: skill.id,
+     name: skill.name,
+     slug: skill.slug,
+    }));
+  }, [availableSkills]);
+
 
   if (!hasProfessionalProfile) {
     return (
@@ -208,7 +216,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           <ProfessionalInfo
             initialData={professionalForm.value!}
             onChange={professionalForm.setValue}
-            availableSkills={availableSkills}
+            availableSkills={transformSkills}
             onSave={handleProfessionalSave}
             onFileUpload={onProfessionalFileUpload}
             curriculumVitaeFile={curriculumVitaeFile}

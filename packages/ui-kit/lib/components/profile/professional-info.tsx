@@ -11,10 +11,10 @@ import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 type TProfessionalProfileAPI = viewModels.TGetProfessionalProfileSuccess['profile'];
-type TSkill = { id: number; name: string; slug: string };
+type TSkill = { id: string | number; name: string; slug: string };
 
 interface ProfessionalInfoProps extends isLocalAware {
   initialData: TProfessionalProfileAPI;
@@ -89,14 +89,6 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   const dictionary = getDictionary(locale);
 
   const [skillSearchQuery, setSkillSearchQuery] = useState('');
-  const [allSkills, setAllSkills] = useState<string[]>(
-    () => initialData.skills?.map(s => s.name) ?? [],
-  );
-
-  // Update allSkills when initialData changes
-  useEffect(() => {
-    setAllSkills(initialData.skills?.map(s => s.name) ?? []);
-  }, [initialData]);
 
   const handleChange = <K extends keyof TProfessionalProfileAPI>(
     field: K,
@@ -121,13 +113,12 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
     const newData = { ...initialData, skills: updatedSkills };
     onChange(newData);
+  };
 
-    setAllSkills((prevSkills) => {
-      const skillExists = prevSkills.includes(skill.name);
-      return skillExists
-        ? prevSkills.filter((s) => s !== skill.name)
-        : [...prevSkills, skill.name];
-    });
+  const removeSkill = (skillId: string | number) => {
+    const updatedSkills = initialData.skills.filter((s) => s.id !== skillId);
+    const newData = { ...initialData, skills: updatedSkills };
+    onChange(newData);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -144,7 +135,6 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
   const handleDiscard = () => {
     onChange(initialData);
-    setAllSkills(initialData.skills?.map(s => s.name) ?? []);
   };
 
   return (
@@ -274,18 +264,16 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           </div>
 
           <div className="flex flex-wrap gap-4 items-center mt-2 w-full text-sm font-bold leading-none text-button-text-text">
-            {allSkills?.map((skill, index) => (
+            {initialData.skills?.map((skill, index) => (
               <Button
+                key={skill.id}
                 variant="text"
-                text={skill}
+                text={skill.name}
                 className="p-0"
                 hasIconRight
                 iconRight={<IconClose />}
-                onClick={() =>
-                  setAllSkills((prevSkills) =>
-                    prevSkills.filter((s) => s !== skill),
-                  )
-                }
+
+                onClick={() => removeSkill(skill.id)}
               />
             ))}
           </div>
