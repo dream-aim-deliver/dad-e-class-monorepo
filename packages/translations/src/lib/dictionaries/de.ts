@@ -2803,7 +2803,7 @@ export const DE: TDictionary = {
       weeklyView: 'Wochenansicht',
       monthlyView: 'Monatsansicht',
       groupCoachingTab: 'Gruppen-Coaching',
-      groupCoachingTitle: 'Gruppen-Coaching-Sessions Kalender',
+      groupCoachingTitle: 'Gruppen Coaching Sessions Kalender',
       addGroupSessionButton: 'Gruppen-Session hinzufügen',
       addingGroupSession: 'Gruppen-Session wird hinzugefügt...',
       groupCoachingOfferings: 'Coaching-Angebote',

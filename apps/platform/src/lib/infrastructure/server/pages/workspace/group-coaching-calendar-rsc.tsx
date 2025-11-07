@@ -1,4 +1,7 @@
 import GroupCoachingCalendar from '../../../client/pages/workspace/calendar/group-coaching-calendar';
+import { HydrateClient } from '../../config/trpc/server';
+import { Suspense } from 'react';
+import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 
@@ -14,5 +17,13 @@ export default async function GroupCoachingCalendarServerComponent() {
         redirect('/workspace');
     }
 
-    return <GroupCoachingCalendar />;
+    return (
+        <>
+            <HydrateClient>
+                <Suspense fallback={<DefaultLoadingWrapper />}>
+                    <GroupCoachingCalendar />
+                </Suspense>
+            </HydrateClient>
+        </>
+    );
 }
