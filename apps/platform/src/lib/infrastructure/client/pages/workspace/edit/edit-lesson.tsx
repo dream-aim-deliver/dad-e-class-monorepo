@@ -112,7 +112,7 @@ function PreviewRenderer({
     };
 
     return (
-        <AssignmentViewProvider mode="study" config={{ studentId: 0 }}>
+        <AssignmentViewProvider mode="study" config={{ studentUsername: undefined }}>
             <FileUploadProvider mode="mock" config={{ lessonId: 0 }}>
                 <div className="flex flex-col gap-4">
                     {components.map(renderComponent)}
@@ -424,6 +424,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             <Breadcrumbs items={breadcrumbItems} />
             <EditHeader
                 title={`${editLessonsTranslations('editLessonTitle')}: ${lessonTitle}`}
+                courseTitle=""
                 onPreview={() => {
                     setIsPreviewing((prev) => !prev);
                 }}
@@ -432,6 +433,8 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}
                 locale={locale}
+                roles={[]}
+                slug=""
             />
             {errorMessage && (
                 <DefaultError

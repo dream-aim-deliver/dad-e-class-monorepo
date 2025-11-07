@@ -27,7 +27,7 @@ export default async function EditCourseServerComponent({
     const highestRoleParsed = highestRole ?? 'visitor';
     validateUserRole(highestRoleParsed);
 
-    if (highestRoleParsed !== 'admin' && highestRoleParsed !== 'course_creator') {
+    if (highestRoleParsed !== 'superadmin' && highestRoleParsed !== 'admin' && highestRoleParsed !== 'course_creator') {
         // TODO: localize this error message
         throw new Error('You can\'t edit this course');
     }
@@ -58,7 +58,7 @@ export default async function EditCourseServerComponent({
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>
             <HydrateClient>
-                <EditCourse slug={slug} defaultTab={defaultTab} />
+                <EditCourse slug={slug} defaultTab={defaultTab} roles={roles} />
             </HydrateClient>
         </Suspense>
     );

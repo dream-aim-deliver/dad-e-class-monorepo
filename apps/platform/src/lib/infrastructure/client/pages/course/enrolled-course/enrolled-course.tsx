@@ -41,6 +41,7 @@ interface EnrolledCourseProps {
     currentRole: string;
     courseSlug: string;
     tab?: string;
+    studentUsername?: string;
 }
 
 function CourseTabList({ role }: { role: string }) {
@@ -273,7 +274,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     />
                 </Tabs.Content>
                 <Tabs.Content value="study" className={tabContentClass}>
-                    <EnrolledCoursePreview courseSlug={props.courseSlug} enableSubmit />
+                    <EnrolledCoursePreview courseSlug={props.courseSlug} enableSubmit studentUsername={props.studentUsername} />
                 </Tabs.Content>
                 <Tabs.Content value="assignments" className={tabContentClass}>
                     <DefaultError locale={locale} />

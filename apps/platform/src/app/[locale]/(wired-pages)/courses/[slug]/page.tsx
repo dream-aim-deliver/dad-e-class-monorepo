@@ -1,5 +1,6 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import CourseServerComponent from '../../../../../lib/infrastructure/server/pages/course-rsc';
+import getSession from '../../../../../lib/infrastructure/server/config/auth/get-session';
 
 export default async function Page({
     params: paramsPromise,
@@ -23,5 +24,9 @@ export default async function Page({
         tab = undefined;
     }
 
-    return <CourseServerComponent slug={slug} locale={locale} role={role} tab={tab} />;
+    // Get session and extract student username
+    const session = await getSession();
+    const username = session?.user?.name || undefined;
+
+    return <CourseServerComponent slug={slug} locale={locale} role={role} tab={tab} username={username} />;
 }

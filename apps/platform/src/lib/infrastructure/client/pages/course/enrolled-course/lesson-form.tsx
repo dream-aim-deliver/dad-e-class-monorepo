@@ -21,11 +21,13 @@ import { trpc } from '../../../trpc/cms-client';
 import { FileUploadProvider } from '../utils/file-upload';
 import { idToNumber } from '../../workspace/edit/utils/id-to-number';
 import { AssignmentViewProvider } from '../utils/assignment-view';
+import { useSession } from 'next-auth/react';
 
 interface LessonFormProps {
     lessonId: number;
     data: viewModels.TListLessonComponentsSuccess;
     enableSubmit?: boolean;
+    studentUsername?: string;
 }
 
 const transformTextInput = (
@@ -169,6 +171,7 @@ export default function LessonForm({
     lessonId,
     data,
     enableSubmit = false,
+    studentUsername,
 }: LessonFormProps) {
     const components = data.components;
     const locale = useLocale() as TLocale;
@@ -249,7 +252,7 @@ export default function LessonForm({
     const isSubmitting = submitProgressMutation.isPending;
 
     return (
-        <AssignmentViewProvider mode={enableSubmit ? 'study' : 'preview'} config={{ studentId: 1 }}>
+        <AssignmentViewProvider mode={enableSubmit ? 'study' : 'preview'} config={{ studentUsername }}>
             <FileUploadProvider
                 mode={enableSubmit ? 'real' : 'mock'}
                 config={{ lessonId: lessonId }}

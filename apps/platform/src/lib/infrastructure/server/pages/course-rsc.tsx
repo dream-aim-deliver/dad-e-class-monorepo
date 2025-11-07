@@ -22,14 +22,16 @@ interface CourseServerComponentProps {
     slug: string;
     locale: TLocale;
     role?: string;
-    tab?: string
+    tab?: string;
+    username?: string;
 }
 
 export default async function CourseServerComponent({
     slug,
     locale,
     role,
-    tab
+    tab,
+    username
 }: CourseServerComponentProps) {
     const courseAccessViewModel = await fetchCourseAccess(slug);
     if (courseAccessViewModel.mode !== 'default') {
@@ -57,7 +59,7 @@ export default async function CourseServerComponent({
     // TODO: might differ base on the tab
     await prefetchIntroductionData(slug, currentRole);
 
-    return renderEnrolledCourse({ slug, roles, currentRole, tab });
+    return renderEnrolledCourse({ slug, roles, currentRole, tab, username });
 }
 
 async function fetchCourseAccess(
@@ -184,11 +186,13 @@ function renderEnrolledCourse({
     roles,
     currentRole,
     tab,
+    username,
 }: {
     slug: string;
     roles: string[];
     currentRole: string;
     tab?: string;
+    username?: string;
 }) {
     return (
         <HydrateClient>
@@ -198,6 +202,7 @@ function renderEnrolledCourse({
                     roles={roles.filter((role) => role !== 'visitor')}
                     currentRole={currentRole}
                     tab={tab}
+                    studentUsername={username}
                 />
             </Suspense>
         </HydrateClient>

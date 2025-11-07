@@ -23,12 +23,12 @@ import { useRealProgressUpload } from '../utils/file-upload';
 
 interface AssignmentContentProps {
     assignmentId: string;
-    studentId: number;
+    studentUsername?: string;
 }
 
 export default function AssignmentContent({
     assignmentId,
-    studentId,
+    studentUsername,
 }: AssignmentContentProps) {
     const locale = useLocale() as TLocale;
     const session = useSession();
@@ -36,7 +36,7 @@ export default function AssignmentContent({
     const [assignmentResponse, { refetch: refetchAssignment }] =
         trpc.getAssignment.useSuspenseQuery({
             assignmentId,
-            studentId,
+            studentUsername,
         });
     const [assignmentViewModel, setAssignmentViewModel] = useState<
         viewModels.TAssignmentViewModel | undefined
@@ -68,7 +68,7 @@ export default function AssignmentContent({
                 />
             )}
             <AssignmentInteraction
-                studentId={studentId}
+                studentUsername={studentUsername}
                 assignmentId={assignmentId}
                 assignment={assignment}
                 refetchAssignment={refetchAssignment}
@@ -78,14 +78,14 @@ export default function AssignmentContent({
 }
 
 interface AssignmentInteractionProps {
-    studentId: number;
+    studentUsername?: string;
     assignmentId: string;
     assignment: viewModels.TAssignmentSuccess;
     refetchAssignment: () => void;
 }
 
 function AssignmentInteraction({
-    studentId,
+    studentUsername,
     assignmentId,
     assignment,
     refetchAssignment,
@@ -165,10 +165,15 @@ function AssignmentInteraction({
     };
 
     const onClickSendMessage = async () => {
+        if (!studentUsername) {
+            console.error('Cannot send assignment reply: studentUsername is undefined');
+            return;
+        }
+
         sendReplyMutation.mutate(
             {
                 assignmentId,
-                studentId,
+                studentUsername,
                 comment: comment,
                 fileIds: files.map((f) => Number(f.id)),
                 links: links.map((l) => ({
@@ -193,10 +198,15 @@ function AssignmentInteraction({
     };
 
     const onClickMarkAsPassed = async () => {
+        if (!studentUsername) {
+            console.error('Cannot mark assignment as passed: studentUsername is undefined');
+            return;
+        }
+
         passAssignmentMutation.mutate(
             {
                 assignmentId,
-                studentId,
+                studentUsername,
             },
             {
                 onSuccess: () => {
@@ -212,7 +222,7 @@ function AssignmentInteraction({
     const isSending =
         sendReplyMutation.isPending || passAssignmentMutation.isPending;
 
-    const isStudent = session.data?.user?.id === studentId.toString();
+    const isStudent = session.data?.user?.name === studentUsername;
 
     // TODO: display uploadError somewhere in the UI
     return (
