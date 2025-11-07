@@ -2,7 +2,8 @@
 
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
-import { useState, useCallback } from 'react';
+import { useRequiredPlatform } from '../context/platform-context';
+import { useState, useCallback, useMemo } from 'react';
 import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetPlatformLanguagePresenter } from '../hooks/use-platform-language-presenter';
@@ -63,6 +64,7 @@ interface PackagePreviewData {
 export default function CreatePackage() {
     // Platform context
     const platformContext = useRequiredPlatformLocale();
+    const { platform } = useRequiredPlatform();
     const contentLocale = useContentLocale();
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -120,6 +122,8 @@ export default function CreatePackage() {
 
     // Preview state
     const [coachingIncluded, setCoachingIncluded] = useState(true);
+
+    const currency = platform?.currency ?? 'CHF';
     const [isPublishing, setIsPublishing] = useState(false);
 
     // Error and success message state
@@ -223,9 +227,9 @@ export default function CreatePackage() {
 
     // Course management functions
     const toggleCourseSelection = useCallback((courseId: string) => {
-        setSelectedCourseIds(prev =>
+        setSelectedCourseIds((prev) =>
             prev.includes(courseId)
-                ? prev.filter(id => id !== courseId)
+                ? prev.filter((id) => id !== courseId)
                 : [...prev, courseId]
         );
     }, []);
@@ -280,7 +284,13 @@ export default function CreatePackage() {
                     courseAmount: Number(courseAmount),
                     discountPercent: Number(String(discount).replace('%', '')),
                 }))
-                .filter(d => !Number.isNaN(d.courseAmount) && !Number.isNaN(d.discountPercent));
+                .filter(
+                    (d) =>
+                        !Number.isNaN(d.courseAmount) &&
+                        !Number.isNaN(d.discountPercent) &&
+                        d.courseAmount > 1 &&
+                        d.courseAmount < selectedCourseIds.length,
+                );
 
             const accordionItemsPayload = packageDetailsFormData.accordionItems.map((item: AccordionBuilderItem, idx: number) => ({
                 title: item.title,
@@ -315,39 +325,59 @@ export default function CreatePackage() {
         coachingIncluded, router, locale, platformSlug, platformLocale, createPackageMutation
     ]);
 
-    // Get selected courses data
-    const selectedCourses = allCourses.filter(course => selectedCourseIds.includes(course.id));
+    const selectedCourses = allCourses.filter((course) =>
+        selectedCourseIds.includes(course.id),
+    );
 
-    // Pricing calculations
-    const calculateIndividualCourseTotal = useCallback(() => {
-        return selectedCourses.reduce((total, course) => {
-            return total + (coachingIncluded ? course.pricing.fullPrice : course.pricing.partialPrice);
-        }, 0);
-    }, [selectedCourses, coachingIncluded]);
+    const parsePrice = useCallback((value: string) => {
+        if (!value) {
+            return 0;
+        }
 
-    const calculatePackagePrice = useCallback(() => {
-        const basePrice = coachingIncluded
-            ? pricingFormData.completePackageWithCoaching
-            : pricingFormData.completePackageWithoutCoaching;
+        const normalized = value.replace(/[^\d.,]/g, '').replace(',', '.');
+        const parsed = Number(normalized);
+        return Number.isNaN(parsed) ? 0 : parsed;
+    }, []);
 
-        // Extract numeric value from price string (e.g., "5400 CHF" -> 5400)
-        const numericPrice = parseFloat(basePrice.replace(/[^\d.]/g, '')) || 0;
-        return numericPrice;
-    }, [pricingFormData, coachingIncluded]);
+    const packagePriceWithCoachingValue = useMemo(
+        () => parsePrice(pricingFormData.completePackageWithCoaching),
+        [parsePrice, pricingFormData.completePackageWithCoaching],
+    );
 
-    const calculateSavings = useCallback(() => {
-        const individualTotal = calculateIndividualCourseTotal();
-        const packagePrice = calculatePackagePrice();
-        return Math.max(0, individualTotal - packagePrice);
-    }, [calculateIndividualCourseTotal, calculatePackagePrice]);
+    const packagePriceWithoutCoachingValue = useMemo(
+        () => parsePrice(pricingFormData.completePackageWithoutCoaching),
+        [parsePrice, pricingFormData.completePackageWithoutCoaching],
+    );
 
-    // Calculate total duration from selected courses
-    const calculateTotalDuration = useCallback(() => {
-        return selectedCourses.reduce((total, course) => {
-            const courseDuration = course.duration.video + course.duration.coaching + course.duration.selfStudy;
-            return total + courseDuration;
-        }, 0);
-    }, [selectedCourses]);
+    const fullCoursePriceWithCoaching = useMemo(
+        () =>
+            selectedCourses.reduce(
+                (total, course) => total + (course.pricing.fullPrice ?? 0),
+                0,
+            ),
+        [selectedCourses],
+    );
+
+    const fullCoursePriceWithoutCoaching = useMemo(
+        () =>
+            selectedCourses.reduce(
+                (total, course) => total + (course.pricing.partialPrice ?? 0),
+                0,
+            ),
+        [selectedCourses],
+    );
+
+    const totalDurationInMinutes = useMemo(
+        () =>
+            selectedCourses.reduce((total, course) => {
+                const video = course.duration?.video ?? 0;
+                const coachingMinutes = course.duration?.coaching ?? 0;
+                const selfStudy = course.duration?.selfStudy ?? 0;
+                return total + video + coachingMinutes + selfStudy;
+            }, 0),
+        [selectedCourses],
+    );
+
 
     // Breadcrumbs following the standard pattern
     const breadcrumbItems = [
@@ -505,6 +535,7 @@ export default function CreatePackage() {
                     formData={pricingFormData}
                     onFormDataChange={handlePricingChange}
                     locale={locale}
+                    selectedCourseCount={selectedCourseIds.length}
                 />
             )}
 
@@ -514,15 +545,18 @@ export default function CreatePackage() {
                     packageTitle={packageDetailsFormData.packageTitle}
                     packageDescription={packageDetailsFormData.packageDescription}
                     featuredImageUrl={packageDetailsFormData.featuredImage?.url}
-                    durationInMinutes={calculateTotalDuration()}
+                    durationInMinutes={totalDurationInMinutes}
                     showListItemNumbers={packageDetailsFormData.showListItemNumbers}
                     accordionItems={packageDetailsFormData.accordionItems}
                     selectedCourses={selectedCourses}
-                    onExcludeCourse={(id: string) => toggleCourseSelection(id)}
+                    currency={currency}
+                    packagePriceWithCoaching={packagePriceWithCoachingValue}
+                    packagePriceWithoutCoaching={packagePriceWithoutCoachingValue}
+                    fullCoursePriceWithCoaching={fullCoursePriceWithCoaching}
+                    fullCoursePriceWithoutCoaching={fullCoursePriceWithoutCoaching}
+                    partialDiscounts={pricingFormData.partialDiscounts}
                     coachingIncluded={coachingIncluded}
                     onToggleCoaching={() => setCoachingIncluded(!coachingIncluded)}
-                    selectedCoursesTotal={calculateIndividualCourseTotal()}
-                    selectedCoursesSavings={calculateSavings()}
                     onBack={handleBack}
                     onPublish={handlePublishPackage}
                     isPublishing={isPublishing}
