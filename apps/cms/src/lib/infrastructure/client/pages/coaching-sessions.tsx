@@ -22,7 +22,7 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { CoachingSessionGrid } from '@maany_shr/e-class-ui-kit';
-import { usePlatform } from '../context/platform-context';
+import { useRequiredPlatform } from '../context/platform-context';
 
 interface CoachingSessionsProps {
   locale: TLocale;
@@ -43,8 +43,8 @@ export default function CoachingSessions({
   const t = useTranslations('pages.coachingSessions');
   const router = useRouter();
   
-  // Use safer platform context access
-  const platformContext = usePlatform();
+
+  const { platform } = useRequiredPlatform();
   
   // TRPC query for coaching sessions data with stale time configuration
   const [coachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({}, {
@@ -69,11 +69,6 @@ export default function CoachingSessions({
 
   const gridRef = useRef<any>(null);
   
-  if (!platformContext) {
-    return <DefaultLoading locale={currentLocale} variant="minimal" />;
-  }
-  
-  const { platform } = platformContext;
   // Loading state
   if (!coachingSessionsViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
