@@ -35,7 +35,7 @@ interface ProfileProps {
 }
 
 // LinkedIn URL validation regex - matches standard LinkedIn profile/company URLs
-const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|showcase)\/[\w\-]+\/?$/;
+const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|showcase)\/[\w-]+\/?$/;
 
 // Zod schema for professional profile validation
 const professionalProfileValidationSchema = z.object({
@@ -110,7 +110,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		if (validTab !== activeTab) {
 			setActiveTab(validTab);
 		}
-	}, [searchParams]);
+	}, [searchParams, activeTab]);
 
 
 	const [professionalProfileViewModel, setProfessionalProfileViewModel] = useState<
@@ -154,7 +154,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		personalPresenter.present(personalProfileResponse, personalProfileViewModel);
 		// @ts-ignore - Presenter type compatibility issue
 		languagesPresenter.present(languagesResponse, languagesViewModel);
-	}, [personalProfileResponse, languagesResponse, personalPresenter, languagesPresenter]);
+	}, [personalProfileResponse, languagesResponse, personalPresenter, languagesPresenter, personalProfileViewModel, languagesViewModel]);
 
 	// Present professional data only when available
 	useEffect(() => {
@@ -162,7 +162,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			// @ts-ignore - Presenter type compatibility issue
 			professionalPresenter.present(professionalProfileQuery.data, professionalProfileViewModel);
 		}
-	}, [professionalProfileQuery.data, professionalPresenter]);
+	}, [professionalProfileQuery.data, professionalPresenter, professionalProfileViewModel]);
 
 	// Present topics data only when available
 	useEffect(() => {
@@ -170,7 +170,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			// @ts-ignore - Presenter type compatibility issue
 			topicsPresenter.present(topicsQuery.data, topicsViewModel);
 		}
-	}, [topicsQuery.data, topicsPresenter]);
+	}, [topicsQuery.data, topicsPresenter, topicsViewModel]);
 
 
 
