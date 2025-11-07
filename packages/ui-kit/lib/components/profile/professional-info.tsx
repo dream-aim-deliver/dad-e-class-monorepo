@@ -26,7 +26,7 @@ interface ProfessionalInfoProps extends isLocalAware {
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
-  onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
+  onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
   onFileDelete: (id: string) => void;
   onFileDownload?: (id: string) => void;
   uploadProgress?: number;
@@ -141,24 +141,6 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     return await onFileUpload(fileRequest, abortSignal);
   };
 
-  const handleUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
-    // Update form data with the uploaded file metadata
-    if (fileMetadata.category === 'document') {
-      // Use the file metadata directly without transformation
-      const newData = { ...initialData, curriculumVitae: fileMetadata as any };
-      onChange(newData);
-    }
-
-    // Notify parent component that upload is complete
-    onUploadComplete?.(fileMetadata);
-  };
-
-  const handleFileDelete = (id: string) => {
-    const newData = { ...initialData, curriculumVitae: null };
-    onChange(newData);
-    // Notify parent component about deletion
-    onFileDelete?.(id);
-  };
 
   const handleDiscard = () => {
     onChange(initialData);
@@ -208,8 +190,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             file={curriculumVitaeFile ?? null}
             acceptedFileTypes={['application/pdf']}
             onFilesChange={handleUploadedFiles}
-            onUploadComplete={handleUploadComplete}
-            onDelete={handleFileDelete}
+            onUploadComplete={onUploadComplete}
+            onDelete={(id) => onFileDelete?.(id)}
             onDownload={(id) => onFileDownload?.(id)}
             locale={locale}
             uploadProgress={uploadProgress}
@@ -321,6 +303,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                   size="small"
                   onClick={() => setShowModal(false)}
                   className="text-button-text-text"
+                  type="button"
                 />
               </div>
 
