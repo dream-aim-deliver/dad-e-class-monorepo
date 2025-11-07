@@ -28,14 +28,9 @@ export function useProfilePictureUpload({
 		undefined,
 	);
 
-	// Sync state when initialImage changes - use ID as stable dependency
 	useEffect(() => {
-		// Only update if the IDs are different (avoids infinite loops from object recreation)
-		if (initialImage?.id !== profilePicture?.id) {
-			setProfilePicture(initialImage);
-		}
-	}, [initialImage?.id]); // Only depend on ID, not the whole object
-
+		setProfilePicture(initialImage);
+	}, [initialImage]);
 	const uploadImage = async (
 		uploadRequest: fileMetadata.TFileUploadRequest,
 		abortSignal?: AbortSignal,
@@ -118,10 +113,9 @@ export function useProfilePictureUpload({
 		}
 	};
 
-	const handleUploadComplete = useCallback((file: fileMetadata.TFileMetadata) => {
-		// Since profile pictures are always images, we can safely cast
+	const handleUploadComplete = (file: fileMetadata.TFileMetadata) => {
 		setProfilePicture(file as fileMetadata.TFileMetadataImage);
-	}, []);
+	}
 
 	const handleDelete = (id: string) => {
 		if (profilePicture?.id === id) {

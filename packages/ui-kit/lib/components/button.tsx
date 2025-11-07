@@ -105,7 +105,7 @@ export const Button: FC<ButtonProps & React.ButtonHTMLAttributes<HTMLButtonEleme
 
   return (
     <button
-    
+      type="button"
       className={cn(
         buttonSizeClasses,
         'cursor-pointer flex items-center gap-1',

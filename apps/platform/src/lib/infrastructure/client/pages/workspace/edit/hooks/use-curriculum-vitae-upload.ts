@@ -30,15 +30,10 @@ export function useCurriculumVitaeUpload({
 	const [uploadError, setUploadError] = useState<string | undefined>(
 		undefined,
 	);
-
-	// Sync state when initialDocument changes - use ID as stable dependency
-	useEffect(() => {
-		// Only update if the IDs are different (avoids infinite loops from object recreation)
-		if (initialDocument?.id !== curriculumVitae?.id) {
-			setCurriculumVitae(initialDocument);
-		}
-	}, [initialDocument?.id]); // Only depend on ID, not the whole object
-
+  
+	useEffect(()=>{
+		setCurriculumVitae(initialDocument);
+	}, [initialDocument]);
 	const uploadDocument = async (
 		uploadRequest: fileMetadata.TFileUploadRequest,
 		abortSignal?: AbortSignal,
@@ -120,6 +115,7 @@ export function useCurriculumVitaeUpload({
 	};
 
 	const handleUploadComplete = useCallback((file: TFileMetadataDocument) => {
+
 		setCurriculumVitae(file);
 	}, []);
 
