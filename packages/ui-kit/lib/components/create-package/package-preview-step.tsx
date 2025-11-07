@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '../button';
 import { BuyCompletePackageBanner } from '../buy-complete-package-banner';
 import { CourseCard } from '../course-card/course-card';
@@ -39,18 +39,21 @@ export interface PackagePreviewStepProps {
 
     // Courses
     selectedCourses: CoursePreview[];
-    onExcludeCourse: (courseId: string) => void;
+    partialDiscounts: Record<string, string>;
+    currency: string;
 
     // Pricing
+    packagePriceWithCoaching: number;
+    packagePriceWithoutCoaching: number;
+    fullCoursePriceWithCoaching: number;
+    fullCoursePriceWithoutCoaching: number;
     coachingIncluded: boolean;
     onToggleCoaching: () => void;
-    selectedCoursesTotal: number;
-    selectedCoursesSavings: number;
 
-    // Footer actions
-    onBack: () => void;
-    onPublish: () => void;
-    isPublishing: boolean;
+    // Optional publish controls (supported for backwards compatibility)
+    onBack?: () => void;
+    onPublish?: () => void;
+    isPublishing?: boolean;
 
     // Purchase callback
     onClickPurchase: () => void;
@@ -78,7 +81,6 @@ export interface PackagePreviewStepProps {
  * - Coaching inclusion toggle functionality
  * - Course exclusion controls for flexible purchasing
  * - Complete package purchase banner
- * - Publish workflow controls (Back/Publish buttons)
  *
  * Props:
  * @param {string} packageTitle - Title of the package
@@ -88,14 +90,10 @@ export interface PackagePreviewStepProps {
  * @param {boolean} showListItemNumbers - Whether to show numbers in accordion items
  * @param {AccordionBuilderItem[]} accordionItems - Array of accordion items to display
  * @param {CoursePreview[]} selectedCourses - Array of selected courses for the package
- * @param {function} onExcludeCourse - Function to handle course exclusion from package
+ * @param {Record<string, string>} partialDiscounts - Discounts applied based on number of selected courses
+ * @param {string} currency - Currency code for pricing display
  * @param {boolean} coachingIncluded - Whether coaching is included in the package
  * @param {function} onToggleCoaching - Function to toggle coaching inclusion
- * @param {number} selectedCoursesTotal - Total price of selected courses
- * @param {number} selectedCoursesSavings - Total savings amount
- * @param {function} onBack - Function to handle back navigation
- * @param {function} onPublish - Function to handle package publishing
- * @param {boolean} isPublishing - Loading state for publish action
  * @param {function} onClickPurchase - Function to handle purchase button clicks (use no-op function for preview mode)
  * @param {function} onCourseDetails - Function to handle course details clicks (receives courseId)
  * @param {function} onCourseAuthorClick - Function to handle course author clicks (receives courseId)
@@ -111,14 +109,10 @@ export interface PackagePreviewStepProps {
  *   showListItemNumbers={showListItemNumbers}
  *   accordionItems={accordionItems}
  *   selectedCourses={selectedCourses}
- *   onExcludeCourse={onExcludeCourse}
+ *   partialDiscounts={partialDiscounts}
+ *   currency="CHF"
  *   coachingIncluded={coachingIncluded}
  *   onToggleCoaching={onToggleCoaching}
- *   selectedCoursesTotal={selectedCoursesTotal}
- *   selectedCoursesSavings={selectedCoursesSavings}
- *   onBack={onBack}
- *   onPublish={onPublish}
- *   isPublishing={isPublishing}
  *   onClickPurchase={() => {}} // Use no-op function for preview mode
  *   onCourseDetails={(courseId) => router.push(`/courses/${courseId}`)} // Navigate to course details
  *   onCourseAuthorClick={(courseId) => router.push(`/coaches/${courseId}`)} // Navigate to author profile
@@ -135,21 +129,102 @@ export function PackagePreviewStep({
     showListItemNumbers,
     accordionItems,
     selectedCourses,
-    onExcludeCourse,
+    partialDiscounts,
+    currency,
+    packagePriceWithCoaching,
+    packagePriceWithoutCoaching,
+    fullCoursePriceWithCoaching,
+    fullCoursePriceWithoutCoaching,
     coachingIncluded,
     onToggleCoaching,
-    selectedCoursesTotal,
-    selectedCoursesSavings,
-    onBack,
-    onPublish,
-    isPublishing,
     onClickPurchase,
     onCourseDetails,
     onCourseAuthorClick,
     locale,
 }: PackagePreviewStepProps) {
     const dictionary = getDictionary(locale);
-    
+
+    const [previewExcludedCourseIds, setPreviewExcludedCourseIds] = useState<string[]>([]);
+
+    useEffect(() => {
+        setPreviewExcludedCourseIds((prev) =>
+            prev.filter((id) => selectedCourses.some((course) => course.id === id)),
+        );
+    }, [selectedCourses]);
+
+    const handleToggleCourseInPreview = useCallback((courseId: string) => {
+        setPreviewExcludedCourseIds((prev) =>
+            prev.includes(courseId)
+                ? prev.filter((id) => id !== courseId)
+                : [...prev, courseId]
+        );
+    }, []);
+
+    const includedCourses = useMemo(
+        () =>
+            selectedCourses.filter(
+                (course) => !previewExcludedCourseIds.includes(course.id),
+            ),
+        [selectedCourses, previewExcludedCourseIds],
+    );
+
+    const currentPackagePrice = coachingIncluded
+        ? packagePriceWithCoaching
+        : packagePriceWithoutCoaching;
+
+    const baseFullPrice = coachingIncluded
+        ? fullCoursePriceWithCoaching
+        : fullCoursePriceWithoutCoaching;
+
+    const previewCoursesFullPrice = useMemo(() => {
+        return includedCourses.reduce((total, course) => {
+            const price = coachingIncluded
+                ? course.pricing.fullPrice ?? 0
+                : course.pricing.partialPrice ?? 0;
+            return total + price;
+        }, 0);
+    }, [includedCourses, coachingIncluded]);
+
+    const previewDiscountPercent = useMemo(() => {
+        if (includedCourses.length === 0) {
+            return 0;
+        }
+        const raw = partialDiscounts[String(includedCourses.length)] ?? '';
+        const normalized = raw.replace(/[^\d.]/g, '').replace(',', '.');
+        const parsed = Number(normalized);
+        if (Number.isNaN(parsed)) {
+            return 0;
+        }
+        return parsed;
+    }, [includedCourses.length, partialDiscounts]);
+
+    const isAllCoursesSelected =
+        includedCourses.length > 0 &&
+        includedCourses.length === selectedCourses.length;
+
+    const previewPrice = useMemo(() => {
+        if (includedCourses.length === 0) {
+            return 0;
+        }
+
+        if (isAllCoursesSelected) {
+            return currentPackagePrice;
+        }
+
+        if (previewDiscountPercent <= 0) {
+            return previewCoursesFullPrice;
+        }
+
+        const discounted = previewCoursesFullPrice * (1 - previewDiscountPercent / 100);
+        return Math.max(0, discounted);
+    }, [
+        includedCourses.length,
+        isAllCoursesSelected,
+        currentPackagePrice,
+        previewCoursesFullPrice,
+        previewDiscountPercent,
+    ]);
+
     return (
         <div className="flex flex-col gap-8 bg-card-fill p-5 border border-card-stroke rounded-medium">
             {/* Top hero section */}
@@ -159,10 +234,15 @@ export function PackagePreviewStep({
                 imageUrl={featuredImageUrl || ''}
                 description={packageDescription}
                 duration={durationInMinutes || 0}
-                // TODO: Remove hardcoded currency
-                pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: selectedCoursesSavings } as any}
+                pricing={{
+                    currency,
+                    fullPrice: baseFullPrice,
+                    partialPrice: currentPackagePrice,
+                } as any}
                 locale={locale}
                 onClickPurchase={onClickPurchase}
+                coachingIncluded={coachingIncluded}
+                onToggleCoaching={onToggleCoaching}
             />
 
             <div className="border-t border-card-stroke" />
@@ -190,44 +270,59 @@ export function PackagePreviewStep({
                 title={dictionary.components.packagePreviewStep.flexibleSectionTitle}
                 description={dictionary.components.packagePreviewStep.flexibleDescription}
                 coachingIncluded={coachingIncluded}
-                // TODO: Remove hardcoded currency
-                pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: Math.max(selectedCoursesTotal - selectedCoursesSavings, 0) }}
+                pricing={{
+                    currency,
+                    fullPrice: previewCoursesFullPrice,
+                    partialPrice: previewPrice,
+                } as any}
                 onClickCheckbox={onToggleCoaching}
                 onClickPurchase={onClickPurchase}
                 locale={locale}
             >
-                {selectedCourses.map((course) => (
-                    <div key={course.id} className="w-full">
-                        <CourseCard
-                            userType="visitor"
-                            reviewCount={course.reviewCount}
-                            locale={locale}
-                            language={{ code: course.language.code, name: course.language.name } as any}
-                            course={{
-                                title: course.title,
-                                description: course.description,
-                                author: course.author,
-                                imageUrl: course.imageUrl,
-                                rating: course.rating,
-                                duration: course.duration,
-                                pricing: course.pricing,
-                            } as any}
-                            sessions={course.sessions}
-                            sales={course.sales}
-                            onDetails={() => onCourseDetails(course.id)}
-                            onClickUser={() => onCourseAuthorClick(course.id)}
-                            className="mb-3"
-                        />
+                {selectedCourses.map((course) => {
+                    const isExcluded = previewExcludedCourseIds.includes(course.id);
+                    return (
+                        <div
+                            key={course.id}
+                            className={`w-full ${isExcluded ? 'opacity-60' : ''}`}
+                        >
+                            <CourseCard
+                                userType="visitor"
+                                reviewCount={course.reviewCount}
+                                locale={locale}
+                                language={{ code: course.language.code, name: course.language.name } as any}
+                                course={{
+                                    title: course.title,
+                                    description: course.description,
+                                    author: course.author,
+                                    imageUrl: course.imageUrl,
+                                    rating: course.rating,
+                                    duration: course.duration,
+                                    pricing: course.pricing,
+                                } as any}
+                                sessions={course.sessions}
+                                sales={course.sales}
+                                onDetails={() => onCourseDetails(course.id)}
+                                onClickUser={() => onCourseAuthorClick(course.id)}
+                                className="mb-3"
+                            />
                         <div className="flex items-center justify-between">
-                            <span className="font-semibold text-text-primary">
-                                {course.pricing.currency} {course.pricing.partialPrice}
-                            </span>
+                                <span className="font-semibold text-text-primary">
+                                    {course.pricing.currency}{' '}
+                                    {coachingIncluded
+                                        ? course.pricing.fullPrice
+                                        : course.pricing.partialPrice}
+                                </span>
                             <div className="flex gap-2">
                                 <Button
-                                    variant="secondary"
+                                        variant="secondary"
                                     size="small"
-                                    text={dictionary.components.packagePreviewStep.excludeButton}
-                                    onClick={() => onExcludeCourse(course.id)}
+                                        text={
+                                            isExcluded
+                                                ? dictionary.components.packagePreviewStep.includeButton
+                                                : dictionary.components.packagePreviewStep.excludeButton
+                                        }
+                                        onClick={() => handleToggleCourseInPreview(course.id)}
                                 />
                                 <Button
                                     variant="text"
@@ -237,8 +332,9 @@ export function PackagePreviewStep({
                                 />
                             </div>
                         </div>
-                    </div>
-                ))}
+                        </div>
+                    );
+                })}
             </PackageCourseSelector>
 
             <div className="border-t border-card-stroke" />
@@ -251,10 +347,15 @@ export function PackagePreviewStep({
                 title={packageTitle}
                 description={packageDescription}
                 duration={durationInMinutes || 0}
-                // TODO: Remove hardcoded currency
-                pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: selectedCoursesSavings }}
+                pricing={{
+                    currency,
+                    fullPrice: baseFullPrice,
+                    partialPrice: currentPackagePrice,
+                }}
                 locale={locale}
                 onClickPurchase={onClickPurchase}
+                coachingIncluded={coachingIncluded}
+                onToggleCoaching={onToggleCoaching}
             />
 
         </div>
