@@ -5,7 +5,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useGetPackagePresenter } from '../hooks/use-get-package-presenter';
 import { useUpdatePackagePresenter } from '../hooks/use-update-package-presenter';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { DefaultLoading, DefaultError, DefaultNotFound, PackageDetailsStep, PackagePricingStep, Breadcrumbs, Button, Banner, FeedBackMessage } from '@maany_shr/e-class-ui-kit';
 import type { PackageDetailsFormData, PackagePricingFormData } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -211,6 +211,20 @@ export default function EditPackage({
         }
     }, [updatePackageMutation.isError, updatePackageMutation.error]);
 
+    const derivedSelectedCourseCount = useMemo(() => {
+        const partialDiscounts = pricingFormData.partialDiscounts ?? {};
+        const discountKeys = Object.entries(partialDiscounts)
+            .filter(([_, value]) => value && value.trim() !== '') // Only consider discounts with actual values
+            .map(([key, _]) => Number(key))
+            .filter((value) => !Number.isNaN(value));
+
+        if (discountKeys.length === 0) {
+            return 0;
+        }
+
+        return Math.max(...discountKeys) + 1;
+    }, [pricingFormData.partialDiscounts]);
+
     const handleUpdatePackage = useCallback(async () => {
         setIsUpdating(true);
         setErrorMessage(null);
@@ -227,7 +241,13 @@ export default function EditPackage({
                     courseAmount: Number(courseAmount),
                     discountPercent: Number(String(discount).replace('%', '')),
                 }))
-                .filter(d => !Number.isNaN(d.courseAmount) && !Number.isNaN(d.discountPercent));
+                .filter(
+                    (d) =>
+                        !Number.isNaN(d.courseAmount) &&
+                        !Number.isNaN(d.discountPercent) &&
+                        d.courseAmount > 1 &&
+                        d.courseAmount < derivedSelectedCourseCount,
+                );
             
             // Map accordion items
             const accordionItemsPayload = packageDetailsFormData.accordionItems.map((item: AccordionBuilderItem, idx: number) => ({
@@ -259,7 +279,17 @@ export default function EditPackage({
         } catch (error) {
             // Error handled by useEffect hooks
         }
-    }, [packageDetailsFormData, pricingFormData, packageIdInt, updatePackageMutation, router, locale, platformSlug, platformLocale]);
+    }, [
+        packageDetailsFormData,
+        pricingFormData,
+        packageIdInt,
+        updatePackageMutation,
+        router,
+        locale,
+        platformSlug,
+        platformLocale,
+        derivedSelectedCourseCount,
+    ]);
 
     // Conditional returns after all hooks
     if (isNaN(packageIdInt)) {
@@ -368,6 +398,7 @@ export default function EditPackage({
                 formData={pricingFormData}
                 onFormDataChange={handlePricingChange}
                 locale={currentLocale}
+                selectedCourseCount={derivedSelectedCourseCount}
             />
             
             {/* Action Buttons */}
