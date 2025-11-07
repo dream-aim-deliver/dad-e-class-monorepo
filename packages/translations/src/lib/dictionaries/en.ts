@@ -326,7 +326,7 @@ export const EN: TDictionary = {
         'A compelling bio helps you stand out among other coaches. This will be visible to all students. ',
 
       linkedinUrl: 'LinkedIn URL',
-      linkedinPlaceholder: 'https://www.linkedin.com/company/bewerbeagentur/',
+      linkedinPlaceholder: 'https://www.linkedin.com/in/company/bewerbeagentur/',
 
       curriculumVitae: 'Curriculum Vitae (CV)',
       portfolioWebsite: 'Portfolio website URL (optional)',
