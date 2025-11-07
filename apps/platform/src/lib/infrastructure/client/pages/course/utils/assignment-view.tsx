@@ -11,7 +11,7 @@ import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 export interface AssignmentViewServiceConfig {
-    studentId: number;
+    studentUsername?: string;
 }
 
 export interface AssignmentViewService {
@@ -65,7 +65,7 @@ export const useStudyAssignmentView = (
                     <Suspense fallback={<DefaultLoading locale={locale} />}>
                         <AssignmentContent
                             assignmentId={assignmentId}
-                            studentId={config.studentId}
+                            studentUsername={config.studentUsername}
                         />
                     </Suspense>
                 </DialogContent>

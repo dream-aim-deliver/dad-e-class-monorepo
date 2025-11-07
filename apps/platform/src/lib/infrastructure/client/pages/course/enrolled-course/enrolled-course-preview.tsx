@@ -23,11 +23,13 @@ import { CourseSlugProvider } from '../utils/course-slug-context';
 interface EnrolledCoursePreviewProps {
     courseSlug: string;
     enableSubmit?: boolean;
+    studentUsername?: string;
 }
 
 function CoursePreviewLesson(props: {
     lessonId: number;
     enableSubmit?: boolean;
+    studentUsername?: string;
 }) {
     const locale = useLocale() as TLocale;
 
@@ -66,6 +68,7 @@ function CoursePreviewLesson(props: {
             lessonId={props.lessonId}
             data={componentsViewModel.data}
             enableSubmit={props.enableSubmit}
+            studentUsername={props.studentUsername}
         />
     );
 }
@@ -227,6 +230,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                                     <CoursePreviewLesson
                                         lessonId={currentLesson.id}
                                         enableSubmit={props.enableSubmit}
+                                        studentUsername={props.studentUsername}
                                     />
                                 </Suspense>
                             </>
@@ -246,6 +250,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
 export default function EnrolledCoursePreview({
     courseSlug,
     enableSubmit,
+    studentUsername,
 }: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     return (
@@ -255,6 +260,7 @@ export default function EnrolledCoursePreview({
             <CoursePreviewContent
                 courseSlug={courseSlug}
                 enableSubmit={enableSubmit}
+                studentUsername={studentUsername}
             />
         </Suspense>
     );

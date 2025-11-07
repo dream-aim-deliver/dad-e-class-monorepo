@@ -28,7 +28,7 @@ import EditCourseIntroOutline, {
     CourseIntroOutlinePreview,
 } from './edit-course-intro-outline';
 import { CourseModule } from './types';
-import { useSaveDetails } from './hooks/edit-details-hooks';
+import { useCourseDetails, useSaveDetails } from './hooks/edit-details-hooks';
 import { useSaveIntroduction } from './hooks/edit-introduction-hooks';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
 import { useSaveOutline } from './hooks/edit-outline-hooks';
@@ -38,6 +38,7 @@ import { trpc } from '../../../trpc/cms-client';
 interface EditCourseProps {
     slug: string;
     defaultTab?: string;
+    roles: string[];
 }
 
 enum TabTypes {
@@ -46,7 +47,7 @@ enum TabTypes {
     CourseContent = 'course-content',
 }
 
-export default function EditCourse({ slug, defaultTab }: EditCourseProps) {
+export default function EditCourse({ slug, defaultTab, roles }: EditCourseProps) {
     const locale = useLocale() as TLocale;
 
     return (
@@ -57,6 +58,7 @@ export default function EditCourse({ slug, defaultTab }: EditCourseProps) {
                     ? (defaultTab as TabTypes)
                     : TabTypes.General
             }
+            roles={roles}
         />
     );
 }
@@ -64,13 +66,20 @@ export default function EditCourse({ slug, defaultTab }: EditCourseProps) {
 interface EditCourseContentProps {
     slug: string;
     defaultTab: TabTypes;
+    roles: string[];
 }
 
 function EditCourseContent({
     slug,
     defaultTab,
+    roles,
 }: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
+
+    const courseViewModel = useCourseDetails(slug);
+    // Fetch course status from listUserCourses filtered by slug
+    //const { data: userCoursesResponse } = trpc.listUserCourses.useQuery({});
+
     const {
         activeTab,
         setActiveTab,
@@ -139,6 +148,12 @@ function EditCourseContent({
         setErrorMessage,
     });
 
+    // Handle error state after all hooks
+    if (courseViewModel?.mode !== "default") {
+        return <DefaultError locale={locale}/>
+    }
+    const courseStatus = courseViewModel?.data.status
+
     const handleSave = async () => {
         let result;
         if (activeTab === TabTypes.General) {
@@ -177,6 +192,9 @@ function EditCourseContent({
             errorMessage={errorMessage}
             locale={locale}
             courseDetails={courseDetails}
+            courseStatus={courseStatus}
+            roles={roles}
+            slug={slug}
         >
             <EditCourseTabContent
                 courseVersion={courseVersion}
@@ -278,6 +296,9 @@ interface EditCourseLayoutProps {
     errorMessage: string | null;
     locale: TLocale;
     courseDetails: CourseDetailsState;
+    courseStatus?: 'draft' | 'live' | 'archived';
+    roles: string[];
+    slug: string;
     children: React.ReactNode;
 }
 
@@ -291,6 +312,9 @@ function EditCourseLayout({
     errorMessage,
     locale,
     courseDetails,
+    courseStatus,
+    roles,
+    slug,
     children,
 }: EditCourseLayoutProps) {
     const tabContentClass = 'mt-5';
@@ -330,12 +354,16 @@ function EditCourseLayout({
             <Breadcrumbs items={breadcrumbItems} />
             <EditHeader
                 title={editCourseTranslations('editCourseTitle')}
+                courseTitle={courseDetails.courseTitle}
+                courseStatus={courseStatus}
                 onPreview={onPreview}
                 onSave={onSave}
                 disablePreview={isEdited || isSaving}
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}
                 locale={locale}
+                roles={roles}
+                slug={slug}
             />
             <Tabs.Root defaultTab={TabTypes.General} onValueChange={onTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
