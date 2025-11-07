@@ -173,7 +173,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           availableLanguages={availableLanguages}
           locale={locale as TLocale}
           uploadProgress={profilePictureUploadProgress}
-          isSaving={isSaving ||personalForm.isDirty}
+          isSaving={isSaving || personalForm.isDirty}
         />
       </div>
     );
