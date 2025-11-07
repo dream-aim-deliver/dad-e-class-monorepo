@@ -111,6 +111,12 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
       setShowSuccessModal(true);
       // Refetch packages by invalidating the query
       utils.listPackages.invalidate({ platformSlug, platformLocale });
+      // Auto-close success modal after 10 seconds
+      const timer = setTimeout(() => {
+        setShowSuccessModal(false);
+        setPackageToArchive(null);
+      }, 10000);
+      return () => clearTimeout(timer);
     }
     if (archivePackageViewModel?.mode === 'kaboom') {
       setErrorMessage(t('errorMessages.archiveFailed'));
@@ -133,7 +139,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
       setErrorMessage(null);
       utils.listPackages.invalidate({ platformSlug, platformLocale });
       // Auto-dismiss success message after 5 seconds
-      const timer = setTimeout(() => setSuccessMessage(null), 5000);
+      const timer = setTimeout(() => setSuccessMessage(null), 10000);
       return () => clearTimeout(timer);
     },
     onError: (error) => {
