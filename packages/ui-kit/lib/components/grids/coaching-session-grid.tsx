@@ -17,9 +17,9 @@ type CoachingSession = viewModels.TListCoachingSessionsSuccess['sessions'][numbe
 
 export interface CoachingSessionGridProps extends isLocalAware {
     gridRef: RefObject<AgGridReact | null>;
-    onCoachClick: (coach: CoachingSession['coach'] | null) => void;
-    onStudentClick?: (student: CoachingSession['student'] | null) => void;
-    onCourseClick?: (course: CoachingSession['course'] | null) => void;
+    onCoachClick: (coachName: string) => void;
+    onStudentClick: (studentName: string) => void;
+    onCourseClick: (courseSlug: string) => void;
     sessions: CoachingSession[];
     onSortChanged?: (event: SortChangedEvent) => void;
     doesExternalFilterPass?: (node: IRowNode<any>) => boolean;
@@ -168,7 +168,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             cellRenderer: CoachCellRenderer,
             onCellClicked: (params: any) => {
                 const coach = params.value;
-                if (coach) props.onCoachClick(coach);
+                if (coach && coach.username) props.onCoachClick(coach.username);
             },
             minWidth: 150,
             filter: 'agTextColumnFilter'
@@ -179,7 +179,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             cellRenderer: StudentCellRenderer,
             onCellClicked: (params: any) => {
                 const student = params.value;
-                if (student && props.onStudentClick) props.onStudentClick(student);
+                if (student && student.username && props.onStudentClick) props.onStudentClick(student.username);
             },
             cellClass: 'cursor-pointer',
             minWidth: 150,
@@ -206,7 +206,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             cellRenderer: CourseCellRenderer,
             onCellClicked: (params: any) => {
                 const course = params.value;
-                if (course && props.onCourseClick) props.onCourseClick(course);
+                if (course && course.slug && props.onCourseClick) props.onCourseClick(course.slug);
             },
             cellClass: 'cursor-pointer',
             minWidth: 180,
@@ -219,7 +219,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             width: 120,
             filter: 'agTextColumnFilter'
         }
-    ], [props.onCoachClick]);
+    ], [props.onCoachClick, props.onStudentClick, props.onCourseClick]);
 
     // Client-side filtering logic for search
     const doesExternalFilterPass = useCallback((node: IRowNode<any>) => {
@@ -275,7 +275,6 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
         }
     }, [props.gridRef, doesExternalFilterPass, refreshGrid]);
 
-    // Listen for selection changes
     useEffect(() => {
         if (props.gridRef.current?.api && props.enableSelection) {
             const selectionListener = () => {

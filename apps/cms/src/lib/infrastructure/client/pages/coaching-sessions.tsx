@@ -22,6 +22,7 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { CoachingSessionGrid } from '@maany_shr/e-class-ui-kit';
+import { usePlatform, useRequiredPlatform } from '../context/platform-context';
 
 interface CoachingSessionsProps {
   locale: TLocale;
@@ -41,7 +42,7 @@ export default function CoachingSessions({
   const currentLocale = useLocale() as TLocale;
   const t = useTranslations('pages.coachingSessions');
   const router = useRouter();
-
+  const { platform } = useRequiredPlatform();
   // TRPC query for coaching sessions data
   const [coachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({
   });
@@ -62,26 +63,21 @@ export default function CoachingSessions({
   const gridRef = useRef<any>(null);
 
 
-  const handleCoachClick = (coach: any) => {
-    
-    if (!coach || !coach.username) return;
-    // TODO: we need to add actual domain for the platform
-    router.push(`/${platformLocale}/coaches/${coach.username}`);
+  const handleCoachClick = (coachName:string) => {
+
+    if (!coachName) return;
+    router.push(`${platform.domainName}/${currentLocale}/coaches/${coachName}`);
   };
 
-  // TODO: we need to add actual domain for the platform
-  const handleStudentClick = (student: any) => {
-    if (!student || !student.username) return;
+  const handleStudentClick = (studentName:string) => {
+    if (!studentName) return;
 
-    // TODO: we need to add actual domain for the platform
-    router.push(`/${platformLocale}/students/${student.username}`);
+    router.push(`${platform.domainName}/${currentLocale}/students/${studentName}`);
   };
 
-  // @todo: Validate course.slug presence and fallback gracefully if missing.
-  const handleCourseClick = (course: any) => {
-    if (!course || !course.slug) return;
-    // TODO: we need to add actual domain for the platform
-    router.push(`/${platformLocale}/courses/${course.slug}`);
+  const handleCourseClick = (courseSlug: string) => {
+    if (!courseSlug) return;
+    router.push(`${platform.domainName}/${currentLocale}/courses/${courseSlug}`);
   };
 
   // Loading state
