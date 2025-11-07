@@ -17,7 +17,8 @@ interface ProfileInfoProps extends isLocalAware {
   initialData: TPersonalProfileAPI;
   onChange: (data: TPersonalProfileAPI) => void;
   availableLanguages: TLanguageListSuccess["languages"];
-  onSave?: (profile: TPersonalProfileAPI) => void;
+  onSave: (profile: TPersonalProfileAPI) => void;
+  onDiscard: () => void;
   onFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
@@ -72,6 +73,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   initialData,
   onChange,
   onSave,
+  onDiscard,
   onFileUpload,
   profilePictureFile,
   onUploadComplete,
@@ -132,6 +134,10 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
   const handleSubmit = () => {
     onSave?.(initialData);
+  };
+
+  const handleDiscard = () => {
+    onDiscard?.();
   };
 
   return (
@@ -349,7 +355,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           <Button
             variant="secondary"
             size="medium"
-            onClick={() => onChange(initialData)}
+            onClick={handleDiscard}
             className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
             text={dictionary.components.profileInfo.buttontext1}
             type="button"

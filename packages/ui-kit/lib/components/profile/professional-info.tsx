@@ -21,6 +21,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   onChange: (data: TProfessionalProfileAPI) => void;
   availableSkills: TSkill[];
   onSave: (profile: TProfessionalProfileAPI) => void;
+  onDiscard?: () => void;
   onFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
@@ -76,6 +77,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   onChange,
   availableSkills = [],
   onSave,
+  onDiscard,
   onFileUpload,
   curriculumVitaeFile,
   onUploadComplete,
@@ -134,7 +136,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
 
   const handleDiscard = () => {
-    onChange(initialData);
+    onDiscard?.();
   };
 
   return (
