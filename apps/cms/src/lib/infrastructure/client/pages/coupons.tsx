@@ -248,6 +248,9 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
     );
   }
 
+  // Success state - extract data from ViewModel
+  const couponsData = listCouponsViewModel.data;
+
   // Revoke coupon handler
   const handleRevokeCoupon = (couponId: string) => {
     const coupon = listCouponsViewModel.data.coupons.find(c => c.id === couponId);
