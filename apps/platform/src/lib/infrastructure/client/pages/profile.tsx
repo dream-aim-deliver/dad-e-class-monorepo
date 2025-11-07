@@ -8,7 +8,6 @@
 import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { USERNAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 import { trpc } from '../trpc/cms-client';
-import { z } from 'zod';
 import { useState, useEffect, useMemo } from 'react';
 import {
 	DefaultLoading,
@@ -18,7 +17,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
@@ -34,42 +33,9 @@ interface ProfileProps {
 	roles: string[];
 }
 
-// LinkedIn URL validation regex - matches standard LinkedIn profile/company URLs
-const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|showcase)\/[\w-]+\/?$/;
-
-// Zod schema for professional profile validation
-const professionalProfileValidationSchema = z.object({
-	bio: z.string().min(1, 'Bio is required').max(280, 'Bio must be 280 characters or less'),
-	linkedinUrl: z.union([
-		z.string().refine(
-			(url) => url === '' || linkedInUrlRegex.test(url),
-			{ message: 'Please enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)' }
-		),
-		z.null(),
-		z.undefined()
-	]).optional(),
-	portfolioWebsite: z.union([
-		z.string().refine(
-			(url) => {
-				if (!url || url === '') return true;
-				try {
-					new URL(url);
-					return true;
-				} catch {
-					return false;
-				}
-			},
-			{ message: 'Please enter a valid portfolio website URL' }
-		),
-		z.null(),
-		z.undefined()
-	]).optional(),
-});
-
 export default function Profile({ locale: localeStr, userEmail, username, roles }: ProfileProps) {
 	const locale = useLocale() as TLocale;
 	const router = useRouter();
-	const searchParams = useSearchParams();
 	const t = useTranslations('pages.profile');
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 	const utils = trpc.useUtils();
@@ -78,25 +44,18 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const [profilePictureUploadProgress, setProfilePictureUploadProgress] = useState<number>(0);
 	const [curriculumVitaeUploadProgress, setCurriculumVitaeUploadProgress] = useState<number>(0);
 
+
 	// State for messages
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-	// Always fetch personal profile data and languages (needed for default tab)
+	// Fetch profile data using tRPC queries
+	const [professionalProfileResponse] = trpc.getProfessionalProfile.useSuspenseQuery({});
 	const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
+	const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
 	const [languagesResponse] = trpc.listLanguages.useSuspenseQuery({});
 
-	// Lazy fetch professional profile data and topics only when needed
-	const professionalProfileQuery = trpc.getProfessionalProfile.useQuery({}, {
-		refetchOnWindowFocus: false,
-		staleTime: 5 * 60 * 1000,
-	});
-	const topicsQuery = trpc.listTopics.useQuery({}, {
-		refetchOnWindowFocus: false,
-		staleTime: 10 * 60 * 1000,
-	});
-
-
+	// View model state management
 	const [professionalProfileViewModel, setProfessionalProfileViewModel] = useState<
 		viewModels.TGetProfessionalProfileViewModel | undefined
 	>(undefined);
@@ -124,48 +83,29 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		setLanguagesViewModel
 	);
 
-	const handleTabChange = (newTab: string) => {
-		const tabValue = newTab as 'personal' | 'professional';
-		const currentParams = new URLSearchParams(searchParams.toString());
-		currentParams.set('tab', tabValue);
-		router.push(`?${currentParams.toString()}`);
-		return true;
-	};
 
-	// Present data to view models - always present personal and languages
+
+	// Present data to view models
 	useEffect(() => {
+		// @ts-ignore - Presenter type compatibility issue
+		professionalPresenter.present(professionalProfileResponse, professionalProfileViewModel);
 		// @ts-ignore - Presenter type compatibility issue
 		personalPresenter.present(personalProfileResponse, personalProfileViewModel);
 		// @ts-ignore - Presenter type compatibility issue
+		topicsPresenter.present(topicsResponse, topicsViewModel);
+		// @ts-ignore - Presenter type compatibility issue
 		languagesPresenter.present(languagesResponse, languagesViewModel);
-	}, [personalProfileResponse, languagesResponse, personalPresenter, languagesPresenter, personalProfileViewModel, languagesViewModel]);
+	}, [professionalProfileResponse, personalProfileResponse, topicsResponse, languagesResponse, professionalPresenter, personalPresenter, topicsPresenter, languagesPresenter, professionalProfileViewModel, personalProfileViewModel, topicsViewModel, languagesViewModel]);
 
-	// Present professional data only when available
-	useEffect(() => {
-		if (professionalProfileQuery.data) {
-			// @ts-ignore - Presenter type compatibility issue
-			professionalPresenter.present(professionalProfileQuery.data, professionalProfileViewModel);
-		}
-	}, [professionalProfileQuery.data, professionalPresenter, professionalProfileViewModel]);
-
-	// Present topics data only when available
-	useEffect(() => {
-		if (topicsQuery.data) {
-			// @ts-ignore - Presenter type compatibility issue
-			topicsPresenter.present(topicsQuery.data, topicsViewModel);
-		}
-	}, [topicsQuery.data, topicsPresenter, topicsViewModel]);
-
-
-
-	// Extract profile data from view models - do this BEFORE any early returns
-	// to ensure hooks always receive consistent data
+	// Extract profile data from view models (with defaults for loading state)
 	const personalProfile = personalProfileViewModel?.mode === 'default' ? personalProfileViewModel.data.profile : null;
 	const professionalProfile = professionalProfileViewModel?.mode === 'default' ? professionalProfileViewModel.data.profile : null;
 
-	// Memoize file metadata objects to prevent unnecessary re-creation
-	const initialProfilePicture = useMemo((): fileMetadata.TFileMetadataImage | null => {
-		return personalProfile?.avatarImage ? {
+	// Transform avatarImage to TFileMetadataImage if it exists
+	// Use useMemo to prevent recreating the object on every render
+	const initialProfilePicture = useMemo<fileMetadata.TFileMetadataImage | null>(() => {
+		if (!personalProfile?.avatarImage) return null;
+		return {
 			id: personalProfile.avatarImage.id,
 			name: personalProfile.avatarImage.name,
 			url: personalProfile.avatarImage.downloadUrl,
@@ -173,21 +113,24 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			size: personalProfile.avatarImage.size,
 			category: 'image' as const,
 			status: 'available' as const,
-		} : null;
-	}, [personalProfile?.avatarImage]);
+		};
+	}, [personalProfile?.avatarImage?.id, personalProfile?.avatarImage?.downloadUrl]);
 
 	// Transform curriculumVitae to TFileMetadata (document type) if it exists
+	// Use useMemo to prevent recreating the object on every render
+	// Explicitly type as document to match the hook's expected type
 	type TFileMetadataDocument = Extract<fileMetadata.TFileMetadata, { category: 'document' }>;
-	const initialCurriculumVitae = useMemo((): TFileMetadataDocument | null => {
-		return professionalProfile?.curriculumVitae ? {
+	const initialCurriculumVitae = useMemo<TFileMetadataDocument | null>(() => {
+		if (!professionalProfile?.curriculumVitae) return null;
+		return {
 			id: professionalProfile.curriculumVitae.id,
 			name: professionalProfile.curriculumVitae.name,
 			url: professionalProfile.curriculumVitae.downloadUrl,
 			size: professionalProfile.curriculumVitae.size,
 			category: 'document' as const,
 			status: 'available' as const,
-		} : null;
-	}, [professionalProfile?.curriculumVitae]);
+		};
+	}, [professionalProfile?.curriculumVitae?.id, professionalProfile?.curriculumVitae?.downloadUrl]);
 
 	// Save mutations with error handling (must be called unconditionally)
 	const savePersonalMutation = trpc.savePersonalProfile.useMutation({
@@ -195,10 +138,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			setErrorMessage(null);
 			setSuccessMessage(null);
 		},
-		onSuccess: async (data) => {
+		onSuccess: (data) => {
 			setSuccessMessage(t('personalProfileSaved'));
 			setErrorMessage(null);
-			await utils.getPersonalProfile.invalidate();
+			// Update the query cache with the fresh data from the mutation response (no extra fetch needed)
+			utils.getPersonalProfile.setData({}, data);
 		},
 		onError: (error) => {
 			setErrorMessage(error.message || t('failedToSavePersonal'));
@@ -211,11 +155,10 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			setErrorMessage(null);
 			setSuccessMessage(null);
 		},
-		onSuccess: async (data) => {
+		onSuccess: (data) => {
 			setSuccessMessage(t('professionalProfileSaved'));
 			setErrorMessage(null);
-			// Invalidate and refetch the professional profile to sync with server state
-			await utils.getProfessionalProfile.invalidate();
+			utils.getProfessionalProfile.setData({}, data);
 		},
 		onError: (error) => {
 			setErrorMessage(error.message || t('failedToSaveProfessional'));
@@ -234,29 +177,70 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		onProgressUpdate: setCurriculumVitaeUploadProgress,
 	});
 
-	if (!personalProfileViewModel || !languagesViewModel) {
+	// Loading state - wait for all view models to be ready
+	if (!professionalProfileViewModel || !personalProfileViewModel || !topicsViewModel || !languagesViewModel) {
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
 	// Error handling - only kaboom errors should prevent rendering
-	if (personalProfileViewModel.mode === 'kaboom' || languagesViewModel.mode === 'kaboom') {
+	// Note: 'not-found' is acceptable for profiles since save mutations support upsert
+	// However, topics and languages must be available
+	if (professionalProfileViewModel.mode === 'kaboom' || personalProfileViewModel.mode === 'kaboom' || topicsViewModel.mode === 'kaboom' || languagesViewModel.mode === 'kaboom') {
 		return <DefaultError locale={locale} />;
 	}
 
-	// Languages are required for both tabs
-	if (languagesViewModel.mode !== 'default') {
+	// Topics and languages are required for the form to work
+	if (topicsViewModel.mode !== 'default' || languagesViewModel.mode !== 'default') {
 		return <DefaultError locale={locale} />;
 	}
 
+	const allTopics = topicsViewModel.data.topics;
 	const allLanguages = languagesViewModel.data.languages;
 
-	// Ensure we have languages
+	// Ensure we have languages - this should never happen if the check above passes
 	if (!allLanguages || allLanguages.length === 0) {
+		console.error('[Profile] Languages data is missing or empty despite mode being default', {
+			languagesViewModel,
+			allLanguages
+		});
 		return <DefaultError locale={locale} title={"Language data missing"} description={'[Profile] Languages data is missing or empty despite mode being default'} />;
 	}
 
-	// Save handlers - must be defined after early returns
-	const handleSavePersonalProfile = async (profile: any) => {
+	// Create default profiles when they don't exist (for upsert functionality)
+	const defaultPersonalProfile: viewModels.TGetPersonalProfileSuccess['profile'] = {
+		id: 0,
+		name: '',
+		surname: '',
+		username: username,
+		email: userEmail,
+		phone: null,
+		dateOfBirth: null,
+		companyDetails: {
+			isRepresentingCompany: false as const,
+		},
+		avatarImage: null,
+		languages: [],
+		interfaceLanguage: allLanguages[0],
+		receiveNewsletter: false,
+	};
+
+	const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
+		id: 0,
+		bio: '',
+		linkedinUrl: null,
+		curriculumVitae: null,
+		skills: [],
+		private: true,
+	};
+
+	// Use actual profiles if they exist, otherwise use defaults
+	const personalProfileToUse = personalProfile || defaultPersonalProfile;
+	const professionalProfileToUse = professionalProfile || defaultProfessionalProfile;
+
+	// Determine if user is a coach - only coaches should see the professional profile tab
+	const isCoach = roles.includes('coach');
+
+	const handleSavePersonalProfile = async (profile: typeof personalProfile) => {
 		if (!profile) return;
 
 		// Client-side validation
@@ -283,22 +267,25 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		if (errors.length > 0) {
 			setErrorMessage(errors.join(', '));
 			setSuccessMessage(null);
-			return;
+			throw new Error('Client-side validation failed');
 		}
 
 		const savePayload = {
 			...profile,
-			languageIds: profile.languages.map((lang: any) => {
+			languageIds: profile.languages.map(lang => {
 				return typeof lang.id === 'number' ? lang.id : parseInt(lang.id as string);
 			}),
 			interfaceLanguageId: typeof profile.interfaceLanguage.id === 'number'
 				? profile.interfaceLanguage.id
 				: parseInt(profile.interfaceLanguage.id as string),
-			avatarImageId: profilePictureUpload.profilePicture?.id
-				? (typeof profilePictureUpload.profilePicture.id === 'number'
-					? profilePictureUpload.profilePicture.id
-					: parseInt(profilePictureUpload.profilePicture.id as string))
-				: undefined
+			avatarImageId: profile.avatarImage?.id
+				? (typeof profile.avatarImage.id === 'number'
+					? profile.avatarImage.id
+					: parseInt(profile.avatarImage.id as string))
+				: undefined,
+			languages: undefined,
+			interfaceLanguage: undefined,
+			avatarImage: undefined
 		};
 
 		try {
@@ -309,56 +296,21 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		}
 	};
 
-	// Get topics data (may be undefined if professional tab hasn't been loaded yet)
-	const allTopics = topicsViewModel?.mode === 'default' ? topicsViewModel.data.topics : [];
-
-	// Create default profiles when they don't exist (for upsert functionality)
-	const defaultPersonalProfile: viewModels.TGetPersonalProfileSuccess['profile'] = {
-		id: 0,
-		name: '',
-		surname: '',
-		username: username,
-		email: userEmail,
-		phone: null,
-		dateOfBirth: null,
-		companyDetails: {
-			isRepresentingCompany: false as const,
-		},
-		avatarImage: null,
-		languages: [],
-		interfaceLanguage: allLanguages[0], // This could change and is expensive
-		receiveNewsletter: false,
-	};
-
-	const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
-		id: 0,
-		bio: '',
-		linkedinUrl: null,
-		curriculumVitae: null,
-		skills: [],
-		private: true,
-	};
-
-	// Use actual profiles if they exist, otherwise use defaults
-	const personalProfileToUse = personalProfile || defaultPersonalProfile;
-	const professionalProfileToUse = professionalProfile || defaultProfessionalProfile;
-
-	const isCoach = roles.includes('coach');
-
 	const handleSaveProfessionalProfile = async (profile: typeof professionalProfile) => {
 		if (!profile) return;
 
-		const validationResult = professionalProfileValidationSchema.safeParse({
-			bio: profile.bio,
-			linkedinUrl: profile.linkedinUrl,
-			portfolioWebsite: profile.portfolioWebsite,
-		});
+		const errors: string[] = [];
 
-		if (!validationResult.success) {
-			const errors = validationResult.error.errors.map(err => err.message);
+		if (!profile.bio || profile.bio.trim() === '') {
+			errors.push(t('bioRequired') || 'Bio is required');
+		} else if (profile.bio.length > 280) {
+			errors.push(t('bioTooLong') || 'Bio must be 280 characters or less');
+		}
+
+		if (errors.length > 0) {
 			setErrorMessage(errors.join(', '));
 			setSuccessMessage(null);
-			return;
+			throw new Error('Client-side validation failed');
 		}
 
 		const savePayload = {
@@ -366,12 +318,14 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			skillIds: profile.skills.map(skill => {
 				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
 			}),
-			curriculumVitaeId: curriculumVitaeUpload.curriculumVitae?.id
-				? (typeof curriculumVitaeUpload.curriculumVitae.id === 'number'
-					? curriculumVitaeUpload.curriculumVitae.id
-					: parseInt(curriculumVitaeUpload.curriculumVitae.id as string))
-				: undefined
-		}
+			curriculumVitaeId: profile.curriculumVitae?.id
+				? (typeof profile.curriculumVitae.id === 'number'
+					? profile.curriculumVitae.id
+					: parseInt(profile.curriculumVitae.id as string))
+				: undefined,
+			skills: undefined,
+			curriculumVitae: undefined
+		};
 
 		try {
 			await saveProfessionalMutation.mutateAsync(savePayload);
@@ -379,7 +333,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			// Error is already handled by the mutation's onError callback
 			console.error('Failed to save professional profile:', error);
 		}
-	}
+	};
 
 
 	return (
@@ -433,7 +387,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						curriculumVitaeUploadProgress={curriculumVitaeUploadProgress}
 						isSaving={savePersonalMutation.isPending || saveProfessionalMutation.isPending}
 						hasProfessionalProfile={isCoach}
-						onTabChange={handleTabChange}
 					/>
 
 
@@ -443,7 +396,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 					)}
 
 					{/* Display success message */}
-					{successMessage && !(savePersonalMutation.isPending || saveProfessionalMutation.isPending) && (
+					{successMessage && (
 						<Banner style="success" description={successMessage} />
 					)}
 
