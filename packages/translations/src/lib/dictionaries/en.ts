@@ -1011,6 +1011,9 @@ export const EN: TDictionary = {
       editCoachNotes: "Edit Coach Notes",
       exploreCourses: "Explore Courses",
       description: "Note: Every edit you make will send a notification to all students in this group. Please review carefully before publishing.",
+      errorMessage: "Failed to save notes. Please try again.",
+      successMessage: "Notes saved successfully!",
+      closeButton: "Close",
     },
     bookSessionWithBanner: {
       bookSessionButton: 'Book a session with',

@@ -10,17 +10,18 @@
 import { useState } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { DefaultLoading, DefaultError, Breadcrumbs, GroupIntroduction, Button, CoachNotesView, Dropdown, IconFilter, AssignmentCardFilterModal, TextInput, IconSearch, StudentCardList, StudentCard, IconEdit, CoachingSessionGroupOverviewCard, AssignmentOverview, AssignmentOverviewList, CoachNotesCreate, CoachNotesEditDialog } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, Breadcrumbs, GroupIntroduction, Button, CoachNotesView, Dropdown, IconFilter, AssignmentCardFilterModal, TextInput, IconSearch, StudentCardList, StudentCard, IconEdit, CoachingSessionGroupOverviewCard, AssignmentOverview, AssignmentOverviewList, CoachNotesCreate, CoachNotesEditDialog, CoachNotesResultPopup, downloadFile } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { viewModels } from '@maany_shr/e-class-models';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { useGetGroupIntroductionPresenter } from '../hooks/use-get-group-introduction-presenter';
 import { useGetGroupNotesPresenter } from '../hooks/use-get-group-notes-presenter';
 import { useGetGroupNextCoachingSessionPresenter } from '../hooks/use-get-group-next-coaching-session-presenter';
 import { useGroupNotesFileUpload } from './common/hooks/use-group-notes-image-upload';
 import { useAssignmentFilters } from './hooks/use-assignment-filters';
 import { useGroupMembers } from './hooks/use-group-members';
+import useClientSidePagination from '../utils/use-client-side-pagination';
 
 interface GroupWorkspaceCoachProps {
   locale: TLocale;
@@ -37,6 +38,7 @@ export default function GroupWorkspaceCoach({
   const router = useRouter();
   const t = useTranslations('pages.groupWorkspaceCoach');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+  const paginationTranslations = useTranslations('components.paginationButton');
 
   // Authentication using Pattern B (Coach role only)
   const sessionDTO = useSession();
@@ -46,7 +48,8 @@ export default function GroupWorkspaceCoach({
   const [noteLinks, setNoteLinks] = useState<{
     url: string;
     title: string;
-    customIconMetadata?: any;
+    customIconMetadata?: fileMetadata.TFileMetadata;
+    id?: number;
   }[]>([]);
   const [includeInMaterials, setIncludeInMaterials] = useState(false);
 
@@ -54,6 +57,10 @@ export default function GroupWorkspaceCoach({
 
   // Edit notes dialog state
   const [isEditNotesDialogOpen, setIsEditNotesDialogOpen] = useState(false);
+
+  // Notes result popup state
+  const [showNotesResultPopup, setShowNotesResultPopup] = useState(false);
+  const [notesResultType, setNotesResultType] = useState<'success' | 'error'>('success');
 
   const [groupIntroductionViewModel, setGroupIntroductionViewModel] = useState<
     viewModels.TGetGroupIntroductionViewModel | undefined
@@ -79,7 +86,7 @@ export default function GroupWorkspaceCoach({
   });
 
   // Fetch group notes from getGroupNotes usecase
-  const [groupNotesResponse, {refetch: refetchGroupNotesResponse}] = trpc.getGroupNotes.useSuspenseQuery({
+  const [groupNotesResponse, { refetch: refetchGroupNotesResponse }] = trpc.getGroupNotes.useSuspenseQuery({
     courseSlug: courseSlug,
     additionalParams: {
       groupId: groupId,
@@ -123,6 +130,7 @@ export default function GroupWorkspaceCoach({
     courseSlug,
     groupId,
     initialFilters: {},
+    requestType: 'requestForCoach',
   });
 
   // Group members hook (includes data fetching, presenter logic, and search)
@@ -155,6 +163,7 @@ export default function GroupWorkspaceCoach({
     setNoteLinks(notesData.links?.map(link => ({
       url: link.url || '',
       title: link.title,
+      id: link.id ? Number(link.id) : undefined,
       customIconMetadata: link.icon ? {
         id: link.icon.id,
         name: link.icon.name,
@@ -162,15 +171,24 @@ export default function GroupWorkspaceCoach({
         status: 'available' as const,
         category: link.icon.category,
         url: link.icon.downloadUrl,
-        thumbnailUrl: null,
+        thumbnailUrl: link.icon.downloadUrl,
       } : undefined,
     })) || []);
-    setIncludeInMaterials(false); // TODO: Get this from notesData when backend provides it
+    setIncludeInMaterials(false);
     setIsEditNotesDialogOpen(true);
   };
 
-  const handlePublishNotes = (description: string, links: any[], includeInMaterials: boolean) => {
-    
+  const handlePublishNotes = (
+    description: string, 
+    links: {
+      url: string;
+      title: string;
+      customIconMetadata?: fileMetadata.TFileMetadata;
+      id?: number;
+    }[], 
+    includeInMaterials: boolean
+  ) => {
+
     // Prevent publishing if already in progress
     if (saveNotesMutation.isPending) {
       return;
@@ -183,21 +201,34 @@ export default function GroupWorkspaceCoach({
           title: link.title,
           url: link.url,
           state: 'draft' as const,
-          // TODO: Please pass complete customIconMetadata object if needed
-          iconFileId: link.customIconMetadata?.id ? Number(link.customIconMetadata.id) : null
+          iconFileId: link.customIconMetadata?.id ? Number(link.customIconMetadata.id) : null,
+          id: link.id,
         }))
       },
       {
         onSuccess: () => {
+          // Close the edit dialog if it's open
+          if (isEditNotesDialogOpen) {
+            setIsEditNotesDialogOpen(false);
+          }
+          
+          // Show success popup
+          setNotesResultType('success');
+          setShowNotesResultPopup(true);
+          
           // Refetch to get updated notes data
           refetchGroupNotesResponse();
-          // Close the dialog after successful save and refetch
-          setIsEditNotesDialogOpen(false);
         },
         onError: (error) => {
-          // TODO: Handle error - show error message to user
-          console.error('Failed to save notes:', error);
-          // Keep dialog open so user can retry
+          // Close the edit dialog if it's open
+          if (isEditNotesDialogOpen) {
+            setIsEditNotesDialogOpen(false);
+          }
+          
+          // Show error popup
+          setNotesResultType('error');
+          setShowNotesResultPopup(true);
+          
         }
       }
     );
@@ -213,9 +244,30 @@ export default function GroupWorkspaceCoach({
   };
 
   const handleDeleteIcon = (index: number) => {
-    // Handle icon deletion if needed
-    console.log('Delete icon:', index);
+    // Add handle icon delete logic if needed
   };
+
+  // Pagination for assignments
+  const {
+    displayedItems: displayedAssignments,
+    hasMoreItems: hasMoreAssignments,
+    handleLoadMore: handleLoadMoreAssignments,
+  } = useClientSidePagination({
+    items: sortedAndFilteredAssignments,
+    itemsPerPage: 3,
+    itemsPerPage2xl: 4,
+  });
+
+  // Pagination for members
+  const {
+    displayedItems: displayedMembers,
+    hasMoreItems: hasMoreMembers,
+    handleLoadMore: handleLoadMoreMembers,
+  } = useClientSidePagination({
+    items: filteredMembers,
+    itemsPerPage: 3,
+    itemsPerPage2xl: 4,
+  });
 
   const session = sessionDTO.data;
   const isCoach = session?.user?.roles?.includes('coach');
@@ -295,77 +347,95 @@ export default function GroupWorkspaceCoach({
     },
   ];
 
-  // Function to render StudentCard based on member data and status
-  const renderStudentCard = (member: typeof allMembers[0]) => {
-    // Base props common to all student card variants
-    const baseProps = {
-      locale: locale,
-      studentName: `${member.name} ${member.surname}`,
-      studentImageUrl: member.avatarUrl || '',
-      coachName: `${member.coach.name} ${member.coach.surname}`,
-      coachImageUrl: member.coach.avatarUrl || '',
-      courseName: member.course.title,
-      courseImageUrl: member.course.imageUrl || '',
-      coachingSessionsLeft: member.coachingSessionCount || undefined,
-      isYou: member.coach.isCurrentUser,
-      onStudentDetails: () => console.log("Click on student"),
-      onClickCourse: () => console.log("Click on course"),
-      onClickCoach: () => console.log("Click on coach"),
-    };
+  // Function to render StudentCards based on members data and status
+  const renderStudentCards = (members: viewModels.TListGroupMembersSuccess['members']) => {
+    return members.map((member, index) => {
+      // Base props common to all student card variants
+      const baseProps = {
+        locale: locale,
+        studentName: `${member.name} ${member.surname}`,
+        studentImageUrl: member.avatarUrl || '',
+        coachName: `${member.coach.name} ${member.coach.surname}`,
+        coachImageUrl: member.coach.avatarUrl || '',
+        courseName: member.course.title,
+        courseImageUrl: member.course.imageUrl || '',
+        coachingSessionsLeft: member.coachingSessionCount || undefined,
+        isYou: member.coach.isCurrentUser,
+        onStudentDetails: () => {
+          // TODO: Redirect to user profile page
+        },
+        onClickCourse: () => {
+          router.push(`/${locale}/workspace/courses/${member.course.slug}`)
+        },
+        onClickCoach: () => {
+          router.push(`/${locale}/coaches/${member.coach.username}`)
+        },
+      };
 
-    // Handle different status cases based on lastAssignment
-    if (!member.lastAssignment) {
-      // No assignment case
+      const key = member.id ?? index;
+
+      // Handle different status cases based on lastAssignment
+      if (!member.lastAssignment) {
+        // No assignment case
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="no-assignment"
+          />
+        );
+      }
+
+      const { status, title } = member.lastAssignment;
+
+      if (status === "waiting-feedback") {
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="waiting-feedback"
+            assignmentTitle={title}
+            onViewAssignment={() => {
+              // TODO: Implement view assignment functionality
+            }}
+          />
+        );
+      }
+
+      if (status === "long-wait") {
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="long-wait"
+            assignmentTitle={title}
+            onViewAssignment={() => {
+              // TODO: Implement view assignment functionality
+            }}
+          />
+        );
+      }
+
+      if (status === "course-completed") {
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="course-completed"
+            completedCourseDate={member.courseCompletionDate ? new Date(member.courseCompletionDate) : new Date()}
+          />
+        );
+      }
+
+      // Fallback to no-assignment if status is unknown
       return (
         <StudentCard
           {...baseProps}
-          key={member.id}
+          key={key}
           status="no-assignment"
         />
       );
-    }
-
-    const { status, title } = member.lastAssignment;
-
-    if (status === "waiting-feedback") {
-      return (
-        <StudentCard
-          {...baseProps}
-          status="waiting-feedback"
-          assignmentTitle={title}
-          onViewAssignment={() => console.log("View assignment:", member.lastAssignment?.id)}
-        />
-      );
-    }
-
-    if (status === "long-wait") {
-      return (
-        <StudentCard
-          {...baseProps}
-          status="long-wait"
-          assignmentTitle={title}
-          onViewAssignment={() => console.log("View assignment:", member.lastAssignment?.id)}
-        />
-      );
-    }
-
-    if (status === "course-completed") {
-      return (
-        <StudentCard
-          {...baseProps}
-          status="course-completed"
-          completedCourseDate={member.courseCompletionDate ? new Date(member.courseCompletionDate) : new Date()}
-        />
-      );
-    }
-
-    // Fallback to no-assignment if status is unknown
-    return (
-      <StudentCard
-        {...baseProps}
-        status="no-assignment"
-      />
-    );
+    });
   };
 
   return (
@@ -384,18 +454,14 @@ export default function GroupWorkspaceCoach({
         <GroupIntroduction
           groupName={introductionData.name}
           courseName={introductionData.course.title}
-          // TODO: In getGroupIntroduction response we need single coach instead of array
-          isYou={introductionData.coaches[0].isCurrentUser}
-          coachName={`${introductionData.coaches[0].name} ${introductionData.coaches[0].surname}`}
+          coaches={introductionData.coaches}
           courseImageUrl={introductionData.course.imageUrl || ''}
-          coachImageUrl={introductionData.coaches[0].avatarUrl || ''}
           actualStudentCount={introductionData.actualStudentCount}
           maxStudentCount={introductionData.maxStudentCount}
           locale={locale}
           onClickCourse={() => router.push(`/${locale}/workspace/courses/${courseSlug}`)}
-          onClickUser={() => {
-            // TODO: Navigate to coach profile page
-            console.log('Navigate to user')
+          onClickUser={(username) => {
+            router.push(`/${locale}/coaches/${username}`);
           }}
         />
       </div>
@@ -424,7 +490,7 @@ export default function GroupWorkspaceCoach({
               noteDescription={noteDescription}
               noteLinks={noteLinks}
               includeInMaterials={includeInMaterials}
-              locale="en"
+              locale={locale}
               onPublish={handlePublishNotes}
               onImageChange={handleImageChange}
               onDeleteIcon={handleDeleteIcon}
@@ -432,7 +498,10 @@ export default function GroupWorkspaceCoach({
               onIncludeInMaterialsChange={setIncludeInMaterials}
               onNoteDescriptionChange={setNoteDescription}
               isEditMode={false}
-              onBack={() => console.log('onBack clicked')}
+              onBack={() => {
+                // No action needed on back for create mode
+              }}
+              isLoading={saveNotesMutation.isPending}
             />
           ) :
             <CoachNotesView
@@ -447,11 +516,13 @@ export default function GroupWorkspaceCoach({
                   status: 'available' as const,
                   category: link.icon.category,
                   url: link.icon.downloadUrl,
-                  thumbnailUrl: null,
+                  thumbnailUrl: link.icon.downloadUrl,
                 } : undefined,
               }))}
-              locale="en"
-              onExploreCourses={() => alert('onExploreCourses')}
+              locale={locale}
+              onExploreCourses={() => {
+                // TODO: Implement explore courses functionality
+              }}
             />
           }
         </div>
@@ -467,7 +538,6 @@ export default function GroupWorkspaceCoach({
               text={t('nextCoachingSession.closedSessionsButton')}
               onClick={() => {
                 // TODO: Implement view closed sessions functionality
-                console.log('View closed is clicked')
               }}
             />
           </div>
@@ -495,7 +565,6 @@ export default function GroupWorkspaceCoach({
               }}
               onClickScheduleSession={() => {
                 // TODO: Implement schedule session functionality
-                console.log('Schedule session clicked');
               }}
             />
           ) : (
@@ -541,20 +610,33 @@ export default function GroupWorkspaceCoach({
           </div>
         </div>
         <AssignmentOverviewList locale={locale}>
-          {sortedAndFilteredAssignments.map((assignment) => 
-              <AssignmentOverview
-                key={assignment.id}
-                {...assignment}
-                locale={locale}
-                role="coach"
-                onClickCourse={() => console.log("Course is clicked")}
-                onClickUser={() => console.log("User is clicked")}
-                onClickView={() => console.log("View assignment clicked")}
-                onClickGroup={() => console.log("Group is clicked")}
-                onFileDownload={(downloadUrl: string) => console.log("Download file:", downloadUrl)}
-              />
+          {displayedAssignments.map((assignment) =>
+            <AssignmentOverview
+              key={assignment.id}
+              {...assignment}
+              locale={locale}
+              role="coach"
+              onClickCourse={() => router.push(`/${locale}/workspace/courses/${assignment.course.slug}`)}
+              onClickUser={() => {
+                // TODO: Navigate to student profile page
+              }}
+              onClickView={() => {
+                // TODO: Implement view assignment functionality
+              }}
+              onClickGroup={() => router.push(`/${locale}/workspace/courses/${assignment.course.slug}/groups/${assignment.groupId}`)}
+              onFileDownload={(url , name) => downloadFile(url, name)}
+            />
           )}
         </AssignmentOverviewList>
+        {hasMoreAssignments && (
+          <div className="flex justify-center items-center w-full mt-6">
+            <Button
+              variant="text"
+              text={paginationTranslations('loadMore')}
+              onClick={handleLoadMoreAssignments}
+            />
+          </div>
+        )}
       </div>
 
       {/* Section: Group Members (listGroupMembers) */}
@@ -580,8 +662,17 @@ export default function GroupWorkspaceCoach({
           </div>
         </div>
         <StudentCardList locale={locale}>
-          {filteredMembers.map((member) => renderStudentCard(member))}
+          {renderStudentCards(displayedMembers)}
         </StudentCardList>
+        {hasMoreMembers && (
+          <div className="flex justify-center items-center w-full mt-6">
+            <Button
+              variant="text"
+              text={paginationTranslations('loadMore')}
+              onClick={handleLoadMoreMembers}
+            />
+          </div>
+        )}
       </div>
 
       {/* Assignment Filter Modal */}
@@ -614,7 +705,22 @@ export default function GroupWorkspaceCoach({
         onIncludeInMaterialsChange={setIncludeInMaterials}
         onNoteDescriptionChange={setNoteDescription}
         isEditMode={true}
+        isLoading={saveNotesMutation.isPending}
       />
+
+      {/* Coach Notes Result Popup */}
+      {showNotesResultPopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm">
+          <CoachNotesResultPopup
+            onClose={() => {
+              setShowNotesResultPopup(false);
+            }}
+            isSuccess={notesResultType === 'success'}
+            isError={notesResultType === 'error'}
+            locale={locale}
+          />
+        </div>
+      )}
     </div>
   );
 }

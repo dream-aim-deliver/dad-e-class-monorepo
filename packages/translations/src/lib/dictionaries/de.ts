@@ -1020,6 +1020,9 @@ export const DE: TDictionary = {
       editCoachNotes: "Coach Notizen bearbeiten",
       exploreCourses: "Kurse erkunden",
       description: "Hinweis: Jede von dir vorgenommene Änderung sendet eine Benachrichtigung an alle Studierenden in dieser Gruppe. Bitte überprüfe diese sorgfältig, bevor du sie veröffentlichst.", // Guidelines: informal 'Du' instead of formal 'Sie/Ihnen'
+      errorMessage: "Fehler beim Speichern der Notizen. Bitte versuche es erneut.",
+      successMessage: "Notizen erfolgreich gespeichert!",
+      closeButton: "Schließen",
     },
     buyCoachingSessionBanner: {
       coachBadge: 'Coach',

@@ -9,7 +9,7 @@
 import { useState } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { DefaultLoading, DefaultError, Breadcrumbs, GroupIntroduction, Button, CoachNotesView, Dropdown, IconFilter,  AssignmentCardFilterModal, TextInput, IconSearch, StudentCardList, StudentCard, CoachingSessionGroupOverviewCard, AssignmentOverview, AssignmentOverviewList } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, Breadcrumbs, GroupIntroduction, Button, CoachNotesView, Dropdown, IconFilter, AssignmentCardFilterModal, TextInput, IconSearch, StudentCardList, StudentCard, CoachingSessionGroupOverviewCard, AssignmentOverview, AssignmentOverviewList, downloadFile } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -19,6 +19,7 @@ import { useGetGroupNotesPresenter } from '../hooks/use-get-group-notes-presente
 import { useGetGroupNextCoachingSessionPresenter } from '../hooks/use-get-group-next-coaching-session-presenter';
 import { useAssignmentFilters } from './hooks/use-assignment-filters';
 import { useGroupMembers } from './hooks/use-group-members';
+import useClientSidePagination from '../utils/use-client-side-pagination';
 
 interface GroupWorkspaceStudentProps {
   locale: TLocale;
@@ -35,6 +36,7 @@ export default function GroupWorkspaceStudent({
   const router = useRouter();
   const t = useTranslations('pages.groupWorkspaceCoach');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+  const paginationTranslations = useTranslations('components.paginationButton');
 
   // Authentication using Pattern B (Student role only)
   const sessionDTO = useSession();
@@ -100,8 +102,8 @@ export default function GroupWorkspaceStudent({
     resetFilters,
   } = useAssignmentFilters({
     courseSlug,
-    groupId,
     initialFilters: {},
+    requestType: 'requestForStudent',
   });
 
   // Group members hook (includes data fetching, presenter logic, and search)
@@ -115,7 +117,6 @@ export default function GroupWorkspaceStudent({
     clearSearch,
   } = useGroupMembers({
     courseSlug,
-    groupId,
     requestType: 'requestForStudent',
   });
 
@@ -129,6 +130,28 @@ export default function GroupWorkspaceStudent({
 
   const session = sessionDTO.data;
   const isStudent = session?.user?.roles?.includes('student');
+
+  // Pagination for assignments
+  const {
+    displayedItems: displayedAssignments,
+    hasMoreItems: hasMoreAssignments,
+    handleLoadMore: handleLoadMoreAssignments,
+  } = useClientSidePagination({
+    items: sortedAndFilteredAssignments,
+    itemsPerPage: 3,
+    itemsPerPage2xl: 4,
+  });
+
+  // Pagination for members
+  const {
+    displayedItems: displayedMembers,
+    hasMoreItems: hasMoreMembers,
+    handleLoadMore: handleLoadMoreMembers,
+  } = useClientSidePagination({
+    items: filteredMembers,
+    itemsPerPage: 3,
+    itemsPerPage2xl: 4,
+  });
 
   if (!isStudent) {
     return (
@@ -205,77 +228,95 @@ export default function GroupWorkspaceStudent({
     },
   ];
 
-  // Function to render StudentCard based on member data and status
-  const renderStudentCard = (member: typeof allMembers[0]) => {
-    // Base props common to all student card variants
-    const baseProps = {
-      locale: locale,
-      studentName: `${member.name} ${member.surname}`,
-      studentImageUrl: member.avatarUrl || '',
-      coachName: `${member.coach.name} ${member.coach.surname}`,
-      coachImageUrl: member.coach.avatarUrl || '',
-      courseName: member.course.title,
-      courseImageUrl: member.course.imageUrl || '',
-      coachingSessionsLeft: member.coachingSessionCount || undefined,
-      isYou: member.coach.isCurrentUser,
-      onStudentDetails: () => console.log("Click on student"),
-      onClickCourse: () => console.log("Click on course"),
-      onClickCoach: () => console.log("Click on coach"),
-    };
+  // Function to render StudentCards based on members data and status
+  const renderStudentCards = (members: viewModels.TListGroupMembersSuccess['members']) => {
+    return members.map((member, index) => {
+      // Base props common to all student card variants
+      const baseProps = {
+        locale: locale,
+        studentName: `${member.name} ${member.surname}`,
+        studentImageUrl: member.avatarUrl || '',
+        coachName: `${member.coach.name} ${member.coach.surname}`,
+        coachImageUrl: member.coach.avatarUrl || '',
+        courseName: member.course.title,
+        courseImageUrl: member.course.imageUrl || '',
+        coachingSessionsLeft: member.coachingSessionCount || undefined,
+        isYou: member.coach.isCurrentUser,
+        onStudentDetails: () => {
+          // TODO: Navigate to student details page
+        },
+        onClickCourse: () => {
+          router.push(`/${locale}/workspace/courses/${member.course.slug}`)
+        },
+        onClickCoach: () => {
+          router.push(`/${locale}/coaches/${member.coach.username}`)
+        },
+      };
 
-    // Handle different status cases based on lastAssignment
-    if (!member.lastAssignment) {
-      // No assignment case
+      const key = member.id ?? index;
+
+      // Handle different status cases based on lastAssignment
+      if (!member.lastAssignment) {
+        // No assignment case
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="no-assignment"
+          />
+        );
+      }
+
+      const { status, title } = member.lastAssignment;
+
+      if (status === "waiting-feedback") {
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="waiting-feedback"
+            assignmentTitle={title}
+            onViewAssignment={() => {
+              // TODO: Implement view assignment functionality
+            }}
+          />
+        );
+      }
+
+      if (status === "long-wait") {
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="long-wait"
+            assignmentTitle={title}
+            onViewAssignment={() => {
+              // TODO: Implement view assignment functionality
+            }}
+          />
+        );
+      }
+
+      if (status === "course-completed") {
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="course-completed"
+            completedCourseDate={member.courseCompletionDate ? new Date(member.courseCompletionDate) : new Date()}
+          />
+        );
+      }
+
+      // Fallback to no-assignment if status is unknown
       return (
         <StudentCard
           {...baseProps}
-          key={member.id}
+          key={key}
           status="no-assignment"
         />
       );
-    }
-
-    const { status, title } = member.lastAssignment;
-
-    if (status === "waiting-feedback") {
-      return (
-        <StudentCard
-          {...baseProps}
-          status="waiting-feedback"
-          assignmentTitle={title}
-          onViewAssignment={() => console.log("View assignment:", member.lastAssignment?.id)}
-        />
-      );
-    }
-
-    if (status === "long-wait") {
-      return (
-        <StudentCard
-          {...baseProps}
-          status="long-wait"
-          assignmentTitle={title}
-          onViewAssignment={() => console.log("View assignment:", member.lastAssignment?.id)}
-        />
-      );
-    }
-
-    if (status === "course-completed") {
-      return (
-        <StudentCard
-          {...baseProps}
-          status="course-completed"
-          completedCourseDate={member.courseCompletionDate ? new Date(member.courseCompletionDate) : new Date()}
-        />
-      );
-    }
-
-    // Fallback to no-assignment if status is unknown
-    return (
-      <StudentCard
-        {...baseProps}
-        status="no-assignment"
-      />
-    );
+    });
   };
 
   return (
@@ -294,18 +335,14 @@ export default function GroupWorkspaceStudent({
         <GroupIntroduction
           groupName={introductionData.name}
           courseName={introductionData.course.title}
-          // TODO: In getGroupIntroduction response we need single coach instead of array
-          isYou={introductionData.coaches[0].isCurrentUser}
-          coachName={`${introductionData.coaches[0].name} ${introductionData.coaches[0].surname}`}
+          coaches={introductionData.coaches}
           courseImageUrl={introductionData.course.imageUrl || ''}
-          coachImageUrl={introductionData.coaches[0].avatarUrl || ''}
           actualStudentCount={introductionData.actualStudentCount}
           maxStudentCount={introductionData.maxStudentCount}
           locale={locale}
           onClickCourse={() => router.push(`/${locale}/workspace/courses/${courseSlug}`)}
-          onClickUser={() => {
-            // TODO: Navigate to coach profile page
-            console.log('Naveigate to user')
+          onClickUser={(username) => {
+            router.push(`/${locale}/coaches/${username}`);
           }}
         />
       </div>
@@ -329,11 +366,13 @@ export default function GroupWorkspaceStudent({
                 status: 'available' as const,
                 category: link.icon.category,
                 url: link.icon.downloadUrl,
-                thumbnailUrl: null,
+                thumbnailUrl: link.icon.downloadUrl,
               } : undefined,
             }))}
-            locale="en"
-            onExploreCourses={() => alert('onExploreCourses')}
+            locale={locale}
+            onExploreCourses={() => {
+              // No action needed on back for create mode
+            }}
           />
         </div>
 
@@ -348,7 +387,6 @@ export default function GroupWorkspaceStudent({
               text={t('nextCoachingSession.closedSessionsButton')}
               onClick={() => {
                 // TODO: Implement view closed sessions functionality
-                console.log("View closed sessions clicked");
               }}
             />
           </div>
@@ -404,20 +442,33 @@ export default function GroupWorkspaceStudent({
           </div>
         </div>
         <AssignmentOverviewList locale={locale}>
-          {sortedAndFilteredAssignments.map((assignment) => 
-              <AssignmentOverview
-                key={assignment.id}
-                {...assignment}
-                locale={locale}
-                role="coach"
-                onClickCourse={() => console.log("Course is clicked")}
-                onClickUser={() => console.log("User is clicked")}
-                onClickView={() => console.log("View assignment clicked")}
-                onClickGroup={() => console.log("Group is clicked")}
-                onFileDownload={(downloadUrl: string) => console.log("Download file:", downloadUrl)}
-              />
+          {displayedAssignments.map((assignment) =>
+            <AssignmentOverview
+              key={assignment.id}
+              {...assignment}
+              locale={locale}
+              role="coach"
+              onClickCourse={() => router.push(`/${locale}/workspace/courses/${assignment.course.slug}`)}
+              onClickUser={() => {
+                // TODO: Navigate to student profile page
+              }}
+              onClickView={() => {
+                // TODO: Implement view assignment functionality
+              }}
+              onClickGroup={() => router.push(`/${locale}/workspace/courses/${assignment.course.slug}/groups/${assignment.groupId}`)}
+              onFileDownload={(url , name) => downloadFile(url, name)}
+            />
           )}
         </AssignmentOverviewList>
+        {hasMoreAssignments && (
+          <div className="flex justify-center items-center w-full mt-6">
+            <Button
+              variant="text"
+              text={paginationTranslations('loadMore')}
+              onClick={handleLoadMoreAssignments}
+            />
+          </div>
+        )}
       </div>
 
       {/* Section: Group Members (listGroupMembers) */}
@@ -443,8 +494,17 @@ export default function GroupWorkspaceStudent({
           </div>
         </div>
         <StudentCardList locale={locale}>
-          {filteredMembers.map((member) => renderStudentCard(member))}
+          {renderStudentCards(displayedMembers)}
         </StudentCardList>
+        {hasMoreMembers && (
+          <div className="flex justify-center items-center w-full mt-6">
+            <Button
+              variant="text"
+              text={paginationTranslations('loadMore')}
+              onClick={handleLoadMoreMembers}
+            />
+          </div>
+        )}
       </div>
 
       {/* Assignment Filter Modal */}

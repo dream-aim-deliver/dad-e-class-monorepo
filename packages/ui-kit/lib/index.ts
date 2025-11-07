@@ -268,6 +268,7 @@ export { default as RedeemStandaloneCoupon } from './components/redeem-standalon
 export { GroupIntroduction } from './components/group-introduction';
 export { CoachNotesView, CoachNotesCreate } from './components/coach/coach-notes';
 export { CoachNotesEditDialog } from './components/coach/coach-notes-edit-dialog';
+export { CoachNotesResultPopup } from './components/coach/coach-notes-result-popup';
 export { AssignmentCardFilterModal } from './components/assignment/assignment-card-filter-modal';
 export { AssignmentOverview } from './components/assignment/assignment-overview';
 export { AssignmentOverviewList } from './components/assignment/assignment-overview-list';

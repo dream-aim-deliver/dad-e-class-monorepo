@@ -5,17 +5,24 @@ import { IconCoachingOffer, IconCourse, IconGroup } from "./icons";
 import { Button } from "./button";
 import { UserAvatar } from "./avatar/user-avatar";
 
+interface CoachProps {
+    name: string;
+    surname: string;
+    id: number;
+    username: string;
+    isCurrentUser: boolean;
+    avatarUrl?: string | null | undefined;
+};
+
 interface GroupIntroductionProps extends isLocalAware {
     groupName: string;
     courseName: string;
-    isYou: boolean;
-    coachName: string;
+    coaches: CoachProps[];
     courseImageUrl?: string;
-    coachImageUrl?: string;
     actualStudentCount: number;
     maxStudentCount: number;
     onClickCourse: () => void;
-    onClickUser: () => void;
+    onClickUser: (username: string) => void;
 };
 
 /**
@@ -24,11 +31,9 @@ interface GroupIntroductionProps extends isLocalAware {
  *
  * @param locale The current locale for the component, determining the language of displayed text.
  * @param groupName The name of the group to be displayed as the main heading.
+ * @param coaches An array of coach objects containing details about each coach.
  * @param courseName The name of the course associated with the group.
- * @param isYou Boolean flag indicating whether the current user is the coach of this group.
- * @param coachName The name of the coach responsible for the group.
  * @param courseImageUrl Optional URL for the course image displayed next to the course name.
- * @param coachImageUrl Optional URL for the coach's profile image.
  * @param actualStudentCount The current number of students enrolled in the group.
  * @param maxStudentCount The maximum number of students allowed in the group.
  * @param onClickCourse Callback function triggered when the course button is clicked.
@@ -39,10 +44,8 @@ interface GroupIntroductionProps extends isLocalAware {
  *   locale="en"
  *   groupName="Advanced Mathematics Group"
  *   courseName="Calculus I"
- *   isYou={false}
- *   coachName="Dr. John Smith"
+ *   coaches ={[{ name: "John", surname: "Doe", id: 1, username: "johndoe", isCurrentUser: false, avatarUrl: "https://example.com/johndoe.jpg" }]}
  *   courseImageUrl="https://example.com/course.jpg"
- *   coachImageUrl="https://example.com/coach.jpg"
  *   actualStudentCount={15}
  *   maxStudentCount={20}
  *   onClickCourse={() => console.log('Course clicked')}
@@ -52,10 +55,8 @@ interface GroupIntroductionProps extends isLocalAware {
 export const GroupIntroduction: FC<GroupIntroductionProps> = ({
     groupName,
     courseName,
-    isYou,
-    coachName,
+    coaches,
     courseImageUrl,
-    coachImageUrl,
     actualStudentCount,
     maxStudentCount,
     locale,
@@ -105,34 +106,41 @@ export const GroupIntroduction: FC<GroupIntroductionProps> = ({
                         <IconCoachingOffer size='5' data-testid="briefcase-icon" />
                         <span>{t.coach}</span>
                     </div>
-                    {!isYou ? (
-                        <Button
-                            size="small"
-                            variant="text"
-                            className="flex gap-1 p-0 h-8 max-w-full"
-                            text={coachName}
-                            hasIconLeft
-                            iconLeft={
-                                <UserAvatar
-                                    size="xSmall"
-                                    imageUrl={coachImageUrl}
-                                    fullName={coachName}
+                    {coaches.map((coach) => (
+                        <div 
+                            key={coach.id}
+                            className="flex items-center gap-4"
+                        >
+                            {!coach.isCurrentUser ? (
+                                <Button
+                                    size="small"
+                                    variant="text"
+                                    className="flex gap-1 p-0 h-8 max-w-full"
+                                    text={coach.name}
+                                    hasIconLeft
+                                    iconLeft={
+                                        <UserAvatar
+                                            size="xSmall"
+                                            imageUrl={coach.avatarUrl || undefined}
+                                            fullName={coach.name}
+                                        />
+                                    }
+                                    onClick={() => onClickUser(coach.username)}
                                 />
-                            }
-                            onClick={onClickUser}
-                        />
-                    ) : (
-                        <div className="flex gap-1 items-center">
-                            <UserAvatar
-                                size="xSmall"
-                                imageUrl={coachImageUrl}
-                                fullName={coachName}
-                            />
-                            <p className="text-base-white text-sm font-bold">
-                                {t.you}
-                            </p>
+                            ) : (
+                                <div className="flex gap-1 items-center">
+                                    <UserAvatar
+                                        size="xSmall"
+                                        imageUrl={coach.avatarUrl || undefined}
+                                        fullName={coach.name}
+                                    />
+                                    <p className="text-base-white text-sm font-bold">
+                                        {t.you}
+                                    </p>
+                                </div>
+                            )}
                         </div>
-                    )}
+                    ))}
                 </div>
             </div>
         </div>
