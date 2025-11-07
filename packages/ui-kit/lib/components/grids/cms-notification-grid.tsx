@@ -294,7 +294,6 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     // Effect to restore selections after data changes
     useEffect(() => {
         if (gridRef.current?.api && selectedRowIds.size > 0) {
-            // Small delay to ensure grid has rendered with new data
             setTimeout(() => {
                 gridRef.current?.api?.forEachNode((node) => {
                     if (node.data?.id && selectedRowIds.has(node.data.id)) {
@@ -305,12 +304,10 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
         }
     }, [rowData, selectedRowIds]);
 
-    // Smart mark as read handler - marks selected if any are selected, otherwise marks all
     const handleSmartMarkAsRead = () => {
         const selectedUnreadReceived = selectedRows.filter(row => row.type === 'received' && !row.isRead);
 
         if (selectedUnreadReceived.length > 0) {
-            // Mark selected as read
             const receivedIds = selectedUnreadReceived
                 .map(row => String(row.id))
                 .filter(id => id && id !== 'undefined');
@@ -319,11 +316,9 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                 onMarkSelectedAsRead(receivedIds);
             }
         } else {
-            // Mark all as read
             onMarkAllRead();
         }
 
-        // Clear selections after marking as read since they will become unselectable
         setSelectedRowIds(new Set());
         setSelectedRows([]);
     };
@@ -362,63 +357,67 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
 
     return (
         <div className="flex flex-col h-full space-y-5">
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-4">
-                <div className="flex flex-col gap-2 md:flex-row md:items-center w-full">
-                    <InputField
-                        className="flex-1 relative h-10"
-                        setValue={setSearchTerm}
-                        value={searchTerm}
-                        inputText={dictionary.searchPlaceholder}
-                        hasLeftContent
-                        leftContent={<IconSearch />}
-                    />
-                    <Dropdown
-                        type="simple"
-                        options={[
-                            { value: 'all', label: dictionary.all },
-                            { value: 'received', label: dictionary.received },
-                            { value: 'sent', label: dictionary.sent },
-                        ]}
-                        onSelectionChange={(selected) => setFilterType(selected as 'all' | 'received' | 'sent')}
-                        defaultValue={filterType}
-                        text={{ simpleText: dictionary.filterByType }}
-                        className="w-full md:w-40"
-                    />
-                </div>
-                <div className="flex flex-col gap-2 md:flex-row">
-                    <Button
-                        variant="primary"
-                        size="medium"
-                        text={loading ? baseGridDictionary.loading : getButtonText()}
-                        onClick={handleSmartMarkAsRead}
-                        disabled={isButtonDisabled()}
-                        className="w-full md:w-auto"
-                    />
+            <div className="flex-shrink-0">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-4">
+                    <div className="flex flex-col gap-2 md:flex-row md:items-center w-full">
+                        <InputField
+                            className="flex-1 relative h-10"
+                            setValue={setSearchTerm}
+                            value={searchTerm}
+                            inputText={dictionary.searchPlaceholder}
+                            hasLeftContent
+                            leftContent={<IconSearch />}
+                        />
+                        <Dropdown
+                            type="simple"
+                            options={[
+                                { value: 'all', label: dictionary.all },
+                                { value: 'received', label: dictionary.received },
+                                { value: 'sent', label: dictionary.sent },
+                            ]}
+                            onSelectionChange={(selected) => setFilterType(selected as 'all' | 'received' | 'sent')}
+                            defaultValue={filterType}
+                            text={{ simpleText: dictionary.filterByType }}
+                            className="w-full md:w-40"
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2 md:flex-row">
+                        <Button
+                            variant="primary"
+                            size="medium"
+                            text={loading ? baseGridDictionary.loading : getButtonText()}
+                            onClick={handleSmartMarkAsRead}
+                            disabled={isButtonDisabled()}
+                            className="w-full md:w-auto"
+                        />
+                    </div>
                 </div>
             </div>
 
-            <BaseGrid
-                shouldDelayRender={true}
-                gridRef={gridRef}
-                locale={locale}
-                suppressRowHoverHighlight={true}
-                columnDefs={columnDefs}
-                rowData={rowData}
-                pagination={true}
-                paginationPageSize={50}
-                suppressPaginationPanel={true}
-                domLayout="normal"
-                isExternalFilterPresent={() => true}
-                doesExternalFilterPass={doesExternalFilterPass}
-                rowSelection="multiple"
-                onSelectionChanged={onSelectionChanged}
-                getRowStyle={(params) => {
-                    if (!params.data) return undefined;
-                    return params.data.isRead
-                        ? { background: 'inherit' }
-                        : { background: 'var(--color-base-neutral-800)' };
-                }}
-            />
+            <div className="flex-1 min-h-0">
+                <BaseGrid
+                    shouldDelayRender={true}
+                    gridRef={gridRef}
+                    locale={locale}
+                    suppressRowHoverHighlight={true}
+                    columnDefs={columnDefs}
+                    rowData={rowData}
+                    pagination={true}
+                    paginationPageSize={50}
+                    suppressPaginationPanel={true}
+                    domLayout="normal"
+                    isExternalFilterPresent={() => true}
+                    doesExternalFilterPass={doesExternalFilterPass}
+                    rowSelection="multiple"
+                    onSelectionChanged={onSelectionChanged}
+                    getRowStyle={(params) => {
+                        if (!params.data) return undefined;
+                        return params.data.isRead
+                            ? { background: 'inherit' }
+                            : { background: 'var(--color-base-neutral-800)' };
+                    }}
+                />
+            </div>
         </div>
     );
 };
