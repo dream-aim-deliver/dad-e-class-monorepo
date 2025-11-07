@@ -15,6 +15,8 @@ import {
     useDialog,
     DefaultError,
     DefaultLoading,
+    RedeemStandaloneCoupon,
+    IconCoupon,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -29,6 +31,7 @@ import CoachDashboardReviews from './coach-dashboard-reviews';
 import { trpc } from '../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetPersonalProfilePresenter } from '../../hooks/use-get-personal-profile-presenter';
+import { useRedeemStandaloneCouponPresenter } from '../../hooks/use-redeem-standalone-coupon-presenter';
 
 interface UserDashboardProps {
     roles: string[];
@@ -139,6 +142,151 @@ function CreateCourseDialog({
                 <CreateCourseDialogContent
                     onDuplicationSuccess={onDuplicationSuccess}
                 />
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+function RedeemCouponDialogContent() {
+    const locale = useLocale() as TLocale;
+    const { setIsOpen } = useDialog();
+    const router = useRouter();
+
+    // Set up view model and presenter
+    const [redeemViewModel, setRedeemViewModel] = useState<
+        viewModels.TRedeemStandaloneCouponViewModel | undefined
+    >(undefined);
+    const { presenter: redeemPresenter } = useRedeemStandaloneCouponPresenter(
+        setRedeemViewModel
+    );
+
+    // Mutation for validating and redeeming coupon
+    const redeemCouponMutation = trpc.redeemStandaloneCoupon.useMutation();
+
+    const handleRedeem = async (couponCode: string) => {
+        try {
+            const response = await redeemCouponMutation.mutateAsync({
+                couponName: couponCode,
+            });
+
+            // Present the response using the presenter
+            if (redeemPresenter) {
+                // @ts-ignore
+                redeemPresenter.present(response, redeemViewModel);
+            }
+
+            if (response.success && 'data' in response) {
+                // Map the backend response to the component's expected format
+                const outcome = (response as any).data.outcome;
+
+                // Determine the type based on outcome
+                let type: 'course' | 'package' | 'coaching' | 'group' = 'course';
+                let title = '';
+                let imageUrl: string | undefined = undefined;
+
+                switch (outcome.type) {
+                    case 'freeCourses':
+                        type = 'course';
+                        title = outcome.courses[0]?.title || 'Free Course';
+                        imageUrl = outcome.courses[0]?.imageUrl || undefined;
+                        break;
+                    case 'freeBundles':
+                        type = 'package';
+                        title = `Bundle with ${outcome.courses.length} courses`;
+                        imageUrl = outcome.courses[0]?.imageUrl || undefined;
+                        break;
+                    case 'freeCoachingSession':
+                        type = 'coaching';
+                        title = outcome.coachingOfferings[0]?.title || 'Coaching Session';
+                        imageUrl = outcome.course?.imageUrl || undefined;
+                        break;
+                    case 'groupCourse':
+                        type = 'group';
+                        title = outcome.group.name;
+                        imageUrl = outcome.course.imageUrl || undefined;
+                        break;
+                }
+
+                return {
+                    valid: true,
+                    data: {
+                        type,
+                        title,
+                        imageUrl,
+                    },
+                };
+            }
+
+            return {
+                valid: false,
+            };
+        } catch (error) {
+            console.error('Error redeeming coupon:', error);
+            return {
+                valid: false,
+            };
+        }
+    };
+
+    const handleFinalRedeem = async (
+        _couponCode: string,
+        data: { type: 'course' | 'package' | 'coaching' | 'group'; title: string; imageUrl?: string }
+    ) => {
+        // Close dialog after successful redemption
+        setIsOpen(false);
+
+        // Optionally navigate to the redeemed content based on type
+        switch (data.type) {
+            case 'course':
+            case 'package':
+                // Navigate to courses page
+                router.push(`/${locale}/workspace/courses`);
+                break;
+            case 'coaching':
+                // Navigate to coaching sessions
+                router.push(`/${locale}/workspace/calendar`);
+                break;
+            case 'group':
+                // TODO: Navigate to the specific group workspace
+                // router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}`);
+                break;
+        }
+    };
+
+    return (
+        <div className="p-6">
+            <RedeemStandaloneCoupon
+                locale={locale}
+                onRedeem={handleRedeem}
+                onFinalRedeem={handleFinalRedeem}
+                onClose={() => setIsOpen(false)}
+            />
+        </div>
+    );
+}
+
+function RedeemCouponDialog() {
+    const t = useTranslations('pages.userDashboard');
+
+    return (
+        <Dialog
+            open={undefined}
+            onOpenChange={() => {
+                // This function is called when the dialog is opened or closed
+            }}
+            defaultOpen={false}
+        >
+            <DialogTrigger asChild>
+                <Button
+                    variant="secondary"
+                    hasIconLeft
+                    iconLeft={<IconCoupon />}
+                    size="medium"
+                    text={t('redeemCoupon')}
+                />
+            </DialogTrigger>
+            <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
+                <RedeemCouponDialogContent />
             </DialogContent>
         </Dialog>
     );
@@ -312,7 +460,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                     </div>
                     <div className="flex space-x-2">
                         <Button
-                            variant="secondary"
+                            variant="text"
                             hasIconLeft
                             iconLeft={<IconEdit />}
                             size="medium"
@@ -320,6 +468,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         >
                             {t('editProfile')}
                         </Button>
+                        {!isCoach && <RedeemCouponDialog />}
                         <Button
                             variant="primary"
                             hasIconLeft
