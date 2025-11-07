@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button } from '../button';
 import { BuyCompletePackageBanner } from '../buy-complete-package-banner';
-import { CourseCard } from '../course-card/course-card';
+import { PackageCourseCard } from '../course-card/package-course-selector/package-course-card';
 import { PackageCourseSelector } from '../course-card/package-course-selector/package-course-selector';
 import { PackageGeneralInformation } from '../package-general-information-banner';
 import { DefaultAccordion } from '../accordion/default-accordion';
@@ -281,58 +280,31 @@ export function PackagePreviewStep({
             >
                 {selectedCourses.map((course) => {
                     const isExcluded = previewExcludedCourseIds.includes(course.id);
+                    const courseIncluded = !isExcluded;
                     return (
-                        <div
+                        <PackageCourseCard
                             key={course.id}
-                            className={`w-full ${isExcluded ? 'opacity-60' : ''}`}
-                        >
-                            <CourseCard
-                                userType="visitor"
-                                reviewCount={course.reviewCount}
-                                locale={locale}
-                                language={{ code: course.language.code, name: course.language.name } as any}
-                                course={{
-                                    title: course.title,
-                                    description: course.description,
-                                    author: course.author,
-                                    imageUrl: course.imageUrl,
-                                    rating: course.rating,
-                                    duration: course.duration,
-                                    pricing: course.pricing,
-                                } as any}
-                                sessions={course.sessions}
-                                sales={course.sales}
-                                onDetails={() => onCourseDetails(course.id)}
-                                onClickUser={() => onCourseAuthorClick(course.id)}
-                                className="mb-3"
-                            />
-                        <div className="flex items-center justify-between">
-                                <span className="font-semibold text-text-primary">
-                                    {course.pricing.currency}{' '}
-                                    {coachingIncluded
-                                        ? course.pricing.fullPrice
-                                        : course.pricing.partialPrice}
-                                </span>
-                            <div className="flex gap-2">
-                                <Button
-                                        variant="secondary"
-                                    size="small"
-                                        text={
-                                            isExcluded
-                                                ? dictionary.components.packagePreviewStep.includeButton
-                                                : dictionary.components.packagePreviewStep.excludeButton
-                                        }
-                                        onClick={() => handleToggleCourseInPreview(course.id)}
-                                />
-                                <Button
-                                    variant="text"
-                                    size="small"
-                                    text={dictionary.components.packagePreviewStep.detailsButton}
-                                    onClick={() => onCourseDetails(course.id)}
-                                />
-                            </div>
-                        </div>
-                        </div>
+                            courseId={course.id}
+                            title={course.title}
+                            description={course.description}
+                            imageUrl={course.imageUrl}
+                            rating={course.rating}
+                            author={course.author}
+                            language={course.language}
+                            duration={course.duration}
+                            pricing={{
+                                fullPrice: coachingIncluded ? course.pricing.fullPrice : course.pricing.partialPrice,
+                                partialPrice: coachingIncluded ? course.pricing.fullPrice : course.pricing.partialPrice,
+                                currency: course.pricing.currency
+                            }}
+                            sales={course.sales}
+                            reviewCount={course.reviewCount}
+                            courseIncluded={courseIncluded}
+                            onClickUser={() => onCourseAuthorClick(course.id)}
+                            onClickDetails={() => onCourseDetails(course.id)}
+                            onClickIncludeExclude={() => handleToggleCourseInPreview(course.id)}
+                            locale={locale}
+                        />
                     );
                 })}
             </PackageCourseSelector>

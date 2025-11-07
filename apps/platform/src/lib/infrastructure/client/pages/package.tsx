@@ -10,10 +10,9 @@ import {
   DefaultAccordion,
   PackageCourseSelector,
   BuyCompletePackageBanner,
-  CourseCard,
+  PackageCourseCard,
   PackageCardList,
   PackageCard,
-  Button,
   Breadcrumbs
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -345,77 +344,41 @@ export default function Package({ locale, packageId }: PackageProps) {
         >
           {allCourses.map((course) => {
             const courseIncluded = selectedCourseIds.includes(course.id);
-            const courseData = {
-              title: course.title,
-              description: course.description,
-              author: {
-                name: course.creator.name,
-                image: course.creator.avatarUrl || ''
-              },
-              imageUrl: course.imageUrl || '',
-              rating: course.averageRating,
-              duration: {
-                video: 100, // TODO: Get course video duration once backend is updated
-                coaching: 200, // TODO: Get course coaching duration once backend is updated
-                selfStudy: 300 // TODO: Get course self-study duration once backend is updated
-              },
-              pricing: {
-                fullPrice: course.priceIncludingCoachings,
-                partialPrice: course.basePrice,
-                currency: platform.currency
-              },
-              language: course.language,
-            };
-
+            // Convert language string to object format if needed
+            const language = typeof course.language === 'string'
+              ? { code: '', name: course.language }
+              : course.language;
             return (
-              <div key={course.id} className={`w-full ${!courseIncluded ? 'opacity-60' : ''}`}>
-                {isLoggedIn ? (
-                  <CourseCard
-                    userType="student"
-                    reviewCount={course.ratingCount}
-                    locale={currentLocale}
-                    language={course.language}
-                    course={courseData}
-                    sales={course.salesCount}
-                    progress={0}
-                    onDetails={() => handleCourseDetails(course.id.toString())}
-                    onClickUser={() => handleCourseAuthorClick(course.id.toString())}
-                    className="mb-3"
-                  />
-                ) : (
-                  <CourseCard
-                    userType="visitor"
-                    reviewCount={course.ratingCount}
-                    locale={currentLocale}
-                    language={course.language}
-                    course={courseData}
-                    sessions={course.coachingSessionCount}
-                    sales={course.salesCount}
-                    onDetails={() => handleCourseDetails(course.id.toString())}
-                    onClickUser={() => handleCourseAuthorClick(course.id.toString())}
-                    className="mb-3"
-                  />
-                )}
-                <div className="flex items-center justify-between">
-                  <span className={`font-semibold ${!courseIncluded ? 'text-text-secondary line-through' : 'text-text-primary'}`}>
-                    {platform.currency} {coachingIncluded ? course.priceIncludingCoachings : course.basePrice}
-                  </span>
-                  <div className="flex gap-2">
-                    <Button
-                      variant={courseIncluded ? "secondary" : "primary"}
-                      size="small"
-                      text={courseIncluded ? t('excludeButton') : (t as any)('includeButton') || 'Include'}
-                      onClick={() => handleIncludeExclude(course.id.toString())}
-                    />
-                    <Button
-                      variant="text"
-                      size="small"
-                      text={t('detailsButton')}
-                      onClick={() => handleCourseDetails(course.id.toString())}
-                    />
-                  </div>
-                </div>
-              </div>
+              <PackageCourseCard
+                key={course.id}
+                courseId={course.id.toString()}
+                title={course.title}
+                description={course.description}
+                imageUrl={course.imageUrl || ''}
+                rating={course.averageRating}
+                author={{
+                  name: course.creator.name,
+                  image: course.creator.avatarUrl || ''
+                }}
+                language={language}
+                duration={{
+                  video: 100, // TODO: Get course video duration once backend is updated
+                  coaching: 200, // TODO: Get course coaching duration once backend is updated
+                  selfStudy: 300 // TODO: Get course self-study duration once backend is updated
+                }}
+                pricing={{
+                  fullPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
+                  partialPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
+                  currency: platform.currency
+                }}
+                sales={course.salesCount}
+                reviewCount={course.ratingCount}
+                courseIncluded={courseIncluded}
+                onClickUser={() => handleCourseAuthorClick(course.id.toString())}
+                onClickDetails={() => handleCourseDetails(course.id.toString())}
+                onClickIncludeExclude={() => handleIncludeExclude(course.id.toString())}
+                locale={currentLocale}
+              />
             );
           })}
         </PackageCourseSelector>

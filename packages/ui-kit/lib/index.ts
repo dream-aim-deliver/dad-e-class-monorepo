@@ -71,6 +71,7 @@ export { PackagePreviewStep } from './components/create-package/package-preview-
 
 // Components used in the Package subComponents
 export { PackageCourseSelector } from './components/course-card/package-course-selector/package-course-selector';
+export { PackageCourseCard } from './components/course-card/package-course-selector/package-course-card';
 export { BuyCompletePackageBanner } from './components/buy-complete-package-banner';
 
 export { default as DefaultLoading } from './components/default-loading';
