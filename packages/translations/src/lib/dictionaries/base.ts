@@ -1595,6 +1595,7 @@ export const DictionarySchema = z.object({
       flexibleSectionTitle: z.string(),
       flexibleDescription: z.string(),
       excludeButton: z.string(),
+      includeButton: z.string(),
       detailsButton: z.string(),
       bottomBannerTitle: z.string(),
       bottomBannerSubtitle: z.string(),

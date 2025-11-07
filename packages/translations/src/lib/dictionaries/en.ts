@@ -1603,6 +1603,7 @@ export const EN: TDictionary = {
       flexibleSectionTitle: 'Flexible',
       flexibleDescription: 'Choose only the services you really need for your success.',
       excludeButton: 'Exclude',
+      includeButton: 'Include',
       detailsButton: 'Details',
       bottomBannerTitle: 'Buy complete package',
       bottomBannerSubtitle: 'Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content.',
