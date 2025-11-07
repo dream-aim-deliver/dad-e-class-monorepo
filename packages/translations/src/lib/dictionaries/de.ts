@@ -1606,6 +1606,7 @@ export const DE: TDictionary = {
       flexibleSectionTitle: 'Flexibel',
       flexibleDescription: 'Wähle nur die Dienstleistungen, die du wirklich für deinen Erfolg brauchst.',
       excludeButton: 'Ausschließen',
+      includeButton: 'Hinzufügen',
       detailsButton: 'Details',
       bottomBannerTitle: 'Vollständiges Paket kaufen',
       bottomBannerSubtitle: 'Hier bekommst du alles inklusive. Du kannst daher schrittweise dein gesamtes Erscheinungsbild mit einem Schlüsselbild, neuem Branding, einer Website und entsprechenden Videoinhalten umsetzen.',
