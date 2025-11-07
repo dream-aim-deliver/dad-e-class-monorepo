@@ -82,19 +82,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-	// Track which tab is active to control data fetching
-	const [activeTab, setActiveTab] = useState<'personal' | 'professional'>(() => {
-		const tabFromUrl = searchParams.get('tab');
-		return (tabFromUrl === 'professional' || tabFromUrl === 'personal') ? tabFromUrl : 'personal';
-	});
-
-
-	useEffect(() => {
-		const tabFromUrl = searchParams.get('tab');
-		const validTab = (tabFromUrl === 'professional' || tabFromUrl === 'personal') ? tabFromUrl : 'personal';
-		setActiveTab(validTab);
-	}, [searchParams]);
-
 	// Always fetch personal profile data and languages (needed for default tab)
 	const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
 	const [languagesResponse] = trpc.listLanguages.useSuspenseQuery({});
@@ -139,11 +126,9 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 
 	const handleTabChange = (newTab: string) => {
 		const tabValue = newTab as 'personal' | 'professional';
-		setActiveTab(tabValue);
-		
 		const currentParams = new URLSearchParams(searchParams.toString());
 		currentParams.set('tab', tabValue);
-		router.replace(`?${currentParams.toString()}`);
+		router.push(`?${currentParams.toString()}`);
 		return true;
 	};
 
@@ -449,7 +434,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						isSaving={savePersonalMutation.isPending || saveProfessionalMutation.isPending}
 						hasProfessionalProfile={isCoach}
 						onTabChange={handleTabChange}
-						defaultTab={activeTab}
 					/>
 
 
