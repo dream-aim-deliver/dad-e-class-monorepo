@@ -3,7 +3,7 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import {
     Breadcrumbs,
@@ -47,7 +47,6 @@ function CalendarContent() {
     const { presenter: groupSessionsPresenter } = useListGroupCoachingSessionsPresenter(
         setGroupCoachingSessionsViewModel,
     );
-    groupSessionsPresenter.present(groupCoachingSessionsResponse, groupCoachingSessionsViewModel);
 
     // Fetch coach's individual coaching sessions
     const [coachCoachingSessionsResponse, { refetch: refetchCoachSessions }] =
@@ -57,7 +56,15 @@ function CalendarContent() {
     const { presenter: coachSessionsPresenter } = useListCoachCoachingSessionsPresenter(
         setCoachCoachingSessionsViewModel,
     );
-    coachSessionsPresenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
+
+    // Present data to view models using useEffect
+    useEffect(() => {
+        groupSessionsPresenter.present(groupCoachingSessionsResponse, groupCoachingSessionsViewModel);
+    }, [groupCoachingSessionsResponse, groupSessionsPresenter, groupCoachingSessionsViewModel]);
+
+    useEffect(() => {
+        coachSessionsPresenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
+    }, [coachCoachingSessionsResponse, coachSessionsPresenter, coachCoachingSessionsViewModel]);
 
     const handleGroupSessionAdded = () => {
         refetchGroupSessions();
