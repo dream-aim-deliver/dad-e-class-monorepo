@@ -212,7 +212,7 @@ export const FilePreview = (props: FilePreviewProps) => {
                         {uploadResponse.uploadProgress !== undefined ? (
                             <div className="flex items-center gap-2">
                                 <div className="flex-1 h-1 bg-base-neutral-700 rounded-full overflow-hidden">
-                                    <div 
+                                    <div
                                         className="h-full bg-primary-500 transition-all duration-300"
                                         style={{ width: `${uploadResponse.uploadProgress}%` }}
                                     />
@@ -257,6 +257,7 @@ export const FilePreview = (props: FilePreviewProps) => {
                             <Button
                                 variant="text"
                                 className="px-0"
+                                type="button"
                                 onClick={() => {
                                     props.onCancel!(
                                         uploadResponse.id as string,

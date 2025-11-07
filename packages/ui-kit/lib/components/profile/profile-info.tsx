@@ -23,7 +23,7 @@ interface ProfileInfoProps extends isLocalAware {
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
   profilePictureFile?: fileMetadata.TFileMetadata | null;
-  onUploadComplete?: (fileMetadata: fileMetadata.TFileMetadata) => void;
+  onUploadComplete: (fileMetadata: fileMetadata.TFileMetadata) => void;
   onFileDelete?: (id: string) => void;
   onFileDownload?: (id: string) => void;
   uploadProgress?: number;
@@ -127,25 +127,6 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     abortSignal?: AbortSignal
   ): Promise<fileMetadata.TFileMetadata> => {
     return await onFileUpload(fileRequest, abortSignal);
-  };
-
-  const handleUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
-    // Update form data with the uploaded file metadata
-    if (fileMetadata.category === 'image') {
-      // Use the file metadata directly without transformation
-      const newData = { ...initialData, avatarImage: fileMetadata as any };
-      onChange(newData);
-    }
-
-    // Notify parent component that upload is complete
-    onUploadComplete?.(fileMetadata);
-  };
-
-  const handleFileDelete = (id: string) => {
-    const newData = { ...initialData, avatarImage: null };
-    onChange(newData);
-    // Notify parent component about deletion
-    onFileDelete?.(id);
   };
 
 
@@ -274,10 +255,10 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             type="single"
             file={profilePictureFile ?? null}
             onFilesChange={handleUploadedFiles}
-            onUploadComplete={handleUploadComplete}
+            onUploadComplete={onUploadComplete}
             variant='image'
             onDownload={(id) => onFileDownload?.(id)}
-            onDelete={handleFileDelete}
+            onDelete={(id) => onFileDelete?.(id)}
             locale={locale}
             className="w-full"
             maxSize={5}

@@ -105,7 +105,7 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
         <IconCloudUpload classNames="w-6 h-6 text-base-neutral-50 font-bold" />
         <div className="flex flex-col gap-1 items-center justify-center">
           <div className="flex flex-wrap items-center justify-center text-center w-full">
-            <Button variant="text" text={text.title} className="md:h-[2.5rem] h-4 px-1" />
+            <Button variant="text" text={text.title} className="md:h-[2.5rem] h-4 px-1" type="button" />
             <p className="text-sm text-text-primary truncate max-w-[200px] sm:max-w-full">
               {text.description}
             </p>

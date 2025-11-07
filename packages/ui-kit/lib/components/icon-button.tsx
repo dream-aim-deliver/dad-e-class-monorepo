@@ -91,6 +91,7 @@ export const IconButton: FC<IconButtonProps> = ({
 
   return (
     <button
+      type="button"
       className={buttonClasses}
       disabled={disabled}
       onClick={onClick}

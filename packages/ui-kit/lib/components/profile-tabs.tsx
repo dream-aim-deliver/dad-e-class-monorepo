@@ -36,17 +36,18 @@ export interface ProfileTabsProps extends isLocalAware {
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
   profilePictureFile?: fileMetadata.TFileMetadataImage | null;
-  onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
+  onProfilePictureUploadComplete: (file: fileMetadata.TFileMetadata) => void;
   onProfilePictureDelete: (id: string) => void;
   onProfilePictureDownload?: (id: string) => void;
   profilePictureUploadProgress?: number;
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
-  onCurriculumVitaeUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
+  onCurriculumVitaeUploadComplete: (file: fileMetadata.TFileMetadata) => void;
   onCurriculumVitaeDelete: (id: string) => void;
   onCurriculumVitaeDownload?: (id: string) => void;
   curriculumVitaeUploadProgress?: number;
   isSaving?: boolean;
   hasProfessionalProfile?: boolean;
+  onTabChange?: (tab: string) => boolean;
 }
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
@@ -71,6 +72,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   locale,
   isSaving = false,
   hasProfessionalProfile = false,
+  onTabChange,
 }) => {
   const personalForm = useFormState(personalProfile, {
     enableReloadProtection: true
@@ -78,14 +80,14 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
   const professionalForm = useFormState(professionalProfile, {
     enableReloadProtection: true,
-     });
+  });
   const [currentTab, setCurrentTab] = useState<'personal' | 'professional'>('personal');
   const dictionary = getDictionary(locale as TLocale);
 
   const unsavedGuard = useUnsavedChangesGuard({
     checkHasChanges: (tab) => {
-      if (tab === 'personal') return personalForm.isDirty;
-      if (tab === 'professional') return professionalForm.isDirty;
+      if (tab === 'personal') return personalForm.isDirty && personalProfile?.avatarImage?.id == profilePictureFile?.id;
+      if (tab === 'professional') return professionalForm.isDirty && professionalProfile?.curriculumVitae?.id == curriculumVitaeFile?.id;
       return false;
     },
     onDiscardChanges: (tab) => {
@@ -95,13 +97,19 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   });
 
   const handleTabChange = useCallback((newTab: string) => {
+    // First call the external tab change handler if provided
+    if (onTabChange && !onTabChange(newTab)) {
+      return false;
+    }
+
+    // Then handle internal unsaved changes guard
     const canChange = unsavedGuard.handleTabChangeRequest(newTab, currentTab);
     if (!canChange) {
       return false;
     }
     setCurrentTab(newTab as 'personal' | 'professional');
     return true;
-  }, [currentTab, unsavedGuard]);
+  }, [currentTab, unsavedGuard, onTabChange]);
 
   const handleConfirmDiscard = () => {
     unsavedGuard.confirmDiscard();
@@ -110,27 +118,33 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
     }
   };
 
-  const handlePersonalSave = (profile: TPersonalProfile) => {
-    onSavePersonal?.(profile);
-    personalForm.markAsSaved();
+  const handlePersonalSave = async (profile: TPersonalProfile) => {
+    try {
+      await onSavePersonal?.(profile);
+      personalForm.markAsSaved();
+    } catch (error) {
+      console.error('Personal profile save failed:', error);
+    }
   };
 
-
-  const handleProfessionalSave = (profile: TProfessionalProfile) => {
-    onSaveProfessional?.(profile);
-    professionalForm.markAsSaved();
+  const handleProfessionalSave = async (profile: TProfessionalProfile) => {
+    try {
+      await onSaveProfessional?.(profile);
+      // Only mark as saved if the save operation succeeded (no exception thrown)
+      professionalForm.markAsSaved();
+    } catch (error) {
+      // Don't mark as saved if there was an error (validation or server error)
+      console.error('Professional profile save failed:', error);
+    }
   };
 
-  // ⚠️ REMOVED useCallback - performance analysis showed it's slower
   const handleSaveFromDialog = () => {
     if (unsavedGuard.sourceTab === 'personal' && personalForm.value) {
       handlePersonalSave(personalForm.value);
     } else if (unsavedGuard.sourceTab === 'professional' && professionalForm.value) {
       handleProfessionalSave(professionalForm.value);
     }
-    // Close dialog after saving
     unsavedGuard.cancelChange();
-    // Switch to pending tab if there was one
     if (unsavedGuard.pendingTab) {
       setCurrentTab(unsavedGuard.pendingTab as 'personal' | 'professional');
     }
