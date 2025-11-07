@@ -86,8 +86,8 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
   const unsavedGuard = useUnsavedChangesGuard({
     checkHasChanges: (tab) => {
-      if (tab === 'personal') return personalForm.isDirty && personalProfile?.avatarImage?.id == profilePictureFile?.id;
-      if (tab === 'professional') return professionalForm.isDirty && professionalProfile?.curriculumVitae?.id == curriculumVitaeFile?.id;
+      if (tab === 'personal') return personalForm.isDirty && personalProfile?.avatarImage?.id !== profilePictureFile?.id;
+      if (tab === 'professional') return professionalForm.isDirty && professionalProfile?.curriculumVitae?.id !== curriculumVitaeFile?.id;
       return false;
     },
     onDiscardChanges: (tab) => {
