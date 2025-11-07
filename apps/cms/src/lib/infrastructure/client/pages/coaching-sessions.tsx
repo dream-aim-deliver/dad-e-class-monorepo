@@ -43,8 +43,9 @@ export default function CoachingSessions({
   const t = useTranslations('pages.coachingSessions');
   const router = useRouter();
   const { platform } = useRequiredPlatform();
-  // TRPC query for coaching sessions data
-  const [coachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({
+  // TRPC query for coaching sessions data with stale time configuration
+  const [coachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({}, {
+    staleTime: 30 * 1000, 
   });
 
   const [coachingSessionsViewModel, setCoachingSessionsViewModel] = useState<
@@ -61,25 +62,6 @@ export default function CoachingSessions({
 
 
   const gridRef = useRef<any>(null);
-
-
-  const handleCoachClick = (coachName:string) => {
-
-    if (!coachName) return;
-    router.push(`${platform.domainName}/${currentLocale}/coaches/${coachName}`);
-  };
-
-  const handleStudentClick = (studentName:string) => {
-    if (!studentName) return;
-
-    router.push(`${platform.domainName}/${currentLocale}/students/${studentName}`);
-  };
-
-  const handleCourseClick = (courseSlug: string) => {
-    if (!courseSlug) return;
-    router.push(`${platform.domainName}/${currentLocale}/courses/${courseSlug}`);
-  };
-
   // Loading state
   if (!coachingSessionsViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
@@ -111,6 +93,25 @@ export default function CoachingSessions({
       />
     );
   }
+
+
+  const handleCoachClick = (coachName: string) => {
+
+    if (!coachName) return;
+    router.push(`${platform.domainName}/${currentLocale}/coaches/${coachName}`);
+  };
+
+  const handleStudentClick = (studentName: string) => {
+    if (!studentName) return;
+
+    router.push(`${platform.domainName}/${currentLocale}/students/${studentName}`);
+  };
+
+  const handleCourseClick = (courseSlug: string) => {
+    if (!courseSlug) return;
+    router.push(`${platform.domainName}/${currentLocale}/courses/${courseSlug}`);
+  };
+
 
   // Success state - extract data
   const coachingSessionsData = coachingSessionsViewModel.data;
