@@ -115,7 +115,7 @@ export default function GroupSessionTimeContent({
         }
     };
 
-    const handleTimeChange = (newTimeValue: string) => {
+    const handleStartTimeChange = (newTimeValue: string) => {
         if (!startTime) return;
 
         const parsedTime = parseTimeString(newTimeValue);
@@ -135,17 +135,6 @@ export default function GroupSessionTimeContent({
             setHasTimeError(true);
         }
     };
-
-    useEffect(() => {
-        handleTimeChange(startTimeValue);
-    }, [startTimeValue]);
-
-    // Update time value when startTime prop changes
-    useEffect(() => {
-        if (startTime) {
-            setStartTimeValue(getTimeValue(startTime));
-        }
-    }, [startTime, locale]);
 
     // Prepare coaching offerings for dropdown
     const coachingOfferingsOptions = React.useMemo(() => {
@@ -174,6 +163,10 @@ export default function GroupSessionTimeContent({
     };
 
     const isFormValid = !hasTimeError && startTime && selectedOffering && !isSubmitting;
+
+    useEffect(() => {
+        handleStartTimeChange(startTimeValue);
+    }, [startTimeValue]);
 
     if (!coachingOfferingsViewModel) {
         return <div>Loading...</div>;
