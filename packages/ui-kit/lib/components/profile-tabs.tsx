@@ -165,6 +165,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           initialData={personalForm.value!}
           onChange={personalForm.setValue}
           onSave={handlePersonalSave}
+          onDiscard={personalForm.reset}
           onFileUpload={onPersonalFileUpload}
           profilePictureFile={profilePictureFile}
           onUploadComplete={onProfilePictureUploadComplete}
@@ -173,7 +174,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           availableLanguages={availableLanguages}
           locale={locale as TLocale}
           uploadProgress={profilePictureUploadProgress}
-          isSaving={isSaving || personalForm.isDirty}
+          isSaving={isSaving || !personalForm.isDirty}
         />
       </div>
     );
@@ -200,6 +201,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             initialData={personalForm.value!}
             onChange={personalForm.setValue}
             onSave={handlePersonalSave}
+            onDiscard={personalForm.reset}
             onFileUpload={onPersonalFileUpload}
             profilePictureFile={profilePictureFile}
             onUploadComplete={onProfilePictureUploadComplete}
@@ -208,7 +210,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             availableLanguages={availableLanguages}
             locale={locale as TLocale}
             uploadProgress={profilePictureUploadProgress}
-            isSaving={isSaving || personalForm.isDirty}
+            isSaving={isSaving || !personalForm.isDirty}
           />
         </TabContent>
 
@@ -218,6 +220,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onChange={professionalForm.setValue}
             availableSkills={transformSkills}
             onSave={handleProfessionalSave}
+            onDiscard={professionalForm.reset}
             onFileUpload={onProfessionalFileUpload}
             curriculumVitaeFile={curriculumVitaeFile}
             onUploadComplete={onCurriculumVitaeUploadComplete}
@@ -225,7 +228,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onFileDownload={onCurriculumVitaeDownload}
             locale={locale as TLocale}
             uploadProgress={curriculumVitaeUploadProgress}
-            isSaving={isSaving || professionalForm.isDirty}
+            isSaving={isSaving || !professionalForm.isDirty}
           />
         </TabContent>
       </Tabs.Root>
