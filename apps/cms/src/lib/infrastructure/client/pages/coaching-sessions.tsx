@@ -11,7 +11,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useListCoachingSessionsPresenter } from '../hooks/use-list-coaching-sessions-presenter';
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Outline, Button, IconCloudDownload } from '@maany_shr/e-class-ui-kit';
 import {
@@ -22,7 +22,7 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { CoachingSessionGrid } from '@maany_shr/e-class-ui-kit';
-import { usePlatform, useRequiredPlatform } from '../context/platform-context';
+import { usePlatform } from '../context/platform-context';
 
 interface CoachingSessionsProps {
   locale: TLocale;
@@ -42,7 +42,10 @@ export default function CoachingSessions({
   const currentLocale = useLocale() as TLocale;
   const t = useTranslations('pages.coachingSessions');
   const router = useRouter();
-  const { platform } = useRequiredPlatform();
+  
+  // Use safer platform context access
+  const platformContext = usePlatform();
+  
   // TRPC query for coaching sessions data with stale time configuration
   const [coachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({}, {
     staleTime: 30 * 1000, 
@@ -56,12 +59,21 @@ export default function CoachingSessions({
     setCoachingSessionsViewModel,
   );
 
-  // @ts-ignore
-  // Present the data
-  presenter.present(coachingSessionsResponse, coachingSessionsViewModel);
+  // Present the data safely
+  React.useEffect(() => {
 
+      // @ts-ignore
+      presenter.present(coachingSessionsResponse, coachingSessionsViewModel);
+
+  }, [coachingSessionsResponse]);
 
   const gridRef = useRef<any>(null);
+  
+  if (!platformContext) {
+    return <DefaultLoading locale={currentLocale} variant="minimal" />;
+  }
+  
+  const { platform } = platformContext;
   // Loading state
   if (!coachingSessionsViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
