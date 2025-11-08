@@ -335,7 +335,7 @@ export default function GroupWorkspaceCoach({
     },
     {
       label: courseSlug,
-      onClick: () => router.push(`/${locale}/workspace/courses/${courseSlug}`),
+      onClick: () => router.push(`/${locale}/courses/${courseSlug}`),
     },
     {
       label: breadcrumbsTranslations('groups'),
@@ -365,7 +365,7 @@ export default function GroupWorkspaceCoach({
           // TODO: Redirect to user profile page
         },
         onClickCourse: () => {
-          router.push(`/${locale}/workspace/courses/${member.course.slug}`)
+          router.push(`/${locale}/courses/${member.course.slug}`)
         },
         onClickCoach: () => {
           router.push(`/${locale}/coaches/${member.coach.username}`)
@@ -459,7 +459,7 @@ export default function GroupWorkspaceCoach({
           actualStudentCount={introductionData.actualStudentCount}
           maxStudentCount={introductionData.maxStudentCount}
           locale={locale}
-          onClickCourse={() => router.push(`/${locale}/workspace/courses/${courseSlug}`)}
+          onClickCourse={() => router.push(`/${locale}/courses/${courseSlug}`)}
           onClickUser={(username) => {
             router.push(`/${locale}/coaches/${username}`);
           }}
@@ -469,7 +469,8 @@ export default function GroupWorkspaceCoach({
       {/* Section: Group Notes (saveGroupNotes, getGroupNotes) */}
       <div className="flex gap-4 items-start flex-col md:flex-row lg:flex-row">
         {/* Notes section*/}
-        <div className='flex flex-col gap-4 w-full md:max-w-[900px] lg:max-w-[900px] sm:max-w-[450px] max-w-[300px]'>
+        {/* TODO: There is some issue in text editor component regarding resizing so we need to investigate further */}
+        <div className='flex flex-col gap-4 w-full md:max-w-[700px] lg:max-w-[900px] sm:max-w-[450px] max-w-[300px]'>
           <div className='flex  gap-7 items-center'>
             <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%]'>
               {t('notes.title')}
@@ -528,7 +529,7 @@ export default function GroupWorkspaceCoach({
         </div>
 
         {/* Next coaching session */}
-        <div className='flex flex-col gap-4 md:w-fit lg:w-fit w-full'>
+        <div className='flex flex-col gap-4 w-full'>
           <div className='flex items-center justify-between w-full gap-7'>
             <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%] whitespace-nowrap'>
               {t('nextCoachingSession.title')}
@@ -555,7 +556,7 @@ export default function GroupWorkspaceCoach({
               groupName={nextSessionData.nextSession.groupName}
               onClickCourse={() => {
                 if (nextSessionData?.nextSession?.course.slug) {
-                  router.push(`/${locale}/workspace/courses/${nextSessionData?.nextSession?.course.slug}`)
+                  router.push(`/${locale}/courses/${nextSessionData?.nextSession?.course.slug}`)
                 }
               }}
               onClickGroup={() => {
@@ -616,7 +617,7 @@ export default function GroupWorkspaceCoach({
               {...assignment}
               locale={locale}
               role="coach"
-              onClickCourse={() => router.push(`/${locale}/workspace/courses/${assignment.course.slug}`)}
+              onClickCourse={() => router.push(`/${locale}/courses/${assignment.course.slug}`)}
               onClickUser={() => {
                 // TODO: Navigate to student profile page
               }}
