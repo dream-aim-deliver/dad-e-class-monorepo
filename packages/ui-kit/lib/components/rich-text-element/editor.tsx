@@ -108,6 +108,15 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
       return <h5 {...attributes} style={style} className="text-md font-bold">{children}</h5>;
     case "h6":
       return <h6 {...attributes} style={style} className="text-sm font-bold">{children}</h6>;
+    case "horizontal-rule":
+      return (
+        <div {...attributes} style={style}>
+          <div contentEditable={false}>
+            <hr className="my-4 border-t-2 border-base-neutral-500" />
+          </div>
+          {children}
+        </div>
+      );
     case "paragraph":
       return <p {...attributes} style={style} className="text-base whitespace-pre-wrap">{children}</p>;
     default:
@@ -132,8 +141,9 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
     // Initialize the editor with history and React plugin
     const [editor] = useState(() => {
       const editor = withHistory(withReact(createEditor()));
-      const { isInline } = editor;
+      const { isInline, isVoid } = editor;
       editor.isInline = (element) => (element.type === "link" ? true : isInline(element));
+      editor.isVoid = (element) => (element.type === "horizontal-rule" ? true : isVoid(element));
       return editor;
     });
 

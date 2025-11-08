@@ -401,6 +401,7 @@ export const EN: TDictionary = {
       blockQuote: "Block Quote",
       numberedList: "Numbered List",
       bulletedList: "Bulleted List",
+      horizontalRule: "Horizontal Rule (dividing line)",
       unlink: "Remove Link"
     },
     coachingOnDemandBanner: {

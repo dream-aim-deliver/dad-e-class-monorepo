@@ -7,7 +7,7 @@ import {
   TEXT_FORMAT_OPTIONS,
 } from "../../utils/constants"
 
-import { insertLink, isBlockActive, isLinkActive, isMarkActive, removeLink, toggleBlock, toggleMark } from "./slate"
+import { insertLink, isBlockActive, isLinkActive, isMarkActive, removeLink, toggleBlock, toggleMark, insertHorizontalRule } from "./slate"
 import { EditorType, ElementKey, MarkKey } from "./types"
 import { Link, Unlink } from "lucide-react";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
@@ -25,7 +25,12 @@ export default function Toolbar({ locale }: isLocalAware) {
   };
 
   const onBlockClick = (id: RichTextAction) => {
-    toggleBlock(editor as EditorType, id as ElementKey);
+    // Handle horizontal rule differently since it's an insertion, not a toggle
+    if (id === "horizontal-rule") {
+      insertHorizontalRule(editor as EditorType);
+    } else {
+      toggleBlock(editor as EditorType, id as ElementKey);
+    }
   };
 
   const getBlockSelectionClass = (id: RichTextAction) => {

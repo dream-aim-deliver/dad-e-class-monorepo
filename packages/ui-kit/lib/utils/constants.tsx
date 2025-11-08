@@ -16,6 +16,7 @@ import {
   Quote,
   Undo,
   Redo,
+  Minus,
 } from "lucide-react";
 
 export enum RichTextAction {
@@ -36,6 +37,7 @@ export enum RichTextAction {
   BlockQuote = "block-quote",
   NumberedList = "numbered-list",
   BulletedList = "bulleted-list",
+  HorizontalRule = "horizontal-rule",
   Undo = "undo",
   Redo = "redo",
   unlink = "unlink"
@@ -60,6 +62,7 @@ export const TEXT_BLOCK_OPTIONS = (dictionary: any) => [
   { id: RichTextAction.BlockQuote, icon: <Quote size={24} />, label: dictionary.components.richTextToolbar.blockQuote },
   { id: RichTextAction.BulletedList, icon: <List size={24} />, label: dictionary.components.richTextToolbar.bulletedList },
   { id: RichTextAction.NumberedList, icon: <ListOrdered size={24} />, label: dictionary.components.richTextToolbar.numberedList },
+  { id: RichTextAction.HorizontalRule, icon: <Minus size={24} />, label: dictionary.components.richTextToolbar.horizontalRule },
 ];
 
 export const HEADINGS = ["h1", "h2", "h3", "h4", "h5", "h6"];

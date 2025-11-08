@@ -99,13 +99,20 @@ const RenderElement = ({ attributes, children, element }: {
       return <h5 {...attributes} style={style} className="text-md font-bold">{children}</h5>;
     case "h6":
       return <h6 {...attributes} style={style} className="text-sm font-bold">{children}</h6>;
+    case "horizontal-rule":
+      return (
+        <div {...attributes} style={style}>
+          <hr className="my-4 border-t-2 border-base-neutral-500" />
+          {children}
+        </div>
+      );
     case "paragraph": {
       // Check if paragraph is empty (only contains empty text)
       const isEmpty = element.children?.length === 1 && element.children[0].text === "";
       return (
-        <p 
-          {...attributes} 
-          style={style} 
+        <p
+          {...attributes}
+          style={style}
           className={`text-base whitespace-pre-wrap pb-3 ${isEmpty ? "min-h-[1.5em]" : ""}`}
         >
           {children}

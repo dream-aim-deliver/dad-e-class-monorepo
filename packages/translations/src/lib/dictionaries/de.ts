@@ -404,6 +404,7 @@ export const DE: TDictionary = {
       blockQuote: "Zitat",
       numberedList: "Nummerierte Liste",
       bulletedList: "Aufzählungsliste",
+      horizontalRule: "Horizontale Linie (Trennlinie)",
       unlink: "Link entfernen"
     },
     coachingOnDemandBanner: {
