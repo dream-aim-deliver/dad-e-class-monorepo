@@ -31,7 +31,6 @@ const NavLinks = ({
     const routes = {
         offers: '/offers',
         coaching: '/coaching',
-        howItWorks: '/how-it-works',
         about: '/about',
     };
 
@@ -61,11 +60,6 @@ const NavLinks = ({
             <Link href="/coaching">
                 <span className={getLinkClass(routes.coaching)}>
                     {t('coaching')}
-                </span>
-            </Link>
-            <Link href="/how-it-works">
-                <span className={getLinkClass(routes.howItWorks)}>
-                    {t('howItWorks')}
                 </span>
             </Link>
             <Link href="/about">

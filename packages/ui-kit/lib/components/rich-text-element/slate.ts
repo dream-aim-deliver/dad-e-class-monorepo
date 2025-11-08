@@ -156,3 +156,21 @@ export const removeLink = (editor: EditorType) => {
     match: (n) => !Editor.isEditor(n) && Element.isElement(n) && n.type === "link",
   });
 };
+
+/**
+ * Inserts a horizontal rule at the current selection.
+ * @param {EditorType} editor - The Slate editor instance.
+ */
+export const insertHorizontalRule = (editor: EditorType) => {
+  const horizontalRule = {
+    type: "horizontal-rule",
+    children: [{ text: "" }],
+  };
+  Transforms.insertNodes(editor, horizontalRule);
+  // Insert a new paragraph after the horizontal rule so the user can continue typing
+  const paragraph = {
+    type: "paragraph",
+    children: [{ text: "" }],
+  };
+  Transforms.insertNodes(editor, paragraph);
+};

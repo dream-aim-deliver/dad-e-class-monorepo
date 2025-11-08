@@ -406,6 +406,7 @@ export const DictionarySchema = z.object({
       blockQuote: z.string(),
       numberedList: z.string(),
       bulletedList: z.string(),
+      horizontalRule: z.string(),
       undo: z.string(),
       redo: z.string(),
     }),
