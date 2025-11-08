@@ -216,7 +216,7 @@ export default function GroupWorkspaceStudent({
     },
     {
       label: courseSlug,
-      onClick: () => router.push(`/${locale}/workspace/courses/${courseSlug}`),
+      onClick: () => router.push(`/${locale}/courses/${courseSlug}`),
     },
     {
       label: breadcrumbsTranslations('groups'),
@@ -246,7 +246,7 @@ export default function GroupWorkspaceStudent({
           // TODO: Navigate to student details page
         },
         onClickCourse: () => {
-          router.push(`/${locale}/workspace/courses/${member.course.slug}`)
+          router.push(`/${locale}/courses/${member.course.slug}`)
         },
         onClickCoach: () => {
           router.push(`/${locale}/coaches/${member.coach.username}`)
@@ -340,7 +340,7 @@ export default function GroupWorkspaceStudent({
           actualStudentCount={introductionData.actualStudentCount}
           maxStudentCount={introductionData.maxStudentCount}
           locale={locale}
-          onClickCourse={() => router.push(`/${locale}/workspace/courses/${courseSlug}`)}
+          onClickCourse={() => router.push(`/${locale}/courses/${courseSlug}`)}
           onClickUser={(username) => {
             router.push(`/${locale}/coaches/${username}`);
           }}
@@ -448,7 +448,7 @@ export default function GroupWorkspaceStudent({
               {...assignment}
               locale={locale}
               role="coach"
-              onClickCourse={() => router.push(`/${locale}/workspace/courses/${assignment.course.slug}`)}
+              onClickCourse={() => router.push(`/${locale}/courses/${assignment.course.slug}`)}
               onClickUser={() => {
                 // TODO: Navigate to student profile page
               }}
