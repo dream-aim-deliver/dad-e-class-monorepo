@@ -32,6 +32,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   onFileDownload?: (id: string) => void;
   uploadProgress?: number;
   isSaving?: boolean;
+  variant?: 'professionalInfo' | 'becomeACoach';
 }
 
 
@@ -43,6 +44,7 @@ interface ProfessionalInfoProps extends isLocalAware {
  * @param onFileUpload Callback function to handle file uploads. This is required for the component to function properly.
  * @param curriculumVitaeFile The current curriculum vitae file metadata to display in the uploader.
  * @param onUploadComplete Callback function triggered when a file upload is completed. Receives the uploaded file metadata.
+ * @param variant Optional variant to customize the component's appearance and behavior.
  * @param locale The locale used for translations and localization.
  *
  * @example
@@ -68,6 +70,7 @@ interface ProfessionalInfoProps extends isLocalAware {
  *   }}
  *   curriculumVitaeFile={currentCurriculumVitaeFile}
  *   onUploadComplete={(fileMetadata) => console.log("Upload completed:", fileMetadata)}
+ *   variant="professionalInfo"
  *   locale="en"
  * />
  */
@@ -86,6 +89,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   locale,
   uploadProgress,
   isSaving = false,
+  variant = 'professionalInfo',
 }) => {
   const [showModal, setShowModal] = useState(false);
   const dictionary = getDictionary(locale);
@@ -145,9 +149,11 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
       onSubmit={handleSubmit}
     >
       <div className="flex flex-col flex-1 gap-4 shrink w-full basis-0">
-        <h1 className="text-xl font-bold leading-tight flex items-start text-text-primary max-md:max-w-full">
-          {dictionary.components.professionalInfo.title}
-        </h1>
+        {variant === 'professionalInfo' && (
+          <h1 className="text-xl font-bold leading-tight flex items-start text-text-primary max-md:max-w-full">
+            {dictionary.components.professionalInfo.title}
+          </h1>
+        )}
 
         <div className="flex flex-col  w-full max-md:max-w-full">
           <TextAreaInput
@@ -344,24 +350,35 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           />
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center  w-full text-base font-bold leading-none max-md:max-w-full">
-          <Button
-            variant="secondary"
-            size="medium"
-            className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
-            onClick={handleDiscard}
-            text={dictionary.components.professionalInfo.buttontext1}
-            type="button"
-          />
+        {variant === 'becomeACoach' ? (
           <Button
             variant="primary"
             size="medium"
-            className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
-            text={dictionary.components.professionalInfo.buttontext2}
+            className="flex-1 w-full min-h-[40px]"
+            text={dictionary.components.professionalInfo.sendApplicationButton}
             type="submit"
             disabled={isSaving}
           />
-        </div>
+        ) : (
+          <div className="flex flex-wrap gap-4 items-center  w-full text-base font-bold leading-none max-md:max-w-full">
+            <Button
+              variant="secondary"
+              size="medium"
+              className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
+              onClick={handleDiscard}
+              text={dictionary.components.professionalInfo.buttontext1}
+              type="button"
+            />
+            <Button
+              variant="primary"
+              size="medium"
+              className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
+              text={dictionary.components.professionalInfo.buttontext2}
+              type="submit"
+              disabled={isSaving}
+            />
+          </div>
+        )}
       </div>
     </form>
   );
