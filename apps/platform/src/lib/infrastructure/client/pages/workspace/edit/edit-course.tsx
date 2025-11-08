@@ -312,6 +312,11 @@ interface EditCourseLayoutProps {
     children: React.ReactNode;
 }
 
+// No-op function for closeable banners
+const noOp = () => {
+    // Intentionally empty - used for banner close handlers
+};
+
 function EditCourseLayout({
     onPreview,
     onSave,
@@ -405,7 +410,7 @@ function EditCourseLayout({
                         style="success"
                         title={successMessage}
                         closeable
-                        onClose={() => {}}
+                        onClose={noOp}
                         className={tabContentClass}
                     />
                 )}
@@ -415,7 +420,7 @@ function EditCourseLayout({
                         title={editCourseTranslations('errorSaving')}
                         description={errorMessage}
                         closeable
-                        onClose={() => {}}
+                        onClose={noOp}
                         className={tabContentClass}
                     />
                 )}
