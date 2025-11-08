@@ -2833,6 +2833,12 @@ export const DE: TDictionary = {
         title: 'Fehler',
         description: 'Beim Absenden deiner Bewerbung ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
       },
+      validation: {
+        bioRequired: 'Biografie ist erforderlich',
+        linkedinRequired: 'LinkedIn URL ist erforderlich',
+        linkedinInvalid: 'Bitte geben Sie eine gültige LinkedIn URL ein (z.B. https://www.linkedin.com/in/ihrname)',
+        portfolioInvalid: 'Bitte geben Sie eine gültige Portfolio URL ein (z.B. https://www.ihrportfolio.com)',
+      },
       email: {
         subject: 'Bewerbung für die Trainerlaufbahn',
         headerTitle: 'Coach-Bewerbungsformular Einreichung',

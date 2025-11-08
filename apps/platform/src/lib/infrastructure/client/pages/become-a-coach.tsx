@@ -16,7 +16,7 @@ import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { trpc } from '../trpc/cms-client';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
-import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { Banner, DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 
 // Types
 type TSkill = { id: string | number; name: string; slug: string };
@@ -39,6 +39,10 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [curriculumVitaeUploadProgress, setCurriculumVitaeUploadProgress] = useState<number>(0);
   const [curriculumVitaeFile, setCurriculumVitaeFile] = useState<fileMetadata.TFileMetadata | null>(null);
+  
+  // State for messages
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const { presenter: listTopicsPresenter } = useListTopicsPresenter(setListTopicsViewModel);
 
@@ -99,20 +103,6 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   const handleCVUploadComplete = (uploadedFile: fileMetadata.TFileMetadata) => {
     setCurriculumVitaeFile(uploadedFile);
     setCurriculumVitaeUploadProgress(0);
-
-    // Sync uploaded file with form state
-    if (professionalForm.value) {
-      professionalForm.setValue({
-        ...professionalForm.value,
-        curriculumVitae: {
-          id: uploadedFile.id,
-          name: uploadedFile.name,
-          size: uploadedFile.size,
-          category: 'document',
-          downloadUrl: uploadedFile.url,
-        }
-      });
-    }
   };
 
   const handleCVFileDelete = (fileId: string) => {
@@ -122,14 +112,6 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     }
 
     setCurriculumVitaeFile(null);
-
-    // Remove file from form state
-    if (professionalForm.value) {
-      professionalForm.setValue({
-        ...professionalForm.value,
-        curriculumVitae: null
-      });
-    }
   };
 
   const handleCVFileDownload = (fileId: string) => {
@@ -147,8 +129,43 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   // Handle form submission and email generation
   // TODO: Implement server-side email sending in the future
   const handleProfessionalSave = async (profile: viewModels.TGetProfessionalProfileSuccess['profile']) => {
-    setIsSaving(true);
+    if (!profile) return;
+
+    // Validation
+    const errors: string[] = [];
+    
+    // Bio validation (required)
+    if (!profile.bio || profile.bio.trim() === '') {
+      errors.push(t('validation.bioRequired'));
+    }
+
+    // LinkedIn URL validation (required + regex)
+    const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|showcase)\/[\w-]+\/?$/;
+    if (!profile.linkedinUrl || profile.linkedinUrl.trim() === '') {
+      errors.push(t('validation.linkedinRequired'));
+    } else if (!linkedInUrlRegex.test(profile.linkedinUrl.trim())) {
+      errors.push(t('validation.linkedinInvalid'));
+    }
+
+    // Portfolio URL validation (optional but must be valid URL if provided)
+    if (profile.portfolioWebsite && profile.portfolioWebsite.trim() !== '') {
+      try {
+        new URL(profile.portfolioWebsite.trim());
+      } catch {
+        errors.push(t('validation.portfolioInvalid'));
+      }
+    }
+
+    // If there are validation errors, show them and return
+    if (errors.length > 0) {
+      setErrorMessage(errors.join('. '));
+      setSuccessMessage(null);
+      setIsSaving(false);
+      return;
+    }
+
     try {
+      setIsSaving(true);
       // Generate localized email subject
       const emailSubject = t('email.subject');
 
@@ -188,11 +205,13 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
 
       // Open email client with pre-filled data
       window.open(mailtoLink, '_blank');
-
     } catch (error) {
-      console.error('Error preparing coach application email:', error);
+      setErrorMessage(t('error.description'));
+      setSuccessMessage(null);
     } finally {
       setIsSaving(false);
+      setSuccessMessage(t('successTitle'));
+      setErrorMessage(null);
     }
   };
 
@@ -215,7 +234,7 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   }));
 
   return (
-    <div className="flex flex-col gap-10 md:flex-row lg:flex-row justify-center px-4">
+    <div className="flex flex-col gap-10 md:flex-row lg:flex-row justify-center px-4 md:px-30">
       <div className='flex flex-col gap-4'>
         <h1 className='text-text-primary text-4xl font-bold'>{t('title')}</h1>
         <p className='text-text-primary text-md'>{t('description')}</p>
@@ -237,6 +256,15 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
           isSaving={isSaving}
           variant="becomeACoach"
         />
+        {/* Display error message */}
+        {errorMessage && (
+          <Banner style="error" description={errorMessage} />
+        )}
+
+        {/* Display success message */}
+        {successMessage && !isSaving && (
+          <Banner style="success" description={successMessage} />
+        )}
       </div>
     </div>
   );

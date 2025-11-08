@@ -2868,6 +2868,12 @@ export const DictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
       }),
+      validation: z.object({
+        bioRequired: z.string(),
+        linkedinRequired: z.string(),
+        linkedinInvalid: z.string(),
+        portfolioInvalid: z.string(),
+      }),
       email: z.object({
         subject: z.string(),
         headerTitle: z.string(),
