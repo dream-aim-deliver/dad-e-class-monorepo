@@ -2830,6 +2830,12 @@ export const EN: TDictionary = {
         title: 'Error',
         description: 'An error occurred while submitting your application. Please try again later.',
       },
+      validation: {
+        bioRequired: 'Bio is required',
+        linkedinRequired: 'LinkedIn URL is required',
+        linkedinInvalid: 'Please enter a valid LinkedIn URL (e.g., https://www.linkedin.com/in/yourname)',
+        portfolioInvalid: 'Please enter a valid portfolio URL (e.g., https://www.yourportfolio.com)',
+      },
       email: {
         subject: 'Application to Become a Coach',
         headerTitle: 'Coach Application Form Submission',
