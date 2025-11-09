@@ -243,7 +243,6 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             autoHeight: true,
             cellRenderer: NotificationMessageRenderer,
             filter: 'agTextColumnFilter',
-            tooltipField: 'message',
             minWidth: 500,
         },
         {
@@ -384,46 +383,41 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     };
 
     return (
-        <div className="flex flex-col h-full space-y-5">
-            <div className="flex-shrink-0">
-                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-4">
-                    <div className="flex flex-col gap-2 md:flex-row md:items-center w-full">
-                        <InputField
-                            className="flex-1 relative h-10"
-                            setValue={setSearchTerm}
-                            value={searchTerm}
-                            inputText={dictionary.searchPlaceholder}
-                            hasLeftContent
-                            leftContent={<IconSearch />}
-                        />
-                        <Dropdown
-                            type="simple"
-                            options={[
-                                { value: 'all', label: dictionary.all },
-                                { value: 'received', label: dictionary.received },
-                                { value: 'sent', label: dictionary.sent },
-                            ]}
-                            onSelectionChange={(selected) => setFilterType(selected as 'all' | 'received' | 'sent')}
-                            defaultValue={filterType}
-                            text={{ simpleText: dictionary.filterByType }}
-                            className="w-full md:w-40"
-                        />
-                    </div>
-                    <div className="flex flex-col gap-2 md:flex-row">
-                        <Button
-                            variant="primary"
-                            size="medium"
-                            text={loading ? baseGridDictionary.loading : getButtonText()}
-                            onClick={handleSmartMarkAsRead}
-                            disabled={isButtonDisabled()}
-                            className="w-full md:w-auto"
-                        />
-                    </div>
+        <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between mb-4">
+                <InputField
+                    className="flex-grow relative md:mr-2 h-10"
+                    setValue={setSearchTerm}
+                    value={searchTerm}
+                    inputText={dictionary.searchPlaceholder}
+                    hasLeftContent
+                    leftContent={<IconSearch />}
+                />
+                <div className="flex flex-row gap-2">
+                    <Dropdown
+                        type="simple"
+                        options={[
+                            { value: 'all', label: dictionary.all },
+                            { value: 'received', label: dictionary.received },
+                            { value: 'sent', label: dictionary.sent },
+                        ]}
+                        onSelectionChange={(selected) => setFilterType(selected as 'all' | 'received' | 'sent')}
+                        defaultValue={filterType}
+                        text={{ simpleText: dictionary.filterByType }}
+                        className="w-full md:w-auto"
+                    />
+                    <Button
+                        variant="primary"
+                        size="medium"
+                        text={loading ? baseGridDictionary.loading : getButtonText()}
+                        onClick={handleSmartMarkAsRead}
+                        disabled={isButtonDisabled()}
+                        className="w-full md:w-auto"
+                    />
                 </div>
             </div>
 
-            <div className="flex-1 min-h-0">
-                <BaseGrid
+            <BaseGrid
                     shouldDelayRender={true}
                     gridRef={gridRef}
                     locale={locale}
@@ -431,7 +425,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                     columnDefs={columnDefs}
                     rowData={rowData}
                     pagination={true}
-                    paginationPageSize={50}
+                    paginationAutoPageSize={true}
                     suppressPaginationPanel={true}
                     domLayout="normal"
                     isExternalFilterPresent={() => true}
@@ -445,7 +439,6 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                             : { background: 'var(--color-base-neutral-800)' };
                     }}
                 />
-            </div>
         </div>
     );
 };

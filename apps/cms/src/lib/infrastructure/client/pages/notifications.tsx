@@ -111,8 +111,6 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
   }
 
-  
-
   const handleMarkAllRead = () => {
     const receivedIds = receivedNotificationsData
       .filter(n => !n.isRead)
@@ -130,15 +128,11 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
     }
   };
 
-
-
-
-
   return (
     <div className="flex flex-col h-[calc(100vh-200px)] space-y-5">
       <div className="flex-shrink-0">
         <h1>{t('title')}</h1>
-        <p>{t('description')}</p>
+        <p className="text-text-secondary">{t('description')}</p>
       </div>
 
       <div className="flex-1 min-h-0">
