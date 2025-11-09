@@ -158,6 +158,14 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   }, [availableSkills]);
 
 
+  // Track if files have changed
+  const hasPersonalFileChanges = personalProfile?.avatarImage?.id !== profilePictureFile?.id;
+  const hasProfessionalFileChanges = professionalProfile?.curriculumVitae?.id !== curriculumVitaeFile?.id;
+
+  // Determine if save button should be disabled
+  const isPersonalSaveDisabled = isSaving || (!personalForm.isDirty && !hasPersonalFileChanges);
+  const isProfessionalSaveDisabled = isSaving || (!professionalForm.isDirty && !hasProfessionalFileChanges);
+
   if (!hasProfessionalProfile) {
     return (
       <div className="w-full  mx-auto">
@@ -174,7 +182,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           availableLanguages={availableLanguages}
           locale={locale as TLocale}
           uploadProgress={profilePictureUploadProgress}
-          isSaving={isSaving || !personalForm.isDirty}
+          isSaving={isPersonalSaveDisabled}
         />
       </div>
     );
@@ -210,7 +218,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             availableLanguages={availableLanguages}
             locale={locale as TLocale}
             uploadProgress={profilePictureUploadProgress}
-            isSaving={isSaving || !personalForm.isDirty}
+            isSaving={isPersonalSaveDisabled}
           />
         </TabContent>
 
@@ -228,7 +236,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onFileDownload={onCurriculumVitaeDownload}
             locale={locale as TLocale}
             uploadProgress={curriculumVitaeUploadProgress}
-            isSaving={isSaving || !professionalForm.isDirty}
+            isSaving={isProfessionalSaveDisabled}
           />
         </TabContent>
       </Tabs.Root>
