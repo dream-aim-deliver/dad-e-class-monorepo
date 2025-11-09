@@ -79,7 +79,7 @@ const CMSSidebar = ({
         coupons: `${basePath}/coupons`,
         users: `${basePath}/manage-users`,
         transactions: `${basePath}/transactions`,
-        sendNotification: `${basePath}/send-notification`,
+        notifications: `/${locale}/platform/${platformSlug}/notifications`,
         settings: `${basePath}/settings`,
         homepage: `${basePath}/manage-homepage`,
         offers: `${basePath}/manage-offers-page`,
@@ -102,7 +102,7 @@ const CMSSidebar = ({
         [routeMap.coupons]: t('coupons'),
         [routeMap.users]: t('users'),
         [routeMap.transactions]: t('transactions'),
-        [routeMap.sendNotification]: t('sendNotification'),
+        [routeMap.notifications]: t('notifications'),
         [routeMap.settings]: t('settings'),
         [routeMap.homepage]: t('homepage'),
         [routeMap.offers]: t('offers'),
@@ -183,8 +183,8 @@ const CMSSidebar = ({
                 },
                 {
                     icon: <IconSendEmail />,
-                    label: t('sendNotification'),
-                    onClick: () => router.push(routeMap.sendNotification),
+                    label: t('notifications'),
+                    onClick: () => router.push(routeMap.notifications),
                 },
                 {
                     icon: <IconSettings />,

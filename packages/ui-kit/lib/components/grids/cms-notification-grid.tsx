@@ -2,7 +2,7 @@
 import { AllCommunityModule, IRowNode, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { RefObject, useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { MailOpen } from 'lucide-react';
+import { MailOpen, ChevronDown, ChevronUp } from 'lucide-react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 import { Button } from '../button';
@@ -64,20 +64,47 @@ export interface CMSNotificationGridProps extends isLocalAware {
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const NotificationMessageRenderer = (props: { value: string }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [isTruncated, setIsTruncated] = useState(false);
     const spanRef = useRef<HTMLSpanElement>(null);
     const message = props.value || '';
 
+    useEffect(() => {
+        const el = spanRef.current;
+        if (!el) return;
+
+        const update = () => {
+            if (!isExpanded) {
+                setIsTruncated(el.scrollWidth > el.clientWidth);
+            }
+        };
+
+        update(); // initial check
+
+        const resizeObserver = new ResizeObserver(update);
+        resizeObserver.observe(el);
+
+        return () => resizeObserver.disconnect();
+    }, [message, isExpanded]);
 
     return (
         <div
             className="flex items-center text-sm my-2.5 space-x-2"
+            onClick={() => isTruncated && setIsExpanded(prev => !prev)}
+            style={{ cursor: isTruncated ? 'pointer' : 'default' }}
         >
             <span
                 ref={spanRef}
-                className={'truncate'}
+                className={isExpanded ? 'whitespace-normal' : 'truncate'}
             >
                 {message}
             </span>
+            {isTruncated &&
+                (isExpanded ? (
+                    <ChevronUp className="flex-shrink-0 w-4 h-4" />
+                ) : (
+                    <ChevronDown className="flex-shrink-0 w-4 h-4" />
+                ))}
         </div>
     );
 };
@@ -213,6 +240,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             field: 'message',
             headerName: dictionary.message,
             wrapText: true,
+            autoHeight: true,
             cellRenderer: NotificationMessageRenderer,
             filter: 'agTextColumnFilter',
             tooltipField: 'message',

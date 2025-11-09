@@ -58,7 +58,7 @@ export default function Layout({
 
     return (
         <div
-            className="w-full min-h-screen bg-repeat-y flex flex-col px-4"
+            className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center px-4"
             style={{
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${"https://i.imgur.com/PoJASP9.png"})`,
                 backgroundPosition: 'center',
@@ -71,7 +71,7 @@ export default function Layout({
                 locale={locale}
                 session={session}
             />
-            <main className="w-full mx-auto pt-25 pb-35 max-w-screen-xl">
+            <main className="flex-grow w-full mx-auto pt-25 pb-35 justify-center items-center">
                 {showSidebar && platformName && platformSlug && platformLocale ? (
                     <div className="flex flex-row lg:gap-3 w-full">
                         <div

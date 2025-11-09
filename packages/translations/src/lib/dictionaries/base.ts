@@ -1805,7 +1805,7 @@ export const DictionarySchema = z.object({
       coupons: z.string(),
       users: z.string(),
       transactions: z.string(),
-      sendNotification: z.string(),
+      notifications: z.string(),
       settings: z.string(),
       homepage: z.string(),
       offers: z.string(),
