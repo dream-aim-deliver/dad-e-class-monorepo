@@ -285,12 +285,6 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     const { data: session } = useSession();
     const router = useRouter();
     const locale = useLocale() as TLocale;
-
-    if (!session) {
-        // TODO: Handle unauthenticated state appropriately
-        return null; // Or a loading state, or redirect to login
-    }
-
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const t = useTranslations('pages.userDashboard');
 
@@ -384,6 +378,11 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
             .filter((role) => role !== 'visitor' && role !== 'student')
             .map((role) => role.charAt(0).toUpperCase() + role.slice(1));
     }, [roles]);
+
+    if (!session) {
+        // TODO: Handle unauthenticated state appropriately
+        return null; // Or a loading state, or redirect to login
+    }
 
     // Handle loading state
     if (!personalProfileViewModel) {
