@@ -154,13 +154,7 @@ export default function Transactions(_props: TransactionsProps) {
     setCreateErrorMessage(null);
     const payload = {
       currency: platform.currency,
-      items: [
-        {
-          description: (data?.description ?? '').toString(),
-          unitPrice: Number(data?.amount),
-          quantity: 1,
-        },
-      ],
+      items: data?.items ?? [],
       coachId: Number(data?.coachId),
       tagIds: (data?.tagIds ?? []).map((x: any) => String(x)),
       settledAt: data?.paidAt ? new Date(data.paidAt).toISOString() : null,

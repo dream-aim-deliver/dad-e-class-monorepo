@@ -74,15 +74,19 @@ export interface TransactionsGridProps extends isLocalAware {
     availableTagsForFilter?: { id: string | number; name: string }[];
 }
 
-const DetailsCellRenderer = (params: { value: TransactionContent; locale: TLocale }) => {
+const DetailsCellRenderer = (params: { value: TransactionContent; data: TransactionRow; locale: TLocale }) => {
     const content = params.value;
     const dictionary = getDictionary(params.locale).components.transactionsGrid;
 
     switch (content.type) {
         case 'coachPayment': {
             const totalItems = content.items.length;
+            const currency = params.data?.currency || '';
+            const itemsBreakdown = content.items.map(item =>
+                `${item.description} - ${item.quantity}x ${item.unitPrice.toFixed(2)} ${currency}`
+            ).join('\n');
             return (
-                <div className="flex flex-col">
+                <div className="flex flex-col" title={itemsBreakdown}>
                     <span className="text-text-primary text-sm">{dictionary.coachingLabel}</span>
                     <span className="text-text-secondary text-xs">{totalItems} {totalItems === 1 ? 'item' : 'items'}</span>
                 </div>
