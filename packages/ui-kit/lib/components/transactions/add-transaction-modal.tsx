@@ -96,12 +96,16 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 
   const isFormValid = validationErrors.length === 0;
 
-  const coachesOptions = (coachesQuery?.data?.data?.coaches ?? []).map((c) => ({
-    label: `${c.name} ${c.surname}`,
-    value: String(c.id),
-    avatarUrl: c.avatarUrl ?? undefined,
-    searchText: `${c.name} ${c.surname}`,
-  }));
+  const coachesOptions = (coachesQuery?.data?.data?.coaches ?? []).map((c) => {
+    const hasNameAndSurname = c.name?.trim() && c.surname?.trim();
+    const displayName = hasNameAndSurname ? `${c.name} ${c.surname}` : c.username;
+    return {
+      label: displayName,
+      value: String(c.id),
+      avatarUrl: c.avatarUrl ?? undefined,
+      searchText: displayName,
+    };
+  });
 
   const tagsOptions = (tagsQuery?.data?.data?.tags ?? []).map((t: TTag) => ({
     label: t.name ?? t.label ?? '',
@@ -150,15 +154,16 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
         {selectedCoachId ? (
           (() => {
             const selected = (coachesQuery?.data?.data?.coaches ?? []).find((c) => String(c.id) === String(selectedCoachId));
-            const fullName = selected ? `${selected.name} ${selected.surname}` : '';
+            const hasNameAndSurname = selected?.name?.trim() && selected?.surname?.trim();
+            const displayName = selected ? (hasNameAndSurname ? `${selected.name} ${selected.surname}` : selected.username) : '';
             const avatarUrl = selected?.avatarUrl ?? undefined;
             return (
               <div className="flex flex-col gap-3 rounded-lg border border-card-stroke bg-card-fill p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <UserAvatar fullName={fullName} size="medium" imageUrl={avatarUrl} />
+                    <UserAvatar fullName={displayName} size="medium" imageUrl={avatarUrl} />
                     <div className="flex flex-col">
-                      <h6 className="text-text-primary text-base font-semibold">{fullName}</h6>
+                      <h6 className="text-text-primary text-base font-semibold">{displayName}</h6>
                     </div>
                   </div>
                 </div>

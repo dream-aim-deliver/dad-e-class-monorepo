@@ -2648,11 +2648,28 @@ export const DictionarySchema = z.object({
     cmsTransactions: z.object({
       title: z.string(),
       description: z.string(),
+      deleteModal: z.object({
+        title: z.string(),
+        message: z.string(),
+        confirm: z.string(),
+        cancel: z.string(),
+        deleting: z.string(),
+      }),
       error: z.object({
         title: z.string(),
         description: z.string(),
         createFailed: z.string(),
+        deleteFailed: z.string(),
+        unauthorized: z.string(),
         notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        kaboom: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        notFoundError: z.object({
           title: z.string(),
           description: z.string(),
         }),
