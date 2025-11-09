@@ -18,7 +18,7 @@ function isUpcomingSession(session: TUpcomingStudentCoachingSession): session is
     return session.status === 'scheduled';
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+ 
 export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const router = useRouter();
     const locale = useLocale() as TLocale;
@@ -27,17 +27,12 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
     const { studentId } = props;
 
-    if (!studentId) {
-        return null;
-    }
     const [viewModel, setViewModel] = useState<viewModels.TListUpcomingStudentCoachingSessionsViewModel | null>(null);
-
     const { presenter } = useListUpcomingStudentCoachingSessionsPresenter(setViewModel);
-
     const [activeTab, setActiveTab] = useState<string>('upcoming');
 
     const [upcomingSessionsResponse] = trpc.listUpcomingStudentCoachingSessions.useSuspenseQuery(
-        { studentId: studentId },
+        { studentId: studentId ?? 0 },
         {
             retry: false
         }
