@@ -50,11 +50,19 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 }) => {
   const dictionary = getDictionary(locale).components.addTransactionModal;
 
+  // Payment item type
+  type PaymentItem = {
+    description: string;
+    unitPrice: string;
+    quantity: string;
+  };
+
   // Form state
   const [selectedCoachId, setSelectedCoachId] = useState<number | null>(null);
   const [paymentDate, setPaymentDate] = useState<string>('');
-  const [amountInput, setAmountInput] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
+  const [paymentItems, setPaymentItems] = useState<PaymentItem[]>([
+    { description: '', unitPrice: '', quantity: '1' }
+  ]);
   const [invoiceUrl, setInvoiceUrl] = useState<string>('');
   const [selectedTagIds, setSelectedTagIds] = useState<(string | number)[]>([]);
   const [coachSearch, setCoachSearch] = useState<string>('');
@@ -65,13 +73,26 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     const errors: string[] = [];
     if (!selectedCoachId) errors.push(dictionary.validationErrors.coachRequired);
     if (!paymentDate) errors.push(dictionary.validationErrors.paymentDateRequired);
-    if (!amountInput) {
-      errors.push(dictionary.validationErrors.amountRequired);
-    } else if (isNaN(Number(amountInput)) || Number(amountInput) <= 0) {
-      errors.push(dictionary.validationErrors.amountInvalid);
+
+    // Validate payment items
+    if (paymentItems.length === 0) {
+      errors.push(dictionary.validationErrors.itemsRequired || 'At least one payment item is required');
+    } else {
+      paymentItems.forEach((item, index) => {
+        if (!item.description?.trim()) {
+          errors.push(`Item ${index + 1}: Description is required`);
+        }
+        if (!item.unitPrice || isNaN(Number(item.unitPrice)) || Number(item.unitPrice) <= 0) {
+          errors.push(`Item ${index + 1}: Valid unit price is required`);
+        }
+        if (!item.quantity || isNaN(Number(item.quantity)) || Number(item.quantity) < 1) {
+          errors.push(`Item ${index + 1}: Quantity must be at least 1`);
+        }
+      });
     }
+
     return errors;
-  }, [selectedCoachId, paymentDate, amountInput, dictionary.validationErrors]);
+  }, [selectedCoachId, paymentDate, paymentItems, dictionary.validationErrors]);
 
   const isFormValid = validationErrors.length === 0;
 
@@ -88,17 +109,38 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     searchText: t.name ?? t.label ?? '',
   }));
 
+  const handleAddItem = () => {
+    setPaymentItems([...paymentItems, { description: '', unitPrice: '', quantity: '1' }]);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    if (paymentItems.length === 1) return; // Keep at least one
+    setPaymentItems(paymentItems.filter((_, i) => i !== index));
+  };
+
+  const handleUpdateItem = (index: number, field: keyof PaymentItem, value: string) => {
+    const updated = [...paymentItems];
+    updated[index] = { ...updated[index], [field]: value };
+    setPaymentItems(updated);
+  };
+
   const handleSubmit = () => {
     setHasAttemptedSubmit(true);
     if (!isFormValid || !selectedCoachId) return;
+
+    const items = paymentItems.map(item => ({
+      description: item.description.trim(),
+      unitPrice: Number(item.unitPrice),
+      quantity: Number(item.quantity),
+    }));
+
     onCreateTransaction({
       coachId: selectedCoachId,
       paidAt: paymentDate,
-      amount: Number(amountInput),
-      description: description?.trim() || undefined,
+      items,
       invoiceUrl: invoiceUrl?.trim() || undefined,
       tagIds: selectedTagIds,
-    });
+    } as any);
   };
 
   const renderForm = () => (
@@ -152,24 +194,91 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
         locale={locale as TLocale}
       />
 
-      {/* Amount */}
-      <TextInput
-        label={dictionary.amountLabel}
-        inputField={{
-          value: amountInput,
-          setValue: setAmountInput,
-          inputText: dictionary.amountPlaceholder,
-          type: 'text',
-        }}
-      />
+      {/* Payment Items */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-text-primary">
+            {dictionary.paymentItemsLabel || 'Payment Items'}
+          </label>
+          <Button
+            variant="text"
+            size="small"
+            text={`+ ${dictionary.addItem || 'Add Item'}`}
+            onClick={handleAddItem}
+          />
+        </div>
 
-      {/* Description */}
-      <TextAreaInput
-        label={dictionary.descriptionLabel}
-        value={description}
-        setValue={setDescription}
-        placeholder={dictionary.descriptionPlaceholder}
-      />
+        {paymentItems.map((item, index) => (
+          <div key={index} className="flex flex-col gap-2 p-3 border border-card-stroke rounded-md bg-card-fill">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-text-secondary">Item {index + 1}</span>
+              {paymentItems.length > 1 && (
+                <Button
+                  variant="text"
+                  size="small"
+                  hasIconLeft
+                  iconLeft={<IconTrashAlt width={14} height={14} />}
+                  onClick={() => handleRemoveItem(index)}
+                />
+              )}
+            </div>
+
+            {/* Description field */}
+            <TextInput
+              label={dictionary.itemDescriptionLabel || 'Description'}
+              inputField={{
+                value: item.description,
+                setValue: (value) => handleUpdateItem(index, 'description', value),
+                inputText: dictionary.itemDescriptionPlaceholder || 'e.g. Coaching Session 1',
+                type: 'text',
+              }}
+            />
+
+            {/* Unit Price and Quantity in same row */}
+            <div className="grid grid-cols-2 gap-2">
+              <TextInput
+                label={dictionary.unitPriceLabel || 'Unit Price'}
+                inputField={{
+                  value: item.unitPrice,
+                  setValue: (value) => handleUpdateItem(index, 'unitPrice', value),
+                  inputText: '0.00',
+                  type: 'number',
+                }}
+              />
+              <TextInput
+                label={dictionary.quantityLabel || 'Quantity'}
+                inputField={{
+                  value: item.quantity,
+                  setValue: (value) => handleUpdateItem(index, 'quantity', value),
+                  inputText: '1',
+                  type: 'number',
+                }}
+              />
+            </div>
+
+            {/* Show subtotal */}
+            {item.unitPrice && item.quantity && !isNaN(Number(item.unitPrice)) && !isNaN(Number(item.quantity)) && (
+              <div className="text-xs text-text-secondary">
+                Subtotal: {(Number(item.unitPrice) * Number(item.quantity)).toFixed(2)}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Total */}
+        {paymentItems.length > 0 && (
+          <div className="flex justify-between items-center p-2 bg-card-stroke rounded-md">
+            <span className="font-semibold text-text-primary">Total</span>
+            <span className="font-semibold text-text-primary">
+              {paymentItems.reduce((sum, item) => {
+                const unitPrice = Number(item.unitPrice) || 0;
+                const quantity = Number(item.quantity) || 0;
+                return sum + (unitPrice * quantity);
+              }, 0).toFixed(2)}
+            </span>
+          </div>
+        )}
+      </div>
 
       {/* Invoice URL */}
       <TextInput
