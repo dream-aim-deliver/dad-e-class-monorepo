@@ -71,8 +71,8 @@ const CMSSidebar = ({
         // Locale-scoped pages (no platformLocale in the path)
         allCourses: `${platformBase}/courses`,
         users: `${platformBase}/users`,
-        transactions: `${platformBase}/transactions`,
-        notifications: `${platformBase}/notifications`,
+        transactions: `${platformLocaleBase}/transactions`,
+        notifications: `${platformLocaleBase}/notifications`,
 
         // Platform-locale scoped pages
         packages: `${platformLocaleBase}/packages`,
