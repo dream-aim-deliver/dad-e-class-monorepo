@@ -20,6 +20,7 @@ export interface TransactionFilterModel {
     createdBefore?: string; // ISO
     settledAfter?: string; // ISO
     settledBefore?: string; // ISO
+    tagIds?: (string | number)[];
 }
 
 export interface TransactionsGridFilterModalProps extends isLocalAware {
@@ -27,9 +28,10 @@ export interface TransactionsGridFilterModalProps extends isLocalAware {
     onClose: () => void;
     initialFilters?: Partial<TransactionFilterModel>;
     locale: TLocale;
+    availableTags?: { id: string | number; name: string }[];
 }
 
-export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalProps> = ({ onApplyFilters, onClose, initialFilters = {}, locale }) => {
+export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalProps> = ({ onApplyFilters, onClose, initialFilters = {}, locale, availableTags = [] }) => {
     // Use the dedicated translations section for transactions filter modal
     const dictionary = getDictionary(locale).components.transactionsGridFilterModal;
 
@@ -46,6 +48,7 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
         createdBefore: initialFilters.createdBefore,
         settledAfter: initialFilters.settledAfter,
         settledBefore: initialFilters.settledBefore,
+        tagIds: initialFilters.tagIds || [],
     });
 
     // This key is required to force re-render of text inputs when filters are reset
@@ -65,6 +68,7 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
             createdBefore: initialFilters.createdBefore ?? prev.createdBefore,
             settledAfter: initialFilters.settledAfter ?? prev.settledAfter,
             settledBefore: initialFilters.settledBefore ?? prev.settledBefore,
+            tagIds: initialFilters.tagIds || prev.tagIds || [],
         }));
     }, [initialFilters]);
 
@@ -93,6 +97,10 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
         setFilters((prev) => ({ ...prev, direction: prev.direction === value ? undefined : value }));
     };
 
+    const handleTagToggle = (tagId: string | number) => {
+        setFilters((prev) => ({ ...prev, tagIds: toggleArrayValue(prev.tagIds, tagId) }));
+    };
+
     const handleReset = () => {
         setFilters({
             status: [],
@@ -106,6 +114,7 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
             createdBefore: undefined,
             settledAfter: undefined,
             settledBefore: undefined,
+            tagIds: [],
         });
         setResetKey((prev) => prev + 1);
     };
@@ -116,15 +125,19 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
     };
 
     return (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50" onClick={onClose}>
-            <div className="flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[350px] h-full max-h-[90vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-bold">{dictionary.title}</h2>
-                    <div className="flex top-0 right-0 p-0">
+        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50 p-4" onClick={onClose}>
+            <div className="flex flex-col bg-card-fill text-text-primary w-full max-w-[400px] max-h-[90vh] rounded-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                {/* Fixed Header */}
+                <div className="flex-shrink-0 flex flex-col gap-2 p-6 pb-4">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold">{dictionary.title}</h2>
                         <Button variant="text" size="small" hasIconLeft iconLeft={<IconClose size="6" />} onClick={onClose} />
                     </div>
+                    <div className="h-px w-full bg-divider"></div>
                 </div>
-                <div className="h-px w-full bg-divider"></div>
+
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto px-6 pb-4 flex flex-col gap-2">
 
                 {/* Status Section */}
                 <div className="flex flex-col gap-4">
@@ -284,24 +297,50 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
                         locale={locale}
                     />
                 </div>
-                <div className="h-px w-full bg-divider"></div>
 
-                {/* Buttons */}
-                <div className="flex gap-2">
-                    <Button
-                        variant="secondary"
-                        size="medium"
-                        onClick={handleReset}
-                        className="flex-1"
-                        text={dictionary.resetFilters}
-                    />
-                    <Button
-                        variant="primary"
-                        size="medium"
-                        onClick={handleApply}
-                        className="flex-1"
-                        text={dictionary.applyFilters}
-                    />
+                {/* Tags Section */}
+                {availableTags.length > 0 && (
+                    <>
+                        <div className="h-px w-full bg-divider"></div>
+                        <div className="flex flex-col gap-4">
+                            <h3 className="text-xl font-semibold">{dictionary.tagsFilter}</h3>
+                            <div className="grid grid-cols-2 gap-3">
+                                {availableTags.map((tag) => (
+                                    <CheckBox
+                                        key={String(tag.id)}
+                                        name={`tag-${tag.id}`}
+                                        value={String(tag.id)}
+                                        label={tag.name}
+                                        labelClass="text-white text-sm"
+                                        checked={(filters.tagIds || []).includes(tag.id)}
+                                        withText
+                                        onChange={() => handleTagToggle(tag.id)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
+                </div>
+
+                {/* Fixed Footer */}
+                <div className="flex-shrink-0 flex flex-col gap-2 p-6 pt-4 border-t border-divider">
+                    <div className="flex gap-2">
+                        <Button
+                            variant="secondary"
+                            size="medium"
+                            onClick={handleReset}
+                            className="flex-1"
+                            text={dictionary.resetFilters}
+                        />
+                        <Button
+                            variant="primary"
+                            size="medium"
+                            onClick={handleApply}
+                            className="flex-1"
+                            text={dictionary.applyFilters}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
