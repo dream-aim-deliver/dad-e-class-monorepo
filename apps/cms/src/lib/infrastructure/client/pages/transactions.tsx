@@ -46,23 +46,22 @@ export default function Transactions(_props: TransactionsProps) {
 
   const utils = trpc.useUtils();
 
-  // Presenter and ViewModel state
-  const [listTransactionsViewModel, setListTransactionsViewModel] = useState<
-    viewModels.TListTransactionsViewModel | undefined
-  >(undefined);
-  const { presenter } = useListTransactionsPresenter(setListTransactionsViewModel);
-
   // TRPC queries
   const [transactionsResponse] = trpc.listTransactions.useSuspenseQuery({});
   const coachesQuery = trpc.listPlatformCoaches.useQuery({});
   const tagsQuery = trpc.listTransactionTags.useQuery({});
 
-  // Present server response into view model outside of render to avoid state updates during render
+  // Presenter and ViewModel - transform data directly
+  const [listTransactionsViewModel, setListTransactionsViewModel] = useState<
+    viewModels.TListTransactionsViewModel | undefined
+  >(undefined);
+  const { presenter } = useListTransactionsPresenter(setListTransactionsViewModel);
+
+  // Present server response into view model - runs on every render with fresh data
   useEffect(() => {
     // @ts-ignore
     presenter.present(transactionsResponse, listTransactionsViewModel);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactionsResponse]);
+  }, [transactionsResponse, presenter, listTransactionsViewModel]);
 
   // Mutations 
   const createTransactionMutation = trpc.createOutgoingTransaction.useMutation({
@@ -141,7 +140,7 @@ export default function Transactions(_props: TransactionsProps) {
   }
 
   // Success state
-  const transactionsData = listTransactionsViewModel.data;
+  const transactionsData = listTransactionsViewModel.data as any;
 
   // Handlers
   const handleOpenCreateModal = () => setIsCreateModalOpen(true);
@@ -211,10 +210,12 @@ export default function Transactions(_props: TransactionsProps) {
   ];
 
   return (
-    <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4 h-screen">
-      <Breadcrumbs items={breadcrumbItems} />
+    <div className="flex flex-col h-[calc(100vh-200px)] space-y-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+      <div className="flex-shrink-0">
+        <Breadcrumbs items={breadcrumbItems} />
+      </div>
 
-      <div className="flex flex-col space-y-2">
+      <div className="flex-shrink-0 flex flex-col space-y-2">
         <h1>{t('title')}</h1>
         <p className="text-text-secondary text-sm">
           Platform: {platformContext.platformSlug}
@@ -222,7 +223,7 @@ export default function Transactions(_props: TransactionsProps) {
       </div>
 
       {/* Transactions Grid */}
-      <div className="flex flex-col grow bg-transparent">
+      <div className="flex-1 min-h-0">
         <TransactionsGrid
           gridRef={gridRef}
           transactions={transactionsData.transactions as any}
@@ -230,6 +231,7 @@ export default function Transactions(_props: TransactionsProps) {
           onDeleteTransaction={handleDeleteTransaction}
           onOpenInvoice={handleOpenInvoice}
           onCreateTransaction={handleOpenCreateModal}
+          availableTagsForFilter={((tagsQuery.data?.data as any)?.tags) || []}
         />
       </div>
 

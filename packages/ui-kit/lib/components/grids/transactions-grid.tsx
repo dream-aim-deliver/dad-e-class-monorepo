@@ -59,6 +59,7 @@ export interface TransactionRow {
     invoiceUrl?: string | null;
     user: { name: string; surname: string; id: number; username: string; avatarUrl?: string | null };
     content: TransactionContent;
+    tags?: { id: string | number; name: string }[];
 }
 
 export interface TransactionsGridProps extends isLocalAware {
@@ -70,6 +71,7 @@ export interface TransactionsGridProps extends isLocalAware {
     onCreateTransaction?: () => void;
     onSortChanged?: (event: SortChangedEvent) => void;
     doesExternalFilterPass?: (node: IRowNode<TransactionRow>) => boolean;
+    availableTagsForFilter?: { id: string | number; name: string }[];
 }
 
 const DetailsCellRenderer = (params: { value: TransactionContent; locale: TLocale }) => {
@@ -305,6 +307,32 @@ export const TransactionsGrid = (props: TransactionsGridProps) => {
             cellRenderer: (params: any) => <DetailsCellRenderer {...params} locale={props.locale} />
         },
         {
+            field: 'tags',
+            headerName: dictionary.tagsColumn,
+            sortable: false,
+            flex: 1,
+            minWidth: 150,
+            valueGetter: (params: any) => {
+                const tags = params.data?.tags || [];
+                return tags.map((t: any) => t.name).join(', ');
+            },
+            cellRenderer: (params: any) => {
+                const tags = params.data?.tags || [];
+                if (tags.length === 0) return <span className="text-text-secondary text-sm">-</span>;
+                const tagNames = tags.map((t: any) => t.name).join(', ');
+                return (
+                    <div className="flex items-center h-full">
+                        <span
+                            className="text-text-primary text-sm truncate"
+                            title={tagNames}
+                        >
+                            {tagNames}
+                        </span>
+                    </div>
+                );
+            }
+        },
+        {
             field: 'actions',
             headerName: dictionary.actionsColumn,
             sortable: false,
@@ -366,6 +394,12 @@ export const TransactionsGrid = (props: TransactionsGridProps) => {
         if (appliedFilters.settledAfter && tx.settledAt && tx.settledAt < appliedFilters.settledAfter) return false;
         if (appliedFilters.settledBefore && tx.settledAt && tx.settledAt > appliedFilters.settledBefore) return false;
 
+        if (appliedFilters.tagIds?.length) {
+            const txTagIds = (tx.tags || []).map(t => String(t.id));
+            const hasMatchingTag = appliedFilters.tagIds.some(tagId => txTagIds.includes(String(tagId)));
+            if (!hasMatchingTag) return false;
+        }
+
         if (props.doesExternalFilterPass) {
             return props.doesExternalFilterPass(node);
         }
@@ -422,6 +456,10 @@ export const TransactionsGrid = (props: TransactionsGridProps) => {
 
                     if (colId === 'content') return detailsToString(data.content);
                     if (colId === 'amount') return calculateAmount(data.content);
+                    if (colId === 'tags') {
+                        const tags = data.tags || [];
+                        return tags.map((t: any) => t.name).join(', ') || '-';
+                    }
                     if (colId === 'createdAt' || colId === 'updatedAt' || colId === 'settledAt') {
                         if (!params.value) return '-';
                         const date = new Date(params.value);
@@ -446,16 +484,25 @@ export const TransactionsGrid = (props: TransactionsGridProps) => {
 
     return (
         <div className="flex flex-col h-full w-full">
-            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-4">
-                <InputField
-                    className="flex-grow relative m-0 md:mr-2 h-10"
-                    setValue={setSearchTerm}
-                    value={searchTerm}
-                    inputText={dictionary.searchPlaceholder}
-                    hasLeftContent
-                    leftContent={<IconSearch />}
-                />
-                <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-1.5">
+            <div className="flex flex-col space-y-2 mb-4">
+                <div className="flex flex-col md:flex-row gap-2">
+                    <InputField
+                        className="flex-1 relative m-0 h-10"
+                        setValue={setSearchTerm}
+                        value={searchTerm}
+                        inputText={dictionary.searchPlaceholder}
+                        hasLeftContent
+                        leftContent={<IconSearch />}
+                    />
+                    <Button
+                        variant="primary"
+                        size="medium"
+                        text={`+ ${dictionary.createTransactionButton}`}
+                        onClick={props.onCreateTransaction}
+                        className="w-full md:w-auto whitespace-nowrap"
+                    />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2">
                     <Button
                         variant="text"
                         size="medium"
@@ -463,7 +510,7 @@ export const TransactionsGrid = (props: TransactionsGridProps) => {
                         onClick={handleExportCurrentView}
                         hasIconLeft
                         iconLeft={<IconCloudDownload />}
-                        className="w-full md:w-auto"
+                        className="w-full sm:flex-1"
                     />
                     <Button
                         variant="secondary"
@@ -472,21 +519,14 @@ export const TransactionsGrid = (props: TransactionsGridProps) => {
                         onClick={() => setShowFilterModal(true)}
                         hasIconLeft
                         iconLeft={<IconFilter />}
-                        className="w-full md:w-auto"
+                        className="w-full sm:flex-1"
                     />
                     <Button
                         variant="secondary"
                         size="medium"
                         text={dictionary.clearFilters}
                         onClick={handleClearAllFilters}
-                        className="w-full md:w-auto"
-                    />
-                    <Button
-                        variant="primary"
-                        size="medium"
-                        text={`+ ${dictionary.createTransactionButton}`}
-                        onClick={props.onCreateTransaction}
-                        className="w-full md:w-auto"
+                        className="w-full sm:flex-1"
                     />
                 </div>
             </div>
@@ -515,6 +555,7 @@ export const TransactionsGrid = (props: TransactionsGridProps) => {
                     onClose={() => setShowFilterModal(false)}
                     initialFilters={appliedFilters}
                     locale={props.locale}
+                    availableTags={props.availableTagsForFilter}
                 />
             )}
         </div>
