@@ -2613,13 +2613,30 @@ manageHomePage: {
     cmsTransactions: {
       title: 'Transaktionen',
       description: 'Verwalte Plattform-Transaktionen und Zahlungen',
+      deleteModal: {
+        title: 'Transaktion löschen',
+        message: 'Sind Sie sicher, dass Sie diese Transaktion löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
+        confirm: 'Löschen',
+        cancel: 'Abbrechen',
+        deleting: 'Wird gelöscht...',
+      },
       error: {
         title: 'Fehler',
         description: 'Beim Laden der Transaktionen ist ein Fehler aufgetreten.',
         createFailed: 'Fehler beim Erstellen der Transaktion. Bitte versuchen Sie es erneut.',
+        deleteFailed: 'Fehler beim Löschen der Transaktion. Bitte versuchen Sie es erneut.',
+        unauthorized: 'Sie sind nicht berechtigt, diese Transaktion zu löschen.',
         notFound: {
           title: 'Nicht gefunden',
           description: 'Die angeforderten Transaktionen konnten nicht gefunden werden.',
+        },
+        kaboom: {
+          title: 'Fehler',
+          description: 'Ein unerwarteter Fehler ist aufgetreten.',
+        },
+        notFoundError: {
+          title: 'Nicht gefunden',
+          description: 'Transaktion nicht gefunden.',
         },
       },
     },

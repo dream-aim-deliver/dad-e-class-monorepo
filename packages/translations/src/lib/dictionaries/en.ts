@@ -2610,13 +2610,30 @@ export const EN: TDictionary = {
     cmsTransactions: {
       title: 'Transactions',
       description: 'Manage platform transactions and payments',
+      deleteModal: {
+        title: 'Delete Transaction',
+        message: 'Are you sure you want to delete this transaction? This action cannot be undone.',
+        confirm: 'Delete',
+        cancel: 'Cancel',
+        deleting: 'Deleting...',
+      },
       error: {
         title: 'Error',
         description: 'An error occurred while loading transactions.',
         createFailed: 'Failed to create transaction. Please try again.',
+        deleteFailed: 'Failed to delete transaction. Please try again.',
+        unauthorized: 'You are not authorized to delete this transaction.',
         notFound: {
           title: 'Not Found',
           description: 'The requested transactions could not be found.',
+        },
+        kaboom: {
+          title: 'Error',
+          description: 'An unexpected error occurred.',
+        },
+        notFoundError: {
+          title: 'Not Found',
+          description: 'Transaction not found.',
         },
       },
     },

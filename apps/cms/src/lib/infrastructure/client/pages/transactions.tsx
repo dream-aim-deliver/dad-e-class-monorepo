@@ -2,12 +2,13 @@
 
 import { trpc } from '../trpc/cms-client';
 import { useEffect, useState, useRef } from 'react';
-import { 
-  DefaultLoading, 
-  DefaultError, 
-  Breadcrumbs, 
-  TransactionsGrid, 
-  AddTransactionModal 
+import {
+  DefaultLoading,
+  DefaultError,
+  Breadcrumbs,
+  TransactionsGrid,
+  AddTransactionModal,
+  Button
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -41,6 +42,7 @@ export default function Transactions(_props: TransactionsProps) {
   const [createErrorMessage, setCreateErrorMessage] = useState<string | null>(null);
 
   // Delete Transaction Modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [deletingTransactionId, setDeletingTransactionId] = useState<string | number | null>(null);
   const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(null);
 
@@ -87,6 +89,7 @@ export default function Transactions(_props: TransactionsProps) {
       utils.listTransactions.invalidate();
       setDeletingTransactionId(null);
       setDeleteErrorMessage(null);
+      setIsDeleteModalOpen(false);
     },
     onError: (error) => {
       const code = (error as any)?.data?.code;
@@ -165,8 +168,19 @@ export default function Transactions(_props: TransactionsProps) {
 
   const handleDeleteTransaction = (transactionId: string | number) => {
     setDeletingTransactionId(transactionId);
-    // immediate delete (no modal) to mirror coupons revoke; can be extended later
-    deleteTransactionMutation.mutate({ transactionId } as any);
+    setDeleteErrorMessage(null);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deletingTransactionId) return;
+    deleteTransactionMutation.mutate({ transactionId: deletingTransactionId } as any);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setDeletingTransactionId(null);
+    setDeleteErrorMessage(null);
   };
 
   const handleOpenInvoice = (transactionId: string | number, invoiceUrl?: string | null) => {
@@ -245,10 +259,42 @@ export default function Transactions(_props: TransactionsProps) {
         />
       )}
 
-      {/* Delete errors (simple banner) */}
-      {deleteErrorMessage && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm">
-          {deleteErrorMessage}
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-[1100]" onClick={handleCancelDelete}>
+          <div className="flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-full max-w-[500px] rounded-md mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-col gap-2">
+              <h2 className="text-xl font-bold">{t('deleteModal.title')}</h2>
+              <p className="text-text-secondary text-sm">{t('deleteModal.message')}</p>
+            </div>
+
+            {deleteErrorMessage && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm">
+                {deleteErrorMessage}
+              </div>
+            )}
+
+            <div className="h-px w-full bg-divider"></div>
+
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                size="medium"
+                onClick={handleCancelDelete}
+                className="flex-1"
+                text={t('deleteModal.cancel')}
+                disabled={deleteTransactionMutation.isPending}
+              />
+              <Button
+                variant="primary"
+                size="medium"
+                onClick={handleConfirmDelete}
+                className="flex-1"
+                text={deleteTransactionMutation.isPending ? t('deleteModal.deleting') : t('deleteModal.confirm')}
+                disabled={deleteTransactionMutation.isPending}
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>
