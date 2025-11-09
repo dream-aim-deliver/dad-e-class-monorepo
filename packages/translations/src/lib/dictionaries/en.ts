@@ -1748,7 +1748,7 @@ export const EN: TDictionary = {
       coupons: "Coupons",
       users: "Users",
       transactions: "Transactions",
-      sendNotification: "Send Notification",
+      notifications: "Notifications",
       settings: "Settings",
       homepage: "Homepage",
       offers: "Offers",

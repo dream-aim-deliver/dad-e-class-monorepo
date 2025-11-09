@@ -8,7 +8,7 @@
 // User Types from Notion: CMS (admin/superadmin - enforced by middleware)
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=8494-227923
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { DefaultLoading, DefaultError, CMSNotificationGrid, Banner } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -42,30 +42,44 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
   const sessionDTO = useSession();
   const session = sessionDTO.data;
   const isAdmin = session?.user?.roles?.includes('admin') || session?.user?.roles?.includes('superadmin');
+
+  // TRPC utils for cache invalidation
+  const utils = trpc.useUtils();
+
   // TRPC queries for page data
-  const [receivedNotificationsResponse, { refetch: refetchReceived }] = trpc.listNotifications.useSuspenseQuery({});
-  const [sentNotificationsResponse, { refetch: refetchSent }] = trpc.listSentNotifications.useSuspenseQuery({});
-  const markNotificationsAsReadMutation = trpc.markNotificationsAsRead.useMutation({
-    onSuccess: () => {
-      setMutationError(null);
-      refetchReceived();
-      refetchSent();
-    },
-    onError: (error) => {
-      setMutationError(error.message || 'Failed to mark notifications as read');
-    }
-  });
+  const [receivedNotificationsResponse] = trpc.listNotifications.useSuspenseQuery({});
+  const [sentNotificationsResponse] = trpc.listSentNotifications.useSuspenseQuery({});
 
   const { presenter: receivedNotificationsPresenter } = useListNotificationsPresenter(setReceivedNotificationsViewModel);
   const { presenter: sentNotificationsPresenter } = useListSentNotificationsPresenter(setSentNotificationsViewModel);
 
   const gridRef = useRef<any>(null);
 
-  // Present data on mount and when responses change
-  // @ts-ignore
-  receivedNotificationsPresenter.present(receivedNotificationsResponse, receivedNotificationsViewModel);
-  // @ts-ignore
-  sentNotificationsPresenter.present(sentNotificationsResponse, sentNotificationsViewModel);
+  // Present data using useEffect to ensure it runs once per data fetch
+  useEffect(() => {
+    // @ts-ignore
+    receivedNotificationsPresenter.present(receivedNotificationsResponse, receivedNotificationsViewModel);
+  }, [receivedNotificationsResponse, receivedNotificationsPresenter]);
+
+  useEffect(() => {
+    // @ts-ignore
+    sentNotificationsPresenter.present(sentNotificationsResponse, sentNotificationsViewModel);
+  }, [sentNotificationsResponse, sentNotificationsPresenter]);
+
+  const markNotificationsAsReadMutation = trpc.markNotificationsAsRead.useMutation({
+    onMutate: () => {
+      setMutationError(null);
+    },
+    onSuccess: async () => {
+      setMutationError(null);
+      // Invalidate cache to trigger refetch
+      await utils.listNotifications.invalidate();
+      await utils.listSentNotifications.invalidate();
+    },
+    onError: (error) => {
+      setMutationError(error.message || 'Failed to mark notifications as read');
+    }
+  });
 
   // Extract data from view models
   const receivedNotificationsData = receivedNotificationsViewModel?.mode === 'default' ? receivedNotificationsViewModel.data.notifications : [];
@@ -121,8 +135,8 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
 
 
   return (
-    <div className="flex flex-col h-full space-y-5">
-      <div>
+    <div className="flex flex-col h-[calc(100vh-200px)] space-y-5">
+      <div className="flex-shrink-0">
         <h1>{t('title')}</h1>
         <p>{t('description')}</p>
       </div>
