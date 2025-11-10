@@ -1,6 +1,5 @@
 'use client';
 
-import { trpc } from '../trpc/cms-client';
 import Header from './header';
 import Footer from './footer';
 import { useState, useEffect, useRef } from 'react';
@@ -11,6 +10,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
+import { useRequiredPlatform } from '../context/platform-context';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -43,12 +43,20 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
         }
     }, [pathname]);
 
-    const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
+    // Get platform data from context (already fetched server-side with 15-minute cache)
+    const { platform } = useRequiredPlatform();
     const [platformViewModel, setPlatformViewModel] = useState<
         viewModels.TGetPlatformViewModel | undefined
     >(undefined);
     const { presenter: platformPresenter } =
         useGetPlatformPresenter(setPlatformViewModel);
+
+    // Construct response object expected by presenter
+    const platformResponse = {
+        success: true as const,
+        data: platform,
+    };
+
     // @ts-ignore
     platformPresenter.present(platformResponse, platformViewModel);
 
