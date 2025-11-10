@@ -16,31 +16,27 @@ import {
     DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
 import { useGetCoachingPagePresenter } from '../../hooks/use-get-coaching-page-presenter';
+import { useGetPublicCourseDetailsPresenter } from '../../hooks/use-public-course-details-presenter';
+import { useGetCourseIntroductionPresenter } from '../../hooks/use-course-introduction-presenter';
+import { useGetCourseOutlinePresenter } from '../../hooks/use-course-outline-presenter';
+import { useListCourseReviewsPresenter } from '../../hooks/use-list-course-reviews-presenter';
+import { useGetCoursePackagesPresenter } from '../../hooks/use-course-packages-presenter';
+import { useGetOffersPageOutlinePresenter } from '../../hooks/use-get-offers-page-outline-presenter';
 import { useRouter } from 'next/navigation';
 
 interface VisitorPageProps {
-    courseData: viewModels.TPublicCourseDetailsViewModel;
-    introductionData: viewModels.TCourseIntroductionViewModel;
-    outlineData: viewModels.TCourseOutlineViewModel;
-    reviewsData: viewModels.TCourseReviewsViewModel;
-    packagesData: viewModels.TCoursePackagesViewModel;
-    offersCarouselData: viewModels.TGetOffersPageOutlineViewModel;
+    courseSlug: string;
     locale: TLocale;
 }
 
 export default function VisitorPage({
-    courseData,
-    introductionData,
-    outlineData,
-    reviewsData,
-    packagesData,
-    offersCarouselData,
+    courseSlug,
     locale,
 }: VisitorPageProps) {
     const t = useTranslations('pages.course.visitor');
@@ -48,14 +44,82 @@ export default function VisitorPage({
     const router = useRouter();
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
 
+    // Fetch all data using tRPC hooks (from prefetched cache)
+    const [courseDetailsResponse] = trpc.getPublicCourseDetails.useSuspenseQuery({ courseSlug });
+    const [courseIntroductionResponse] = trpc.getCourseIntroduction.useSuspenseQuery({ courseSlug });
+    const [courseOutlineResponse] = trpc.getCourseOutline.useSuspenseQuery({ courseSlug });
+    const [courseReviewsResponse] = trpc.listCourseReviews.useSuspenseQuery({ courseSlug });
+    const [coursePackagesResponse] = trpc.getCoursePackages.useSuspenseQuery({ courseSlug });
+    const [offersCarouselResponse] = trpc.getOffersPageOutline.useSuspenseQuery({});
     const [coachingPageResponse] = trpc.getCoachingPage.useSuspenseQuery({});
-    const [coachingPageViewModel, setCoachingPageViewModel] = useState<
-        viewModels.TGetCoachingPageViewModel | undefined
-    >(undefined);
 
-    const { presenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);
-    // @ts-ignore
-    presenter.present(coachingPageResponse, coachingPageViewModel);
+    // Create view model states
+    const [courseData, setCourseData] = useState<viewModels.TPublicCourseDetailsViewModel | undefined>(undefined);
+    const [introductionData, setIntroductionData] = useState<viewModels.TCourseIntroductionViewModel | undefined>(undefined);
+    const [outlineData, setOutlineData] = useState<viewModels.TCourseOutlineViewModel | undefined>(undefined);
+    const [reviewsData, setReviewsData] = useState<viewModels.TCourseReviewsViewModel | undefined>(undefined);
+    const [packagesData, setPackagesData] = useState<viewModels.TCoursePackagesViewModel | undefined>(undefined);
+    const [offersCarouselData, setOffersCarouselData] = useState<viewModels.TGetOffersPageOutlineViewModel | undefined>(undefined);
+    const [coachingPageViewModel, setCoachingPageViewModel] = useState<viewModels.TGetCoachingPageViewModel | undefined>(undefined);
+
+    // Create presenters using hooks
+    const { presenter: courseDetailsPresenter } = useGetPublicCourseDetailsPresenter(setCourseData);
+    const { presenter: courseIntroductionPresenter } = useGetCourseIntroductionPresenter(setIntroductionData);
+    const { presenter: courseOutlinePresenter } = useGetCourseOutlinePresenter(setOutlineData);
+    const { presenter: courseReviewsPresenter } = useListCourseReviewsPresenter(setReviewsData);
+    const { presenter: coursePackagesPresenter } = useGetCoursePackagesPresenter(setPackagesData);
+    const { presenter: offersCarouselPresenter } = useGetOffersPageOutlinePresenter(setOffersCarouselData);
+    const { presenter: coachingPagePresenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);
+
+    // Run presenters when data is available
+    useEffect(() => {
+        if (courseDetailsResponse) {
+            // @ts-ignore
+            courseDetailsPresenter.present(courseDetailsResponse, courseData);
+        }
+    }, [courseDetailsResponse]);
+
+    useEffect(() => {
+        if (courseIntroductionResponse) {
+            // @ts-ignore
+            courseIntroductionPresenter.present(courseIntroductionResponse, introductionData);
+        }
+    }, [courseIntroductionResponse]);
+
+    useEffect(() => {
+        if (courseOutlineResponse) {
+            // @ts-ignore
+            courseOutlinePresenter.present(courseOutlineResponse, outlineData);
+        }
+    }, [courseOutlineResponse]);
+
+    useEffect(() => {
+        if (courseReviewsResponse) {
+            // @ts-ignore
+            courseReviewsPresenter.present(courseReviewsResponse, reviewsData);
+        }
+    }, [courseReviewsResponse]);
+
+    useEffect(() => {
+        if (coursePackagesResponse) {
+            // @ts-ignore
+            coursePackagesPresenter.present(coursePackagesResponse, packagesData);
+        }
+    }, [coursePackagesResponse]);
+
+    useEffect(() => {
+        if (offersCarouselResponse) {
+            // @ts-ignore
+            offersCarouselPresenter.present(offersCarouselResponse, offersCarouselData);
+        }
+    }, [offersCarouselResponse]);
+
+    useEffect(() => {
+        if (coachingPageResponse) {
+            // @ts-ignore
+            coachingPagePresenter.present(coachingPageResponse, coachingPageViewModel);
+        }
+    }, [coachingPageResponse]);
 
     // Handle coaching page loading and error states
     if (!coachingPageViewModel) {
