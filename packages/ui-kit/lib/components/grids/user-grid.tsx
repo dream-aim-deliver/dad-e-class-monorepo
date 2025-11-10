@@ -30,6 +30,7 @@ export interface UserRow extends profile.TBasePersonalProfile {
     surname: string;
     email: string;
     phone: string;
+    username: string;
     rating?: number;
     roles: { platformName: string; role: string }[];
     coachingSessionsCount?: number;
@@ -42,6 +43,7 @@ export interface UserGridProps extends isLocalAware {
     gridRef: RefObject<AgGridReact | null>;
     onUserDetailsClick: (user: UserRow) => void;
     onEmailClick: (email: string) => void;
+    emailTooltip?: string;
     users: UserRow[];
     onSortChanged?: (event: SortChangedEvent) => void;
     doesExternalFilterPass?: (node: IRowNode<UserRow>) => boolean;
@@ -53,6 +55,7 @@ export interface UserGridProps extends isLocalAware {
 const RoleIcon = ({ role, className }: { role: string; className?: string }) => {
     const icons = {
         admin: <IconAdmin classNames={className} />,
+        superadmin: <IconAdmin classNames={className} />,
         'course creator': <IconCourseCreator classNames={className} />,
         coach: <IconCoach classNames={className} />,
         student: <IconStudent classNames={className} />
@@ -68,7 +71,8 @@ const DetailsCellRenderer = () => {
 
 const EmailCellRenderer = (props: any) => {
     const email = props.value;
-    return <Button variant="text" text={email} className="text-sm px-0" />;
+    const tooltip = props.colDef?.cellRendererParams?.emailTooltip;
+    return <Button variant="text" text={email} className="text-sm px-0" title={tooltip} />;
 };
 
 const RatingCellRenderer = (props: any) => {
@@ -193,6 +197,9 @@ export const UserGrid = (props: UserGridProps) => {
             field: 'email',
             headerName: dictionary.emailColumn,
             cellRenderer: EmailCellRenderer,
+            cellRendererParams: {
+                emailTooltip: props.emailTooltip
+            },
             onCellClicked: (params: any) => {
                 const email = params.value;
                 props.onEmailClick(email);
@@ -255,7 +262,7 @@ export const UserGrid = (props: UserGridProps) => {
             },
             filter: 'agDateColumnFilter'
         }
-    ], [dictionary]);
+    ], [dictionary, props.emailTooltip]);
 
     // For filter modal
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
@@ -284,8 +291,10 @@ export const UserGrid = (props: UserGridProps) => {
 
             if (user.roles) {
                 user.roles.forEach(roleObj => {
-                    if (counts[roleObj.role] !== undefined) {
-                        counts[roleObj.role]++;
+                    // Map course_creator to 'course creator' for display
+                    const displayRole = roleObj.role === 'course_creator' ? 'course creator' : roleObj.role;
+                    if (counts[displayRole] !== undefined) {
+                        counts[displayRole]++;
                     }
                 });
             }
@@ -651,7 +660,7 @@ export const UserGrid = (props: UserGridProps) => {
                         </TabContent>
 
                         <TabContent value="course creator">
-                            {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'course creator')) || [])}
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'course_creator')) || [])}
                         </TabContent>
 
                         <TabContent value="admin">
