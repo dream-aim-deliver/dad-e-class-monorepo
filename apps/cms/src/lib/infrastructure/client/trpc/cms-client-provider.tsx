@@ -32,78 +32,16 @@ export default function CMSTRPCClientProviders({
     const locale = useLocale();
     const runtimeConfig = useRuntimeConfig();
 
-    // DEBUG: Track render count and component lifecycle
-    // const renderCount = useRef(0);
-    // renderCount.current += 1;
-    // // console.log(`[TRPC Provider] 🔄 Render #${renderCount.current}`);
-
-    // // Debug logging for session state
-    // // console.log('[TRPC Provider] Session status:', status);
-    // // console.log('[TRPC Provider] Session data:', {
-    //     hasSession: !!session,
-    //     hasUser: !!session?.user,
-    //     hasIdToken: !!session?.user?.idToken,
-    //     userId: session?.user?.id,
-    //     locale
-    // });
-
-    // // DEBUG: Track when useMemo dependencies change
-    // const prevDeps = useRef({
-    //     idToken: session?.user?.idToken,
-    //     locale,
-    //     status,
-    //     platformContext,
-    //     runtimeConfig,
-    // });
-
-    // useEffect(() => {
-    //     const current = {
-    //         idToken: session?.user?.idToken,
-    //         locale,
-    //         status,
-    //         platformContext,
-    //         runtimeConfig,
-    //     };
-
-    //     const changes = [];
-    //     if (prevDeps.current.idToken !== current.idToken) changes.push('idToken');
-    //     if (prevDeps.current.locale !== current.locale) changes.push('locale');
-    //     if (prevDeps.current.status !== current.status) changes.push('status');
-    //     if (prevDeps.current.platformContext !== current.platformContext) changes.push('platformContext');
-    //     if (prevDeps.current.runtimeConfig !== current.runtimeConfig) changes.push('runtimeConfig');
-
-    //     if (changes.length > 0) {
-    //         // console.log('[TRPC Client] 🔄 Dependencies changed:', changes);
-    //         // console.log('[TRPC Client] Previous deps:', prevDeps.current);
-    //         // console.log('[TRPC Client] Current deps:', current);
-    //     }
-
-    //     prevDeps.current = current;
-    // }, [session?.user?.idToken, locale, status, platformContext, runtimeConfig]);
+    // Extract stable config and context values to prevent unnecessary client recreation
+    const cmsRestUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
+    const runtimeSlug = runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
+    const platformSlug = platformContext?.platformSlug;
+    const platformLanguageCode = platformContext?.platformLanguageCode;
 
     const trpcClient = useMemo(
         () => {
-            // DEBUG: Generate unique ID for this client instance
-            const clientInstanceId = Math.random().toString(36).slice(2, 9);
-            // console.log(`[TRPC Client] 🏗️ Creating NEW TRPC client instance: ${clientInstanceId}`);
-
-            // Build TRPC URL from runtime config
-            const trpcUrl = `${runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL}/api/trpc`;
-
-            // console.log('[TRPC Client] Creating new TRPC client with:', {
-            //     clientInstanceId,
-            //     hasIdToken: !!session?.user?.idToken,
-            //     tokenLength: session?.user?.idToken?.length || 0,
-            //     locale,
-            //     sessionStatus: status,
-            //     trpcUrl
-            // });
-
-            // Wait for session to be determined (not loading) before setting up auth
-            const isSessionReady = status !== 'loading';
-            if (!isSessionReady) {
-                // console.log('[TRPC Client] ⏳ Session still loading, creating client without auth');
-            }
+            // Creating new TRPC client - only when token, locale, or config values change
+            const trpcUrl = `${cmsRestUrl}/api/trpc`;
 
             return trpc.createClient({
                 links: [
@@ -113,60 +51,36 @@ export default function CMSTRPCClientProviders({
                         headers() {
                             const headers: Record<string, string> = {};
 
-                            // Only add auth header if session is ready and has token
-                            if (isSessionReady && session?.user?.idToken) {
+                            // Only add auth header if session has token
+                            // Note: status check removed - headers function checks token directly
+                            if (session?.user?.idToken) {
                                 headers['Authorization'] =
                                     `Bearer ${session.user.idToken}`;
-                                // console.log('[TRPC Client Headers] Authorization header added');
-                            } else {
-                                // console.log('[TRPC Client Headers] No authorization token available', {
-                                //     isSessionReady,
-                                //     hasSession: !!session,
-                                //     hasUser: !!session?.user,
-                                //     hasIdToken: !!session?.user?.idToken
-                                // });
+                            } else if (status !== 'loading' && !session?.user?.idToken) {
+                                // Log warning only after session is ready
+                                console.warn('[TRPC Headers] No authorization token available');
                             }
 
                             // Add session ID header (defaults to "public" if no session)
                             headers['x-eclass-session-id'] = session?.user?.sessionId || 'public';
-                            // console.log('[TRPC Client Headers] Session ID:', headers['x-eclass-session-id']);
 
                             // Add locale header
                             if (locale) {
                                 headers['Accept-Language'] = locale;
-                                // console.log('[TRPC Client Headers] Locale:', locale);
                             }
 
                             // Add runtime header
-                            if (runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME) {
-                                headers['x-eclass-runtime'] =
-                                    runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
-                                // console.log('[TRPC Client Headers] Runtime:', runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME);
+                            if (runtimeSlug) {
+                                headers['x-eclass-runtime'] = runtimeSlug;
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing runtime header');
                             }
 
                             // Add dynamic platform context headers (both must be present together)
-                            if (platformContext?.platformSlug && platformContext?.platformLanguageCode) {
-                                headers['x-eclass-platform'] = platformContext.platformSlug;
-                                headers['x-eclass-platform-language'] = platformContext.platformLanguageCode;
-                                // console.log('[TRPC Client Headers] Platform context added:', {
-                                //     'x-eclass-platform': platformContext.platformSlug,
-                                //     'x-eclass-platform-language': platformContext.platformLanguageCode
-                                // });
-                            } else {
-                                // console.log('[TRPC Client Headers] Platform context not complete:', {
-                                //     hasPlatformContext: !!platformContext,
-                                //     hasSlug: !!platformContext?.platformSlug,
-                                //     hasLanguage: !!platformContext?.platformLanguageCode,
-                                //     platformContext
-                                // });
+                            if (platformSlug && platformLanguageCode) {
+                                headers['x-eclass-platform'] = platformSlug;
+                                headers['x-eclass-platform-language'] = platformLanguageCode;
                             }
-
-                            // console.log('[TRPC Client Headers] Final headers being sent:', {
-                            //     ...headers,
-                            //     Authorization: headers.Authorization ? '[REDACTED]' : undefined
-                            // });
 
                             return headers;
                         },
@@ -174,7 +88,10 @@ export default function CMSTRPCClientProviders({
                 ],
             });
         },
-        [session?.user?.idToken, locale, status, platformContext, runtimeConfig], // Recreate client when session, locale, platform context, or runtime config changes
+        // Only recreate client when token, locale, or specific config values change
+        // Removed 'status' - unnecessary, headers check token directly
+        // Replaced 'runtimeConfig' and 'platformContext' with specific values for stability
+        [session?.user?.idToken, locale, cmsRestUrl, runtimeSlug, platformSlug, platformLanguageCode],
     );
 
     // DEBUG: Log which client instance is currently active

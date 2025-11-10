@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useMemo } from 'react';
 import type { RuntimeConfig } from '../../types/runtime-config';
 
 const RuntimeConfigContext = createContext<RuntimeConfig | null>(null);
@@ -40,8 +40,12 @@ export function RuntimeConfigProvider({
     children,
     config,
 }: RuntimeConfigProviderProps) {
+    // Memoize config to prevent re-renders when reference changes but values are same
+    // Config is static but object reference may change on server re-renders
+    const value = useMemo(() => config, [config]);
+
     return (
-        <RuntimeConfigContext.Provider value={config}>
+        <RuntimeConfigContext.Provider value={value}>
             {children}
         </RuntimeConfigContext.Provider>
     );

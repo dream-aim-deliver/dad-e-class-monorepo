@@ -12,15 +12,6 @@ export function getTRPCUrl() {
 
     const base = serverUrl || publicUrl || fallbackUrl;
 
-    console.log('[getTRPCUrl] Environment check:', {
-        hasServerUrl: !!serverUrl,
-        serverUrl: serverUrl || 'NOT SET',
-        hasPublicUrl: !!publicUrl,
-        publicUrl: publicUrl || 'NOT SET',
-        selectedUrl: base,
-        fallbackUsed: !serverUrl && !publicUrl
-    });
-
     return `${base}/api/trpc`;
 }
 

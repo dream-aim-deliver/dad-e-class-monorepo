@@ -24,17 +24,14 @@ export default function CMSTRPCClientProviders({
     const locale = useLocale();
     const runtimeConfig = useRuntimeConfig();
 
-    // Debug logging for session state
+    // Extract stable config values to prevent unnecessary client recreation
+    const cmsRestUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
+    const platformSlug = runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
 
     const trpcClient = useMemo(
         () => {
-            // Creating new TRPC client
-
-            // Wait for session to be determined (not loading) before setting up auth
-            const isSessionReady = status !== 'loading';
-
-            // Build TRPC URL from runtime config
-            const trpcUrl = `${runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL}/api/trpc`;
+            // Creating new TRPC client - only when token, locale, or config URLs change
+            const trpcUrl = `${cmsRestUrl}/api/trpc`;
 
             return trpc.createClient({
                 links: [
@@ -44,12 +41,12 @@ export default function CMSTRPCClientProviders({
                         headers() {
                             const headers: Record<string, string> = {};
 
-                            // Only add auth header if session is ready and has token
-                            if (isSessionReady && session?.user?.idToken) {
+                            // Only add auth header if session has token
+                            // Note: status check removed - headers function checks token directly
+                            if (session?.user?.idToken) {
                                 headers['Authorization'] =
                                     `Bearer ${session.user.idToken}`;
-                                // Authorization header added
-                            } else if (!session?.user?.idToken) {
+                            } else if (status !== 'loading' && !session?.user?.idToken) {
                                 console.warn('[TRPC Headers] ⚠️ Missing Authorization header - no idToken found', {
                                     hasSession: !!session,
                                     hasUser: !!session?.user,
@@ -60,32 +57,31 @@ export default function CMSTRPCClientProviders({
 
                             // Add session ID header (defaults to "public" if no session)
                             headers['x-eclass-session-id'] = session?.user?.sessionId || 'public';
-                            // Session ID header added
+
                             // Add locale header
                             if (locale) {
                                 headers['Accept-Language'] = locale;
-                                // Accept-Language header added
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing Accept-Language header');
                             }
 
                             // Add platform header
-                            if (runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME) {
-                                headers['x-eclass-runtime'] =
-                                    runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
-                                // console.log('[TRPC Headers] ✅ Platform header added:', runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME);
+                            if (platformSlug) {
+                                headers['x-eclass-runtime'] = platformSlug;
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing platform header');
                             }
 
-                            // Final headers
                             return headers;
                         },
                     }),
                 ],
             });
         },
-        [session?.user?.idToken, locale, status, runtimeConfig], // Recreate client when session, locale, or config changes
+        // Only recreate client when token or locale changes
+        // Removed 'status' - unnecessary, headers check token directly
+        // Replaced 'runtimeConfig' with specific values for stability
+        [session?.user?.idToken, locale, cmsRestUrl, platformSlug],
     );
 
     // Handle potential errors in TRPC provider setup
