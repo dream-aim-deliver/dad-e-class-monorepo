@@ -12,13 +12,14 @@ import {
 import Layout from '../../../lib/infrastructure/client/pages/layout';
 import CMSTRPCClientProviders from '../../../lib/infrastructure/client/trpc/cms-client-provider';
 import { PlatformProviderWithSuspense } from '../../../lib/infrastructure/client/context/platform-context-with-suspense';
-import { HydrateClient, prefetch, trpc } from '../../../lib/infrastructure/server/config/trpc/cms-server';
+import { HydrateClient } from '../../../lib/infrastructure/server/config/trpc/cms-server';
 import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/context/runtime-config-context';
 import { Suspense } from 'react';
 import getSession from '../../../lib/infrastructure/server/config/auth/get-session';
 import { getRuntimeConfig } from '../../../lib/infrastructure/server/utils/get-runtime-config';
 import NextTopLoaderWrapper from '../../../lib/infrastructure/client/components/next-top-loader-wrapper';
 import DefaultLoadingWrapper from '../../../lib/infrastructure/client/wrappers/default-loading';
+import { getPlatformCached } from '../../../lib/infrastructure/server/utils/get-platform-cached';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -97,12 +98,21 @@ export default async function RootLayout({
     timings.localeValidation = performance.now() - localeStart;
 
     // STEP 2: Parallel Data Fetching
-    // getMessages and getSession are independent and can run concurrently
+    // All data fetches are independent and can run concurrently
     const parallelStart = performance.now();
     const [messages, session] = await Promise.all([
         getMessages({ locale }), // Already cached by next-intl internally
         getSession(), // Uses React.cache() for request-level deduplication
     ]);
+
+    // Fetch platform data with dynamic parameters (locale, session)
+    // Cache is keyed by these parameters for proper cache segmentation
+    const platformData = await getPlatformCached(
+        locale,
+        session?.user?.sessionId || 'public',
+        session?.user?.idToken
+    );
+
     timings.parallelFetch = performance.now() - parallelStart;
 
     // STEP 3: Runtime Config (synchronous, cached)
@@ -111,26 +121,21 @@ export default async function RootLayout({
     const runtimeConfig = getRuntimeConfig();
     timings.runtimeConfig = performance.now() - configStart;
 
-    // STEP 4: Platform Prefetch (streaming pattern - non-blocking)
-    // This fires the query but doesn't await it
-    // PlatformProviderWithSuspense will use the prefetched data
-    const prefetchStart = performance.now();
-    prefetch(trpc.getPlatform.queryOptions({}));
-    timings.prefetchStart = performance.now() - prefetchStart;
-
     // Performance logging (development only)
     const totalTime = performance.now() - perfStart;
     if (process.env.NODE_ENV === 'development') {
         console.log('🚀 Layout Performance:', {
             timings: {
                 localeValidation: `${timings.localeValidation.toFixed(2)}ms`,
-                parallelFetch: `${timings.parallelFetch.toFixed(2)}ms (messages + session)`,
+                parallelFetch: `${timings.parallelFetch.toFixed(2)}ms (messages + session + platform)`,
                 runtimeConfig: `${timings.runtimeConfig.toFixed(2)}ms`,
-                prefetchStart: `${timings.prefetchStart.toFixed(2)}ms`,
                 total: `${totalTime.toFixed(2)}ms`,
             },
             breakdown: {
                 parallelFetch: `${((timings.parallelFetch / totalTime) * 100).toFixed(1)}%`,
+            },
+            cache: {
+                platform: 'Cached for 15 minutes server-side',
             }
         });
     }
@@ -147,7 +152,7 @@ export default async function RootLayout({
                             <CMSTRPCClientProviders>
                                 <HydrateClient>
                                     <Suspense fallback={<DefaultLoadingWrapper />}>
-                                        <PlatformProviderWithSuspense>
+                                        <PlatformProviderWithSuspense platform={platformData}>
                                             <Layout availableLocales={availableLocales}>
                                                 {children}
                                             </Layout>

@@ -1,35 +1,28 @@
 'use client';
 
 import { PlatformProvider } from './platform-context';
-import { trpc } from '../trpc/cms-client';
+import type { TGetPlatformSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 interface PlatformProviderWithSuspenseProps {
     children: React.ReactNode;
+    platform: TGetPlatformSuccessResponse['data'];
 }
 
 /**
- * Client component that fetches platform data using useSuspenseQuery.
- * Works with server-side prefetching for optimal performance.
+ * Client component that provides platform data to the application.
+ *
+ * Platform data is now fetched server-side with 15-minute caching,
+ * eliminating the need for client-side queries and improving performance.
  *
  * This component should be wrapped in a Suspense boundary in the layout.
- * The server should prefetch the data using:
+ * The server should fetch the data using:
  * ```tsx
- * prefetch(trpc.getPlatform.queryOptions({}));
+ * const platformData = await getPlatformCached();
  * ```
  */
-export function PlatformProviderWithSuspense({ children }: PlatformProviderWithSuspenseProps) {
-    // Uses prefetched data from server (streaming pattern)
-    // If data is not ready, Suspense boundary will show fallback
-    const [platformResult] = trpc.getPlatform.useSuspenseQuery({});
-
-    // @ts-ignore - Type mismatch between TRPC response and platform context
-    if (!platformResult.success) {
-        throw new Error('Failed to load platform data');
-    }
-
+export function PlatformProviderWithSuspense({ children, platform }: PlatformProviderWithSuspenseProps) {
     return (
-        // @ts-ignore - Type mismatch between TRPC response data and PlatformProvider prop
-        <PlatformProvider platform={platformResult.data}>
+        <PlatformProvider platform={platform}>
             {children}
         </PlatformProvider>
     );
