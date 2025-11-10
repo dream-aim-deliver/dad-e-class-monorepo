@@ -61,8 +61,9 @@ export default function EditHeader({
             if (result.success) {
                 // Invalidate queries to refetch updated data
                 utils.listUserCourses.invalidate();
+                utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
                 alert(dictionary.components.editHeader.publishSuccess);
-                window.location.reload();
+                // ✅ No reload needed - query invalidation handles UI update
             } else {
                 alert(dictionary.components.editHeader.publishError + ': ' + (result as any).data?.message);
             }

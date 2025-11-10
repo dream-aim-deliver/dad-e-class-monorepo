@@ -31,7 +31,16 @@ export function useSaveStructure({
     const saveTranslations = useTranslations('components.saveHooks');
 
     const [modules, setModules] = useState<CourseModule[]>([]);
-    const saveCourseStructureMutation = trpc.saveCourseStructure.useMutation();
+
+    const utils = trpc.useUtils();
+
+    const saveCourseStructureMutation = trpc.saveCourseStructure.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.getCourseStructure.invalidate({ courseSlug: slug });
+            utils.listUserCourses.invalidate();
+        },
+    });
     const [saveCourseStructureViewModel, setSaveCourseStructureViewModel] =
         useState<viewModels.TSaveCourseStructureViewModel | undefined>(
             undefined,
@@ -139,7 +148,15 @@ export function useSaveLesson({
 
     const [components, setComponents] = useState<LessonElement[]>([]);
 
-    const saveLessonMutation = trpc.saveLessonComponents.useMutation();
+    const utils = trpc.useUtils();
+
+    const saveLessonMutation = trpc.saveLessonComponents.useMutation({
+        onSuccess: () => {
+            // Invalidate lesson components query to refetch fresh data
+            // Note: This uses lessonId - may need courseSlug for full invalidation
+            utils.listLessonComponents.invalidate({ lessonId });
+        },
+    });
     const [saveLessonViewModel, setSaveLessonViewModel] = useState<
         viewModels.TSaveLessonComponentsViewModel | undefined
     >(undefined);
