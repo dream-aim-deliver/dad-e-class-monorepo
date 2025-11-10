@@ -21,7 +21,13 @@ import { trpc } from '../../trpc/cms-client';
 
 const useCreateCourse = () => {
     const router = useRouter();
-    const createMutation = trpc.createCourse.useMutation();
+    const utils = trpc.useUtils();
+    const createMutation = trpc.createCourse.useMutation({
+        onSuccess: () => {
+            // Invalidate queries to refetch fresh course list
+            utils.listUserCourses.invalidate();
+        },
+    });
 
     const [createCourseViewModel, setCreateCourseViewModel] = useState<
         viewModels.TCreateCourseViewModel | undefined
@@ -44,9 +50,8 @@ const useCreateCourse = () => {
     // Redirect to courses page after success
     useEffect(() => {
         if (createCourseViewModel?.mode === 'default') {
-            setTimeout(() => {
-                router.push('/workspace/courses');
-            }, 1000);
+            // ✅ Navigate immediately - no artificial delay
+            router.push('/workspace/courses');
         }
     }, [createCourseViewModel]);
 
