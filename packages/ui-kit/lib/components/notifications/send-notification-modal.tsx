@@ -408,7 +408,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50"
+      className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-[1100]"
       onClick={onClose}
     >
       <div

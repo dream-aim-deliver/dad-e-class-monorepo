@@ -10,6 +10,8 @@ import { useListUsersPresenter } from '../hooks/use-list-users-presenter';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { useRequiredPlatform } from '../context/platform-context';
 import { useRouter } from 'next/navigation';
+import { TUserListItem } from '@dream-aim-deliver/e-class-cms-rest';
+
 
 interface PlatformUsersProps {
   locale: TLocale;
@@ -64,31 +66,40 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
     if (!listUsersViewModel || listUsersViewModel.mode !== 'default') {
       return [];
     }
-    return listUsersViewModel.data.users.map((user) => ({
+    return listUsersViewModel.data.users.map((user: TUserListItem) => ({
       userId: user.id,
       id: user.id,
       name: user.name ?? '',
       surname: user.surname ?? '',
       email: user.email,
       phone: user.phone ?? '',
+      phoneNumber: user.phone ?? undefined,
       rating: 'rating' in user ? (user.rating ?? undefined) : undefined,
       roles: user.roles,
       coachingSessionsCount: user.coachingSessionsCount ?? undefined,
       coursesBought: user.coursesBought ?? undefined,
       coursesCreated: user.coursesCreated ?? undefined,
       lastAccess: user.lastAccess,
-    } as UserRow));
+      username: user.username,
+      interfaceLanguage: { code: 'en', name: 'English' }, // Default values since not provided by backend
+      receiveNewsletter: false,
+    }));
   }, [listUsersViewModel]);
 
   // Handlers (must be before early returns)
   const handleUserDetailsClick = (user: UserRow) => {
-    // TODO: Implement navigation to user details page when available
-    console.log('User details clicked:', user);
+    if (user.username) {
+      router.push(`/${locale}/platform/${platformSlug}/${platformContext.platformLocale}/users/${user.username}`);
+    }
   };
 
-  const handleEmailClick = (email: string) => {
-    // TODO: Implement email handler (open mailto link or copy to clipboard)
-    console.log('Email clicked:', email);
+  const handleEmailClick = async (email: string) => {
+    try {
+      await navigator.clipboard.writeText(email);
+      // Optional: You could add a toast notification here to confirm the copy
+    } catch (error) {
+      console.error('Failed to copy email to clipboard:', error);
+    }
   };
 
   // Get selected users from grid
@@ -168,10 +179,12 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
   ];
 
   return (
-    <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4 h-screen">
-      <Breadcrumbs items={breadcrumbItems} />
+    <div className="flex flex-col h-[calc(100vh-200px)] space-y-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+      <div className="flex-shrink-0">
+        <Breadcrumbs items={breadcrumbItems} />
+      </div>
 
-      <div className="flex flex-col space-y-2">
+      <div className="flex-shrink-0 flex flex-col space-y-2">
         <h1>{t('title')}</h1>
         <p className="text-text-secondary text-sm">
           Platform: {platformContext.platformSlug} | Content Language: {platformContext.platformLocale.toUpperCase()}
@@ -179,13 +192,14 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
       </div>
 
       {/* Users Grid */}
-      <div className="flex flex-col grow bg-transparent">
+      <div className="flex-1 min-h-0 bg-transparent">
         <UserGrid
           gridRef={gridRef}
           users={transformedUsers}
           locale={currentLocale}
           onUserDetailsClick={handleUserDetailsClick}
           onEmailClick={handleEmailClick}
+          emailTooltip={t('copyEmailTooltip')}
           enableSelection={true}
           onSendNotifications={handleSendNotifications}
         />
@@ -197,6 +211,8 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
         onClose={() => {
           setIsSendNotificationModalOpen(false);
           setSelectedUsers([]);
+          // Reset mutation state to allow modal to work properly on next open
+          sendNotificationMutation.reset();
           // Clear selection in grid
           if (gridRef.current?.api) {
             gridRef.current.api.deselectAll();

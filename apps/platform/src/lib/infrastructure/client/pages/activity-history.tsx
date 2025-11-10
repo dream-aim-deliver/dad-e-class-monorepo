@@ -50,8 +50,10 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
   // TRPC utils for cache invalidation
   const utils = trpc.useUtils();
 
-  // State for notifications
-  const [notificationsResponse, { refetch: refetchNotifications }] = trpc.listNotifications.useSuspenseQuery({});
+  // State for notifications - poll every 30 seconds for new notifications
+  const [notificationsResponse, { refetch: refetchNotifications }] = trpc.listNotifications.useSuspenseQuery({}, {
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
 
   const [listNotificationsViewModel, setListNotificationsViewModel] = useState<
     viewModels.TListNotificationsViewModel | undefined
