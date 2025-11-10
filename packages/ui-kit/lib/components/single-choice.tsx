@@ -104,7 +104,7 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
         <div className="flex flex-col gap-4 mt-4 w-full">
             <div className="w-full">
                 <InputField
-                    inputText="single-choice-title"
+                    inputText={dictionary.components.lessons.singleChoiceTitle}
                     className="border-0"
                     value={title}
                     setValue={(value) => setTitle(value)}

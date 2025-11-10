@@ -35,6 +35,8 @@ import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upl
 import { useSaveOutline } from './hooks/edit-outline-hooks';
 import { AccordionIconUploadState } from './hooks/use-accordion-icon-upload';
 import { trpc } from '../../../trpc/cms-client';
+import { useSaveAdminDetails } from './hooks/edit-admin-details-hooks';
+import EditCourseAdminDetails from './edit-course-admin-details';
 
 interface EditCourseProps {
     slug: string;
@@ -46,6 +48,7 @@ enum TabTypes {
     General = 'general',
     IntroOutline = 'intro-outline',
     CourseContent = 'course-content',
+    AdminDetails = 'admin-details',
 }
 
 export default function EditCourse({ slug, defaultTab, roles }: EditCourseProps) {
@@ -150,6 +153,22 @@ function EditCourseContent({
         setErrorMessage,
     });
 
+    // Admin Details Tab State (superadmin only)
+    const {
+        isPublic,
+        setIsPublic,
+        basePrice,
+        setBasePrice,
+        priceIncludingCoachings,
+        setPriceIncludingCoachings,
+        saveCourseAdminDetails,
+        isAdminDetailsSaving,
+    } = useSaveAdminDetails({
+        slug,
+        courseVersion,
+        setErrorMessage,
+    });
+
     // Handle error state after all hooks
     if (courseViewModel?.mode !== "default") {
         return <DefaultError locale={locale}/>
@@ -171,6 +190,9 @@ function EditCourseContent({
         if (activeTab === TabTypes.CourseContent) {
             result = await saveCourseStructure();
         }
+        if (activeTab === TabTypes.AdminDetails) {
+            result = await saveCourseAdminDetails();
+        }
         if (result) {
             setIsEdited(false);
             setSuccessMessage(editCourseTranslations('saveSuccess'));
@@ -183,7 +205,8 @@ function EditCourseContent({
         isSavingCourseStructure ||
         isDetailsSaving ||
         isIntroductionSaving ||
-        isOutlineSaving;
+        isOutlineSaving ||
+        isAdminDetailsSaving;
 
     return (
         <EditCourseLayout
@@ -224,6 +247,13 @@ function EditCourseContent({
                 setCourseVersion={setCourseVersion}
                 editWrap={editWrap}
                 defaultTab={defaultTab}
+                isPublic={isPublic}
+                setIsPublic={setIsPublic}
+                basePrice={basePrice}
+                setBasePrice={setBasePrice}
+                priceIncludingCoachings={priceIncludingCoachings}
+                setPriceIncludingCoachings={setPriceIncludingCoachings}
+                roles={roles}
             />
         </EditCourseLayout>
     );
@@ -400,10 +430,19 @@ function EditCourseLayout({
                     <Tabs.Trigger
                         value={TabTypes.CourseContent}
                         disabled={isSaving || isPreviewing}
-                        isLast={true}
+                        isLast={!roles.includes('superadmin')}
                     >
                         {editCourseTranslations('courseContent')}
                     </Tabs.Trigger>
+                    {roles.includes('superadmin') && (
+                        <Tabs.Trigger
+                            value={TabTypes.AdminDetails}
+                            disabled={isSaving || isPreviewing}
+                            isLast={true}
+                        >
+                            {editCourseTranslations('adminDetailsTab')}
+                        </Tabs.Trigger>
+                    )}
                 </Tabs.List>
                 {successMessage && (
                     <Banner
@@ -456,6 +495,13 @@ interface EditCourseTabContentProps {
         fn: (...args: T) => U,
     ) => (...args: T) => U;
     defaultTab: TabTypes;
+    isPublic: boolean;
+    setIsPublic: (value: boolean) => void;
+    basePrice: number | null;
+    setBasePrice: (value: number | null) => void;
+    priceIncludingCoachings: number | null;
+    setPriceIncludingCoachings: (value: number | null) => void;
+    roles: string[];
 }
 
 function EditCourseTabContent({
@@ -479,7 +525,14 @@ function EditCourseTabContent({
     setOutlineItems,
     accordionIconUpload,
     accordionUploadProgress,
-    defaultTab
+    defaultTab,
+    isPublic,
+    setIsPublic,
+    basePrice,
+    setBasePrice,
+    priceIncludingCoachings,
+    setPriceIncludingCoachings,
+    roles,
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
@@ -583,6 +636,29 @@ function EditCourseTabContent({
                     </Suspense>
                 )}
             </Tabs.Content>
+            {roles.includes('superadmin') && (
+                <Tabs.Content
+                    value={TabTypes.AdminDetails}
+                    className={tabContentClass}
+                >
+                    {!isPreviewing && (
+                        <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
+                            <EditCourseAdminDetails
+                                slug={slug}
+                                courseVersion={courseVersion}
+                                setCourseVersion={setCourseVersion}
+                                isPublic={isPublic}
+                                setIsPublic={editWrap(setIsPublic)}
+                                basePrice={basePrice}
+                                setBasePrice={editWrap(setBasePrice)}
+                                priceIncludingCoachings={priceIncludingCoachings}
+                                setPriceIncludingCoachings={editWrap(setPriceIncludingCoachings)}
+                                setIsEdited={setIsEdited}
+                            />
+                        </Suspense>
+                    )}
+                </Tabs.Content>
+            )}
         </>
     );
 }
