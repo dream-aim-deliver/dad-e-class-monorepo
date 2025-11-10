@@ -5,20 +5,18 @@ import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
-import { auth, viewModels } from '@maany_shr/e-class-models';
-import { NextAuthGateway } from '@maany_shr/e-class-auth';
-import nextAuth from '../../../lib/infrastructure/server/config/auth/next-auth.config';
 import {
     languageCodeToLocale,
     localeToLanguageCode,
 } from '../../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../../lib/infrastructure/client/pages/layout';
 import CMSTRPCClientProviders from '../../../lib/infrastructure/client/trpc/cms-client-provider';
-import { PlatformProvider } from '../../../lib/infrastructure/client/context/platform-context';
-import { getQueryClient, trpc } from '../../../lib/infrastructure/server/config/trpc/cms-server';
+import { PlatformProviderWithSuspense } from '../../../lib/infrastructure/client/context/platform-context-with-suspense';
+import { HydrateClient, prefetch, trpc } from '../../../lib/infrastructure/server/config/trpc/cms-server';
 import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/context/runtime-config-context';
-import { connection } from 'next/server';
-import env from '../../../lib/infrastructure/server/config/env';
+import { Suspense } from 'react';
+import getSession from '../../../lib/infrastructure/server/config/auth/get-session';
+import { getRuntimeConfig } from '../../../lib/infrastructure/server/utils/get-runtime-config';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -53,21 +51,12 @@ export default async function RootLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
-    // const queryOptions = trpc.listLanguages.queryOptions({});
-    // const queryClient = getQueryClient();
-    // const languagesResponse = await queryClient.fetchQuery(queryOptions);
-    // let languagesViewModel: viewModels.TLanguageListViewModel | undefined;
-    // const presenter = createGetLanguagesPresenter((viewModel) => {
-    //     languagesViewModel = viewModel;
-    // });
-    // await presenter.present(languagesResponse, languagesViewModel);
-    // if (!languagesViewModel || languagesViewModel.mode !== 'default') {
-    //     throw Error(
-    //         languagesViewModel?.data?.message ||
-    //             'Unknown error happened while loading languages',
-    //     );
-    // }
+    // Performance tracking (development only)
+    const perfStart = performance.now();
+    const timings: Record<string, number> = {};
 
+    // STEP 1: Locale Resolution and Validation
+    const localeStart = performance.now();
     const { languages } = {
         languages: [
             {
@@ -103,42 +92,46 @@ export default async function RootLayout({
     if (!availableLocales.includes(locale) || !language) {
         notFound();
     }
+    timings.localeValidation = performance.now() - localeStart;
 
-    const messages = await getMessages({ locale });
+    // STEP 2: Parallel Data Fetching
+    // getMessages and getSession are independent and can run concurrently
+    const parallelStart = performance.now();
+    const [messages, session] = await Promise.all([
+        getMessages({ locale }), // Already cached by next-intl internally
+        getSession(), // Uses React.cache() for request-level deduplication
+    ]);
+    timings.parallelFetch = performance.now() - parallelStart;
 
-    // Enable dynamic rendering for runtime environment variables
-    // This causes env.ts to be evaluated at request time, not build time
-    await connection();
+    // STEP 3: Runtime Config (synchronous, cached)
+    // No connection() needed - getSession() already forces dynamic rendering
+    const configStart = performance.now();
+    const runtimeConfig = getRuntimeConfig();
+    timings.runtimeConfig = performance.now() - configStart;
 
-    // Get runtime configuration from env.ts (evaluated at request time due to connection() above)
-    const runtimeConfig = {
-        NEXT_PUBLIC_E_CLASS_RUNTIME: env.NEXT_PUBLIC_E_CLASS_RUNTIME,
-        NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME,
-        NEXT_PUBLIC_APP_URL: env.NEXT_PUBLIC_APP_URL,
-        NEXT_PUBLIC_E_CLASS_CMS_REST_URL: env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
-        defaultTheme: env.DEFAULT_THEME,
-    };
+    // STEP 4: Platform Prefetch (streaming pattern - non-blocking)
+    // This fires the query but doesn't await it
+    // PlatformProviderWithSuspense will use the prefetched data
+    const prefetchStart = performance.now();
+    prefetch(trpc.getPlatform.queryOptions({}));
+    timings.prefetchStart = performance.now() - prefetchStart;
 
-    // Perform authentication
-    const authGateway = new NextAuthGateway(nextAuth);
-    const sessionDTO = await authGateway.getSession();
-    let session: auth.TSession | null = null;
-    if (sessionDTO.success) {
-        session = sessionDTO.data;
+    // Performance logging (development only)
+    const totalTime = performance.now() - perfStart;
+    if (process.env.NODE_ENV === 'development') {
+        console.log('🚀 Layout Performance:', {
+            timings: {
+                localeValidation: `${timings.localeValidation.toFixed(2)}ms`,
+                parallelFetch: `${timings.parallelFetch.toFixed(2)}ms (messages + session)`,
+                runtimeConfig: `${timings.runtimeConfig.toFixed(2)}ms`,
+                prefetchStart: `${timings.prefetchStart.toFixed(2)}ms`,
+                total: `${totalTime.toFixed(2)}ms`,
+            },
+            breakdown: {
+                parallelFetch: `${((timings.parallelFetch / totalTime) * 100).toFixed(1)}%`,
+            }
+        });
     }
-
-    // Fetch platform details from database via TRPC
-    const queryClient = getQueryClient();
-    // @ts-expect-error - fetchQuery returns unknown, but we know the type from TRPC router
-    const platformResult: useCaseModels.TGetPlatformUseCaseResponse = await queryClient.fetchQuery(
-        trpc.getPlatform.queryOptions({})
-    );
-
-    if (!platformResult.success) {
-        throw new Error('Failed to load platform data');
-    }
-
-    const platform = platformResult.data;
 
     return (
         <html lang={locale}>
@@ -148,13 +141,17 @@ export default async function RootLayout({
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <RuntimeConfigProvider config={runtimeConfig}>
-                            <PlatformProvider platform={platform}>
-                                <CMSTRPCClientProviders>
-                                    <Layout availableLocales={availableLocales}>
-                                        {children}
-                                    </Layout>
-                                </CMSTRPCClientProviders>
-                            </PlatformProvider>
+                            <CMSTRPCClientProviders>
+                                <HydrateClient>
+                                    <Suspense fallback={<div>Loading platform...</div>}>
+                                        <PlatformProviderWithSuspense>
+                                            <Layout availableLocales={availableLocales}>
+                                                {children}
+                                            </Layout>
+                                        </PlatformProviderWithSuspense>
+                                    </Suspense>
+                                </HydrateClient>
+                            </CMSTRPCClientProviders>
                         </RuntimeConfigProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>

@@ -122,17 +122,19 @@ export function HydrateClient(props: { children: React.ReactNode }) {
 }
 
 /**
- * Prefetches the specified query options.
+ * Prefetches the specified query options using streaming pattern.
+ * Does not await - allows React to stream HTML while queries are in-flight.
+ * Pending queries are dehydrated and sent to client via HydrateClient.
  * @template T
  * @param {T} queryOptions - The query options to prefetch.
  */
-export async function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(
+export function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(
     queryOptions: T,
-) {
+): void {
     const queryClient = getQueryClient();
     if (queryOptions.queryKey[1]?.type === 'infinite') {
-        await queryClient.prefetchInfiniteQuery(queryOptions as any);
+        void queryClient.prefetchInfiniteQuery(queryOptions as any);
     } else {
-        await queryClient.prefetchQuery(queryOptions);
+        void queryClient.prefetchQuery(queryOptions);
     }
 }

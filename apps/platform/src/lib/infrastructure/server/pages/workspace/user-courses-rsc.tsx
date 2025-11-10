@@ -20,7 +20,10 @@ export default async function UserCoursesServerComponent() {
         throw new Error();
     }
 
-    await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
+    // Streaming pattern: Fire prefetch without awaiting
+    // Pending queries will be dehydrated and sent to client
+    prefetch(trpc.listUserCourses.queryOptions({}));
+    prefetch(trpc.listPlatformCoursesShort.queryOptions({}));
 
     return (
         <>
