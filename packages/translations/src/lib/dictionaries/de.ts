@@ -2615,6 +2615,7 @@ manageHomePage: {
     cmsPlatformUsers: {
       title: 'Benutzer',
       description: 'Verwalte Plattform-Benutzer und sende Benachrichtigungen',
+      copyEmailTooltip: 'E-Mail in Zwischenablage kopieren',
       error: {
         title: 'Fehler',
         description: 'Beim Laden der Benutzer ist ein Fehler aufgetreten.',

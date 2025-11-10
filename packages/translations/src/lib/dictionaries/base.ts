@@ -2650,6 +2650,7 @@ export const DictionarySchema = z.object({
     cmsPlatformUsers: z.object({
       title: z.string(),
       description: z.string(),
+      copyEmailTooltip: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),
