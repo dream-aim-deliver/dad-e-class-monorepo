@@ -27,7 +27,6 @@ export function getTRPCUrl() {
 export function makeQueryClient() {
     return new QueryClient({
         defaultOptions: {
-            // TODO: define default options for queries
             dehydrate: {
                 serializeData: superjson.serialize,
                 shouldDehydrateQuery: (query) => {

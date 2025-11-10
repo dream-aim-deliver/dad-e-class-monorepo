@@ -186,7 +186,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             setModalType(null);
             setSessionId(null);
             setScheduleViewModel(undefined);
-        }, 2000);
+        }, 1000);
 
 
     };

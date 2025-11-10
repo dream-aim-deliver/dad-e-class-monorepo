@@ -27,41 +27,30 @@ export default async function UserDashboardServerComponent() {
 
     const isCoach = roles?.includes('coach');
 
-    // Prefetch data based on user role
-    const prefetchPromises = [
-        prefetch(trpc.listUserCourses.queryOptions({})),
-        prefetch(trpc.getPersonalProfile.queryOptions({}))
-    ];
+    // Streaming pattern: Fire prefetches without awaiting
+    // Pending queries will be dehydrated and sent to client
+    prefetch(trpc.listUserCourses.queryOptions({}));
+    prefetch(trpc.getPersonalProfile.queryOptions({}));
 
     // Add coach-specific data prefetching
     if (isCoach) {
-        prefetchPromises.push(
-            prefetch(
-                trpc.listCoachStudents.queryOptions({
-                    pagination: {
-                        page: 1,
-                        pageSize: 3,
-                    },
-                }),
-            )
+        prefetch(
+            trpc.listCoachStudents.queryOptions({
+                pagination: {
+                    page: 1,
+                    pageSize: 3,
+                },
+            })
         );
         // TODO: Add prefetch for coach reviews when endpoint is available
-        // prefetchPromises.push(
-        //     prefetch(
-        //         trpc.listCoachReviews.queryOptions({
-        //             pagination: {
-        //                 page: 1,
-        //                 pageSize: 3,
-        //             },
-        //         }),
-        //     )
+        // prefetch(
+        //     trpc.listCoachReviews.queryOptions({
+        //         pagination: {
+        //             page: 1,
+        //             pageSize: 3,
+        //         },
+        //     })
         // );
-    }
-
-    try {
-        await Promise.all(prefetchPromises);
-    } catch (error) {
-        throw new Error(dictionary.pages.userDashboard.errorFailed);
     }
 
     return (
