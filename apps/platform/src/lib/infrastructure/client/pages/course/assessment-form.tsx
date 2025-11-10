@@ -16,6 +16,7 @@ import {
 import { transformLessonComponents } from '../../utils/transform-lesson-components';
 import { transformFormAnswers } from '../../utils/transform-answers';
 import { useSubmitAssessmentProgressPresenter } from '../../hooks/use-assessment-progress-presenter';
+import { useRouter } from 'next/navigation';
 
 interface AssessmentFormProps {
     courseSlug: string;
@@ -24,6 +25,8 @@ interface AssessmentFormProps {
 export default function AssessmentForm(props: AssessmentFormProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.assessmentForm');
+    const router = useRouter();
+    const utils = trpc.useUtils();
 
     const [componentsResponse] =
         trpc.listPreCourseAssessmentComponents.useSuspenseQuery({
@@ -54,7 +57,18 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         return transformLessonComponents(components) as FormElement[];
     }, [componentsViewModel]);
 
-    const submitMutation = trpc.submitAssessmentProgress.useMutation({});
+    const submitMutation = trpc.submitAssessmentProgress.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.getCourseAccess.invalidate({ courseSlug: props.courseSlug });
+            utils.getEnrolledCourseDetails.invalidate({ courseSlug: props.courseSlug });
+            utils.listUserCourses.invalidate();
+
+            // Navigate to course page to re-trigger RSC evaluation
+            // This will show the enrolled course view since assessment is now complete
+            router.push(`/courses/${props.courseSlug}`);
+        },
+    });
 
     const getIsFormDisabled = () => {
         return (
@@ -79,11 +93,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         }
     }, [submitMutation.isSuccess]);
 
-    useEffect(() => {
-        if (submitAssessmentViewModel?.mode === 'default') {
-            window.location.reload();
-        }
-    }, [submitAssessmentViewModel]);
+    // ✅ Removed window.location.reload() - query invalidation + router.push handles UI update
 
     if (!componentsViewModel || getIsFormDisabled()) {
         return <DefaultLoading locale={locale} variant="minimal" />;
