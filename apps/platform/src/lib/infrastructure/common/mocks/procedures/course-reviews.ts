@@ -99,8 +99,6 @@ const courseReviewsMock: useCaseModels.TListCourseReviewsSuccessResponse['data']
 export const listCourseReviews = t.procedure
     .input(useCaseModels.ListCourseReviewsRequestSchema)
     .query(async (opts): Promise<useCaseModels.TListCourseReviewsUseCaseResponse> => {
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
-
         return {
             success: true,
             data: courseReviewsMock,

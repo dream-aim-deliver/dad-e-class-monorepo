@@ -59,7 +59,6 @@ export const listOffersPagePackages = t.procedure
     .input(useCaseModels.ListOffersPagePackagesRequestSchema)
     .query(
         async (): Promise<useCaseModels.TListOffersPagePackagesUseCaseResponse> => {
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
             return {
                 success: true,
                 data: packagesMock,

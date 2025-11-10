@@ -96,8 +96,6 @@ const RegisterCoachToGroupRequestSchema = z.object({
 export const listCourseGroups = t.procedure
     .input(ListCourseGroupsRequestSchema)
     .query(async (opts): Promise<any> => {
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
-        
         const { courseSlug } = opts.input;
         const courseData = listCourseGroupsMock[courseSlug];
 
@@ -143,8 +141,6 @@ export const listCourseGroups = t.procedure
 export const registerCoachToGroup = t.procedure
     .input(RegisterCoachToGroupRequestSchema)
     .mutation(async (opts): Promise<any> => {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-        
         const { couponCode } = opts.input;
         
         // Mock validation - accept any code for demo

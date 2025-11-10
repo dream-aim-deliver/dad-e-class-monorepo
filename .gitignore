@@ -66,3 +66,4 @@ storybook-static
 
 # AI
 .claude
+.playwright-mcp

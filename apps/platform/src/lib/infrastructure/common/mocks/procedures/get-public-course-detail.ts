@@ -85,7 +85,6 @@ export const getPublicCourseDetails = t.procedure
     .input(useCaseModels.GetPublicCourseDetailsRequestSchema)
     .query(async (opts): Promise<useCaseModels.TGetPublicCourseDetailsUseCaseResponse> => {
         const { courseSlug } = opts.input;
-        await new Promise((resolve) => setTimeout(resolve, 800));
         return {
             success: true,
             data: publicCourseDetailsMock,

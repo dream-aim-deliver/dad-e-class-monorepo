@@ -378,7 +378,6 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
 export const listCourses = t.procedure
     .input(useCaseModels.ListCoursesRequestSchema)
     .query(async (opts): Promise<useCaseModels.TListCoursesUseCaseResponse> => {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
 
         // Create array with 5 copies of coursesMock with unique IDs
         // const multipliedCourses = Array(5)
