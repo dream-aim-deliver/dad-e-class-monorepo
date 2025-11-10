@@ -14,10 +14,12 @@ import superjson from 'superjson';
 
 interface ClientProvidersProps {
     children: ReactNode;
+    defaultTheme?: 'just-do-ad' | 'job-brand-me' | 'bewerbeagentur' | 'cms';
 }
 
 export default function MockTRPCClientProviders({
     children,
+    defaultTheme = 'just-do-ad',
 }: ClientProvidersProps) {
     const queryClient = getQueryClient();
     const [trpcClient] = useState(() =>
@@ -32,7 +34,7 @@ export default function MockTRPCClientProviders({
     );
 
     return (
-        <ThemeProvider>
+        <ThemeProvider defaultTheme={defaultTheme}>
             <trpc.Provider client={trpcClient} queryClient={queryClient}>
                 <QueryClientProvider client={queryClient}>
                     {children}

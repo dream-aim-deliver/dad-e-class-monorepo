@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, useState, createContext, useContext } from 'react';
+import React, { ReactNode, useState, createContext, useContext, useMemo } from 'react';
 
 type ThemeContextProps = {
   theme: string;
@@ -16,8 +16,11 @@ type ThemeProviderProps = {
 const ThemeProvider = ({ children, defaultTheme = "just-do-ad" }: ThemeProviderProps) => {
   const [theme, setTheme] = useState<string>(defaultTheme);
 
+  // Memoize context value to prevent unnecessary re-renders of consumers
+  const value = useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={value}>
       <div className={`theme theme-${theme}`}>{children}</div>
     </ThemeContext.Provider>
 

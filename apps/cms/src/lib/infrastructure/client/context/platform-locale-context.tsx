@@ -1,7 +1,7 @@
 'use client';
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 /**
  * Context for managing platform-specific locale information.
@@ -39,8 +39,11 @@ interface PlatformLocaleProviderProps {
  * ```
  */
 export function PlatformLocaleProvider({ platformSlug, platformLocale, children }: PlatformLocaleProviderProps) {
+    // Memoize context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({ platformSlug, platformLocale }), [platformSlug, platformLocale]);
+
     return (
-        <PlatformLocaleContext.Provider value={{ platformSlug, platformLocale }}>
+        <PlatformLocaleContext.Provider value={value}>
             {children}
         </PlatformLocaleContext.Provider>
     );

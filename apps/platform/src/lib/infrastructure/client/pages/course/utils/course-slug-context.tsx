@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useMemo } from 'react';
 
 interface CourseSlugContextType {
     courseSlug: string;
@@ -17,8 +17,11 @@ export function CourseSlugProvider({
     courseSlug: string;
     children: ReactNode;
 }) {
+    // Memoize context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({ courseSlug }), [courseSlug]);
+
     return (
-        <CourseSlugContext.Provider value={{ courseSlug }}>
+        <CourseSlugContext.Provider value={value}>
             {children}
         </CourseSlugContext.Provider>
     );

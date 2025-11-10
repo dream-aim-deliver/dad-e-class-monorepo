@@ -1,7 +1,7 @@
 'use client';
 
 import { TGetPlatformSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 /**
  * Context for managing platform data fetched from the server.
@@ -47,8 +47,11 @@ interface PlatformProviderProps {
  * ```
  */
 export function PlatformProvider({ platform, children }: PlatformProviderProps) {
+    // Memoize context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({ platform }), [platform]);
+
     return (
-        <PlatformContext.Provider value={{ platform }}>
+        <PlatformContext.Provider value={value}>
             {children}
         </PlatformContext.Provider>
     );

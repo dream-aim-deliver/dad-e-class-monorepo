@@ -1,5 +1,5 @@
 'use client';
-import { useState, createContext, forwardRef, ReactNode } from "react";
+import { useState, createContext, forwardRef, ReactNode, useMemo, useCallback } from "react";
 import { cn } from "../../utils/style-utils";
 
 /**
@@ -57,8 +57,9 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
 
         /**
          * Toggle function to handle accordion item expansion and collapse.
+         * Memoized to prevent unnecessary re-renders.
          */
-        const toggle = (itemValue: string) => {
+        const toggle = useCallback((itemValue: string) => {
             if (type === "single") {
                 setValue(value.includes(itemValue) ? [] : [itemValue]);
             } else {
@@ -68,12 +69,13 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
                         : [...value, itemValue]
                 );
             }
-        };
+        }, [type, value]);
+
+        // Memoize context value to prevent unnecessary re-renders
+        const contextValue = useMemo(() => ({ value, toggle, variance }), [value, toggle, variance]);
 
         return (
-            <AccordionContext.Provider
-                value={{ value, toggle, variance }}
-            >
+            <AccordionContext.Provider value={contextValue}>
                 <div ref={ref} className={cn("w-full space-y-1", className)}>
                     {children}
                 </div>

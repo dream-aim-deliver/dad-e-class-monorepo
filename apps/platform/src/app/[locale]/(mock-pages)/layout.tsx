@@ -12,6 +12,11 @@ import {
 import Layout from '../../../lib/infrastructure/client/pages/layout';
 import MockTRPCClientProviders from '../../../lib/infrastructure/client/trpc/mock-client-providers';
 import getSession from '../../../lib/infrastructure/server/config/auth/get-session';
+import { PlatformProviderWithSuspense } from '../../../lib/infrastructure/client/context/platform-context-with-suspense';
+import { getMockPlatformData } from '../../../lib/infrastructure/server/utils/get-mock-platform-data';
+import { getRuntimeConfig } from '../../../lib/infrastructure/server/utils/get-runtime-config';
+import { Suspense } from 'react';
+import DefaultLoadingWrapper from '../../../lib/infrastructure/client/wrappers/default-loading';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -100,6 +105,12 @@ export default async function RootLayout({
     const messages = await getMessages({ locale });
     const session = await getSession();
 
+    // Get mock platform data for development/testing
+    const mockPlatformData = getMockPlatformData();
+
+    // Get runtime config for theme consistency
+    const runtimeConfig = getRuntimeConfig();
+
     return (
         <html lang={locale}>
             <body
@@ -107,10 +118,14 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <MockTRPCClientProviders>
-                            <Layout availableLocales={availableLocales}>
-                                {children}
-                            </Layout>
+                        <MockTRPCClientProviders defaultTheme={runtimeConfig.defaultTheme}>
+                            <Suspense fallback={<DefaultLoadingWrapper />}>
+                                <PlatformProviderWithSuspense platform={mockPlatformData}>
+                                    <Layout availableLocales={availableLocales}>
+                                        {children}
+                                    </Layout>
+                                </PlatformProviderWithSuspense>
+                            </Suspense>
                         </MockTRPCClientProviders>
                     </NextIntlClientProvider>
                 </SessionProvider>

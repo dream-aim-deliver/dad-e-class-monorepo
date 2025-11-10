@@ -107,11 +107,24 @@ export default async function RootLayout({
 
     // Fetch platform data with dynamic parameters (locale, session)
     // Cache is keyed by these parameters for proper cache segmentation
-    const platformData = await getPlatformCached(
-        locale,
-        session?.user?.sessionId || 'public',
-        session?.user?.idToken
-    );
+    let platformData;
+    try {
+        platformData = await getPlatformCached(
+            locale,
+            session?.user?.sessionId || 'public',
+            session?.user?.idToken
+        );
+
+        if (!platformData) {
+            throw new Error('Platform data is null or undefined');
+        }
+    } catch (error) {
+        console.error('[Layout] Failed to fetch platform data:', error);
+        // Throw a user-friendly error that Next.js can catch and display
+        throw new Error(
+            'Failed to load platform configuration. Please check if the CMS backend is running and try again.'
+        );
+    }
 
     timings.parallelFetch = performance.now() - parallelStart;
 
@@ -127,7 +140,7 @@ export default async function RootLayout({
         console.log('🚀 Layout Performance:', {
             timings: {
                 localeValidation: `${timings.localeValidation.toFixed(2)}ms`,
-                parallelFetch: `${timings.parallelFetch.toFixed(2)}ms (messages + session + platform)`,
+                parallelFetch: `${timings.parallelFetch.toFixed(2)}ms (messages + session + platform with validation)`,
                 runtimeConfig: `${timings.runtimeConfig.toFixed(2)}ms`,
                 total: `${totalTime.toFixed(2)}ms`,
             },
@@ -135,7 +148,7 @@ export default async function RootLayout({
                 parallelFetch: `${((timings.parallelFetch / totalTime) * 100).toFixed(1)}%`,
             },
             cache: {
-                platform: 'Cached for 15 minutes server-side',
+                platform: 'Cached for 15 minutes server-side (with error handling)',
             }
         });
     }

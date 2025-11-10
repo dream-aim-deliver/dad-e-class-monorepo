@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
 
 interface TabContextType {
   activeTab: string;
@@ -25,7 +25,8 @@ interface TabProviderProps {
 export function TabProvider({ children, onValueChange, defaultTab }: TabProviderProps) {
   const [activeTab, setActiveTab] = useState(defaultTab);
 
-  const handleSetActiveTab = (id: string) => {
+  // Memoize handler to prevent unnecessary re-renders
+  const handleSetActiveTab = useCallback((id: string) => {
     if (onValueChange) {
       try {
         onValueChange(id);
@@ -35,10 +36,13 @@ export function TabProvider({ children, onValueChange, defaultTab }: TabProvider
       }
     }
     setActiveTab(id);
-  }
+  }, [onValueChange]);
+
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({ activeTab, setActiveTab: handleSetActiveTab }), [activeTab, handleSetActiveTab]);
 
   return (
-    <TabContext.Provider value={{ activeTab, setActiveTab: handleSetActiveTab }}>
+    <TabContext.Provider value={value}>
       {children}
     </TabContext.Provider>
   );

@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
 
 interface StepperContextType {
     currentStep: number; // Current active step in the stepper
@@ -81,15 +81,17 @@ export function StepperProvider({
 }: StepperProviderProps) {
     const [currentStep, setCurrentStepState] = useState(defaultStep);
 
-    const setCurrentStep = (step: number) => {
+    // Memoize handler to prevent unnecessary re-renders
+    const setCurrentStep = useCallback((step: number) => {
         setCurrentStepState(step);
         if (onStepChange) onStepChange(step);
-    };
+    }, [onStepChange]);
+
+    // Memoize context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({ currentStep, setCurrentStep, totalSteps }), [currentStep, setCurrentStep, totalSteps]);
 
     return (
-        <StepperContext.Provider
-            value={{ currentStep, setCurrentStep, totalSteps }}
-        >
+        <StepperContext.Provider value={value}>
             {children}
         </StepperContext.Provider>
     );

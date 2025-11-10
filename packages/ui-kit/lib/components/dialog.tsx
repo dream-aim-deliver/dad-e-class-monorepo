@@ -6,6 +6,8 @@ import React, {
     useState,
     useEffect,
     useRef,
+    useMemo,
+    useCallback,
 } from 'react';
 import { IconClose } from './icons';
 import { IconButton } from './icon-button';
@@ -70,15 +72,19 @@ export const Dialog: React.FC<DialogProps> = ({
     const isControlled = open !== undefined;
     const isOpen = isControlled ? open : internalOpen;
 
-    const setIsOpen = (newOpen: boolean) => {
+    // Memoize setIsOpen to prevent unnecessary re-renders
+    const setIsOpen = useCallback((newOpen: boolean) => {
         if (!isControlled) {
             setInternalOpen(newOpen);
         }
         onOpenChange?.(newOpen);
-    };
+    }, [isControlled, onOpenChange]);
+
+    // Memoize context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({ isOpen, setIsOpen }), [isOpen, setIsOpen]);
 
     return (
-        <DialogContext.Provider value={{ isOpen, setIsOpen }}>
+        <DialogContext.Provider value={value}>
             {children}
         </DialogContext.Provider>
     );
