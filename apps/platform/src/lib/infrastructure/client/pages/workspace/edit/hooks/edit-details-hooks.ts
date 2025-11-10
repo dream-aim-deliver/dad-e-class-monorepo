@@ -43,7 +43,15 @@ export function useSaveDetails({
 
     const courseImageUpload = useCourseImageUpload();
 
-    const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
+    const utils = trpc.useUtils();
+
+    const saveDetailsMutation = trpc.saveCourseDetails.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
+            utils.listUserCourses.invalidate();
+        },
+    });
 
     const editDetailsTranslations = useTranslations('components.editDetailsHooks');
 

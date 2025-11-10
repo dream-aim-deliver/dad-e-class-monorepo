@@ -35,7 +35,16 @@ export function useSaveOutline({
 
     const [accordionUploadProgress, setAccordionUploadProgress] = useState<number | undefined>(undefined);
     const accordionIconUpload = useAccordionIconUpload(slug, setAccordionUploadProgress);
-    const saveOutlineMutation = trpc.saveCourseIntroductionOutline.useMutation();
+
+    const utils = trpc.useUtils();
+
+    const saveOutlineMutation = trpc.saveCourseIntroductionOutline.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.getCourseOutline.invalidate({ courseSlug: slug });
+            utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
+        },
+    });
 
     const editOutlineTranslations = useTranslations('components.editOutlineHooks');
 

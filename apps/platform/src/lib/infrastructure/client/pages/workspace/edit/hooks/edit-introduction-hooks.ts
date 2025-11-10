@@ -37,7 +37,15 @@ export function useSaveIntroduction({
     const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     const introductionVideoUpload = useIntroductionVideoUpload(slug, setUploadProgress);
 
-    const saveIntroductionMutation = trpc.saveCourseIntroduction.useMutation();
+    const utils = trpc.useUtils();
+
+    const saveIntroductionMutation = trpc.saveCourseIntroduction.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.getCourseIntroduction.invalidate({ courseSlug: slug });
+            utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
+        },
+    });
 
     const editIntroductionTranslations = useTranslations('components.editIntroductionHooks');
 
