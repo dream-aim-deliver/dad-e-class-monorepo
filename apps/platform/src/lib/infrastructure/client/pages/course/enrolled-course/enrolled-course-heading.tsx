@@ -214,7 +214,8 @@ export default function EnrolledCourseHeading({
                                 percentage={progressPercent ?? 0}
                                 locale={locale}
                                 onClickResume={() => {
-                                    window.location.href = `/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`;
+                                    // ✅ Use Next.js router for instant SPA navigation
+                                    router.push(`/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`);
                                 }}
                             />
                         )
