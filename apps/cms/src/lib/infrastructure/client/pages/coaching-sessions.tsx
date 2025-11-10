@@ -42,13 +42,13 @@ export default function CoachingSessions({
   const currentLocale = useLocale() as TLocale;
   const t = useTranslations('pages.coachingSessions');
   const router = useRouter();
-  
+
 
   const { platform } = useRequiredPlatform();
-  
+
   // TRPC query for coaching sessions data with stale time configuration
   const [coachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({}, {
-    staleTime: 30 * 1000, 
+    staleTime: 30 * 1000,
   });
 
   const [coachingSessionsViewModel, setCoachingSessionsViewModel] = useState<
@@ -62,13 +62,13 @@ export default function CoachingSessions({
   // Present the data safely
   React.useEffect(() => {
 
-      // @ts-ignore
-      presenter.present(coachingSessionsResponse, coachingSessionsViewModel);
+    // @ts-ignore
+    presenter.present(coachingSessionsResponse, coachingSessionsViewModel);
 
   }, [coachingSessionsResponse]);
 
   const gridRef = useRef<any>(null);
-  
+
   // Loading state
   if (!coachingSessionsViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
@@ -157,7 +157,7 @@ export default function CoachingSessions({
             if (!coach) return '-';
             return coach.name && coach.surname
               ? `${coach.name} ${coach.surname}`
-              : coach.username;
+              : coach.name || coach.username;
           }
 
           // Format student name
@@ -166,7 +166,7 @@ export default function CoachingSessions({
             if (!student) return '-';
             return student.name && student.surname
               ? `${student.name} ${student.surname}`
-              : student.username;
+              : student.name || student.username;
           }
 
           // Format rating
@@ -182,9 +182,9 @@ export default function CoachingSessions({
           }
 
           // Format coupon
-          if (colId === 'coupon') {
-            const coupon = data.coupon;
-            return coupon ? coupon.code : '-';
+          if (colId === 'couponName') {
+            const couponName = data.couponName;
+            return couponName ? couponName : '-';
           }
 
           return params.value;
@@ -195,9 +195,9 @@ export default function CoachingSessions({
 
 
   return (
-    <div className="flex flex-col space-y-5 bg-card-fill p-6 rounded-md">
-      {/* Page header with Outline and export control */}
-      <div className="flex items-start justify-between w-full gap-4">
+    <div className="flex flex-col h-[calc(100vh-200px)] space-y-5 bg-card-fill p-6 rounded-md">
+      {/* Page header with Outline and export control - won't shrink */}
+      <div className="flex-shrink-0 flex items-start justify-between w-full gap-4">
         <Outline title={t('title')} description={t('description')} className="flex-1" />
         <div className="flex items-center space-x-2">
           <Button
@@ -212,8 +212,8 @@ export default function CoachingSessions({
         </div>
       </div>
 
-      {/* Coaching sessions grid */}
-      <div>
+      {/* Coaching sessions grid - grows to fill available space */}
+      <div className="flex-1 min-h-0">
         <CoachingSessionGrid
           gridRef={gridRef}
           locale={currentLocale}

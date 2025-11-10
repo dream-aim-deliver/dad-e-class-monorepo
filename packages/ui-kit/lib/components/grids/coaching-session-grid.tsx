@@ -65,7 +65,7 @@ const CoachCellRenderer = (props: any) => {
 
     const displayName = coach.name && coach.surname
         ? `${coach.name} ${coach.surname}`
-        : coach.username;
+        : coach.name || coach.username;
 
     return (
         <Button
@@ -113,12 +113,12 @@ const CourseCellRenderer = (props: any) => {
 };
 
 const CouponCellRenderer = (props: any) => {
-    const coupon = props.value;
-    if (!coupon) return <span className="text-neutral-500">-</span>;
+    const couponName = props.value;
+    if (!couponName) return <span className="text-neutral-500">-</span>;
 
     return (
-        <span className="truncate" title={`${coupon.code} (${coupon.discount}% off)`}>
-            {coupon.code}
+        <span className="truncate" title={couponName}>
+            {couponName}
         </span>
     );
 };
@@ -213,7 +213,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             filter: 'agTextColumnFilter'
         },
         {
-            field: 'coupon',
+            field: 'couponName',
             headerName: 'Coupon',
             cellRenderer: CouponCellRenderer,
             width: 120,
@@ -239,9 +239,9 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
                 session.student?.surname?.toLowerCase().includes(searchLower) ||
                 session.student?.username?.toLowerCase().includes(searchLower);
             const courseTitleMatch = session.course?.title?.toLowerCase().includes(searchLower);
-            const couponCodeMatch = session.coupon?.code?.toLowerCase().includes(searchLower);
+            const couponNameMatch = session.couponName?.toLowerCase().includes(searchLower);
 
-            if (!(titleMatch || coachNameMatch || studentNameMatch || courseTitleMatch || couponCodeMatch)) {
+            if (!(titleMatch || coachNameMatch || studentNameMatch || courseTitleMatch || couponNameMatch)) {
                 return false;
             }
         }
