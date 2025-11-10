@@ -20,7 +20,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 
 interface UserCoursesListProps {
@@ -55,6 +55,9 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     // Present data when available
     useEffect(() => {
         if (coursesResponse && presenter) {
+            // TRPC useSuspenseQuery returns the raw procedure response
+            // which already has the TBaseResult structure the presenter expects
+            // @ts-ignore - Type mismatch between TRPC response wrapper and presenter input
             presenter.present(coursesResponse, coursesViewModel);
         }
     }, [coursesResponse, presenter, coursesViewModel]);

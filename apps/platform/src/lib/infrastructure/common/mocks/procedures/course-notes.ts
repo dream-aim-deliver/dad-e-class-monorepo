@@ -540,8 +540,6 @@ const listStudentNotesMock: useCaseModels.TListStudentNotesSuccessResponse['data
 export const listStudentNotes = t.procedure
     .input(useCaseModels.ListStudentNotesRequestSchema)
     .query(async (opts): Promise<useCaseModels.TListStudentNotesUseCaseResponse> => {
-        await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate network delay
-
         return {
             success: true,
             data: listStudentNotesMock,

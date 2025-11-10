@@ -46,7 +46,6 @@ export const getCourseIntroduction = t.procedure
     .input(useCaseModels.GetCourseIntroductionRequestSchema)
     .query(
         async (): Promise<useCaseModels.TGetCourseIntroductionUseCaseResponse> => {
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
             return {
                 success: true,
                 data: getCourseIntroductionMock,

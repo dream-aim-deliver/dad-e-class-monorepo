@@ -10,7 +10,6 @@ export const submitAssessmentProgress = t.procedure
         async (
             opts,
         ): Promise<useCaseModels.TSubmitAssessmentProgressUseCaseResponse> => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
             return {
                 success: true,
                 data: submitAssessmentProgressMock,

@@ -416,7 +416,6 @@ export const saveCourseStructure = t.procedure
             ctx,
         ): Promise<useCaseModels.TSaveCourseStructureUseCaseResponse> => {
             console.dir(ctx.input, { depth: null });
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
             return {
                 success: true,
                 data: saveCourseStructureMock,

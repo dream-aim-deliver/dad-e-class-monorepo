@@ -590,7 +590,6 @@ export const saveLessonComponents = t.procedure
             ctx,
         ): Promise<useCaseModels.TSaveLessonComponentsUseCaseResponse> => {
             console.log(ctx.input);
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
             return {
                 success: true,
                 data: {

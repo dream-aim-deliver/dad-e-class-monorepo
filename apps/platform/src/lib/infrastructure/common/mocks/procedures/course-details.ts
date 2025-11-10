@@ -10,7 +10,6 @@ export const saveCourseDetails = t.procedure
         async (
             ctx,
         ): Promise<useCaseModels.TSaveCourseDetailsUseCaseResponse> => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
             return {
                 success: true,
                 data: saveCourseDetailsMock,

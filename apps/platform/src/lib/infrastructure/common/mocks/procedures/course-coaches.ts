@@ -193,8 +193,6 @@ export const listCourseCoaches = t.procedure
     .query(async (opts): Promise<useCaseModels.TListCoachesUseCaseResponse> => {
         const {courseSlug } = opts.input;
 
-        await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate network delay
-
         // Get course-specific coaches or fall back to default
         const courseCoaches = courseCoachesMockData[courseSlug || ''] || courseCoachesMockData['default'];
 
@@ -209,8 +207,6 @@ export const addCourseCoach = t.procedure
     .input(useCaseModels.AddCourseCoachRequestSchema)
     .mutation(async (opts): Promise<useCaseModels.TAddCourseCoachUseCaseResponse> => {
         const { coachId, courseSlug } = opts.input;
-
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
 
         // Now coachId is the username directly
         let coachToAdd: useCaseModels.TListCoachesSuccessResponse['data']['coaches'][0] | undefined;
@@ -251,8 +247,6 @@ export const removeCourseCoach = t.procedure
     .input(useCaseModels.RemoveCourseCoachRequestSchema)
     .mutation(async (opts): Promise<useCaseModels.TRemoveCourseCoachUseCaseResponse> => {
         const { coachId, courseSlug } = opts.input;
-
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
 
         // Now coachId is the username directly
         let removedCoach: useCaseModels.TListCoachesSuccessResponse['data']['coaches'][0] | undefined;

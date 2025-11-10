@@ -38,7 +38,6 @@ export const uploadCourseImage = t.procedure
                     },
                 };
             }
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
             return {
                 success: true,
                 data: uploadCourseImageMock,
