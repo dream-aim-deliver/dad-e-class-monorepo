@@ -59,7 +59,14 @@ export const useRealProgressUpload = (
     const editLessonTranslations = useTranslations(
         'components.useCourseImageUpload',
     );
-    const uploadMutation = trpc.uploadLessonProgressFile.useMutation();
+    const utils = trpc.useUtils();
+
+    const uploadMutation = trpc.uploadLessonProgressFile.useMutation({
+        onSuccess: () => {
+            // Invalidate lesson components to show updated progress files
+            utils.listLessonComponents.invalidate({ lessonId: config.lessonId, withProgress: true });
+        },
+    });
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>();

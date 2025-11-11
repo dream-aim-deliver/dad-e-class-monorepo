@@ -16,7 +16,15 @@ export function useAddAvailability({ onSuccess }: UseAddAvailabilityProps = {}) 
         endTime: undefined,
     });
     const [error, setError] = useState<string | undefined>(undefined);
-    const addAvailabilityMutation = trpc.addAvailability.useMutation();
+
+    const utils = trpc.useUtils();
+
+    const addAvailabilityMutation = trpc.addAvailability.useMutation({
+        onSuccess: () => {
+            // Invalidate coach availability to show updated availability
+            utils.getCoachAvailability.invalidate();
+        },
+    });
 
     const setStartTime = (date: Date) => {
         setNewAvailability((prev) => ({ ...prev, startTime: date }));

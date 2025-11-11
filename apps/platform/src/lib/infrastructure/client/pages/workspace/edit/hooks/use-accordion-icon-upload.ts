@@ -29,7 +29,14 @@ export const useAccordionIconUpload = (
     const uploadAbortError = useAccordionIconUploadTranslations('uploadAbortError');
     const uploadFailedError = useAccordionIconUploadTranslations('uploadFailedError');
 
-    const uploadMutation = trpc.uploadAccordionIcon.useMutation();
+    const utils = trpc.useUtils();
+
+    const uploadMutation = trpc.uploadAccordionIcon.useMutation({
+        onSuccess: () => {
+            // Invalidate course outline to show updated icon
+            utils.getCourseOutline.invalidate({ courseSlug: slug });
+        },
+    });
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>(

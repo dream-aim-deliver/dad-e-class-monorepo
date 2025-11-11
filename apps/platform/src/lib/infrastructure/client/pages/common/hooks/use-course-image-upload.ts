@@ -25,6 +25,7 @@ export interface CourseImageUploadState {
 export const useCourseImageUpload = (
     initialImage: fileMetadata.TFileMetadataImage | null = null,
     onProgressUpdate?: (progress: number) => void,
+    courseSlug?: string,
 ): CourseImageUploadState => {
     const useCourseImageUploadTranslations = useTranslations('components.useCourseImageUpload');
     const uploadCredentialsError = useCourseImageUploadTranslations('uploadCredentialsError');
@@ -32,7 +33,15 @@ export const useCourseImageUpload = (
     const uploadAbortError = useCourseImageUploadTranslations('uploadAbortError');
     const uploadFailedError = useCourseImageUploadTranslations('uploadFailedError');
 
-    const uploadMutation = trpc.uploadCourseImage.useMutation();
+    const utils = trpc.useUtils();
+
+    const uploadMutation = trpc.uploadCourseImage.useMutation({
+        onSuccess: () => {
+            // Invalidate user courses to show updated course image
+            // Note: Course-specific queries are invalidated by saveCourseDetails mutation
+            utils.listUserCourses.invalidate();
+        },
+    });
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [courseImage, setCourseImage] =

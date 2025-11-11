@@ -79,6 +79,8 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     type ModalState = 'completion' | 'review-form' | 'review-thank-you' | 'none';
     const [modalState, setModalState] = useState<ModalState>('none');
 
+    const utils = trpc.useUtils();
+
     // TRPC mutation for creating review with proper callbacks
     const createReviewMutation = trpc.createCourseReview.useMutation({
         onMutate: () => {
@@ -90,6 +92,9 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
             courseReviewPresenter.present(data, courseReviewViewModel);
             // Switch to thank you state
             setModalState('review-thank-you');
+            // Invalidate course details to refresh review stats
+            utils.getCourseStatus.invalidate({ courseSlug: slug });
+            utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
         },
         onError: (error) => {
             setErrorMessage(error.message);

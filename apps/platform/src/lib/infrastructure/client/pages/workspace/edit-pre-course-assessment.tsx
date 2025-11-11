@@ -99,8 +99,15 @@ function usePreCourseAssessmentToggle({
     refetchPlatformLanguage,
     setError,
 }: UsePreCourseAssessmentToggleProps) {
+    const utils = trpc.useUtils();
+
     const togglePreCourseAssessmentMutation =
-        trpc.togglePreCourseAssessment.useMutation();
+        trpc.togglePreCourseAssessment.useMutation({
+            onSuccess: () => {
+                // Invalidate platform language to show updated assessment status
+                utils.getPlatformLanguage.invalidate();
+            },
+        });
 
     const onTogglePreCourseAssessment = async (enable: boolean) => {
         if (!platformLanguageViewModel) return;
@@ -111,9 +118,7 @@ function usePreCourseAssessmentToggle({
             enablePreCourseAssessment: enable,
         });
 
-        if (response.success) {
-            await refetchPlatformLanguage();
-        } else {
+        if (!response.success) {
             setError('An error occurred while toggling the form.');
         }
     };
@@ -457,8 +462,15 @@ function PreCourseAssessmentContent({
         Map<string, string | undefined>
     >(new Map());
 
+    const utils = trpc.useUtils();
+
     const saveComponentsMutation =
-        trpc.savePreCourseAssessmentComponents.useMutation();
+        trpc.savePreCourseAssessmentComponents.useMutation({
+            onSuccess: () => {
+                // Invalidate platform language to show updated assessment
+                utils.getPlatformLanguage.invalidate();
+            },
+        });
     const [saveError, setSaveError] = useState<string | undefined>(undefined);
 
     const validateComponents = () => {

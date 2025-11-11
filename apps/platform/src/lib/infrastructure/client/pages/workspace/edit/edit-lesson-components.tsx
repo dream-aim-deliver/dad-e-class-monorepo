@@ -59,7 +59,14 @@ const useFileUpload = ({
         'components.useCourseImageUpload',
     );
 
-    const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
+    const utils = trpc.useUtils();
+
+    const uploadMutation = trpc.uploadLessonComponentFile.useMutation({
+        onSuccess: () => {
+            // Invalidate lesson components to show updated file
+            utils.listLessonComponents.invalidate({ lessonId });
+        },
+    });
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>(
