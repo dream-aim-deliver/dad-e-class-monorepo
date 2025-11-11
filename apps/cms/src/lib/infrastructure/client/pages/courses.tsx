@@ -17,6 +17,7 @@ import { useListCmsCoursesPresenter } from '../hooks/use-list-cms-courses-presen
 import useClientSidePagination from '../utils/use-client-side-pagination';
 import { TListCmsCoursesSuccess } from 'packages/models/src/view-models';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useRequiredPlatform } from '../context/platform-context';
 interface CoursesProps {
   locale: TLocale;
   platformSlug: string;
@@ -29,6 +30,8 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();
   const searchParams = useSearchParams();
+  const{ platform} = useRequiredPlatform();
+
 
   // Get status from URL or default to 'all'
   const statusFromUrl = searchParams.get('status') as 'all' | 'draft' | 'archived' | 'live' | null;
@@ -260,6 +263,7 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
                           course={courseMetadata}
                           sessions={course.coachingSessionCount}
                           sales={course.salesCount}
+                          onEdit={()=>router.push(`${platform.domainName}/edit/course/${course.id}`)}
                         />
                       );
                     })}
