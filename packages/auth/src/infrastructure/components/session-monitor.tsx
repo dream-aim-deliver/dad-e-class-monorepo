@@ -77,7 +77,7 @@ export function SessionMonitor({
     setHasTriggeredLogout(true);
     log('Session expired, initiating logout');
 
-    let hasUnsaved = false;
+    const hasUnsaved = false;
 
     // Check for unsaved changes if enabled
     if (checkUnsavedChanges && typeof window !== 'undefined') {
