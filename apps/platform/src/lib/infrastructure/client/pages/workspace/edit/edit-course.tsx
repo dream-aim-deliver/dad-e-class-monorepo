@@ -254,6 +254,7 @@ function EditCourseContent({
                 priceIncludingCoachings={priceIncludingCoachings}
                 setPriceIncludingCoachings={setPriceIncludingCoachings}
                 roles={roles}
+                courseStatus={courseStatus}
             />
         </EditCourseLayout>
     );
@@ -354,6 +355,7 @@ function EditCourseLayout({
     isEdited,
     isSaving,
     isPreviewing,
+    activeTab,
     errorMessage,
     successMessage,
     locale,
@@ -404,12 +406,17 @@ function EditCourseLayout({
                 courseStatus={courseStatus}
                 onPreview={onPreview}
                 onSave={onSave}
-                disablePreview={isEdited || isSaving}
+                disablePreview={
+                    isEdited ||
+                    isSaving ||
+                    (activeTab === TabTypes.CourseContent && courseStatus && courseStatus !== 'draft')
+                }
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}
                 locale={locale}
                 roles={roles}
                 slug={slug}
+                isReadOnlyContent={activeTab === TabTypes.CourseContent && (courseStatus === 'live' || courseStatus === 'archived')}
             />
             <Tabs.Root defaultTab={TabTypes.General} onValueChange={onTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
@@ -502,6 +509,7 @@ interface EditCourseTabContentProps {
     priceIncludingCoachings: number | null;
     setPriceIncludingCoachings: (value: number | null) => void;
     roles: string[];
+    courseStatus?: 'draft' | 'live' | 'archived';
 }
 
 function EditCourseTabContent({
@@ -533,6 +541,7 @@ function EditCourseTabContent({
     priceIncludingCoachings,
     setPriceIncludingCoachings,
     roles,
+    courseStatus,
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
@@ -623,7 +632,9 @@ function EditCourseTabContent({
                 className={tabContentClass}
             >
                 {isPreviewing && <EnrolledCoursePreview courseSlug={slug} />}
-                {!isPreviewing && (
+                {!isPreviewing && courseStatus === 'live' && <EnrolledCoursePreview courseSlug={slug} />}
+                {!isPreviewing && courseStatus === 'archived' && <EnrolledCoursePreview courseSlug={slug} />}
+                {!isPreviewing && (courseStatus === 'draft' || !courseStatus) && (
                     <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
                         <EditCourseStructure
                             slug={slug}

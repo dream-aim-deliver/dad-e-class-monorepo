@@ -1269,6 +1269,7 @@ export const DE: TDictionary = {
       editCourseText: 'Kurs bearbeiten',
       savingText: 'Sparen...',
       saveDraftText: 'Entwurf speichern',
+      saveText: 'Speichern',
       previewText: 'Vorschau',
       hidePreviewText: 'Vorschau ausblenden',
       saveToPreviewText: 'Zur Vorschau speichern',
@@ -1280,6 +1281,10 @@ export const DE: TDictionary = {
       publishRequirements: 'Veröffentlichungsanforderungen:\n\n1. Erforderliche Kurs-Metadatenfelder:\n   - Selbststudiendauer\n   - Basispreis\n   - Preis inklusive Coachings\n   - Einführung\n\n2. Einführungsvideo:\n   - Der Kurs muss ein Einführungsvideo haben\n\n3. Lektionskomponenten:\n   - Der Kurs muss mindestens ein Modul haben\n   - Das Modul muss mindestens eine Lektion haben\n   - Mindestens eine Lektion muss Lektionskomponenten haben\n\nAll dies muss vorhanden sein, sonst schlägt die Veröffentlichung fehl.',
       publishSuccess: 'Kurs erfolgreich veröffentlicht!',
       publishError: 'Fehler beim Veröffentlichen des Kurses',
+      archiveCourse: 'Kurs archivieren',
+      archiveConfirmation: 'Sind Sie sicher, dass Sie diesen Kurs archivieren möchten? Studenten können sich nicht mehr anmelden.',
+      archiveSuccess: 'Kurs erfolgreich archiviert!',
+      archiveError: 'Fehler beim Archivieren des Kurses',
     },
     lessonComponentBar: {
       simpleText: 'Einfach',

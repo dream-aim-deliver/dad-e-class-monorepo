@@ -1266,6 +1266,7 @@ export const EN: TDictionary = {
       editCourseText: 'Edit Course',
       savingText: 'Saving...',
       saveDraftText: 'Save draft',
+      saveText: 'Save',
       previewText: 'Preview',
       hidePreviewText: 'Hide preview',
       saveToPreviewText: 'Save to preview',
@@ -1277,6 +1278,10 @@ export const EN: TDictionary = {
       publishRequirements: 'Publishing requirements:\n\n1. Required Course Metadata Fields:\n   - Self-study duration\n   - Base price\n   - Price including coachings\n   - Introduction\n\n2. Introductory Video:\n   - Course must have an introductory video\n\n3. Lesson Components:\n   - Course must have at least one module\n   - Module must have at least one lesson\n   - At least one lesson must have lesson components\n\nAll of these must be in place or publishing will fail.',
       publishSuccess: 'Course published successfully!',
       publishError: 'Failed to publish course',
+      archiveCourse: 'Archive course',
+      archiveConfirmation: 'Are you sure you want to archive this course? Students will no longer be able to enroll.',
+      archiveSuccess: 'Course archived successfully!',
+      archiveError: 'Failed to archive course',
     },
     lessonComponentBar: {
       simpleText: 'Simple',
