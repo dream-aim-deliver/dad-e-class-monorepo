@@ -27,6 +27,7 @@ import {
 	Banner,
 	Breadcrumbs,
 	DefaultNotFound,
+	IconSave,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -177,6 +178,9 @@ export default function ManageFooter() {
 
 	// Success state - extract data from view model
 	const footerData = platformViewModel.data;
+	
+	// Check if content has been modified
+	const hasChanges = currentContent !== (footerData.footerContent || '');
 
 	// Breadcrumbs following the standard pattern
 	const breadcrumbItems = [
@@ -199,27 +203,30 @@ export default function ManageFooter() {
 	];
 
 	return (
-		<div className="flex flex-col space-y-2 gap-4">
+		<div className="flex flex-col gap-4">
 			<Breadcrumbs items={breadcrumbItems} />
 
-			<div className="flex flex-col space-y-2">
-				<h1>{t('title')}</h1>
-				<p className="text-text-secondary text-sm">
-					Platform: {platform.name}
-				</p>
-			</div>
-			<div className="sticky top-18 z-50 flex justify-end"> 
-				<Button
-					onClick={handleSave}
-					disabled={savePlatformFooterMutation.isPending}
-					variant="primary"
-					size="medium"
-					text={savePlatformFooterMutation.isPending ? t('saving') : t('saveButton')}
-					className='shadow-lg'
-				/>
+			<div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg shadow-lg">
+				<div className="flex justify-between items-center">
+					<div className="flex flex-col space-y-2">
+						<h1>{t('title')}</h1>
+						<p className="text-text-secondary text-sm">
+							Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
+						</p>
+					</div>
+					<Button
+						variant="primary"
+						size="medium"
+						hasIconLeft
+						iconLeft={<IconSave />}
+						text={savePlatformFooterMutation.isPending ? t('saving') : t('saveButton')}
+						onClick={handleSave}
+						disabled={savePlatformFooterMutation.isPending || !hasChanges}
+					/>
+				</div>
 			</div>
 
-			{/* Success Banner - Course builder style */}
+			{/* Success Banner */}
 			{successMessage && (
 				<Banner
 					title="Success!"
