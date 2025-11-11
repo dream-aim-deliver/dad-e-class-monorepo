@@ -2,13 +2,13 @@
 
 import { trpc } from '../trpc/cms-client';
 import { useState, useRef, useEffect } from 'react';
-import { 
-  DefaultLoading, 
+import {
+  DefaultLoading,
   DefaultError,
-  CouponGrid, 
-  Breadcrumbs, 
-  RevokeCouponModal, 
-  CreateCouponModal 
+  CouponGrid,
+  Breadcrumbs,
+  RevokeCouponModal,
+  CreateCouponModal
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -51,7 +51,7 @@ function RevokeCouponModalContent({
     if (revokeCouponMutation.isSuccess && revokeCouponMutation.data) {
       // @ts-ignore
       presenter.present(revokeCouponMutation.data, revokeCouponViewModel);
-      utils.listCoupons.invalidate();
+      void utils.listCoupons.invalidate();
     }
   }, [revokeCouponMutation.isSuccess, revokeCouponMutation.data, presenter, revokeCouponViewModel, utils]);
 
@@ -64,11 +64,11 @@ function RevokeCouponModalContent({
   };
 
   const isSuccess = revokeCouponViewModel?.mode === 'default';
-  const errorMessage = revokeCouponViewModel?.mode === 'kaboom' 
-    ? revokeCouponViewModel.data.message 
-    : revokeCouponViewModel?.mode === 'not-found'
+  const errorMessage = revokeCouponViewModel?.mode === 'kaboom'
     ? revokeCouponViewModel.data.message
-    : null;
+    : revokeCouponViewModel?.mode === 'not-found'
+      ? revokeCouponViewModel.data.message
+      : null;
 
   return (
     <RevokeCouponModal
@@ -115,7 +115,7 @@ function CreateCouponModalContent({
     if (createCouponMutation.isSuccess && createCouponMutation.data) {
       // @ts-ignore
       presenter.present(createCouponMutation.data, createCouponViewModel);
-      utils.listCoupons.invalidate();
+      void utils.listCoupons.invalidate();
     }
   }, [createCouponMutation.isSuccess, createCouponMutation.data, presenter, createCouponViewModel, utils]);
 
@@ -131,7 +131,7 @@ function CreateCouponModalContent({
   };
 
   const handleCreateCoupon = (data: unknown) => {
-    const couponData = data as { name?: string; [key: string]: unknown };
+    const couponData = data as { name?: string;[key: string]: unknown };
     const newName: string | undefined = couponData?.name?.trim();
     setClientValidationError(null);
     if (newName) {
@@ -150,14 +150,14 @@ function CreateCouponModalContent({
   };
 
   const isSuccess = createCouponViewModel?.mode === 'default';
-  const createdCouponName = createCouponViewModel?.mode === 'default' 
-    ? createCouponViewModel.data.coupon.name 
+  const createdCouponName = createCouponViewModel?.mode === 'default'
+    ? createCouponViewModel.data.coupon.name
     : '';
-  const errorMessage = clientValidationError 
+  const errorMessage = clientValidationError
     ? clientValidationError
     : createCouponViewModel?.mode === 'kaboom'
-    ? createCouponViewModel.data.message
-    : null;
+      ? createCouponViewModel.data.message
+      : null;
 
   return (
     <CreateCouponModal
@@ -187,7 +187,7 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   const router = useRouter();
 
   // Grid ref for AG Grid instance
-  const gridRef = useRef<any>(null);
+  const gridRef = useRef(null);
 
   // Revoke Modal state
   const [revokingCouponId, setRevokingCouponId] = useState<string | null>(null);
@@ -195,6 +195,9 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
 
   // Create Modal state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+
+  // Error state
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   // ViewModel state
   const [listCouponsViewModel, setListCouponsViewModel] = useState<
@@ -207,8 +210,13 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   // TRPC query for page data
   const [couponsResponse] = trpc.listCoupons.useSuspenseQuery({});
 
-  // @ts-ignore
-  presenter.present(couponsResponse, listCouponsViewModel);
+  // Present the data whenever it changes
+  useEffect(() => {
+    if (couponsResponse) {
+      // @ts-ignore
+      presenter.present(couponsResponse, listCouponsViewModel);
+    }
+  }, [couponsResponse, presenter, listCouponsViewModel]);
 
   // Loading state
   if (!listCouponsViewModel) {
@@ -279,17 +287,19 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   ];
 
   return (
-    <div className="flex flex-col space-y-2 gap-4 h-screen">
-      <Breadcrumbs items={breadcrumbItems} />
-
-      <div className="flex flex-col space-y-2">
-        <p className="text-text-secondary text-sm">
-          Platform: {platformContext.platformSlug} | Content Language: {platformLocale.toUpperCase()}
-        </p>
+    <div className="flex flex-col h-[calc(100vh-200px)] space-y-5">
+      {/* Header - won't shrink */}
+      <div className="flex-shrink-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <div className="flex flex-col space-y-2">
+          <p className="text-text-secondary text-sm">
+            Platform: {platformContext.platformSlug} | Content Language: {platformLocale.toUpperCase()}
+          </p>
+        </div>
       </div>
 
-      {/* Coupons Grid */}
-      <div className="flex flex-col grow bg-card-fill p-5 border border-card-stroke rounded-medium">
+      {/* Coupons Grid - grows to fill space */}
+      <div className="flex-1 min-h-0">
         <CouponGrid
           gridRef={gridRef}
           coupons={listCouponsViewModel.data.coupons}
@@ -298,6 +308,9 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
           onCreateCoupon={handleOpenCreateModal}
         />
       </div>
+
+      {/* Error display */}
+      {errorMessage && <DefaultError locale={locale} title={errorMessage} />}
 
       {/* Revoke Coupon Modal */}
       {revokingCouponId && (

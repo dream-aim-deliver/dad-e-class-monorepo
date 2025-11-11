@@ -39,6 +39,12 @@ interface SelectedCourse {
   withCoaching: boolean;
 }
 
+interface SingleCourse {
+  id: number;
+  title: string;
+  withCoaching: boolean;
+}
+
 interface SelectedPackage {
   id: number;
   title: string;
@@ -124,7 +130,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   const [selectedType, setSelectedType] = useState<CouponType | null>(null);
 
   // Type-specific form states
-  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<SingleCourse | null>(null);
   const [selectedPackages, setSelectedPackages] = useState<SelectedPackage[]>([]);
   const [coachingDuration, setCoachingDuration] = useState<number | null>(null);
   const [isCoachingPartOfCourse, setIsCoachingPartOfCourse] = useState(false);
@@ -179,8 +185,8 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
 
     switch (selectedType) {
       case 'freeCourses':
-        if (selectedCourses.length === 0) {
-          errors.push(dictionary.validationErrors.coursesRequired);
+        if (!selectedCourse) {
+          errors.push(dictionary.validationErrors.courseRequired);
         }
         break;
       case 'freeBundles':
@@ -228,12 +234,15 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
 
     switch (selectedType) {
       case 'freeCourses':
+        if (!selectedCourse) {
+          throw new Error('Course is required for free course coupon');
+        }
         couponContent = {
           type: 'freeCourses',
-          courseIds: selectedCourses.map(course => ({
-            id: course.id,
-            withCoaching: course.withCoaching
-          }))
+          courseIds: [{
+            id: selectedCourse.id,
+            withCoaching: selectedCourse.withCoaching
+          }]
         };
         break;
       case 'freeBundles':
@@ -291,20 +300,27 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
     // TODO: Show toast notification
   };
 
-  const handleCourseSelection = (courseIds: string[]) => {
+  const handleCourseSelection = (courseId: string | string[]) => {
     if (!coursesQuery?.data?.data?.courses) return;
-    
-    const courses = coursesQuery.data.data.courses.filter((course: any) => 
-      courseIds.includes(course.id.toString())
+
+    // Handle single selection
+    const selectedId = typeof courseId === 'string' ? courseId : null;
+    if (!selectedId) {
+      setSelectedCourse(null);
+      return;
+    }
+
+    const course = coursesQuery.data.data.courses.find((c: any) =>
+      c.id.toString() === selectedId
     );
-    
-    const newSelectedCourses = courses.map((course: any) => ({
-      id: course.id,
-      title: course.title,
-      withCoaching: false
-    }));
-    
-    setSelectedCourses(newSelectedCourses);
+
+    if (course) {
+      setSelectedCourse({
+        id: course.id,
+        title: course.title,
+        withCoaching: false
+      });
+    }
   };
 
   const handlePackageSelection = (packageIds: string[]) => {
@@ -323,14 +339,13 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
     setSelectedPackages(newSelectedPackages);
   };
 
-  const toggleCourseCoaching = (courseId: number) => {
-    setSelectedCourses(prev => 
-      prev.map(course => 
-        course.id === courseId 
-          ? { ...course, withCoaching: !course.withCoaching }
-          : course
-      )
-    );
+  const toggleCourseCoaching = () => {
+    if (selectedCourse) {
+      setSelectedCourse({
+        ...selectedCourse,
+        withCoaching: !selectedCourse.withCoaching
+      });
+    }
   };
 
   const togglePackageCoaching = (packageId: number) => {
@@ -405,7 +420,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
             <RadioButton
               name="couponType"
               value="freeCourses"
-              label={dictionary.freeCourses}
+              label={dictionary.freeCourse}
               checked={selectedType === 'freeCourses'}
               onChange={() => setSelectedType('freeCourses')}
               withText
@@ -452,10 +467,10 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
         {/* Dynamic Fields Based on Selected Type */}
         {selectedType && (
           <div className="flex flex-col gap-4">
-            {/* Free Courses */}
+            {/* Free Course */}
             {selectedType === 'freeCourses' && (
               <div className="flex flex-col gap-3">
-                <h4 className="font-medium">{dictionary.selectCourses}</h4>
+                <h4 className="font-medium">{dictionary.selectCourse}</h4>
                 {coursesQuery?.isLoading ? (
                   <div className="p-4 bg-gray-50 rounded-md">
                     <p className="text-sm text-gray-600">Loading courses...</p>
@@ -463,32 +478,29 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                 ) : coursesQuery?.data?.data?.courses ? (
                   <>
                     <Dropdown
-                      type="multiple-choice-and-search"
+                      type="simple"
                       options={coursesQuery.data.data.courses.map((course: any) => ({
                         label: course.title,
                         value: course.id.toString()
                       }))}
-                      onSelectionChange={(selected) => handleCourseSelection(selected as string[])}
-                      text={{ multiText: dictionary.selectCourses }}
-                      defaultValue={selectedCourses.map(c => c.id.toString())}
+                      onSelectionChange={(selected) => handleCourseSelection(selected as string)}
+                      text={{ simpleText: dictionary.selectCourse }}
+                      defaultValue={selectedCourse?.id.toString()}
                       className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
                     />
-                    
-                    {/* Selected Courses with Coaching Checkboxes */}
-                    {selectedCourses.length > 0 && (
+
+                    {/* Selected Course with Coaching Checkbox */}
+                    {selectedCourse && (
                       <div className="flex flex-col gap-2">
                         <h5 className="font-medium text-sm">{dictionary.withCoaching}</h5>
-                        {selectedCourses.map(course => (
-                          <CheckBox
-                            key={course.id}
-                            name={`course-${course.id}`}
-                            value={`course-${course.id}`}
-                            label={course.title}
-                            checked={course.withCoaching}
-                            onChange={() => toggleCourseCoaching(course.id)}
-                            withText
-                          />
-                        ))}
+                        <CheckBox
+                          name={`course-${selectedCourse.id}`}
+                          value={`course-${selectedCourse.id}`}
+                          label={selectedCourse.title}
+                          checked={selectedCourse.withCoaching}
+                          onChange={toggleCourseCoaching}
+                          withText
+                        />
                       </div>
                     )}
                   </>
@@ -551,44 +563,67 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
             {/* Free Coaching Sessions */}
             {selectedType === 'freeCoachingSession' && (
               <div className="flex flex-col gap-3">
-                <h4 className="font-medium">{dictionary.duration}</h4>
-                <div className="flex gap-4">
-                  {[10, 20, 30, 60].map((minutes) => (
-                    <RadioButton
-                      key={minutes}
-                      name="coachingDuration"
-                      value={minutes.toString()}
-                      label={`${minutes} ${dictionary.minutes}`}
-                      checked={coachingDuration === minutes}
-                      onChange={() => setCoachingDuration(minutes)}
-                      withText
-                    />
-                  ))}
-                </div>
-                
-                <CheckBox
-                  name="isPartOfCourse"
-                  value="isPartOfCourse"
-                  label={dictionary.isPartOfCourse}
-                  checked={isCoachingPartOfCourse}
-                  onChange={() => setIsCoachingPartOfCourse(!isCoachingPartOfCourse)}
-                  withText
-                />
-                
-                {isCoachingPartOfCourse && coursesQuery?.data?.data?.courses && (
-                  <div className="flex flex-col gap-2">
-                    <h4 className="font-medium">{dictionary.selectCourse}</h4>
+                {coachingQuery?.isLoading ? (
+                  <div className="p-4 bg-gray-50 rounded-md">
+                    <p className="text-sm text-gray-600">Loading coaching offerings...</p>
+                  </div>
+                ) : coachingQuery?.data?.data?.coachingOfferings ? (
+                  <>
+                    <h4 className="font-medium">{dictionary.selectCoachingOffering}</h4>
                     <Dropdown
                       type="simple"
-                      options={coursesQuery.data.data.courses.map((course: any) => ({
-                        label: course.title,
-                        value: course.id.toString()
+                      options={coachingQuery.data.data.coachingOfferings.map((offering: any) => ({
+                        label: `${offering.title} (${offering.duration} ${dictionary.minutes})`,
+                        value: offering.id.toString()
                       }))}
-                      onSelectionChange={(selected) => setSelectedCourseForCoaching(selected && typeof selected === 'string' ? parseInt(selected) : null)}
-                      text={{ simpleText: dictionary.selectCourse }}
-                      defaultValue={selectedCourseForCoaching?.toString()}
+                      onSelectionChange={(selected) => {
+                        if (selected && typeof selected === 'string') {
+                          const offeringId = parseInt(selected);
+                          setSelectedCoachingOffering(offeringId);
+                          // Set duration from the selected offering
+                          const offering = coachingQuery.data.data.coachingOfferings.find((o: any) => o.id === offeringId);
+                          if (offering) {
+                            setCoachingDuration(offering.duration);
+                          }
+                        } else {
+                          setSelectedCoachingOffering(null);
+                          setCoachingDuration(null);
+                        }
+                      }}
+                      text={{ simpleText: dictionary.selectCoachingOffering }}
+                      defaultValue={selectedCoachingOffering?.toString()}
                       className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
                     />
+
+                    <CheckBox
+                      name="isPartOfCourse"
+                      value="isPartOfCourse"
+                      label={dictionary.isPartOfCourse}
+                      checked={isCoachingPartOfCourse}
+                      onChange={() => setIsCoachingPartOfCourse(!isCoachingPartOfCourse)}
+                      withText
+                    />
+
+                    {isCoachingPartOfCourse && coursesQuery?.data?.data?.courses && (
+                      <div className="flex flex-col gap-2">
+                        <h4 className="font-medium">{dictionary.selectCourse}</h4>
+                        <Dropdown
+                          type="simple"
+                          options={coursesQuery.data.data.courses.map((course: any) => ({
+                            label: course.title,
+                            value: course.id.toString()
+                          }))}
+                          onSelectionChange={(selected) => setSelectedCourseForCoaching(selected && typeof selected === 'string' ? parseInt(selected) : null)}
+                          text={{ simpleText: dictionary.selectCourse }}
+                          defaultValue={selectedCourseForCoaching?.toString()}
+                          className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
+                        />
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="p-4 bg-red-50 rounded-md">
+                    <p className="text-sm text-red-600">Failed to load coaching offerings</p>
                   </div>
                 )}
               </div>
