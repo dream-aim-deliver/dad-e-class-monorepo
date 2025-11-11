@@ -1256,6 +1256,7 @@ export const DictionarySchema = z.object({
       editCourseText: z.string(),
       savingText: z.string(),
       saveDraftText: z.string(),
+      saveText: z.string(),
       previewText: z.string(),
       hidePreviewText: z.string(),
       saveToPreviewText: z.string(),
@@ -1267,6 +1268,10 @@ export const DictionarySchema = z.object({
       publishRequirements: z.string(),
       publishSuccess: z.string(),
       publishError: z.string(),
+      archiveCourse: z.string(),
+      archiveConfirmation: z.string(),
+      archiveSuccess: z.string(),
+      archiveError: z.string(),
     }),
     lessonComponentBar: z.object({
       simpleText: z.string(),

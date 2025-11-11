@@ -21,6 +21,7 @@ interface EditHeaderProps {
     locale: TLocale;
     roles: string[];
     slug: string;
+    isReadOnlyContent?: boolean;
 }
 
 export default function EditHeader({
@@ -35,12 +36,15 @@ export default function EditHeader({
     locale,
     roles,
     slug,
+    isReadOnlyContent = false,
 }: EditHeaderProps) {
     const dictionary = getDictionary(locale);
     const isSuperAdmin = roles.includes('superadmin');
     const canPublish = isSuperAdmin && courseStatus === 'draft';
+    const canArchive = isSuperAdmin && courseStatus === 'live';
 
     const publishMutation = trpc.publishCourse.useMutation();
+    const archiveMutation = trpc.archiveCourse.useMutation();
     const utils = trpc.useUtils();
 
     const handlePublish = async () => {
@@ -67,11 +71,35 @@ export default function EditHeader({
         }
     };
 
+    const handleArchive = async () => {
+        const confirmed = window.confirm(
+            dictionary.components.editHeader.archiveConfirmation
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const result = await archiveMutation.mutateAsync({ courseSlug: slug });
+            if (result.success) {
+                // Invalidate queries to refetch updated data
+                utils.listUserCourses.invalidate();
+                alert(dictionary.components.editHeader.archiveSuccess);
+                window.location.reload();
+            } else {
+                alert(dictionary.components.editHeader.archiveError + ': ' + (result as any).data?.message);
+            }
+        } catch (error: any) {
+            alert(dictionary.components.editHeader.archiveError + ': ' + error.message);
+        }
+    };
+
     const previewButtonText = isPreviewing
         ? dictionary.components.editHeader.hidePreviewText
-        : disablePreview
-            ? dictionary.components.editHeader.saveToPreviewText
-            : dictionary.components.editHeader.previewText;
+        : isReadOnlyContent
+            ? dictionary.components.editHeader.previewText
+            : disablePreview
+                ? dictionary.components.editHeader.saveToPreviewText
+                : dictionary.components.editHeader.previewText;
 
     const getStatusBadgeVariant = (status?: string) => {
         switch (status) {
@@ -128,7 +156,7 @@ export default function EditHeader({
                     text={
                         isSaving
                             ? dictionary.components.editHeader.savingText
-                            : dictionary.components.editHeader.saveDraftText
+                            : dictionary.components.editHeader.saveText
                     }
                     onClick={onSave}
                     disabled={isSaving || isPreviewing}
@@ -139,6 +167,14 @@ export default function EditHeader({
                         text={dictionary.components.editHeader.publishCourse}
                         onClick={handlePublish}
                         disabled={isSaving || isPreviewing || publishMutation.isPending}
+                    />
+                )}
+                {canArchive && (
+                    <Button
+                        variant="primary"
+                        text={dictionary.components.editHeader.archiveCourse}
+                        onClick={handleArchive}
+                        disabled={isSaving || isPreviewing || archiveMutation.isPending}
                     />
                 )}
             </div>

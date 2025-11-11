@@ -34,9 +34,19 @@ export default function EditCourseAdminDetails(props: EditCourseAdminDetailsProp
         const course = courseViewModel.data;
 
         // Initialize form with existing admin data if available
-        // Note: These fields need to be added to the course view model
-        // For now, just set courseVersion and mark form as loaded
         props.setCourseVersion(course.courseVersion);
+
+        // Initialize admin fields from course data
+        if ('public' in course && typeof course.public === 'boolean') {
+            props.setIsPublic(course.public);
+        }
+        if ('basePrice' in course && (course.basePrice === null || typeof course.basePrice === 'number')) {
+            props.setBasePrice(course.basePrice);
+        }
+        if ('priceIncludingCoachings' in course && (course.priceIncludingCoachings === null || typeof course.priceIncludingCoachings === 'number')) {
+            props.setPriceIncludingCoachings(course.priceIncludingCoachings);
+        }
+
         setIsFormLoading(false);
         props.setIsEdited(false);
     }, [courseViewModel]);
