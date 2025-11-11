@@ -409,7 +409,7 @@ function EditCourseLayout({
                 disablePreview={
                     isEdited ||
                     isSaving ||
-                    (activeTab === TabTypes.CourseContent && courseStatus && courseStatus !== 'draft')
+                    !!(activeTab === TabTypes.CourseContent && courseStatus && courseStatus !== 'draft')
                 }
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}

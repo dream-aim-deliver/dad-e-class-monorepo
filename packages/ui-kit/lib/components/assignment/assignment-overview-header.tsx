@@ -20,7 +20,7 @@ export interface AssignmentOverviewHeaderBaseProps extends isLocalAware {
         id: number;
         slug: string;
     };
-    groupName?: string;
+    groupName?: string | null;
     onClickCourse: () => void;
     onClickGroup?: () => void;
 }
