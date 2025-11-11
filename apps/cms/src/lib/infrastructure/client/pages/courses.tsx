@@ -30,10 +30,10 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get tab from URL or default to 'all'
-  const tabFromUrl = searchParams.get('tab') as 'all' | 'draft' | 'archived' | 'live' | null;
+  // Get status from URL or default to 'all'
+  const statusFromUrl = searchParams.get('status') as 'all' | 'draft' | 'archived' | 'live' | null;
   const [activeTab, setActiveTab] = useState<'all' | 'draft' | 'archived' | 'live'>(
-    tabFromUrl && ['all', 'draft', 'archived', 'live'].includes(tabFromUrl) ? tabFromUrl : 'all'
+    statusFromUrl && ['all', 'draft', 'archived', 'live'].includes(statusFromUrl) ? statusFromUrl : 'all'
   );
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -43,16 +43,16 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
 
 
   useEffect(() => {
-    if (tabFromUrl && ['all', 'draft', 'archived', 'live'].includes(tabFromUrl)) {
-      setActiveTab(tabFromUrl);
+    if (statusFromUrl && ['all', 'draft', 'archived', 'live'].includes(statusFromUrl)) {
+      setActiveTab(statusFromUrl);
     }
-  }, [tabFromUrl]);
+  }, [statusFromUrl]);
 
 
   const handleTabChange = (newTab: 'all' | 'draft' | 'archived' | 'live') => {
     setActiveTab(newTab);
     const params = new URLSearchParams(searchParams.toString());
-    params.set('tab', newTab);
+    params.set('status', newTab);
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
