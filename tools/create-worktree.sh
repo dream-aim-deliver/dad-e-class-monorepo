@@ -120,6 +120,14 @@ else
     print_info ".claude folder not found, skipping"
 fi
 
+# Copy .dadai folder if present
+if [ -d "$REPO_ROOT/.dadai" ]; then
+    cp -r "$REPO_ROOT/.dadai" "$WORKTREE_PATH/.dadai"
+    print_success "Copied .dadai folder"
+else
+    print_info ".dadai folder not found, skipping"
+fi
+
 # Run pnpm install in the worktree
 print_info "Running pnpm install in the worktree..."
 cd "$WORKTREE_PATH"
