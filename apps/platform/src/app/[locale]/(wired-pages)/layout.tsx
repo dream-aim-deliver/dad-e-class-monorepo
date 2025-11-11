@@ -17,6 +17,8 @@ import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/contex
 import { Suspense } from 'react';
 import getSession from '../../../lib/infrastructure/server/config/auth/get-session';
 import { getRuntimeConfig } from '../../../lib/infrastructure/server/utils/get-runtime-config';
+import NextTopLoaderWrapper from '../../../lib/infrastructure/client/components/next-top-loader-wrapper';
+import DefaultLoadingWrapper from '../../../lib/infrastructure/client/wrappers/default-loading';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -138,12 +140,13 @@ export default async function RootLayout({
             <body
                 className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
+                <NextTopLoaderWrapper />
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <RuntimeConfigProvider config={runtimeConfig}>
                             <CMSTRPCClientProviders>
                                 <HydrateClient>
-                                    <Suspense fallback={<div>Loading platform...</div>}>
+                                    <Suspense fallback={<DefaultLoadingWrapper />}>
                                         <PlatformProviderWithSuspense>
                                             <Layout availableLocales={availableLocales}>
                                                 {children}

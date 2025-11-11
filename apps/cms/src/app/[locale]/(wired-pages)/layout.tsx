@@ -16,6 +16,7 @@ import Layout from '../../../lib/infrastructure/client/pages/layout';
 import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/context/runtime-config-context';
 import { connection } from 'next/server';
 import env from '../../../lib/infrastructure/server/config/env';
+import NextTopLoaderWrapper from '../../../lib/infrastructure/client/components/next-top-loader-wrapper';
 
 
 export const metadata = {
@@ -113,6 +114,7 @@ export default async function RootLayout({
             <body
                 className={`theme theme-${THEME} ${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
+                <NextTopLoaderWrapper />
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <RuntimeConfigProvider config={runtimeConfig}>
