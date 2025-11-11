@@ -8,6 +8,7 @@
 
 import { trpc } from '../trpc/cms-client';
 import { useLocale, useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 
 import {
 	DefaultError,
@@ -15,14 +16,19 @@ import {
 	DefaultNotFound,
 	Button,
 	Tabs,
-	Banner
+	Banner,
+	IconSave,
+	Breadcrumbs,
+	FeedBackMessage
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useEffect, useState, useMemo } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
+import { useSaveHomePagePresenter } from '../hooks/use-save-home-page-presenter';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useRequiredPlatform } from '../context/platform-context';
 import { HeroSection, CarouselSection, CoachingDemandSection, HowItWorksSection } from '@maany_shr/e-class-ui-kit';
 import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
 import { useHomePageVideoUpload } from './common/hooks/use-homepage-video-upload';
@@ -65,9 +71,12 @@ export default function ManageHomepage() {
 
 	// Translations for this page
 	const t = useTranslations('pages.manageHomePage');
+	const router = useRouter();
+	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
 	// Platform context
 	const platformContext = useRequiredPlatformLocale();
+	const { platform } = useRequiredPlatform();
 	const contentLocale = useContentLocale();
 
 	// Fetch homepage data (refetch retained for future integration)
@@ -94,10 +103,59 @@ export default function ManageHomepage() {
 	const [videoUploadProgress, setVideoUploadProgress] = useState<number | undefined>(undefined);
 
 
-	const [saveState, setSaveState] = useState<{
-		status: 'idle' | 'success' | 'error';
-		message: string | null;
-	}>({ status: 'idle', message: null });
+	// Save mutation
+	const saveHomePageMutation = trpc.saveHomePage.useMutation();
+	const [saveViewModel, setSaveViewModel] = useState<
+		viewModels.TSaveHomePageViewModel | undefined
+	>(undefined);
+
+	// Mutation presenter
+	const { presenter: savePresenter } = useSaveHomePagePresenter(setSaveViewModel);
+
+	// Error and success message state
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (saveHomePageMutation.isSuccess && saveHomePageMutation.data) {
+			// @ts-ignore
+			savePresenter.present(saveHomePageMutation.data, saveViewModel);
+		}
+	}, [saveHomePageMutation.isSuccess, saveHomePageMutation.data, savePresenter, saveViewModel]);
+
+	useEffect(() => {
+		if (
+			saveHomePageMutation.isSuccess &&
+			saveViewModel?.mode === 'default'
+		) {
+			// Success case
+			setErrorMessage(null);
+			setSuccessMessage('Home page content saved successfully!');
+			// Auto-dismiss success message after 5 seconds
+			const timer = setTimeout(() => setSuccessMessage(null), 5000);
+			return () => clearTimeout(timer);
+		}
+		// Handle kaboom and other error modes
+		if (
+			saveHomePageMutation.isSuccess &&
+			saveViewModel?.mode === 'kaboom'
+		) {
+			setErrorMessage(
+				'Failed to save home page content. Please try again.'
+			);
+			setSuccessMessage(null);
+		}
+	}, [saveViewModel, saveHomePageMutation.isSuccess]);
+
+	useEffect(() => {
+		if (saveHomePageMutation.isError) {
+			setErrorMessage(
+				saveHomePageMutation.error?.message ||
+				'Failed to save home page content. Please try again.'
+			);
+			setSuccessMessage(null);
+		}
+	}, [saveHomePageMutation.isError, saveHomePageMutation.error]);
 
 	const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
 	const videoUpload = useHomePageVideoUpload(setVideoUploadProgress);
@@ -234,22 +292,6 @@ export default function ManageHomepage() {
 		});
 	};
 
-	const saveHomePageMutation = trpc.saveHomePage.useMutation({
-		onSuccess: async (data) => {
-			if (data.success) {
-				setSaveState({ status: 'success', message: t('savedBanner') });
-				// Refetch to get fresh data - useFormState will auto-sync when new data arrives
-				await refetchHomePage();
-			} else {
-				setSaveState({ status: 'error', message: t('failedBanner') });
-			}
-		},
-		onError: (error) => {
-			setSaveState({ status: 'error', message: error.message ?? t('failedBanner') });
-			console.error('Error saving homepage:', error);
-		},
-
-	});
 
 	// All hooks must be called before any conditional returns
 	if (!homePageViewModel) {
@@ -276,79 +318,114 @@ export default function ManageHomepage() {
 
 	const editableHomePageData: viewModels.TGetHomePageSuccess = formState.value;
 
-	const handleSaveHomePage = () => {
-		setSaveState({ status: 'idle', message: null });
+	const handleSaveHomePage = async () => {
+		setErrorMessage(null);
+		setSuccessMessage(null);
 
-		saveHomePageMutation.mutate({
-			banner: {
-				title: editableHomePageData.banner.title,
-				description: editableHomePageData.banner.description,
-				videoId: editableHomePageData.banner.video?.id ? Number(editableHomePageData.banner.video.id) : null,
-				thumbnailImageId: editableHomePageData.banner.thumbnailImage?.id ? Number(editableHomePageData.banner.thumbnailImage.id) : null,
-			},
-			carousel: editableHomePageData.carousel.map(item => ({
-				title: item.title,
-				description: item.description,
-				buttonText: item.buttonText,
-				buttonUrl: item.buttonUrl,
-				badge: item.badge,
-				imageId: item.image?.id ? Number(item.image.id) : null,
-			})),
-			coachingOnDemand: {
-				title: editableHomePageData.coachingOnDemand.title,
-				description: editableHomePageData.coachingOnDemand.description,
-				desktopImageId: editableHomePageData.coachingOnDemand.desktopImage?.id ? Number(editableHomePageData.coachingOnDemand.desktopImage.id) : null,
-				tabletImageId: editableHomePageData.coachingOnDemand.tabletImage?.id ? Number(editableHomePageData.coachingOnDemand.tabletImage.id) : null,
-				mobileImageId: editableHomePageData.coachingOnDemand.mobileImage?.id ? Number(editableHomePageData.coachingOnDemand.mobileImage.id) : null,
-			},
-			accordion: {
-				title: editableHomePageData.accordion.title,
-				showNumbers: editableHomePageData.accordion.showNumbers,
-				items: editableHomePageData.accordion.items.map(item => ({
+		try {
+			await saveHomePageMutation.mutateAsync({
+				banner: {
+					title: editableHomePageData.banner.title,
+					description: editableHomePageData.banner.description,
+					videoId: editableHomePageData.banner.video?.id ? Number(editableHomePageData.banner.video.id) : null,
+					thumbnailImageId: editableHomePageData.banner.thumbnailImage?.id ? Number(editableHomePageData.banner.thumbnailImage.id) : null,
+				},
+				carousel: editableHomePageData.carousel.map(item => ({
 					title: item.title,
-					content: item.content,
-					position: item.position,
-					iconImageId: item.iconImage?.id ? Number(item.iconImage.id) : null,
+					description: item.description,
+					buttonText: item.buttonText,
+					buttonUrl: item.buttonUrl,
+					badge: item.badge,
+					imageId: item.image?.id ? Number(item.image.id) : null,
 				})),
-			},
-		});
+				coachingOnDemand: {
+					title: editableHomePageData.coachingOnDemand.title,
+					description: editableHomePageData.coachingOnDemand.description,
+					desktopImageId: editableHomePageData.coachingOnDemand.desktopImage?.id ? Number(editableHomePageData.coachingOnDemand.desktopImage.id) : null,
+					tabletImageId: editableHomePageData.coachingOnDemand.tabletImage?.id ? Number(editableHomePageData.coachingOnDemand.tabletImage.id) : null,
+					mobileImageId: editableHomePageData.coachingOnDemand.mobileImage?.id ? Number(editableHomePageData.coachingOnDemand.mobileImage.id) : null,
+				},
+				accordion: {
+					title: editableHomePageData.accordion.title,
+					showNumbers: editableHomePageData.accordion.showNumbers,
+					items: editableHomePageData.accordion.items.map(item => ({
+						title: item.title,
+						content: item.content,
+						position: item.position,
+						iconImageId: item.iconImage?.id ? Number(item.iconImage.id) : null,
+					})),
+				},
+			});
+			// Refetch to get fresh data - useFormState will auto-sync when new data arrives
+			await refetchHomePage();
+		} catch (error) {
+			// Error handled by useEffect
+		}
 	};
 
+	// Breadcrumbs following the standard pattern
+	const breadcrumbItems = [
+		{
+			label: breadcrumbsTranslations('platforms'),
+			onClick: () => router.push('/'),
+		},
+		{
+			label: platform.name,
+			onClick: () => {
+				// TODO: Implement navigation to platform
+			},
+		},
+		{
+			label: breadcrumbsTranslations('homePage'),
+			onClick: () => {
+				// Nothing should happen on clicking the current page
+			},
+		},
+	];
+
 	return (
-		<div className="flex flex-col space-y-6 p-6 max-w-7xl mx-auto">
-			{/* Page Header */}
-			<div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6 rounded-lg shadow-lg">
+		<div className="flex flex-col gap-4 w-full">
+			<Breadcrumbs items={breadcrumbItems} />
+
+			{/* Page header with gradient background */}
+			<div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg shadow-lg">
 				<div className="flex justify-between items-center">
-					<div>
-						<h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
-						<p className="text-lg opacity-90">
-							Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+					<div className="flex flex-col space-y-2">
+						<h1>{t('title')}</h1>
+						<p className="text-text-secondary text-sm">
+							Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
 						</p>
 					</div>
 					<Button
 						variant="primary"
 						size="medium"
+						hasIconLeft
+						iconLeft={<IconSave />}
 						text={t('save')}
 						onClick={handleSaveHomePage}
 						disabled={saveHomePageMutation.isPending || !formState.isDirty}
-
 					/>
 				</div>
 			</div>
 
-			{saveHomePageMutation.isPending && saveState.status === 'idle' && (
-				<Banner style="success" title={t('savingBanner')} />
-
+			{/* Success Banner */}
+			{successMessage && (
+				<Banner
+					title="Success!"
+					description={successMessage}
+					style="success"
+					closeable={true}
+					onClose={() => setSuccessMessage(null)}
+				/>
 			)}
-			{saveState.status === 'success' && saveState.message && (
-				<Banner style="success" title={saveState.message} />
-			)
-			}
-			{
-				saveState.status === 'error' && saveState.message && (
-					<Banner style="error" title={saveState.message} />
-				)
-			}
+
+			{/* Error Message */}
+			{errorMessage && (
+				<FeedBackMessage
+					type="error"
+					message={errorMessage}
+				/>
+			)}
 
 			{/* Tabs for Homepage Sections */}
 			<Tabs.Root defaultTab="hero" className="w-full">
