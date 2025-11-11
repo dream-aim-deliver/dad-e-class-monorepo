@@ -5,6 +5,10 @@ import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
+import { auth, viewModels } from '@maany_shr/e-class-models';
+import { NextAuthGateway } from '@maany_shr/e-class-auth';
+import nextAuth from '../../../lib/infrastructure/server/config/auth/next-auth.config';
+import { SessionMonitorWrapper } from '../../../lib/infrastructure/client/components/session-monitor-wrapper';
 import {
     languageCodeToLocale,
     localeToLanguageCode,
@@ -161,11 +165,13 @@ export default async function RootLayout({
                             <CMSTRPCClientProviders>
                                 <HydrateClient>
                                     <Suspense fallback={<DefaultLoadingWrapper />}>
-                                        <PlatformProviderWithSuspense platform={platformData}>
-                                            <Layout availableLocales={availableLocales}>
-                                                {children}
-                                            </Layout>
-                                        </PlatformProviderWithSuspense>
+                                        <SessionMonitorWrapper locale={locale}>
+                                            <PlatformProviderWithSuspense platform={platformData}>
+                                                <Layout availableLocales={availableLocales}>
+                                                    {children}
+                                                </Layout>
+                                            </PlatformProviderWithSuspense>
+                                        </SessionMonitorWrapper>
                                     </Suspense>
                                 </HydrateClient>
                             </CMSTRPCClientProviders>

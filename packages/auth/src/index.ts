@@ -9,6 +9,9 @@ export { type AuthGatewayOutputPort} from './core/ports/secondary/auth-gateway-o
 export { NextAuthGateway } from './infrastructure/gateway/next-auth-gateway';
 export { generateNextAuthConfig } from './infrastructure/config/next-auth.config';
 export { type isSessionAware, extractPlatformSpecificRoles, getTestAccount } from './infrastructure/utils';
+export { validateCallbackUrl, decodeAndValidateCallbackUrl, type ValidateCallbackUrlOptions } from './infrastructure/utils/callback-url-validator';
+export { SessionMonitor, type SessionMonitorProps } from './infrastructure/components/session-monitor';
+export { SessionMonitorWithModal, type SessionMonitorWithModalProps } from './infrastructure/components/session-monitor-with-modal';
 
 interface TPermission {
     course: TCourseResourcePermission

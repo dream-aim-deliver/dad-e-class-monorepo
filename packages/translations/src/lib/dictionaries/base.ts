@@ -545,6 +545,12 @@ export const DictionarySchema = z.object({
       yesDeleteText: z.string(),
       modalText: z.string(),
     }),
+    sessionExpirationModal: z.object({
+      title: z.string(),
+      message: z.string(),
+      unsavedChangesWarning: z.string(),
+      loginButtonText: z.string(),
+    }),
     coachingSessionTracker: z.object({
       minuteText: z.string(),
       usedText: z.string(),
