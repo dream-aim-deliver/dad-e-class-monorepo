@@ -2359,6 +2359,8 @@ export const EN: TDictionary = {
         sortBy: 'Sort by',
         selectSort: 'Select sort option',
         filterButton: 'Filters',
+        selectCoursePrompt: 'Please select a course to view assignments',
+        noAssignmentsFound: 'No assignments found',
         sortOptions: {
           title: 'Title (A-Z)',
           status: 'Status',
