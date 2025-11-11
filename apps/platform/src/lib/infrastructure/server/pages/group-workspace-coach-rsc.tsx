@@ -28,34 +28,34 @@ export default async function GroupWorkspaceCoachServerComponent(
   if(isCoach) {
     // TRPC prefetching for page data
     // Usecases: saveGroupNotes, getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
-      prefetch(trpc.getGroupNotes.queryOptions({
-        courseSlug: props.courseSlug,
-        additionalParams: {
-          requestType: 'requestForCoach',
-          groupId: props.groupId,
-        },
-      })),
-      prefetch(trpc.listGroupAssignments.queryOptions({
-        courseSlug: props.courseSlug,
-        additionalParams: {
-          requestType: 'requestForCoach',
-          groupId: props.groupId,
-        },
-      })),
-      prefetch(trpc.listGroupMembers.queryOptions({
-        courseSlug: props.courseSlug,
-        additionalParams: {
-          requestType: 'requestForCoach',
-          groupId: props.groupId,
-        },
-      })),
-      prefetch(trpc.getGroupNextCoachingSession.queryOptions({
-        courseSlug: props.courseSlug,
-        additionalParams: {
-          requestType: 'requestForCoach',
-          groupId: props.groupId,
-        },
-      }));
+    prefetch(trpc.getGroupNotes.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForCoach',
+        groupId: props.groupId,
+      },
+    }));
+    prefetch(trpc.listGroupAssignments.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForCoach',
+        groupId: props.groupId,
+      },
+    }));
+    prefetch(trpc.listGroupMembers.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForCoach',
+        groupId: props.groupId,
+      },
+    }));
+    prefetch(trpc.getGroupNextCoachingSession.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForCoach',
+        groupId: props.groupId,
+      },
+    }));
   
     return (
       <HydrateClient>
@@ -69,33 +69,34 @@ export default async function GroupWorkspaceCoachServerComponent(
       </HydrateClient>
     );
   } else {
-      // TRPC prefetching for page data
-      // Usecases: getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
-        prefetch(trpc.getGroupNotes.queryOptions({
-          courseSlug: props.courseSlug,
-          additionalParams: {
-            requestType: 'requestForStudent',
-          },
-        })),
-        prefetch(trpc.listGroupAssignments.queryOptions({
-          courseSlug: props.courseSlug,
-          additionalParams: {
-            requestType: 'requestForStudent',
-          },
-        })),
-        prefetch(trpc.listGroupMembers.queryOptions({
-          courseSlug: props.courseSlug,
-          additionalParams: {
-            requestType: 'requestForStudent',
-          },
-        })),
-        prefetch(trpc.getGroupNextCoachingSession.queryOptions({
-          courseSlug: props.courseSlug,
-          additionalParams: {
-            requestType: 'requestForStudent',
-          },
-        }))    
-      return (
+    // TRPC prefetching for page data
+    // Usecases: getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
+    prefetch(trpc.getGroupNotes.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForStudent',
+      },
+    }));
+    prefetch(trpc.listGroupAssignments.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForStudent',
+      },
+    }));
+    prefetch(trpc.listGroupMembers.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForStudent',
+      },
+    }));
+    prefetch(trpc.getGroupNextCoachingSession.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForStudent',
+      },
+    }));
+
+    return (
         <HydrateClient>
           <Suspense fallback={<DefaultLoadingWrapper />}>
             <GroupWorkspaceStudent
