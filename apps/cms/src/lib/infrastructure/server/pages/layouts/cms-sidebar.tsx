@@ -82,7 +82,6 @@ const CMSSidebar = ({
         legalTexts: `${platformLocaleBase}/manage-legal-texts`,
         coachingOffering: `${platformLocaleBase}/coaching-offering`,
         coachingSessions: `${platformLocaleBase}/coaching-sessions`,
-        coachSkills: `${platformLocaleBase}/coach-skills-form`,
         coupons: `${platformLocaleBase}/coupons`,
         sendNotification: `${platformLocaleBase}/send-notification`,
         settings: `${platformLocaleBase}/settings`,
@@ -103,7 +102,6 @@ const CMSSidebar = ({
         [routeMap.legalTexts]: t('legalTexts'),
         [routeMap.coachingOffering]: t('coachingOffering'),
         [routeMap.coachingSessions]: t('coachingSessions'),
-        [routeMap.coachSkills]: t('coachSkillsForm'),
         [routeMap.coupons]: t('coupons'),
         [routeMap.users]: t('users'),
         [routeMap.transactions]: t('transactions'),
@@ -162,11 +160,6 @@ const CMSSidebar = ({
                     icon: <IconCoachingSession />,
                     label: t('coachingSessions'),
                     onClick: () => router.push(routeMap.coachingSessions),
-                },
-                {
-                    icon: <IconCoachSkillForm />,
-                    label: t('coachSkillsForm'),
-                    onClick: () => router.push(routeMap.coachSkills),
                 },
             ],
             // Other management items
