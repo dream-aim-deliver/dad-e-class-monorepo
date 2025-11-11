@@ -1,33 +1,28 @@
 'use client';
 
 import React from 'react';
+import { FormElementType } from './types';
 import {
-    FormElementType,
     HeadingElement,
-    LessonElement,
     MultiCheckElement,
     OneOutOfThreeElement,
-    OneOutOfThreeData,
     RichTextElement,
     SingleChoiceElement,
     TextInputElement,
-    RichTextDesignerComponent,
-    HeadingDesignerComponent,
-    TextInputDesignerComponent,
-    SingleChoiceDesignerComponent,
-    MultiCheckDesignerComponent,
-    OneOutOfThreeDesignerComponent,
-    ComponentCard,
-    SubsectionHeading,
-    IconRichText,
-    IconHeading,
-    IconTextInput,
-    IconSingleChoice,
-    IconMultiChoice,
-    IconOneOutOfThree,
-} from '@maany_shr/e-class-ui-kit';
+} from '../lesson-components/types';
+import { LessonElement } from '../lesson/types';
+import { OneOutOfThreeData } from '../out-of-three/one-out-of-three';
+import { DesignerComponent as RichTextDesignerComponent } from '../lesson-components/rich-text';
+import { DesignerComponent as HeadingDesignerComponent } from '../lesson-components/heading-lesson';
+import { DesignerComponent as TextInputDesignerComponent } from '../lesson-components/text-input';
+import { DesignerComponent as SingleChoiceDesignerComponent } from '../lesson-components/single-choice';
+import { DesignerComponent as MultiCheckDesignerComponent } from '../lesson-components/multi-check';
+import { DesignerComponent as OneOutOfThreeDesignerComponent } from '../lesson-components/one-out-of-three';
+import { ComponentCard } from '../course-builder/component-card';
+import { SubsectionHeading } from '../text';
+import { IconRichText, IconHeading, IconTextInput, IconSingleChoice, IconMultiChoice, IconOneOutOfThree } from '../icons';
 import { optionsType } from '../single-choice';
-import { TLocale, isLocalAware } from '@maany_shr/e-class-translations';
+import { isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface PreCourseAssessmentBuilderProps extends isLocalAware {
     components: LessonElement[];

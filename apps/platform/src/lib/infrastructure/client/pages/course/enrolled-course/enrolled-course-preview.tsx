@@ -11,7 +11,8 @@ import {
     LessonHeader,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
 import { useListLessonComponentsPresenter } from '../../../hooks/use-list-lesson-components-presenter';
@@ -24,6 +25,7 @@ interface EnrolledCoursePreviewProps {
     courseSlug: string;
     enableSubmit?: boolean;
     studentUsername?: string;
+    initialLessonId?: string;
 }
 
 function CoursePreviewLesson(props: {
@@ -74,9 +76,11 @@ function CoursePreviewLesson(props: {
 }
 
 function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
-    const { courseSlug } = props;
+    const { courseSlug, initialLessonId, studentUsername } = props;
     const locale = useLocale() as TLocale;
     const t = useTranslations('components.lessonNotes');
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     // State for showing/hiding notes panel (only for students with enableSubmit)
     const [showNotes, setShowNotes] = useState(false);
@@ -99,6 +103,37 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const [activeLessonIndex, setActiveLessonIndex] = useState<
         number | undefined
     >(undefined);
+    const hasInitializedLesson = useRef(false);
+
+    // Initialize lesson from URL parameter
+    useEffect(() => {
+        if (
+            hasInitializedLesson.current ||
+            !initialLessonId ||
+            !courseStructureViewModel ||
+            courseStructureViewModel.mode !== 'default'
+        ) {
+            return;
+        }
+
+        const lessonId = parseInt(initialLessonId, 10);
+        if (isNaN(lessonId)) return;
+
+        const modules = courseStructureViewModel.data.modules;
+
+        // Find the module and lesson indices
+        for (let moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
+            const lessonIndex = modules[moduleIndex].lessons.findIndex(
+                (lesson) => lesson.id === lessonId,
+            );
+            if (lessonIndex !== -1) {
+                setActiveModuleIndex(moduleIndex);
+                setActiveLessonIndex(lessonIndex);
+                hasInitializedLesson.current = true;
+                return;
+            }
+        }
+    }, [courseStructureViewModel, initialLessonId]);
 
     if (!courseStructureViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -135,6 +170,19 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
 
         setActiveLessonIndex(lessonIndex);
         setActiveModuleIndex(moduleIndex);
+
+        // Update URL with lesson parameter
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('tab', 'study');
+        params.set('lesson', lessonId.toString());
+        
+        // Preserve role parameter
+        const currentRole = params.get('role');
+        if (currentRole) {
+            params.set('role', currentRole);
+        }
+        
+        router.push(`/${locale}/courses/${courseSlug}?${params.toString()}`);
     };
 
     const handlePreviousLesson = () => {
@@ -230,7 +278,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                                     <CoursePreviewLesson
                                         lessonId={currentLesson.id}
                                         enableSubmit={props.enableSubmit}
-                                        studentUsername={props.studentUsername}
+                                        studentUsername={studentUsername}
                                     />
                                 </Suspense>
                             </>
@@ -251,6 +299,7 @@ export default function EnrolledCoursePreview({
     courseSlug,
     enableSubmit,
     studentUsername,
+    initialLessonId,
 }: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     return (
@@ -261,6 +310,7 @@ export default function EnrolledCoursePreview({
                 courseSlug={courseSlug}
                 enableSubmit={enableSubmit}
                 studentUsername={studentUsername}
+                initialLessonId={initialLessonId}
             />
         </Suspense>
     );
