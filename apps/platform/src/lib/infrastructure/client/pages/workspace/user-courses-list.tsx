@@ -118,7 +118,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     return (
         <div className="flex flex-col space-y-2 mt-6 pb-15">
             <CardListLayout>
-                {limitedCourses.map((course) => {
+                {limitedCourses.map((course: viewModels.TUserCourseListSuccess['courses'][number]) => {
                     // Leaving some fields empty as neither response provides them, nor the view uses them
 
                     const language = {
@@ -170,7 +170,6 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 onClickUser={() =>
                                     onClickUser(course.author?.username || '')
                                 }
-                                onManage={() => onCourseVisit(course.slug || '')}
                                 onEdit={() => onCourseEdit(course.slug || '')}
                             />
                         );
