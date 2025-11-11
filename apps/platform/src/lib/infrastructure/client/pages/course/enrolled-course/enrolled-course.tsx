@@ -22,7 +22,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import EnrolledCourseHeading from './enrolled-course-heading';
 import EnrolledCourseIntroduction from './enrolled-course-introduction';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
 import EnrolledCoursePreview from './enrolled-course-preview';
@@ -43,6 +43,7 @@ interface EnrolledCourseProps {
     courseSlug: string;
     tab?: string;
     studentUsername?: string;
+    lesson?: string;
 }
 
 function CourseTabList({ role }: { role: string }) {
@@ -200,6 +201,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     }, [courseStatusViewModel, props.currentRole]);
     const locale = useLocale() as TLocale;
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         if (courseViewModel?.mode === 'unauthenticated') {
@@ -219,6 +221,27 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
         }
         return StudentCourseTab.INTRODUCTION;
     }, [props.tab, props.currentRole]);
+
+    // Update URL when tab changes
+    const handleTabChange = (newTab: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        const currentRole = params.get('role') || props.currentRole;
+        
+        // Update tab parameter
+        params.set('tab', newTab);
+        
+        // Remove lesson parameter when switching away from study tab
+        if (newTab !== StudentCourseTab.STUDY) {
+            params.delete('lesson');
+        }
+        
+        // Preserve role parameter
+        if (currentRole) {
+            params.set('role', currentRole);
+        }
+        
+        router.push(`/${locale}/courses/${props.courseSlug}?${params.toString()}`);
+    };
 
     if (!courseViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -252,7 +275,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 currentRole={props.currentRole}
                 courseSlug={props.courseSlug}
             />
-            <Tabs.Root defaultTab={defaultTab}>
+            <Tabs.Root defaultTab={defaultTab} onValueChange={handleTabChange}>
                 <CourseTabList role={props.currentRole} />
                 <Tabs.Content value="introduction" className={tabContentClass}>
                     <EnrolledCourseIntroduction
@@ -275,7 +298,12 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     />
                 </Tabs.Content>
                 <Tabs.Content value="study" className={tabContentClass}>
-                    <EnrolledCoursePreview courseSlug={props.courseSlug} enableSubmit studentUsername={props.studentUsername} />
+                    <EnrolledCoursePreview
+                        courseSlug={props.courseSlug}
+                        enableSubmit
+                        studentUsername={props.studentUsername}
+                        initialLessonId={props.lesson}
+                    />
                 </Tabs.Content>
                 <Tabs.Content value="assignments" className={tabContentClass}>
                     <Suspense

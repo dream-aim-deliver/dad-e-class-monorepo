@@ -15,6 +15,7 @@ export default async function Page({
     const { locale, slug } = params;
     let role = searchParams.role;
     let tab = searchParams.tab;
+    let lesson = searchParams.lesson;
 
     if (role && Array.isArray(role)) {
         role = undefined;
@@ -24,9 +25,22 @@ export default async function Page({
         tab = undefined;
     }
 
+    if (lesson && Array.isArray(lesson)) {
+        lesson = undefined;
+    }
+
     // Get session and extract student username
     const session = await getSession();
     const username = session?.user?.name || undefined;
 
-    return <CourseServerComponent slug={slug} locale={locale} role={role} tab={tab} username={username} />;
+    return (
+        <CourseServerComponent
+            slug={slug}
+            locale={locale}
+            role={role}
+            tab={tab}
+            lesson={lesson}
+            username={username}
+        />
+    );
 }

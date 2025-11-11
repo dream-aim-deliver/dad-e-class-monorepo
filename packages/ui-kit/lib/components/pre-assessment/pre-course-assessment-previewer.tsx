@@ -1,18 +1,16 @@
 'use client';
 
 import React, { useRef } from 'react';
-import {
-    FormElementType,
-    LessonElement,
-    RichTextFormComponent,
-    HeadingFormComponent,
-    TextInputFormComponent,
-    SingleChoiceFormComponent,
-    MultiCheckFormComponent,
-    OneOutOfThreeFormComponent,
-    Divider,
-} from '@maany_shr/e-class-ui-kit';
-import { TLocale, isLocalAware } from '@maany_shr/e-class-translations';
+import { FormElementType } from './types';
+import { LessonElement } from '../lesson/types';
+import { FormComponent as RichTextFormComponent } from '../lesson-components/rich-text';
+import { FormComponent as HeadingFormComponent } from '../lesson-components/heading-lesson';
+import { FormComponent as TextInputFormComponent } from '../lesson-components/text-input';
+import { FormComponent as SingleChoiceFormComponent } from '../lesson-components/single-choice';
+import { FormComponent as MultiCheckFormComponent } from '../lesson-components/multi-check';
+import { FormComponent as OneOutOfThreeFormComponent } from '../lesson-components/one-out-of-three';
+import { Divider } from '../divider';
+import { isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface PreCourseAssessmentPreviewerProps extends isLocalAware {
     components: LessonElement[];
