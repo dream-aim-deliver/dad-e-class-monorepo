@@ -19,10 +19,8 @@ export default async function ManageFooterServerComponent({
 		platform_locale: platformLocale
 	});
 
-	// Prefetch platform data for the footer editor
-	await Promise.all([
-		prefetch(trpc.getPlatform.queryOptions({})),
-	]);
+	// Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+	prefetch(trpc.getPlatform.queryOptions({}));
 
 	return (
 		<HydrateClient>

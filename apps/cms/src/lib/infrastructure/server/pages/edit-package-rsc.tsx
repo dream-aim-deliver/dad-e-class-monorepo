@@ -30,14 +30,12 @@ export default async function EditPackageServerComponent({
 
     const packageIdInt = parseInt(packageId);
 
-    // Prefetch package data using getPackage feature
-    await Promise.all([
-        prefetch(
-            trpc.getPackage.queryOptions({
-                packageId: packageIdInt,
-            })
-        ),
-    ]);
+    // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+    prefetch(
+        trpc.getPackage.queryOptions({
+            packageId: packageIdInt,
+        })
+    );
 
     return (
         <HydrateClient>

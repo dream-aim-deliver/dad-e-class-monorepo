@@ -26,11 +26,8 @@ export default async function ManageCoachingPageServerComponent({
     platform_locale: platformLocale,
   });
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  // Authentication is handled by middleware - only admin/superadmin can access
-  await Promise.all([
-    prefetch(trpc.getCoachingPage.queryOptions({})), // getCoachingPage
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.getCoachingPage.queryOptions({})); // getCoachingPage
 
   return (
     <HydrateClient>

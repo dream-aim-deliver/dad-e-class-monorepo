@@ -28,11 +28,10 @@ export default async function CreatePackageServerComponent(
         platform_locale: props.platformLocale,
     });
 
-    // Prefetch data needed by the client page
-    await Promise.all([
-        prefetch(trpc.getPlatformLanguage.queryOptions({})),
-        prefetch(trpc.listCourses.queryOptions({ showFilter: "live" })),
-    ]);
+    // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+    // React will stream HTML while queries are pending
+    prefetch(trpc.getPlatformLanguage.queryOptions({}));
+    prefetch(trpc.listCourses.queryOptions({ showFilter: "live" }));
 
     return (
         <HydrateClient>

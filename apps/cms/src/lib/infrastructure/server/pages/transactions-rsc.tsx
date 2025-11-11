@@ -17,12 +17,11 @@ export default async function TransactionsServerComponent(
     platform_slug: props.platformSlug,
   });
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  await Promise.all([
-    prefetch(trpc.listTransactions.queryOptions({})),
-    prefetch(trpc.listPlatformCoaches.queryOptions({})),
-    prefetch(trpc.listTransactionTags.queryOptions({})),
-  ]);
+  // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+  // React will stream HTML while queries are pending
+  prefetch(trpc.listTransactions.queryOptions({}));
+  prefetch(trpc.listPlatformCoaches.queryOptions({}));
+  prefetch(trpc.listTransactionTags.queryOptions({}));
 
   return (
     <HydrateClient>

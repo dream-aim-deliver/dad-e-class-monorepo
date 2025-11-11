@@ -24,11 +24,10 @@ export default async function AllUsersServerComponent(
     platform_locale: props.locale,
   });
 
-  await Promise.all([
-    prefetch(trpc.listUsers.queryOptions({
-      showFilter: "all"
-    })),
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.listUsers.queryOptions({
+    showFilter: "all"
+  }));
 
   return (
     <HydrateClient>

@@ -19,10 +19,8 @@ export default async function CouponsServerComponent({
     platform_locale: platformLocale
   });
 
-  // Prefetch coupons data with cache-busting to always fetch fresh data
-  await Promise.all([
-    prefetch(trpc.listCoupons.queryOptions({})), 
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.listCoupons.queryOptions({}));
 
   return (
     <HydrateClient>

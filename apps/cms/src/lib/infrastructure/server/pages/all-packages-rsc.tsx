@@ -21,12 +21,11 @@ export default async function AllPackagesServerComponent(props: AllPackagesProps
     platform_locale: props.platformLocale,
   });
 
-  await Promise.all([
-    prefetch(trpc.listPackages.queryOptions({
-      platformSlug: props.platformSlug,
-      platformLocale: props.platformLocale
-    })),
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.listPackages.queryOptions({
+    platformSlug: props.platformSlug,
+    platformLocale: props.platformLocale
+  }));
 
   return (
     <HydrateClient>

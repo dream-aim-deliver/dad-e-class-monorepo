@@ -32,28 +32,28 @@ export default async function EditCourseServerComponent({
         throw new Error('You can\'t edit this course');
     }
 
-    // Prefetch all data needed across all tabs to improve initial load performance
-    await Promise.all([
-        // General Tab data
-        prefetch(trpc.getEnrolledCourseDetails.queryOptions({
-            courseSlug: slug,
-        })),
-        prefetch(trpc.listTopics.queryOptions({})),
-        prefetch(trpc.listCategories.queryOptions({})),
+    // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+    // All data needed across tabs - React will stream HTML while queries are pending
 
-        // Intro/Outline Tab data
-        prefetch(trpc.getCourseIntroduction.queryOptions({
-            courseSlug: slug,
-        })),
-        prefetch(trpc.getCourseOutline.queryOptions({
-            courseSlug: slug,
-        })),
+    // General Tab data
+    prefetch(trpc.getEnrolledCourseDetails.queryOptions({
+        courseSlug: slug,
+    }));
+    prefetch(trpc.listTopics.queryOptions({}));
+    prefetch(trpc.listCategories.queryOptions({}));
 
-        // Course Content Tab data
-        prefetch(trpc.getCourseStructure.queryOptions({
-            courseSlug: slug,
-        })),
-    ]);
+    // Intro/Outline Tab data
+    prefetch(trpc.getCourseIntroduction.queryOptions({
+        courseSlug: slug,
+    }));
+    prefetch(trpc.getCourseOutline.queryOptions({
+        courseSlug: slug,
+    }));
+
+    // Course Content Tab data
+    prefetch(trpc.getCourseStructure.queryOptions({
+        courseSlug: slug,
+    }));
 
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>

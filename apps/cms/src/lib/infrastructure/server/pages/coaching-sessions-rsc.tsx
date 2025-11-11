@@ -25,11 +25,8 @@ export default async function CoachingSessionsServerComponent(
     platform_locale: props.platformLocale
   });
 
-  // TRPC prefetching for coaching sessions data using EXACT usecase name from Notion
-  // Authentication is handled by middleware - only admin/superadmin can access
-  await Promise.all([
-    prefetch(trpc.listCoachingSessions.queryOptions({})), // listCoachingSessions
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.listCoachingSessions.queryOptions({})); // listCoachingSessions
 
   return (
     <HydrateClient>

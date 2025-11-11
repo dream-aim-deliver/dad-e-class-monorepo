@@ -27,9 +27,8 @@ export default async function ActivityHistoryServerComponent(
     redirect('/auth/login');
   }
 
-  await Promise.all([
-    prefetch(trpc.listNotifications.queryOptions({})),
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.listNotifications.queryOptions({}));
 
   return (
     <HydrateClient>

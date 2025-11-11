@@ -24,10 +24,8 @@ export default async function CoursesServerComponent(
     platform_slug: props.platformSlug,
   });
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  await Promise.all([
-    prefetch(trpc.listCmsCourses.queryOptions({})), // listCMSCourses
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.listCmsCourses.queryOptions({})); // listCMSCourses
 
   return (
     <HydrateClient>

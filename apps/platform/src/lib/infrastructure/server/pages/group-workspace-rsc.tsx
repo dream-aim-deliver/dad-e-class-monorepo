@@ -34,29 +34,28 @@ export default async function GroupWorkspaceServerComponent(
     throw new Error('pages.groupWorkspace.error.accessDenied');
   }
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  await Promise.all([
-    prefetch(trpc.getGroupIntroduction.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: { requestType: 'requestForStudent' },
-    })),
-    prefetch(trpc.listGroupAssignments.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: { requestType: 'requestForStudent' },
-    })),
-    prefetch(trpc.getGroupNextCoachingSession.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: { requestType: 'requestForStudent' },
-    })),
-    prefetch(trpc.listGroupMembers.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: { requestType: 'requestForStudent' },
-    })),
-    prefetch(trpc.getGroupNotes.queryOptions({
-      courseSlug: props.courseSlug,
-      additionalParams: { requestType: 'requestForStudent' },
-    })),
-  ]);
+  // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+  // React will stream HTML while queries are pending
+  prefetch(trpc.getGroupIntroduction.queryOptions({
+    courseSlug: props.courseSlug,
+    additionalParams: { requestType: 'requestForStudent' },
+  }));
+  prefetch(trpc.listGroupAssignments.queryOptions({
+    courseSlug: props.courseSlug,
+    additionalParams: { requestType: 'requestForStudent' },
+  }));
+  prefetch(trpc.getGroupNextCoachingSession.queryOptions({
+    courseSlug: props.courseSlug,
+    additionalParams: { requestType: 'requestForStudent' },
+  }));
+  prefetch(trpc.listGroupMembers.queryOptions({
+    courseSlug: props.courseSlug,
+    additionalParams: { requestType: 'requestForStudent' },
+  }));
+  prefetch(trpc.getGroupNotes.queryOptions({
+    courseSlug: props.courseSlug,
+    additionalParams: { requestType: 'requestForStudent' },
+  }));
 
   return (
     <HydrateClient>

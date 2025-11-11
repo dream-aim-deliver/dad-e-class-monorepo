@@ -21,12 +21,10 @@ export default async function ManageTopicsServerComponent(props: ManageTopicsPro
         platform_locale: props.platformLocale,
     });
 
-    // Prefetch topics data for better performance
-    await Promise.all([
-        prefetch(trpc.listTopics.queryOptions({
-            withCounts: true,
-        })),
-    ]);
+    // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+    prefetch(trpc.listTopics.queryOptions({
+        withCounts: true,
+    }));
 
     return (
         <HydrateClient>

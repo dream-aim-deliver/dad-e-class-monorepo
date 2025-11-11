@@ -36,18 +36,18 @@ export default async function GroupCoachingSessionReviewsServerComponent(
         throw new Error(dictionary.pages.groupCoachingSessionReviews.error.accessDenied);
     }
 
-    await Promise.all([
-        prefetch(trpc.listGroupCoachingSessionReviews.queryOptions({
-            coachingSessionId: props.coachingSessionId,
-        })),
-        prefetch(trpc.getGroupIntroduction.queryOptions({
-            courseSlug: props.courseSlug,
-            additionalParams: {
-                groupId: props.groupId,
-                requestType: "requestForCoach",
-            },
-        })),
-    ]);
+    // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+    // React will stream HTML while queries are pending
+    prefetch(trpc.listGroupCoachingSessionReviews.queryOptions({
+        coachingSessionId: props.coachingSessionId,
+    }));
+    prefetch(trpc.getGroupIntroduction.queryOptions({
+        courseSlug: props.courseSlug,
+        additionalParams: {
+            groupId: props.groupId,
+            requestType: "requestForCoach",
+        },
+    }));
 
     return (
         <HydrateClient>

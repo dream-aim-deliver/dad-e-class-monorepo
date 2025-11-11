@@ -8,11 +8,11 @@ interface CoachingPageProps {
 }
 
 export default async function CoachingPageServerComponent(props: CoachingPageProps) {
-    await Promise.all([
-        prefetch(trpc.getCoachingPage.queryOptions({})),
-        prefetch(trpc.listTopicsByCategory.queryOptions({})),
-        prefetch(trpc.listCoachingOfferings.queryOptions({})),
-    ]);
+    // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+    // React will stream HTML while queries are pending
+    prefetch(trpc.getCoachingPage.queryOptions({}));
+    prefetch(trpc.listTopicsByCategory.queryOptions({}));
+    prefetch(trpc.listCoachingOfferings.queryOptions({}));
 
     return (
         <>

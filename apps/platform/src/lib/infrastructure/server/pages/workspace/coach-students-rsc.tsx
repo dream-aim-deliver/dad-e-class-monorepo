@@ -20,16 +20,15 @@ export default async function CoachStudentsServerComponent() {
         throw new Error('Access denied. Only coaches and course creators can access this page.');
     }
 
-    await Promise.all([
-        prefetch(
-            trpc.listCoachStudents.queryOptions({
-                pagination: {
-                    page: 1,
-                    pageSize: 20,
-                },
-            }),
-        ),
-    ]);
+    // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+    prefetch(
+        trpc.listCoachStudents.queryOptions({
+            pagination: {
+                page: 1,
+                pageSize: 20,
+            },
+        }),
+    );
 
     return (
         <>

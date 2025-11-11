@@ -27,11 +27,10 @@ export default async function PackageServerComponent(
     notFound();
   }
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  await Promise.all([
-    prefetch(trpc.getPackageWithCourses.queryOptions({ packageId: packageIdNumber })), // getPackageWithCourses
-    prefetch(trpc.listPackageRelatedPackages.queryOptions({ packageId: packageIdNumber })), // listPackageRelatedPackages
-  ]);
+  // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+  // React will stream HTML while queries are pending
+  prefetch(trpc.getPackageWithCourses.queryOptions({ packageId: packageIdNumber })); // getPackageWithCourses
+  prefetch(trpc.listPackageRelatedPackages.queryOptions({ packageId: packageIdNumber })); // listPackageRelatedPackages
 
   return (
     <HydrateClient>

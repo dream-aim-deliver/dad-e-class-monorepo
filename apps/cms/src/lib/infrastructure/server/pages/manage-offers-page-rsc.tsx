@@ -26,13 +26,11 @@ export default async function ManageOffersPageServerComponent({
         platform_locale: platformLocale
     });
 
-    // TRPC prefetching for page data using EXACT usecase names from Notion
-    // Authentication is handled by middleware - only admin/superadmin can access
-    await Promise.all([
-        prefetch(trpc.getOffersPageOutline.queryOptions({})), // getOffersPageOutline
-        prefetch(trpc.listOffersPagePackagesShort.queryOptions({})), // listOffersPagePackagesShort
-        prefetch(trpc.listPackages.queryOptions({})), // listPackages
-    ]);
+    // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+    // React will stream HTML while queries are pending
+    prefetch(trpc.getOffersPageOutline.queryOptions({})); // getOffersPageOutline
+    prefetch(trpc.listOffersPagePackagesShort.queryOptions({})); // listOffersPagePackagesShort
+    prefetch(trpc.listPackages.queryOptions({})); // listPackages
 
     return (
         <HydrateClient>

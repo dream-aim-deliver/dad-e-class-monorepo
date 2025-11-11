@@ -19,14 +19,13 @@ export default async function AddGroupSessionServerComponent(
   props: AddGroupSessionServerComponentProps
 ) {
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  await Promise.all([
-    prefetch(trpc.listGroupCoachingSessions.queryOptions({
-      groupId: parseInt(props.groupId),
-    })),
-    prefetch(trpc.listCoachCoachingSessions.queryOptions({})),
-    prefetch(trpc.listCoachingOfferings.queryOptions({})),
-  ]);
+  // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+  // React will stream HTML while queries are pending
+  prefetch(trpc.listGroupCoachingSessions.queryOptions({
+    groupId: parseInt(props.groupId),
+  }));
+  prefetch(trpc.listCoachCoachingSessions.queryOptions({}));
+  prefetch(trpc.listCoachingOfferings.queryOptions({}));
 
   return (
     <HydrateClient>

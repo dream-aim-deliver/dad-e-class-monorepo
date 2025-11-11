@@ -8,11 +8,11 @@ interface OffersProps {
 }
 
 export default async function OffersServerComponent(props: OffersProps) {
-    await Promise.all([
-        prefetch(trpc.getOffersPageOutline.queryOptions({})),
-        prefetch(trpc.listTopicsByCategory.queryOptions({})),
-        prefetch(trpc.listOffersPagePackages.queryOptions({})),
-    ]);
+    // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+    // React will stream HTML while queries are pending
+    prefetch(trpc.getOffersPageOutline.queryOptions({}));
+    prefetch(trpc.listTopicsByCategory.queryOptions({}));
+    prefetch(trpc.listOffersPagePackages.queryOptions({}));
 
     return (
         <>

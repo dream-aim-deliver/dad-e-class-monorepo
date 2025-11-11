@@ -19,10 +19,8 @@ export default async function ManageAboutPageServerComponent({
 		platform_locale: platformLocale
 	});
 
-	// Prefetch platform language data for the about page editor
-	await Promise.all([
-		prefetch(trpc.getPlatformLanguage.queryOptions({})),
-	]);
+	// Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+	prefetch(trpc.getPlatformLanguage.queryOptions({}));
 
 	return (
 		<HydrateClient>

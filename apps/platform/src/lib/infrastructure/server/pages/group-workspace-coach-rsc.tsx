@@ -28,7 +28,6 @@ export default async function GroupWorkspaceCoachServerComponent(
   if(isCoach) {
     // TRPC prefetching for page data
     // Usecases: saveGroupNotes, getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
-    await Promise.all([
       prefetch(trpc.getGroupNotes.queryOptions({
         courseSlug: props.courseSlug,
         additionalParams: {
@@ -56,8 +55,7 @@ export default async function GroupWorkspaceCoachServerComponent(
           requestType: 'requestForCoach',
           groupId: props.groupId,
         },
-      })),
-    ]);
+      }));
   
     return (
       <HydrateClient>
@@ -73,7 +71,6 @@ export default async function GroupWorkspaceCoachServerComponent(
   } else {
       // TRPC prefetching for page data
       // Usecases: getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
-      await Promise.all([
         prefetch(trpc.getGroupNotes.queryOptions({
           courseSlug: props.courseSlug,
           additionalParams: {
@@ -97,9 +94,7 @@ export default async function GroupWorkspaceCoachServerComponent(
           additionalParams: {
             requestType: 'requestForStudent',
           },
-        })),
-      ]);
-    
+        }))    
       return (
         <HydrateClient>
           <Suspense fallback={<DefaultLoadingWrapper />}>

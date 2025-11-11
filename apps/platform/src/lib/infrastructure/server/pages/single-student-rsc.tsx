@@ -38,11 +38,11 @@ export default async function SingleStudentServerComponent({
         throw new Error('Access denied. Only coaches and admins can access student details.');
     }
 
-    await Promise.all([
-        prefetch(trpc.listStudentInteractions.queryOptions({ studentId, courseSlug })),
-        prefetch(trpc.listCoachStudentCourses.queryOptions({ studentUsername: slug })),
-        prefetch(trpc.getStudentDetails.queryOptions({ username: slug })),
-    ]);
+    // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+    // React will stream HTML while queries are pending
+    prefetch(trpc.listStudentInteractions.queryOptions({ studentId, courseSlug }));
+    prefetch(trpc.listCoachStudentCourses.queryOptions({ studentUsername: slug }));
+    prefetch(trpc.getStudentDetails.queryOptions({ username: slug }));
 
     return (
         <>

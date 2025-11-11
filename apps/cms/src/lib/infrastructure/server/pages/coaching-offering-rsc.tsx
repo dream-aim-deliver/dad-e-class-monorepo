@@ -27,11 +27,10 @@ export default async function CoachingOfferingServerComponent(
         platform_slug: props.platformSlug,
         platform_locale: props.platformLocale,
     });
-    await Promise.all([
-        prefetch(
-            trpc.listCoachingOfferings.queryOptions({}),
-        ),
-    ]);
+    // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+    prefetch(
+        trpc.listCoachingOfferings.queryOptions({}),
+    );
 
     return (
         <HydrateClient>

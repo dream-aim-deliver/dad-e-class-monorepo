@@ -25,21 +25,19 @@ export default async function SingleUserServerComponent(
     platform_slug: props.platformSlug,
   });
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  // TODO: Update parameters once usecase implementations are confirmed
-  await Promise.all([
-    prefetch(trpc.getPersonalProfile.queryOptions({})), // getPersonalProfile
-    prefetch(trpc.getProfessionalProfile.queryOptions({})), // getProfessionalProfile
-    prefetch(trpc.listStudentCourses.queryOptions({})), // listStudentCourses
-    prefetch(trpc.listCoachReviews.queryOptions({
-      coachUsername: props.username,
-    })), // listCoachReviews
-    prefetch(trpc.listUserRoles.queryOptions({})), // listUserRoles
-    prefetch(trpc.listCoachCourses.queryOptions({
-      forStudent: false,
-      //coachUsername: props.username, // TODO: Uncomment once backend allows for this
-    })), // listCoachCourses
-  ]);
+  // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+  // React will stream HTML while queries are pending
+  prefetch(trpc.getPersonalProfile.queryOptions({})); // getPersonalProfile
+  prefetch(trpc.getProfessionalProfile.queryOptions({})); // getProfessionalProfile
+  prefetch(trpc.listStudentCourses.queryOptions({})); // listStudentCourses
+  prefetch(trpc.listCoachReviews.queryOptions({
+    coachUsername: props.username,
+  })); // listCoachReviews
+  prefetch(trpc.listUserRoles.queryOptions({})); // listUserRoles
+  prefetch(trpc.listCoachCourses.queryOptions({
+    forStudent: false,
+    //coachUsername: props.username, // TODO: Uncomment once backend allows for this
+  })); // listCoachCourses
 
   return (
     <HydrateClient>
