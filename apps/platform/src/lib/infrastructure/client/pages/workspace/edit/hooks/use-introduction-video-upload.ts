@@ -32,7 +32,14 @@ export const useIntroductionVideoUpload = (
     const uploadAbortError = useIntroductionVideoUploadTranslations('uploadAbortError');
     const uploadFailedError = useIntroductionVideoUploadTranslations('uploadFailedError');
 
-    const uploadMutation = trpc.uploadIntroductionVideo.useMutation();
+    const utils = trpc.useUtils();
+
+    const uploadMutation = trpc.uploadIntroductionVideo.useMutation({
+        onSuccess: () => {
+            // Invalidate course introduction to show updated video
+            utils.getCourseIntroduction.invalidate({ courseSlug: slug });
+        },
+    });
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [video, setVideo] = useState<fileMetadata.TFileMetadataVideo | null>(

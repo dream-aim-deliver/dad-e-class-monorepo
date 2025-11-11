@@ -52,7 +52,13 @@ export default function EnrolledCourseHeading({
 
     const locale = useLocale() as TLocale;
     const router = useRouter();
-    const createReviewMutation = trpc.createCourseReview.useMutation();
+    const utils = trpc.useUtils();
+    const createReviewMutation = trpc.createCourseReview.useMutation({
+        onSuccess: () => {
+            // Invalidate course details to refresh review stats
+            utils.getEnrolledCourseDetails.invalidate({ courseSlug });
+        },
+    });
 
     // State for certificate error
     const [certificateError, setCertificateError] = useState<string | null>(null);

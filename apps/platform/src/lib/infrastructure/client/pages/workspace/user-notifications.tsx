@@ -50,13 +50,15 @@ export default function UserNotifications() {
 
     // TODO: Uncomment pagination once implemented
     // TRPC queries
-    const [notificationsResponse, { refetch: refetchNotifications }] = trpc.listNotifications.useSuspenseQuery({
+    const [notificationsResponse] = trpc.listNotifications.useSuspenseQuery({
         // userId: getUserId(),
         // pagination: {
         //    pageSize: 5,
         //    page: 1
         //}
     });
+
+    const utils = trpc.useUtils();
 
     // Memoize activity components at top level
     const activityComponents = useMemo(() => {
@@ -82,11 +84,12 @@ export default function UserNotifications() {
                 }
             />
         ));
-    }, [viewModel, locale, isValidUrl]);
+    }, [viewModel, locale, isValidUrl, platform.name]);
 
     const markAsReadMutation = trpc.markNotificationsAsRead.useMutation({
         onSuccess: () => {
-            refetchNotifications();
+            // Invalidate notifications to refetch updated read status
+            utils.listNotifications.invalidate();
         }
     });
 

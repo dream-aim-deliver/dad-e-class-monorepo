@@ -21,8 +21,15 @@ export function useCurriculumVitaeUpload({
 }) {
 	const t = useTranslations('components.useCourseImageUpload');
 
+	const utils = trpc.useUtils();
+
 	// Use uploadCourseImage as a temporary workaround until dedicated profile upload procedure exists
-	const uploadMutation = trpc.requestFileUpload.useMutation();
+	const uploadMutation = trpc.requestFileUpload.useMutation({
+		onSuccess: () => {
+			// Invalidate professional profile to show updated CV
+			utils.getProfessionalProfile.invalidate();
+		},
+	});
 	const verifyMutation = trpc.getDownloadUrl.useMutation();
 
 	const [curriculumVitae, setCurriculumVitae] =

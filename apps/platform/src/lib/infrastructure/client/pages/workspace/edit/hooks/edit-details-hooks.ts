@@ -41,7 +41,7 @@ export function useSaveDetails({
 }) {
     const courseDetails = useCourseForm();
 
-    const courseImageUpload = useCourseImageUpload();
+    const courseImageUpload = useCourseImageUpload(null, undefined, slug);
 
     const utils = trpc.useUtils();
 

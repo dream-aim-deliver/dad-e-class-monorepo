@@ -18,8 +18,15 @@ export function useProfilePictureUpload({
     onProgressUpdate?: (progress: number) => void,}) {
 	const t = useTranslations('components.useCourseImageUpload');
 
+	const utils = trpc.useUtils();
+
 	// Use uploadProfilePicture as a temporary workaround until dedicated profile upload procedure exists
-	const uploadMutation = trpc.requestFileUpload.useMutation();
+	const uploadMutation = trpc.requestFileUpload.useMutation({
+		onSuccess: () => {
+			// Invalidate personal profile to show updated picture
+			utils.getPersonalProfile.invalidate();
+		},
+	});
 	const verifyMutation = trpc.getDownloadUrl.useMutation();
 
 	const [profilePicture, setProfilePicture] =

@@ -7,7 +7,15 @@ interface UseDeleteAvailabilityProps {
 
 export function useDeleteAvailability({ onSuccess }: UseDeleteAvailabilityProps = {}) {
     const [error, setError] = useState<string | undefined>(undefined);
-    const deleteAvailabilityMutation = trpc.deleteAvailability.useMutation();
+
+    const utils = trpc.useUtils();
+
+    const deleteAvailabilityMutation = trpc.deleteAvailability.useMutation({
+        onSuccess: () => {
+            // Invalidate coach availability to show updated availability
+            utils.getCoachAvailability.invalidate();
+        },
+    });
 
     const deleteAvailability = (availabilityId: number) => {
         setError(undefined);
