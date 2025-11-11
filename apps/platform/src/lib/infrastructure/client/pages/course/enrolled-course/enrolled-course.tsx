@@ -34,6 +34,7 @@ import EnrolledCourseNotes from './enrolled-course-notes';
 import CoachCourseGroups from './coach-course-groups';
 import { useGetCourseStatusPresenter } from '../../../hooks/use-get-course-status-presenter';
 import CourseCompletion from '../../course-completion';
+import { CourseAssignmentsList } from '../components/course-assignments-list';
 
 
 interface EnrolledCourseProps {
@@ -277,7 +278,17 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     <EnrolledCoursePreview courseSlug={props.courseSlug} enableSubmit studentUsername={props.studentUsername} />
                 </Tabs.Content>
                 <Tabs.Content value="assignments" className={tabContentClass}>
-                    <DefaultError locale={locale} />
+                    <Suspense
+                        fallback={
+                            <DefaultLoading locale={locale} variant="minimal" />
+                        }
+                    >
+                        <CourseAssignmentsList
+                            courseSlug={props.courseSlug}
+                            role={props.currentRole === 'student' ? 'student' : 'coach'}
+                            studentUsername={props.studentUsername}
+                        />
+                    </Suspense>
                 </Tabs.Content>
                 <Tabs.Content value={StudentCourseTab.NOTES} className={tabContentClass}>
                     <EnrolledCourseNotes

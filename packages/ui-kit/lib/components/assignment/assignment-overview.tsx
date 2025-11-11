@@ -9,7 +9,7 @@ import { AssignmentDescription } from "./assignment-description";
  * Contains core assignment metadata and navigation callbacks.
  */
 export interface AssignmentOverviewBaseProps extends isLocalAware {
-    id: number;
+    id: string;
     module: number;
     lesson: number;
     title: string;
@@ -20,8 +20,8 @@ export interface AssignmentOverviewBaseProps extends isLocalAware {
         id: number;
         slug: string;
     };
-    groupId: number;
-    groupName?: string;
+    groupId: number | null;
+    groupName?: string | null;
     onClickCourse: () => void;
     onClickGroup?: () => void;
     onClickView: () => void;
