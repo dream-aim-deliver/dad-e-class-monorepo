@@ -63,7 +63,7 @@ const LoginPage = (props: LoginPageProps) => {
     }
 
     return (
-        <div className="flex text-white w-full items-center justify-center ">
+        <div className="theme theme-cms flex text-white w-full items-center justify-center min-h-screen">
             <div className="flex flex-col items-center justify-between text-center gap-4">
                 <h1 className="mb-8 text-4xl font-bold animate-pulseGrow">
                     {' '}
@@ -149,8 +149,19 @@ const LoginPage = (props: LoginPageProps) => {
 const LoginPageWithSuspense = (props: LoginPageProps) => {
     const dictionary = getDictionary(props.locale);
 
+    const LoginLoadingFallback = () => (
+        <div className="theme theme-cms flex text-white w-full items-center justify-center min-h-screen">
+            <div className="flex flex-col items-center justify-center text-center gap-4">
+                <h1 className="mb-8 text-4xl font-bold animate-pulseGrow">
+                    {props.platform}
+                </h1>
+                <DefaultLoading locale={props.locale} variant="minimal" />
+            </div>
+        </div>
+    );
+
     return (
-        <Suspense fallback={<DefaultLoading locale={props.locale} variant="minimal" />}>
+        <Suspense fallback={<LoginLoadingFallback />}>
             <LoginPage {...props} />
         </Suspense>
     );
