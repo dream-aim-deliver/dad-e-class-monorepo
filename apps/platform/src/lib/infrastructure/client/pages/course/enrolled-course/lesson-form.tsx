@@ -22,6 +22,7 @@ import { FileUploadProvider } from '../utils/file-upload';
 import { idToNumber } from '../../workspace/edit/utils/id-to-number';
 import { AssignmentViewProvider } from '../utils/assignment-view';
 import { useSession } from 'next-auth/react';
+import { useCourseSlug } from '../utils/course-slug-context';
 
 interface LessonFormProps {
     lessonId: number;
@@ -193,6 +194,8 @@ export default function LessonForm({
 
     const elementProgress = useRef(new Map([...formElements]));
     const trpcUtils = trpc.useUtils();
+    const courseSlug = useCourseSlug(); // Get courseSlug from context
+
     const submitProgressMutation = trpc.submitLessonProgresses.useMutation({
         onSuccess: () => {
             // Invalidate the lesson components query to refetch with updated progress
@@ -200,6 +203,10 @@ export default function LessonForm({
                 lessonId: lessonId,
                 withProgress: true,
             });
+            // Invalidate course-level queries to reflect progress changes
+            trpcUtils.getEnrolledCourseDetails.invalidate({ courseSlug });
+            trpcUtils.listUserCourses.invalidate();
+            trpcUtils.getCourseAccess.invalidate({ courseSlug });
         },
     });
     // When implementing student submission, this will be used to track progress

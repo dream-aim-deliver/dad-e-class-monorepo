@@ -76,6 +76,7 @@ function CreateCourseDialogContent() {
                     setIsOpen(false);
                     // Invalidate the user courses list to refetch and show the new duplicated course
                     utils.listUserCourses.invalidate();
+                    utils.listPlatformCoursesShort.invalidate();
                 }}
                 onQueryChange={(query) => setSearchQuery(query)}
                 courses={courses.map((course: any) => ({

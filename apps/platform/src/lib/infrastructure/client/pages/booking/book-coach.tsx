@@ -66,7 +66,15 @@ function BookCoachPageContent({
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const requestSessionMutation = trpc.requestCoachingSession.useMutation();
+    const utils = trpc.useUtils();
+
+    const requestSessionMutation = trpc.requestCoachingSession.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.listStudentCoachingSessions.invalidate();
+            utils.getCoachAvailability.invalidate({ coachUsername });
+        },
+    });
     const [submitError, setSubmitError] = useState<string | undefined>(
         undefined,
     );
@@ -104,7 +112,7 @@ function BookCoachPageContent({
                     if (defaultSession) {
                         router.push('/workspace/coaching-sessions');
                     }
-                    refetchCoachAvailability();
+                    // Query invalidation handled by mutation's onSuccess callback
                 },
                 onError: (error) => {
                     setSubmitError(

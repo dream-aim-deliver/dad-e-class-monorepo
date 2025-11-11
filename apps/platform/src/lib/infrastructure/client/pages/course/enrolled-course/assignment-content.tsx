@@ -93,6 +93,8 @@ function AssignmentInteraction({
     const locale = useLocale() as TLocale;
     const session = useSession();
 
+    const utils = trpc.useUtils();
+
     const sendReplyMutation = trpc.sendAssignmentReply.useMutation();
     const passAssignmentMutation = trpc.passAssignment.useMutation();
 
@@ -188,7 +190,8 @@ function AssignmentInteraction({
                     setComment('');
                     setFiles([]);
                     setLinks([]);
-                    refetchAssignment();
+                    // Invalidate assignment query to refetch fresh data
+                    utils.getAssignment.invalidate({ assignmentId, studentUsername });
                 },
                 onError: (error) => {
                     // TODO: set error state and display to the user
@@ -210,7 +213,8 @@ function AssignmentInteraction({
             },
             {
                 onSuccess: () => {
-                    refetchAssignment();
+                    // Invalidate assignment query to refetch fresh data
+                    utils.getAssignment.invalidate({ assignmentId, studentUsername });
                 },
                 onError: (error) => {
                     // TODO: set error state and display to the user

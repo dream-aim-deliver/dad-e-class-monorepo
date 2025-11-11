@@ -26,6 +26,7 @@ const useCreateCourse = () => {
         onSuccess: () => {
             // Invalidate queries to refetch fresh course list
             utils.listUserCourses.invalidate();
+            utils.listPlatformCoursesShort.invalidate();
         },
     });
 

@@ -51,9 +51,30 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         refetchInterval: 2 * 60 * 1000,
     });
 
-    const scheduleMutation = trpc.scheduleCoachingSession.useMutation();
-    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation();
-    const createNotificationMutation = trpc.createNotification.useMutation();
+    const utils = trpc.useUtils();
+
+    const scheduleMutation = trpc.scheduleCoachingSession.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.listCoachCoachingSessions.invalidate();
+            utils.listStudentCoachingSessions.invalidate();
+            utils.getCoachAvailability.invalidate();
+        },
+    });
+    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.listCoachCoachingSessions.invalidate();
+            utils.listStudentCoachingSessions.invalidate();
+            utils.getCoachAvailability.invalidate();
+        },
+    });
+    const createNotificationMutation = trpc.createNotification.useMutation({
+        onSuccess: () => {
+            // Invalidate notifications to refetch fresh data
+            utils.listNotifications.invalidate();
+        },
+    });
 
     const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
         viewModels.TListCoachCoachingSessionsViewModel | undefined

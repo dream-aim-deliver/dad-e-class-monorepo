@@ -62,6 +62,9 @@ export default function EditHeader({
                 // Invalidate queries to refetch updated data
                 utils.listUserCourses.invalidate();
                 utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
+                utils.listPlatformCoursesShort.invalidate();
+                utils.getOffersPageOutline.invalidate();
+                utils.getHomePage.invalidate();
                 alert(dictionary.components.editHeader.publishSuccess);
                 // ✅ No reload needed - query invalidation handles UI update
             } else {

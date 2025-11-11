@@ -31,8 +31,19 @@ export default function StudentCoachingSessions() {
     const [studentCoachingSessionsResponse] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
     const utils = trpc.useUtils();
 
-    const createReviewMutation = trpc.createCoachingSessionReview.useMutation();
-    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation();
+    const createReviewMutation = trpc.createCoachingSessionReview.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.listStudentCoachingSessions.invalidate();
+        },
+    });
+    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation({
+        onSuccess: () => {
+            // Invalidate related queries to refetch fresh data
+            utils.listStudentCoachingSessions.invalidate();
+            utils.getCoachAvailability.invalidate();
+        },
+    });
 
     const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
         viewModels.TStudentCoachingSessionsListViewModel | undefined

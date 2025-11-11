@@ -153,8 +153,10 @@ export function useSaveLesson({
     const saveLessonMutation = trpc.saveLessonComponents.useMutation({
         onSuccess: () => {
             // Invalidate lesson components query to refetch fresh data
-            // Note: This uses lessonId - may need courseSlug for full invalidation
             utils.listLessonComponents.invalidate({ lessonId });
+            // Invalidate course-level queries (partial invalidation without courseSlug)
+            // Note: This invalidates all course structures - less precise but works without courseSlug
+            utils.getCourseStructure.invalidate();
         },
     });
     const [saveLessonViewModel, setSaveLessonViewModel] = useState<
