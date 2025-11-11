@@ -36,11 +36,8 @@ export const getValidationError: ElementValidator = (props) => {
             .descriptionRequired;
     }
 
-    // File image attached
-    if (!quiz.imageFile) {
-        return dictionary.components.quiz.quizTypeOne.validationErrors
-            .imageRequired;
-    }
+    // File image attached - now optional, no validation needed
+    // Image is optional/nullable, quiz can be saved without image
 
     // At least one option present
     if (!quiz.options || quiz.options.length === 0) {

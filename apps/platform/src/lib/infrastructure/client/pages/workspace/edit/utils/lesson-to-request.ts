@@ -244,13 +244,16 @@ function transformQuizTypeOne(
         throw new Error('Invalid component type');
     }
 
+    // Handle optional/nullable imageFile
+    const imageFileId = component.imageFile ? (idToNumber(component.imageFile.id) ?? null) : null;
+
     return {
         id: extractId(component.id),
         type: 'quizTypeOne',
         position: order,
         title: component.title,
         description: component.description,
-        imageFileId: idToNumber(component.imageFile!.id)!,
+        imageFileId: imageFileId,
         options: component.options.map((option, index) => ({
             id: String(index + 1),
             name: option.name,
@@ -267,13 +270,16 @@ function transformQuizTypeTwo(
         throw new Error('Invalid component type');
     }
 
+    // Handle optional/nullable imageFile
+    const imageFileId = component.imageFile ? (idToNumber(component.imageFile.id) ?? null) : null;
+
     return {
         id: extractId(component.id),
         type: 'quizTypeTwo',
         position: order,
         title: component.title,
         description: component.description,
-        imageFileId: idToNumber(component.imageFile!.id)!,
+        imageFileId: imageFileId,
         groups: component.groups.map((group, index) => ({
             id: String(index + 1),
             title: group.title,

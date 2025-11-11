@@ -135,7 +135,7 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewProps> = ({
   };
 
   const thumbnailUrl = elementInstance.imageFile?.thumbnailUrl;
-  const shouldShowPlaceholder = !thumbnailUrl || isImageError;
+  const hasImage = elementInstance.imageFile !== null && elementInstance.imageFile !== undefined;
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -145,24 +145,26 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewProps> = ({
         <p className="text-lg text-text-secondary leading-[150%]">{elementInstance.description}</p>
       </div>
 
-      {/* Image */}
-      <div className="relative">
-        {shouldShowPlaceholder ? (
-          <div className="w-full h-[147px] bg-base-neutral-700 flex items-center justify-center rounded-medium">
-            <span className="text-text-secondary text-md">
-              {dictionary.components.coachBanner.placeHolderText}
-            </span>
-          </div>
-        ) : (
-          <img
-            loading="lazy"
-            src={thumbnailUrl}
-            alt={elementInstance.title}
-            className="rounded w-full max-h-[30rem] object-cover"
-            onError={handleImageError}
-          />
-        )}
-      </div>
+      {/* Image - only show if imageFile exists */}
+      {hasImage && (
+        <div className="relative">
+          {!thumbnailUrl || isImageError ? (
+            <div className="w-full h-[147px] bg-base-neutral-700 flex items-center justify-center rounded-medium">
+              <span className="text-text-secondary text-md">
+                {dictionary.components.coachBanner.placeHolderText}
+              </span>
+            </div>
+          ) : (
+            <img
+              loading="lazy"
+              src={thumbnailUrl}
+              alt={elementInstance.title}
+              className="rounded w-full max-h-[30rem] object-cover"
+              onError={handleImageError}
+            />
+          )}
+        </div>
+      )}
 
       {/* Choices */}
       <div className="flex flex-col gap-3 justify-start">
