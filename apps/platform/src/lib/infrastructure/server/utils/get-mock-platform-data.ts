@@ -9,21 +9,18 @@ export function getMockPlatformData(): TGetPlatformSuccessResponse['data'] {
     return {
         id: 1,
         name: 'Just Do Ad',
-        logoUrl:
-            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748270861/a_wy7cuh_kwevw6.png',
-        backgroundImageUrl:
-            'https://res.cloudinary.com/dsyephqpf/image/upload/v1747650265/background-eln_mhvipu.jpg',
-        footerContent: entities.RichText.parse(
-            JSON.stringify([
-                {
-                    type: 'paragraph',
-                    children: [
-                        {
-                            text: '© 2025 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hi@justdoad.ai',
-                        },
-                    ],
-                },
-            ]),
-        ),
+        currency: '',
+        state: 'created',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        slug: 'just-do-ad',
+        public: false,
+        accentColor: '',
+        font: '',
+        hasOnlyFreeCourses: false,
+        footerContent: '',
+        domainName: '',
+        backgroundImage: null,
+        logo: null
     };
 }

@@ -105,15 +105,11 @@ export default async function RootLayout({
         getSession(), // Uses React.cache() for request-level deduplication
     ]);
 
-    // Fetch platform data with dynamic parameters (locale, session)
-    // Cache is keyed by these parameters for proper cache segmentation
+    // Fetch platform data (cached globally per locale for 15 minutes)
+    // Platform data is public and identical for all users, so no session segmentation needed
     let platformData;
     try {
-        platformData = await getPlatformCached(
-            locale,
-            session?.user?.sessionId || 'public',
-            session?.user?.idToken
-        );
+        platformData = await getPlatformCached(locale);
 
         if (!platformData) {
             throw new Error('Platform data is null or undefined');
