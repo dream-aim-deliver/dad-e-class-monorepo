@@ -41,7 +41,44 @@ interface CourseAssignmentsListProps {
     role: 'student' | 'coach';
 }
 
+/**
+ * Wrapper component that handles empty courseSlug state before rendering the main component.
+ * This prevents React hooks errors by ensuring hooks are only called when component is mounted.
+ */
 export function CourseAssignmentsList({
+    courseSlug,
+    studentUsername,
+    role,
+}: CourseAssignmentsListProps) {
+    const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.groupWorkspaceCoach');
+
+    // Show "select a course" message if no course is selected
+    if (!courseSlug || courseSlug === '') {
+        return (
+            <div className="flex flex-col items-center justify-center py-12 px-4">
+                <p className="text-text-secondary text-lg text-center">
+                    {t('assignments.selectCoursePrompt')}
+                </p>
+            </div>
+        );
+    }
+
+    // Render the actual content component only when we have a valid courseSlug
+    return (
+        <CourseAssignmentsListContent
+            courseSlug={courseSlug}
+            studentUsername={studentUsername}
+            role={role}
+        />
+    );
+}
+
+/**
+ * Internal component that handles the actual assignments list rendering.
+ * Assumes courseSlug is always valid (non-empty).
+ */
+function CourseAssignmentsListContent({
     courseSlug,
     studentUsername,
     role,
@@ -104,17 +141,17 @@ export function CourseAssignmentsList({
         return <DefaultLoading locale={locale} />;
     }
 
-    // Error state
-    if (assignmentsViewModel?.mode === 'kaboom' || assignmentsViewModel?.mode === 'not-found') {
+    // Error state (kaboom only - not-found means no assignments which is fine)
+    if (assignmentsViewModel?.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
     }
 
-    // Empty state
-    if (assignments.length === 0) {
+    // Empty state (includes not-found from backend)
+    if (assignmentsViewModel?.mode === 'not-found' || assignments.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-12 px-4">
                 <p className="text-text-secondary text-lg text-center">
-                    No assignments found
+                    {t('assignments.noAssignmentsFound')}
                 </p>
             </div>
         );

@@ -2397,6 +2397,8 @@ export const DictionarySchema = z.object({
         sortBy: z.string(),
         selectSort: z.string(),
         filterButton: z.string(),
+        selectCoursePrompt: z.string(),
+        noAssignmentsFound: z.string(),
         sortOptions: z.object({
           title: z.string(),
           status: z.string(),

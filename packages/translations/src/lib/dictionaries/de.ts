@@ -2362,6 +2362,8 @@ export const DE: TDictionary = {
         sortBy: 'Sortieren nach',
         selectSort: 'Sortieroption auswählen',
         filterButton: 'Filter',
+        selectCoursePrompt: 'Bitte wähle einen Kurs aus, um Aufgaben anzuzeigen',
+        noAssignmentsFound: 'Keine Aufgaben gefunden',
         sortOptions: {
           title: 'Titel (A-Z)',
           status: 'Status',
