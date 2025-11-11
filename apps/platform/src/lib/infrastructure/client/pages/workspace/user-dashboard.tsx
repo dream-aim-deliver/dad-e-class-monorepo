@@ -151,6 +151,7 @@ function RedeemCouponDialogContent() {
     const locale = useLocale() as TLocale;
     const { setIsOpen } = useDialog();
     const router = useRouter();
+    const utils = trpc.useUtils();
 
     // Set up view model and presenter
     const [redeemViewModel, setRedeemViewModel] = useState<
@@ -232,25 +233,12 @@ function RedeemCouponDialogContent() {
         _couponCode: string,
         data: { type: 'course' | 'package' | 'coaching' | 'group'; title: string; imageUrl?: string }
     ) => {
-        // Close dialog after successful redemption
-        setIsOpen(false);
+        // Invalidate queries to refetch user data after successful redemption
+        void utils.listUserCourses.invalidate();
+        void utils.listUpcomingStudentCoachingSessions.invalidate();
 
-        // Optionally navigate to the redeemed content based on type
-        switch (data.type) {
-            case 'course':
-            case 'package':
-                // Navigate to courses page
-                router.push(`/${locale}/workspace/courses`);
-                break;
-            case 'coaching':
-                // Navigate to coaching sessions
-                router.push(`/${locale}/workspace/calendar`);
-                break;
-            case 'group':
-                // TODO: Navigate to the specific group workspace
-                // router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}`);
-                break;
-        }
+        // Note: Modal will stay open to show success state
+        // User can close it manually or component will handle navigation
     };
 
     return (
