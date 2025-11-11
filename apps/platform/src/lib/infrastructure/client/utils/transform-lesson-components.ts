@@ -564,6 +564,21 @@ const applyOneOutOfThreeProgress = (
     }
 };
 
+const applyUploadFilesProgress = (
+    element: UploadFilesElement,
+    answer: TPreCourseAssessmentProgress,
+): void => {
+    // Type guard to check if answer is uploadFiles type
+    // Using 'fileIds' as a more specific discriminator
+    if ('fileIds' in answer) {
+        // Note: The answer only contains fileIds, not the full file metadata
+        // The actual file metadata would need to be fetched or stored separately
+        // For now, we just mark that there are uploaded files
+        element.userComment = answer.comment;
+        // element.files would be populated by the component from backend data
+    }
+};
+
 const progressAppliers: Record<
     FormElementType | CourseElementType,
     ((element: any, answer: TPreCourseAssessmentProgress) => void) | undefined
@@ -578,7 +593,7 @@ const progressAppliers: Record<
     [CourseElementType.ImageFile]: undefined,
     [CourseElementType.ImageGallery]: undefined,
     [CourseElementType.DownloadFiles]: undefined,
-    [CourseElementType.UploadFiles]: undefined,
+    [CourseElementType.UploadFiles]: applyUploadFilesProgress,
     [CourseElementType.QuizTypeOne]: undefined,
     [CourseElementType.QuizTypeTwo]: undefined,
     [CourseElementType.QuizTypeThree]: undefined,

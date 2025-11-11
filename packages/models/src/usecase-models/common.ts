@@ -129,6 +129,7 @@ export const PreCourseAssessmentProgressSchema = z.discriminatedUnion('type', [
     SingleChoiceProgress,
     MultipleChoiceProgress,
     OneOutOfThreeProgress,
+    UploadFilesProgress,
 ]);
 export type TPreCourseAssessmentProgress = z.infer<typeof PreCourseAssessmentProgressSchema>;
 
@@ -373,6 +374,7 @@ export const AssessmentComponentSchema = z.discriminatedUnion('type', [
     SingleChoiceSchema,
     MultipleChoiceSchema,
     OneOutOfThreeSchema,
+    UploadFilesSchema,
 ]);
 export const LessonComponentSchema = z.discriminatedUnion('type', [
     RichTextSchema,
@@ -527,7 +529,7 @@ const QuizTypeOneComponentRequestSchema = BaseComponentRequestSchema.extend({
     type: z.literal('quizTypeOne'),
     title: z.string(),
     description: z.string(),
-    imageFileId: z.number().int(),
+    imageFileId: z.number().int().optional().nullable(),
     options: z.array(z.object({
         id: z.string(),
         name: z.string(),
@@ -539,7 +541,7 @@ const QuizTypeTwoComponentRequestSchema = BaseComponentRequestSchema.extend({
     type: z.literal('quizTypeTwo'),
     title: z.string(),
     description: z.string(),
-    imageFileId: z.number().int(),
+    imageFileId: z.number().int().optional().nullable(),
     groups: z.array(z.object({
         id: z.string(),
         title: z.string(),
@@ -598,6 +600,7 @@ export const AssessmentComponentRequestSchema = z.discriminatedUnion('type', [
     MultipleChoiceComponentRequestSchema,
     TextInputComponentRequestSchema,
     OneOutOfThreeComponentRequestSchema,
+    UploadFilesComponentRequestSchema,
 ]);
 
 export const LessonComponentRequestSchema = z.discriminatedUnion('type', [
