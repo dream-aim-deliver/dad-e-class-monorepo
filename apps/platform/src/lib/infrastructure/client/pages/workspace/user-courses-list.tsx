@@ -60,10 +60,10 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     }, [coursesResponse, presenter, coursesViewModel]);
 
     const courses = useMemo(() => {
-        if (!coursesViewModel || coursesViewModel.mode !== 'default') {
+        if (!coursesViewModel || coursesViewModel.mode !== 'default' || !coursesViewModel.data) {
             return [];
         }
-        return coursesViewModel.data.courses;
+        return coursesViewModel.data.courses || [];
     }, [coursesViewModel]);
 
     const {
@@ -124,12 +124,12 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                     };
                     const author = {
                         name: getAuthorDisplayName(
-                            course.author.name,
-                            course.author.surname,
+                            course.author?.name || null,
+                            course.author?.surname || null,
                             locale,
                         ),
-                        username: course.author.username,
-                        image: course.author.avatarUrl ?? undefined,
+                        username: course.author?.username || '',
+                        image: course.author?.avatarUrl ?? undefined,
                     };
                     const duration = {
                         selfStudy: course.fullDuration,
@@ -153,25 +153,25 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                         return (
                             <CourseCreatorCard
                                 key={course.id}
-                                rating={course.averageRating}
-                                reviewCount={course.reviewCount}
+                                rating={course.averageRating ?? 0}
+                                reviewCount={course.reviewCount ?? 0}
                                 sessions={course.coachingSessionCount ?? 0}
-                                sales={course.salesCount}
+                                sales={course.salesCount ?? 0}
                                 // TODO: get rid of this mapping once ui-kit is updated
-                                status={stateToStatus[course.status] || 'draft'}
+                                status={stateToStatus[course.status || 'draft'] || 'draft'}
                                 locale={locale}
-                                title={course.title}
-                                description={course.description}
+                                title={course.title || ''}
+                                description={course.description || ''}
                                 imageUrl={course.imageUrl ?? ''}
                                 author={author}
                                 language={language}
                                 duration={duration}
                                 pricing={pricing}
                                 onClickUser={() =>
-                                    onClickUser(course.author.username)
+                                    onClickUser(course.author?.username || '')
                                 }
-                                onManage={() => onCourseVisit(course.slug)}
-                                onEdit={() => onCourseEdit(course.slug)}
+                                onManage={() => onCourseVisit(course.slug || '')}
+                                onEdit={() => onCourseEdit(course.slug || '')}
                             />
                         );
                     }
@@ -179,19 +179,19 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                         return (
                             <CoachCourseCard
                                 key={course.id}
-                                title={course.title}
-                                reviewCount={course.reviewCount}
+                                title={course.title || ''}
+                                reviewCount={course.reviewCount ?? 0}
                                 sessions={course.coachingSessionCount ?? 0}
-                                sales={course.salesCount}
+                                sales={course.salesCount ?? 0}
                                 locale={locale}
                                 language={language}
                                 imageUrl={course.imageUrl ?? ''}
                                 author={author}
                                 duration={duration}
-                                rating={course.averageRating}
-                                onManage={() => onCourseVisit(course.slug)}
+                                rating={course.averageRating ?? 0}
+                                onManage={() => onCourseVisit(course.slug || '')}
                                 onClickUser={() =>
-                                    onClickUser(course.author.username)
+                                    onClickUser(course.author?.username || '')
                                 }
                             />
                         );
@@ -201,21 +201,21 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                             <StudentCourseCard
                                 key={course.id}
                                 locale={locale}
-                                sales={course.salesCount}
-                                reviewCount={course.reviewCount}
-                                title={course.title}
-                                description={course.description}
+                                sales={course.salesCount ?? 0}
+                                reviewCount={course.reviewCount ?? 0}
+                                title={course.title || ''}
+                                description={course.description || ''}
                                 language={language}
                                 imageUrl={course.imageUrl ?? ''}
                                 author={author}
                                 pricing={pricing}
                                 duration={duration}
-                                rating={course.averageRating}
-                                progress={course.progress}
-                                onBegin={() => onCourseVisit(course.slug)}
-                                onResume={() => onCourseVisit(course.slug)}
+                                rating={course.averageRating ?? 0}
+                                progress={course.progress ?? 0}
+                                onBegin={() => onCourseVisit(course.slug || '')}
+                                onResume={() => onCourseVisit(course.slug || '')}
                                 onClickUser={() =>
-                                    onClickUser(course.author.username)
+                                    onClickUser(course.author?.username || '')
                                 }
                             />
                         );

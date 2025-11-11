@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TListUpcomingStudentCoachingSessionsUseCaseResponse,
+    ListUpcomingStudentCoachingSessionsUseCaseResponseSchema,
+    TListUpcomingStudentCoachingSessionsUseCaseErrorResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TUpcomingCoachingSessionsPresenterUtilities = {};
 
 export const ListUpcomingCoachingSessionsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListUpcomingStudentCoachingSessionsUseCaseResponse,
+        TListUpcomingStudentCoachingSessionsUseCaseResponse,
         viewModels.TUpcomingCoachingSessionsListViewModel,
         TUpcomingCoachingSessionsPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const ListUpcomingCoachingSessionsResponseMiddleware =
 type TListUpcomingCoachingSessionsResponseMiddleware = typeof ListUpcomingCoachingSessionsResponseMiddleware;
 
 export default class ListUpcomingCoachingSessionsPresenter extends BasePresenter<
-    useCaseModels.TListUpcomingStudentCoachingSessionsUseCaseResponse,
+    TListUpcomingStudentCoachingSessionsUseCaseResponse,
     viewModels.TUpcomingCoachingSessionsListViewModel,
     TUpcomingCoachingSessionsPresenterUtilities,
     TListUpcomingCoachingSessionsResponseMiddleware
@@ -29,7 +34,7 @@ export default class ListUpcomingCoachingSessionsPresenter extends BasePresenter
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.ListUpcomingStudentCoachingSessionsUseCaseResponseSchema,
+                responseModel: ListUpcomingStudentCoachingSessionsUseCaseResponseSchema,
                 viewModel: viewModels.UpcomingCoachingSessionsListViewModelSchema
             },
             middleware: ListUpcomingCoachingSessionsResponseMiddleware,
@@ -40,7 +45,7 @@ export default class ListUpcomingCoachingSessionsPresenter extends BasePresenter
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListUpcomingStudentCoachingSessionsUseCaseResponse,
+            TListUpcomingStudentCoachingSessionsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TUpcomingCoachingSessionsListViewModel {
@@ -54,7 +59,7 @@ export default class ListUpcomingCoachingSessionsPresenter extends BasePresenter
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListUpcomingStudentCoachingSessionsUseCaseErrorResponse,
+            TListUpcomingStudentCoachingSessionsUseCaseErrorResponse,
             TListUpcomingCoachingSessionsResponseMiddleware
         >,
     ): viewModels.TUpcomingCoachingSessionsListViewModel {

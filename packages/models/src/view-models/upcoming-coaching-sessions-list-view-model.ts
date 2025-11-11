@@ -6,7 +6,7 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { ListUpcomingStudentCoachingSessionsSuccessResponseSchema } from '../usecase-models/list-upcoming-student-coaching-sessions-usecase-models';
+import { ListUpcomingStudentCoachingSessionsSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
 export const UpcomingCoachingSessionsListSuccessSchema = ListUpcomingStudentCoachingSessionsSuccessResponseSchema.shape.data;
 

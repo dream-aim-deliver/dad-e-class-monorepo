@@ -3,23 +3,16 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { Button, CoachingSessionCard, Tabs } from '@maany_shr/e-class-ui-kit';
 import { useTranslations } from 'next-intl';
 
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useListUpcomingCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-coaching-sessions-presenter';
 
 interface UserCoachingSessionsProps {
     emptyStateTranslationsNamespace?: string;
-}
-
-// Type guard to check if a session is upcoming/scheduled
-function isUpcomingSession(
-    session: useCaseModels.TStudentUpcomingCoachingSession,
-): session is useCaseModels.TStudentUpcomingCoachingSession {
-    return session.status === 'scheduled';
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
@@ -41,7 +34,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
         isLoading: isUpcomingSessionsLoading,
         error: upcomingSessionsError,
     } = trpc.listUpcomingStudentCoachingSessions.useQuery(
-        { studentId: 1 }, // Mock student ID
+        {}, // No studentId needed - backend infers from session
         {
             retry: false,
         },
@@ -51,6 +44,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
     useEffect(() => {
         if (upcomingSessionsResponse) {
+            // @ts-ignore
             presenter.present(upcomingSessionsResponse, viewModel ?? undefined);
         }
         if (upcomingSessionsError) {
@@ -99,15 +93,15 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
         return (
             <div className="flex flex-col space-y-4">
                 <h3> {t('title')} </h3>
-                <div className="text-red-500">{viewModel.data.message}</div>
+                <div className="text-red-500">{viewModel.data?.message || 'An error occurred'}</div>
             </div>
         );
     }
 
-    // Filter only upcoming sessions (scheduled) that have required properties
+    // Backend already filters to return only scheduled sessions
     const allSessions =
-        viewModel?.mode === 'default' ? viewModel.data.sessions : [];
-    const upcomingSessions = allSessions.filter(isUpcomingSession);
+        viewModel?.mode === 'default' && viewModel.data ? viewModel.data.sessions : [];
+    const upcomingSessions = allSessions || [];
     const hasUpcomingSessions = upcomingSessions.length > 0;
 
     return (
@@ -116,13 +110,13 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                 <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4">
                     <div className="w-full flex gap-4 items-center justify-between">
                         <div className='flex flex-row items-center'>
-                        <h3>{t('title')}</h3>
-                        <Button
-                            variant="text"
-                            size="small"
-                            onClick={handleViewAllCoachingSessions}
-                            text={t('viewAllSessions')}
-                        />
+                            <h3>{t('title')}</h3>
+                            <Button
+                                variant="text"
+                                size="small"
+                                onClick={handleViewAllCoachingSessions}
+                                text={t('viewAllSessions')}
+                            />
                         </div>
                         <div className="flex items-center gap-4">
                             <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
@@ -143,61 +137,74 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                 <Tabs.Content value="upcoming" className="mt-6">
                     {hasUpcomingSessions ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {upcomingSessions.slice(0, 3).map((session) => (
-                                <CoachingSessionCard
-                                    key={session.id}
-                                    locale={locale}
-                                    userType="student"
-                                    status="upcoming-locked"
-                                    title={session.coachingOfferingTitle}
-                                    duration={session.coachingOfferingDuration}
-                                    date={new Date(session.startTime)}
-                                    startTime={new Date(
-                                        session.startTime,
-                                    ).toLocaleTimeString('en-US', {
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false,
-                                    })}
-                                    endTime={new Date(
-                                        session.endTime,
-                                    ).toLocaleTimeString('en-US', {
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false,
-                                    })}
-                                    creatorName={
-                                        `${session.coach.name || ''} ${session.coach.surname || ''}`.trim() ||
-                                        session.coach.username
-                                    }
-                                    creatorImageUrl={
-                                        session.coach.avatarUrl || ''
-                                    }
-                                    courseName={session.course?.title}
-                                    onClickCreator={() => {
-                                        console.log(
-                                            'View coach profile',
-                                            session.coach.username,
-                                        );
-                                    }}
-                                    onClickJoinMeeting={() => {
-                                        console.log(
-                                            'Join meeting for session',
-                                            session.id,
-                                        );
-                                        // TODO: Implement meeting join functionality
-                                    }}
-                                    onClickCourse={
-                                        session.course
-                                            ? () => {
-                                                  router.push(
-                                                      `/${locale}/course/${session.course?.slug || ''}`,
-                                                  );
-                                              }
-                                            : undefined
-                                    }
-                                />
-                            ))}
+                            {upcomingSessions.slice(0, 3).map((session) => {
+                                // Ensure all required fields are present
+                                if (!session.coachingOfferingTitle ||
+                                    !session.coachingOfferingDuration ||
+                                    !session.startTime ||
+                                    !session.endTime ||
+                                    !session.coach) {
+                                    return null;
+                                }
+
+                                return (
+                                    <CoachingSessionCard
+                                        key={session.id}
+                                        locale={locale}
+                                        userType="student"
+                                        status="upcoming-locked"
+                                        title={session.coachingOfferingTitle}
+                                        duration={session.coachingOfferingDuration}
+                                        date={new Date(session.startTime)}
+                                        startTime={new Date(
+                                            session.startTime,
+                                        ).toLocaleTimeString('en-US', {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: false,
+                                        })}
+                                        endTime={new Date(
+                                            session.endTime,
+                                        ).toLocaleTimeString('en-US', {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: false,
+                                        })}
+                                        creatorName={
+                                            `${session.coach.name || ''} ${session.coach.surname || ''}`.trim() ||
+                                            session.coach.username || 'Unknown'
+                                        }
+                                        creatorImageUrl={
+                                            session.coach.avatarUrl || ''
+                                        }
+                                        courseName={session.course?.title}
+                                        onClickCreator={() => {
+                                            if (session.coach?.username) {
+                                                console.log(
+                                                    'View coach profile',
+                                                    session.coach.username,
+                                                );
+                                            }
+                                        }}
+                                        onClickJoinMeeting={() => {
+                                            console.log(
+                                                'Join meeting for session',
+                                                session.id,
+                                            );
+                                            // TODO: Implement meeting join functionality
+                                        }}
+                                        onClickCourse={
+                                            session.course
+                                                ? () => {
+                                                    router.push(
+                                                        `/${locale}/course/${session.course?.slug || ''}`,
+                                                    );
+                                                }
+                                                : undefined
+                                        }
+                                    />
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">

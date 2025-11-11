@@ -187,19 +187,6 @@ export default function RedeemStandaloneCoupon(
         }
     };
 
-    const getViewButtonText = (type: CouponType) => {
-        switch (type) {
-            case 'course':
-                return dictionary.viewCourse;
-            case 'package':
-                return dictionary.viewPackage;
-            case 'coaching':
-                return dictionary.viewCoaching;
-            case 'group':
-                return dictionary.viewGroup;
-        }
-    };
-
     // Redeemed State
     if (state === 'redeemed' && couponData) {
         return (
@@ -251,23 +238,12 @@ export default function RedeemStandaloneCoupon(
                             </span>
                         </div>
                     </div>
-
-                    {/* View Button */}
-                    <Button
-                        className="w-full"
-                        variant="primary"
-                        size="medium"
-                        text={getViewButtonText(couponData.type)}
-                        onClick={() => {
-                            // Handle navigation to the course/package/etc
-                        }}
-                    />
                 </div>
 
                 {/* Close Button */}
                 <Button
                     className="w-full"
-                    variant="text"
+                    variant="primary"
                     size="medium"
                     text={dictionary.closeButton}
                     onClick={props.onClose}
