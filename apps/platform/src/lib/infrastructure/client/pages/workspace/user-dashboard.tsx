@@ -78,8 +78,8 @@ function CreateCourseDialogContent({
 
     const courses = coursesResponse?.success && (coursesResponse as any).data.courses
         ? (coursesResponse as any).data.courses.filter((course: any) =>
-              course.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-          )
+            course.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+        )
         : [];
 
     return (
@@ -468,7 +468,9 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         >
                             {t('editProfile')}
                         </Button>
-                        {!isCoach && <RedeemCouponDialog />}
+
+                        <RedeemCouponDialog />
+
                         <Button
                             variant="primary"
                             hasIconLeft
