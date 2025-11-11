@@ -1,6 +1,8 @@
 'use client';
 
-import { SessionMonitorWithModal } from '@maany_shr/e-class-auth';
+import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState, useCallback } from 'react';
 import {
     UnsavedChangesProvider,
     useUnsavedChanges,
@@ -14,24 +16,124 @@ interface SessionMonitorWrapperProps {
 }
 
 /**
+ * Internal session monitor component for Platform app
+ */
+function SessionMonitor({ locale }: { locale: TLocale }) {
+    const { data: session, status, update } = useSession();
+    const pathname = usePathname();
+    const [showExpirationModal, setShowExpirationModal] = useState(false);
+    const [hasTriggeredCheck, setHasTriggeredCheck] = useState(false);
+    const unsavedChangesState = useUnsavedChanges();
+    const hasUnsavedChanges = unsavedChangesState?.hasUnsavedChanges ?? false;
+
+    const debug = process.env.NODE_ENV === 'development';
+    const checkInterval = 60000; // 60 seconds
+    const loginPath = '/auth/login';
+
+    const log = useCallback((...args: any[]) => {
+        if (debug) {
+            console.log('[SessionMonitor]', ...args);
+        }
+    }, [debug]);
+
+    const handleConfirmLogout = useCallback(async () => {
+        log('User confirmed logout, clearing unsaved changes and signing out');
+
+        if (unsavedChangesState?.clearAllUnsavedChanges) {
+            unsavedChangesState.clearAllUnsavedChanges();
+        }
+
+        setShowExpirationModal(false);
+
+        const callbackUrl = encodeURIComponent(pathname || '/');
+        const redirectUrl = `${loginPath}?callbackUrl=${callbackUrl}&reason=session_expired`;
+
+        log('Redirecting to:', redirectUrl);
+
+        await signOut({
+            callbackUrl: redirectUrl,
+            redirect: true
+        });
+    }, [unsavedChangesState, pathname, loginPath, log]);
+
+    // Monitor session for errors
+    useEffect(() => {
+        if (status === 'loading') {
+            log('Session loading...');
+            return;
+        }
+
+        if (status === 'unauthenticated') {
+            log('User not authenticated');
+            return;
+        }
+
+        if (status === 'authenticated' && session && !hasTriggeredCheck) {
+            const sessionError = (session as any).error;
+
+            if (sessionError) {
+                log('Session error detected:', sessionError);
+
+                if (sessionError === 'RefreshAccessTokenError' || sessionError === 'RefreshTokenMissing') {
+                    log('Token refresh failed, showing expiration modal');
+                    setShowExpirationModal(true);
+                    setHasTriggeredCheck(true);
+                }
+            } else {
+                log('Session valid');
+                setHasTriggeredCheck(false);
+            }
+        }
+    }, [session, status, hasTriggeredCheck, log]);
+
+    // Periodic session check
+    useEffect(() => {
+        if (status !== 'authenticated') {
+            return;
+        }
+
+        log(`Setting up periodic session check every ${checkInterval}ms`);
+
+        const interval = setInterval(async () => {
+            log('Performing periodic session check');
+
+            try {
+                await update();
+                log('Session check complete');
+            } catch (error) {
+                log('Error during session check:', error);
+            }
+        }, checkInterval);
+
+        return () => {
+            log('Clearing periodic session check interval');
+            clearInterval(interval);
+        };
+    }, [status, checkInterval, update, log]);
+
+    return (
+        <SessionExpirationModal
+            isOpen={showExpirationModal}
+            hasUnsavedChanges={hasUnsavedChanges}
+            onConfirm={handleConfirmLogout}
+            locale={locale}
+        />
+    );
+}
+
+/**
  * Wrapper component that provides session monitoring and unsaved changes tracking
  * for the Platform application.
  *
  * This component:
  * - Wraps children with UnsavedChangesProvider
- * - Includes SessionMonitorWithModal for auto-logout functionality
+ * - Includes session monitoring for auto-logout functionality
  * - Checks for unsaved changes before logout
  */
 export function SessionMonitorWrapper({ children, locale }: SessionMonitorWrapperProps) {
     return (
         <UnsavedChangesProvider>
-            <SessionMonitorWithModal
-                locale={locale}
-                SessionExpirationModal={SessionExpirationModal}
-                useUnsavedChanges={useUnsavedChanges}
-                checkInterval={60000} // Check every 60 seconds
-                debug={process.env.NODE_ENV === 'development'}
-            />
+            <SessionMonitor locale={locale} />
             {children}
         </UnsavedChangesProvider>
     );
