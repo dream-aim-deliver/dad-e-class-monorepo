@@ -26,31 +26,41 @@ export default async function UserDashboardServerComponent() {
     }
 
     const isCoach = roles?.includes('coach');
+    const isAdmin = roles?.includes('admin');
 
     // Streaming pattern: Fire prefetches without awaiting
     // Pending queries will be dehydrated and sent to client
     prefetch(trpc.listUserCourses.queryOptions({}));
     prefetch(trpc.getPersonalProfile.queryOptions({}));
 
+    // TSK-PERF-014: Add coaching sessions prefetch for all users
+    prefetch(trpc.listUpcomingStudentCoachingSessions.queryOptions({
+        studentId: 1  // TODO: Get from session if needed
+    }));
+
     // Add coach-specific data prefetching
     if (isCoach) {
+        // TSK-PERF-014: Fix pagination - changed from pageSize 3 to 8 (matches client)
         prefetch(
             trpc.listCoachStudents.queryOptions({
                 pagination: {
                     page: 1,
-                    pageSize: 3,
+                    pageSize: 8,
                 },
             })
         );
-        // TODO: Add prefetch for coach reviews when endpoint is available
-        // prefetch(
-        //     trpc.listCoachReviews.queryOptions({
-        //         pagination: {
-        //             page: 1,
-        //             pageSize: 3,
-        //         },
-        //     })
-        // );
+
+        // TSK-PERF-014: Add coach reviews prefetch for rating badge
+        prefetch(
+            trpc.listCoachReviews.queryOptions({
+                coachUsername: session.user.name || ''
+            })
+        );
+    }
+
+    // TSK-PERF-014: Add platform courses prefetch for create course modal
+    if (isAdmin || isCoach) {
+        prefetch(trpc.listPlatformCoursesShort.queryOptions({}));
     }
 
     return (

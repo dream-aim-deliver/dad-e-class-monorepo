@@ -169,6 +169,13 @@ async function prefetchIntroductionData(
         }),
     );
 
+    // TSK-PERF-014: Remove role restriction - course status used by all roles
+    prefetch(
+        trpc.getCourseStatus.queryOptions({
+            courseSlug: slug,
+        }),
+    );
+
     if (currentRole === 'student') {
         prefetch(
             trpc.getStudentProgress.queryOptions({
@@ -180,16 +187,8 @@ async function prefetchIntroductionData(
                 courseSlug: slug,
             }),
         );
-        prefetch(
-            trpc.getCourseStatus.queryOptions({
-                courseSlug: slug,
-            }),
-        );
-        prefetch(
-            trpc.getCourseCertificateData.queryOptions({
-                courseSlug: slug,
-            }),
-        );
+        // TSK-PERF-014: Removed unused getCourseCertificateData prefetch
+        // No client component uses this query currently
     }
 }
 
