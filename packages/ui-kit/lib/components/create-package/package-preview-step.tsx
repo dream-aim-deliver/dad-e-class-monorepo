@@ -298,12 +298,12 @@ export function PackagePreviewStep({
                                 currency: course.pricing.currency
                             }}
                             sales={course.sales}
-                            reviewCount={course.reviewCount}
+                                reviewCount={course.reviewCount}
                             courseIncluded={courseIncluded}
                             onClickUser={() => onCourseAuthorClick(course.id)}
                             onClickDetails={() => onCourseDetails(course.id)}
                             onClickIncludeExclude={() => handleToggleCourseInPreview(course.id)}
-                            locale={locale}
+                                locale={locale}
                         />
                     );
                 })}

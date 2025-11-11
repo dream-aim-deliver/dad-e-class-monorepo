@@ -348,11 +348,16 @@ export function useLessonToRequest() {
             throw new Error('Invalid component type');
         }
 
+        const coachingOfferingId = component.coachingSession!.id;
+        const idAsNumber = typeof coachingOfferingId === 'number' 
+            ? coachingOfferingId 
+            : idToNumber(coachingOfferingId);
+
         return {
             id: extractId(component.id),
             type: 'coachingSession',
             position: order,
-            coachingOfferingId: component.coachingSession!.id!,
+            coachingOfferingId: idAsNumber ?? undefined,
         };
     }
 

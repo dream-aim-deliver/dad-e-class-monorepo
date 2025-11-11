@@ -357,19 +357,19 @@ export default function Package({ locale, packageId }: PackageProps) {
                 imageUrl={course.imageUrl || ''}
                 rating={course.averageRating}
                 author={{
-                  name: course.creator.name,
-                  image: course.creator.avatarUrl || ''
+                    name: course.creator.name,
+                    image: course.creator.avatarUrl || ''
                 }}
                 language={language}
                 duration={{
-                  video: 100, // TODO: Get course video duration once backend is updated
-                  coaching: 200, // TODO: Get course coaching duration once backend is updated
-                  selfStudy: 300 // TODO: Get course self-study duration once backend is updated
+                    video: 100, // TODO: Get course video duration once backend is updated
+                    coaching: 200, // TODO: Get course coaching duration once backend is updated
+                    selfStudy: 300 // TODO: Get course self-study duration once backend is updated
                 }}
                 pricing={{
                   fullPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
                   partialPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
-                  currency: platform.currency
+                    currency: platform.currency
                 }}
                 sales={course.salesCount}
                 reviewCount={course.ratingCount}
@@ -378,7 +378,7 @@ export default function Package({ locale, packageId }: PackageProps) {
                 onClickDetails={() => handleCourseDetails(course.id.toString())}
                 onClickIncludeExclude={() => handleIncludeExclude(course.id.toString())}
                 locale={currentLocale}
-              />
+                  />
             );
           })}
         </PackageCourseSelector>
