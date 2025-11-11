@@ -14,6 +14,13 @@ export default async function OffersServerComponent(props: OffersProps) {
     prefetch(trpc.listTopicsByCategory.queryOptions({}));
     prefetch(trpc.listOffersPagePackages.queryOptions({}));
 
+    // TSK-PERF-014: Add missing prefetches for coaches and courses lists
+    prefetch(trpc.listCoaches.queryOptions({
+        skillSlugs: [],  // Default: all coaches (filters applied client-side)
+        pagination: { page: 1, pageSize: 6 }
+    }));
+    prefetch(trpc.listCourses.queryOptions({}));
+
     return (
         <>
             <HydrateClient>

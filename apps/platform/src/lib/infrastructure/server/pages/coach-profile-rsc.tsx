@@ -9,6 +9,7 @@ import { Suspense } from 'react';
 import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import CoachProfile from '../../client/pages/coach-profile';
 import { TLocale } from '@maany_shr/e-class-translations';
+import getSession from '../config/auth/get-session';
 
 interface CoachProfileProps {
 	locale: TLocale;
@@ -16,11 +17,16 @@ interface CoachProfileProps {
 }
 
 export default async function CoachProfileServerComponent(props: CoachProfileProps) {
+	// TSK-PERF-014: Get session to match client logic for forStudent parameter
+	const session = await getSession();
+	const isLoggedIn = !!session?.user;
+
 	// Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
 	// React will stream HTML while queries are pending
 	prefetch(trpc.getCoachIntroduction.queryOptions({ coachUsername: props.username }));
 	prefetch(trpc.listCoachReviews.queryOptions({ coachUsername: props.username }));
-	prefetch(trpc.listCoachCourses.queryOptions({ forStudent: true }));
+	// TSK-PERF-014: Match client logic - forStudent depends on login status
+	prefetch(trpc.listCoachCourses.queryOptions({ forStudent: isLoggedIn }));
 	prefetch(trpc.getCoachProfileAccess.queryOptions({ coachUsername: props.username }));
 
 	return (
