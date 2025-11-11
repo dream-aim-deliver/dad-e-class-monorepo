@@ -50,6 +50,7 @@ export function useSaveDetails({
             // Invalidate related queries to refetch fresh data
             utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
             utils.listUserCourses.invalidate();
+            utils.listPlatformCoursesShort.invalidate();
         },
     });
 

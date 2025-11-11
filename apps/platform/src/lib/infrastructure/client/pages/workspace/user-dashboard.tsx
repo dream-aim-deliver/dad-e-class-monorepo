@@ -295,6 +295,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     const handleDuplicationSuccess = useCallback(() => {
         // Invalidate and refetch user courses
         utils.listUserCourses.invalidate();
+        utils.listPlatformCoursesShort.invalidate();
     }, [utils]);
 
     // Determine if user is a coach
