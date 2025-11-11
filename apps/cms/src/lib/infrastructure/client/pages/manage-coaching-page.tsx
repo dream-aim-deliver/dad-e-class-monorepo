@@ -9,15 +9,19 @@
 // Design: Similar to CMS Manage Offers
 
 import { useState, useEffect, useMemo } from 'react';
-import { DefaultLoading, DefaultError, Outline, PageTitleSection, BannerSection, Button, Banner } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, Outline, PageTitleSection, BannerSection, Button, Banner, IconSave, Breadcrumbs, FeedBackMessage } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachingPagePresenter } from '../hooks/use-coaching-page-presenter';
+import { useSaveCoachingPagePresenter } from '../hooks/use-save-coaching-page-presenter';
 import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
 import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
+import { useRequiredPlatform } from '../context/platform-context';
+import { useContentLocale } from '../hooks/use-platform-translations';
 
 type BannerItemType = {
   title: string;
@@ -65,9 +69,12 @@ export default function ManageCoachingPage({
 }: ManageCoachingPageProps) {
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.manageCoachingPage');
+  const router = useRouter();
+  const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+  const { platform } = useRequiredPlatform();
+  const contentLocale = useContentLocale();
 
   const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [coachingPageViewModel, setCoachingPageViewModel] = useState<
     viewModels.TGetCoachingPageViewModel | undefined
   >(undefined);
@@ -132,17 +139,59 @@ export default function ManageCoachingPage({
     });
   };
 
-  const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation({
-    onSuccess: async (data) => {
-      if (data.success) {
-        setSaveStatus('success');
-        await refetchCoachingPage();
-      }
-    },
-    onError: () => {
-      setSaveStatus('error');
-    },
-  });
+  // Save mutation
+  const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation();
+  const [saveViewModel, setSaveViewModel] = useState<
+    viewModels.TSaveCoachingPageViewModel | undefined
+  >(undefined);
+
+  // Mutation presenter
+  const { presenter: savePresenter } = useSaveCoachingPagePresenter(setSaveViewModel);
+
+  // Error and success message state
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (saveCoachingPageMutation.isSuccess && saveCoachingPageMutation.data) {
+      // @ts-ignore
+      savePresenter.present(saveCoachingPageMutation.data, saveViewModel);
+    }
+  }, [saveCoachingPageMutation.isSuccess, saveCoachingPageMutation.data, savePresenter, saveViewModel]);
+
+  useEffect(() => {
+    if (
+      saveCoachingPageMutation.isSuccess &&
+      saveViewModel?.mode === 'default'
+    ) {
+      // Success case
+      setErrorMessage(null);
+      setSuccessMessage('Coaching page content saved successfully!');
+      // Auto-dismiss success message after 5 seconds
+      const timer = setTimeout(() => setSuccessMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+    // Handle kaboom and other error modes
+    if (
+      saveCoachingPageMutation.isSuccess &&
+      saveViewModel?.mode === 'kaboom'
+    ) {
+      setErrorMessage(
+        'Failed to save coaching page content. Please try again.'
+      );
+      setSuccessMessage(null);
+    }
+  }, [saveViewModel, saveCoachingPageMutation.isSuccess]);
+
+  useEffect(() => {
+    if (saveCoachingPageMutation.isError) {
+      setErrorMessage(
+        saveCoachingPageMutation.error?.message ||
+        'Failed to save coaching page content. Please try again.'
+      );
+      setSuccessMessage(null);
+    }
+  }, [saveCoachingPageMutation.isError, saveCoachingPageMutation.error]);
 
   // Present data on mount and when response changes
   useEffect(() => {
@@ -189,35 +238,64 @@ export default function ManageCoachingPage({
   const handleSave = async () => {
     if (!formState.value) return;
 
-    setSaveStatus('idle');
+    setErrorMessage(null);
+    setSuccessMessage(null);
 
-    await saveCoachingPageMutation.mutateAsync({
-      title: formState.value.title,
-      description: formState.value.description,
-      banner: {
-        title: formState.value.banner.title,
-        description: formState.value.banner.description,
-        imageId: Number(formState.value.banner.image?.id) || null,
-        buttonText: formState.value.banner.buttonText,
-        buttonLink: formState.value.banner.buttonLink,
-      },
-    });
+    try {
+      await saveCoachingPageMutation.mutateAsync({
+        title: formState.value.title,
+        description: formState.value.description,
+        banner: {
+          title: formState.value.banner.title,
+          description: formState.value.banner.description,
+          imageId: Number(formState.value.banner.image?.id) || null,
+          buttonText: formState.value.banner.buttonText,
+          buttonLink: formState.value.banner.buttonLink,
+        },
+      });
+    } catch (error) {
+      // Error handled by useEffect
+    }
   };
 
+  // Breadcrumbs following the standard pattern
+  const breadcrumbItems = [
+    {
+      label: breadcrumbsTranslations('platforms'),
+      onClick: () => router.push('/'),
+    },
+    {
+      label: platform.name,
+      onClick: () => {
+        // TODO: Implement navigation to platform
+      },
+    },
+    {
+      label: breadcrumbsTranslations('coachingPage'),
+      onClick: () => {
+        // Nothing should happen on clicking the current page
+      },
+    },
+  ];
+
   return (
-    <div className="flex flex-col space-y-5 w-full">
-      {/* Page header with translations */}
-      <div className="flex justify-between items-start">
-        <div className="flex-1">
-          <Outline
-            title={t('title')}
-            description={t('description')}
-          />
-        </div>
-        <div className="ml-4">
+    <div className="flex flex-col gap-4 w-full">
+      <Breadcrumbs items={breadcrumbItems} />
+
+      {/* Page header with gradient background */}
+      <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg shadow-lg">
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col space-y-2">
+            <h1>{t('title')}</h1>
+            <p className="text-text-secondary text-sm">
+              Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
+            </p>
+          </div>
           <Button
             variant="primary"
             size="medium"
+            hasIconLeft
+            iconLeft={<IconSave />}
             text={t('save')}
             onClick={handleSave}
             disabled={saveCoachingPageMutation.isPending || !formState.isDirty}
@@ -225,14 +303,23 @@ export default function ManageCoachingPage({
         </div>
       </div>
 
-      {saveCoachingPageMutation.isPending && saveStatus === 'idle' && (
-        <Banner style="success" title={t('savingBanner')} />
+      {/* Success Banner */}
+      {successMessage && (
+        <Banner
+          title="Success!"
+          description={successMessage}
+          style="success"
+          closeable={true}
+          onClose={() => setSuccessMessage(null)}
+        />
       )}
-      {saveStatus === 'success' && (
-        <Banner style="success" title={t('savedBanner')} />
-      )}
-      {saveStatus === 'error' && (
-        <Banner style="error" title={t('failedBanner')} />
+
+      {/* Error Message */}
+      {errorMessage && (
+        <FeedBackMessage
+          type="error"
+          message={errorMessage}
+        />
       )}
 
       {/* Page Title Section */}
