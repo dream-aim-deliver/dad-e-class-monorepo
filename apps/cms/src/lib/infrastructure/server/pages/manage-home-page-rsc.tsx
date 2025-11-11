@@ -24,10 +24,8 @@ export default async function ManageHomepageServerComponent({
 		platform_locale: platformLocale
 	});
 
-	// Prefetch homepage data for better performance
-	await Promise.all([
-		prefetch(trpc.getHomePage.queryOptions({})),
-	]);
+	// Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+	prefetch(trpc.getHomePage.queryOptions({}));
 
 	return (
 		<>

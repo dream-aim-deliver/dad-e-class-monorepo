@@ -24,19 +24,14 @@ export default async function BillingServerComponent(
   const session = await getSession();
   const isCoach = session?.user?.roles?.includes('coach');
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  const prefetchPromises = [
-    prefetch(trpc.listUserIncomingTransactions.queryOptions({})), // Student transactions (orders)
-  ];
+  // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+  // React will stream HTML while queries are pending
+  prefetch(trpc.listUserIncomingTransactions.queryOptions({})); // Student transactions (orders)
 
   // Coaches also need to prefetch outgoing transactions (received payments)
   if (isCoach) {
-    prefetchPromises.push(
-      prefetch(trpc.listUserOutgoingTransactions.queryOptions({})) // Coach received payments
-    );
+    prefetch(trpc.listUserOutgoingTransactions.queryOptions({})); // Coach received payments
   }
-
-  await Promise.all(prefetchPromises);
 
   return (
     <HydrateClient>

@@ -22,7 +22,8 @@ export default async function CoachingSessionsServerComponent(props: CoachingSes
 
     // Handle coach role
     if (roles && roles.includes('coach') && userRole === 'coach') {
-        await Promise.all([prefetch(trpc.listCoachCoachingSessions.queryOptions({}))]);
+        // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+        prefetch(trpc.listCoachCoachingSessions.queryOptions({}));
 
         return (
             <>

@@ -25,13 +25,11 @@ export default async function ProfileServerComponent(props: ProfileProps) {
 	const username = session.user.name || '';
 	const roles = session.user.roles || [];
 
-	// Only prefetch data needed for the default "Personal" tab
-	// Professional profile and topics will be lazy-loaded when user clicks the Professional tab
-	await Promise.all([
-		prefetch(trpc.getPersonalProfile.queryOptions({})),
-		prefetch(trpc.listLanguages.queryOptions({})),
-		prefetch(trpc.getProfessionalProfile.queryOptions({})),
-	]);
+	// Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+	// React will stream HTML while queries are pending
+	prefetch(trpc.getPersonalProfile.queryOptions({}));
+	prefetch(trpc.listLanguages.queryOptions({}));
+	prefetch(trpc.getProfessionalProfile.queryOptions({}));
 
 	return (
 		<>

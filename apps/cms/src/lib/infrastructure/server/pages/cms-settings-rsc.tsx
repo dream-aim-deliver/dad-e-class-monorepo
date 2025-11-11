@@ -27,9 +27,8 @@ export default async function CmsSettingsServerComponent({
     platform_locale: platformLocale,
   });
 
-  await Promise.all([
-    prefetch(trpc.getPlatform.queryOptions({})),
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.getPlatform.queryOptions({}));
 
   return (
     <HydrateClient>

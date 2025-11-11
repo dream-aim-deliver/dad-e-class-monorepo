@@ -25,9 +25,8 @@ export default async function PlatformUsersServerComponent(
     platform_slug: props.platformSlug,
   });
 
-  await Promise.all([
-    prefetch(trpc.listUsers.queryOptions({})),
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.listUsers.queryOptions({}));
 
   return (
     <HydrateClient>

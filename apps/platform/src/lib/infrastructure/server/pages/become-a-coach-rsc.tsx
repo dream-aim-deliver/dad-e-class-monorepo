@@ -18,10 +18,8 @@ interface BecomeACoachServerComponentProps {
 export default async function BecomeACoachServerComponent(
   props: BecomeACoachServerComponentProps
 ) {
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  await Promise.all([
-    prefetch(trpc.listTopics.queryOptions({})), // listTopics
-  ]);
+  // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  prefetch(trpc.listTopics.queryOptions({})); // listTopics
 
   return (
     <HydrateClient>

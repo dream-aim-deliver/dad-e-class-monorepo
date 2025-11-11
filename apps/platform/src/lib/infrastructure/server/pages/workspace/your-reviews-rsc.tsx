@@ -23,20 +23,13 @@ export default async function YourReviewsServerComponent({ locale }: { locale: T
 
     const roles = session.user.roles;
 
-    // Prefetch coach reviews data
-    try {
-        await Promise.all([
-            prefetch(
-                trpc.listCoachReviews.queryOptions({
-                    coachUsername: session.user.name,
-                }),
-            ),
-        ]);
-    } catch (error) {
-        throw new Error(
-            dictionary.pages.yourReviews.errorMessage,
-        );
-    }
+    // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+    // Note: Errors will be handled by React error boundaries
+    prefetch(
+        trpc.listCoachReviews.queryOptions({
+            coachUsername: session.user.name,
+        }),
+    );
 
     return (
         <>

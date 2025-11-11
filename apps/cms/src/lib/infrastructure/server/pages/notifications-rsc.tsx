@@ -24,10 +24,10 @@ export default async function NotificationsServerComponent(
     platform_slug: props.platformSlug,
   });
 
-  await Promise.all([
-    prefetch(trpc.listNotifications.queryOptions({})),
-    prefetch(trpc.listSentNotifications.queryOptions({})),
-  ]);
+  // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+  // React will stream HTML while queries are pending
+  prefetch(trpc.listNotifications.queryOptions({}));
+  prefetch(trpc.listSentNotifications.queryOptions({}));
 
   return (
     <HydrateClient>

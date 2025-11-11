@@ -5,9 +5,8 @@ import { HydrateClient, prefetch, getServerTRPC } from '../config/trpc/cms-serve
 
 export default async function ListPlatformsServerComponent() {
     const trpc = getServerTRPC();
-    await Promise.all([
-        prefetch(trpc.listPlatforms.queryOptions({})),
-    ]);
+    // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+    prefetch(trpc.listPlatforms.queryOptions({}));
 
     return (
         <>

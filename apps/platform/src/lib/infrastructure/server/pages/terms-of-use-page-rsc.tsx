@@ -4,9 +4,8 @@ import TermsOfUsePage from '../../../../lib/infrastructure/client/pages/terms-of
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 
 export default async function TermsOfUsePageServerComponent() {
-    await Promise.all([
-        prefetch(trpc.getPlatformLanguage.queryOptions({})),
-    ]);
+    // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+    prefetch(trpc.getPlatformLanguage.queryOptions({}));
 
     return (
         <HydrateClient>

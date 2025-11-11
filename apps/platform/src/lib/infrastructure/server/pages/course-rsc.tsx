@@ -144,7 +144,8 @@ function shouldShowAssessment(
 }
 
 async function renderAssessmentForm(slug: string) {
-    await prefetch(
+    // Streaming pattern: Fire prefetch without awaiting
+    prefetch(
         trpc.listPreCourseAssessmentComponents.queryOptions({}),
     );
 
@@ -161,40 +162,35 @@ async function prefetchIntroductionData(
     slug: string,
     currentRole: string,
 ): Promise<void> {
-    const promises = [
-        prefetch(
-            trpc.getEnrolledCourseDetails.queryOptions({
-                courseSlug: slug,
-            }),
-        ),
-    ];
+    // Streaming pattern: Fire prefetches without awaiting
+    prefetch(
+        trpc.getEnrolledCourseDetails.queryOptions({
+            courseSlug: slug,
+        }),
+    );
 
     if (currentRole === 'student') {
-        promises.push(
-            prefetch(
-                trpc.getStudentProgress.queryOptions({
-                    courseSlug: slug,
-                }),
-            ),
-            prefetch(
-                trpc.listIncludedCoachingSessions.queryOptions({
-                    courseSlug: slug,
-                }),
-            ),
-            prefetch(
-                trpc.getCourseStatus.queryOptions({
-                    courseSlug: slug,
-                }),
-            ),
-            prefetch(
-                trpc.getCourseCertificateData.queryOptions({
-                    courseSlug: slug,
-                }),
-            ),
+        prefetch(
+            trpc.getStudentProgress.queryOptions({
+                courseSlug: slug,
+            }),
+        );
+        prefetch(
+            trpc.listIncludedCoachingSessions.queryOptions({
+                courseSlug: slug,
+            }),
+        );
+        prefetch(
+            trpc.getCourseStatus.queryOptions({
+                courseSlug: slug,
+            }),
+        );
+        prefetch(
+            trpc.getCourseCertificateData.queryOptions({
+                courseSlug: slug,
+            }),
         );
     }
-
-    await Promise.all(promises);
 }
 
 function renderEnrolledCourse({
@@ -241,15 +237,15 @@ async function renderVisitorView(slug: string, locale: TLocale) {
     );
 }
 // ✅ NEW: Only prefetch data - no presenters on server
+// ✅ STREAMING: Fire prefetches without awaiting (TSK-PERF-007)
 async function prefetchVisitorCourseData(slug: string) {
-    // Prefetch all data in parallel - client will handle presentation
-    await Promise.all([
-        prefetch(trpc.getPublicCourseDetails.queryOptions({ courseSlug: slug })),
-        prefetch(trpc.getCourseIntroduction.queryOptions({ courseSlug: slug })),
-        prefetch(trpc.getCourseOutline.queryOptions({ courseSlug: slug })),
-        prefetch(trpc.listCourseReviews.queryOptions({ courseSlug: slug })),
-        prefetch(trpc.getCoursePackages.queryOptions({ courseSlug: slug })),
-        prefetch(trpc.getOffersPageOutline.queryOptions({})),
-        prefetch(trpc.getCoachingPage.queryOptions({})),
-    ]);
+    // Streaming pattern: Fire all prefetches without awaiting
+    // React will stream HTML while queries are pending
+    prefetch(trpc.getPublicCourseDetails.queryOptions({ courseSlug: slug }));
+    prefetch(trpc.getCourseIntroduction.queryOptions({ courseSlug: slug }));
+    prefetch(trpc.getCourseOutline.queryOptions({ courseSlug: slug }));
+    prefetch(trpc.listCourseReviews.queryOptions({ courseSlug: slug }));
+    prefetch(trpc.getCoursePackages.queryOptions({ courseSlug: slug }));
+    prefetch(trpc.getOffersPageOutline.queryOptions({}));
+    prefetch(trpc.getCoachingPage.queryOptions({}));
 }

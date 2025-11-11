@@ -4,10 +4,10 @@ import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 
 export default async function HomeServerComponent() {
-    await Promise.all([
-        prefetch(trpc.getHomePage.queryOptions({})),
-        prefetch(trpc.listTopics.queryOptions({})),
-    ]);
+    // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
+    // React will stream HTML while queries are pending
+    prefetch(trpc.getHomePage.queryOptions({}));
+    prefetch(trpc.listTopics.queryOptions({}));
 
     return (
         <>
