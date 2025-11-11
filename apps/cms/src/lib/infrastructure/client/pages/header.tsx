@@ -72,7 +72,9 @@ export default function Header({
     const handleLogout = async () => {
         try {
             setIsLoggingOut(true);
-            await signOut({ callbackUrl: `/${locale}/` });
+            // Preserve current page by encoding it in the callback URL
+            const encodedPath = encodeURIComponent(pathname);
+            await signOut({ callbackUrl: `/${locale}/auth/login?callbackUrl=${encodedPath}` });
         } catch (error) {
             console.error('Logout failed:', error);
             setIsLoggingOut(false);

@@ -544,6 +544,12 @@ export const DE: TDictionary = {
       yesDeleteText: 'Ja, Löschen',
       modalText: 'Sind Sie sicher, dass Sie dieses Element löschen möchten?',
     },
+    sessionExpirationModal: {
+      title: 'Sitzung abgelaufen',
+      message: 'Ihre Sitzung ist aufgrund von Inaktivität abgelaufen. Bitte melden Sie sich erneut an, um fortzufahren.',
+      unsavedChangesWarning: 'Warnung: Sie haben ungespeicherte Änderungen, die verloren gehen.',
+      loginButtonText: 'Zur Anmeldung',
+    },
     coachingSessionTracker: {
       minuteText: 'Minuten',
       usedText: 'gebraucht',

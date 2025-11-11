@@ -65,6 +65,9 @@ export const generateNextAuthConfig = (config: {
         trustHost: true,
         session: {
             strategy: "jwt",
+            // Set session maxAge to 24 hours (Auth0 default token expiry)
+            // This can be overridden by token expiration if refresh fails
+            maxAge: 24 * 60 * 60, // 24 hours in seconds
         },
         pages: {
             signIn: `${config.pages.signIn}`,
@@ -77,7 +80,7 @@ export const generateNextAuthConfig = (config: {
                 issuer: config.auth0.issuer,
                 authorization: {
                     params: {
-                        scope: "openid profile email roles",
+                        scope: "openid profile email roles offline_access",
                     },
                     url: config.auth0.authorizationUrl,
                 },
@@ -105,18 +108,87 @@ export const generateNextAuthConfig = (config: {
             })
         ],
         callbacks: {
-            jwt: async ({ token, user, account, profile }) => {
+            jwt: async ({ token, user, account, profile, trigger }) => {
+                // Initial sign in - store user and account data
                 if (user) {
                     token.user = user;
                 }
                 if (account) {
                     token.account = account;
+                    // Store when the access token expires
+                    token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : Date.now() + 3600 * 1000;
                 }
-                // Store the JWT ID (jti) for session tracking
-                if (token.jti) {
-                    token.sessionId = token.jti;
+
+                // Return previous token if the access token has not expired yet
+                const currentTime = Date.now();
+                const tokenExpires = (token.accessTokenExpires as number) || 0;
+
+                // Refresh token 5 minutes before expiration to avoid edge cases
+                const shouldRefresh = tokenExpires - currentTime < 5 * 60 * 1000;
+
+                if (!shouldRefresh) {
+                    console.log('[Auth JWT] ✅ Token still valid, no refresh needed');
+                    return token;
                 }
-                return token;
+
+                // Access token has expired or will expire soon, try to refresh it
+                console.log('[Auth JWT] 🔄 Access token expired or expiring soon, attempting refresh...');
+                const refreshToken = (token.account as Account)?.refresh_token;
+
+                if (!refreshToken) {
+                    console.error('[Auth JWT] ❌ No refresh token available, cannot refresh session');
+                    // Mark token as expired so client can handle logout
+                    token.error = 'RefreshTokenMissing';
+                    return token;
+                }
+
+                try {
+                    const tokenEndpoint = `${config.auth0.issuer}/oauth/token`;
+                    console.log('[Auth JWT] 📡 Refreshing token at:', tokenEndpoint);
+
+                    const response = await fetch(tokenEndpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({
+                            grant_type: 'refresh_token',
+                            client_id: config.auth0.clientId,
+                            client_secret: config.auth0.clientSecret,
+                            refresh_token: refreshToken,
+                        }),
+                    });
+
+                    const refreshedTokens = await response.json();
+
+                    if (!response.ok) {
+                        console.error('[Auth JWT] ❌ Token refresh failed:', refreshedTokens);
+                        throw new Error(refreshedTokens.error || 'Token refresh failed');
+                    }
+
+                    console.log('[Auth JWT] ✅ Token refreshed successfully');
+
+                    // Update the token with refreshed credentials
+                    const updatedAccount = {
+                        ...(token.account as Account),
+                        access_token: refreshedTokens.access_token,
+                        id_token: refreshedTokens.id_token,
+                        expires_at: Math.floor(Date.now() / 1000) + (refreshedTokens.expires_in || 3600),
+                        refresh_token: refreshedTokens.refresh_token || refreshToken,
+                    };
+
+                    return {
+                        ...token,
+                        account: updatedAccount,
+                        accessTokenExpires: (updatedAccount.expires_at || 0) * 1000,
+                        error: undefined,
+                    };
+                } catch (error) {
+                    console.error('[Auth JWT] ❌ Error refreshing access token:', error);
+                    // Mark token as expired so client can handle logout
+                    return {
+                        ...token,
+                        error: 'RefreshAccessTokenError',
+                    };
+                }
             },
             session: async ({ session, token }) => {
                 // console.log('[Auth Session] 🔄 Invoking session callback. Token:', token.jti);
@@ -126,12 +198,13 @@ export const generateNextAuthConfig = (config: {
                 const nextAuthToken = token as DefaultJWT & {
                     user: TAuthProviderProfileDTO,
                     account: Account,
-                    sessionId?: string
+                    error?: string
                 }
 
-                // Set the session ID from JWT token ID (jti)
-                if (nextAuthToken.sessionId) {
-                    session.user.sessionId = nextAuthToken.sessionId;
+                // Propagate error to session for client-side handling
+                if (nextAuthToken.error) {
+                    console.error('[Auth Session] ❌ Token error detected:', nextAuthToken.error);
+                    (session as any).error = nextAuthToken.error;
                 }
 
                 // Create TRPC client with authorization header

@@ -20,7 +20,9 @@ export {
   TextAreaInput,
   type TextAreaInputProps,
 } from './components/text-areaInput';
-export { ThemeProvider, useTheme } from './contexts';
+export { ThemeProvider, useTheme, UnsavedChangesProvider, useUnsavedChanges } from './contexts';
+export { useFormDirtyTracking } from './hooks/use-form-dirty-tracking';
+export { SessionExpirationModal, type SessionExpirationModalProps } from './components/session-expiration-modal';
 export { VisitorCourseCard } from './components/course-card/visitor-course-card/visitor-course-card';
 export { CoachCourseCard } from './components/course-card/coach-course-card/coach-course-card';
 export { StudentCourseCard } from './components/course-card/student-course-card/student-course-card';

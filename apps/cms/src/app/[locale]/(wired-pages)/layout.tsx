@@ -8,6 +8,7 @@ import { SessionProvider } from 'next-auth/react';
 import { auth, viewModels } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../../lib/infrastructure/server/config/auth/next-auth.config';
+import { SessionMonitorWrapper } from '../../../lib/infrastructure/client/components/session-monitor-wrapper';
 import {
     languageCodeToLocale,
     localeToLanguageCode,
@@ -118,9 +119,11 @@ export default async function RootLayout({
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <RuntimeConfigProvider config={runtimeConfig}>
-                            <Layout availableLocales={availableLocales}>
-                                {children}
-                            </Layout>
+                            <SessionMonitorWrapper locale={locale}>
+                                <Layout availableLocales={availableLocales}>
+                                    {children}
+                                </Layout>
+                            </SessionMonitorWrapper>
                         </RuntimeConfigProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>

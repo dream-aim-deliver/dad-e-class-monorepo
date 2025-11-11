@@ -541,6 +541,12 @@ export const EN: TDictionary = {
       yesDeleteText: 'Delete',
       modalText: 'Are you sure you want to delete this item?',
     },
+    sessionExpirationModal: {
+      title: 'Session Expired',
+      message: 'Your session has expired due to inactivity. Please log in again to continue.',
+      unsavedChangesWarning: 'Warning: You have unsaved changes that will be lost.',
+      loginButtonText: 'Go to Login',
+    },
     coachingSessionTracker: {
       minuteText: 'minutes',
       usedText: 'used',

@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { validateCallbackUrl } from '@maany_shr/e-class-auth';
 import env from '../config/env';
 
 interface LoginPageProps {
@@ -17,6 +18,12 @@ const LoginPage = (props: LoginPageProps) => {
     const searchParams = useSearchParams();
     const loggedOut = searchParams?.get('loggedout');
 
+    // Get and validate callback URL from query parameters
+    const rawCallbackUrl = searchParams?.get('callbackUrl');
+    const callbackUrl = validateCallbackUrl(rawCallbackUrl, {
+        defaultUrl: `/${props.locale}`,
+    });
+
     const dictionary = getDictionary(props.locale);
 
     const handleSubmit = async (inputValues: {
@@ -26,7 +33,7 @@ const LoginPage = (props: LoginPageProps) => {
         await signIn('credentials', {
             username: inputValues.userName,
             password: inputValues.userPassword,
-            callbackUrl: '/',
+            callbackUrl: callbackUrl,
         });
     };
 
@@ -34,7 +41,7 @@ const LoginPage = (props: LoginPageProps) => {
     const handleAuth0 = async () => {
         await signIn(
             'auth0',
-            { callbackUrl: '/' },
+            { callbackUrl: callbackUrl },
             {
                 ui_locales: props.locale,
                 platform: props.platform,
