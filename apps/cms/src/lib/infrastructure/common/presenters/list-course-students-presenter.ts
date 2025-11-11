@@ -6,31 +6,31 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TCourseStudentsPresenterUtilities = {};
+export type TListCourseStudentsPresenterUtilities = {};
 
 export const ListCourseStudentsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         useCaseModels.TListCourseStudentsUseCaseResponse,
-        viewModels.TCourseStudentsListViewModel,
-        TCourseStudentsPresenterUtilities
+        viewModels.TListCourseStudentsViewModel,
+        TListCourseStudentsPresenterUtilities
     >;
 
 type TListCourseStudentsResponseMiddleware = typeof ListCourseStudentsResponseMiddleware;
 
 export default class ListCourseStudentsPresenter extends BasePresenter<
     useCaseModels.TListCourseStudentsUseCaseResponse,
-    viewModels.TCourseStudentsListViewModel,
-    TCourseStudentsPresenterUtilities,
+    viewModels.TListCourseStudentsViewModel,
+    TListCourseStudentsPresenterUtilities,
     TListCourseStudentsResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TCourseStudentsListViewModel) => void,
-        viewUtilities: TCourseStudentsPresenterUtilities,
+        setViewModel: (viewModel: viewModels.TListCourseStudentsViewModel) => void,
+        viewUtilities: TListCourseStudentsPresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel: useCaseModels.ListCourseStudentsUseCaseResponseSchema,
-                viewModel: viewModels.CourseStudentsListViewModelSchema
+                viewModel: viewModels.ListCourseStudentsViewModelSchema
             },
             middleware: ListCourseStudentsResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -43,7 +43,7 @@ export default class ListCourseStudentsPresenter extends BasePresenter<
             useCaseModels.TListCourseStudentsUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TCourseStudentsListViewModel {
+    ): viewModels.TListCourseStudentsViewModel {
         return {
             mode: 'default',
             data: {
@@ -56,7 +56,7 @@ export default class ListCourseStudentsPresenter extends BasePresenter<
             useCaseModels.TListCourseStudentsUseCaseErrorResponse,
             TListCourseStudentsResponseMiddleware
         >,
-    ): viewModels.TCourseStudentsListViewModel {
+    ): viewModels.TListCourseStudentsViewModel {
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
