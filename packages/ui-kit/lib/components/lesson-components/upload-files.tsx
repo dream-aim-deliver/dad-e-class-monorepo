@@ -8,15 +8,17 @@ import {
     FormElementType,
     DesignerComponentProps,
     FormComponentProps,
+    SubmissionComponentProps,
 } from '../pre-assessment/types';
 import { PreAssessmentUploadFilesElement } from './types';
 import DesignerLayout from '../designer-layout';
 import { ElementValidator } from '../lesson/types';
-import { getDictionary } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import DefaultError from '../default-error';
 import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
+import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
 export const getValidationError: ElementValidator = (props) => {
@@ -291,29 +293,60 @@ export function FormComponent({
  * View Component for Upload Files
  * Renders the read-only view of uploaded files and comments
  */
-function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
+function ViewComponent({
+    elementInstance,
+    locale,
+}: SubmissionComponentProps) {
     if (elementInstance.type !== FormElementType.UploadFiles) return null;
     const uploadElement = elementInstance as PreAssessmentUploadFilesElement;
-    
+    const dictionary = getDictionary(locale);
+
+    const handleFileDownload = (fileId: string) => {
+        const file = uploadElement.files?.find((f) => f.id === fileId);
+        if (file && file.url) {
+            window.open(file.url, '_blank');
+        }
+    };
+
     return (
-        <div className="text-text-primary flex flex-col gap-2">
+        <div className="p-4 pt-2 w-full border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
+            <div className="flex items-center gap-2 flex-1 text-text-primary py-4 border-b border-divider">
+                <span className="min-w-0 flex-shrink-0">
+                    <IconCloudUpload />
+                </span>
+                <p className="text-md font-important leading-[24px] word-break">
+                    {dictionary.components.courseBuilder.uploadFilesText}
+                </p>
+            </div>
+
             <p className="font-important text-text-primary leading-[150%] text-sm md:text-md">
                 {uploadElement.description}
             </p>
+
             {uploadElement.files && uploadElement.files.length > 0 && (
-                <div className="flex flex-col gap-2">
-                    <p className="text-sm font-important">Uploaded Files:</p>
-                    {uploadElement.files.map((file) => (
-                        <div key={file.id} className="text-sm">
-                            {file.name}
-                        </div>
+                <div className="flex flex-col gap-2 w-full">
+                    {uploadElement.files.map((file, index) => (
+                        <FilePreview
+                            key={file.id || `file-${index}`}
+                            uploadResponse={file}
+                            locale={locale}
+                            readOnly={true}
+                            deletion={{ isAllowed: false }}
+                            onDownload={() => handleFileDownload(file.id as string)}
+                        />
                     ))}
                 </div>
             )}
+
             {uploadElement.userComment && (
-                <div className="flex flex-col gap-2">
-                    <p className="text-sm font-important">Comment:</p>
-                    <p className="text-sm">{uploadElement.userComment}</p>
+                <div className="w-full flex flex-col gap-2">
+                    <p className="text-sm md:text-md text-text-secondary flex gap-1 items-center">
+                        {
+                            dictionary.components.courseBuilder
+                                .additionalCommentsTooltip
+                        }
+                    </p>
+                    <p className="text-sm text-text-primary">{uploadElement.userComment}</p>
                 </div>
             )}
         </div>
