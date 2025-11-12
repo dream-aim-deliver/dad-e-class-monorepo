@@ -30,7 +30,7 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();
   const searchParams = useSearchParams();
-  const{ platform} = useRequiredPlatform();
+  const { platform } = useRequiredPlatform();
 
 
   // Get status from URL or default to 'all'
@@ -70,8 +70,13 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
     setListCoursesViewModel
   );
 
-  // @ts-ignore
-  presenter.present(coursesResponse, listCoursesViewModel);
+  // Present data when it changes
+  useEffect(() => {
+    if (coursesResponse && presenter) {
+      // @ts-ignore
+      presenter.present(coursesResponse, listCoursesViewModel);
+    }
+  }, [coursesResponse, presenter]);
 
   const courses: Course[] = listCoursesViewModel?.mode === 'default'
     ? listCoursesViewModel.data.courses
@@ -223,7 +228,6 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
                   <CourseCardList
                     locale={currentLocale}
                     emptyStateMessage={'No courses found'}
-                    emptyStateButtonText={'Create Course'}
                   >
                     {displayedItems.map((course) => {
 
@@ -263,7 +267,7 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
                           course={courseMetadata}
                           sessions={course.coachingSessionCount}
                           sales={course.salesCount}
-                          onEdit={()=>router.push(`${platform.domainName}/edit/course/${course.id}`)}
+                          onEdit={() => window.open(`/edit/course/${course.id}`, '_blank')}
                         />
                       );
                     })}
