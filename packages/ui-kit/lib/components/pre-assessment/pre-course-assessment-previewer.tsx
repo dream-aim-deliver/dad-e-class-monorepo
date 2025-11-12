@@ -9,6 +9,7 @@ import { FormComponent as TextInputFormComponent } from '../lesson-components/te
 import { FormComponent as SingleChoiceFormComponent } from '../lesson-components/single-choice';
 import { FormComponent as MultiCheckFormComponent } from '../lesson-components/multi-check';
 import { FormComponent as OneOutOfThreeFormComponent } from '../lesson-components/one-out-of-three';
+import { FormComponent as UploadFilesFormComponent } from '../lesson-components/upload-files';
 import { Divider } from '../divider';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 
@@ -83,6 +84,18 @@ export function PreCourseAssessmentPreviewer({
             case FormElementType.OneOutOfThree:
                 return (
                     <OneOutOfThreeFormComponent
+                        key={key}
+                        elementInstance={formElement}
+                        locale={locale}
+                        submitValue={(id, element) => {
+                            elementProgress.current.set(id, element);
+                        }}
+                    />
+                );
+
+            case FormElementType.UploadFiles:
+                return (
+                    <UploadFilesFormComponent
                         key={key}
                         elementInstance={formElement}
                         locale={locale}
