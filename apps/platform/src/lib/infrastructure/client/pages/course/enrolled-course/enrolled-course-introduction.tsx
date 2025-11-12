@@ -100,6 +100,7 @@ function IncludedCoachingSessions({ courseSlug }: { courseSlug: string }) {
     const { presenter } = useListIncludedCoachingSessionsPresenter(
         setCoachingSessionsViewModel,
     );
+    // @ts-ignore
     presenter.present(coachingSessionsResponse, coachingSessionsViewModel);
 
     const locale = useLocale() as TLocale;
