@@ -2,7 +2,7 @@ import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
 // Mock data for upcoming coaching sessions (only scheduled sessions that are upcoming)
-const listUpcomingStudentCoachingSessionsMock: useCaseModels.TListUpcomingStudentCoachingSessionsSuccessResponse['data'] = {
+const listUpcomingStudentCoachingSessionsMock: useCaseModels.TListStudentCoachingSessionsSuccessResponse['data'] = {
     sessions: [
         // REQUESTED status - Sessions awaiting coach approval
         {
@@ -71,9 +71,9 @@ const listUpcomingStudentCoachingSessionsMock: useCaseModels.TListUpcomingStuden
 };
 
 export const listUpcomingStudentCoachingSessions = t.procedure
-    .input(useCaseModels.ListUpcomingStudentCoachingSessionsRequestSchema)
+    .input(useCaseModels.ListStudentCoachingSessionsRequestSchema)
     .query(
-        async (): Promise<useCaseModels.TListUpcomingStudentCoachingSessionsUseCaseResponse> => {
+        async (): Promise<useCaseModels.TListStudentCoachingSessionsUseCaseResponse> => {
             return {
                 success: true,
                 data: listUpcomingStudentCoachingSessionsMock,
