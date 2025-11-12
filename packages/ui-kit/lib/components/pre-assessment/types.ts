@@ -1,10 +1,20 @@
 import React from "react";
 import { Descendant } from "slate";
 import { isLocalAware } from "@maany_shr/e-class-translations";
-import { HeadingElement, MultiCheckElement, OneOutOfThreeElement, RichTextElement, SingleChoiceElement, TextInputElement } from "../lesson-components/types";
+import { 
+    BaseFormElement, 
+    HeadingElement, 
+    MultiCheckElement, 
+    OneOutOfThreeElement, 
+    RichTextElement, 
+    SingleChoiceElement, 
+    TextInputElement,
+    PreAssessmentUploadFilesElement
+} from "../lesson-components/types";
 import { HeadingType } from "../heading-type";
 import { OneOutOfThreeData } from "../out-of-three/one-out-of-three";
 import { optionsType } from "../single-choice";
+import { fileMetadata } from "@maany_shr/e-class-models";
 
 /**
  * Enum representing the available form element types in the pre-assessment form builder.
@@ -21,17 +31,41 @@ import { optionsType } from "../single-choice";
  * ```
  */
 export enum FormElementType {
-    /** Rich text element for displaying formatted text content */
+    /** 
+     * Rich text element for displaying formatted text content.
+     * Supports HTML formatting and can be used for instructions, descriptions, or informational content.
+     */
     RichText = "richText",
-    /** Single choice element for selecting one option from a list */
+    /** 
+     * Single choice element for selecting one option from a list of options.
+     * Displays as radio buttons and allows users to select exactly one option.
+     */
     SingleChoice = "singleChoice",
-    /** Multi choice element for selecting multiple options from a list */
+    /** 
+     * Multi choice element for selecting multiple options from a list.
+     * Displays as checkboxes and allows users to select zero or more options.
+     */
     MultiCheck = "multiCheck",
-    /** Text input element for entering text */
+    /** 
+     * Text input element for entering free-form text.
+     * Allows users to type their response in a text field.
+     */
     TextInput = "textInput",
+    /** 
+     * Heading element for displaying section titles and headings.
+     * Supports different heading levels (h1, h2, h3, etc.) for hierarchical organization.
+     */
     HeadingText = "headingText",
-    OneOutOfThree = "oneOutOfThree"
-
+    /** 
+     * One out of three element for matrix-style selection.
+     * Displays rows and columns where users select one option per row from three columns.
+     */
+    OneOutOfThree = "oneOutOfThree",
+    /** 
+     * Upload files element for allowing users to upload files.
+     * Supports multiple file uploads with optional descriptions and user comments.
+     */
+    UploadFiles = "uploadFiles"
 }
 
 
@@ -58,7 +92,11 @@ export enum FormElementType {
 export type FormElement =
     | RichTextElement
     | TextInputElement
-    | SingleChoiceElement |MultiCheckElement | HeadingElement | OneOutOfThreeElement;
+    | SingleChoiceElement 
+    |MultiCheckElement 
+    | HeadingElement 
+    | OneOutOfThreeElement 
+    | PreAssessmentUploadFilesElement;
 
 /**
  * Function type for handling form submissions.
@@ -152,6 +190,15 @@ export interface DesignerComponentProps extends isLocalAware {
 export interface FormComponentProps extends isLocalAware {
     elementInstance: FormElement;
     submitValue?: SubmitFunction;
+    /** Optional file upload handler for upload files components */
+    onFileUpload?: (
+        uploadRequest: import('@maany_shr/e-class-models').fileMetadata.TFileUploadRequest,
+        componentId: string,
+        courseSlug: string,
+        abortSignal?: AbortSignal,
+    ) => Promise<import('@maany_shr/e-class-models').fileMetadata.TFileMetadata | null>;
+    /** Course slug for file uploads */
+    courseSlug?: string;
 }
 
 

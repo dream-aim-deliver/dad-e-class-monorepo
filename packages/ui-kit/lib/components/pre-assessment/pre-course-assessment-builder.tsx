@@ -10,6 +10,7 @@ import {
     RichTextElement,
     SingleChoiceElement,
     TextInputElement,
+    PreAssessmentUploadFilesElement 
 } from '../lesson-components/types';
 import { DesignerComponent as RichTextDesignerComponent } from '../lesson-components/rich-text';
 import { DesignerComponent as HeadingDesignerComponent } from '../lesson-components/heading-lesson';
@@ -17,6 +18,7 @@ import { DesignerComponent as TextInputDesignerComponent } from '../lesson-compo
 import { DesignerComponent as SingleChoiceDesignerComponent } from '../lesson-components/single-choice';
 import { DesignerComponent as MultiCheckDesignerComponent } from '../lesson-components/multi-check';
 import { DesignerComponent as OneOutOfThreeDesignerComponent } from '../lesson-components/one-out-of-three';
+import { DesignerComponent as UploadFilesDesignerComponent } from '../lesson-components/upload-files';
 import { ComponentCard } from '../course-builder/component-card';
 import { SubsectionHeading } from '../text';
 import { IconRichText } from '../icons/icon-rich-text';
@@ -25,6 +27,7 @@ import { IconTextInput } from '../icons/icon-text-input';
 import { IconSingleChoice } from '../icons/icon-single-choice';
 import { IconMultiChoice } from '../icons/icon-multi-choice';
 import { IconOneOutOfThree } from '../icons/icon-one-out-of-three';
+import { IconCloudUpload } from '../icons/icon-cloud-upload';
 import { optionsType } from '../single-choice';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 
@@ -40,6 +43,7 @@ export interface PreCourseAssessmentBuilderProps extends isLocalAware {
         singleChoice: string;
         checklist: string;
         oneOutOfThree: string;
+        uploadFiles: string;
         components: string;
     };
 }
@@ -160,6 +164,19 @@ export function PreCourseAssessmentBuilder({
                         rows: [],
                         columns: [],
                     },
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+        {
+            icon: <IconCloudUpload />,
+            label: translations.uploadFiles,
+            onClick: () => {
+                const newComponent: PreAssessmentUploadFilesElement = {
+                    id: generateTempId(),
+                    type: FormElementType.UploadFiles,
+                    description: '',
+                    files: null,
                 };
                 setComponents((prev) => [...prev, newComponent]);
             },
@@ -320,6 +337,35 @@ export function PreCourseAssessmentBuilder({
                                 prev.map((comp) =>
                                     comp.id === component.id
                                         ? { ...comp, data: updatedData }
+                                        : comp,
+                                ),
+                            );
+                        }}
+                        onRequiredChange={(isRequired: boolean) => {
+                            setComponents((prev) =>
+                                prev.map((comp) =>
+                                    comp.id === component.id
+                                        ? { ...comp, required: isRequired }
+                                        : comp,
+                                ),
+                            );
+                        }}
+                        {...commonProps}
+                    />
+                );
+            }
+
+            case FormElementType.UploadFiles: {
+                const uploadFiles = component as PreAssessmentUploadFilesElement;
+                return (
+                    <UploadFilesDesignerComponent
+                        key={component.id}
+                        elementInstance={uploadFiles}
+                        onDescriptionChange={(description: string) => {
+                            setComponents((prev) =>
+                                prev.map((comp) =>
+                                    comp.id === component.id
+                                        ? { ...comp, description }
                                         : comp,
                                 ),
                             );

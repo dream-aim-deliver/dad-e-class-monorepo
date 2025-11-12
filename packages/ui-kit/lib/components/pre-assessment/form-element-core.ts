@@ -5,6 +5,7 @@ import textInputElement from "../lesson-components/text-input";
 import multiCheckElement from "../lesson-components/multi-check";
 import headingTextElement from "../lesson-components/heading-lesson";
 import oneOutOfThreeElement from "../lesson-components/one-out-of-three";
+import uploadFilesElement from "../lesson-components/upload-files";
 
 
 /**
@@ -18,4 +19,5 @@ export const formElements: FormElementRegistry = {
     [FormElementType.MultiCheck]: multiCheckElement,
     [FormElementType.HeadingText]: headingTextElement,
     [FormElementType.OneOutOfThree]: oneOutOfThreeElement,
+    [FormElementType.UploadFiles]: uploadFilesElement,
 };
