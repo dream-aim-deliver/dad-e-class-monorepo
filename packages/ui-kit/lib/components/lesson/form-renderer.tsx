@@ -2,6 +2,8 @@
 
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { lessonElements } from './element-core';
+import { formElements } from '../pre-assessment/form-element-core';
+import { FormElementType } from '../pre-assessment/types';
 import { useRef, useState } from 'react';
 import { Button } from '../button';
 import Banner from '../banner';
@@ -15,7 +17,6 @@ import {
     OneOutOfThreeElement,
 } from '../lesson-components/types';
 import { deserialize } from '../rich-text-element/serializer';
-import { FormComponent as UploadFilesFormComponent } from '../course-builder-lesson-component/upload-files-lesson';
 import { validatorPerType } from './validators';
 
 /**
@@ -35,7 +36,15 @@ interface FormElementRendererProps extends isLocalAware {
     elements: LessonElement[];
     /** Optional error message to display when isError is true */
     errorMessage?: string;
-    // TODO: Add functions to handle interactive elements like UploadFiles
+    /** Optional file upload handler for upload files components */
+    onFileUpload?: (
+        uploadRequest: import('@maany_shr/e-class-models').fileMetadata.TFileUploadRequest,
+        componentId: string,
+        courseSlug: string,
+        abortSignal?: AbortSignal,
+    ) => Promise<import('@maany_shr/e-class-models').fileMetadata.TFileMetadata | null>;
+    /** Course slug for file uploads */
+    courseSlug?: string;
 }
 
 /**
@@ -74,6 +83,8 @@ export function FormElementRenderer({
     elements,
     locale,
     errorMessage,
+    onFileUpload,
+    courseSlug,
 }: FormElementRendererProps) {
     const dictionary = getDictionary(locale);
     const formValues = useRef<{ [key: string]: LessonElement }>({});
@@ -137,9 +148,15 @@ export function FormElementRenderer({
             className="flex flex-col gap-4 text-text-primary"
         >
             {elements.map((elementInstance) => {
+                // Check if this is a FormElementType (pre-assessment form element)
+                // If so, use formElements registry, otherwise use lessonElements
+                const isFormElementType = Object.values(FormElementType).includes(
+                    elementInstance.type as FormElementType
+                );
+                const registry = isFormElementType ? formElements : lessonElements;
+                
                 // @ts-ignore
-                const Element =
-                    lessonElements[elementInstance.type].formComponent;
+                const Element = registry[elementInstance.type].formComponent;
                 return (
                     <div
                         key={elementInstance.id.toString()}
@@ -150,6 +167,8 @@ export function FormElementRenderer({
                             // @ts-ignore
                             elementInstance={elementInstance}
                             locale={locale}
+                            onFileUpload={onFileUpload}
+                            courseSlug={courseSlug}
                         />
                         {formErrors[elementInstance.id] && (
                             <Banner
