@@ -2605,6 +2605,8 @@ export const EN: TDictionary = {
         package: 'Package',
         totalLabel: 'Tot.',
         paymentMethod: 'Payment method',
+        type: 'Type',
+        description: 'Description',
       },
       error: {
         title: 'Error',
@@ -2665,6 +2667,8 @@ export const EN: TDictionary = {
         package: 'Package',
         totalLabel: 'Tot.',
         paymentMethod: 'Payment method',
+        type: 'Type',
+        description: 'Description',
       },
       error: {
         title: 'Error',

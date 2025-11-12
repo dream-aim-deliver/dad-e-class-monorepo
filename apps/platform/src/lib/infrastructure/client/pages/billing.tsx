@@ -9,18 +9,18 @@ import { useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { Breadcrumbs, DefaultLoading, Tabs } from '@maany_shr/e-class-ui-kit';
 import { useSession } from 'next-auth/react';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { BillingTab } from '../utils/billing-tabs';
 import OrderHistoryTab from './order-history-tab';
 import ReceivedPaymentsTab from './received-payments-tab';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface BillingProps {
     locale: TLocale;
     tab?: string;
 }
 
-export default function Billing({ locale, tab }: BillingProps) {
+function BillingContent({ locale, tab }: BillingProps) {
     const t = useTranslations('pages.orderHistory');
     const tReceivedPayments = useTranslations('pages.receivedPayments');
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
@@ -28,6 +28,24 @@ export default function Billing({ locale, tab }: BillingProps) {
     const session = sessionDTO.data;
     const isCoach = session?.user?.roles?.includes('coach');
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // Get tab from URL query parameter or use default
+    const urlTab = searchParams.get('tab');
+    const [currentTab, setCurrentTab] = useState(urlTab || tab || BillingTab.ORDER_HISTORY);
+
+    // Update current tab when URL changes
+    useEffect(() => {
+        if (urlTab) {
+            setCurrentTab(urlTab);
+        }
+    }, [urlTab]);
+
+    // Handler to update URL when tab changes
+    const handleTabChange = (newTab: string) => {
+        setCurrentTab(newTab);
+        router.push(`/${locale}/workspace/billing?tab=${newTab}`, { scroll: false });
+    };
 
     // Breadcrumb navigation items
     const breadcrumbItems = [
@@ -67,7 +85,6 @@ export default function Billing({ locale, tab }: BillingProps) {
     }
 
     // Coaches see tabs: Order History and Received Payments
-    const defaultTab = tab || BillingTab.ORDER_HISTORY;
     const tabContentClass = 'mt-10';
 
     return (
@@ -81,7 +98,7 @@ export default function Billing({ locale, tab }: BillingProps) {
             </div>
 
             {/* Tab navigation for coaches */}
-            <Tabs.Root defaultTab={defaultTab}>
+            <Tabs.Root defaultTab={currentTab} onValueChange={handleTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium border border-base-neutral-700 gap-2 mb-4">
                     <Tabs.Trigger
                         value={BillingTab.ORDER_HISTORY}
@@ -124,5 +141,13 @@ export default function Billing({ locale, tab }: BillingProps) {
                 </Tabs.Content>
             </Tabs.Root>
         </div>
+    );
+}
+
+export default function Billing(props: BillingProps) {
+    return (
+        <Suspense fallback={<DefaultLoading locale={props.locale} variant="minimal" />}>
+            <BillingContent {...props} />
+        </Suspense>
     );
 }

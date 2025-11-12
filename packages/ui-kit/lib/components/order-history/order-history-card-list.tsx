@@ -53,13 +53,13 @@ export function OrderHistoryCardList({
                         <div
                             key={child?.key ?? `order-history-card-${index}`}
                             role="listitem"
-                            className="min-w-0 w-full"
+                            className="min-w-0"
                         >
                             {child}
                         </div>
                     ))
                 ) : (
-                    <div key="single-order-history-card" role="listitem" className="min-w-0 w-full">
+                    <div key="single-order-history-card" role="listitem" className="min-w-0">
                         {children}
                     </div>
                 )}

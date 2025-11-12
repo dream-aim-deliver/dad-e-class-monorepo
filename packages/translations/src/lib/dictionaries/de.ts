@@ -2608,6 +2608,8 @@ export const DE: TDictionary = {
         package: 'Paket',
         totalLabel: 'Ges.',
         paymentMethod: 'Zahlungsmethode',
+        type: 'Typ',
+        description: 'Beschreibung',
       },
       error: {
         title: 'Fehler',
@@ -2668,6 +2670,8 @@ export const DE: TDictionary = {
         package: 'Paket',
         totalLabel: 'Gesamt',
         paymentMethod: 'Zahlungsmethode',
+        type: 'Typ',
+        description: 'Beschreibung',
       },
       error: {
         title: 'Fehler',

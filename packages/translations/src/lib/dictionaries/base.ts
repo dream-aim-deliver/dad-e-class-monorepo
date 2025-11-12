@@ -2643,6 +2643,8 @@ export const DictionarySchema = z.object({
         package: z.string(),
         totalLabel: z.string(),
         paymentMethod: z.string(),
+        type: z.string(),
+        description: z.string(),
       }),
       error: z.object({
         title: z.string(),
@@ -2703,6 +2705,8 @@ export const DictionarySchema = z.object({
         package: z.string(),
         totalLabel: z.string(),
         paymentMethod: z.string(),
+        type: z.string(),
+        description: z.string(),
       }),
       error: z.object({
         title: z.string(),
