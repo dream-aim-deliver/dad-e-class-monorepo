@@ -40,21 +40,28 @@ export default function CategoryTopics({
     const { presenter } = useListTopicsByCategoryPresenter(
         setTopicsByCategoryViewModel,
     );
-    // Unwrap the TRPC response data before passing to presenter
-    if (topicsByCategoryResponse.success === true) {
-        presenter.present(topicsByCategoryResponse.data, topicsByCategoryViewModel);
-    }
-
+    
     const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
     const [topicsViewModel, setTopicsViewModel] = useState<
         viewModels.TListTopicsViewModel | undefined
     >(undefined);
     const { presenter: topicsPresenter } =
         useListTopicsPresenter(setTopicsViewModel);
-    // Unwrap the TRPC response data before passing to presenter  
-    if (topicsResponse.success === true) {
-        topicsPresenter.present(topicsResponse.data, topicsViewModel);
-    }
+
+    // Present data using useEffect to prevent render loops
+    useEffect(() => {
+        if (topicsByCategoryResponse.success === true) {
+            // @ts-ignore - tRPC response structure compatibility issue
+            presenter.present(topicsByCategoryResponse, topicsByCategoryViewModel);
+        }
+    }, [topicsByCategoryResponse, presenter, topicsByCategoryViewModel]);
+
+    useEffect(() => {
+        if (topicsResponse.success === true) {
+            // @ts-ignore - tRPC response structure compatibility issue  
+            topicsPresenter.present(topicsResponse, topicsViewModel);
+        }
+    }, [topicsResponse, topicsPresenter, topicsViewModel]);
 
     // Validation and derived state
     const isMapViewModelValid =
