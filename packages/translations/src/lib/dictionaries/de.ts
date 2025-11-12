@@ -1852,6 +1852,12 @@ export const DE: TDictionary = {
         downloadNotes: 'Notizen herunterladen',
         downloadFailed: 'PDF konnte nicht erstellt werden: {error}. Bitte versuche es erneut.',
         noNotesFound: 'Keine Notizen gefunden. Beginne Notizen während deiner Lektionen zu machen!',
+        module: 'Modul',
+        lesson: 'Lektion',
+        noNotesAvailable: 'Keine Notizen verfügbar für diese Lektion',
+        error: {
+          title: 'Fehler',
+        },
       },
       study: {
         submit: 'Absenden',
