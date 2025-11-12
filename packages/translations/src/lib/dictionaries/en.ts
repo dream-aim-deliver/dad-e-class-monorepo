@@ -542,6 +542,12 @@ export const EN: TDictionary = {
       yesDeleteText: 'Delete',
       modalText: 'Are you sure you want to delete this item?',
     },
+    assessmentSubmissionConfirmationModal: {
+      goBackText: 'Go Back',
+      submitText: 'Submit',
+      title: 'Submit Assessment?',
+      message: 'You cannot change your answers after submission. Are you sure you want to submit?',
+    },
     sessionExpirationModal: {
       title: 'Session Expired',
       message: 'Your session has expired due to inactivity. Please log in again to continue.',

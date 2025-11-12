@@ -545,6 +545,12 @@ export const DE: TDictionary = {
       yesDeleteText: 'Ja, Löschen',
       modalText: 'Sind Sie sicher, dass Sie dieses Element löschen möchten?',
     },
+    assessmentSubmissionConfirmationModal: {
+      goBackText: 'Zurück',
+      submitText: 'Einreichen',
+      title: 'Bewertung einreichen?',
+      message: 'Sie können Ihre Antworten nach der Einreichung nicht mehr ändern. Möchten Sie wirklich einreichen?',
+    },
     sessionExpirationModal: {
       title: 'Sitzung abgelaufen',
       message: 'Ihre Sitzung ist aufgrund von Inaktivität abgelaufen. Bitte melden Sie sich erneut an, um fortzufahren.',
