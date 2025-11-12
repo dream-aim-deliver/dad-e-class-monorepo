@@ -140,3 +140,4 @@ export * from './list-offers-page-packages-view-model';
 export * from './list-student-courses-view-model';
 export * from './list-lesson-components-view-model';
 export * from './list-student-assignments-view-model';
+export * from './update-user-roles-view-model';
