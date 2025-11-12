@@ -221,7 +221,7 @@ export interface FormComponentProps extends isLocalAware {
  * };
  * ```
  */
-export interface SubmissionComponentProps {
+export interface SubmissionComponentProps extends isLocalAware {
     elementInstance: FormElement;
 }
 
