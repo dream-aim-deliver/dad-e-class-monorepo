@@ -45,22 +45,27 @@ function usePreCourseAssessmentToggle({
     toggleError,
 }: UsePreCourseAssessmentToggleProps) {
     const togglePreCourseAssessmentMutation =
-        trpc.togglePreCourseAssessment.useMutation();
+        trpc.togglePreCourseAssessment.useMutation({
+            onSuccess: async (data) => {
+                if (data.success) {
+                    await refetchPlatformLanguage();
+                } else {
+                    setError(toggleError);
+                }
+            },
+            onError: () => {
+                setError(toggleError);
+            }
+        });
 
-    const onTogglePreCourseAssessment = async (enable: boolean) => {
+    const onTogglePreCourseAssessment = (enable: boolean) => {
         if (!platformLanguageViewModel) return;
         if (platformLanguageViewModel.mode !== 'default') return;
 
         setError(undefined);
-        const response = await togglePreCourseAssessmentMutation.mutateAsync({
+        togglePreCourseAssessmentMutation.mutate({
             enablePreCourseAssessment: enable,
         });
-
-        if (response.success) {
-            await refetchPlatformLanguage();
-        } else {
-            setError(toggleError);
-        }
     };
 
     return {
@@ -284,8 +289,22 @@ function PreCourseAssessmentContent({
         Map<string, string | undefined>
     >(new Map());
 
+    const utils = trpc.useUtils();
     const savePreCourseAssessmentComponents =
-        trpc.savePreCourseAssessmentComponents.useMutation();
+        trpc.savePreCourseAssessmentComponents.useMutation({
+            onSuccess: async (data) => {
+                if (data.success) {
+                    setSaveSuccessMessage(t('saveSuccess'));
+                    // Invalidate and refetch the components list
+                    await utils.listPreCourseAssessmentComponents.invalidate();
+                } else {
+                    setSaveError(t('saveError'));
+                }
+            },
+            onError: (error) => {
+                setSaveError(error?.message || t('saveError'));
+            }
+        });
     const [saveError, setSaveError] = useState<string | undefined>(undefined);
     const [saveSuccessMessage, setSaveSuccessMessage] = useState<string | null>(null);
     const { transformLessonToRequest } = useLessonToRequest();
@@ -308,7 +327,7 @@ function PreCourseAssessmentContent({
         return newErrors.size === 0;
     };
 
-    const onSaveComponents = async () => {
+    const onSaveComponents = () => {
         if (!validateComponents()) {
             return;
         }
@@ -316,33 +335,12 @@ function PreCourseAssessmentContent({
         setSaveError(undefined);
         setSaveSuccessMessage(null);
 
-        try {
-            const transformedComponents = transformLessonToRequest(components);
-            const response = await savePreCourseAssessmentComponents.mutateAsync({
-                components:
-                    transformedComponents as useCaseModels.TAssessmentComponentRequest[],
-            });
-            if (response.success === true) {
-                // @ts-ignore
-                setComponents(transformLessonComponents(response.data.components));
-                setSaveSuccessMessage(t('saveSuccess'));
-            } else {
-                setSaveError(t('saveError'));
-            }
-        } catch (error) {
-            setSaveError(t('saveError'));
-        }
+        const transformedComponents = transformLessonToRequest(components);
+        savePreCourseAssessmentComponents.mutate({
+            components:
+                transformedComponents as useCaseModels.TAssessmentComponentRequest[],
+        });
     };
-
-    // Handle mutation error state
-    useEffect(() => {
-        if (savePreCourseAssessmentComponents.isError) {
-            setSaveError(
-                savePreCourseAssessmentComponents.error?.message || t('saveError')
-            );
-            setSaveSuccessMessage(null);
-        }
-    }, [savePreCourseAssessmentComponents.isError, savePreCourseAssessmentComponents.error, t]);
 
     // Auto-dismiss success message after 5 seconds
     useEffect(() => {
