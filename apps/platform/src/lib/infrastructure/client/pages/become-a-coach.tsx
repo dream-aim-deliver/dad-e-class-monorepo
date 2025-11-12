@@ -15,7 +15,7 @@ import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { trpc } from '../trpc/cms-client';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
-import { Banner, DefaultError, DefaultLoading, ProfessionalInfo } from '@maany_shr/e-class-ui-kit';
+import { Banner, DefaultError, DefaultLoading, BecomeACoachForm } from '@maany_shr/e-class-ui-kit';
 
 // Types
 type TSkill = { id: string | number; name: string; slug: string };
@@ -35,8 +35,6 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     viewModels.TTopicListViewModel | undefined
   >(undefined);
   const [isSaving, setIsSaving] = useState(false);
-  const [curriculumVitaeUploadProgress, setCurriculumVitaeUploadProgress] = useState<number>(0);
-  const [curriculumVitaeFile, setCurriculumVitaeFile] = useState<fileMetadata.TFileMetadata | null>(null);
 
   // State for messages
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -69,64 +67,6 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listTopicsResponse, listTopicsPresenter]); // listTopicsViewModel excluded - presenter updates it via setListTopicsViewModel
 
-  // Client-side CV file upload handler - memoized to prevent recreation
-  // TODO: Implement server-side upload in the future
-  const handleCVFileUpload = useCallback(async (
-    fileRequest: fileMetadata.TFileUploadRequest,
-    abortSignal?: AbortSignal
-  ): Promise<fileMetadata.TFileMetadata> => {
-    return new Promise((resolve) => {
-      // Simulate upload progress for UX feedback
-      let progress = 0;
-      const progressInterval = setInterval(() => {
-        progress += 10;
-        setCurriculumVitaeUploadProgress(progress);
-
-        if (progress >= 100) {
-          clearInterval(progressInterval);
-
-          // Create file metadata object for client-side storage
-          const cvFileMetadata: fileMetadata.TFileMetadata = {
-            id: `cv_${Date.now()}`,
-            name: fileRequest.file.name,
-            size: fileRequest.file.size,
-            category: 'document',
-            status: 'available',
-            url: URL.createObjectURL(fileRequest.file), // Create blob URL for client-side access
-          };
-
-          resolve(cvFileMetadata);
-        }
-      }, 100);
-    });
-  }, []);
-
-  const handleCVUploadComplete = useCallback((uploadedFile: fileMetadata.TFileMetadata) => {
-    setCurriculumVitaeFile(uploadedFile);
-    setCurriculumVitaeUploadProgress(0);
-  }, []);
-
-  const handleCVFileDelete = useCallback((fileId: string) => {
-    // Clean up blob URL to prevent memory leaks
-    if (curriculumVitaeFile?.url) {
-      URL.revokeObjectURL(curriculumVitaeFile.url);
-    }
-
-    setCurriculumVitaeFile(null);
-  }, [curriculumVitaeFile]);
-
-  const handleCVFileDownload = useCallback((fileId: string) => {
-    if (curriculumVitaeFile?.url) {
-      // Create a temporary download link for client-side files
-      const downloadLink = document.createElement('a');
-      downloadLink.href = curriculumVitaeFile.url;
-      downloadLink.download = curriculumVitaeFile.name;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-    }
-  }, [curriculumVitaeFile]);
-
   // Handle form submission and email generation - memoized to prevent recreation
   // TODO: Implement server-side email sending in the future
   const handleProfessionalSave = useCallback(async (profile: viewModels.TGetProfessionalProfileSuccess['profile']) => {
@@ -140,11 +80,9 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
       errors.push(t('validation.bioRequired'));
     }
 
-    // LinkedIn URL validation (required + regex)
+    // LinkedIn URL validation (optional but must be valid if provided)
     const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|showcase)\/[\w-]+\/?$/;
-    if (!profile.linkedinUrl || profile.linkedinUrl.trim() === '') {
-      errors.push(t('validation.linkedinRequired'));
-    } else if (!linkedInUrlRegex.test(profile.linkedinUrl.trim())) {
+    if (profile.linkedinUrl && profile.linkedinUrl.trim() !== '' && !linkedInUrlRegex.test(profile.linkedinUrl.trim())) {
       errors.push(t('validation.linkedinInvalid'));
     }
 
@@ -172,36 +110,52 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
       // Generate localized email subject
       const emailSubject = t('email.subject');
 
-      // Generate localized CV file info
-      const cvFileInfo = curriculumVitaeFile
-        ? `${t('email.fileName')}: ${curriculumVitaeFile.name}\n${t('email.fileSize')}: ${(curriculumVitaeFile.size / 1024).toFixed(2)} KB\n${t('email.attachmentNote')}`
-        : t('email.noCvUploaded');
+      // Build email sections dynamically - only include fields that are provided
+      const personalInfoLines: string[] = [];
+      personalInfoLines.push(`- ${t('email.bio')}: ${profile.bio}`);
+      if (profile.linkedinUrl) {
+        personalInfoLines.push(`- ${t('email.linkedinProfile')}: ${profile.linkedinUrl}`);
+      }
+      if (profile.portfolioWebsite) {
+        personalInfoLines.push(`- ${t('email.portfolioWebsite')}: ${profile.portfolioWebsite}`);
+      }
 
-      // Create localized comprehensive email body
-      const emailBody = `
-        ${t('email.headerTitle')}
-        ================================
+      const companyInfoLines: string[] = [];
+      if (profile.companyName) {
+        companyInfoLines.push(`- ${t('email.companyName')}: ${profile.companyName}`);
+      }
+      if (profile.companyRole) {
+        companyInfoLines.push(`- ${t('email.jobRole')}: ${profile.companyRole}`);
+      }
+      if (profile.companyIndustry) {
+        companyInfoLines.push(`- ${t('email.industry')}: ${profile.companyIndustry}`);
+      }
 
-        ${t('email.personalInformation')}
-        - ${t('email.bio')}: ${profile.bio || t('email.notProvided')}
-        - ${t('email.linkedinProfile')}: ${profile.linkedinUrl || t('email.notProvided')}
-        - ${t('email.portfolioWebsite')}: ${profile.portfolioWebsite || t('email.notProvided')}
+      const professionalDetailsLines: string[] = [];
+      if (profile.skills.length > 0) {
+        professionalDetailsLines.push(`- ${t('email.skillsExpertise')}: ${profile.skills.map(skill => skill.name).join(', ')}`);
+      }
 
-        ${t('email.companyInformation')}
-        - ${t('email.companyName')}: ${profile.companyName || t('email.notProvided')}
-        - ${t('email.jobRole')}: ${profile.companyRole || t('email.notProvided')}
-        - ${t('email.industry')}: ${profile.companyIndustry || t('email.notProvided')}
+      // Build the complete email body
+      const emailParts: string[] = [
+        t('email.headerTitle'),
+        '================================',
+        '',
+        t('email.personalInformation'),
+        ...personalInfoLines,
+      ];
 
-        ${t('email.professionalDetails')}
-        - ${t('email.skillsExpertise')}: ${profile.skills.map(skill => skill.name).join(', ') || t('email.notProvided')}
-        - ${t('email.profileVisibility')}: ${profile.private ? t('email.private') : t('email.public')}
+      if (companyInfoLines.length > 0) {
+        emailParts.push('', t('email.companyInformation'), ...companyInfoLines);
+      }
 
-        ${t('email.curriculumVitae')}
-        ${cvFileInfo}
+      if (professionalDetailsLines.length > 0) {
+        emailParts.push('', t('email.professionalDetails'), ...professionalDetailsLines);
+      }
 
-        ================================
-        ${t('email.footerNote')}
-      `.trim();
+      emailParts.push('', '================================', t('email.footerNote'));
+
+      const emailBody = emailParts.join('\n').trim();
 
       // Generate mailto link with encoded parameters
       const mailtoLink = `mailto:coaches@example.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
@@ -217,7 +171,7 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     } finally {
       setIsSaving(false);
     }
-  }, [curriculumVitaeFile, t]);
+  }, [t]);
 
   // Stable handler for form changes - prevents stale closures
   const handleProfessionalChange = useCallback((data: viewModels.TGetProfessionalProfileSuccess['profile']) => {
@@ -246,27 +200,23 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   }));
 
   return (
-    <div className="flex flex-col gap-10 md:flex-row lg:flex-row justify-center px-4 md:px-30">
-      <div className='flex flex-col gap-4'>
+    <div className="flex flex-col gap-10 md:flex-row lg:flex-row justify-center px-4 md:px-8 max-w-[1400px] mx-auto">
+      <div className='flex flex-col gap-4 md:w-[40%] lg:w-[35%]'>
         <h1 className='text-text-primary text-4xl font-bold'>{t('title')}</h1>
         <p className='text-text-primary text-md'>{t('description')}</p>
       </div>
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-4 md:w-[60%] lg:w-[65%]'>
         <p className='text-text-primary text-2xl font-bold'>{t('formTitle')}</p>
-        <ProfessionalInfo
+        <BecomeACoachForm
           initialData={professionalForm.value || defaultProfessionalProfile}
           onChange={handleProfessionalChange}
           availableSkills={availableSkills}
           onSave={handleProfessionalSave}
-          onFileUpload={handleCVFileUpload}
-          curriculumVitaeFile={curriculumVitaeFile}
-          onUploadComplete={handleCVUploadComplete}
-          onFileDelete={handleCVFileDelete}
-          onFileDownload={handleCVFileDownload}
+          onFileUpload={async () => ({} as fileMetadata.TFileMetadata)}
+          onUploadComplete={() => { /* No-op: CV upload disabled */ }}
+          onFileDelete={() => { /* No-op: CV upload disabled */ }}
           locale={locale as TLocale}
-          uploadProgress={curriculumVitaeUploadProgress}
           isSaving={isSaving}
-          variant="becomeACoach"
         />
         {/* Display error message */}
         {errorMessage && (
