@@ -1,5 +1,6 @@
 import { OneOutOfThreeData } from "../out-of-three/one-out-of-three";
 import { FormElementType } from "../pre-assessment/types";
+import { fileMetadata } from "@maany_shr/e-class-models";
 
 /**
  * Base interface for all form elements.
@@ -156,4 +157,30 @@ export interface OneOutOfThreeElement extends BaseFormElement {
 
     data: OneOutOfThreeData;
 
+}
+
+/**
+ * Upload Files element interface for pre-course assessment.
+ * This element is used for file uploads in pre-assessment forms.
+ *
+ * @property type - Must be FormElementType.UploadFiles
+ * @property description - Description text for the upload field
+ * @property files - Array of uploaded files or null
+ * @property userComment - Optional comment from the user
+ *
+ * @example
+ * ```tsx
+ * const uploadFiles: PreAssessmentUploadFilesElement = {
+ *   type: FormElementType.UploadFiles,
+ *   id: "upload-1",
+ *   description: "Please upload your resume",
+ *   files: null,
+ * };
+ * ```
+ */
+export interface PreAssessmentUploadFilesElement extends BaseFormElement {
+    type: FormElementType.UploadFiles;
+    description?: string;
+    files: fileMetadata.TFileMetadata[] | null;
+    userComment?: string | null;
 }
