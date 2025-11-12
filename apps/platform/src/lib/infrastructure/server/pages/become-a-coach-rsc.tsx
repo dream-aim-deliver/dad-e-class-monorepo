@@ -5,6 +5,7 @@
 // UI Components: UserProfile (Personal information Form), UserProfile (Professional Information Form), Become a Coach Form, Professional Information Sent Modal
 // User Types: Visitor
 
+import { notFound } from 'next/navigation';
 import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
@@ -18,6 +19,9 @@ interface BecomeACoachServerComponentProps {
 export default async function BecomeACoachServerComponent(
   props: BecomeACoachServerComponentProps
 ) {
+  // TODO: Clean up email generation and re-enable this page
+  notFound();
+
   // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
   prefetch(trpc.listTopics.queryOptions({})); // listTopics
 
