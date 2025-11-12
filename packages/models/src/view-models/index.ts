@@ -146,3 +146,4 @@ export * from './get-course-packages-view-model';
 export * from './create-group-coaching-session-view-model';
 export * from './get-public-course-details-view-model';
 export * from './remove-course-coach-view-model';
+export * from './add-course-coach-view-model';
