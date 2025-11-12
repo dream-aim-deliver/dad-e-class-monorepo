@@ -119,20 +119,30 @@ export const generateNextAuthConfig = (config: {
                     token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : Date.now() + 3600 * 1000;
                 }
 
+                // Ensure we have a token expiration time
+                if (!token.accessTokenExpires) {
+                    // This can happen on first session check after login if the token wasn't properly initialized
+                    // Set a default expiration time to prevent false expiration detection
+                    console.warn('[Auth JWT] ⚠️ Token expiration time not found, initializing with default (1 hour)');
+                    token.accessTokenExpires = Date.now() + 3600 * 1000; // 1 hour from now
+                }
+
                 // Return previous token if the access token has not expired yet
                 const currentTime = Date.now();
-                const tokenExpires = (token.accessTokenExpires as number) || 0;
+                const tokenExpires = token.accessTokenExpires as number;
+                const timeUntilExpiry = tokenExpires - currentTime;
+                const minutesUntilExpiry = Math.floor(timeUntilExpiry / 1000 / 60);
 
                 // Refresh token 5 minutes before expiration to avoid edge cases
-                const shouldRefresh = tokenExpires - currentTime < 5 * 60 * 1000;
+                const shouldRefresh = timeUntilExpiry < 5 * 60 * 1000;
 
                 if (!shouldRefresh) {
-                    console.log('[Auth JWT] ✅ Token still valid, no refresh needed');
+                    console.log(`[Auth JWT] ✅ Token still valid, no refresh needed (expires in ${minutesUntilExpiry} minutes)`);
                     return token;
                 }
 
                 // Access token has expired or will expire soon, try to refresh it
-                console.log('[Auth JWT] 🔄 Access token expired or expiring soon, attempting refresh...');
+                console.log(`[Auth JWT] 🔄 Access token expired or expiring soon (${minutesUntilExpiry} minutes left), attempting refresh...`);
                 const refreshToken = (token.account as Account)?.refresh_token;
 
                 if (!refreshToken) {
@@ -142,53 +152,69 @@ export const generateNextAuthConfig = (config: {
                     return token;
                 }
 
-                try {
-                    const tokenEndpoint = `${config.auth0.issuer}/oauth/token`;
-                    console.log('[Auth JWT] 📡 Refreshing token at:', tokenEndpoint);
+                // Retry logic with exponential backoff
+                const maxRetries = 3;
+                let lastError: Error | null = null;
 
-                    const response = await fetch(tokenEndpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({
-                            grant_type: 'refresh_token',
-                            client_id: config.auth0.clientId,
-                            client_secret: config.auth0.clientSecret,
-                            refresh_token: refreshToken,
-                        }),
-                    });
+                for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                    try {
+                        const tokenEndpoint = `${config.auth0.issuer}/oauth/token`;
+                        console.log(`[Auth JWT] 📡 Refreshing token at: ${tokenEndpoint} (attempt ${attempt}/${maxRetries})`);
 
-                    const refreshedTokens = await response.json();
+                        const response = await fetch(tokenEndpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({
+                                grant_type: 'refresh_token',
+                                client_id: config.auth0.clientId,
+                                client_secret: config.auth0.clientSecret,
+                                refresh_token: refreshToken,
+                            }),
+                        });
 
-                    if (!response.ok) {
-                        console.error('[Auth JWT] ❌ Token refresh failed:', refreshedTokens);
-                        throw new Error(refreshedTokens.error || 'Token refresh failed');
+                        const refreshedTokens = await response.json();
+
+                        if (!response.ok) {
+                            console.error(`[Auth JWT] ❌ Token refresh failed (attempt ${attempt}/${maxRetries}):`, refreshedTokens);
+                            throw new Error(refreshedTokens.error || 'Token refresh failed');
+                        }
+
+                        console.log('[Auth JWT] ✅ Token refreshed successfully');
+
+                        // Update the token with refreshed credentials
+                        const updatedAccount = {
+                            ...(token.account as Account),
+                            access_token: refreshedTokens.access_token,
+                            id_token: refreshedTokens.id_token,
+                            expires_at: Math.floor(Date.now() / 1000) + (refreshedTokens.expires_in || 3600),
+                            refresh_token: refreshedTokens.refresh_token || refreshToken,
+                        };
+
+                        return {
+                            ...token,
+                            account: updatedAccount,
+                            accessTokenExpires: (updatedAccount.expires_at || 0) * 1000,
+                            error: undefined,
+                        };
+                    } catch (error) {
+                        lastError = error as Error;
+                        console.error(`[Auth JWT] ❌ Error refreshing access token (attempt ${attempt}/${maxRetries}):`, error);
+
+                        // If not the last attempt, wait with exponential backoff
+                        if (attempt < maxRetries) {
+                            const backoffMs = Math.pow(2, attempt - 1) * 1000; // 1s, 2s, 4s
+                            console.log(`[Auth JWT] ⏳ Waiting ${backoffMs}ms before retry...`);
+                            await new Promise(resolve => setTimeout(resolve, backoffMs));
+                        }
                     }
-
-                    console.log('[Auth JWT] ✅ Token refreshed successfully');
-
-                    // Update the token with refreshed credentials
-                    const updatedAccount = {
-                        ...(token.account as Account),
-                        access_token: refreshedTokens.access_token,
-                        id_token: refreshedTokens.id_token,
-                        expires_at: Math.floor(Date.now() / 1000) + (refreshedTokens.expires_in || 3600),
-                        refresh_token: refreshedTokens.refresh_token || refreshToken,
-                    };
-
-                    return {
-                        ...token,
-                        account: updatedAccount,
-                        accessTokenExpires: (updatedAccount.expires_at || 0) * 1000,
-                        error: undefined,
-                    };
-                } catch (error) {
-                    console.error('[Auth JWT] ❌ Error refreshing access token:', error);
-                    // Mark token as expired so client can handle logout
-                    return {
-                        ...token,
-                        error: 'RefreshAccessTokenError',
-                    };
                 }
+
+                // All retries failed
+                console.error('[Auth JWT] ❌ All token refresh attempts failed, marking session as expired');
+                return {
+                    ...token,
+                    error: 'RefreshAccessTokenError',
+                };
             },
             session: async ({ session, token }) => {
                 // console.log('[Auth Session] 🔄 Invoking session callback. Token:', token.jti);
