@@ -167,6 +167,7 @@ function PreCourseAssessmentFormBuilder({
                 singleChoice: editLessonsTranslations('singleChoice'),
                 checklist: editLessonsTranslations('checklist'),
                 oneOutOfThree: editLessonsTranslations('oneOutOfThree'),
+                uploadFiles: editLessonsTranslations('uploadFiles'),
                 components: 'Components',
             }}
         />
@@ -319,7 +320,9 @@ function PreCourseAssessmentContent({
                     dictionary,
                 });
                 if (error) {
-                    newErrors.set(component.id, error);
+                    // All LessonElements have an id property
+                    const componentId = (component as { id: string }).id;
+                    newErrors.set(componentId, error);
                 }
             }
         });
