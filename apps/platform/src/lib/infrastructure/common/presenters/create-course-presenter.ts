@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    CreateCourseUseCaseResponseSchema,
+    TCreateCourseUseCaseResponse,
+    TCreateCourseErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TCreateCoursePresenterUtilities = {};
 
 export const CreateCourseResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TCreateCourseUseCaseResponse,
+        TCreateCourseUseCaseResponse,
         viewModels.TCreateCourseViewModel,
         TCreateCoursePresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const CreateCourseResponseMiddleware =
 type TCreateCourseResponseMiddleware = typeof CreateCourseResponseMiddleware;
 
 export default class CreateCoursePresenter extends BasePresenter<
-    useCaseModels.TCreateCourseUseCaseResponse,
+    TCreateCourseUseCaseResponse,
     viewModels.TCreateCourseViewModel,
     TCreateCoursePresenterUtilities,
     TCreateCourseResponseMiddleware
@@ -29,7 +34,7 @@ export default class CreateCoursePresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.CreateCourseUseCaseResponseSchema,
+                responseModel: CreateCourseUseCaseResponseSchema,
                 viewModel: viewModels.CreateCourseViewModelSchema
             },
             middleware: CreateCourseResponseMiddleware,
@@ -40,7 +45,7 @@ export default class CreateCoursePresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TCreateCourseUseCaseResponse,
+            TCreateCourseUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCreateCourseViewModel {
@@ -54,36 +59,26 @@ export default class CreateCoursePresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TCreateCourseUseCaseErrorResponse,
+            TCreateCourseErrorResponse,
             TCreateCourseResponseMiddleware
         >,
     ): viewModels.TCreateCourseViewModel {
-        if (response.data.errorType === 'ValidationError') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
-                mode: 'invalid',
+                mode: 'not-found',
                 data: {
-
                     message: response.data.message,
                     operation: response.data.operation,
-                    context: {
-                        ...response.data.context,
-                        errorType: response.data.errorType
-                    }
-
+                    context: response.data.context
                 }
             };
         }
         return {
             mode: 'kaboom',
             data: {
-
                 message: response.data.message,
                 operation: response.data.operation,
-                context: {
-                    ...response.data.context,
-                    errorType: response.data.errorType
-                }
-
+                context: response.data.context
             }
         };
     }

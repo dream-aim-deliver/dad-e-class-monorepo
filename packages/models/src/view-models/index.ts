@@ -153,3 +153,7 @@ export * from './list-course-students-view-model';
 export * from './get-course-packages-view-model';
 export * from './get-public-course-details-view-model';
 export * from './list-course-reviews-view-model';
+export * from './add-course-coach-view-model';
+export * from './remove-course-coach-view-model';
+export * from './get-course-short-view-model';
+export * from './list-courses-view-model';

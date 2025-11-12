@@ -1,4 +1,8 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ScheduleCoachingSessionUseCaseResponseSchema,
+    TScheduleCoachingSessionUseCaseResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,30 +14,26 @@ export type TScheduleCoachingSessionPresenterUtilities = {};
 
 export const ScheduleCoachingSessionResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TScheduleCoachingSessionUseCaseResponse,
+        TScheduleCoachingSessionUseCaseResponse,
         viewModels.TScheduleCoachingSessionViewModel,
         TScheduleCoachingSessionPresenterUtilities
     >;
 
-type TScheduleCoachingSessionResponseMiddleware =
-    typeof ScheduleCoachingSessionResponseMiddleware;
+type TScheduleCoachingSessionResponseMiddleware = typeof ScheduleCoachingSessionResponseMiddleware;
 
 export default class ScheduleCoachingSessionPresenter extends BasePresenter<
-    useCaseModels.TScheduleCoachingSessionUseCaseResponse,
+    TScheduleCoachingSessionUseCaseResponse,
     viewModels.TScheduleCoachingSessionViewModel,
     TScheduleCoachingSessionPresenterUtilities,
     TScheduleCoachingSessionResponseMiddleware
 > {
     constructor(
-        setViewModel: (
-            viewModel: viewModels.TScheduleCoachingSessionViewModel,
-        ) => void,
+        setViewModel: (viewModel: viewModels.TScheduleCoachingSessionViewModel) => void,
         viewUtilities: TScheduleCoachingSessionPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel:
-                    useCaseModels.ScheduleCoachingSessionUseCaseResponseSchema,
+                responseModel: ScheduleCoachingSessionUseCaseResponseSchema,
                 viewModel: viewModels.ScheduleCoachingSessionViewModelSchema
             },
             middleware: ScheduleCoachingSessionResponseMiddleware,
@@ -44,7 +44,7 @@ export default class ScheduleCoachingSessionPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TScheduleCoachingSessionUseCaseResponse,
+            TScheduleCoachingSessionUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TScheduleCoachingSessionViewModel {
@@ -58,10 +58,20 @@ export default class ScheduleCoachingSessionPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TScheduleCoachingSessionUseCaseErrorResponse,
+            any,
             TScheduleCoachingSessionResponseMiddleware
         >,
     ): viewModels.TScheduleCoachingSessionViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {

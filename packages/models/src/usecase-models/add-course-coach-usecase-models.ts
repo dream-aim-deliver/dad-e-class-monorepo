@@ -28,7 +28,7 @@ const CoachSchema = z.object({
 });
 
 export const AddCourseCoachRequestSchema = z.object({
-    coachId: z.string().min(1),
+    coachId: z.string(),
     courseSlug: z.string().min(1),
 });
 export type TAddCourseCoachRequest = z.infer<typeof AddCourseCoachRequestSchema>;
@@ -38,7 +38,9 @@ export const AddCourseCoachSuccessResponseSchema = BaseSuccessSchemaFactory(z.ob
 }));
 export type TAddCourseCoachSuccessResponse = z.infer<typeof AddCourseCoachSuccessResponseSchema>;
 
-const AddCourseCoachUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+const AddCourseCoachUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({
+  
+});
 export type TAddCourseCoachUseCaseErrorResponse = z.infer<typeof AddCourseCoachUseCaseErrorResponseSchema>;
 
 export const AddCourseCoachUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
