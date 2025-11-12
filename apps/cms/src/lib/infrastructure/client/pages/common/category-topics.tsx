@@ -1,5 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { useListTopicsByCategoryPresenter } from '../../hooks/use-topics-by-category-presenter';
+import { useListTopicsByCategoryPresenter } from '../../hooks/use-list-topics-by-category-presenter';
 import { trpc } from '../../trpc/client';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -10,7 +10,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useListTopicsPresenter } from '../../hooks/use-topics-presenter';
+import { useListTopicsPresenter } from '../../hooks/use-list-topics-presenter';
 
 const CONTENT_CLASS_NAME = 'mt-8';
 
@@ -34,21 +34,27 @@ export default function CategoryTopics({
     const [topicsByCategoryResponse] =
         trpc.listTopicsByCategory.useSuspenseQuery({});
     const [topicsByCategoryViewModel, setTopicsByCategoryViewModel] = useState<
-        viewModels.TTopicsByCategoryViewModel | undefined
+        viewModels.TListTopicsByCategoryViewModel | undefined
     >(undefined);
 
     const { presenter } = useListTopicsByCategoryPresenter(
         setTopicsByCategoryViewModel,
     );
-    presenter.present(topicsByCategoryResponse, topicsByCategoryViewModel);
+    // Unwrap the TRPC response data before passing to presenter
+    if (topicsByCategoryResponse.success === true) {
+        presenter.present(topicsByCategoryResponse.data, topicsByCategoryViewModel);
+    }
 
     const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
     const [topicsViewModel, setTopicsViewModel] = useState<
-        viewModels.TTopicListViewModel | undefined
+        viewModels.TListTopicsViewModel | undefined
     >(undefined);
     const { presenter: topicsPresenter } =
         useListTopicsPresenter(setTopicsViewModel);
-    topicsPresenter.present(topicsResponse, topicsViewModel);
+    // Unwrap the TRPC response data before passing to presenter  
+    if (topicsResponse.success === true) {
+        topicsPresenter.present(topicsResponse.data, topicsViewModel);
+    }
 
     // Validation and derived state
     const isMapViewModelValid =
@@ -69,9 +75,7 @@ export default function CategoryTopics({
         const existingSlugs = new Set<string>();
         const topics: viewModels.TMatrixTopic[] = [];
 
-        for (const category of Object.values(
-            topicsByCategoryViewModel.data.categories,
-        )) {
+        for (const category of topicsByCategoryViewModel.data.categories) {
             for (const topic of category.topics) {
                 if (!existingSlugs.has(topic.slug)) {
                     topics.push(topic);
@@ -140,6 +144,7 @@ export default function CategoryTopics({
     );
 
     const renderCategoryContent = (category: string) => {
+        if (!isMapViewModelValid) return null;
         const categoryItem = topicsByCategoryViewModel.data.categories.find(
             (c) => c.name === category,
         );
