@@ -230,15 +230,17 @@ export function useLessonToRequest() {
         component: LessonElement,
         order: number,
     ): Extract<RequestComponent, { type: 'uploadFiles' }> {
-        if (component.type !== CourseElementType.UploadFiles) {
+        if (component.type !== CourseElementType.UploadFiles && component.type !== FormElementType.UploadFiles) {
             throw new Error('Invalid component type');
         }
 
+        // Both CourseElementType.UploadFiles and FormElementType.UploadFiles have id and description
+        const uploadFilesComponent = component as { id: string; description?: string };
         return {
-            id: extractId(component.id),
+            id: extractId(uploadFilesComponent.id),
             type: 'uploadFiles',
             position: order,
-            description: component.description || '',
+            description: uploadFilesComponent.description || '',
         };
     }
 
@@ -417,6 +419,8 @@ export function useLessonToRequest() {
         [FormElementType.TextInput]: transformTextInput,
         [FormElementType.HeadingText]: transformHeading,
         [FormElementType.OneOutOfThree]: transformOneOutOfThree,
+        // FormElementType.UploadFiles uses the same transformUploadFiles as CourseElementType.UploadFiles
+        // (both have value "uploadFiles", so only one entry is needed)
     };
 
     const transformLessonToRequest = (
