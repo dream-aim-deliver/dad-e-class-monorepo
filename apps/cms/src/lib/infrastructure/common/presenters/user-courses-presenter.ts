@@ -32,7 +32,7 @@ export default class UserCoursesPresenter extends BasePresenter<
             schemas: {
                 responseModel:
                     useCaseModels.ListUserCoursesUseCaseResponseSchema,
-                viewModel: viewModels.UserCourseListViewModelSchema
+                viewModel: viewModels.ListUserCoursesViewModelSchema
             },
             middleware: ListUserCoursesResponseMiddleware,
             viewUtilities: viewUtilities,

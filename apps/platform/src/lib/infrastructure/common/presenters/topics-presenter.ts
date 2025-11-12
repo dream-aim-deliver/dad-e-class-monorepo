@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ListTopicsUseCaseResponseSchema,
+    TListTopicsUseCaseResponse,
+    TListTopicsErrorResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TTopicsPresenterUtilities = {};
 
 export const ListTopicsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListTopicsUseCaseResponse,
+        TListTopicsUseCaseResponse,
         viewModels.TTopicListViewModel,
         TTopicsPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const ListTopicsResponseMiddleware =
 type TListTopicsResponseMiddleware = typeof ListTopicsResponseMiddleware;
 
 export default class TopicsPresenter extends BasePresenter<
-    useCaseModels.TListTopicsUseCaseResponse,
+    TListTopicsUseCaseResponse,
     viewModels.TTopicListViewModel,
     TTopicsPresenterUtilities,
     TListTopicsResponseMiddleware
@@ -29,8 +34,8 @@ export default class TopicsPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
-                viewModel: viewModels.HomePageViewModelSchema
+                responseModel: ListTopicsUseCaseResponseSchema,
+                viewModel: viewModels.TopicListViewModelSchema
             },
             middleware: ListTopicsResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -40,7 +45,7 @@ export default class TopicsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListTopicsUseCaseResponse,
+            TListTopicsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TTopicListViewModel {
@@ -48,7 +53,7 @@ export default class TopicsPresenter extends BasePresenter<
             mode: 'default',
             data: {
                 topics: response.data.topics.map((topic) => ({
-                    id: topic.id,
+                    id: typeof topic.id === 'string' ? parseInt(topic.id, 10) : topic.id,
                     name: topic.name,
                     slug: topic.slug,
                     url: `/offers?topics=${topic.slug}`
@@ -58,7 +63,7 @@ export default class TopicsPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListTopicsUseCaseErrorResponse,
+            TListTopicsErrorResponse,
             TListTopicsResponseMiddleware
         >,
     ): viewModels.TTopicListViewModel {
