@@ -5,7 +5,7 @@ import UserCoursesPresenter, {
 } from '../../common/presenters/user-courses-presenter';
 
 export function useListUserCoursesPresenter(
-    setViewModel: (viewModel: viewModels.TUserCourseListViewModel) => void,
+    setViewModel: (viewModel: viewModels.TListUserCoursesViewModel) => void,
 ) {
     const presenterUtilities: TUserCoursesPresenterUtilities = {};
     const presenter = useMemo(

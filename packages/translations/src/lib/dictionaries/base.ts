@@ -2221,6 +2221,7 @@ export const DictionarySchema = z.object({
       duplicatingCourse: z.string(),
       duplicateSuccess: z.string(),
       duplicateError: z.string(),
+      redeemCoupon: z.string(),
     }),
     manageTopics: z.object({
       title: z.string(),
