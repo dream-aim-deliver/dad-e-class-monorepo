@@ -267,7 +267,7 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
                           course={courseMetadata}
                           sessions={course.coachingSessionCount}
                           sales={course.salesCount}
-                          onEdit={() => window.open(`/edit/course/${course.id}`, '_blank')}
+                          onEdit={() => window.open(`${platform.domainName}/edit/course/${course.slug}`, '_blank')}
                         />
                       );
                     })}
