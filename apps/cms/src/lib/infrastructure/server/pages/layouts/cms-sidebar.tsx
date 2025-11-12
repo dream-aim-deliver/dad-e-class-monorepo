@@ -69,7 +69,7 @@ const CMSSidebar = ({
 
     const routeMap = {
         // Locale-scoped pages (no platformLocale in the path)
-        allCourses: `${platformBase}/courses`,
+        allCourses: `${platformLocaleBase}/courses`,
         users: `${platformLocaleBase}/users`,
         transactions: `${platformLocaleBase}/transactions`,
         notifications: `${platformLocaleBase}/notifications`,
