@@ -84,7 +84,7 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
     <div
       data-testid="user-avatar"
       className={cn(
-        'flex items-center justify-center rounded-full overflow-hidden',
+        'flex items-center justify-center rounded-full overflow-hidden flex-shrink-0',
         shouldShowInitials &&
         'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
         sizeClasses[size],

@@ -83,6 +83,40 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   onDetails,
   onClickUser,
 }) => {
+  // Helper function to extract plain text from rich text content
+  const extractPlainText = (content: string | any[]): string => {
+    try {
+      let parsedContent: any[];
+
+      // If content is a string, try to parse it
+      if (typeof content === 'string') {
+        try {
+          parsedContent = JSON.parse(content);
+        } catch {
+          return content;
+        }
+      } else {
+        parsedContent = content;
+      }
+
+      // Recursively extract text from the Slate structure
+      const extractText = (nodes: any[]): string => {
+        return nodes.map((node) => {
+          if (node.text !== undefined) {
+            return node.text;
+          }
+          if (node.children) {
+            return extractText(node.children);
+          }
+          return '';
+        }).join('');
+      };
+
+      return extractText(parsedContent);
+    } catch (error) {
+      return '';
+    }
+  };
 
   // Calculate total course duration in minutes and format as "Xh Ym"
   const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
@@ -174,7 +208,19 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
           </div>
 
           {studyProgress === 'yet-to-start' && description && (
-            <RichTextRenderer content={description} onDeserializationError={console.error} className="text-sm leading-[150%] text-text-secondary text-start" />
+            <div
+              className="cursor-help [&_p]:pb-0"
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+              title={extractPlainText(description)}
+            >
+              <RichTextRenderer content={description} onDeserializationError={console.error} className="text-sm leading-[150%] text-text-secondary text-start" />
+            </div>
           )}
 
           {studyProgress === 'in-progress' && (

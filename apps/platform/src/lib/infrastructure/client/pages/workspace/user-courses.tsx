@@ -134,8 +134,8 @@ export default function UserCourses(props: UserCoursesProps) {
                             onClick: () => router.push('/'),
                         },
                         {
-                            label: breadcrumbsTranslations('dashboard'),
-                            onClick: () => router.push('/workspace/dashboard'),
+                            label: breadcrumbsTranslations('workspace'),
+                            onClick: () => router.push('/workspace'),
                         },
                     {
                         label: breadcrumbsTranslations('courses'),

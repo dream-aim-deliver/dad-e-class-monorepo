@@ -69,8 +69,8 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
 
     if (coachesViewModel.mode === 'not-found') {
         return (
-            <div className="flex-1 flex items-center justify-center">
-                <p className="text-center text-gray-500 py-8">
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] animate-pulse">
+                <p className="text-text-primary text-md">
                     {coachingT('noCoachesFound')}
                 </p>
             </div>
@@ -83,8 +83,8 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
 
     if (displayedCoaches.length === 0) {
         return (
-            <div className="flex-1 flex items-center justify-center">
-                <p className="text-center text-gray-500 py-8">
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] animate-pulse">
+                <p className="text-text-primary text-md">
                     {coachingT('noCoachesFound')}
                 </p>
             </div>
