@@ -1904,6 +1904,7 @@ export const DictionarySchema = z.object({
         downloading: z.string(),
         downloadNotes: z.string(),
         downloadFailed: z.string(),
+        noNotesFound: z.string(),
       }),
       study: z.object({
         submit: z.string(),

@@ -430,7 +430,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                             },
                         },
                         {
-                            label: breadcrumbsTranslations('dashboard'),
+                            label: breadcrumbsTranslations('workspace'),
                             onClick: () => {
                                 // Nothing should happen on clicking the current page
                             },

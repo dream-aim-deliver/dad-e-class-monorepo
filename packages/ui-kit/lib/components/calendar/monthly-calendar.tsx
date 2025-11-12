@@ -106,6 +106,11 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                 {/* Calendar days */}
                 {calendarDays.map((date) => {
                     const isCurrentMonth = date.getMonth() === currentMonth;
+                    const today = new Date();
+                    const isToday =
+                        date.getDate() === today.getDate() &&
+                        date.getMonth() === today.getMonth() &&
+                        date.getFullYear() === today.getFullYear();
                     const isSelected =
                         props.selectedDate &&
                         date.toDateString() ===
@@ -125,6 +130,8 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                                 !isCurrentMonth && 'text-base-neutral-400',
                                 isSelected &&
                                     'bg-base-brand-500 text-text-primary-inverted rounded-full',
+                                isToday && !isSelected &&
+                                    'bg-base-brand-400 text-text-primary-inverted rounded-full',
                                 props.onDateClick
                                     ? 'cursor-pointer'
                                     : 'cursor-default',
@@ -133,7 +140,7 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                             <span className="text-xl font-bold leading-none">
                                 {date.getDate()}
                             </span>
-                            {!isSelected && (
+                            {!isSelected && !isToday && (
                                 <div className="flex flex-row space-x-1 mt-1">
                                     {hasCoachAvailability && (
                                         <div className="h-[6px] w-[6px] rounded-full bg-action-semi-transparent-medium"></div>
