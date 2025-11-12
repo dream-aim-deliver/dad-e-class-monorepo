@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import {
     DefaultError,
     DefaultLoading,
-    SubmissionRenderer,
+    AssessmentSubmissionRenderer,
     FormElement,
     DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
@@ -12,6 +12,7 @@ import { transformLessonComponents } from '../../../utils/transform-lesson-compo
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListAssessmentProgressesPresenter } from '../../../hooks/use-assessment-progresses-presenter';
+import { useSession } from 'next-auth/react';
 
 interface EnrolledCourseCompletedAssessmentProps {
     courseSlug: string;
@@ -21,10 +22,16 @@ export default function EnrolledCourseCompletedAssessment(
     props: EnrolledCourseCompletedAssessmentProps,
 ) {
     const locale = useLocale() as TLocale;
+    const { data: session } = useSession();
+    
+    // Get student ID from session (user.id is the student/user ID)
+    const studentId = session?.user?.id;
 
     const [progressResponse] = trpc.listAssessmentProgresses.useSuspenseQuery({
         courseSlug: props.courseSlug,
+        studentId: studentId, // Pass student ID to get the correct student's progress
     });
+
     const [progressViewModel, setProgressViewModel] = useState<
         viewModels.TAssessmentProgressListViewModel | undefined
     >(undefined);
@@ -62,5 +69,5 @@ export default function EnrolledCourseCompletedAssessment(
         );
     }
 
-    return <SubmissionRenderer elements={formElements} locale={locale} />;
+    return <AssessmentSubmissionRenderer elements={formElements} locale={locale} />;
 }
