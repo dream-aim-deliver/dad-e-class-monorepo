@@ -145,3 +145,4 @@ export * from './list-upcoming-student-coaching-sessions-view-model';
 export * from './get-course-packages-view-model';
 export * from './create-group-coaching-session-view-model';
 export * from './get-public-course-details-view-model';
+export * from './remove-course-coach-view-model';
