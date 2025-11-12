@@ -12,11 +12,16 @@ import {
     FormElement,
     FormElementRenderer,
     PreAssessmentForm,
+    AssessmentSubmissionConfirmationModal,
 } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../utils/transform-lesson-components';
 import { transformFormAnswers } from '../../utils/transform-answers';
 import { useSubmitAssessmentProgressPresenter } from '../../hooks/use-assessment-progress-presenter';
 import { useRouter } from 'next/navigation';
+import {
+    AssessmentFileUploadProvider,
+    useAssessmentFileUploadContext,
+} from './utils/assessment-file-upload';
 
 interface AssessmentFormProps {
     courseSlug: string;
@@ -93,7 +98,6 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         }
     }, [submitMutation.isSuccess]);
 
-    // ✅ Removed window.location.reload() - query invalidation + router.push handles UI update
 
     if (!componentsViewModel || getIsFormDisabled()) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -103,9 +107,10 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         return <DefaultError locale={locale} />;
     }
 
-    const hasViewModelError =
+    const hasViewModelError = Boolean(
         submitAssessmentViewModel &&
-        submitAssessmentViewModel.mode !== 'default';
+        submitAssessmentViewModel.mode !== 'default',
+    );
 
     const getErrorMessage = () => {
         if (submitAssessmentViewModel?.mode === 'invalid') {
@@ -118,24 +123,108 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     };
 
     return (
-        <div className="flex justify-center">
-            <PreAssessmentForm locale={locale}>
-                <FormElementRenderer
-                    isError={hasViewModelError || submitMutation.isError}
-                    isLoading={submitMutation.isPending}
-                    onSubmit={(formValues) => {
-                        const progress: useCaseModels.TPreCourseAssessmentProgress[] =
-                            transformFormAnswers(formValues);
-                        submitMutation.mutate({
-                            progress,
-                            courseSlug: props.courseSlug,
-                        });
-                    }}
-                    elements={formElements}
-                    locale={locale}
-                    errorMessage={getErrorMessage()}
-                />
-            </PreAssessmentForm>
-        </div>
+        <AssessmentFileUploadProvider config={{ courseSlug: props.courseSlug }}>
+            <div className="flex justify-center">
+                <PreAssessmentForm locale={locale}>
+                    <AssessmentFormContent
+                        formElements={formElements}
+                        locale={locale}
+                        hasViewModelError={hasViewModelError}
+                        submitMutation={submitMutation}
+                        getErrorMessage={getErrorMessage}
+                        courseSlug={props.courseSlug}
+                    />
+                </PreAssessmentForm>
+            </div>
+        </AssessmentFileUploadProvider>
+    );
+}
+
+function AssessmentFormContent({
+    formElements,
+    locale,
+    hasViewModelError,
+    submitMutation,
+    getErrorMessage,
+    courseSlug,
+}: {
+    formElements: FormElement[];
+    locale: TLocale;
+    hasViewModelError: boolean;
+    submitMutation: ReturnType<typeof trpc.submitAssessmentProgress.useMutation>;
+    getErrorMessage: () => string | undefined;
+    courseSlug: string;
+}) {
+    const { uploadFile } = useAssessmentFileUploadContext();
+    const t = useTranslations('components.assessmentSubmissionConfirmationModal');
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [pendingFormValues, setPendingFormValues] = useState<
+        Record<string, any> | null
+    >(null);
+
+    // Wrapper function to match the expected signature
+    const onFileUpload = async (
+        uploadRequest: import('@maany_shr/e-class-models').fileMetadata.TFileUploadRequest,
+        componentId: string,
+        courseSlug: string,
+        abortSignal?: AbortSignal,
+    ): Promise<import('@maany_shr/e-class-models').fileMetadata.TFileMetadata | null> => {
+        try {
+            const result = await uploadFile(uploadRequest, componentId, abortSignal);
+            return result;
+        } catch (error) {
+            console.error('Assessment file upload error:', error);
+            return null;
+        }
+    };
+
+    const handleSubmit = (formValues: Record<string, any>) => {
+        // Store form values and show confirmation modal
+        setPendingFormValues(formValues);
+        setShowConfirmationModal(true);
+    };
+
+    const handleConfirmSubmit = () => {
+        if (pendingFormValues) {
+            const progress: useCaseModels.TPreCourseAssessmentProgress[] =
+                transformFormAnswers(pendingFormValues);
+            submitMutation.mutate({
+                progress,
+                courseSlug: courseSlug,
+            });
+            setShowConfirmationModal(false);
+            setPendingFormValues(null);
+        }
+    };
+
+    const handleCancelSubmit = () => {
+        setShowConfirmationModal(false);
+        setPendingFormValues(null);
+    };
+
+    return (
+        <>
+            <FormElementRenderer
+                isError={hasViewModelError || submitMutation.isError}
+                isLoading={submitMutation.isPending}
+                onSubmit={handleSubmit}
+                elements={formElements}
+                locale={locale}
+                errorMessage={getErrorMessage()}
+                onFileUpload={onFileUpload}
+                courseSlug={courseSlug}
+            />
+            {showConfirmationModal && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <AssessmentSubmissionConfirmationModal
+                        locale={locale}
+                        title={t('title')}
+                        message={t('message')}
+                        onClose={handleCancelSubmit}
+                        onSubmit={handleConfirmSubmit}
+                    />
+                </div>
+            )}
+        </>
     );
 }
