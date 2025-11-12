@@ -201,8 +201,8 @@ export default function CoachStudents(props: CoachStudentsProps) {
                         onClick: () => router.push('/'),
                     },
                     {
-                        label: breadcrumbsTranslations('dashboard'),
-                        onClick: () => router.push('/workspace/dashboard'),
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => router.push('/workspace/'),
                     },
                     {
                         label: breadcrumbsTranslations('students'),

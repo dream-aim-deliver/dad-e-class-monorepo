@@ -1830,6 +1830,7 @@ export const EN: TDictionary = {
         downloading: 'Downloading...',
         downloadNotes: 'Download notes',
         downloadFailed: 'Failed to generate PDF: {error}. Please try again.',
+        noNotesFound: 'No notes found. Start taking notes during your lessons!',
       },
       study: {
         submit: 'Submit',

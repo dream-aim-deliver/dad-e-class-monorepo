@@ -70,7 +70,7 @@ export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
     const componentKey = `lesson-note-${lessonId}-${initialContent.slice(0, 50)}`;
 
     return (
-        <div className="w-[400px] sticky top-4 h-fit">
+        <div className="w-[400px] sticky top-20 h-fit">
             <LessonNoteBuilderView
                 key={componentKey}
                 id={lessonId}

@@ -450,6 +450,22 @@ function EnrolledCourseNotesContent(
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
+    // Check if there are any notes in any lesson
+    const hasAnyNotes = courseNotesViewModel.data.modules.some(module =>
+        module.lessons?.some(lesson => lesson.notes && lesson.notes.trim() !== '')
+    );
+
+    // Show empty state if no notes exist
+    if (!hasAnyNotes) {
+        return (
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
+                <p className="text-text-primary text-md">
+                    {t('noNotesFound')}
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between p-2">

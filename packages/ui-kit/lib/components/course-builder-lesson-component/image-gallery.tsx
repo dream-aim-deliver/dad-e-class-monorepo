@@ -247,9 +247,9 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                 />
 
                 {/* Carousel */}
-                <div className="relative overflow-hidden">
+                <div className="relative overflow-hidden w-full">
                     <div
-                        className="flex gap-2 transition-transform duration-500 ease-out"
+                        className="flex gap-2 transition-transform duration-500 ease-out min-w-0"
                         style={{
                             transform: `translateX(${translateXPercent}%)`
                         }}
@@ -257,8 +257,8 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                         {imageElements.map((image, index) => (
                             <div
                                 key={index}
-                                className={cn("flex-shrink-0 p-1 transition-all duration-300", index === currentIndex && "ring-2 ring-button-primary-fill ring-offset-2 ring-offset-base-neutral-900 rounded-lg shadow-lg scale-105")}
-                                style={{ width: `${thumbWidthPercent}%` }}
+                                className={cn("flex-shrink-0 p-1 transition-all duration-300 min-w-0", index === currentIndex && "ring-2 ring-button-primary-fill ring-offset-2 ring-offset-base-neutral-900 rounded-lg shadow-lg scale-105")}
+                                style={{ width: `calc(${thumbWidthPercent}% - ${(imageElements.length - 1) * 0.5 / imageElements.length}rem)` }}
                             >
                                 <img
                                     className="w-full h-24 object-cover cursor-pointer rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 border border-base-neutral-600"
