@@ -385,9 +385,7 @@ function EditCourseLayout({
         },
         {
             label: courseDetails.courseTitle,
-            onClick: () => {
-                // TODO: implement navigation
-            },
+            onClick: () => router.push(`/courses/${slug}`),
         },
         {
             label: breadcrumbTranslations('editCourse'),

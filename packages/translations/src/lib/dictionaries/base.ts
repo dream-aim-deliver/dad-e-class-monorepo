@@ -1149,6 +1149,9 @@ export const DictionarySchema = z.object({
       cmsSettings: z.string(),
       transactions: z.string(),
       ordersAndPayments: z.string(),
+      manageCoachingPage: z.string(),
+      manageOffersPage: z.string(),
+      manageHomePage: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),

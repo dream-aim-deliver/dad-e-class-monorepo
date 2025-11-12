@@ -246,7 +246,7 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
           </Tabs.Content>
 
           <Tabs.Content value="privacy-policy">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
               <h2>{t('tabs.privacyPolicy')}</h2>
               <RichTextDesignerComponent
                 key={`privacy-policy-${updateCounter}`}
@@ -265,8 +265,8 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
           </Tabs.Content>
 
           <Tabs.Content value="terms-of-use">
-            <div className="flex flex-col gap-4">
-              <h2 className="text-xl font-semibold text-white">{t('tabs.termsOfUse')}</h2>
+            <div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+              <h2>{t('tabs.termsOfUse')}</h2>
               <RichTextDesignerComponent
                 key={`terms-of-use-${updateCounter}`}
                 elementInstance={{
@@ -284,8 +284,8 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
           </Tabs.Content>
 
           <Tabs.Content value="rules">
-            <div className="flex flex-col gap-4">
-              <h2 className="text-xl font-semibold text-white">{t('tabs.rules')}</h2>
+            <div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+              <h2>{t('tabs.rules')}</h2>
               <RichTextDesignerComponent
                 key={`rules-${updateCounter}`}
                 elementInstance={{
@@ -303,8 +303,8 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
           </Tabs.Content>
 
           <Tabs.Content value="offer-information">
-            <div className="flex flex-col gap-4">
-              <h2 className="text-xl font-semibold text-white">{t('tabs.offerInformation')}</h2>
+            <div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+              <h2>{t('tabs.offerInformation')}</h2>
               <RichTextDesignerComponent
                 key={`offer-information-${updateCounter}`}
                 elementInstance={{
