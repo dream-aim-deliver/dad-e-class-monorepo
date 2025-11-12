@@ -19,8 +19,8 @@ export default async function PreCourseAssessmentServerComponent({
 		platform_locale: platformLocale
 	});
 
-	// Prefetch platform language data for the pre-course assessment editor
-	await Promise.all([
+	// Prefetch platform language data for the pre-course assessment editor (fire-and-forget pattern)
+	Promise.all([
 		prefetch(trpc.getPlatformLanguage.queryOptions({})),
 	]);
 
