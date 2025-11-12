@@ -237,13 +237,19 @@ function transformUploadFiles(
         type: LessonElementType.UploadFiles,
         id: component.id,
         description: component.description,
-        files: component.progress?.files.map((file) => ({
-            ...file,
-            url: file.downloadUrl,
-            status: 'available',
-            thumbnailUrl: file.downloadUrl,
-            category: 'generic',
-        })) ?? null,
+        files: component.progress?.files && component.progress.files.length > 0
+            ? (component.progress.files
+                  .filter((file) => file !== null)
+                  .map((file) => ({
+                      id: file.id,
+                      name: file.name,
+                      size: file.size,
+                      category: file.category || 'generic',
+                      url: file.downloadUrl,
+                      status: 'available' as const,
+                      thumbnailUrl: file.downloadUrl,
+                  })) as any)
+            : null,
         userComment: component.progress?.comment,
     };
 }
