@@ -5,6 +5,7 @@ const clientEnvSchema = z.object({
     NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: z.string(),
     NEXT_PUBLIC_APP_URL: z.string().url(),
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: z.string().url(),
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
 });
 
 export { clientEnvSchema };
@@ -16,6 +17,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_APP_URL:
         process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173',
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder',
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);

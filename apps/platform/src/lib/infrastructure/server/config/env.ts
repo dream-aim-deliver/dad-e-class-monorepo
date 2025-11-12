@@ -14,6 +14,7 @@ const serverEnvSchema = clientEnvSchema.merge(z.object({
     S3_PORT: z.string().min(1),
     S3_PROTOCOL: z.enum(['http', 'https']),
     DEFAULT_THEME: z.enum(['just-do-ad', 'job-brand-me', 'bewerbeagentur', 'cms']),
+    STRIPE_SECRET_KEY: z.string().min(1),
 }));
 
 export type TEnv = z.infer<typeof serverEnvSchema>;
@@ -28,6 +29,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_APP_URL:
         process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173',
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || (isBuildTime ? 'pk_test_build_time_placeholder' : undefined),
     AUTH_SECRET: process.env.AUTH_SECRET || (isBuildTime ? 'build-time-placeholder' : undefined),
     AUTH_ENABLE_TEST_ACCOUNTS:
         process.env.AUTH_ENABLE_TEST_ACCOUNTS?.trim().toLowerCase() === 'true',
@@ -42,6 +44,7 @@ const runtimeEnv = {
     S3_PORT: process.env.S3_PORT || (isBuildTime ? '9000' : undefined),
     S3_PROTOCOL: process.env.S3_PROTOCOL === 'https' ? 'https' : 'http',
     DEFAULT_THEME: (process.env.DEFAULT_THEME as 'just-do-ad' | 'job-brand-me' | 'bewerbeagentur' | 'cms') || 'just-do-ad',
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || (isBuildTime ? 'sk_test_build_time_placeholder' : undefined),
 };
 
 const envValidationResult = serverEnvSchema.safeParse(runtimeEnv);
