@@ -1,0 +1,85 @@
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    GetCoursePackagesUseCaseResponseSchema,
+    TGetCoursePackagesUseCaseResponse,
+    TGetCoursePackagesErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
+import {
+    BasePresenter,
+    TBaseResponseResponseMiddleware,
+    UnhandledErrorResponse
+} from '@dream-aim-deliver/dad-cats';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type TGetCoursePackagesPresenterUtilities = {};
+
+export const GetCoursePackagesResponseMiddleware =
+    {} satisfies TBaseResponseResponseMiddleware<
+        TGetCoursePackagesUseCaseResponse,
+        viewModels.TGetCoursePackagesViewModel,
+        TGetCoursePackagesPresenterUtilities
+    >;
+
+type TGetCoursePackagesResponseMiddleware = typeof GetCoursePackagesResponseMiddleware;
+
+export default class GetCoursePackagesPresenter extends BasePresenter<
+    TGetCoursePackagesUseCaseResponse,
+    viewModels.TGetCoursePackagesViewModel,
+    TGetCoursePackagesPresenterUtilities,
+    TGetCoursePackagesResponseMiddleware
+> {
+    constructor(
+        setViewModel: (viewModel: viewModels.TGetCoursePackagesViewModel) => void,
+        viewUtilities: TGetCoursePackagesPresenterUtilities,
+    ) {
+        super({
+            schemas: {
+                responseModel: GetCoursePackagesUseCaseResponseSchema,
+                viewModel: viewModels.GetCoursePackagesViewModelSchema
+            },
+            middleware: GetCoursePackagesResponseMiddleware,
+            viewUtilities: viewUtilities,
+            setViewModel: setViewModel
+        });
+    }
+
+    presentSuccess(
+        response: Extract<
+            TGetCoursePackagesUseCaseResponse,
+            { success: true }
+        >,
+    ): viewModels.TGetCoursePackagesViewModel {
+        return {
+            mode: 'default',
+            data: {
+                ...response.data
+            }
+        };
+    }
+
+    presentError(
+        response: UnhandledErrorResponse<
+            TGetCoursePackagesErrorResponse,
+            TGetCoursePackagesResponseMiddleware
+        >,
+    ): viewModels.TGetCoursePackagesViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
+        return {
+            mode: 'kaboom',
+            data: {
+                message: response.data.message,
+                operation: response.data.operation,
+                context: response.data.context
+            }
+        };
+    }
+}
