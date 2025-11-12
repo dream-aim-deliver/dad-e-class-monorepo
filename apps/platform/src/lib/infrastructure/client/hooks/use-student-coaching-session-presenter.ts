@@ -14,5 +14,6 @@ export function useGetStudentCoachingSessionPresenter(
         () => new StudentCoachingSessionPresenter(setViewModel, presenterUtilities),
         [setViewModel],
     );
+    
     return { presenter };
 }
