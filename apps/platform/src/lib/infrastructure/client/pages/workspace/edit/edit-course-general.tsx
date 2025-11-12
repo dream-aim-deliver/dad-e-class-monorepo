@@ -1,4 +1,8 @@
 import { TLocale } from '@maany_shr/e-class-translations';
+import { 
+    TListCategoriesUseCaseResponse,
+    TListTopicsUseCaseResponse 
+} from '@dream-aim-deliver/e-class-cms-rest';
 import { useLocale } from 'next-intl';
 import { CourseImageUploadState } from '../../common/hooks/use-course-image-upload';
 import {
@@ -93,8 +97,7 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     >(undefined);
     const { presenter: topicsPresenter } =
         useListTopicsPresenter(setTopicsViewModel);
-    // @ts-ignore
-    topicsPresenter.present(topicsResponse, topicsViewModel);
+    topicsPresenter.present(topicsResponse?.data as TListTopicsUseCaseResponse, topicsViewModel);
 
     const [categoriesResponse] = trpc.listCategories.useSuspenseQuery({});
     const [categoriesViewModel, setCategoriesViewModel] = useState<
@@ -103,8 +106,8 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     const { presenter: categoriesPresenter } = useListCategoriesPresenter(
         setCategoriesViewModel,
     );
-    // @ts-ignore
-    categoriesPresenter.present(categoriesResponse, categoriesViewModel);
+    // Extract the actual response data from the TRPC wrapper and type it correctly
+    categoriesPresenter.present(categoriesResponse?.data as TListCategoriesUseCaseResponse, categoriesViewModel);
 
     const [isFormLoading, setIsFormLoading] = useState(true);
 

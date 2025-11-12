@@ -1,7 +1,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import {
-    ListCoachReviewsUseCaseResponseSchema,
-    TListCoachReviewsUseCaseResponse,
+    ListCoachReviewsResponseSchema,
+    TListCoachReviewsResponse,
     TListCoachReviewsErrorResponse,
 } from '@dream-aim-deliver/e-class-cms-rest';
 import {
@@ -15,7 +15,7 @@ export type TListCoachReviewsPresenterUtilities = {};
 
 export const ListCoachReviewsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        TListCoachReviewsUseCaseResponse,
+        TListCoachReviewsResponse,
         viewModels.TListCoachReviewsViewModel,
         TListCoachReviewsPresenterUtilities
     >;
@@ -23,7 +23,7 @@ export const ListCoachReviewsResponseMiddleware =
 type TListCoachReviewsResponseMiddleware = typeof ListCoachReviewsResponseMiddleware;
 
 export default class ListCoachReviewsPresenter extends BasePresenter<
-    TListCoachReviewsUseCaseResponse,
+    TListCoachReviewsResponse,
     viewModels.TListCoachReviewsViewModel,
     TListCoachReviewsPresenterUtilities,
     TListCoachReviewsResponseMiddleware
@@ -34,7 +34,7 @@ export default class ListCoachReviewsPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: ListCoachReviewsUseCaseResponseSchema,
+                responseModel: ListCoachReviewsResponseSchema,
                 viewModel: viewModels.ListCoachReviewsViewModelSchema
             },
             middleware: ListCoachReviewsResponseMiddleware,
@@ -45,7 +45,7 @@ export default class ListCoachReviewsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            TListCoachReviewsUseCaseResponse,
+            TListCoachReviewsResponse,
             { success: true }
         >,
     ): viewModels.TListCoachReviewsViewModel {

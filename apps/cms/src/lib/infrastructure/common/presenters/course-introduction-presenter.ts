@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    GetCourseIntroductionUseCaseResponseSchema,
+    TGetCourseIntroductionUseCaseResponse,
+    TGetCourseIntroductionUseCaseErrorResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TCourseIntroductionPresenterUtilities = {};
 
 export const GetCourseIntroductionResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetCourseIntroductionUseCaseResponse,
+        TGetCourseIntroductionUseCaseResponse,
         viewModels.TCourseIntroductionViewModel,
         TCourseIntroductionPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TGetCourseIntroductionResponseMiddleware =
     typeof GetCourseIntroductionResponseMiddleware;
 
 export default class CourseIntroductionPresenter extends BasePresenter<
-    useCaseModels.TGetCourseIntroductionUseCaseResponse,
+    TGetCourseIntroductionUseCaseResponse,
     viewModels.TCourseIntroductionViewModel,
     TCourseIntroductionPresenterUtilities,
     TGetCourseIntroductionResponseMiddleware
@@ -33,7 +38,7 @@ export default class CourseIntroductionPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.GetCourseIntroductionUseCaseResponseSchema,
+                    GetCourseIntroductionUseCaseResponseSchema,
                 viewModel: viewModels.CourseIntroductionViewModelSchema
             },
             middleware: GetCourseIntroductionResponseMiddleware,
@@ -44,7 +49,7 @@ export default class CourseIntroductionPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetCourseIntroductionUseCaseResponse,
+            TGetCourseIntroductionUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCourseIntroductionViewModel {
@@ -58,7 +63,7 @@ export default class CourseIntroductionPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetCourseIntroductionUseCaseErrorResponse,
+            TGetCourseIntroductionUseCaseErrorResponse,
             TGetCourseIntroductionResponseMiddleware
         >,
     ): viewModels.TCourseIntroductionViewModel {

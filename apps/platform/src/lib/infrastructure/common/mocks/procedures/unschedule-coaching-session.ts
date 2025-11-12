@@ -7,6 +7,9 @@ export const unscheduleCoachingSession = t.procedure
     .mutation<useCaseModels.TUnscheduleCoachingSessionUseCaseResponse>((opts) => {
         const { coachingSessionId } = opts.input;
 
+        // TODO: Replace with real backend API call
+        // Since the backend is now fully implemented, this mock should be replaced
+        
         // Get the original session data
         const originalSession = getSessionById(coachingSessionId);
 
@@ -20,6 +23,14 @@ export const unscheduleCoachingSession = t.procedure
             coachingOfferingTitle: originalSession?.coachingOfferingTitle || 'Unscheduled Coaching Session',
             coachingOfferingDuration: originalSession?.coachingOfferingDuration || 30,
             status: 'unscheduled',
+            startTime: originalSession?.startTime || new Date().toISOString(),
+            endTime: originalSession?.endTime || new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+            state: 'created' as const,
+            createdAt: originalSession?.createdAt || new Date(),
+            updatedAt: originalSession?.updatedAt || new Date(),
+            publicationDate: originalSession?.publicationDate || new Date().toISOString(),
+            meetingUrl: originalSession?.meetingUrl || null,
+            couponName: originalSession?.couponName || null,
         };
 
         return {
