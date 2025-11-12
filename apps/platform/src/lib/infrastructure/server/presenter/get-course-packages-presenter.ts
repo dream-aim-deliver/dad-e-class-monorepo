@@ -1,8 +1,8 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import CoursePackagesPresenter from '../../common/presenters/course-packages-presenter';
+import GetCoursePackagesPresenter from '../../common/presenters/get-course-packages-presenter';
 
 export function createGetCoursePackagesPresenter(
     setViewModel: (viewModel: viewModels.TGetCoursePackagesViewModel) => void,
 ) {
-    return new CoursePackagesPresenter(setViewModel, {});
+    return new GetCoursePackagesPresenter(setViewModel, {});
 }

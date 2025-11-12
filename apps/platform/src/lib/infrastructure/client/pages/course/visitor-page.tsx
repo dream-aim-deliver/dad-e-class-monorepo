@@ -59,7 +59,7 @@ export default function VisitorPage({
     const [introductionData, setIntroductionData] = useState<viewModels.TCourseIntroductionViewModel | undefined>(undefined);
     const [outlineData, setOutlineData] = useState<viewModels.TCourseOutlineViewModel | undefined>(undefined);
     const [reviewsData, setReviewsData] = useState<viewModels.TCourseReviewsViewModel | undefined>(undefined);
-    const [packagesData, setPackagesData] = useState<viewModels.TCoursePackagesViewModel | undefined>(undefined);
+    const [packagesData, setPackagesData] = useState<viewModels.TGetCoursePackagesViewModel | undefined>(undefined);
     const [offersCarouselData, setOffersCarouselData] = useState<viewModels.TGetOffersPageOutlineViewModel | undefined>(undefined);
     const [coachingPageViewModel, setCoachingPageViewModel] = useState<viewModels.TGetCoachingPageViewModel | undefined>(undefined);
 
@@ -320,19 +320,36 @@ export default function VisitorPage({
                             </p>
                         </div>
                         <PackageCardList locale={locale}>
-                            {packagesData.data.packages.map((pkg) => (
-                                <PackageCard
-                                    key={pkg.id}
-                                    {...pkg}
-                                    onClickPurchase={() =>
-                                        handlePackagePurchase(String(pkg.id))
-                                    }
-                                    onClickDetails={() =>
-                                        handlePackageDetails(String(pkg.id))
-                                    }
-                                    locale={locale}
-                                />
-                            ))}
+                            {packagesData.data.packages.map((pkg: any) => {
+                                // Map the package data to the expected UI structure
+                                const mappedPackage = {
+                                    id: String(pkg.id),
+                                    title: pkg.title,
+                                    description: pkg.description,
+                                    duration: pkg.duration,
+                                    imageUrl: pkg.image?.downloadUrl || pkg.imageUrl || '',
+                                    courseCount: pkg.courseCount || 0,
+                                    pricing: {
+                                        fullPrice: pkg.priceWithCoachings || pkg.fullPrice || 0,
+                                        partialPrice: pkg.price || pkg.partialPrice || 0,
+                                        currency: pkg.currency || 'USD',
+                                    },
+                                };
+
+                                return (
+                                    <PackageCard
+                                        key={mappedPackage.id}
+                                        {...mappedPackage}
+                                        onClickPurchase={() =>
+                                            handlePackagePurchase(mappedPackage.id)
+                                        }
+                                        onClickDetails={() =>
+                                            handlePackageDetails(mappedPackage.id)
+                                        }
+                                        locale={locale}
+                                    />
+                                );
+                            })}
                         </PackageCardList>
                     </div>
                 );

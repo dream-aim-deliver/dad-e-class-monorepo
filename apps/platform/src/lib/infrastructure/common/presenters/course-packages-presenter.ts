@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    GetCoursePackagesUseCaseResponseSchema,
+    TGetCoursePackagesUseCaseResponse,
+    TGetCoursePackagesErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TCoursePackagesPresenterUtilities = {};
 
 export const GetCoursePackagesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetCoursePackagesUseCaseResponse,
+        TGetCoursePackagesUseCaseResponse,
         viewModels.TGetCoursePackagesViewModel,
         TCoursePackagesPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const GetCoursePackagesResponseMiddleware =
 type TGetCoursePackagesResponseMiddleware = typeof GetCoursePackagesResponseMiddleware;
 
 export default class CoursePackagesPresenter extends BasePresenter<
-    useCaseModels.TGetCoursePackagesUseCaseResponse,
+    TGetCoursePackagesUseCaseResponse,
     viewModels.TGetCoursePackagesViewModel,
     TCoursePackagesPresenterUtilities,
     TGetCoursePackagesResponseMiddleware
@@ -29,7 +34,7 @@ export default class CoursePackagesPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetCoursePackagesUseCaseResponseSchema,
+                responseModel: GetCoursePackagesUseCaseResponseSchema,
                 viewModel: viewModels.GetCoursePackagesViewModelSchema
             },
             middleware: GetCoursePackagesResponseMiddleware,
@@ -40,7 +45,7 @@ export default class CoursePackagesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetCoursePackagesUseCaseResponse,
+            TGetCoursePackagesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TGetCoursePackagesViewModel {
@@ -54,7 +59,7 @@ export default class CoursePackagesPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetCoursePackagesUseCaseErrorResponse,
+            TGetCoursePackagesErrorResponse,
             TGetCoursePackagesResponseMiddleware
         >,
     ): viewModels.TGetCoursePackagesViewModel {

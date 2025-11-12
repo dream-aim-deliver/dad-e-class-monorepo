@@ -23,14 +23,14 @@ export const unscheduleCoachingSession = t.procedure
             coachingOfferingTitle: originalSession?.coachingOfferingTitle || 'Unscheduled Coaching Session',
             coachingOfferingDuration: originalSession?.coachingOfferingDuration || 30,
             status: 'unscheduled',
-            startTime: originalSession?.startTime || new Date().toISOString(),
-            endTime: originalSession?.endTime || new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+            startTime: (originalSession as any)?.startTime || new Date().toISOString(),
+            endTime: (originalSession as any)?.endTime || new Date(Date.now() + 30 * 60 * 1000).toISOString(),
             state: 'created' as const,
-            createdAt: originalSession?.createdAt || new Date(),
-            updatedAt: originalSession?.updatedAt || new Date(),
-            publicationDate: originalSession?.publicationDate || new Date().toISOString(),
-            meetingUrl: originalSession?.meetingUrl || null,
-            couponName: originalSession?.couponName || null,
+            createdAt: (originalSession as any)?.createdAt || new Date(),
+            updatedAt: (originalSession as any)?.updatedAt || new Date(),
+            publicationDate: (originalSession as any)?.publicationDate || new Date().toISOString(),
+            meetingUrl: (originalSession as any)?.meetingUrl || null,
+            couponName: (originalSession as any)?.couponName || null,
         };
 
         return {
