@@ -5,6 +5,7 @@ import {
     SingleChoiceElement,
     MultiCheckElement,
     OneOutOfThreeElement,
+    PreAssessmentUploadFilesElement,
     LessonElement,
 } from '@maany_shr/e-class-ui-kit';
 
@@ -97,11 +98,35 @@ function transformOneOutOfThreeAnswer(
     };
 }
 
+function transformUploadFilesAnswer(
+    element: PreAssessmentUploadFilesElement,
+): Extract<useCaseModels.TPreCourseAssessmentProgress, { type: 'uploadFiles' }> {
+    if (!element.files || element.files.length === 0) {
+        if (element.required) {
+            throw new Error(`Upload files element ${element.id} is required but has no files`);
+        }
+        // Return empty progress for optional uploads
+        return {
+            componentId: element.id,
+            type: 'uploadFiles',
+            fileIds: [],
+            comment: element.userComment || undefined,
+        };
+    }
+    return {
+        componentId: element.id,
+        type: 'uploadFiles',
+        fileIds: element.files.map((file) => Number(file.id)),
+        comment: element.userComment || undefined,
+    };
+}
+
 const answerTransformers = {
     textInput: transformTextInputAnswer,
     singleChoice: transformSingleChoiceAnswer,
     multiCheck: transformMultiCheckAnswer,
     oneOutOfThree: transformOneOutOfThreeAnswer,
+    uploadFiles: transformUploadFilesAnswer,
 } as const;
 
 export function transformFormAnswers(
