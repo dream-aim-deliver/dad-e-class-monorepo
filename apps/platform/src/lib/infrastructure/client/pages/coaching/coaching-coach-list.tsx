@@ -28,7 +28,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
         viewModels.TCoachListViewModel | undefined
     >(undefined);
     const { presenter } = useListCoachesPresenter(setCoachesViewModel);
-    presenter.present(coachesResponse, coachesViewModel);
+        presenter.present(coachesResponse, coachesViewModel);
 
     const t = useTranslations('components.paginationButton');
     const coachingT = useTranslations('pages.coaching');
@@ -83,7 +83,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
 
     if (displayedCoaches.length === 0) {
         return (
-            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] animate-pulse">
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] h-fit animate-pulse">
                 <p className="text-text-primary text-md">
                     {coachingT('noCoachesFound')}
                 </p>
@@ -93,7 +93,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
 
     return (
         <div className="flex flex-col space-y-5">
-            <CardListLayout className="md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2">
+            <CardListLayout className="md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 w-full">
                 {displayedCoaches.map((coach) => (
                     <CoachCard
                         key={`coach-${coach.username}`}
