@@ -223,6 +223,7 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
             size="medium"
             text={dictionary.components!.reviewModal!.sendReviewButton}
             disabled={!isFormValid || isLoading}
+            type="submit"
           />
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center">
