@@ -212,7 +212,11 @@ export default function Package({ locale, packageId }: PackageProps) {
   // Calculate total package duration from all courses
   const calculatePackageDuration = (): number => {
     return packageData.courses.reduce((totalMinutes, course) => {
-      return totalMinutes + (course.duration || 0);
+      if (!course.duration) return totalMinutes;
+      const courseDuration = (course.duration.video || 0) +
+                            (course.duration.coaching || 0) +
+                            (course.duration.selfStudy || 0);
+      return totalMinutes + courseDuration;
     }, 0);
   };
 
@@ -362,9 +366,9 @@ export default function Package({ locale, packageId }: PackageProps) {
                 }}
                 language={language}
                 duration={{
-                    video: 100, // TODO: Get course video duration once backend is updated
-                    coaching: 200, // TODO: Get course coaching duration once backend is updated
-                    selfStudy: 300 // TODO: Get course self-study duration once backend is updated
+                    video: course.duration.video || 0,
+                    coaching: course.duration.coaching || 0,
+                    selfStudy: course.duration.selfStudy || 0
                 }}
                 pricing={{
                   fullPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
