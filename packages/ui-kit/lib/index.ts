@@ -97,6 +97,7 @@ export { AvailableCoachingSessionCard } from './components/available-coaching-se
 
 export { FormElementRenderer } from './components/lesson/form-renderer';
 export { SubmissionElementsRenderer as SubmissionRenderer } from './components/lesson/submission-renderer';
+export { AssessmentSubmissionRenderer } from './components/pre-assessment/assessment-submission-renderer';
 export * from './components/pre-assessment/types';
 export * from './components/lesson-components/types';
 export * from './components/course-builder-lesson-component/types';
