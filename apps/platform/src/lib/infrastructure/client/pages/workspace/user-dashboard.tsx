@@ -374,10 +374,15 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     const formatRoles = useCallback(() => {
         if (!roles || roles.length === 0) return [];
 
-        // Filter out visitor and student roles, then capitalize first letter of each role
+        // Filter out visitor and student roles, then format role names properly
         return roles
             .filter((role) => role !== 'visitor' && role !== 'student')
-            .map((role) => role.charAt(0).toUpperCase() + role.slice(1));
+            .map((role) =>
+                role
+                    .split('_')
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')
+            );
     }, [roles]);
 
     // Handle loading state
