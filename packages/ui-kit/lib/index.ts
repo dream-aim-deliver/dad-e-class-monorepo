@@ -222,6 +222,7 @@ export { CancelCoachingSessionModal } from './components/coaching-sessions/cance
 export { CoachingSessionList } from "./components/coaching-sessions/coaching-session-list"
 export { ConfirmationModal } from './components/confirmation-modal';
 export { DeleteConfirmationModal } from './components/delete-confirmation-modal/delete-confirmation-modal';
+export { AssessmentSubmissionConfirmationModal } from './components/pre-assessment/assessment-submission-confirmation-modal';
 
 export { OrderHistoryCard, type OrderHistoryCardProps, type OrderHistoryType, type CourseOrderHistoryProps, type CoachingOrderHistoryProps, type PackageOrderHistoryProps } from './components/order-history/order-history-card';
 export { OrderHistoryCardList, type OrderHistoryCardListProps } from './components/order-history/order-history-card-list';
