@@ -276,6 +276,7 @@ export default function CoachingOffering({
     const router = useRouter();
     const t = useTranslations('pages.coachingOffering');
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const platformTranslations = useTranslations('pages.managePagesGeneral');
 
     // Platform context - contains platform-specific information
     const platformContext = useRequiredPlatformLocale();
@@ -398,9 +399,7 @@ export default function CoachingOffering({
         },
         {
             label: platform.name,
-            onClick: () => {
-                // TODO: Implement navigation to platform
-            },
+            onClick: () => router.push(`/platform/${platformContext.platformSlug}/${platformContext.platformLocale}`),
         },
         {
             label: breadcrumbsTranslations('coachingOfferings'),
@@ -411,29 +410,30 @@ export default function CoachingOffering({
     ];
 
     return (
-        <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
+        <div className="flex flex-col space-y-2 gap-4">
             <Breadcrumbs items={breadcrumbItems} />
 
             <div className="flex flex-col space-y-2">
-                <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
-                    <div className="flex flex-row items-center gap-3">
-                        <h1>{t('title')}</h1>
-                        <Badge
-                            variant="info"
-                            size="medium"
-                            text={offerings.length.toString()}
-                        />
-                    </div>
-                    <CreateCoachingOfferingDialog
-                        onOfferingCreated={() => refetchOfferings()}
+                <div className="flex flex-row items-center gap-3">
+                    <h1>{t('title')}</h1>
+                    <Badge
+                        variant="info"
+                        size="medium"
+                        text={offerings.length.toString()}
                     />
                 </div>
                 <p className="text-text-secondary text-sm">
-                    Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
+                    {platformTranslations('platformLabel')} {platform.name} | {platformTranslations('contentLanguageLabel')} {contentLocale.toUpperCase()}
                 </p>
             </div>
 
-            <div className="flex flex-col items-start gap-6">
+            <div className="sticky top-18 z-50 flex justify-end">
+                <CreateCoachingOfferingDialog
+                    onOfferingCreated={() => refetchOfferings()}
+                />
+            </div>
+
+            <div className="flex flex-col items-start gap-6 bg-card-fill p-5 border border-card-stroke rounded-medium">
                 <ManageCoachingOfferingList locale={locale}>
                     {offerings.map((offering) => (
                         <ManageCoachingOfferingItem
