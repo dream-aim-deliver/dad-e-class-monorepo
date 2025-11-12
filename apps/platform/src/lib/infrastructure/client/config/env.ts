@@ -9,6 +9,7 @@ const clientEnvSchema = z.object({
     NEXT_PUBLIC_OTEL_ENABLED: z.string().optional(),
     NEXT_PUBLIC_OTEL_SERVICE_NAME: z.string().optional(),
     NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
 });
 
 export { clientEnvSchema };
@@ -24,6 +25,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_OTEL_ENABLED: process.env.NEXT_PUBLIC_OTEL_ENABLED,
     NEXT_PUBLIC_OTEL_SERVICE_NAME: process.env.NEXT_PUBLIC_OTEL_SERVICE_NAME || 'e-class-platform-browser',
     NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT: process.env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder',
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);

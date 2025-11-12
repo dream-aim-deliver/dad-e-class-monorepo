@@ -18,6 +18,7 @@ const serverEnvSchema = clientEnvSchema.merge(z.object({
     OTEL_ENABLED: z.boolean().optional(),
     OTEL_SERVICE_NAME: z.string().optional(),
     OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
+    STRIPE_SECRET_KEY: z.string().min(1),
 }));
 
 export type TEnv = z.infer<typeof serverEnvSchema>;
@@ -32,6 +33,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_APP_URL:
         process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173',
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || (isBuildTime ? 'pk_test_build_time_placeholder' : undefined),
     AUTH_SECRET: process.env.AUTH_SECRET || (isBuildTime ? 'build-time-placeholder' : undefined),
     AUTH_ENABLE_TEST_ACCOUNTS:
         process.env.AUTH_ENABLE_TEST_ACCOUNTS?.trim().toLowerCase() === 'true',
@@ -50,6 +52,7 @@ const runtimeEnv = {
     OTEL_ENABLED: process.env.OTEL_ENABLED?.trim().toLowerCase() === 'true',
     OTEL_SERVICE_NAME: process.env.OTEL_SERVICE_NAME || 'e-class-platform',
     OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || (isBuildTime ? 'sk_test_build_time_placeholder' : undefined),
 };
 
 const envValidationResult = serverEnvSchema.safeParse(runtimeEnv);
