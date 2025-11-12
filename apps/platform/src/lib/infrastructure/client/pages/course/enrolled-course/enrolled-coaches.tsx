@@ -246,7 +246,6 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
 
     // Check for mutation errors and show as full page errors
     if (
-        addCoachViewModel?.mode === 'error' ||
         addCoachViewModel?.mode === 'kaboom'
     ) {
         const errorMessage = addCoachViewModel.data.message;
@@ -254,7 +253,6 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     }
 
     if (
-        removeCoachViewModel?.mode === 'error' ||
         removeCoachViewModel?.mode === 'kaboom'
     ) {
         const errorMessage = removeCoachViewModel.data.message;
