@@ -2111,6 +2111,7 @@ export const DE: TDictionary = {
       duplicatingCourse: "Kurs wird dupliziert, bitte warten...",
       duplicateSuccess: "Kurs erfolgreich dupliziert!",
       duplicateError: "Fehler beim Duplizieren des Kurses. Bitte versuchen Sie es erneut.",
+      redeemCoupon: 'Gutschein einlösen',
     },
     manageTopics: {
       title: 'Themen verwalten (aka Fähigkeiten)',

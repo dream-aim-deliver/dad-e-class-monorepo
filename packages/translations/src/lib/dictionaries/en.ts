@@ -2108,6 +2108,7 @@ export const EN: TDictionary = {
       duplicatingCourse: "Duplicating course, please wait...",
       duplicateSuccess: "Course duplicated successfully!",
       duplicateError: "Failed to duplicate course. Please try again.",
+      redeemCoupon: "Redeem Coupon",
     },
     manageTopics: {
       title: 'Manage Topics (aka Skills)',
