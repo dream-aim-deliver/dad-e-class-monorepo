@@ -289,3 +289,5 @@ export { AssignmentOverviewList } from './components/assignment/assignment-overv
 
 export { ProfessionalInfo } from './components/profile/professional-info';
 export { BecomeACoachForm } from './components/profile/become-a-coach-form';
+export { CoachReviewCardList } from './components/review/coach-review-card-list';
+export { ReviewDisplay } from './components/review/review-display';

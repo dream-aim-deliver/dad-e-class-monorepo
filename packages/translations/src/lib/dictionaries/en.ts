@@ -364,6 +364,7 @@ export const EN: TDictionary = {
     coachReview: {
       by: 'by',
       group: 'Group',
+      emptyState: 'No reviews are available for this coach',
     },
     coachCard: {
       coachingSession: "Coaching Session",
@@ -753,6 +754,10 @@ export const EN: TDictionary = {
       by: 'by',
       readMore: 'Read more',
       readLess: 'Read less',
+    },
+    reviewDisplay: {
+      yourReview: 'Your Review',
+      close: 'Close',
     },
     moduleCompletionModal: {
       moduleCompletedText: 'Module complete — awesome job!',
@@ -1148,6 +1153,7 @@ export const EN: TDictionary = {
       cmsSettings: 'Settings',
       transactions: 'Transactions',
       ordersAndPayments: 'Orders & Payments',
+      coaches: 'Coaches',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -2993,6 +2999,20 @@ export const EN: TDictionary = {
           description: 'You do not have permission to view this user.',
         },
       },
+    },
+    coachProfile: {
+      back: "Back",
+      coachCourses: "Coach's courses",
+      coachReviews: "Coach's reviews",
+      sortBy: "Sort by",
+      selectSort: "Select sorting option",
+      filterButton: "Filter",
+      mostRecentFirst: "Most recent first",
+      oldestFirst: "Oldest first", 
+      bestFirst: "Best first",
+      worstFirst: "Worst first",
+      emptyStateCourses: "No courses available from this coach",
+      exploreCourses: "Explore courses",
     },
   },
 };
