@@ -2,7 +2,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import {
     ListCoursesUseCaseResponseSchema,
     TListCoursesUseCaseResponse,
-    TListCoursesErrorResponse,
+    TListCoursesUseCaseErrorResponse
 } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
@@ -59,7 +59,7 @@ export default class ListCoursesPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            TListCoursesErrorResponse,
+            TListCoursesUseCaseErrorResponse,
             TListCoursesResponseMiddleware
         >,
     ): viewModels.TListCoursesViewModel {

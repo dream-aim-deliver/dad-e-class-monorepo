@@ -16,6 +16,7 @@ import {
     DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
+import { TGetCourseIntroductionUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
@@ -81,8 +82,9 @@ export default function VisitorPage({
 
     useEffect(() => {
         if (courseIntroductionResponse) {
-            // @ts-ignore
-            courseIntroductionPresenter.present(courseIntroductionResponse, introductionData);
+            // Extract the actual response data from the TRPC wrapper and type it correctly
+            const actualResponse = courseIntroductionResponse?.data as TGetCourseIntroductionUseCaseResponse;
+            courseIntroductionPresenter.present(actualResponse, introductionData);
         }
     }, [courseIntroductionResponse]);
 

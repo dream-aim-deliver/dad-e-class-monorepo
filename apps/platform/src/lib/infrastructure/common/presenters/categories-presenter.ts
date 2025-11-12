@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ListCategoriesUseCaseResponseSchema,
+    TListCategoriesUseCaseResponse,
+    TListCategoriesErrorResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +15,7 @@ export type TCategoriesPresenterUtilities = {};
 
 export const ListCategoriesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListCategoriesUseCaseResponse,
+        TListCategoriesUseCaseResponse,
         viewModels.TCategoryListViewModel,
         TCategoriesPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const ListCategoriesResponseMiddleware =
 type TListCategoriesResponseMiddleware = typeof ListCategoriesResponseMiddleware;
 
 export default class CategoriesPresenter extends BasePresenter<
-    useCaseModels.TListCategoriesUseCaseResponse,
+    TListCategoriesUseCaseResponse,
     viewModels.TCategoryListViewModel,
     TCategoriesPresenterUtilities,
     TListCategoriesResponseMiddleware
@@ -29,7 +34,7 @@ export default class CategoriesPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.ListCategoriesUseCaseResponseSchema,
+                responseModel: ListCategoriesUseCaseResponseSchema,
                 viewModel: viewModels.CategoryListViewModelSchema
             },
             middleware: ListCategoriesResponseMiddleware,
@@ -40,7 +45,7 @@ export default class CategoriesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListCategoriesUseCaseResponse,
+            TListCategoriesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCategoryListViewModel {
@@ -48,7 +53,7 @@ export default class CategoriesPresenter extends BasePresenter<
             mode: 'default',
             data: {
                 categories: response.data.categories.map((category) => ({
-                    id: category.id,
+                    id: typeof category.id === 'string' ? parseInt(category.id, 10) : category.id,
                     name: category.name,
                 }))
             }
@@ -56,7 +61,7 @@ export default class CategoriesPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListCategoriesErrorResponse,
+            TListCategoriesErrorResponse,
             TListCategoriesResponseMiddleware
         >,
     ): viewModels.TCategoryListViewModel {
