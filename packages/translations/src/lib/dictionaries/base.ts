@@ -546,6 +546,12 @@ export const DictionarySchema = z.object({
       yesDeleteText: z.string(),
       modalText: z.string(),
     }),
+    assessmentSubmissionConfirmationModal: z.object({
+      goBackText: z.string(),
+      submitText: z.string(),
+      title: z.string(),
+      message: z.string(),
+    }),
     sessionExpirationModal: z.object({
       title: z.string(),
       message: z.string(),
