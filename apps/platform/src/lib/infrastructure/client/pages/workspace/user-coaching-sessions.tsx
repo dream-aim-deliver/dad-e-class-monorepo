@@ -15,7 +15,7 @@ interface UserCoachingSessionsProps {
     emptyStateTranslationsNamespace?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+ 
 export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const router = useRouter();
     const locale = useLocale() as TLocale;

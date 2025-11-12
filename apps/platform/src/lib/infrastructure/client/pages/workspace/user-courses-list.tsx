@@ -44,7 +44,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
         }
     }, [sessionStatus, session, router]);
     const userRoles = session?.user.roles;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const isAdmin = userRoles?.includes('admin');
     const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
     const [coursesViewModel, setCoursesViewModel] = useState<

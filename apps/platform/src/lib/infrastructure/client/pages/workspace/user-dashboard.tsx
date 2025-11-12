@@ -280,7 +280,7 @@ function RedeemCouponDialog() {
     );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+ 
 export default function UserDashboard({ roles }: UserDashboardProps) {
     const { data: session } = useSession();
     const router = useRouter();
