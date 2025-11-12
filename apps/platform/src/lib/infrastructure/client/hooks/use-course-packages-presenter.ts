@@ -1,15 +1,15 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import CoursePackagesPresenter, {
-    TCoursePackagesPresenterUtilities,
-} from '../../common/presenters/course-packages-presenter';
+import GetCoursePackagesPresenter, {
+    TGetCoursePackagesPresenterUtilities,
+} from '../../common/presenters/get-course-packages-presenter';
 
 export function useGetCoursePackagesPresenter(
-    setViewModel: (viewModel: viewModels.TCoursePackagesViewModel) => void,
+    setViewModel: (viewModel: viewModels.TGetCoursePackagesViewModel) => void,
 ) {
-    const presenterUtilities: TCoursePackagesPresenterUtilities = {};
+    const presenterUtilities: TGetCoursePackagesPresenterUtilities = {};
     const presenter = useMemo(
-        () => new CoursePackagesPresenter(setViewModel, presenterUtilities),
+        () => new GetCoursePackagesPresenter(setViewModel, presenterUtilities),
         [setViewModel],
     );
     return { presenter };

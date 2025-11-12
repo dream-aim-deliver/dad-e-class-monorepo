@@ -157,3 +157,5 @@ export * from './add-course-coach-view-model';
 export * from './remove-course-coach-view-model';
 export * from './get-course-short-view-model';
 export * from './list-courses-view-model';
+export * from './list-topics-view-model';
+export * from './list-topics-by-category-view-model';
