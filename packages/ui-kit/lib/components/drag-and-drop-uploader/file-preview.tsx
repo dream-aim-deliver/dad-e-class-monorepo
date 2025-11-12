@@ -139,19 +139,25 @@ export const FilePreview = (props: FilePreviewProps) => {
                 return <IconImage classNames="w-6 h-6 text-text-primary" />;
             }
 
+            // Get thumbnailUrl or url for image display
+            const imageUrl = (
+                uploadResponse as fileMetadata.TFileMetadata & {
+                    thumbnailUrl?: string;
+                }
+            ).thumbnailUrl || uploadResponse.url;
+
+            // If no valid image URL, show icon instead
+            if (!imageUrl || imageUrl === '') {
+                return <IconImage classNames="w-6 h-6 text-text-primary" />;
+            }
+
             // Show loader while thumbnail is loading
             if (thumbnailLoading) {
                 return (
                     <div className="relative  flex items-center justify-center">
                         <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-secondary" />
                         <img
-                            src={
-                                (
-                                    uploadResponse as fileMetadata.TFileMetadata & {
-                                        thumbnailUrl?: string;
-                                    }
-                                ).thumbnailUrl || ''
-                            }
+                            src={imageUrl}
                             alt={uploadResponse.name}
                             className="absolute inset-0 w-full h-full object-cover rounded-small opacity-0"
                             onLoad={() => setThumbnailLoading(false)}
@@ -166,13 +172,7 @@ export const FilePreview = (props: FilePreviewProps) => {
 
             return (
                 <img
-                    src={
-                        (
-                            uploadResponse as fileMetadata.TFileMetadata & {
-                                thumbnailUrl?: string;
-                            }
-                        ).thumbnailUrl || ''
-                    }
+                    src={imageUrl}
                     alt={uploadResponse.name}
                     className="w-10 h-10 object-cover rounded-small"
                     onError={() => setThumbnailError(true)}
