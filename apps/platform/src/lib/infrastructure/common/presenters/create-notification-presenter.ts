@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    CreateNotificationUseCaseResponseSchema,
+    TCreateNotificationUseCaseResponse,
+    TCreateNotificationErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,30 +15,26 @@ export type TCreateNotificationPresenterUtilities = {};
 
 export const CreateNotificationResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TCreateNotificationUseCaseResponse,
+        TCreateNotificationUseCaseResponse,
         viewModels.TCreateNotificationViewModel,
         TCreateNotificationPresenterUtilities
     >;
 
-type TCreateNotificationResponseMiddleware =
-    typeof CreateNotificationResponseMiddleware;
+type TCreateNotificationResponseMiddleware = typeof CreateNotificationResponseMiddleware;
 
 export default class CreateNotificationPresenter extends BasePresenter<
-    useCaseModels.TCreateNotificationUseCaseResponse,
+    TCreateNotificationUseCaseResponse,
     viewModels.TCreateNotificationViewModel,
     TCreateNotificationPresenterUtilities,
     TCreateNotificationResponseMiddleware
 > {
     constructor(
-        setViewModel: (
-            viewModel: viewModels.TCreateNotificationViewModel,
-        ) => void,
+        setViewModel: (viewModel: viewModels.TCreateNotificationViewModel) => void,
         viewUtilities: TCreateNotificationPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel:
-                    useCaseModels.CreateNotificationUseCaseResponseSchema,
+                responseModel: CreateNotificationUseCaseResponseSchema,
                 viewModel: viewModels.CreateNotificationViewModelSchema
             },
             middleware: CreateNotificationResponseMiddleware,
@@ -44,7 +45,7 @@ export default class CreateNotificationPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TCreateNotificationUseCaseResponse,
+            TCreateNotificationUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCreateNotificationViewModel {
@@ -58,10 +59,20 @@ export default class CreateNotificationPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TCreateNotificationUseCaseErrorResponse,
+            TCreateNotificationErrorResponse,
             TCreateNotificationResponseMiddleware
         >,
     ): viewModels.TCreateNotificationViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {
