@@ -343,9 +343,9 @@ export const DE: TDictionary = {
       portfolioWebsitePlaceholder: 'https://wimlanz.ch/',
 
       associatedCompanyName: 'Firmenname (optional)',
-      associatedCompanyNAMEPlaceholder: 'Meine Firma',
+      associatedCompanyPlaceholder: 'z. B. Tech GmbH',
       associatedCompanyRole: 'Position (optional)',
-      associatedCompanyPlaceholder: 'Senior DevOps Engineer',
+      associatedCompanyRolePlaceholder: 'z. B. Senior DevOps Engineer',
       associatedCompanyIndustry: 'Branche (optional)',
       associatedCompanyIndustryPlaceholder: 'z. B. Informationstechnologie',
 

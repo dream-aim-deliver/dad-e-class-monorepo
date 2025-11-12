@@ -277,3 +277,4 @@ export { AssignmentOverview } from './components/assignment/assignment-overview'
 export { AssignmentOverviewList } from './components/assignment/assignment-overview-list';
 
 export { ProfessionalInfo } from './components/profile/professional-info';
+export { BecomeACoachForm } from './components/profile/become-a-coach-form';
