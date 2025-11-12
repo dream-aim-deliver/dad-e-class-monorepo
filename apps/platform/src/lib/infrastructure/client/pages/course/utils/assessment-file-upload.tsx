@@ -53,19 +53,17 @@ export const useAssessmentFileUploadService = (
 
             const checksum = await calculateMd5(uploadRequest.file);
 
-            // Request upload credentials from server with specific upload type
-            // Note: Files are uploaded generically and then associated with the assessment component
+            // Request upload credentials from server with assessment-specific upload type
+            // Files are uploaded with courseSlug and then associated with the assessment component
             // when the assessment progress is submitted via fileIds in the progress object.
-            // The componentId parameter is accepted but not used in the upload request - it's only
-            // used for logging/debugging. Files are associated with components during submission.
-            // TODO: Once backend supports 'upload_assessment_file' upload type, update this
             const uploadResult = await requestFileUploadMutation.mutateAsync({
                 upload: {
                     name: uploadRequest.name,
                     checksum,
                     mimeType: uploadRequest.file.type,
                     size: uploadRequest.file.size,
-                    uploadType: 'upload_cv_file',
+                    courseSlug: config.courseSlug,
+                    uploadType: 'upload_pre_course_assessment_file',
                 },
             });
 
