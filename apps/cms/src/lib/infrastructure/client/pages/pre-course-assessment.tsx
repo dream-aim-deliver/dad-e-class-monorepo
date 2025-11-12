@@ -393,6 +393,10 @@ function PreCourseAssessmentContent({
                         onClick: () => router.push('/'),
                     },
                     {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => router.push('/workspace/'),
+                    },
+                    {
                         label: breadcrumbsTranslations('preCourseAssessmentForm'),
                         onClick: () => {
                             // Nothing should happen on clicking the current page

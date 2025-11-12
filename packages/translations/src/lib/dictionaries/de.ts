@@ -1833,6 +1833,7 @@ export const DE: TDictionary = {
         downloading: 'Wird heruntergeladen...',
         downloadNotes: 'Notizen herunterladen',
         downloadFailed: 'PDF konnte nicht erstellt werden: {error}. Bitte versuche es erneut.',
+        noNotesFound: 'Keine Notizen gefunden. Beginne Notizen während deiner Lektionen zu machen!',
       },
       study: {
         submit: 'Absenden',

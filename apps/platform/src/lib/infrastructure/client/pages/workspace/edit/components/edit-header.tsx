@@ -140,6 +140,7 @@ export default function EditHeader({
                         text={getStatusText(courseStatus)}
                         variant={getStatusBadgeVariant(courseStatus)}
                         size="medium"
+                        className='w-fit'
                     />
                 )}
             </div>
