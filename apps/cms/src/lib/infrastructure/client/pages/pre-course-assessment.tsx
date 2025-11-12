@@ -361,7 +361,6 @@ function PreCourseAssessmentContent({
     }
 
     const isEnabled = platformLanguageViewModel.data.enablePreCourseAssessment;
-    const error = toggleError ?? saveError;
 
     return (
         <div className="flex flex-col space-y-2">
@@ -411,7 +410,7 @@ function PreCourseAssessmentContent({
                 />
             )}
 
-            {/* Error Message */}
+            {/* Save Error Message */}
             {saveError && (
                 <FeedBackMessage
                     type="error"
@@ -419,7 +418,8 @@ function PreCourseAssessmentContent({
                 />
             )}
 
-            {error && <DefaultError locale={locale} description={error} />}
+            {/* Toggle Error Message */}
+            {toggleError && <DefaultError locale={locale} description={toggleError} />}
 
             {!isEnabled && (
                 <PreCourseAssessmentDisabledCard
