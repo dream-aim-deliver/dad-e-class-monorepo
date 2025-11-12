@@ -27,7 +27,7 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
     const hasUnsavedChanges = unsavedChangesState?.hasUnsavedChanges ?? false;
 
     const debug = process.env.NODE_ENV === 'development';
-    const checkInterval = 60000; // 60 seconds
+    const checkInterval = 300000; // 5 minutes (reduced from 60s to minimize server load and false positives)
     const loginPath = '/auth/login';
 
     const log = useCallback((...args: any[]) => {
