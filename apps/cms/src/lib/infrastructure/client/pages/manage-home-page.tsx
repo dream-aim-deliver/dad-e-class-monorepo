@@ -33,6 +33,8 @@ import { HeroSection, CarouselSection, CoachingDemandSection, HowItWorksSection 
 import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
 import { useHomePageVideoUpload } from './common/hooks/use-homepage-video-upload';
 import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
+import { useRouter } from 'next/navigation';
+import { useRequiredPlatform } from '../context/platform-context';
 
 // Static default data - moved outside component for better performance
 const DEFAULT_HOME_PAGE_DATA: viewModels.TGetHomePageSuccess = {
@@ -71,8 +73,10 @@ export default function ManageHomepage() {
 
 	// Translations for this page
 	const t = useTranslations('pages.manageHomePage');
-	const router = useRouter();
+	const platformTranslations = useTranslations('pages.managePagesGeneral');
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+	const router = useRouter();
+	const { platform } = useRequiredPlatform();
 
 	// Platform context
 	const platformContext = useRequiredPlatformLocale();
@@ -384,28 +388,26 @@ export default function ManageHomepage() {
 	];
 
 	return (
-		<div className="flex flex-col gap-4 w-full">
+		<div className="flex flex-col space-y-2 gap-4">
 			<Breadcrumbs items={breadcrumbItems} />
 
-			{/* Page header with gradient background */}
-			<div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg shadow-lg">
-				<div className="flex justify-between items-center">
-					<div className="flex flex-col space-y-2">
-						<h1>{t('title')}</h1>
-						<p className="text-text-secondary text-sm">
-							Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
-						</p>
-					</div>
-					<Button
-						variant="primary"
-						size="medium"
-						hasIconLeft
-						iconLeft={<IconSave />}
-						text={t('save')}
-						onClick={handleSaveHomePage}
-						disabled={saveHomePageMutation.isPending || !formState.isDirty}
-					/>
-				</div>
+			{/* Page header with translations */}
+			<div className="flex flex-col space-y-2">
+				<h1>{t('title')}</h1>
+				<p className="text-text-secondary text-sm">
+					{platformTranslations('platformLabel')} {platform.name} | {platformTranslations('contentLanguageLabel')} {contentLocale.toUpperCase()}
+				</p>
+			</div>
+
+			<div className="sticky top-18 z-50 flex justify-end">
+				<Button
+					onClick={handleSaveHomePage}
+					disabled={saveHomePageMutation.isPending || !formState.isDirty}
+					variant="primary"
+					size="medium"
+					text={saveHomePageMutation.isPending ? t('savingBanner') : t('save')}
+					className='shadow-lg'
+				/>
 			</div>
 
 			{/* Success Banner */}

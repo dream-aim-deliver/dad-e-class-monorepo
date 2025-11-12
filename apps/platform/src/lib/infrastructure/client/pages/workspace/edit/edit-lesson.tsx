@@ -62,6 +62,7 @@ import { useSession } from 'next-auth/react';
 
 interface EditLessonProps {
     lessonId: number;
+    courseSlug?: string;
 }
 
 /*
@@ -122,9 +123,14 @@ function PreviewRenderer({
     );
 }
 
-export default function EditLesson({ lessonId }: EditLessonProps) {
+export default function EditLesson({ lessonId, courseSlug: courseSlugProp }: EditLessonProps) {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
+    const router = useRouter();
+
+    // Get courseSlug from URL search params if not provided as prop
+    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const courseSlug = courseSlugProp || searchParams?.get('courseSlug') || undefined;
 
     const lessonComponentsViewModel = useLessonComponents(lessonId);
 
@@ -155,7 +161,6 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     const [isPreviewing, setIsPreviewing] = useState(false);
     const editLessonsTranslations = useTranslations('pages.editLesson');
     const breadcrumbTranslations = useTranslations('components.breadcrumbs');
-    const router = useRouter();
 
     const breadcrumbItems = [
         {
@@ -172,7 +177,13 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             label: breadcrumbTranslations('editCourse'),
-            onClick: () => router.back(),
+            onClick: () => {
+                if (courseSlug) {
+                    router.push(`/workspace/courses/${courseSlug}/edit?tab=course-content`);
+                } else {
+                    router.back();
+                }
+            },
         },
         {
             label: breadcrumbTranslations('editLesson'),

@@ -12,7 +12,9 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useContentLocale } from '../hooks/use-platform-translations';
+
+import { Button } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListOffersPagePackagesShortPresenter } from '../hooks/use-list-offers-page-packages-short-presenter';
 import { useListPackagesPresenter } from '../hooks/use-list-packages-presenter';
@@ -20,8 +22,8 @@ import { useGetOffersPageOutlinePresenter } from '../hooks/use-get-offers-page-o
 import { useSaveOffersPagePresenter } from '../hooks/use-save-offers-page-presenter';
 import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
 import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
+import { useRouter } from 'next/navigation';
 import { useRequiredPlatform } from '../context/platform-context';
-import { useContentLocale } from '../hooks/use-platform-translations';
 
 type CarouselItem = {
     title: string;
@@ -63,8 +65,9 @@ export default function ManageOffersPage({
 }: ManageOffersPageProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.manageOffersPage');
-    const router = useRouter();
+    const platformTranslations = useTranslations('pages.managePagesGeneral');
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const router = useRouter();
     const { platform } = useRequiredPlatform();
     const contentLocale = useContentLocale();
 
@@ -369,12 +372,10 @@ export default function ManageOffersPage({
         },
         {
             label: platform.name,
-            onClick: () => {
-                // TODO: Implement navigation to platform
-            },
+            onClick: () => router.push(`/platform/${platformSlug}/${platformLocale}`),
         },
         {
-            label: breadcrumbsTranslations('offersPage'),
+            label: breadcrumbsTranslations('manageOffersPage'),
             onClick: () => {
                 // Nothing should happen on clicking the current page
             },
@@ -382,28 +383,26 @@ export default function ManageOffersPage({
     ];
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col space-y-2 gap-4">
             <Breadcrumbs items={breadcrumbItems} />
 
-            {/* Page header with gradient background */}
-            <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg shadow-lg">
-                <div className="flex justify-between items-center">
-                    <div className="flex flex-col space-y-2">
-                        <h1>{t('title')}</h1>
-                        <p className="text-text-secondary text-sm">
-                            Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
-                        </p>
-                    </div>
-                    <Button
-                        variant="primary"
-                        size="medium"
-                        hasIconLeft
-                        iconLeft={<IconSave />}
-                        text={t('save')}
-                        onClick={handleSave}
-                        disabled={saveOffersPageMutation.isPending || !formState.isDirty}
-                    />
-                </div>
+            {/* Page header with translations */}
+            <div className="flex flex-col space-y-2">
+                <h1>{t('title')}</h1>
+                <p className="text-text-secondary text-sm">
+					{platformTranslations('platformLabel')} {platform.name} | {platformTranslations('contentLanguageLabel')} {contentLocale.toUpperCase()}
+				</p>
+            </div>
+
+            <div className="sticky top-18 z-50 flex justify-end">
+                <Button
+                    onClick={handleSave}
+                    disabled={saveOffersPageMutation.isPending || !formState.isDirty}
+                    variant="primary"
+                    size="medium"
+                    text={saveOffersPageMutation.isPending ? t('savingBanner') : t('save')}
+                    className='shadow-lg'
+                />
             </div>
 
             {/* Success Banner */}

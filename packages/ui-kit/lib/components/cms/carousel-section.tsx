@@ -256,19 +256,17 @@ export default function CarouselSection({
                         </div>
                     </div>
                 ))}
+            {(value || []).length === 0 && (
+            <div className="p-4 text-center text-text-secondary border border-border-default rounded-medium">
+                {dictionary.components.cmsSections.carouselSection.emptyState}
+            </div>
+                )}
                 <Button
                     variant="primary"
                     size="medium"
                     text="Add Carousel Item"
                     onClick={addCarouselItem}
-                    className="transition-all duration-200 hover:scale-105"
                 />
-
-                {(value || []).length === 0 && (
-                    <div className="text-center py-8 text-text-secondary transition-all duration-300 animate-in fade-in-0 slide-in-from-bottom-4">
-                        No carousel items yet. Click "Add Carousel Item" to get started.
-                    </div>
-                )}
             </div>
         </div>
     );

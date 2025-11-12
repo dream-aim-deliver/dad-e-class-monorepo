@@ -20,6 +20,7 @@ import { useGetCoachingPagePresenter } from '../hooks/use-coaching-page-presente
 import { useSaveCoachingPagePresenter } from '../hooks/use-save-coaching-page-presenter';
 import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
 import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
+import { useRouter } from 'next/navigation';
 import { useRequiredPlatform } from '../context/platform-context';
 import { useContentLocale } from '../hooks/use-platform-translations';
 
@@ -69,9 +70,10 @@ export default function ManageCoachingPage({
 }: ManageCoachingPageProps) {
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.manageCoachingPage');
-  const router = useRouter();
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+  const router = useRouter();
   const { platform } = useRequiredPlatform();
+  const platformTranslations = useTranslations('pages.managePagesGeneral');
   const contentLocale = useContentLocale();
 
   const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
@@ -266,9 +268,7 @@ export default function ManageCoachingPage({
     },
     {
       label: platform.name,
-      onClick: () => {
-        // TODO: Implement navigation to platform
-      },
+      onClick: () => router.push(`/platform/${platformSlug}/${platformLocale}`),
     },
     {
       label: breadcrumbsTranslations('coachingPage'),
@@ -279,28 +279,26 @@ export default function ManageCoachingPage({
   ];
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col space-y-2 gap-4">
       <Breadcrumbs items={breadcrumbItems} />
 
-      {/* Page header with gradient background */}
-      <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg shadow-lg">
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col space-y-2">
-            <h1>{t('title')}</h1>
-            <p className="text-text-secondary text-sm">
-              Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
-            </p>
-          </div>
-          <Button
-            variant="primary"
-            size="medium"
-            hasIconLeft
-            iconLeft={<IconSave />}
-            text={t('save')}
-            onClick={handleSave}
-            disabled={saveCoachingPageMutation.isPending || !formState.isDirty}
-          />
-        </div>
+      {/* Page header with translations */}
+      <div className="flex flex-col space-y-2">
+        <h1>{t('title')}</h1>
+        <p className="text-text-secondary text-sm">
+					{platformTranslations('platformLabel')} {platform.name} | {platformTranslations('contentLanguageLabel')} {contentLocale.toUpperCase()}
+				</p>
+      </div>
+
+      <div className="sticky top-18 z-50 flex justify-end">
+        <Button
+          onClick={handleSave}
+          disabled={saveCoachingPageMutation.isPending || !formState.isDirty}
+          variant="primary"
+          size="medium"
+          text={saveCoachingPageMutation.isPending ? t('savingBanner') : t('save')}
+          className='shadow-lg'
+        />
       </div>
 
       {/* Success Banner */}

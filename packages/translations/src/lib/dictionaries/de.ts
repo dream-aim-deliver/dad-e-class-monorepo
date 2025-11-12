@@ -1133,6 +1133,9 @@ export const DE: TDictionary = {
       topics: 'Themen',
       categories: 'Kategorien',
       aboutPage: 'Über uns Seite',
+      manageCoachingPage: 'Coaching-Seite verwalten',
+      manageOffersPage: 'Angebote-Seite verwalten',
+      manageHomePage: 'Startseite verwalten',
       footer: 'Fußzeile',
       homePage: 'Startseite',
       coachingPage: 'Coaching-Seite',
@@ -2997,6 +3000,10 @@ export const DE: TDictionary = {
           description: 'Du hast keine Berechtigung, diesen Benutzer anzusehen.',
         },
       },
+    },
+    managePagesGeneral: {
+      platformLabel: "Plattform:",
+      contentLanguageLabel: "Inhaltssprache:",
     },
   },
 };
