@@ -1135,6 +1135,9 @@ export const EN: TDictionary = {
       topics: 'Topics',
       categories: 'Categories',
       aboutPage: 'About Page',
+      manageCoachingPage: 'Manage Coaching Page',
+      manageOffersPage: 'Manage Offers Page',
+      manageHomePage: 'Manage Homepage',
       footer: 'Footer',
       homePage: 'Home Page',
       coachingPage: 'Coaching Page',
@@ -3000,6 +3003,10 @@ export const EN: TDictionary = {
           description: 'You do not have permission to view this user.',
         },
       },
+    },
+    managePagesGeneral: {
+      platformLabel: "Platform:",
+      contentLanguageLabel: "Content Language:",
     },
   },
 };
