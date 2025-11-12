@@ -8,15 +8,14 @@
 // User Types from Notion: Visitor
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=6247-208046
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import ProfessionalInfo from 'packages/ui-kit/lib/components/profile/professional-info';
 import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
 import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
-import { useState } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { trpc } from '../trpc/cms-client';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
-import { Banner, DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { Banner, DefaultError, DefaultLoading, ProfessionalInfo } from '@maany_shr/e-class-ui-kit';
 
 // Types
 type TSkill = { id: string | number; name: string; slug: string };
@@ -27,7 +26,6 @@ interface BecomeACoachProps {
 
 export default function BecomeACoach({ locale }: BecomeACoachProps) {
   const t = useTranslations('pages.becomeACoach');
-  const currentLocale = useLocale() as TLocale;
 
   // TRPC query for topics
   const [listTopicsResponse] = trpc.listTopics.useSuspenseQuery({});
@@ -39,15 +37,15 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [curriculumVitaeUploadProgress, setCurriculumVitaeUploadProgress] = useState<number>(0);
   const [curriculumVitaeFile, setCurriculumVitaeFile] = useState<fileMetadata.TFileMetadata | null>(null);
-  
+
   // State for messages
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const { presenter: listTopicsPresenter } = useListTopicsPresenter(setListTopicsViewModel);
 
-  // Empty default professional profile data for new users
-  const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
+  // Empty default professional profile data for new users - memoized to prevent re-renders
+  const defaultProfessionalProfile = useMemo<viewModels.TGetProfessionalProfileSuccess['profile']>(() => ({
     id: 0,
     bio: '',
     linkedinUrl: null,
@@ -58,19 +56,22 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     companyName: null,
     companyRole: null,
     companyIndustry: null,
-  };
+  }), []);
 
   const professionalForm = useFormState(defaultProfessionalProfile, {
     enableReloadProtection: true,
   });
 
-  // Present topics data
-  // @ts-ignore
-  listTopicsPresenter.present(listTopicsResponse, listTopicsViewModel);
+  // Present topics data - called in useEffect to prevent render loops
+  useEffect(() => {
+    // @ts-ignore
+    listTopicsPresenter.present(listTopicsResponse, listTopicsViewModel);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listTopicsResponse, listTopicsPresenter]); // listTopicsViewModel excluded - presenter updates it via setListTopicsViewModel
 
-  // Client-side CV file upload handler
+  // Client-side CV file upload handler - memoized to prevent recreation
   // TODO: Implement server-side upload in the future
-  const handleCVFileUpload = async (
+  const handleCVFileUpload = useCallback(async (
     fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
   ): Promise<fileMetadata.TFileMetadata> => {
@@ -98,23 +99,23 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
         }
       }, 100);
     });
-  };
+  }, []);
 
-  const handleCVUploadComplete = (uploadedFile: fileMetadata.TFileMetadata) => {
+  const handleCVUploadComplete = useCallback((uploadedFile: fileMetadata.TFileMetadata) => {
     setCurriculumVitaeFile(uploadedFile);
     setCurriculumVitaeUploadProgress(0);
-  };
+  }, []);
 
-  const handleCVFileDelete = (fileId: string) => {
+  const handleCVFileDelete = useCallback((fileId: string) => {
     // Clean up blob URL to prevent memory leaks
     if (curriculumVitaeFile?.url) {
       URL.revokeObjectURL(curriculumVitaeFile.url);
     }
 
     setCurriculumVitaeFile(null);
-  };
+  }, [curriculumVitaeFile]);
 
-  const handleCVFileDownload = (fileId: string) => {
+  const handleCVFileDownload = useCallback((fileId: string) => {
     if (curriculumVitaeFile?.url) {
       // Create a temporary download link for client-side files
       const downloadLink = document.createElement('a');
@@ -124,16 +125,16 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
       downloadLink.click();
       document.body.removeChild(downloadLink);
     }
-  };
+  }, [curriculumVitaeFile]);
 
-  // Handle form submission and email generation
+  // Handle form submission and email generation - memoized to prevent recreation
   // TODO: Implement server-side email sending in the future
-  const handleProfessionalSave = async (profile: viewModels.TGetProfessionalProfileSuccess['profile']) => {
+  const handleProfessionalSave = useCallback(async (profile: viewModels.TGetProfessionalProfileSuccess['profile']) => {
     if (!profile) return;
 
     // Validation
     const errors: string[] = [];
-    
+
     // Bio validation (required)
     if (!profile.bio || profile.bio.trim() === '') {
       errors.push(t('validation.bioRequired'));
@@ -160,12 +161,14 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     if (errors.length > 0) {
       setErrorMessage(errors.join('. '));
       setSuccessMessage(null);
-      setIsSaving(false);
       return;
     }
 
     try {
       setIsSaving(true);
+      setErrorMessage(null);
+      setSuccessMessage(null);
+
       // Generate localized email subject
       const emailSubject = t('email.subject');
 
@@ -205,15 +208,24 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
 
       // Open email client with pre-filled data
       window.open(mailtoLink, '_blank');
-    } catch (error) {
+
+      // Only set success if no error occurred
+      setSuccessMessage(t('successTitle'));
+    } catch {
       setErrorMessage(t('error.description'));
       setSuccessMessage(null);
     } finally {
       setIsSaving(false);
-      setSuccessMessage(t('successTitle'));
-      setErrorMessage(null);
     }
-  };
+  }, [curriculumVitaeFile, t]);
+
+  // Stable handler for form changes - prevents stale closures
+  const handleProfessionalChange = useCallback((data: viewModels.TGetProfessionalProfileSuccess['profile']) => {
+    professionalForm.setValue((prev) => {
+      if (!prev) return prev;
+      return data;
+    });
+  }, [professionalForm]);
 
   // Loading state
   if (!listTopicsViewModel) {
@@ -242,8 +254,8 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
       <div className='flex flex-col gap-4'>
         <p className='text-text-primary text-2xl font-bold'>{t('formTitle')}</p>
         <ProfessionalInfo
-          initialData={professionalForm.value!}
-          onChange={professionalForm.setValue}
+          initialData={professionalForm.value || defaultProfessionalProfile}
+          onChange={handleProfessionalChange}
           availableSkills={availableSkills}
           onSave={handleProfessionalSave}
           onFileUpload={handleCVFileUpload}

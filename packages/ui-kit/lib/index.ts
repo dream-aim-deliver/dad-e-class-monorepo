@@ -275,3 +275,5 @@ export { CoachNotesResultPopup } from './components/coach/coach-notes-result-pop
 export { AssignmentCardFilterModal } from './components/assignment/assignment-card-filter-modal';
 export { AssignmentOverview } from './components/assignment/assignment-overview';
 export { AssignmentOverviewList } from './components/assignment/assignment-overview-list';
+
+export { ProfessionalInfo } from './components/profile/professional-info';
