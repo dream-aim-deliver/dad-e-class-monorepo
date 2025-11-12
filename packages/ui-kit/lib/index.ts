@@ -300,3 +300,5 @@ export { PaginationButton, type PaginationButtonProps } from './components/pagin
 
 // Assignment types from cms-rest (authoritative backend schema)
 export type { AssignmentReply, TAssignmentSenderResponse, TAssignmentReplyResponse, TAssignmentPassedResponse } from './types/assignment-types';
+export { CoachReviewCardList } from './components/review/coach-review-card-list';
+export { ReviewDisplay } from './components/review/review-display';
