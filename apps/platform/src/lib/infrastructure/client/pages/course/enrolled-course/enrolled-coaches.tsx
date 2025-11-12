@@ -13,11 +13,9 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
-import { useListCourseCoachesPresenter } from '../../../hooks/use-course-coaches-presenter';
 import { useListCoachesPresenter } from '../../../hooks/use-coaches-presenter';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { trpc as trpcMock } from '../../../trpc/client';
 import { trpc } from '../../../trpc/cms-client';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import CMSTRPCClientProviders from '../../../trpc/cms-client-provider';
@@ -35,17 +33,18 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [localAddedCoaches, setLocalAddedCoaches] = useState<string[]>([]);
 
-    // Fetch course-specific coaches data using TRPC Mock Client
+    // Fetch course-specific coaches data using real TRPC Client
     const [courseCoachesResponse, { refetch: refetchCoaches }] =
-
-        // TODO: MISSING USECASE - REPLACE WITH REAL TRPC CLIENT
-        trpcMock.listCourseCoaches.useSuspenseQuery({
-            courseSlug: props.courseSlug,
+        // TODO: Add courseSlug as input parameter when implemented in backend
+        trpc.listCoaches.useSuspenseQuery({
+            pagination: { pageSize: 50, page: 1 },
+            skillSlugs: null
         });
 
-    const [availableCoachesResponse] = trpc.listCoaches.useSuspenseQuery(
-        {},
-    );
+    const [availableCoachesResponse] = trpc.listCoaches.useSuspenseQuery({
+        pagination: { pageSize: 100, page: 1 },
+        skillSlugs: null
+    });
 
     // Set up presenter for transforming the response to view model
     const [courseCoachesViewModel, setCourseCoachesViewModel] = useState<
@@ -56,13 +55,14 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     >(undefined);
 
     // Set up presenters
-    const { presenter: courseCoachesPresenter } = useListCourseCoachesPresenter(
+    const { presenter: courseCoachesPresenter } = useListCoachesPresenter(
         setCourseCoachesViewModel,
     );
     const { presenter: availableCoachesPresenter } = useListCoachesPresenter(
         setAvailableCoachesViewModel,
     );
 
+    // @ts-ignore
     courseCoachesPresenter.present(courseCoachesResponse, courseCoachesViewModel);
 
     // @ts-ignore

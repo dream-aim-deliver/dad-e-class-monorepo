@@ -20,8 +20,7 @@ export const UnscheduleCoachingSessionResponseMiddleware =
         TUnscheduleCoachingSessionPresenterUtilities
     >;
 
-type TUnscheduleCoachingSessionResponseMiddleware =
-    typeof UnscheduleCoachingSessionResponseMiddleware;
+type TUnscheduleCoachingSessionResponseMiddleware = typeof UnscheduleCoachingSessionResponseMiddleware;
 
 export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
     TUnscheduleCoachingSessionUseCaseResponse,
@@ -30,15 +29,12 @@ export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
     TUnscheduleCoachingSessionResponseMiddleware
 > {
     constructor(
-        setViewModel: (
-            viewModel: viewModels.TUnscheduleCoachingSessionViewModel,
-        ) => void,
+        setViewModel: (viewModel: viewModels.TUnscheduleCoachingSessionViewModel) => void,
         viewUtilities: TUnscheduleCoachingSessionPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel:
-                    UnscheduleCoachingSessionUseCaseResponseSchema,
+                responseModel: UnscheduleCoachingSessionUseCaseResponseSchema,
                 viewModel: viewModels.UnscheduleCoachingSessionViewModelSchema
             },
             middleware: UnscheduleCoachingSessionResponseMiddleware,
@@ -67,6 +63,16 @@ export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
             TUnscheduleCoachingSessionResponseMiddleware
         >,
     ): viewModels.TUnscheduleCoachingSessionViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {

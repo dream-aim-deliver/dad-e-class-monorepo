@@ -6,21 +6,36 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { CreateCourseSuccessResponseSchema } from '../usecase-models/create-course-usecase-models';
+import { CreateCourseSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
+// Extract success data from usecase response
 export const CreateCourseSuccessSchema = CreateCourseSuccessResponseSchema.shape.data;
-
 export type TCreateCourseSuccess = z.infer<typeof CreateCourseSuccessSchema>;
 
-const CreateCourseDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CreateCourseSuccessSchema);
-const CreateCourseInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
-const CreateCourseKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+// Define view mode schemas
+const CreateCourseDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory(
+    "default",
+    CreateCourseSuccessSchema
+);
 
+const CreateCourseKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory(
+    "kaboom",
+    BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema)
+);
+
+const CreateCourseNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory(
+    "not-found",
+    BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema)
+);
+
+// Create schema map with all view modes
 export const CreateCourseViewModelSchemaMap = {
     default: CreateCourseDefaultViewModelSchema,
-    invalid: CreateCourseInvalidViewModelSchema,
     kaboom: CreateCourseKaboomViewModelSchema,
+    notFound: CreateCourseNotFoundViewModelSchema,
 };
 export type TCreateCourseViewModelSchemaMap = typeof CreateCourseViewModelSchemaMap;
+
+// Create discriminated union of all view modes
 export const CreateCourseViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(CreateCourseViewModelSchemaMap);
 export type TCreateCourseViewModel = z.infer<typeof CreateCourseViewModelSchema>;

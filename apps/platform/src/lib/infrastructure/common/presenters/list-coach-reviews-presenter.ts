@@ -1,7 +1,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import {
-    ListCoachReviewsResponseSchema,
-    TListCoachReviewsResponse,
+    ListCoachReviewsUseCaseResponseSchema,
+    TListCoachReviewsUseCaseResponse,
     TListCoachReviewsErrorResponse,
 } from '@dream-aim-deliver/e-class-cms-rest';
 import {
@@ -15,21 +15,15 @@ export type TListCoachReviewsPresenterUtilities = {};
 
 export const ListCoachReviewsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        TListCoachReviewsResponse,
+        TListCoachReviewsUseCaseResponse,
         viewModels.TListCoachReviewsViewModel,
         TListCoachReviewsPresenterUtilities
     >;
 
 type TListCoachReviewsResponseMiddleware = typeof ListCoachReviewsResponseMiddleware;
 
-/**
- * Presenter for list-coach-reviews feature.
- *
- * Transforms usecase responses into view models for UI consumption.
- * Maps success responses to 'default' view mode and errors to appropriate error modes.
- */
 export default class ListCoachReviewsPresenter extends BasePresenter<
-    TListCoachReviewsResponse,
+    TListCoachReviewsUseCaseResponse,
     viewModels.TListCoachReviewsViewModel,
     TListCoachReviewsPresenterUtilities,
     TListCoachReviewsResponseMiddleware
@@ -40,7 +34,7 @@ export default class ListCoachReviewsPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: ListCoachReviewsResponseSchema,
+                responseModel: ListCoachReviewsUseCaseResponseSchema,
                 viewModel: viewModels.ListCoachReviewsViewModelSchema
             },
             middleware: ListCoachReviewsResponseMiddleware,
@@ -51,7 +45,7 @@ export default class ListCoachReviewsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            TListCoachReviewsResponse,
+            TListCoachReviewsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TListCoachReviewsViewModel {
