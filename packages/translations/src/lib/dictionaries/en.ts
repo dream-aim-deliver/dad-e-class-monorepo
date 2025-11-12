@@ -1834,6 +1834,12 @@ export const EN: TDictionary = {
         downloadNotes: 'Download notes',
         downloadFailed: 'Failed to generate PDF: {error}. Please try again.',
         noNotesFound: 'No notes found. Start taking notes during your lessons!',
+        module: 'Module',
+        lesson: 'Lesson',
+        noNotesAvailable: 'No notes available for this lesson',
+        error: {
+          title: 'Error',
+        },
       },
       study: {
         submit: 'Submit',

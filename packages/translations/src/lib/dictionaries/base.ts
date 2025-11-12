@@ -1893,6 +1893,12 @@ export const DictionarySchema = z.object({
         downloadNotes: z.string(),
         downloadFailed: z.string(),
         noNotesFound: z.string(),
+        module: z.string(),
+        lesson: z.string(),
+        noNotesAvailable: z.string(),
+        error: z.object({
+          title: z.string(),
+        }),
       }),
       study: z.object({
         submit: z.string(),
