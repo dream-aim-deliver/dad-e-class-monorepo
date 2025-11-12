@@ -10,12 +10,15 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { OrderHistoryCard, OrderHistoryCardList, Button, ConfirmationModal } from '@maany_shr/e-class-ui-kit';
-import { useState } from 'react';
+import { OrderHistoryCard, OrderHistoryCardList, Button, ConfirmationModal, DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { generateInvoicePdf } from '../utils/generate-invoice-pdf';
 import { getLocaleCountryCode } from '../utils/locale-mapping';
+import { useRequiredPlatform } from '../context/platform-context';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListUserIncomingTransactionsPresenter } from '../hooks/use-list-user-incoming-transactions-presenter';
 
 interface OrderHistoryTabProps {
   locale: TLocale;
@@ -26,6 +29,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
   const currentLocale = useLocale() as TLocale;
   const { data: session } = useSession();
   const router = useRouter();
+  const { platform } = useRequiredPlatform();
 
   // Pagination state - show 8 cards initially (2 rows on desktop with 4 cols)
   const [visibleCount, setVisibleCount] = useState(8);
@@ -43,48 +47,58 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
     message: '',
   });
 
-  // Fetch platform data for invoice branding
-  const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
-
   // Fetch personal profile for customer details in invoice
   const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
 
   // TRPC query for listUserIncomingTransactions usecase
-  const [transactionsResponse] = trpc.listUserIncomingTransactions.useSuspenseQuery({});
+  const [transactionsResponse, { refetch: refetchTransactions }] = trpc.listUserIncomingTransactions.useSuspenseQuery({});
+
+  // View model state
+  const [transactionsViewModel, setTransactionsViewModel] = useState<
+    viewModels.TListUserIncomingTransactionsViewModel | undefined
+  >(undefined);
+
+  // Presenter
+  const { presenter: transactionsPresenter } = useListUserIncomingTransactionsPresenter(
+    setTransactionsViewModel,
+  );
+
+  // Present the data when response changes
+  useEffect(() => {
+    // @ts-ignore
+    transactionsPresenter.present(transactionsResponse, transactionsViewModel);
+  }, [transactionsResponse, transactionsPresenter]);
 
   // Handle error states
-  if (!transactionsResponse.success) {
-    const mode = (transactionsResponse as any).mode;
-
-    // Determine which error message to show based on mode
-    let errorTitle = t('error.title');
-    let errorDescription = t('error.description');
-
-    if (mode === 'kaboom') {
-      errorTitle = t('error.kaboom.title');
-      errorDescription = t('error.kaboom.description');
-    } else if (mode === 'not-found') {
-      errorTitle = t('error.notFound.title');
-      errorDescription = t('error.notFound.description');
-    } else if (mode === 'unauthorized') {
-      errorTitle = t('error.unauthorized.title');
-      errorDescription = t('error.unauthorized.description');
-    }
-
+  if (transactionsViewModel?.mode === 'kaboom') {
     return (
-      <div className="flex flex-col space-y-3">
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-          <h3 className="text-lg font-semibold text-red-800">{errorTitle}</h3>
-          <p className="text-sm text-red-600 mt-1">{errorDescription}</p>
-        </div>
-      </div>
+      <DefaultError
+        locale={currentLocale}
+        onRetry={() => refetchTransactions()}
+      />
     );
   }
 
-  // Get all transactions
+  if (transactionsViewModel?.mode === 'not-found') {
+    return (
+      <DefaultError
+        locale={currentLocale}
+        onRetry={() => refetchTransactions()}
+      />
+    );
+  }
+
+  // Loading state
+  if (!transactionsViewModel) {
+    return <DefaultLoading locale={currentLocale} variant="minimal" />;
+  }
+
+  // Get all transactions from view model
   const getAllTransactions = () => {
-    const responseData = transactionsResponse.data as { transactions: any[] };
-    return responseData.transactions || [];
+    if (transactionsViewModel.mode !== 'default') {
+      return [];
+    }
+    return transactionsViewModel.data.transactions || [];
   };
 
   // Handler for invoice download/generation
@@ -101,16 +115,6 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
       return;
     }
 
-    // Check if platform API call was successful
-    if (!(platformResponse as any)?.success) {
-      setErrorModal({
-        isOpen: true,
-        title: t('error.title'),
-        message: t('platformDataFetchFailed'),
-      });
-      return;
-    }
-
     // Check if personal profile API call was successful
     if (!(personalProfileResponse as any)?.success) {
       setErrorModal({
@@ -120,9 +124,6 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
       });
       return;
     }
-
-    // Get platform data (guaranteed to exist after success check)
-    const platformData = (platformResponse as any).data;
 
     // Get customer data (guaranteed to exist after success check)
     const personalProfile = (personalProfileResponse as any).data?.profile;
@@ -137,16 +138,57 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
       return;
     }
 
+    // Validate that platform has required company information for invoice
+    // Check for null, undefined, or empty string
+    if (!platform.companyName?.trim() || !platform.companyAddress?.trim() || !platform.companyUuid?.trim()) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('platformDataMissing'),
+      });
+      return;
+    }
+
     setIsGeneratingPdf(String(transactionId));
 
     try {
+      // Transform transaction to match InvoiceTransactionData interface
+      // Map API response fields to the expected invoice format
+      const invoiceTransaction = {
+        id: transaction.id,
+        createdAt: transaction.createdAt,
+        currency: transaction.currency,
+        content: {
+          type: transaction.content.type,
+          unitPrice: transaction.content.type === 'coachingOffers' ? 0 : transaction.content.unitPrice,
+          ...(transaction.content.type === 'course' && transaction.content.course && {
+            course: {
+              title: transaction.content.course.title,
+              id: transaction.content.course.id,
+            },
+          }),
+          ...(transaction.content.type === 'coachingOffers' && {
+            items: transaction.content.items,
+          }),
+          ...(transaction.content.type === 'package' && transaction.content.package && {
+            package: {
+              title: transaction.content.package.title,
+              id: transaction.content.package.id,
+            },
+          }),
+        },
+      };
+
       // Use the reusable invoice PDF generator utility
       await generateInvoicePdf({
-        transaction,
+        transaction: invoiceTransaction,
         platformData: {
-          name: platformData.name,
-          logoUrl: platformData.logoUrl,
-          domainName: platformData.domainName,
+          name: platform.name,
+          logoUrl: platform.logo?.downloadUrl || '',
+          domainName: platform.domainName,
+          companyName: platform.companyName,
+          companyAddress: platform.companyAddress,
+          companyUid: platform.companyUuid,
         },
         customerData: {
           name: personalProfile.name,
@@ -176,6 +218,8 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
           package: t('invoice.package'),
           totalLabel: t('invoice.totalLabel'),
           paymentMethod: t('invoice.paymentMethod'),
+          type: t('invoice.type'),
+          description: t('invoice.description'),
         },
       });
     } catch (error: any) {
@@ -270,7 +314,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
           title: course.title,
           imageUrl: course.imageUrl || '',
           onClick: () => {
-            console.log('Navigate to course:', course.id);
+            router.push(`/courses/${course.slug}`);
           },
         })) || [];
 

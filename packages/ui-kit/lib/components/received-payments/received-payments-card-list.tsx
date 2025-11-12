@@ -53,13 +53,13 @@ export function ReceivedPaymentsCardList({
                         <div
                             key={child?.key ?? `received-payments-card-${index}`}
                             role="listitem"
-                            className="min-w-0 w-full"
+                            className="min-w-0"
                         >
                             {child}
                         </div>
                     ))
                 ) : (
-                    <div key="single-received-payments-card" role="listitem" className="min-w-0 w-full">
+                    <div key="single-received-payments-card" role="listitem" className="min-w-0">
                         {children}
                     </div>
                 )}

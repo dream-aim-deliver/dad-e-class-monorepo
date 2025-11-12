@@ -10,10 +10,13 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { ReceivedPaymentsCard, ReceivedPaymentsCardList, Button, ConfirmationModal } from '@maany_shr/e-class-ui-kit';
-import { useState } from 'react';
+import { ReceivedPaymentsCard, ReceivedPaymentsCardList, Button, ConfirmationModal, DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { useState, useEffect } from 'react';
 import { generateInvoicePdf } from '../utils/generate-invoice-pdf';
 import { getLocaleCountryCode } from '../utils/locale-mapping';
+import { useRequiredPlatform } from '../context/platform-context';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListUserOutgoingTransactionsPresenter } from '../hooks/use-list-user-outgoing-transactions-presenter';
 
 interface ReceivedPaymentsTabProps {
   locale: TLocale;
@@ -22,6 +25,7 @@ interface ReceivedPaymentsTabProps {
 export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps) {
   const t = useTranslations('pages.receivedPayments');
   const currentLocale = useLocale() as TLocale;
+  const { platform } = useRequiredPlatform();
 
   // Pagination state - show 8 cards initially (2 rows on desktop with 4 cols)
   const [visibleCount, setVisibleCount] = useState(8);
@@ -39,48 +43,58 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
     message: '',
   });
 
-  // Fetch platform data for invoice branding
-  const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
-
   // Fetch personal profile for company details in invoice (coach details)
   const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
 
   // TRPC query for listUserOutgoingTransactions usecase
-  const [transactionsResponse] = trpc.listUserOutgoingTransactions.useSuspenseQuery({});
+  const [transactionsResponse, { refetch: refetchTransactions }] = trpc.listUserOutgoingTransactions.useSuspenseQuery({});
+
+  // View model state
+  const [transactionsViewModel, setTransactionsViewModel] = useState<
+    viewModels.TListUserOutgoingTransactionsViewModel | undefined
+  >(undefined);
+
+  // Presenter
+  const { presenter: transactionsPresenter } = useListUserOutgoingTransactionsPresenter(
+    setTransactionsViewModel,
+  );
+
+  // Present the data when response changes
+  useEffect(() => {
+    // @ts-ignore
+    transactionsPresenter.present(transactionsResponse, transactionsViewModel);
+  }, [transactionsResponse, transactionsPresenter]);
 
   // Handle error states
-  if (!transactionsResponse.success) {
-    const mode = (transactionsResponse as any).mode;
-
-    // Determine which error message to show based on mode
-    let errorTitle = t('error.title');
-    let errorDescription = t('error.description');
-
-    if (mode === 'kaboom') {
-      errorTitle = t('error.kaboom.title');
-      errorDescription = t('error.kaboom.description');
-    } else if (mode === 'not-found') {
-      errorTitle = t('error.notFound.title');
-      errorDescription = t('error.notFound.description');
-    } else if (mode === 'unauthorized') {
-      errorTitle = t('error.unauthorized.title');
-      errorDescription = t('error.unauthorized.description');
-    }
-
+  if (transactionsViewModel?.mode === 'kaboom') {
     return (
-      <div className="flex flex-col space-y-3">
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-          <h3 className="text-lg font-semibold text-red-800">{errorTitle}</h3>
-          <p className="text-sm text-red-600 mt-1">{errorDescription}</p>
-        </div>
-      </div>
+      <DefaultError
+        locale={currentLocale}
+        onRetry={() => refetchTransactions()}
+      />
     );
   }
 
-  // Get all transactions
+  if (transactionsViewModel?.mode === 'not-found') {
+    return (
+      <DefaultError
+        locale={currentLocale}
+        onRetry={() => refetchTransactions()}
+      />
+    );
+  }
+
+  // Loading state
+  if (!transactionsViewModel) {
+    return <DefaultLoading locale={currentLocale} variant="minimal" />;
+  }
+
+  // Get all transactions from view model
   const getAllTransactions = () => {
-    const responseData = transactionsResponse.data as { transactions: any[] };
-    return responseData.transactions || [];
+    if (transactionsViewModel.mode !== 'default') {
+      return [];
+    }
+    return transactionsViewModel.data.transactions || [];
   };
 
   // Handler for invoice download/generation
@@ -97,16 +111,6 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
       return;
     }
 
-    // Check if platform API call was successful
-    if (!(platformResponse as any)?.success) {
-      setErrorModal({
-        isOpen: true,
-        title: t('error.title'),
-        message: t('platformDataFetchFailed'),
-      });
-      return;
-    }
-
     // Check if personal profile API call was successful
     if (!(personalProfileResponse as any)?.success) {
       setErrorModal({
@@ -116,9 +120,6 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
       });
       return;
     }
-
-    // Get platform data (guaranteed to exist after success check)
-    const platformData = (platformResponse as any).data;
 
     // Get coach's own profile data (guaranteed to exist after success check)
     const personalProfile = (personalProfileResponse as any).data?.profile;
@@ -133,18 +134,30 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
       return;
     }
 
+    // Validate that platform has required company information for invoice
+    // Check for null, undefined, or empty string
+    if (!platform.companyName?.trim() || !platform.companyAddress?.trim() || !platform.companyUuid?.trim()) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('platformDataMissing'),
+      });
+      return;
+    }
+
     setIsGeneratingPdf(String(transactionId));
 
     try {
-      // Transform the outgoing transaction to match the invoice PDF generator format
-      // For outgoing transactions (coach receiving payment), we need to adapt the data structure
-      const transformedTransaction = {
+      // Transform transaction to match InvoiceTransactionData interface
+      // Map API response fields to the expected invoice format
+      // Note: Outgoing transactions (coach receiving payment) are always type "coachPayment"
+      const invoiceTransaction = {
         id: transaction.id,
         createdAt: transaction.createdAt,
         currency: transaction.currency,
         content: {
-          type: 'coachingOffers' as const, // Outgoing transactions are coaching payments
-          unitPrice: 0, // Will be calculated from items
+          type: 'coachingOffers' as const, // Map "coachPayment" to "coachingOffers" for invoice generator
+          unitPrice: 0, // Not used for coaching offers, calculated from items
           items: transaction.content.items.map((item: any) => ({
             title: item.description,
             duration: item.duration || '0',
@@ -157,11 +170,14 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
       // Use the reusable invoice PDF generator utility
       // For received payments (coach perspective), show the coach's information
       await generateInvoicePdf({
-        transaction: transformedTransaction,
+        transaction: invoiceTransaction,
         platformData: {
-          name: platformData.name,
-          logoUrl: platformData.logoUrl,
-          domainName: platformData.domainName,
+          name: platform.name,
+          logoUrl: platform.logo?.downloadUrl || '',
+          domainName: platform.domainName,
+          companyName: platform.companyName,
+          companyAddress: platform.companyAddress,
+          companyUid: platform.companyUuid,
         },
         customerData: {
           name: personalProfile.name,
@@ -191,6 +207,8 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
           package: t('invoice.package'),
           totalLabel: t('invoice.totalLabel'),
           paymentMethod: t('invoice.paymentMethod'),
+          type: t('invoice.type'),
+          description: t('invoice.description'),
         },
       });
     } catch (error: any) {

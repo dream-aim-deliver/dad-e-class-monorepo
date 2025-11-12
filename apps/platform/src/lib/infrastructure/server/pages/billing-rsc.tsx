@@ -26,11 +26,16 @@ export default async function BillingServerComponent(
 
   // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
   // React will stream HTML while queries are pending
-  prefetch(trpc.listUserIncomingTransactions.queryOptions({})); // Student transactions (orders)
+
+  // Prefetch personal profile for invoice generation (both students and coaches need this)
+  prefetch(trpc.getPersonalProfile.queryOptions({}));
+
+  // Prefetch student transactions (orders) - all users
+  prefetch(trpc.listUserIncomingTransactions.queryOptions({}));
 
   // Coaches also need to prefetch outgoing transactions (received payments)
   if (isCoach) {
-    prefetch(trpc.listUserOutgoingTransactions.queryOptions({})); // Coach received payments
+    prefetch(trpc.listUserOutgoingTransactions.queryOptions({}));
   }
 
   return (

@@ -11,6 +11,9 @@ export interface InvoicePlatformData {
   name: string;
   logoUrl?: string | null;
   domainName?: string;
+  companyName: string;
+  companyAddress: string;
+  companyUid: string;
 }
 
 export interface InvoiceCustomerData {
@@ -75,6 +78,8 @@ export interface GenerateInvoicePdfOptions {
     package: string;
     totalLabel: string;
     paymentMethod: string;
+    type: string;
+    description: string;
   };
 }
 
@@ -339,7 +344,7 @@ export async function generateInvoicePdf(options: GenerateInvoicePdfOptions): Pr
   };
 
   // Add table header
-  const headerRow = createOrderRow('Type', 'Description', t.pricePerUnit, t.units, t.total, true);
+  const headerRow = createOrderRow(t.type, t.description, t.pricePerUnit, t.units, t.total, true);
   tableWrapper.appendChild(headerRow);
 
   // Add order items based on type
@@ -444,7 +449,7 @@ export async function generateInvoicePdf(options: GenerateInvoicePdfOptions): Pr
   }
 
   const footerText = document.createElement('div');
-  footerText.textContent = `${platformData.name} Company Name, ${platformData.name} Company Address, ${platformData.name} Company UID`;
+  footerText.textContent = `${platformData.companyName}, ${platformData.companyAddress}, ${platformData.companyUid}`;
   footerText.style.fontSize = '8px';
   footerText.style.color = '#999999';
   footerText.style.textAlign = 'center';

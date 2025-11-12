@@ -140,14 +140,13 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
     const dictionary = getDictionary(props.locale).components.orderHistoryCard;
 
     return (
-        <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full min-w-0">
+        <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
             {/* Header */}
-            <div className="flex justify-between items-center gap-8">
-                <p className="text-text-primary text-md">
+            <div className="flex flex-col gap-1">
+                <p className="text-text-primary text-md">{props.orderDate}</p>
+                <p className="text-text-secondary text-xs truncate" title={`${dictionary.orderIdLabel} ${props.orderId}`}>
                     {dictionary.orderIdLabel} {props.orderId}
                 </p>
-
-                <p className="text-text-secondary text-sm">{props.orderDate}</p>
             </div>
             <Divider className="my-1" />
 
@@ -278,14 +277,14 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
             <div className="flex flex-row w-full justify-between items-center gap-2">
                 <Button
                     variant="text"
-                    className="p-0 gap-1 text-xs md:text-sm truncate"
+                    className="p-0 gap-1 text-xs md:text-sm flex-shrink-0"
                     size="small"
                     text={dictionary.invoice}
                     onClick={props.onInvoiceClick}
                     hasIconLeft
                     iconLeft={<IconFile size="6" />}
                 />
-                <p className="text-text-primary font-important text-sm md:text-md ml-auto">
+                <p className="text-text-primary font-important text-sm md:text-md ml-auto truncate" title={`${dictionary.total} ${props.total}`}>
                     {dictionary.total} {props.total}
                 </p>
             </div>
