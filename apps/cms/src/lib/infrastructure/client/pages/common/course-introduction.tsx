@@ -1,5 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
+import { TGetCourseIntroductionUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
+import { trpc } from '../../trpc/cms-client';
 import { Suspense, useState } from 'react';
 import { useGetCourseIntroductionPresenter } from '../../hooks/use-course-introduction-presenter';
 import { useLocale } from 'next-intl';
@@ -25,7 +26,9 @@ function IntroductionBanner({ courseSlug }: CourseIntroductionProps) {
     const { presenter } = useGetCourseIntroductionPresenter(
         setIntroductionViewModel,
     );
-    presenter.present(introductionResponse, introductionViewModel);
+    // Extract the actual response data from the TRPC wrapper and type it correctly
+    const actualResponse = introductionResponse?.data as TGetCourseIntroductionUseCaseResponse;
+    presenter.present(actualResponse, introductionViewModel);
 
     const locale = useLocale() as TLocale;
 

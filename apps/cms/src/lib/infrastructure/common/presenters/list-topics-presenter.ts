@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ListTopicsUseCaseResponseSchema,
+    TListTopicsUseCaseResponse,
+    TListTopicsErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -6,35 +11,33 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TUserCoursesPresenterUtilities = {};
+export type TListTopicsPresenterUtilities = {};
 
-export const ListUserCoursesResponseMiddleware =
+export const ListTopicsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListUserCoursesUseCaseResponse,
-        viewModels.TUserCourseListViewModel,
-        TUserCoursesPresenterUtilities
+        TListTopicsUseCaseResponse,
+        viewModels.TListTopicsViewModel,
+        TListTopicsPresenterUtilities
     >;
 
-type TListUserCoursesResponseMiddleware =
-    typeof ListUserCoursesResponseMiddleware;
+type TListTopicsResponseMiddleware = typeof ListTopicsResponseMiddleware;
 
-export default class UserCoursesPresenter extends BasePresenter<
-    useCaseModels.TListUserCoursesUseCaseResponse,
-    viewModels.TUserCourseListViewModel,
-    TUserCoursesPresenterUtilities,
-    TListUserCoursesResponseMiddleware
+export default class ListTopicsPresenter extends BasePresenter<
+    TListTopicsUseCaseResponse,
+    viewModels.TListTopicsViewModel,
+    TListTopicsPresenterUtilities,
+    TListTopicsResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TUserCourseListViewModel) => void,
-        viewUtilities: TUserCoursesPresenterUtilities,
+        setViewModel: (viewModel: viewModels.TListTopicsViewModel) => void,
+        viewUtilities: TListTopicsPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel:
-                    useCaseModels.ListUserCoursesUseCaseResponseSchema,
-                viewModel: viewModels.UserCourseListViewModelSchema
+                responseModel: ListTopicsUseCaseResponseSchema,
+                viewModel: viewModels.ListTopicsViewModelSchema
             },
-            middleware: ListUserCoursesResponseMiddleware,
+            middleware: ListTopicsResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel
         });
@@ -42,10 +45,10 @@ export default class UserCoursesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListUserCoursesUseCaseResponse,
+            TListTopicsUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TUserCourseListViewModel {
+    ): viewModels.TListTopicsViewModel {
         return {
             mode: 'default',
             data: {
@@ -56,30 +59,26 @@ export default class UserCoursesPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListUserCoursesUseCaseErrorResponse,
-            TListUserCoursesResponseMiddleware
+            TListTopicsErrorResponse,
+            TListTopicsResponseMiddleware
         >,
-    ): viewModels.TUserCourseListViewModel {
+    ): viewModels.TListTopicsViewModel {
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {
-
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context
-
                 }
             };
         }
         return {
             mode: 'kaboom',
             data: {
-
                 message: response.data.message,
                 operation: response.data.operation,
                 context: response.data.context
-
             }
         };
     }

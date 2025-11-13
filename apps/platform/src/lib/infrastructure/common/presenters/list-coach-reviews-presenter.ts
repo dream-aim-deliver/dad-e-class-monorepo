@@ -22,12 +22,6 @@ export const ListCoachReviewsResponseMiddleware =
 
 type TListCoachReviewsResponseMiddleware = typeof ListCoachReviewsResponseMiddleware;
 
-/**
- * Presenter for list-coach-reviews feature.
- *
- * Transforms usecase responses into view models for UI consumption.
- * Maps success responses to 'default' view mode and errors to appropriate error modes.
- */
 export default class ListCoachReviewsPresenter extends BasePresenter<
     TListCoachReviewsResponse,
     viewModels.TListCoachReviewsViewModel,

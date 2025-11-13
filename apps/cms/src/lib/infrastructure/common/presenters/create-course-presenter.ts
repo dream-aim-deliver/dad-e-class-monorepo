@@ -60,24 +60,20 @@ export default class CreateCoursePresenter extends BasePresenter<
     ): viewModels.TCreateCourseViewModel {
         if (response.data.errorType === 'ValidationError') {
             return {
-                mode: 'invalid',
+                mode: 'kaboom',
                 data: {
-
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context
-
                 }
             };
         }
         return {
             mode: 'kaboom',
             data: {
-
                 message: response.data.message,
                 operation: response.data.operation,
                 context: response.data.context
-
             }
         };
     }

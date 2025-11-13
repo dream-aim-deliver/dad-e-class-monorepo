@@ -11,7 +11,7 @@ export type TUserCoursesPresenterUtilities = {};
 export const ListUserCoursesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         useCaseModels.TListUserCoursesUseCaseResponse,
-        viewModels.TUserCourseListViewModel,
+        viewModels.TListUserCoursesViewModel,
         TUserCoursesPresenterUtilities
     >;
 
@@ -20,19 +20,19 @@ type TListUserCoursesResponseMiddleware =
 
 export default class UserCoursesPresenter extends BasePresenter<
     useCaseModels.TListUserCoursesUseCaseResponse,
-    viewModels.TUserCourseListViewModel,
+    viewModels.TListUserCoursesViewModel,
     TUserCoursesPresenterUtilities,
     TListUserCoursesResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TUserCourseListViewModel) => void,
+        setViewModel: (viewModel: viewModels.TListUserCoursesViewModel) => void,
         viewUtilities: TUserCoursesPresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel:
                     useCaseModels.ListUserCoursesUseCaseResponseSchema,
-                viewModel: viewModels.UserCourseListViewModelSchema
+                viewModel: viewModels.ListUserCoursesViewModelSchema
             },
             middleware: ListUserCoursesResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -45,7 +45,7 @@ export default class UserCoursesPresenter extends BasePresenter<
             useCaseModels.TListUserCoursesUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TUserCourseListViewModel {
+    ): viewModels.TListUserCoursesViewModel {
         return {
             mode: 'default',
             data: {
@@ -59,7 +59,7 @@ export default class UserCoursesPresenter extends BasePresenter<
             useCaseModels.TListUserCoursesUseCaseErrorResponse,
             TListUserCoursesResponseMiddleware
         >,
-    ): viewModels.TUserCourseListViewModel {
+    ): viewModels.TListUserCoursesViewModel {
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',

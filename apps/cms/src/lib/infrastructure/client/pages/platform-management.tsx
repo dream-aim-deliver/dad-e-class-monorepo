@@ -11,6 +11,10 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
+import { 
+    TListTopicsUseCaseResponse,
+    TListCategoriesUseCaseResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 import { useState } from 'react';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
 import { useListCategoriesPresenter } from '../hooks/use-categories-presenter';
@@ -68,8 +72,7 @@ export default function PlatformManagement() {
         viewModels.TTopicListViewModel | undefined
     >(undefined);
     const { presenter: topicsPresenter } = useListTopicsPresenter(setTopicsViewModel);
-    // @ts-ignore
-    topicsPresenter.present(topicsResponse, topicsViewModel);
+    topicsPresenter.present(topicsResponse?.data as TListTopicsUseCaseResponse, topicsViewModel);
 
     // Categories data fetching and presentation
     const [categoriesResponse, { refetch: refetchCategories }] = trpc.listCategories.useSuspenseQuery({});
@@ -77,8 +80,7 @@ export default function PlatformManagement() {
         viewModels.TCategoryListViewModel | undefined
     >(undefined);
     const { presenter: categoriesPresenter } = useListCategoriesPresenter(setCategoriesViewModel);
-    // @ts-ignore
-    categoriesPresenter.present(categoriesResponse, categoriesViewModel);
+    categoriesPresenter.present(categoriesResponse?.data as TListCategoriesUseCaseResponse, categoriesViewModel);
 
     // Loading state
     if (!topicsViewModel || !categoriesViewModel) {

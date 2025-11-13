@@ -15,7 +15,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { Suspense, useEffect, useState } from 'react';
 import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
 import { useRouter } from 'next/navigation';
-import { useGetCourseShortPresenter } from '../../hooks/use-course-short-presenter';
+import { useGetCourseShortPresenter } from '../../hooks/use-get-course-short-presenter';
 import { useCourseImageUpload } from '../common/hooks/use-course-image-upload';
 import { trpc } from '../../trpc/cms-client';
 
@@ -62,18 +62,16 @@ const useCreateCourse = () => {
         const hasViewModelError =
             createCourseViewModel && createCourseViewModel.mode !== 'default';
 
-        // Check for specific error types in both invalid and kaboom modes
-        if (createCourseViewModel?.mode === 'invalid' || createCourseViewModel?.mode === 'kaboom') {
+        // Check for specific error types in kaboom and not-found modes
+        if (createCourseViewModel?.mode === 'kaboom' || createCourseViewModel?.mode === 'not-found') {
             const errorType = createCourseViewModel.data.context?.errorType;
             if (errorType === 'slug_already_exists') {
                 return createCourseTranslations('slugAlreadyExistsError');
             }
-        }
-
-        if (createCourseViewModel?.mode === 'invalid') {
-            // TODO: Decide if we can pass the error message directly
+            // Return the specific error message from the backend
             return createCourseViewModel.data.message;
         }
+
         if (createMutation.error || hasViewModelError) {
             return createCourseTranslations('courseCreationError');
         }

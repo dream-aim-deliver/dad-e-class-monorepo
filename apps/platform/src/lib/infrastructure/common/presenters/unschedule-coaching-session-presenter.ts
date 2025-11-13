@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    UnscheduleCoachingSessionUseCaseResponseSchema,
+    TUnscheduleCoachingSessionUseCaseResponse,
+    TUnscheduleCoachingSessionErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,30 +15,26 @@ export type TUnscheduleCoachingSessionPresenterUtilities = {};
 
 export const UnscheduleCoachingSessionResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TUnscheduleCoachingSessionUseCaseResponse,
+        TUnscheduleCoachingSessionUseCaseResponse,
         viewModels.TUnscheduleCoachingSessionViewModel,
         TUnscheduleCoachingSessionPresenterUtilities
     >;
 
-type TUnscheduleCoachingSessionResponseMiddleware =
-    typeof UnscheduleCoachingSessionResponseMiddleware;
+type TUnscheduleCoachingSessionResponseMiddleware = typeof UnscheduleCoachingSessionResponseMiddleware;
 
 export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
-    useCaseModels.TUnscheduleCoachingSessionUseCaseResponse,
+    TUnscheduleCoachingSessionUseCaseResponse,
     viewModels.TUnscheduleCoachingSessionViewModel,
     TUnscheduleCoachingSessionPresenterUtilities,
     TUnscheduleCoachingSessionResponseMiddleware
 > {
     constructor(
-        setViewModel: (
-            viewModel: viewModels.TUnscheduleCoachingSessionViewModel,
-        ) => void,
+        setViewModel: (viewModel: viewModels.TUnscheduleCoachingSessionViewModel) => void,
         viewUtilities: TUnscheduleCoachingSessionPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel:
-                    useCaseModels.UnscheduleCoachingSessionUseCaseResponseSchema,
+                responseModel: UnscheduleCoachingSessionUseCaseResponseSchema,
                 viewModel: viewModels.UnscheduleCoachingSessionViewModelSchema
             },
             middleware: UnscheduleCoachingSessionResponseMiddleware,
@@ -44,7 +45,7 @@ export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TUnscheduleCoachingSessionUseCaseResponse,
+            TUnscheduleCoachingSessionUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TUnscheduleCoachingSessionViewModel {
@@ -58,10 +59,20 @@ export default class UnscheduleCoachingSessionPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TUnscheduleCoachingSessionUseCaseErrorResponse,
+            TUnscheduleCoachingSessionErrorResponse,
             TUnscheduleCoachingSessionResponseMiddleware
         >,
     ): viewModels.TUnscheduleCoachingSessionViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {

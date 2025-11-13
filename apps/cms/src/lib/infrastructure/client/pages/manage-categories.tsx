@@ -26,6 +26,12 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
+import { 
+    TListCategoriesUseCaseResponse,
+    TCreateCategoryUseCaseResponse,
+    TUpdateCategoryUseCaseResponse,
+    TDeleteCategoryUseCaseResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 import { useState, useEffect } from 'react';
 import { useListCategoriesPresenter } from '../hooks/use-categories-presenter';
 import { useCreateCategoryPresenter } from '../hooks/use-create-category-presenter';
@@ -55,8 +61,7 @@ function CreateCategoryDialogContent({ onSuccess }: { onSuccess: () => void }) {
 
     useEffect(() => {
         if (createCategoryMutation.isSuccess && createCategoryMutation.data) {
-            // @ts-ignore
-            presenter.present(createCategoryMutation.data, createCategoryViewModel);
+            presenter.present(createCategoryMutation.data?.data as TCreateCategoryUseCaseResponse, createCategoryViewModel);
         }
     }, [createCategoryMutation.isSuccess, createCategoryMutation.data, presenter, createCategoryViewModel]);
 
@@ -126,8 +131,7 @@ function EditCategoryDialogContent({
 
     useEffect(() => {
         if (updateCategoryMutation.isSuccess && updateCategoryMutation.data) {
-            // @ts-ignore
-            updatePresenter.present(updateCategoryMutation.data, updateCategoryViewModel);
+            updatePresenter.present(updateCategoryMutation.data?.data as TUpdateCategoryUseCaseResponse, updateCategoryViewModel);
         }
     }, [
         updateCategoryMutation.isSuccess,
@@ -138,8 +142,7 @@ function EditCategoryDialogContent({
 
     useEffect(() => {
         if (deleteCategoryMutation.isSuccess && deleteCategoryMutation.data) {
-            // @ts-ignore
-            deletePresenter.present(deleteCategoryMutation.data, deleteCategoryViewModel);
+            deletePresenter.present(deleteCategoryMutation.data?.data as TDeleteCategoryUseCaseResponse, deleteCategoryViewModel);
         }
     }, [
         deleteCategoryMutation.isSuccess,
@@ -279,8 +282,7 @@ export default function ManageCategories({
     const deleteCategoryMutation = trpc.deleteCategory.useMutation();
 
     // Present the data
-    // @ts-ignore
-    presenter.present(categoriesResponse, categoriesViewModel);
+    presenter.present(categoriesResponse?.data as TListCategoriesUseCaseResponse, categoriesViewModel);
 
     // Loading state using discovered patterns
     if (!categoriesViewModel) {

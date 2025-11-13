@@ -35,8 +35,7 @@ export default async function CoachingSessionsServerComponent(props: CoachingSes
             </>
         );
     } else if (roles && roles.includes('student')) {
-        // TODO: Uncomment when router is updated
-        // await Promise.all([prefetch(trpc.listStudentCoachingSessions.queryOptions({}))]);
+        await Promise.all([prefetch(trpc.listStudentCoachingSessions.queryOptions({}))]);
 
         return (
             <>

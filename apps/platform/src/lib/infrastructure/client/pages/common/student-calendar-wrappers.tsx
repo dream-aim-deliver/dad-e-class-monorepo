@@ -17,7 +17,7 @@ interface WeeklyStudentCalendarWrapperProps {
         | undefined;
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
-    onSessionClick?: (sessionId: number) => void;
+    onSessionClick?: (sessionId: number | string) => void;
 }
 
 export function WeeklyStudentCalendarWrapper({
@@ -87,7 +87,7 @@ interface MonthlyStudentCalendarWrapperProps {
         | undefined;
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
-    onSessionClick?: (sessionId: number) => void;
+    onSessionClick?: (sessionId: number | string) => void;
     variant?: 'compact' | 'full';
     selectedDate?: Date;
     setSelectedDate?: (date: Date | undefined) => void;

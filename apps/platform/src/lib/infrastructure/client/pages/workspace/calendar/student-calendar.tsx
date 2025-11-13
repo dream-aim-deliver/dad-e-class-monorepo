@@ -2,7 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import React, { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListStudentCoachingSessionsPresenter } from '../../../hooks/use-list-student-coaching-sessions-presenter';
@@ -33,6 +33,7 @@ export default function StudentCalendar() {
         setStudentCoachingSessionsViewModel,
     );
     presenter.present(
+        // @ts-ignore
         listStudentCoachingSessionsResponse,
         studentCoachingSessionsViewModel,
     );
