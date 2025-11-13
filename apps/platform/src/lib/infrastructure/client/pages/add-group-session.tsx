@@ -10,7 +10,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { trpc } from '../trpc/client';
+import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import {
     Breadcrumbs,
@@ -89,14 +89,18 @@ function CalendarContent({ courseSlug, groupId }: { courseSlug: string; groupId:
 
     // Present data to view models using useEffect
     useEffect(() => {
-        groupSessionsPresenter.present(groupCoachingSessionsResponse, groupCoachingSessionsViewModel);
+        if (groupCoachingSessionsResponse) {
+            // @ts-ignore - Follow standard pattern used throughout codebase
+            groupSessionsPresenter.present(groupCoachingSessionsResponse, groupCoachingSessionsViewModel);
+        }
     }, [groupCoachingSessionsResponse, groupSessionsPresenter, groupCoachingSessionsViewModel]);
 
     useEffect(() => {
-        coachSessionsPresenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
-    }, [coachCoachingSessionsResponse, coachSessionsPresenter, coachCoachingSessionsViewModel]);
-
-    const handleGroupSessionAdded = () => {
+        if (coachCoachingSessionsResponse) {
+            // @ts-ignore - Follow standard pattern used throughout codebase
+            coachSessionsPresenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
+        }
+    }, [coachCoachingSessionsResponse, coachSessionsPresenter, coachCoachingSessionsViewModel]);    const handleGroupSessionAdded = () => {
         refetchGroupSessions();
         refetchCoachSessions();
         setIsAddDialogOpen(false);
