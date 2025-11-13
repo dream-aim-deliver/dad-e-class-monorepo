@@ -70,6 +70,17 @@ function transformOneOutOfThreeAnswer(
 ): Extract<useCaseModels.TPreCourseAssessmentProgress, { type: 'oneOutOfThree' }> {
     const answers: Array<{ rowId: string; columnId: string }> = [];
 
+    console.log(`[OneOutOfThree Transform] Element ${element.id}:`, {
+        totalRows: element.data.rows.length,
+        rows: element.data.rows.map((r, idx) => ({
+            index: idx,
+            id: r.id,
+            title: r.rowTitle,
+            hasSelectedColumn: r.columns.some((col) => col.selected),
+            selectedColumnId: r.columns.find((col) => col.selected)?.id,
+        }))
+    });
+
     for (const row of element.data.rows) {
         const selectedColumn = row.columns.find((col) => col.selected);
 
@@ -90,6 +101,8 @@ function transformOneOutOfThreeAnswer(
             `One out of three element ${element.id} has no answers`,
         );
     }
+
+    console.log(`[OneOutOfThree Transform] Generated ${answers.length} answers:`, answers);
 
     return {
         componentId: element.id,
@@ -113,10 +126,20 @@ function transformUploadFilesAnswer(
             comment: element.userComment || undefined,
         };
     }
+
+    // Convert file IDs to numbers and validate
+    const fileIds = element.files.map((file) => {
+        const numericId = Number(file.id);
+        if (isNaN(numericId)) {
+            throw new Error(`Invalid file ID "${file.id}" for file "${file.name}". File ID must be numeric.`);
+        }
+        return numericId;
+    });
+
     return {
         componentId: element.id,
         type: 'uploadFiles',
-        fileIds: element.files.map((file) => Number(file.id)),
+        fileIds,
         comment: element.userComment || undefined,
     };
 }
