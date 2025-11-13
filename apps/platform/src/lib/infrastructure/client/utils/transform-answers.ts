@@ -70,17 +70,6 @@ function transformOneOutOfThreeAnswer(
 ): Extract<useCaseModels.TPreCourseAssessmentProgress, { type: 'oneOutOfThree' }> {
     const answers: Array<{ rowId: string; columnId: string }> = [];
 
-    console.log(`[OneOutOfThree Transform] Element ${element.id}:`, {
-        totalRows: element.data.rows.length,
-        rows: element.data.rows.map((r, idx) => ({
-            index: idx,
-            id: r.id,
-            title: r.rowTitle,
-            hasSelectedColumn: r.columns.some((col) => col.selected),
-            selectedColumnId: r.columns.find((col) => col.selected)?.id,
-        }))
-    });
-
     for (const row of element.data.rows) {
         const selectedColumn = row.columns.find((col) => col.selected);
 
@@ -101,8 +90,6 @@ function transformOneOutOfThreeAnswer(
             `One out of three element ${element.id} has no answers`,
         );
     }
-
-    console.log(`[OneOutOfThree Transform] Generated ${answers.length} answers:`, answers);
 
     return {
         componentId: element.id,
