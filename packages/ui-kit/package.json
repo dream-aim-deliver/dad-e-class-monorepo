@@ -19,7 +19,7 @@
   "dependencies": {
     "@maany_shr/e-class-models": "workspace:*",
     "@maany_shr/e-class-translations": "workspace:*",
-    "@dream-aim-deliver/e-class-cms-rest": "3.0.4",
+    "@dream-aim-deliver/e-class-cms-rest": "3.0.5",
     "@mux/mux-player-react": "^3.3.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.1.0",
