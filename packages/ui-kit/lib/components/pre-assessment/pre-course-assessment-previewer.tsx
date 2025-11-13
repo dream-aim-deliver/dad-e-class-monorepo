@@ -12,14 +12,24 @@ import { FormComponent as OneOutOfThreeFormComponent } from '../lesson-component
 import { FormComponent as UploadFilesFormComponent } from '../lesson-components/upload-files';
 import { Divider } from '../divider';
 import { isLocalAware } from '@maany_shr/e-class-translations';
+import { fileMetadata } from '@maany_shr/e-class-models';
 
 export interface PreCourseAssessmentPreviewerProps extends isLocalAware {
     components: LessonElement[];
+    onFileUpload?: (
+        uploadRequest: fileMetadata.TFileUploadRequest,
+        componentId: string,
+        courseSlug: string,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata | null>;
+    courseSlug?: string;
 }
 
 export function PreCourseAssessmentPreviewer({
     components,
     locale,
+    onFileUpload,
+    courseSlug,
 }: PreCourseAssessmentPreviewerProps) {
     const elementProgress = useRef(new Map<string, LessonElement>());
 
@@ -102,6 +112,8 @@ export function PreCourseAssessmentPreviewer({
                         submitValue={(id, element) => {
                             elementProgress.current.set(id, element);
                         }}
+                        onFileUpload={onFileUpload}
+                        courseSlug={courseSlug}
                     />
                 );
 
