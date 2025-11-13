@@ -10,7 +10,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useMemo, useState } from 'react';
-import { DefaultLoading, DefaultError, DefaultNotFound, Button, Breadcrumbs, IconChevronLeft, BookSessionWith, BuyCoachingSessionBanner, CourseCardList, CourseCard, Dropdown, CoachReviewCardList, CoachReviewCard, IconFilter, CoachReviewFilterModel, CoachReviewFilterModal, ReviewModal, ReviewDisplay } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, Button, Breadcrumbs, IconChevronLeft, BookSessionWith, BuyCoachingSessionBanner, CourseCardList, CourseCard, Dropdown, CoachReviewCardList, CoachReviewCard, IconFilter, CoachReviewFilterModel, CoachReviewFilterModal, ReviewModal, ReviewDisplay, ReviewDialog } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useGetCoachIntroductionPresenter } from '../hooks/use-get-coach-introduction-presenter';
@@ -57,7 +57,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	// Fetch coach courses - conditional based on login status
 	// If logged in: forStudent=true (shows enrolled/in-progress courses)
 	// If NOT logged in: forStudent=false (shows all public courses)
-	// TODO: Add coachUsername parameter instead of coachId
+	// TODO: Add coachUsername parameter instead of coachId and uncomment below line and comment line afterwards once backend is ready
 	// const [coachCoursesResponse] = trpc.listCoachCourses.useSuspenseQuery({
 	// 	forStudent: isLoggedIn,
 	// 	coachUsername: username,
@@ -98,9 +98,16 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	// Review Modal states
 	const [showReviewModal, setShowReviewModal] = useState<boolean>(false);
 	const [showReviewSnippet, setShowReviewSnippet] = useState<boolean>(false);
-	// TODO: In listCoachCourses procedure add studentReview object for completed courses if student has reviewed the course and then uncomment line 102 and comment line 103
-	// const [reviewingCourse, setReviewingCourse] = useState<viewModels.TListCoachCoursesSuccess['courses'][number] | null>(null);
+
+	type CourseWithStatus = Extract<
+		viewModels.TListCoachCoursesSuccess['courses'][number],
+		{ status: unknown }
+	>;
+
+	// TODO: In listCoachCourses procedure add studentReview object for completed courses if student has reviewed the course otherwise use studentReview as null and then uncomment line 108 and comment line 109
+	// const [reviewingCourse, setReviewingCourse] = useState<CourseWithStatus | null>(null);
 	const [reviewingCourse, setReviewingCourse] = useState<any>(null);
+
 	const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
 	const [reviewError, setReviewError] = useState<boolean>(false);
 
@@ -905,11 +912,13 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
+	// TODO: Uncomment error handling when backend APIs are ready
 	// Error handling - not found
 	// if (coachIntroductionViewModel.mode === 'not-found' || coachReviewsViewModel.mode === 'not-found' || coachCoursesViewModel.mode === 'not-found' || coachProfileAccessViewModel.mode === 'not-found') {
 	// 	return <DefaultNotFound locale={locale} />;
 	// }
 
+	// TODO: Uncomment error handling when backend APIs are ready
 	// Error handling - kaboom
 	// if (coachIntroductionViewModel.mode === 'kaboom' || coachReviewsViewModel.mode === 'kaboom' || coachCoursesViewModel.mode === 'kaboom' || coachProfileAccessViewModel.mode === 'kaboom') {
 	// 	return <DefaultError locale={locale} />;
@@ -990,8 +999,9 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		// Reset error state before submitting
 		setReviewError(false);
 
-		// TODO: add courseSlug in listCoachCourses procedure and replace below line
+		// TODO: add course slug in listCoachCourses procedure and replace below line
 		const courseSlug = 'the-first-course';
+		// const courseSlug = reviewingCourse.slug;
 
 		createReviewMutation.mutate(
 			{
@@ -1027,6 +1037,8 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	};
 
 	// Handle review functionality - shows modal or snippet based on existing review
+	// TODO: Replace 'any' with 'CourseWithStatus' once type is available
+	// const handleReviewAction = (course: CourseWithStatus) => {
 	const handleReviewAction = (course: any) => {
 		setReviewingCourse(course);
 		setReviewSubmitted(false);
@@ -1097,7 +1109,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 				// TODO: Need a single language instead of an array
 				language: course.languages[0],
 				onClickUser: () => {
-					// TODO: Navigate to course creator profile
+					route.push(`/${locale}/coaches/${course.creator.username}`);
 				},
 			};
 
