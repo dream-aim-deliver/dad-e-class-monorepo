@@ -2,7 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import React, { useState, useEffect } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import {
@@ -20,7 +20,6 @@ import {
     WeeklyGroupCoachingCalendarWrapper,
 } from '../../common/group-coaching-calendar-wrappers';
 import { useRouter } from 'next/navigation';
-import { useListGroupCoachingSessionsPresenter } from '../../../hooks/use-list-group-coaching-sessions-presenter';
 import { useListCoachCoachingSessionsPresenter } from '../../../hooks/use-list-coach-coaching-sessions-presenter';
 
 function CalendarContent() {
@@ -39,14 +38,13 @@ function CalendarContent() {
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-    // Fetch group coaching sessions
-    const [groupCoachingSessionsResponse, { refetch: refetchGroupSessions }] =
-        trpc.listGroupCoachingSessions.useSuspenseQuery({});
+    // For the general calendar view, we don't show group sessions since those are managed 
+    // in specific group calendars. Set group sessions view model to empty state.
     const [groupCoachingSessionsViewModel, setGroupCoachingSessionsViewModel] =
-        useState<viewModels.TListGroupCoachingSessionsViewModel | undefined>(undefined);
-    const { presenter: groupSessionsPresenter } = useListGroupCoachingSessionsPresenter(
-        setGroupCoachingSessionsViewModel,
-    );
+        useState<viewModels.TListGroupCoachingSessionsViewModel>({
+            mode: 'default',
+            data: { sessions: [] }
+        });
 
     // Fetch coach's individual coaching sessions
     const [coachCoachingSessionsResponse, { refetch: refetchCoachSessions }] =
@@ -58,16 +56,15 @@ function CalendarContent() {
     );
 
     // Present data to view models using useEffect
+    // Note: No need to present group sessions in general calendar since they're empty
     useEffect(() => {
-        groupSessionsPresenter.present(groupCoachingSessionsResponse, groupCoachingSessionsViewModel);
-    }, [groupCoachingSessionsResponse, groupSessionsPresenter, groupCoachingSessionsViewModel]);
-
-    useEffect(() => {
-        coachSessionsPresenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
+        if (coachCoachingSessionsResponse) {
+            // @ts-ignore - Follow standard pattern used throughout codebase
+            coachSessionsPresenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
+        }
     }, [coachCoachingSessionsResponse, coachSessionsPresenter, coachCoachingSessionsViewModel]);
 
     const handleGroupSessionAdded = () => {
-        refetchGroupSessions();
         refetchCoachSessions();
         setIsAddDialogOpen(false);
         setNewSessionStart(undefined);
@@ -78,7 +75,7 @@ function CalendarContent() {
         setIsAddDialogOpen(true);
     };
 
-    if (!groupCoachingSessionsViewModel || !coachCoachingSessionsViewModel) {
+    if (!coachCoachingSessionsViewModel) {
         return <DefaultLoading locale={locale} />;
     }
 
