@@ -110,7 +110,7 @@ export const useAssessmentFileUploadService = (
             // Type assertion for verify result
             const verifyData = verifyResult.data as { downloadUrl: string };
 
-            const fileMetadata = {
+            return {
                 id: uploadData.file.id,
                 name: uploadData.file.name,
                 url: verifyData.downloadUrl,
@@ -119,11 +119,6 @@ export const useAssessmentFileUploadService = (
                 category: uploadData.file.category as fileMetadata.TFileCategoryEnum,
                 status: 'available',
             } as fileMetadata.TFileMetadata;
-
-            // Debug: Log the file ID to help diagnose submission issues
-            console.log(`File uploaded successfully - ID: ${uploadData.file.id} (type: ${typeof uploadData.file.id}), Name: ${uploadData.file.name}`);
-
-            return fileMetadata;
         } catch (error) {
             if (error instanceof AbortError) {
                 console.warn('Upload cancelled by user');
