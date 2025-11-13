@@ -34,9 +34,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     const utils = trpc.useUtils();
 
     const [componentsResponse] =
-        trpc.listPreCourseAssessmentComponents.useSuspenseQuery({
-            courseSlug: props.courseSlug,
-        });
+        trpc.listPreCourseAssessmentComponents.useSuspenseQuery({});
     const [componentsViewModel, setComponentsViewModel] = useState<
         viewModels.TAssessmentComponentListViewModel | undefined
     >(undefined);
