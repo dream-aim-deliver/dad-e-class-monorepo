@@ -181,10 +181,31 @@ function PreviewRenderer({
 }) {
     const locale = useLocale() as TLocale;
 
+    // Mock file upload handler for preview mode
+    const mockFileUpload = async (
+        uploadRequest: any,
+        componentId: string,
+        courseSlug: string,
+        abortSignal?: AbortSignal,
+    ) => {
+        // Return a mock file metadata object for preview
+        return {
+            id: `mock-${Date.now()}`,
+            name: uploadRequest.name,
+            size: uploadRequest.file.size,
+            category: 'generic' as const,
+            url: URL.createObjectURL(uploadRequest.file),
+            thumbnailUrl: URL.createObjectURL(uploadRequest.file),
+            status: 'available' as const,
+        };
+    };
+
     return (
         <PreCourseAssessmentPreviewer
             components={components}
             locale={locale}
+            onFileUpload={mockFileUpload}
+            courseSlug="preview"
         />
     );
 }
