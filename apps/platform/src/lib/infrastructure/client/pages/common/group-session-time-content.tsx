@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { Button, DefaultError, InputField, Dropdown } from '@maany_shr/e-class-ui-kit';
 import DatePicker from './date-picker';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
 
@@ -44,6 +44,7 @@ export default function GroupSessionTimeContent({
     const [coachingOfferingsViewModel, setCoachingOfferingsViewModel] =
         useState<viewModels.TCoachingOfferingListViewModel | undefined>(undefined);
     const { presenter } = useListCoachingOfferingsPresenter(setCoachingOfferingsViewModel);
+    // @ts-ignore
     presenter.present(coachingOfferingsResponse, coachingOfferingsViewModel);
 
     const getTimeValue = (time?: Date): string => {
