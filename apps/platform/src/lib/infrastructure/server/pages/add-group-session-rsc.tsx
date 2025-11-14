@@ -3,11 +3,12 @@
 // Usecases: createGroupCoachingSession (NOT IMPLEMENTED), listGroupCoachingSessions, listCoachingOfferings
 // User Types: Coach
 
-import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
+import { HydrateClient, prefetch, trpc } from '../config/trpc/server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import AddGroupSession from '../../client/pages/add-group-session';
 import { TLocale } from '@maany_shr/e-class-translations';
+import MockTRPCClientProviders from '../../client/trpc/mock-client-providers';
 
 interface AddGroupSessionServerComponentProps {
   locale: TLocale;
@@ -29,13 +30,15 @@ export default async function AddGroupSessionServerComponent(
 
   return (
     <HydrateClient>
-      <Suspense fallback={<DefaultLoadingWrapper />}>
-        <AddGroupSession
-          locale={props.locale}
-          courseSlug={props.courseSlug}
-          groupId={props.groupId}
-        />
-      </Suspense>
+      <MockTRPCClientProviders>
+        <Suspense fallback={<DefaultLoadingWrapper />}>
+          <AddGroupSession
+            locale={props.locale}
+            courseSlug={props.courseSlug}
+            groupId={props.groupId}
+          />
+        </Suspense>
+      </MockTRPCClientProviders>
     </HydrateClient>
   );
 }
