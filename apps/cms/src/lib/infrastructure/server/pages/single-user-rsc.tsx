@@ -27,17 +27,16 @@ export default async function SingleUserServerComponent(
 
   // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
   // React will stream HTML while queries are pending
-  prefetch(trpc.getPersonalProfile.queryOptions({})); // getPersonalProfile
-  prefetch(trpc.getProfessionalProfile.queryOptions({})); // getProfessionalProfile
-  prefetch(trpc.listStudentCourses.queryOptions({})); // listStudentCourses
-  prefetch(trpc.listCoachReviews.queryOptions({
-    coachUsername: props.username,
-  })); // listCoachReviews
-  prefetch(trpc.listUserRoles.queryOptions({})); // listUserRoles
-  prefetch(trpc.listCoachCourses.queryOptions({
-    forStudent: false,
-    //coachUsername: props.username, // TODO: Uncomment once backend allows for this
-  })); // listCoachCourses
+  // prefetch(trpc.getPersonalProfile.queryOptions({}));
+  // prefetch(trpc.getProfessionalProfile.queryOptions({}));
+  // prefetch(trpc.listStudentCourses.queryOptions({}));
+  // prefetch(trpc.listCoachReviews.queryOptions({
+  //   coachUsername: props.username,
+  // }));
+  // prefetch(trpc.listUserRoles.queryOptions({}));
+  // prefetch(trpc.listCoachCourses.queryOptions({
+  //   forStudent: false,
+  // }));
 
   return (
     <HydrateClient>
