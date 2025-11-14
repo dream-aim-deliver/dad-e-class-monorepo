@@ -11,7 +11,6 @@ import { getValidationError as getImageValidationError } from "../course-builder
 import { getValidationError as getImageGalleryValidationError } from "../course-builder-lesson-component/image-gallery";
 import { getValidationError as getLinksValidationError } from "../course-builder-lesson-component/links";
 import { getValidationError as getDownloadFilesValidationError } from "../course-builder-lesson-component/download-files-lesson";
-import { getValidationError as getUploadFilesValidationError } from "../course-builder-lesson-component/upload-files-lesson";
 import { getValidationError as getQuizValidationError } from "../course-builder-lesson-component/quiz";
 import { getValidationError as getCoachingSessionValidationError } from '../course-builder-lesson-component/coaching-session';
 import { getValidationError as getAssignmentValidationError } from '../course-builder-lesson-component/assignment';
@@ -24,7 +23,7 @@ export const validatorPerType: Record<CourseElementType | FormElementType, Eleme
     [CourseElementType.VideoFile]: getVideoValidationError,
     [CourseElementType.ImageGallery]: getImageGalleryValidationError,
     [CourseElementType.DownloadFiles]: getDownloadFilesValidationError,
-    [CourseElementType.UploadFiles]: getUploadFilesValidationError,
+    [CourseElementType.UploadFiles]: getUploadFilesFormValidationError,
     [CourseElementType.Assignment]: getAssignmentValidationError,
     [CourseElementType.QuizTypeOne]: getQuizValidationError,
     [CourseElementType.QuizTypeTwo]: getQuizValidationError,
@@ -37,5 +36,4 @@ export const validatorPerType: Record<CourseElementType | FormElementType, Eleme
     [FormElementType.TextInput]: getTextInputValidationError,
     [FormElementType.HeadingText]: getHeadingTextValidationError,
     [FormElementType.OneOutOfThree]: getOneOutOfThreeValidationError,
-    [FormElementType.UploadFiles]: getUploadFilesFormValidationError
 }

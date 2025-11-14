@@ -188,6 +188,7 @@ export function FormComponent({
     elementInstance,
     submitValue,
     locale,
+    disableValidation,
 }: FormComponentProps) {
     const isSingleChoice =
         elementInstance.type === FormElementType.SingleChoice;
@@ -200,19 +201,21 @@ export function FormComponent({
 
     const dictionary = getDictionary(locale);
 
-    const validationError = getValidationError({
-        elementInstance,
-        dictionary,
-        context: 'coach',
-    });
-    if (validationError) {
-        return (
-            <DefaultError
-                locale={locale}
-                title={dictionary.components.lessons.elementValidationText}
-                description={validationError}
-            />
-        );
+    if (!disableValidation) {
+        const validationError = getValidationError({
+            elementInstance,
+            dictionary,
+            context: 'coach',
+        });
+        if (validationError) {
+            return (
+                <DefaultError
+                    locale={locale}
+                    title={dictionary.components.lessons.elementValidationText}
+                    description={validationError}
+                />
+            );
+        }
     }
 
     const handleOptionChange = (option: string) => {

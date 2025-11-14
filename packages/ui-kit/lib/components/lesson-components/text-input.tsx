@@ -183,24 +183,27 @@ export function FormComponent({
     elementInstance,
     submitValue,
     locale,
+    disableValidation,
 }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.TextInput) return null;
 
     const dictionary = getDictionary(locale);
 
-    const validationError = getValidationError({
-        elementInstance,
-        dictionary,
-        context: 'coach',
-    });
-    if (validationError) {
-        return (
-            <DefaultError
-                locale={locale}
-                title={dictionary.components.lessons.elementValidationText}
-                description={validationError}
-            />
-        );
+    if (!disableValidation) {
+        const validationError = getValidationError({
+            elementInstance,
+            dictionary,
+            context: 'coach',
+        });
+        if (validationError) {
+            return (
+                <DefaultError
+                    locale={locale}
+                    title={dictionary.components.lessons.elementValidationText}
+                    description={validationError}
+                />
+            );
+        }
     }
 
     const onDeserializationError = (message: string, error: Error) => {

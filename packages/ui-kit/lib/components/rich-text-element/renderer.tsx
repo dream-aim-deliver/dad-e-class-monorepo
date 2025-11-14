@@ -113,7 +113,7 @@ const RenderElement = ({ attributes, children, element }: {
         <p
           {...attributes}
           style={style}
-          className={`text-base whitespace-pre-wrap pb-3 ${isEmpty ? "min-h-[1.5em]" : ""}`}
+          className={`text-base whitespace-pre-wrap ${isEmpty ? "h-6" : "pb-3"}`}
         >
           {children}
         </p>

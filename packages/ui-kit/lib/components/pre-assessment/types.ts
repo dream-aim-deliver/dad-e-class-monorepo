@@ -199,6 +199,8 @@ export interface FormComponentProps extends isLocalAware {
     ) => Promise<import('@maany_shr/e-class-models').fileMetadata.TFileMetadata | null>;
     /** Course slug for file uploads */
     courseSlug?: string;
+    /** Disable validation errors in preview mode */
+    disableValidation?: boolean;
 }
 
 
