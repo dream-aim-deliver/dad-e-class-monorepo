@@ -1,12 +1,14 @@
-import { viewModels } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/cms-client';
 import { Suspense, useMemo, useState } from 'react';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
 import {
     AvailableCoachingSessions,
     BuyCoachingSession,
+    CheckoutModal,
     DefaultError,
     DefaultLoading,
+    type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -14,6 +16,8 @@ import { useRouter } from 'next/navigation';
 import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
 import { useSession } from 'next-auth/react';
 import { groupOfferings } from '../../utils/group-offerings';
+import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
+import env from '../../config/env';
 
 function AvailableCoachings() {
     const router = useRouter();
@@ -31,13 +35,10 @@ function AvailableCoachings() {
 
     const locale = useLocale() as TLocale;
 
-    const groupedOfferings = useMemo(
-        () => {
-            if (!availableCoachingsViewModel) return [];
-            return groupOfferings(availableCoachingsViewModel);
-        },
-        [availableCoachingsViewModel],
-    );
+    const groupedOfferings = useMemo(() => {
+        if (!availableCoachingsViewModel) return [];
+        return groupOfferings(availableCoachingsViewModel);
+    }, [availableCoachingsViewModel]);
 
     if (!availableCoachingsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -90,6 +91,16 @@ export default function CoachingOfferingsPanel() {
     const sessionDTO = useSession();
     const isLoggedIn = !!sessionDTO.data;
 
+    // Checkout modal state
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [transactionDraft, setTransactionDraft] =
+        useState<TransactionDraft | null>(null);
+    const [checkoutViewModel, setCheckoutViewModel] =
+        useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
+    const { presenter: checkoutPresenter } =
+        usePrepareCheckoutPresenter(setCheckoutViewModel);
+    const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
+
     const currency = useMemo(() => {
         if (
             !coachingOfferingsViewModel ||
@@ -100,6 +111,43 @@ export default function CoachingOfferingsPanel() {
         // Each offering specifies a currency, hence deriving it from the first offering
         return coachingOfferingsViewModel.data.offerings[0]?.currency;
     }, [coachingOfferingsViewModel]);
+
+    const handleBuyCoachingSessions = async (
+        sessionsPerOffering: Record<string | number, number>,
+    ) => {
+        try {
+            // Find the first offering with a quantity > 0
+            const offeringId = Object.keys(sessionsPerOffering).find(
+                (id) => sessionsPerOffering[id] > 0,
+            );
+            const quantity = offeringId ? sessionsPerOffering[offeringId] : 0;
+
+            if (!offeringId || quantity === 0) {
+                return;
+            }
+
+            const response = await prepareCheckoutMutation.mutateAsync({
+                type: 'StudentCoachingSessionPurchase',
+                coachingOfferingId: Number(offeringId),
+                quantity,
+            });
+            checkoutPresenter.present(response, checkoutViewModel);
+
+            if (checkoutViewModel && checkoutViewModel.mode === 'default') {
+                setTransactionDraft(checkoutViewModel.data.transaction);
+                setIsCheckoutOpen(true);
+            }
+        } catch (err) {
+            console.error('Failed to prepare checkout:', err);
+        }
+    };
+
+    const handlePaymentComplete = (sessionId: string) => {
+        console.log('Payment completed with session ID:', sessionId);
+        setIsCheckoutOpen(false);
+        setTransactionDraft(null);
+        // TODO: Redirect to success page or show success message
+    };
 
     if (!coachingOfferingsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -149,15 +197,26 @@ export default function CoachingOfferingsPanel() {
                     currency: offering.currency,
                     duration: offering.duration,
                 }))}
-                onBuy={function (
-                    sessionsPerOffering: Record<string | number, number>,
-                ): void {
-                    // TODO: construct query parameters from sessionPerOffering
-                    router.push('/checkout');
-                }}
+                onBuy={handleBuyCoachingSessions}
                 currencyType={currency ?? ''}
                 locale={locale}
             />
+
+            {transactionDraft && (
+                <CheckoutModal
+                    isOpen={isCheckoutOpen}
+                    onClose={() => {
+                        setIsCheckoutOpen(false);
+                        setTransactionDraft(null);
+                    }}
+                    transactionDraft={transactionDraft}
+                    stripePublishableKey={
+                        env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+                    }
+                    locale={locale}
+                    onPaymentComplete={handlePaymentComplete}
+                />
+            )}
         </div>
     );
 }

@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe-js';
+import {
+    EmbeddedCheckoutProvider,
+    EmbeddedCheckout,
+} from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Dialog, DialogContent, DialogBody } from '../dialog';
 import { Button } from '../button';
@@ -14,12 +17,12 @@ export interface TransactionDraft {
         name: string;
         description: string;
         quantity: number;
-        unit_price: number;
-        total_price: number;
+        unitPrice: number;
+        totalPrice: number;
     }>;
     currency: string;
-    coupon_code?: string | null;
-    final_price: number;
+    couponCode?: string | null;
+    finalPrice: number;
 }
 
 export interface CheckoutModalProps extends isLocalAware {
@@ -44,7 +47,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const [modalState, setModalState] = useState<ModalState>('summary');
     const [couponInput, setCouponInput] = useState('');
     const [appliedCoupon, setAppliedCoupon] = useState<string | null>(
-        transactionDraft.coupon_code || null
+        transactionDraft.couponCode || null,
     );
     const [couponError, setCouponError] = useState<string | null>(null);
     const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
@@ -56,7 +59,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
     const stripePromise = useMemo(
         () => loadStripe(stripePublishableKey),
-        [stripePublishableKey]
+        [stripePublishableKey],
     );
 
     // Extract discount percentage from coupon code (e.g., "XXX10" -> 10)
@@ -69,8 +72,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const discountAmount = useMemo(() => {
         if (!appliedCoupon || discountPercentage === 0) return 0;
         const subtotal = transactionDraft.invoiceLineItems.reduce(
-            (sum, item) => sum + item.total_price,
-            0
+            (sum, item) => sum + item.totalPrice,
+            0,
         );
         return Math.round((subtotal * discountPercentage) / 100);
     }, [appliedCoupon, discountPercentage, transactionDraft.invoiceLineItems]);
@@ -78,8 +81,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     // Calculate totals
     const subtotal = useMemo(() => {
         return transactionDraft.invoiceLineItems.reduce(
-            (sum, item) => sum + item.total_price,
-            0
+            (sum, item) => sum + item.totalPrice,
+            0,
         );
     }, [transactionDraft.invoiceLineItems]);
 
@@ -193,10 +196,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={handleCloseModal} defaultOpen={false}>
+        <Dialog
+            open={isOpen}
+            onOpenChange={handleCloseModal}
+            defaultOpen={false}
+        >
             <DialogContent
                 showCloseButton={modalState === 'summary'}
-                closeOnOverlayClick={!isLoadingPayment && modalState === 'summary'}
+                closeOnOverlayClick={
+                    !isLoadingPayment && modalState === 'summary'
+                }
                 closeOnEscape={!isLoadingPayment}
                 className={modalState === 'summary' ? 'max-w-2xl' : 'max-w-4xl'}
             >
@@ -206,7 +215,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             {/* Header */}
                             <div className="flex items-center gap-3">
                                 <span className="p-2 bg-base-neutral-700 rounded-small">
-                                    <IconPayments size="5" classNames="text-text-primary" />
+                                    <IconPayments
+                                        size="5"
+                                        classNames="text-text-primary"
+                                    />
                                 </span>
                                 <h2 className="text-2xl font-semibold text-text-primary">
                                     {dictionary.components.checkoutModal.title}
@@ -218,37 +230,48 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             {/* Line Items */}
                             <div className="flex flex-col gap-3">
                                 <h3 className="text-sm font-semibold text-text-secondary uppercase">
-                                    {dictionary.components.checkoutModal.lineItems}
+                                    {
+                                        dictionary.components.checkoutModal
+                                            .lineItems
+                                    }
                                 </h3>
-                                {transactionDraft.invoiceLineItems.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex justify-between items-start p-3 border border-card-stroke rounded-md hover:bg-card-fill transition-colors"
-                                    >
-                                        <div className="flex flex-col gap-1">
-                                            <span className="text-text-primary font-medium">
-                                                {item.name}
-                                            </span>
-                                            {item.description && (
-                                                <span className="text-text-secondary text-sm">
-                                                    {item.description}
+                                {transactionDraft.invoiceLineItems.map(
+                                    (item, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex justify-between items-start p-3 border border-card-stroke rounded-md hover:bg-card-fill transition-colors"
+                                        >
+                                            <div className="flex flex-col gap-1">
+                                                <span className="text-text-primary font-medium">
+                                                    {item.name}
                                                 </span>
-                                            )}
-                                            <span className="text-text-secondary text-xs">
-                                                {item.quantity} × {formatPrice(item.unit_price)}
+                                                {item.description && (
+                                                    <span className="text-text-secondary text-sm">
+                                                        {item.description}
+                                                    </span>
+                                                )}
+                                                <span className="text-text-secondary text-xs">
+                                                    {item.quantity} ×{' '}
+                                                    {formatPrice(
+                                                        item.unitPrice,
+                                                    )}
+                                                </span>
+                                            </div>
+                                            <span className="text-text-primary font-semibold">
+                                                {formatPrice(item.totalPrice)}
                                             </span>
                                         </div>
-                                        <span className="text-text-primary font-semibold">
-                                            {formatPrice(item.total_price)}
-                                        </span>
-                                    </div>
-                                ))}
+                                    ),
+                                )}
                             </div>
 
                             {/* Subtotal */}
                             <div className="flex justify-between items-center p-2">
                                 <span className="text-text-secondary">
-                                    {dictionary.components.checkoutModal.subtotal}
+                                    {
+                                        dictionary.components.checkoutModal
+                                            .subtotal
+                                    }
                                 </span>
                                 <span className="text-text-primary font-semibold">
                                     {formatPrice(subtotal)}
@@ -263,12 +286,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                     <>
                                         <div onBlur={handleCouponBlur}>
                                             <InputField
-                                                inputText={dictionary.components.checkoutModal.enterCoupon}
+                                                inputText={
+                                                    dictionary.components
+                                                        .checkoutModal
+                                                        .enterCoupon
+                                                }
                                                 value={couponInput}
                                                 setValue={(value) => {
                                                     setCouponInput(value);
                                                     // Clear error when user starts typing
-                                                    if (hasBlurred && couponError) {
+                                                    if (
+                                                        hasBlurred &&
+                                                        couponError
+                                                    ) {
                                                         setHasBlurred(false);
                                                         setCouponError(null);
                                                     }
@@ -277,28 +307,39 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                                     hasBlurred && couponError
                                                         ? 'error'
                                                         : couponInput
-                                                        ? 'filling'
-                                                        : 'placeholder'
+                                                          ? 'filling'
+                                                          : 'placeholder'
                                                 }
                                                 type="text"
                                             />
                                         </div>
                                         {hasBlurred && couponError && (
-                                            <p className="text-red-600 text-sm -mt-2">{couponError}</p>
+                                            <p className="text-red-600 text-sm -mt-2">
+                                                {couponError}
+                                            </p>
                                         )}
                                         <Button
                                             variant="secondary"
                                             size="medium"
-                                            text={dictionary.components.checkoutModal.applyCoupon}
+                                            text={
+                                                dictionary.components
+                                                    .checkoutModal.applyCoupon
+                                            }
                                             onClick={handleApplyCoupon}
-                                            disabled={!couponInput || isValidatingCoupon}
+                                            disabled={
+                                                !couponInput ||
+                                                isValidatingCoupon
+                                            }
                                             className="w-full"
                                         />
                                     </>
                                 ) : (
                                     <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-md">
                                         <div className="flex items-center gap-2">
-                                            <IconCheck size="4" classNames="text-green-600" />
+                                            <IconCheck
+                                                size="4"
+                                                classNames="text-green-600"
+                                            />
                                             <span className="text-green-800 font-medium">
                                                 {appliedCoupon}
                                             </span>
@@ -306,9 +347,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                         <button
                                             onClick={handleRemoveCoupon}
                                             className="p-1 hover:bg-green-100 rounded-small transition-colors"
-                                            aria-label={dictionary.components.checkoutModal.removeCoupon}
+                                            aria-label={
+                                                dictionary.components
+                                                    .checkoutModal.removeCoupon
+                                            }
                                         >
-                                            <IconClose size="4" classNames="text-green-600" />
+                                            <IconClose
+                                                size="4"
+                                                classNames="text-green-600"
+                                            />
                                         </button>
                                     </div>
                                 )}
@@ -318,7 +365,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                         <p className="text-green-800 text-sm">
                                             {dictionary.components.checkoutModal.couponApplied.replace(
                                                 '{code}',
-                                                appliedCoupon || ''
+                                                appliedCoupon || '',
                                             )}
                                         </p>
                                     </div>
@@ -330,8 +377,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                 <>
                                     <div className="flex justify-between items-center p-2">
                                         <span className="text-green-600 font-medium">
-                                            {dictionary.components.checkoutModal.discount} (
-                                            {discountPercentage}%)
+                                            {
+                                                dictionary.components
+                                                    .checkoutModal.discount
+                                            }{' '}
+                                            ({discountPercentage}%)
                                         </span>
                                         <span className="text-green-600 font-semibold">
                                             -{formatPrice(discountAmount)}
@@ -355,7 +405,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             <Button
                                 variant="primary"
                                 size="big"
-                                text={dictionary.components.checkoutModal.proceedToPayment}
+                                text={
+                                    dictionary.components.checkoutModal
+                                        .proceedToPayment
+                                }
                                 onClick={handleProceedToPayment}
                                 disabled={isLoadingPayment}
                                 className="w-full mt-2"

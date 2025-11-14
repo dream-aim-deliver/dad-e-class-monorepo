@@ -1,73 +1,264 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { useLocale } from 'next-intl'
-import { Button, CheckoutModal, type TransactionDraft } from '@maany_shr/e-class-ui-kit'
-import { TLocale } from '@maany_shr/e-class-translations'
-import env from '../../config/env'
+import { useState } from 'react';
+import { useLocale } from 'next-intl';
+import {
+    Button,
+    CheckoutModal,
+    type TransactionDraft,
+} from '@maany_shr/e-class-ui-kit';
+import { TLocale } from '@maany_shr/e-class-translations';
+import env from '../../config/env';
+import { trpc } from '../../trpc/client';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
+
+interface SimulationCardProps {
+    title: string;
+    description: string;
+    icon: string;
+    onTest: () => Promise<void>;
+    isLoading: boolean;
+}
+
+function SimulationCard({
+    title,
+    description,
+    icon,
+    onTest,
+    isLoading,
+}: SimulationCardProps) {
+    return (
+        <div className="border border-card-stroke rounded-lg p-6 bg-card-fill hover:shadow-md transition-shadow">
+            <div className="flex items-start gap-4">
+                <div className="text-4xl">{icon}</div>
+                <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-text-primary mb-2">
+                        {title}
+                    </h3>
+                    <p className="text-sm text-text-secondary mb-4">
+                        {description}
+                    </p>
+                    <Button
+                        variant="primary"
+                        size="medium"
+                        text={isLoading ? 'Loading...' : 'Test Purchase'}
+                        onClick={onTest}
+                        disabled={isLoading}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+}
 
 export default function CheckoutPage() {
-    const searchParams = useSearchParams()
-    const locale = useLocale() as TLocale
-    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
-    const couponCode = searchParams.get('coupon')
+    const locale = useLocale() as TLocale;
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [transactionDraft, setTransactionDraft] =
+        useState<TransactionDraft | null>(null);
+    const [viewModel, setViewModel] =
+        useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
+    const { presenter } = usePrepareCheckoutPresenter(setViewModel);
 
-    // Hardcoded transaction draft for demo purposes
-    // In production, this would come from the cart or package selection
-    const transactionDraft: TransactionDraft = {
-        invoiceLineItems: [
-            {
-                name: 'Coaching Session',
-                description: 'One-on-one coaching session',
-                quantity: 1,
-                unit_price: 10000, // CHF 100.00 in cents
-                total_price: 10000,
-            },
-            {
-                name: 'VAT 7.7%',
-                description: 'Swiss Value Added Tax',
-                quantity: 1,
-                unit_price: 770, // CHF 7.70 in cents
-                total_price: 770,
-            },
-        ],
-        currency: 'CHF',
-        coupon_code: couponCode,
-        final_price: 10770, // CHF 107.70 in cents
-    }
+    const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
+
+    const handleTest = async (request: useCaseModels.TPrepareCheckoutRequest) => {
+        try {
+            const response = await prepareCheckoutMutation.mutateAsync(request);
+            presenter.present(response, viewModel);
+
+            // Check view model state and handle accordingly
+            if (viewModel && viewModel.mode === 'default') {
+                setTransactionDraft(viewModel.data.transaction);
+                setIsCheckoutOpen(true);
+            }
+        } catch (err) {
+            console.error('Failed to prepare checkout:', err);
+        }
+    };
 
     const handlePaymentComplete = (sessionId: string) => {
-        console.log('Payment completed with session ID:', sessionId)
-        setIsCheckoutOpen(false)
-        // Redirect to success page or handle completion
-    }
+        console.log('Payment completed with session ID:', sessionId);
+        setIsCheckoutOpen(false);
+        setTransactionDraft(null);
+    };
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="max-w-2xl mx-auto">
-                <h1 className="text-3xl font-bold mb-6">Checkout</h1>
+            <div className="max-w-6xl mx-auto">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold mb-2">
+                        Checkout Testing & Simulation
+                    </h1>
+                    <p className="text-text-secondary">
+                        This page allows you to test all purchase flows without
+                        requiring full backend setup. Click any card below to
+                        simulate a purchase and test the checkout modal.
+                    </p>
+                </div>
 
-                <p className="text-gray-600 mb-8">
-                    Click the button below to proceed with your payment.
-                </p>
+                {viewModel && viewModel.mode !== 'default' && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+                        <p className="text-red-800 font-semibold">
+                            Error: {viewModel.mode}
+                        </p>
+                        <p className="text-red-600 text-sm">{viewModel.data.message}</p>
+                    </div>
+                )}
 
-                <Button
-                    variant="primary"
-                    size="big"
-                    text="Proceed to Checkout"
-                    onClick={() => setIsCheckoutOpen(true)}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <SimulationCard
+                        title="Single Course"
+                        description="Purchase a single course without coaching sessions"
+                        icon="📚"
+                        isLoading={prepareCheckoutMutation.isPending}
+                        onTest={() =>
+                            handleTest({
+                                type: 'StudentCoursePurchase',
+                                courseSlug: 'intro-to-programming',
+                            })
+                        }
+                    />
 
-                <CheckoutModal
-                    isOpen={isCheckoutOpen}
-                    onClose={() => setIsCheckoutOpen(false)}
-                    transactionDraft={transactionDraft}
-                    stripePublishableKey={env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
-                    locale={locale}
-                    onPaymentComplete={handlePaymentComplete}
-                />
+                    <SimulationCard
+                        title="Course + Coaching"
+                        description="Purchase a course with personalized coaching sessions"
+                        icon="👨‍🏫"
+                        isLoading={prepareCheckoutMutation.isPending}
+                        onTest={() =>
+                            handleTest({
+                                type: 'StudentCoursePurchaseWithCoaching',
+                                courseSlug: 'advanced-javascript',
+                            })
+                        }
+                    />
+
+                    <SimulationCard
+                        title="Package"
+                        description="Purchase a package bundle of multiple courses"
+                        icon="📦"
+                        isLoading={prepareCheckoutMutation.isPending}
+                        onTest={() =>
+                            handleTest({
+                                type: 'StudentPackagePurchase',
+                                packageId: 1,
+                            })
+                        }
+                    />
+
+                    <SimulationCard
+                        title="Package + Coaching"
+                        description="Purchase a package with coaching for all included courses"
+                        icon="🎓"
+                        isLoading={prepareCheckoutMutation.isPending}
+                        onTest={() =>
+                            handleTest({
+                                type: 'StudentPackagePurchaseWithCoaching',
+                                packageId: 1,
+                            })
+                        }
+                    />
+
+                    <SimulationCard
+                        title="Coaching Sessions"
+                        description="Purchase standalone coaching sessions"
+                        icon="💬"
+                        isLoading={prepareCheckoutMutation.isPending}
+                        onTest={() =>
+                            handleTest({
+                                type: 'StudentCoachingSessionPurchase',
+                                coachingOfferingId: 1,
+                                quantity: 2,
+                            })
+                        }
+                    />
+                </div>
+
+                <div className="border-t border-card-stroke pt-8">
+                    <h2 className="text-2xl font-semibold mb-4">
+                        Coupon Testing
+                    </h2>
+                    <p className="text-text-secondary mb-4">
+                        Test various coupon scenarios by clicking the cards
+                        below. These will test coupon validation.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <SimulationCard
+                            title="Valid: 10% Off"
+                            description="Test with SAVE10 coupon"
+                            icon="✅"
+                            isLoading={prepareCheckoutMutation.isPending}
+                            onTest={() =>
+                                handleTest({
+                                    type: 'StudentCoursePurchase',
+                                    courseSlug: 'intro-to-programming',
+                                    couponCode: 'SAVE10',
+                                })
+                            }
+                        />
+
+                        <SimulationCard
+                            title="Valid: 20% Off"
+                            description="Test with SAVE20 coupon"
+                            icon="✅"
+                            isLoading={prepareCheckoutMutation.isPending}
+                            onTest={() =>
+                                handleTest({
+                                    type: 'StudentCoursePurchase',
+                                    courseSlug: 'intro-to-programming',
+                                    couponCode: 'SAVE20',
+                                })
+                            }
+                        />
+
+                        <SimulationCard
+                            title="Invalid Code"
+                            description="Test with INVALID coupon"
+                            icon="❌"
+                            isLoading={prepareCheckoutMutation.isPending}
+                            onTest={() =>
+                                handleTest({
+                                    type: 'StudentCoursePurchase',
+                                    courseSlug: 'intro-to-programming',
+                                    couponCode: 'INVALID',
+                                })
+                            }
+                        />
+
+                        <SimulationCard
+                            title="Expired"
+                            description="Test with EXPIRED coupon"
+                            icon="⏰"
+                            isLoading={prepareCheckoutMutation.isPending}
+                            onTest={() =>
+                                handleTest({
+                                    type: 'StudentCoursePurchase',
+                                    courseSlug: 'intro-to-programming',
+                                    couponCode: 'EXPIRED',
+                                })
+                            }
+                        />
+                    </div>
+                </div>
+
+                {transactionDraft && (
+                    <CheckoutModal
+                        isOpen={isCheckoutOpen}
+                        onClose={() => {
+                            setIsCheckoutOpen(false);
+                            setTransactionDraft(null);
+                        }}
+                        transactionDraft={transactionDraft}
+                        stripePublishableKey={
+                            env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+                        }
+                        locale={locale}
+                        onPaymentComplete={handlePaymentComplete}
+                    />
+                )}
             </div>
         </div>
-    )
+    );
 }
