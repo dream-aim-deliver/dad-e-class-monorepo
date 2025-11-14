@@ -428,7 +428,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
 
         {/* Personal Profile Information */}
         <div className="flex flex-col gap-3 border-t border-card-stroke pt-4">
-          <h4 className="text-text-primary font-semibold">Personal Information</h4>
+          <h4 className="text-text-primary">Personal Information</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <p className="text-sm text-text-secondary">Name</p>
@@ -452,7 +452,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
         {/* Professional Profile Information - Only for coaches and above */}
         {isCoachOrHigher && professionalProfile && (
           <div className="flex flex-col gap-3 border-t border-card-stroke pt-4">
-            <h4 className="text-text-primary font-semibold">Professional Information</h4>
+            <h4 className="text-text-primary">Professional Information</h4>
             <div className="flex flex-col gap-4">
               <div>
                 <p className="text-sm text-text-secondary">Professional Bio</p>
