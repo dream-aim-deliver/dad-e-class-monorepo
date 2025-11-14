@@ -9,7 +9,7 @@
   "private": true,
   "dependencies": {
     "@dream-aim-deliver/dad-cats": "^0.13.0",
-    "@dream-aim-deliver/e-class-cms-rest": "3.0.5",
+    "@dream-aim-deliver/e-class-cms-rest": "3.0.6",
     "@mux/mux-player-react": "3.3.0",
     "@tailwindcss/postcss": "4.0.0-beta.8",
     "@tanstack/react-query": "^5.76.1",
