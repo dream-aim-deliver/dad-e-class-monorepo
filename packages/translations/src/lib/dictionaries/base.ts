@@ -770,8 +770,11 @@ export const DictionarySchema = z.object({
       certifyThat: z.string(),
       hasCompleted: z.string(),
       completedOn: z.string(),
+      certificateId: z.string(),
       courseStructure: z.string(),
       module: z.string(),
+      awardedOn: z.string(),
+      awardedPrefix: z.string(),
     }),
     coachesSkeleton: z.object({
       title: z.string(),
