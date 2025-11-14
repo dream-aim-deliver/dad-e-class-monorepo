@@ -8,14 +8,14 @@ import { useState, useEffect } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { 
-  DefaultLoading, 
-  DefaultError, 
-  DefaultNotFound, 
-  PackageCmsCardList, 
-  PackageCmsCard, 
-  Breadcrumbs, 
-  ArchivePackageModal, 
+import {
+  DefaultLoading,
+  DefaultError,
+  DefaultNotFound,
+  PackageCmsCardList,
+  PackageCmsCard,
+  Breadcrumbs,
+  ArchivePackageModal,
   ArchiveSuccessModal,
   Banner,
   FeedBackMessage
@@ -93,7 +93,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
 
   // Archive package mutation
   const archivePackageMutation = trpc.archivePackage.useMutation();
-  
+
   // Get TRPC utils for query invalidation (must be at top level)
   const utils = trpc.useUtils();
 
@@ -183,7 +183,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   const handlePublishPackage = async (packageId: string) => {
     setErrorMessage(null);
     setSuccessMessage(null);
-    
+
     try {
       await publishPackageMutation.mutateAsync({
         packageId: idToNumber(packageId)!
@@ -191,16 +191,6 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     } catch (error) {
       // Error handled by mutation onError callback
     }
-  };
-
-  // Calculates pricing for a package card
-  // TODO: Replace hardcoded fullPrice with sum of courses' priceIncludingCoachings
-  // once backend starts returning per-course pricing for packages.
-  const calculatePackagePricing = (pkg: any) => {
-    const partialPrice = pkg.priceWithCoachings;
-    // const fullPrice = pkg.courses.reduce((sum: number, c: { priceIncludingCoachings: number }) => sum + c.priceIncludingCoachings, 0);
-    const fullPrice = pkg.priceWithCoachings * 1.5; // TODO: Replace with sum(priceIncludingCoachings) of courses
-    return { fullPrice, partialPrice};
   };
 
   // Breadcrumbs following the standard pattern
@@ -216,10 +206,10 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
       },
     },
     {
-        label: t('title'),
-        onClick: () => {
-            // Nothing should happen on clicking the current page
-        },
+      label: t('title'),
+      onClick: () => {
+        // Nothing should happen on clicking the current page
+      },
     },
   ];
 
@@ -242,7 +232,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   // Success state - extract data using discovered pattern
   const packagesData = listPackagesViewModel.data;
   const packages = packagesData.packages;
-  
+
   return (
     <div className="flex flex-col space-y-4">
       {/* Breadcrumbs */}
@@ -274,8 +264,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
         onClickCheckbox={() => setShowArchived(!showArchived)}
         onCreatePackage={handleCreatePackage}
       >
-        {packages.map((pkg: any) => {
-          const calculatedPricing = calculatePackagePricing(pkg);
+        {packages.map((pkg) => {
           const baseProps = {
             title: pkg.title,
             description: pkg.description,
@@ -284,11 +273,11 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
             courseCount: pkg.courseCount || 0,
             pricing: {
               currency: platform.currency,
-              fullPrice: calculatedPricing.fullPrice,
-              partialPrice: calculatedPricing.partialPrice,
+              fullPrice: pkg.coursesPriceWithCoachings,
+              partialPrice: pkg.coursesPriceWithoutCoachings,
             },
             locale: currentLocale,
-            onClickEdit: () => handleEditPackage(pkg.id),
+            onClickEdit: () => handleEditPackage(`${pkg.id}`),
           };
 
           if (pkg.status === 'published') {
@@ -297,7 +286,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
                 key={pkg.id}
                 {...baseProps}
                 status="published"
-                onClickArchive={() => handleArchivePackage(pkg.id)}
+                onClickArchive={() => handleArchivePackage(`${pkg.id}`)}
               />
             );
           } else if (pkg.status === 'archived') {
@@ -306,7 +295,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
                 key={pkg.id}
                 {...baseProps}
                 status="archived"
-                onClickPublished={() => handlePublishPackage(pkg.id)}
+                onClickPublished={() => handlePublishPackage(`${pkg.id}`)}
               />
             );
           } else {
@@ -316,7 +305,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
                 key={pkg.id}
                 {...baseProps}
                 status="published"
-                onClickArchive={() => handleArchivePackage(pkg.id)}
+                onClickArchive={() => handleArchivePackage(`${pkg.id}`)}
               />
             );
           }
