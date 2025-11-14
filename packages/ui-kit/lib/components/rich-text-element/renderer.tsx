@@ -55,6 +55,12 @@ const RenderElement = ({ attributes, children, element }: {
 }) => {
   const style = { textAlign: element.align };
 
+  // Helper to check if element is empty (only contains empty text)
+  const isEmpty = element.children?.length === 1 && element.children[0].text === "";
+
+  // For empty elements, insert a non-breaking space to prevent CSS collapse
+  const content = isEmpty ? <>&nbsp;</> : children;
+
   switch (element.type) {
     case "link":
       return (
@@ -75,8 +81,8 @@ const RenderElement = ({ attributes, children, element }: {
       );
     case "block-quote":
       return (
-        <blockquote {...attributes} style={style} className="border-l-2 border-base-brand-400 text-base-brand-400  pl-2 italic">
-          {children}
+        <blockquote {...attributes} style={style} className={`border-l-2 border-base-brand-400 text-base-brand-400 pl-2 italic ${isEmpty ? "h-[1lh]" : ""}`}>
+          {content}
         </blockquote>
       );
     case "numbered-list":
@@ -88,17 +94,17 @@ const RenderElement = ({ attributes, children, element }: {
     case "list-item":
       return <li {...attributes} style={style} className="ml-4">{children}</li>;
     case "h1":
-      return <h1 {...attributes} style={style} className="text-3xl font-bold">{children}</h1>;
+      return <h1 {...attributes} style={style} className={`text-3xl font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h1>;
     case "h2":
-      return <h2 {...attributes} style={style} className="text-2xl font-bold">{children}</h2>;
+      return <h2 {...attributes} style={style} className={`text-2xl font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h2>;
     case "h3":
-      return <h3 {...attributes} style={style} className="text-xl font-bold">{children}</h3>;
+      return <h3 {...attributes} style={style} className={`text-xl font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h3>;
     case "h4":
-      return <h4 {...attributes} style={style} className="text-lg font-bold">{children}</h4>;
+      return <h4 {...attributes} style={style} className={`text-lg font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h4>;
     case "h5":
-      return <h5 {...attributes} style={style} className="text-md font-bold">{children}</h5>;
+      return <h5 {...attributes} style={style} className={`text-md font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h5>;
     case "h6":
-      return <h6 {...attributes} style={style} className="text-sm font-bold">{children}</h6>;
+      return <h6 {...attributes} style={style} className={`text-sm font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h6>;
     case "horizontal-rule":
       return (
         <div {...attributes} style={style}>
@@ -107,20 +113,18 @@ const RenderElement = ({ attributes, children, element }: {
         </div>
       );
     case "paragraph": {
-      // Check if paragraph is empty (only contains empty text)
-      const isEmpty = element.children?.length === 1 && element.children[0].text === "";
       return (
         <p
           {...attributes}
           style={style}
           className={`text-base whitespace-pre-wrap leading-normal ${isEmpty ? "h-[1lh]" : ""}`}
         >
-          {children}
+          {content}
         </p>
       );
     }
     default:
-      return <div {...attributes} style={style} className="text-base whitespace-pre-wrap">{children}</div>;
+      return <div {...attributes} style={style} className={`text-base whitespace-pre-wrap ${isEmpty ? "h-[1lh]" : ""}`}>{content}</div>;
   }
 };
 
