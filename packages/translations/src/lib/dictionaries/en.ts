@@ -770,11 +770,14 @@ export const EN: TDictionary = {
     certificateGenerator: {
       certificatePrefix: 'certificate',
       certificateTitle: 'Certificate of Completion',
-      certifyThat: 'This is to certify that',
-      hasCompleted: 'has successfully completed the course',
+      certifyThat: 'this certificate is presented to',
+      hasCompleted: 'for successfully completing the course',
       completedOn: 'Completed on',
-      courseStructure: 'Course Structure',
+      certificateId: 'Certificate ID',
+      courseStructure: 'Course description',
       module: 'Module',
+      awardedOn: 'Awarded on',
+      awardedPrefix: 'AWARDED',
     },
     coachesSkeleton: {
       title: 'Many other coaches are waiting for you...',
