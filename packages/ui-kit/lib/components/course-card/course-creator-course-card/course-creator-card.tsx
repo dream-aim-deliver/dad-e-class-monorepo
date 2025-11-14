@@ -229,47 +229,28 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             locale={locale as TLocale}
                         />
 
-                        {status === 'archived' ? (
-                            <>
-                                {onDuplicate && (
-                                    <Button
-                                        onClick={onDuplicate}
-                                        className="w-full"
-                                        variant="primary"
-                                        size="medium"
-                                        text={
-                                            dictionary.components.courseCard
-                                                .duplicateButton
-                                        }
-                                    />
-                                )}
-                            </>
-                        ) : (
-                            <>
-                                <Button
-                                    onClick={onEdit}
-                                    className="w-full"
-                                    variant="primary"
-                                    size="medium"
-                                    text={
-                                        dictionary.components.courseCard
-                                            .editCourseButton
-                                    }
-                                />
+                        <Button
+                            onClick={onEdit}
+                            className="w-full"
+                            variant="primary"
+                            size="medium"
+                            text={
+                                dictionary.components.courseCard
+                                    .editCourseButton
+                            }
+                        />
 
-                                {onDuplicate && (
-                                    <Button
-                                        onClick={onDuplicate}
-                                        className="w-full"
-                                        variant="text"
-                                        size="medium"
-                                        text={
-                                            dictionary.components.courseCard
-                                                .duplicateButton
-                                        }
-                                    />
-                                )}
-                            </>
+                        {onDuplicate && (
+                            <Button
+                                onClick={onDuplicate}
+                                className="w-full"
+                                variant="text"
+                                size="medium"
+                                text={
+                                    dictionary.components.courseCard
+                                        .duplicateButton
+                                }
+                            />
                         )}
                     </div>
                 </div>
