@@ -1,4 +1,4 @@
-import { VideoPlayer } from '../video-player';
+import { AutoPlayVideoPlayer } from '../auto-play-video-player';
 import { homePage } from '@maany_shr/e-class-models';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 import { Outline } from '../outline';
@@ -34,9 +34,9 @@ export const Hero: React.FC<HeroProps> = ({
     return (
         <div className="flex md:flex-row flex-col  gap-[4.1875rem] items-center w-full">
             <Outline title={title as string} description={description as string} className="md:w-1/2 gap-[2.5625rem]"/>
-            {/* VideoPlayer */}
+            {/* AutoPlayVideoPlayer */}
             <div className="flex-1 w-full aspect-video md:min-h-[200px]">
-                <VideoPlayer
+                <AutoPlayVideoPlayer
                     videoId={videoId}
                     thumbnailUrl={thumbnailUrl}
                     locale={locale}
