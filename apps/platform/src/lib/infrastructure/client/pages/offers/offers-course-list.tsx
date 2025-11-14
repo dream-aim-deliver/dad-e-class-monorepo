@@ -2,13 +2,14 @@ import {
     Button,
     CardListLayout,
     CheckBox,
+    CheckoutModal,
     DefaultError,
     DefaultLoading,
     DefaultNotFound,
     VisitorCourseCard,
+    type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
 import { useMemo, useState } from 'react';
-import { viewModels } from '@maany_shr/e-class-models';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/client';
@@ -16,6 +17,9 @@ import { useListCoursesPresenter } from '../../hooks/use-list-courses-presenter'
 import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
+import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
+import env from '../../config/env';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 
 interface OffersCourseHeadingProps {
     coachingIncluded: boolean;
@@ -67,6 +71,45 @@ export function OffersCourseList({
     const offersTranslations = useTranslations('pages.offers');
 
     const router = useRouter();
+
+    // Checkout modal state
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [transactionDraft, setTransactionDraft] =
+        useState<TransactionDraft | null>(null);
+    const [checkoutViewModel, setCheckoutViewModel] =
+        useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
+    const { presenter: checkoutPresenter } =
+        usePrepareCheckoutPresenter(setCheckoutViewModel);
+    const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
+
+    const handleBuyCourse = async (
+        courseSlug: string,
+        withCoaching: boolean,
+    ) => {
+        try {
+            const response = await prepareCheckoutMutation.mutateAsync({
+                type: withCoaching
+                    ? 'StudentCoursePurchaseWithCoaching'
+                    : 'StudentCoursePurchase',
+                courseSlug,
+            });
+            checkoutPresenter.present(response, checkoutViewModel);
+
+            if (checkoutViewModel && checkoutViewModel.mode === 'default') {
+                setTransactionDraft(checkoutViewModel.data.transaction);
+                setIsCheckoutOpen(true);
+            }
+        } catch (err) {
+            console.error('Failed to prepare checkout:', err);
+        }
+    };
+
+    const handlePaymentComplete = (sessionId: string) => {
+        console.log('Payment completed with session ID:', sessionId);
+        setIsCheckoutOpen(false);
+        setTransactionDraft(null);
+        // TODO: Redirect to success page or show success message
+    };
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default') {
@@ -127,7 +170,7 @@ export function OffersCourseList({
                                 router.push(`/courses/${course.slug}`);
                             }}
                             onBuy={() => {
-                                router.push(`/checkout/${course.slug}`);
+                                handleBuyCourse(course.slug, coachingIncluded);
                             }}
                             onClickUser={() => {
                                 router.push(
@@ -174,6 +217,22 @@ export function OffersCourseList({
                     variant="text"
                     text={paginationTranslations('loadMore')}
                     onClick={handleLoadMore}
+                />
+            )}
+
+            {transactionDraft && (
+                <CheckoutModal
+                    isOpen={isCheckoutOpen}
+                    onClose={() => {
+                        setIsCheckoutOpen(false);
+                        setTransactionDraft(null);
+                    }}
+                    transactionDraft={transactionDraft}
+                    stripePublishableKey={
+                        env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+                    }
+                    locale={locale}
+                    onPaymentComplete={handlePaymentComplete}
                 />
             )}
         </div>
