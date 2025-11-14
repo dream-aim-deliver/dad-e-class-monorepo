@@ -12,9 +12,19 @@
 // For Students: only render PersonalProfile, StudentCourses, Roles
 // For Coach and higher: PersonalProfile, ProfessionalProfile, StudentCourses, CoachCourses, CoachReviews, Roles
 
+import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { z } from 'zod';
+import { trpc } from '../trpc/cms-client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard, Button, Dropdown, ConfirmationModal, CoachReviewCard } from '@maany_shr/e-class-ui-kit';
+import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
+import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
+import { useListStudentCoursesPresenter } from '../hooks/use-list-student-courses-presenter';
+import { useListCoachReviewsPresenter } from '../hooks/use-list-coach-reviews-presenter';
+import { useListUserRolesPresenter } from '../hooks/use-list-user-roles-presenter';
+import { useListCoachCoursesPresenter } from '../hooks/use-list-coach-courses-presenter';
 
 interface SingleUserProps {
   locale: TLocale;
@@ -36,30 +46,568 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
   const t = useTranslations('pages.singleUser');
   const currentLocale = useLocale() as TLocale;
 
+  // View models
+  const [personalProfileVM, setPersonalProfileVM] = useState<viewModels.TGetPersonalProfileViewModel | undefined>(undefined);
+  const [professionalProfileVM, setProfessionalProfileVM] = useState<viewModels.TGetProfessionalProfileViewModel | undefined>(undefined);
+
+  // Hardcoded mock data for studentCoursesVM
+  const [studentCoursesVM, setStudentCoursesVM] = useState<viewModels.TListStudentCoursesViewModel | undefined>({
+    mode: 'default',
+    data: {
+      courses: [
+        {
+          id: 1,
+          title: 'Introduction to React',
+          description: 'Learn the basics of React and build modern web applications',
+          duration: {
+            video: 120,
+            coaching: 30,
+            selfStudy: 30
+          },
+          pricing: {
+            fullPrice: 49.99,
+            partialPrice: 39.99,
+            currency: 'USD'
+          },
+          imageUrl: '',
+          rating: 4.5,
+          author: {
+            name: 'John Doe',
+            image: undefined
+          },
+          language: [{ name: 'English', code: 'en', id: 1, state: 'created' as const, createdAt: new Date(), updatedAt: new Date() }]
+        },
+        {
+          id: 2,
+          title: 'Advanced TypeScript',
+          description: 'Master TypeScript with advanced patterns and best practices',
+          duration: {
+            video: 180,
+            coaching: 40,
+            selfStudy: 20
+          },
+          pricing: {
+            fullPrice: 79.99,
+            partialPrice: 69.99,
+            currency: 'USD'
+          },
+          imageUrl: '',
+          rating: 4.8,
+          author: {
+            name: 'Sarah Smith',
+            image: undefined
+          },
+          language: [{ name: 'English', code: 'en', id: 1, state: 'created' as const, createdAt: new Date(), updatedAt: new Date() }]
+        }
+      ]
+    }
+  } as any);
+
+  // Hardcoded mock data for coachReviewsVM
+  const [coachReviewsVM, setCoachReviewsVM] = useState<viewModels.TListCoachReviewsViewModel | undefined>({
+    mode: 'default',
+    data: {
+      reviews: [
+        {
+          id: 1,
+          rating: 5,
+          notes: 'Excellent coaching session! Very knowledgeable and helpful.',
+          neededMoreTime: false,
+          state: 'created' as const,
+          createdAt: new Date('2024-12-15'),
+          updatedAt: new Date('2024-12-15'),
+          student: {
+            id: 101,
+            name: 'Alice',
+            surname: 'Johnson',
+            username: 'alice_j',
+            avatarImage: null
+          },
+          coachingSession: {
+            id: 1001,
+            status: 'completed' as const,
+            startTime: '2024-12-15T10:00:00Z',
+            endTime: '2024-12-15T11:00:00Z',
+            publicationDate: '2024-12-01T00:00:00Z',
+            coachingOfferingTitle: 'React Fundamentals',
+            coachingOfferingDuration: 60,
+            meetingUrl: null,
+            couponName: null,
+            state: 'created' as const,
+            createdAt: new Date('2024-12-01'),
+            updatedAt: new Date('2024-12-15')
+          },
+          course: {
+            id: 1,
+            slug: 'intro-to-react',
+            title: 'Introduction to React',
+            image: null
+          }
+        },
+        {
+          id: 2,
+          rating: 4,
+          notes: 'Great session, would have appreciated more time on advanced topics.',
+          neededMoreTime: true,
+          state: 'created' as const,
+          createdAt: new Date('2024-12-10'),
+          updatedAt: new Date('2024-12-10'),
+          student: {
+            id: 102,
+            name: 'Bob',
+            surname: 'Williams',
+            username: 'bob_w',
+            avatarImage: null
+          },
+          coachingSession: {
+            id: 1002,
+            status: 'completed' as const,
+            startTime: '2024-12-10T14:00:00Z',
+            endTime: '2024-12-10T15:00:00Z',
+            publicationDate: '2024-11-20T00:00:00Z',
+            coachingOfferingTitle: 'TypeScript Best Practices',
+            coachingOfferingDuration: 60,
+            meetingUrl: null,
+            couponName: null,
+            state: 'created' as const,
+            createdAt: new Date('2024-11-20'),
+            updatedAt: new Date('2024-12-10')
+          },
+          course: null
+        }
+      ]
+    }
+  });
+
+  // Hardcoded mock data for coachCoursesVM
+  const [coachCoursesVM, setCoachCoursesVM] = useState<viewModels.TListCoachCoursesViewModel | undefined>({
+    mode: 'default',
+    data: {
+      courses: [
+        {
+          id: 10,
+          title: 'React Masterclass',
+          duration: {
+            video: 240,
+            coaching: 60,
+            selfStudy: 60
+          },
+          imageUrl: '',
+          rating: 4.7,
+          author: {
+            name: 'Coach Name',
+            image: undefined
+          },
+          language: [{ name: 'English', code: 'en', id: 1, state: 'created' as const, createdAt: new Date(), updatedAt: new Date() }]
+        },
+        {
+          id: 11,
+          title: 'JavaScript Deep Dive',
+          duration: {
+            video: 200,
+            coaching: 50,
+            selfStudy: 50
+          },
+          imageUrl: '',
+          rating: 4.9,
+          author: {
+            name: 'Coach Name',
+            image: undefined
+          },
+          language: [{ name: 'English', code: 'en', id: 1, state: 'created' as const, createdAt: new Date(), updatedAt: new Date() }]
+        }
+      ]
+    }
+  });
+
+  const [userRolesVM, setUserRolesVM] = useState<viewModels.TListUserRolesViewModel | undefined>(undefined);
+
+  // Role management state
+  const [selectedRole, setSelectedRole] = useState<string>('');
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  // Review sorting state
+  const [reviewSortOrder, setReviewSortOrder] = useState<string>('highest');
+
+  const { presenter: personalProfilePresenter } = useGetPersonalProfilePresenter(setPersonalProfileVM);
+  const { presenter: professionalProfilePresenter } = useGetProfessionalProfilePresenter(setProfessionalProfileVM);
+  const { presenter: studentCoursesPresenter } = useListStudentCoursesPresenter(setStudentCoursesVM);
+  const { presenter: coachReviewsPresenter } = useListCoachReviewsPresenter(setCoachReviewsVM);
+  const { presenter: userRolesPresenter } = useListUserRolesPresenter(setUserRolesVM);
+  const { presenter: coachCoursesPresenter } = useListCoachCoursesPresenter(setCoachCoursesVM);
+
+  console.log(personalProfileVM, professionalProfileVM, studentCoursesVM, coachReviewsVM, userRolesVM, coachCoursesVM);
+  const [personalProfileResponse, { refetch: refetchPersonalProfile }] = trpc.getPersonalProfile.useSuspenseQuery({});
+  const [professionalProfileResponse, { refetch: refetchProfessionalProfile }] = trpc.getProfessionalProfile.useSuspenseQuery({});
+  const [studentCoursesResponse, { refetch: refetchStudentCourses }] = trpc.listStudentCourses.useSuspenseQuery({studentUsername: username });
+  const [coachReviewsResponse, { refetch: refetchCoachReviews }] = trpc.listCoachReviews.useSuspenseQuery({ coachUsername: username });
+  const [userRolesResponse, { refetch: refetchUserRoles }] = trpc.listUserRoles.useSuspenseQuery({});
+  // const [coachCoursesResponse, { refetch: refetchCoachCourses }] = trpc.listCoachCourses.useSuspenseQuery({ forStudent: false });
+
+  // Present responses
+  // @ts-ignore
+  personalProfilePresenter.present(personalProfileResponse, personalProfileVM);
+  // @ts-ignore
+  professionalProfilePresenter.present(professionalProfileResponse, professionalProfileVM);
+  // @ts-ignore
+  // studentCoursesPresenter.present(studentCoursesResponse, studentCoursesVM);
+  // @ts-ignore
+  // coachReviewsPresenter.present(coachReviewsResponse, coachReviewsVM);
+  // @ts-ignore
+  userRolesPresenter.present(userRolesResponse, userRolesVM);
+  // @ts-ignore
+  // coachCoursesPresenter.present(coachCoursesResponse, coachCoursesVM);
+
+  if (!personalProfileVM || !professionalProfileVM || !studentCoursesVM || !coachReviewsVM || !userRolesVM || !coachCoursesVM) {
+    return <DefaultLoading locale={currentLocale} variant="minimal" />;
+  }
+
+  const hasError =
+    personalProfileVM.mode === 'kaboom' ||
+    professionalProfileVM.mode === 'kaboom' ||
+    studentCoursesVM.mode === 'kaboom' ||
+    coachReviewsVM.mode === 'kaboom' ||
+    userRolesVM.mode === 'kaboom' ||
+    coachCoursesVM.mode === 'kaboom';
+
+  if (hasError) {
+    return (
+      <DefaultError
+        locale={currentLocale}
+        onRetry={() => {
+          refetchPersonalProfile();
+          refetchProfessionalProfile();
+          refetchUserRoles();
+        }}
+      />
+    );
+  }
+
+
+  const personalProfile = personalProfileVM.mode === 'default' ? personalProfileVM.data : null;
+  const professionalProfile = professionalProfileVM.mode === 'default' ? professionalProfileVM.data : null;
+  const userRoles = userRolesVM.mode === 'default' ? userRolesVM.data : null;
+  const coachReviews = coachReviewsVM.mode === 'default' ? coachReviewsVM.data : null;
+  const studentCourses = studentCoursesVM.mode === 'default' ? studentCoursesVM.data : null;
+  const coachCourses = coachCoursesVM.mode === 'default' ? coachCoursesVM.data : null;
+
+  // Construct full name from name and surname
+  const fullName = personalProfile?.profile.name && personalProfile?.profile.surname
+    ? `${personalProfile.profile.name} ${personalProfile.profile.surname}`
+    : personalProfile?.profile.name || personalProfile?.profile.surname || username;
+
+  const averageRating = coachReviews?.reviews && coachReviews.reviews.length > 0
+    ? coachReviews.reviews.reduce((sum, review) => sum + (review.rating || 0), 0) / coachReviews.reviews.length
+    : 0;
+
+  const totalReviews = coachReviews?.reviews?.length || 0;
+
+  // Determine if user is coach or higher (coach, course-creator, admin)
+  const isCoachOrHigher = userRoles?.roles && userRoles.roles.some(role =>
+    ['coach', 'course-creator', 'admin'].includes(role.toLowerCase())
+  );
+
+  // Sort reviews based on selected sort order
+  const sortedReviews = coachReviews?.reviews ? [...coachReviews.reviews].sort((a, b) => {
+    if (reviewSortOrder === 'highest') {
+      return (b.rating || 0) - (a.rating || 0);
+    } else if (reviewSortOrder === 'lowest') {
+      return (a.rating || 0) - (b.rating || 0);
+    }
+    return 0;
+  }) : [];
+
+  // Handle role change
+  const handleRoleChange = (value: string | string[] | null) => {
+    if (typeof value === 'string') {
+      setSelectedRole(value);
+      setShowConfirmation(true);
+    }
+  };
+
+  const handleConfirmRoleChange = () => {
+    if (selectedRole) {
+      const request = {
+        username,
+        role: selectedRole,
+      };
+      // @TODO Mock the request - show in alert for now
+      alert(`Mock Update User Role Request:\n${JSON.stringify(request, null, 2)}`);
+      setShowConfirmation(false);
+      setSelectedRole('');
+    }
+  };
+
+  const handleCancelRoleChange = () => {
+    setShowConfirmation(false);
+    setSelectedRole('');
+  };
+
+  // Handle review sort change
+  const handleReviewSortChange = (value: string | string[] | null) => {
+    if (typeof value === 'string') {
+      setReviewSortOrder(value);
+    }
+  };
+
+  const roleOptions = [
+    { label: 'Student', value: 'student' },
+    { label: 'Coach', value: 'coach' },
+    { label: 'Course Creator', value: 'course-creator' },
+    { label: 'Admin', value: 'admin' },
+  ];
+
+  const reviewSortOptions = [
+    { label: 'Highest Rating', value: 'highest' },
+    { label: 'Lowest Rating', value: 'lowest' },
+  ];
+
   return (
-    <div className="flex flex-col space-y-5 px-30">
-      <div>
-        <h1>{t('title')}</h1>
-        <p>{t('description')}</p>
+    <div className="flex flex-col space-y-5">
+      {/* Hero Section with Personal & Professional Profile */}
+      <div className="flex flex-col gap-6 ">
+        <div className="flex flex-row gap-7 items-start">
+          <UserAvatar
+            size="xLarge"
+            imageUrl={personalProfile?.profile.avatarImage?.downloadUrl}
+            fullName={fullName}
+          />
+
+          {/* Name, Roles, and Reviews Column */}
+          <div className="flex flex-col gap-4 flex-1">
+            <div className="flex flex-row justify-between items-start gap-4">
+              {/* User Name */}
+              <h1>{fullName}</h1>
+
+              {/* Role Management Dropdown */}
+              <div className="min-w-[200px]">
+                <Dropdown
+                  type="simple"
+                  options={roleOptions}
+                  onSelectionChange={handleRoleChange}
+                  text={{ simpleText: 'Change Role' }}
+                  className="w-full"
+                />
+              </div>
+            </div>
+
+            {/* Roles and Reviews Row */}
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* Roles */}
+              {userRoles?.roles && userRoles.roles.length > 0 && (
+                <>
+                  {userRoles.roles.map((role, index) => (
+                    <Badge
+                      key={index}
+                      text={role}
+                      variant="info"
+                      size="medium"
+                    />
+                  ))}
+                </>
+              )}
+
+              {/* Reviews - Only show if there are reviews */}
+              {totalReviews > 0 && (
+                <div className="flex flex-row gap-2 items-center">
+                  <StarRating
+                    rating={averageRating}
+                    totalStars={5}
+                  />
+                  <span className="md:text-sm text-xs text-text-primary font-important">
+                    {averageRating.toFixed(1)}
+                  </span>
+                  <span className="sm:text-xs text-[10px] text-text-secondary font-important">
+                    ({totalReviews})
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Personal Profile Information */}
+        <div className="flex flex-col gap-3 border-t border-card-stroke pt-4">
+          <h4 className="text-text-primary font-semibold">Personal Information</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <p className="text-sm text-text-secondary">Name</p>
+              <p className="text-text-primary">{personalProfile?.profile.name || '-'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-text-secondary">Surname</p>
+              <p className="text-text-primary">{personalProfile?.profile.surname || '-'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-text-secondary">Email</p>
+              <p className="text-text-primary">{personalProfile?.profile.email || '-'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-text-secondary">Phone</p>
+              <p className="text-text-primary">{personalProfile?.profile.phone || '-'}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Professional Profile Information - Only for coaches and above */}
+        {isCoachOrHigher && professionalProfile && (
+          <div className="flex flex-col gap-3 border-t border-card-stroke pt-4">
+            <h4 className="text-text-primary font-semibold">Professional Information</h4>
+            <div className="flex flex-col gap-4">
+              <div>
+                <p className="text-sm text-text-secondary">Professional Bio</p>
+                <p className="text-text-primary">{professionalProfile?.profile.bio || '-'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-text-secondary">Skills</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {professionalProfile?.profile.skills && professionalProfile.profile.skills.length > 0 ? (
+                    professionalProfile.profile.skills.map((skill, index) => (
+                      <Badge key={index} text={skill.name} variant="primary" size="small" />
+                    ))
+                  ) : (
+                    <p className="text-text-primary">-</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Features from Notion:
-        - Personal Profile
-        - Professional Profile
-        - Student Courses
-        - Coach Courses
-        - Coach Reviews
-        - User Roles Management
-      */}
+      {/* Courses Section */}
+      {studentCourses && studentCourses.courses && studentCourses.courses.length > 0 && (
+        <div className="flex flex-col gap-4">
+          {/* Section Header */}
+          <div className="flex flex-row justify-between items-center">
+            <h3>Courses</h3>
+            <Button
+              text="View All"
+              variant="secondary"
+              size="medium"
+              onClick={() => {}}
+            />
+          </div>
 
-      {/* Sections to implement:
-        - {t('personalProfile')}
-        - {t('professionalProfile')}
-        - {t('studentCourses')}
-        - {t('coachCourses')}
-        - {t('coachReviews')}
-        - {t('roles')}
-      */}
+          {/* Course Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {studentCourses.courses.map((course, index) => {
+              const language = course.languages.map((each) => ({ name: each.name, code: each.code }));
+
+              return (
+                <CourseCard
+                  key={course.id}
+                  userType="student"
+                  reviewCount={0}
+                  locale={currentLocale}
+                  language={language[0]}
+                  course={course}
+                  progress={0}
+                  onBegin={() => console.log('Begin course:', course.title)}
+                  onResume={() => console.log('Resume course:', course.title)}
+                  onReview={() => console.log('Review course:', course.title)}
+                  onDetails={() => console.log('View details:', course.title)}
+                  onClickUser={() => console.log('View author:', course.author?.name)}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Coach Courses Section - Only for coaches and above */}
+      {isCoachOrHigher && coachCourses && coachCourses.courses && coachCourses.courses.length > 0 && (
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-row justify-between items-center">
+            <h3>Coach Courses</h3>
+            <Button
+              text="View All"
+              variant="secondary"
+              size="medium"
+              onClick={() => console.log('View all coach courses')}
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {coachCourses.courses.map((course, index) => {
+              const language = course.languages.map((each) => ({ name: each.name, code: each.code }));
+
+              return (
+                <CourseCard
+                  key={index}
+                  userType="course_creator"
+                  reviewCount={0}
+                  locale={currentLocale}
+                  language={language[0]}
+                  course={course}
+                  creatorStatus={"draft"}
+                  sessions={course.coachingSessionCount}
+                  sales={course.salesCount || 0}
+                  onEdit={() => console.log('Edit course:')}
+                  onClickUser={() => console.log('View author:')}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Coach Reviews Section - Only for coaches and above */}
+      {isCoachOrHigher && coachReviews && coachReviews.reviews && coachReviews.reviews.length > 0 && (
+        <div className="flex flex-col gap-4">
+          {/* Section Header with Sort Dropdown */}
+          <div className="flex flex-row justify-between items-center">
+            <h3>Coach Reviews</h3>
+            <div className="w-48">
+              <Dropdown
+                type="simple"
+                options={reviewSortOptions}
+                onSelectionChange={handleReviewSortChange}
+                text={{ simpleText: 'Sort by Rating' }}
+                className="w-full"
+              />
+            </div>
+          </div>
+
+          {/* Reviews List */}
+          <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-1 grid-cols-1">
+            {sortedReviews.map((review, index) => {
+              const startTime = new Date(review.coachingSession.startTime);
+              const endTime = new Date(review.coachingSession.endTime);
+              const timeRange = `${startTime.toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit' })} - ${endTime.toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit' })}`;
+
+              return (
+                <CoachReviewCard
+                  key={index}
+                  locale={currentLocale}
+                  rating={review.rating || 0}
+                  reviewText={review.notes || ''}
+                  reviewerAvatar={review.student.avatarImage?.downloadUrl}
+                  reviewerName={`${review.student.name} ${review.student.surname}`}
+                  workshopTitle={review.coachingSession.coachingOfferingTitle}
+                  date={startTime}
+                  time={timeRange}
+                  courseTitle={review.course?.title || 'No Course'}
+                  courseImage={review.course?.image?.downloadUrl || ''}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal for Role Changes */}
+      {showConfirmation && (
+        <ConfirmationModal
+          locale={currentLocale}
+          title="Confirm Role Change"
+          message={`Are you sure you want to change this user's role to: ${selectedRole}? This action will modify the user's permissions.`}
+          confirmText="Confirm"
+          type="decline"
+          isOpen={showConfirmation}
+          onConfirm={handleConfirmRoleChange}
+          onClose={handleCancelRoleChange}
+        />
+      )}
     </div>
   );
 }
