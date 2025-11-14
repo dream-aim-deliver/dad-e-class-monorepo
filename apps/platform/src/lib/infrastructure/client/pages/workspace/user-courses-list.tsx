@@ -15,6 +15,7 @@ import {
     DefaultLoading,
     DefaultNotFound,
     StudentCourseCard,
+    ReviewDialog,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -37,6 +38,34 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     const paginationTranslations = useTranslations(
         'components.paginationButton',
     );
+
+    // State for review modal - declared early to avoid conditional hook calls
+    const [reviewModalOpen, setReviewModalOpen] = useState(false);
+    const [selectedCourseForReview, setSelectedCourseForReview] = useState<{
+        courseSlug: string;
+        courseTitle: string;
+    } | null>(null);
+    const [reviewErrorMessage, setReviewErrorMessage] = useState<string | undefined>(undefined);
+
+    const utils = trpc.useUtils();
+
+    // TRPC mutation for creating review
+    const createReviewMutation = trpc.createCourseReview.useMutation({
+        onMutate: () => {
+            setReviewErrorMessage(undefined);
+        },
+        onSuccess: () => {
+            setReviewErrorMessage(undefined);
+            setReviewModalOpen(false);
+            setSelectedCourseForReview(null);
+            // Invalidate queries to refresh course list
+            utils.listUserCourses.invalidate({});
+        },
+        onError: (error) => {
+            setReviewErrorMessage(error.message);
+        }
+    });
+
     // Handle authentication redirect in useEffect to prevent infinite re-renders
     useEffect(() => {
         if (sessionStatus !== 'authenticated' || session == null) {
@@ -113,6 +142,21 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
 
     const onClickUser = (username: string) => {
         router.push(`/coaches/${username}`);
+    };
+
+    const onReviewCourse = (courseSlug: string, courseTitle: string) => {
+        setSelectedCourseForReview({ courseSlug, courseTitle });
+        setReviewModalOpen(true);
+    };
+
+    const handleReviewSubmit = (rating: number, review: string) => {
+        if (!selectedCourseForReview) return;
+
+        createReviewMutation.mutate({
+            courseSlug: selectedCourseForReview.courseSlug,
+            rating,
+            review,
+        });
     };
 
     return (
@@ -213,6 +257,8 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 progress={course.progress ?? 0}
                                 onBegin={() => onCourseVisit(course.slug || '')}
                                 onResume={() => onCourseVisit(course.slug || '')}
+                                onReview={() => onReviewCourse(course.slug || '', course.title || '')}
+                                onDetails={() => onCourseVisit(course.slug || '')}
                                 onClickUser={() =>
                                     onClickUser(course.author?.username || '')
                                 }
@@ -228,6 +274,21 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                     onClick={handleLoadMore}
                     size="medium"
                     className="pt-10"
+                />
+            )}
+
+            {/* Review Modal */}
+            {selectedCourseForReview && (
+                <ReviewDialog
+                    isOpen={reviewModalOpen}
+                    onOpenChange={setReviewModalOpen}
+                    modalType="course"
+                    onSubmit={handleReviewSubmit}
+                    onClose={() => setReviewModalOpen(false)}
+                    locale={locale}
+                    isLoading={createReviewMutation.isPending}
+                    isError={createReviewMutation.isError}
+                    errorMessage={reviewErrorMessage}
                 />
             )}
         </div>

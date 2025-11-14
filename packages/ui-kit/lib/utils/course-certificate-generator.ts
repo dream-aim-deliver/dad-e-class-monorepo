@@ -158,7 +158,9 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
                     logo.onload = resolve;
                     logo.onerror = () => resolve(null); // Don't fail if logo doesn't load
                     setTimeout(() => resolve(null), 3000);
-                }).catch(() => {});
+                }).catch(() => {
+                    // Intentionally ignore errors when loading logo
+                });
 
                 if (logo.complete && logo.naturalHeight !== 0) {
                     const logoSize = 15;
