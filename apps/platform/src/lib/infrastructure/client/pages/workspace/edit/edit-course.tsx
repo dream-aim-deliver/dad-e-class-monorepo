@@ -408,15 +408,13 @@ function EditCourseLayout({
                 onSave={onSave}
                 disablePreview={
                     isEdited ||
-                    isSaving ||
-                    !!(activeTab === TabTypes.CourseContent && courseStatus && courseStatus !== 'draft')
+                    isSaving
                 }
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}
                 locale={locale}
                 roles={roles}
                 slug={slug}
-                isReadOnlyContent={activeTab === TabTypes.CourseContent && (courseStatus === 'live' || courseStatus === 'archived')}
             />
             <Tabs.Root defaultTab={TabTypes.General} onValueChange={onTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
@@ -632,9 +630,7 @@ function EditCourseTabContent({
                 className={tabContentClass}
             >
                 {isPreviewing && <EnrolledCoursePreview courseSlug={slug} />}
-                {!isPreviewing && courseStatus === 'live' && <EnrolledCoursePreview courseSlug={slug} />}
-                {!isPreviewing && courseStatus === 'archived' && <EnrolledCoursePreview courseSlug={slug} />}
-                {!isPreviewing && (courseStatus === 'draft' || !courseStatus) && (
+                {!isPreviewing && (
                     <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
                         <EditCourseStructure
                             slug={slug}
