@@ -60,7 +60,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
             // @ts-ignore - Type mismatch between TRPC response wrapper and presenter input
             presenter.present(coursesResponse, coursesViewModel);
         }
-    }, [coursesResponse, presenter, coursesViewModel]);
+    }, [coursesResponse, presenter]);
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default' || !coursesViewModel.data) {
