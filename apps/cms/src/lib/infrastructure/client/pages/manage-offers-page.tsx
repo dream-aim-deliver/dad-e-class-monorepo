@@ -13,8 +13,6 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { useSession } from 'next-auth/react';
 import { useContentLocale } from '../hooks/use-platform-translations';
-
-import { Button } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListOffersPagePackagesShortPresenter } from '../hooks/use-list-offers-page-packages-short-presenter';
 import { useListPackagesPresenter } from '../hooks/use-list-packages-presenter';

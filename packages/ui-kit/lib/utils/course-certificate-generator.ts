@@ -2,6 +2,7 @@ import jsPDF from 'jspdf';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { slateToPlainText } from '../components/rich-text-element/serializer';
 import { formatCertificateDate } from './format-utils';
+import { ICON_AWARDED_SVG } from './certificate-assets';
 
 /**
  * Interface for module in course summary
@@ -30,6 +31,12 @@ export interface CertificateData {
     platformFooterContent?: string;
     courseSummary: ModuleSummary[];
     locale?: TLocale;
+    /**
+     * Optional URL to certificate template background image (JPG or PNG).
+     * If not provided, uses default styled background.
+     * For bundled templates, provide the full URL path to the asset.
+     */
+    certificateTemplateUrl?: string;
 }
 
 /**
@@ -103,195 +110,306 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
         // Set up document dimensions
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-        const centerX = pageWidth / 2;
         const margin = 20;
-        let currentY = 25;
 
-        // Set background color (card-stroke: #27272A - dark gray/blue)
-        pdf.setFillColor(39, 39, 42); // RGB for #27272A
-        pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+        // Define 2-column layout: left for certificate card, right for course details
+        const leftColumnWidth = (pageWidth - 3 * margin) * 0.45; // 45% for certificate card
+        const rightColumnWidth = (pageWidth - 3 * margin) * 0.55; // 55% for course details
+        const leftColumnX = margin;
+        const rightColumnX = margin + leftColumnWidth + margin;
 
-        // Add certificate border (white)
-        pdf.setDrawColor(255, 255, 255); // White border
-        pdf.setLineWidth(2);
-        pdf.rect(10, 10, pageWidth - 20, pageHeight - 20);
+        // Helper function to add page setup with solid background color
+        const setupPage = () => {
+            // Add solid background color matching Tailwind color-base-neutral-950 (#0C0A09)
+            pdf.setFillColor(12, 10, 9); // RGB for #0C0A09
+            pdf.rect(0, 0, pageWidth, pageHeight, 'F'); // Fill entire page
+            pdf.setTextColor(255, 255, 255); // White text for visibility
+        };
 
-        // Add inner decorative border (white)
-        pdf.setLineWidth(0.5);
-        pdf.rect(15, 15, pageWidth - 30, pageHeight - 30);
+        // Setup first page
+        setupPage();
 
-        // Set text color to base-white (#FFFFFF)
-        pdf.setTextColor(255, 255, 255);
+        // LEFT COLUMN: Certificate Card (centered vertically)
+        const drawCertificateCard = async (startY: number) => {
+            const cardX = leftColumnX;
+            const cardWidth = leftColumnWidth;
+            const cardPadding = 15;
 
-        // Certificate title
-        pdf.setFontSize(28);
-        pdf.setFont('Nunito', 'bold');
-        pdf.text(t.certificateTitle, centerX, currentY, { align: 'center' });
-        currentY += 10;
+            // Draw card background with fill and border
+            const cardHeight = 140;
+            const cardY = startY;
 
-        // Decorative line under title
-        pdf.setLineWidth(1);
-        pdf.line(centerX - 60, currentY, centerX + 60, currentY);
-        currentY += 15;
+            // Card background - card-fill (#1C1917)
+            pdf.setFillColor(28, 25, 23); // RGB for #1C1917
+            pdf.roundedRect(cardX, cardY, cardWidth, cardHeight, 3, 3, 'F');
 
-        // "This is to certify that" text
-        pdf.setFontSize(12);
-        pdf.setFont('Nunito', 'normal');
-        pdf.text(t.certifyThat, centerX, currentY, { align: 'center' });
-        currentY += 10;
-
-        // Student name (larger, bold)
-        pdf.setFontSize(18);
-        pdf.setFont('Nunito', 'bold');
-        pdf.text(data.studentName, centerX, currentY, { align: 'center' });
-        currentY += 10;
-
-        // "has successfully completed" text
-        pdf.setFontSize(12);
-        pdf.setFont('Nunito', 'normal');
-        pdf.text(t.hasCompleted, centerX, currentY, { align: 'center' });
-        currentY += 10;
-
-        // Course title (larger, bold)
-        pdf.setFontSize(16);
-        pdf.setFont('Nunito', 'bold');
-        const courseTitleLines = pdf.splitTextToSize(data.courseTitle, pageWidth - 2 * margin);
-        pdf.text(courseTitleLines, centerX, currentY, { align: 'center' });
-        currentY += courseTitleLines.length * 7;
-
-        // Course description (if provided)
-        if (data.courseDescription) {
-            currentY += 5;
-            pdf.setFontSize(10);
-            pdf.setFont('Nunito', 'italic');
-            // Convert SlateJS to plain text if needed
-            const descriptionText = slateToPlainText(data.courseDescription);
-            const descriptionLines = pdf.splitTextToSize(descriptionText, pageWidth - 2 * margin);
-            pdf.text(descriptionLines, centerX, currentY, { align: 'center' });
-            currentY += descriptionLines.length * 5;
-        }
-
-        currentY += 5;
-
-        // Completion date
-        pdf.setFontSize(11);
-        pdf.setFont('Nunito', 'normal');
-        // Format the date for display
-        const formattedDate = formatCertificateDate(data.completionDate, locale);
-        pdf.text(`${t.completedOn}: ${formattedDate}`, centerX, currentY, { align: 'center' });
-
-        // Add page 2 for course structure if there are modules
-        if (data.courseSummary && data.courseSummary.length > 0) {
-            pdf.addPage();
-            pdf.setFillColor(39, 39, 42);
-            pdf.rect(0, 0, pageWidth, pageHeight, 'F');
-            pdf.setDrawColor(255, 255, 255);
-            pdf.setLineWidth(2);
-            pdf.rect(10, 10, pageWidth - 20, pageHeight - 20);
+            // Card border - card-stroke (#292524)
+            pdf.setDrawColor(41, 37, 36); // RGB for #292524
             pdf.setLineWidth(0.5);
-            pdf.rect(15, 15, pageWidth - 30, pageHeight - 30);
-            pdf.setTextColor(255, 255, 255);
+            pdf.roundedRect(cardX, cardY, cardWidth, cardHeight, 3, 3, 'S');
 
-            currentY = 30;
+            let cardCurrentY = cardY + cardPadding;
 
-            // Course Structure Section
+            // Platform logo (if provided) at top
+            if (data.platformLogoUrl) {
+                const logo = new Image();
+                logo.src = data.platformLogoUrl;
+                await new Promise((resolve, reject) => {
+                    logo.onload = resolve;
+                    logo.onerror = () => resolve(null); // Don't fail if logo doesn't load
+                    setTimeout(() => resolve(null), 3000);
+                }).catch(() => {});
+
+                if (logo.complete && logo.naturalHeight !== 0) {
+                    const logoSize = 15;
+                    pdf.addImage(logo, 'PNG', cardX + (cardWidth / 2) - (logoSize / 2), cardCurrentY, logoSize, logoSize);
+                    cardCurrentY += logoSize + 5;
+                }
+            }
+
+            // Certificate title
             pdf.setFontSize(16);
             pdf.setFont('Nunito', 'bold');
-            pdf.text(t.courseStructure, centerX, currentY, { align: 'center' });
-            currentY += 10;
+            pdf.text(t.certificateTitle, cardX + cardWidth / 2, cardCurrentY, { align: 'center', maxWidth: cardWidth - 2 * cardPadding });
+            cardCurrentY += 12;
 
-            // Decorative line
-            pdf.setLineWidth(0.5);
-            pdf.line(margin, currentY, pageWidth - margin, currentY);
-            currentY += 10;
+            // "This is to certify that" text
+            pdf.setFontSize(9);
+            pdf.setFont('Nunito', 'normal');
+            pdf.text(t.certifyThat, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
+            cardCurrentY += 10;
 
-            // Render modules and lessons
-            pdf.setFontSize(10);
-            const leftMargin = margin + 5;
-            const maxYBeforeFooter = pageHeight - 40; // Reserve space for footer with page numbers
+            // Student name
+            pdf.setFontSize(18);
+            try {
+                pdf.setFont('Nunito', 'normal');
+            } catch {
+                // Fallback to Times italic for script-like appearance
+                pdf.setFont('times', 'italic');
+            }
+            const studentNameLines = pdf.splitTextToSize(data.studentName, cardWidth - 2 * cardPadding);
+            pdf.text(studentNameLines, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
+            cardCurrentY += studentNameLines.length * 7 + 8;
 
+            // Reset to regular font
+            pdf.setFont('Nunito', 'normal');
+
+            // "for successfully completing the course"
+            pdf.setFontSize(9);
+            pdf.setFont('Nunito', 'normal');
+            pdf.text(t.hasCompleted, cardX + cardWidth / 2, cardCurrentY, { align: 'center', maxWidth: cardWidth - 2 * cardPadding });
+            cardCurrentY += 10;
+
+            // Course title in quotes
+            pdf.setFontSize(11);
+            pdf.setFont('Nunito', 'bold');
+            const courseTitleLines = pdf.splitTextToSize(`"${data.courseTitle}"`, cardWidth - 2 * cardPadding);
+            pdf.text(courseTitleLines, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
+            cardCurrentY += courseTitleLines.length * 5 + 5;
+
+            // Awarded badge/seal - Draw a gold star/seal badge
+            const badgeSize = 28;
+            const badgeCenterX = cardX + cardWidth / 2;
+            const badgeCenterY = cardCurrentY + badgeSize / 2;
+
+            // Draw outer star/seal shape using a circle for simplicity
+            // Outer gold ring
+            pdf.setFillColor(220, 190, 128); // Light gold #DCBE80
+            pdf.circle(badgeCenterX, badgeCenterY, badgeSize / 2, 'F');
+
+            // Middle ring (darker gold)
+            pdf.setFillColor(197, 147, 44); // Dark gold #C5932C
+            pdf.circle(badgeCenterX, badgeCenterY, (badgeSize / 2) - 1.5, 'F');
+
+            // Inner circle (light gold again)
+            pdf.setFillColor(220, 190, 128); // Light gold #DCBE80
+            pdf.circle(badgeCenterX, badgeCenterY, (badgeSize / 2) - 3, 'F');
+
+            // Add decorative border lines
+            pdf.setDrawColor(197, 147, 44); // Dark gold
+            pdf.setLineWidth(0.3);
+            pdf.circle(badgeCenterX, badgeCenterY, badgeSize / 2, 'S');
+            pdf.circle(badgeCenterX, badgeCenterY, (badgeSize / 2) - 1.5, 'S');
+            pdf.circle(badgeCenterX, badgeCenterY, (badgeSize / 2) - 3, 'S');
+
+            // "AWARDED" text
+            pdf.setTextColor(197, 147, 44); // Dark gold text
+            pdf.setFontSize(6);
+            pdf.setFont('Nunito', 'bold');
+            pdf.text('AWARDED', badgeCenterX, badgeCenterY - 3, { align: 'center' });
+
+            // Year text
+            const currentYear = new Date().getFullYear();
+            pdf.setFontSize(9);
+            pdf.setFont('Nunito', 'bold');
+            pdf.text(currentYear.toString(), badgeCenterX, badgeCenterY + 4, { align: 'center' });
+
+            // Reset text color to white
+            pdf.setTextColor(255, 255, 255);
+
+            cardCurrentY += badgeSize + 7;
+
+            // Certificate ID and Awarded date at bottom of card
+            pdf.setFontSize(7);
+            pdf.setFont('Nunito', 'normal');
+
+            // Certificate ID (left aligned within card)
+            const certIdText = `${t.certificateId || 'Certificate ID'}`;
+            const certIdValue = `CER-${data.studentUsername}-${data.courseSlug}`.substring(0, 20);
+            pdf.text(certIdText, cardX + cardPadding, cardCurrentY);
+            pdf.setFont('Nunito', 'bold');
+            pdf.text(certIdValue, cardX + cardPadding, cardCurrentY + 4);
+
+            // Awarded date (right aligned within card)
+            pdf.setFont('Nunito', 'normal');
+            const formattedDate = formatCertificateDate(data.completionDate, locale);
+            const awardedText = `${t.completedOn}`;
+            pdf.text(awardedText, cardX + cardWidth - cardPadding, cardCurrentY, { align: 'right' });
+            pdf.setFont('Nunito', 'bold');
+            pdf.text(formattedDate, cardX + cardWidth - cardPadding, cardCurrentY + 4, { align: 'right' });
+
+            // Platform name at the very bottom (centered)
+            cardCurrentY += 10;
+            pdf.setFontSize(6);
+            pdf.setFont('Nunito', 'normal');
+            pdf.setTextColor(180, 180, 180); // Gray text
+            const platformFooterText = data.platformFooterContent
+                ? slateToPlainText(data.platformFooterContent).substring(0, 80)
+                : data.platformName;
+            const platformLines = pdf.splitTextToSize(platformFooterText, cardWidth - 2 * cardPadding);
+            pdf.text(platformLines, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
+            pdf.setTextColor(255, 255, 255); // Reset to white
+
+            return cardY + cardHeight;
+        };
+
+        // Calculate vertical center for certificate card
+        const totalContentHeight = 140; // Approximate card height
+        const certificateStartY = (pageHeight - totalContentHeight) / 2;
+
+        // Draw certificate card on left
+        await drawCertificateCard(certificateStartY);
+
+        // RIGHT COLUMN: Course Details
+        const rightStartY = margin + 15;
+        let rightCurrentY = rightStartY;
+
+        // Course description header
+        pdf.setFontSize(11);
+        pdf.setFont('Nunito', 'bold');
+        pdf.text('Course description', rightColumnX, rightCurrentY);
+        rightCurrentY += 7;
+
+        // Course description content
+        if (data.courseDescription) {
+            pdf.setFontSize(8);
+            pdf.setFont('Nunito', 'normal');
+            const descriptionText = slateToPlainText(data.courseDescription);
+            // Limit to ~280 characters as per design
+            const limitedDescription = descriptionText.substring(0, 280);
+            const descriptionLines = pdf.splitTextToSize(limitedDescription, rightColumnWidth);
+            pdf.text(descriptionLines, rightColumnX, rightCurrentY);
+            rightCurrentY += descriptionLines.length * 3.5 + 8;
+        }
+
+        // Course modules
+        const maxYBeforeFooter = pageHeight - 25;
+
+        if (data.courseSummary && data.courseSummary.length > 0) {
             for (const module of data.courseSummary) {
                 // Check if we need a new page
-                if (currentY > maxYBeforeFooter) {
+                if (rightCurrentY > maxYBeforeFooter - 20) {
+                    // Add footer to current page
+                    const currentPage = pdf.getCurrentPageInfo().pageNumber;
+                    pdf.setFontSize(8);
+                    pdf.setFont('Nunito', 'normal');
+                    pdf.text(`Pag. ${currentPage}/${pdf.getNumberOfPages() + 1}`, pageWidth / 2, pageHeight - 15, { align: 'center' });
+
+                    // Add new page
                     pdf.addPage();
-                    pdf.setFillColor(39, 39, 42);
-                    pdf.rect(0, 0, pageWidth, pageHeight, 'F');
-                    pdf.setDrawColor(255, 255, 255);
-                    pdf.setLineWidth(2);
-                    pdf.rect(10, 10, pageWidth - 20, pageHeight - 20);
-                    pdf.setLineWidth(0.5);
-                    pdf.rect(15, 15, pageWidth - 30, pageHeight - 30);
-                    pdf.setTextColor(255, 255, 255);
-                    currentY = 30;
+                    setupPage();
+
+                    // Redraw certificate card on left (same position)
+                    await drawCertificateCard(certificateStartY);
+
+                    // Reset right column position
+                    rightCurrentY = rightStartY;
                 }
 
                 // Module title
+                pdf.setFontSize(9);
                 pdf.setFont('Nunito', 'bold');
                 const moduleText = `${t.module} ${module.moduleNumber}: ${module.moduleTitle}`;
-                pdf.text(moduleText, leftMargin, currentY);
-                currentY += 6;
+                const moduleLines = pdf.splitTextToSize(moduleText, rightColumnWidth);
+                pdf.text(moduleLines, rightColumnX, rightCurrentY);
+                rightCurrentY += moduleLines.length * 3.5 + 4;
 
                 // Lesson titles
+                pdf.setFontSize(8);
                 pdf.setFont('Nunito', 'normal');
                 for (const lessonTitle of module.lessonTitles) {
-                    if (currentY > maxYBeforeFooter) {
+                    if (rightCurrentY > maxYBeforeFooter - 10) {
+                        // Add footer to current page
+                        const currentPage = pdf.getCurrentPageInfo().pageNumber;
+                        pdf.setFontSize(8);
+                        pdf.setFont('Nunito', 'normal');
+                        pdf.text(`Pag. ${currentPage}/${pdf.getNumberOfPages() + 1}`, pageWidth / 2, pageHeight - 15, { align: 'center' });
+
+                        // Add new page
                         pdf.addPage();
-                        pdf.setFillColor(39, 39, 42);
-                        pdf.rect(0, 0, pageWidth, pageHeight, 'F');
-                        pdf.setDrawColor(255, 255, 255);
-                        pdf.setLineWidth(2);
-                        pdf.rect(10, 10, pageWidth - 20, pageHeight - 20);
-                        pdf.setLineWidth(0.5);
-                        pdf.rect(15, 15, pageWidth - 30, pageHeight - 30);
-                        pdf.setTextColor(255, 255, 255);
-                        currentY = 30;
+                        setupPage();
+
+                        // Redraw certificate card on left
+                        await drawCertificateCard(certificateStartY);
+
+                        // Reset right column position
+                        rightCurrentY = rightStartY;
+
+                        // Reset font after page break
+                        pdf.setFontSize(8);
+                        pdf.setFont('Nunito', 'normal');
                     }
 
-                    pdf.text(`  • ${lessonTitle}`, leftMargin + 5, currentY);
-                    currentY += 5;
+                    const lessonLines = pdf.splitTextToSize(lessonTitle, rightColumnWidth - 5);
+                    pdf.text(lessonLines, rightColumnX, rightCurrentY);
+                    rightCurrentY += lessonLines.length * 3.5;
                 }
-                currentY += 3; // Extra space between modules
+
+                // Add divider line after module (except if we're near the bottom)
+                if (rightCurrentY < maxYBeforeFooter - 15) {
+                    rightCurrentY += 5; // Space before divider
+                    pdf.setDrawColor(100, 100, 100); // Gray color for divider
+                    pdf.setLineWidth(0.2);
+                    pdf.line(rightColumnX, rightCurrentY, rightColumnX + rightColumnWidth, rightCurrentY);
+                    rightCurrentY += 5; // Space after divider
+                } else {
+                    rightCurrentY += 5; // Just add space if no room for divider
+                }
             }
         }
 
-        // Add footer on all pages
+        // Add footer with platform footer content (centered at bottom)
         const pageCount = pdf.getNumberOfPages();
         for (let i = 1; i <= pageCount; i++) {
             pdf.setPage(i);
 
-            // Platform name and footer content
-            pdf.setFontSize(9);
-            pdf.setFont('Nunito', 'italic');
-            let footerY = pageHeight - 20;
+            const footerY = pageHeight - 12;
 
-            if (i === 1) {
-                // Page 1: Only platform footer content
-                if (data.platformFooterContent) {
-                    // Convert SlateJS to plain text if needed
-                    const footerText = slateToPlainText(data.platformFooterContent);
-                    const footerLines = pdf.splitTextToSize(footerText, pageWidth - 2 * margin);
-                    pdf.text(footerLines, centerX, footerY, { align: 'center' });
-                } else {
-                    pdf.text(data.platformName, centerX, footerY, { align: 'center' });
-                }
-            } else {
-                // Page 2+: Platform footer + page numbers
-                if (data.platformFooterContent) {
-                    // Convert SlateJS to plain text if needed
-                    const footerText = slateToPlainText(data.platformFooterContent);
-                    const footerLines = pdf.splitTextToSize(footerText, pageWidth - 2 * margin);
-                    pdf.text(footerLines, centerX, footerY, { align: 'center' });
-                    footerY += footerLines.length * 4 + 3;
-                } else {
-                    pdf.text(data.platformName, centerX, footerY, { align: 'center' });
-                    footerY += 6;
-                }
-
-                // Add page numbers on pages 2+
-                pdf.setFontSize(8);
-                pdf.setFont('Nunito', 'normal');
-                pdf.text(`${i} / ${pageCount}`, centerX, footerY, { align: 'center' });
+            // Platform footer content (if available) - smaller text at bottom
+            if (data.platformFooterContent) {
+                pdf.setFontSize(7);
+                pdf.setFont('Nunito', 'italic');
+                pdf.setTextColor(180, 180, 180); // Lighter gray
+                const footerText = slateToPlainText(data.platformFooterContent);
+                const footerLines = pdf.splitTextToSize(footerText, pageWidth - 2 * margin - 40);
+                pdf.text(footerLines, pageWidth / 2, footerY - 4, { align: 'center' });
             }
+
+            // Page numbers on all pages (centered) - "Pag. 1/2" format
+            pdf.setFontSize(8);
+            pdf.setFont('Nunito', 'normal');
+            pdf.setTextColor(255, 255, 255); // White
+            pdf.text(`Pag. ${i}/${pageCount}`, pageWidth / 2, footerY, { align: 'center' });
         }
 
         // Generate filename with student username and course slug (already sanitized)

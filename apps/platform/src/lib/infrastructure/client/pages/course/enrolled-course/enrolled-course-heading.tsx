@@ -10,12 +10,14 @@ import {
     IconTrashAlt,
     StarRating,
     ReviewCard,
-    generateCertificatePDF,
+    PaginatedCertificate,
+    PaginatedCertificateHandle,
     DefaultError,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
+import html2pdf from 'html2pdf.js';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/cms-client';
 
@@ -63,27 +65,49 @@ export default function EnrolledCourseHeading({
     // State for certificate error
     const [certificateError, setCertificateError] = useState<string | null>(null);
 
-    // Handle download certificate
+    // Ref for the PaginatedCertificate component
+    const certificateRef = useRef<PaginatedCertificateHandle>(null);
+
+    // Handle download certificate using PaginatedCertificate component
     const handleDownloadCertificate = async () => {
-        if (certificateDataViewModel?.mode === 'default') {
+        if (certificateDataViewModel?.mode === 'default' && certificateDataViewModel.data?.certificateData) {
             try {
                 setCertificateError(null); // Clear any previous errors
-                const certificateData = certificateDataViewModel.data.certificateData;
 
-                // Map the certificate data to the expected format
-                await generateCertificatePDF({
-                    studentName: `${certificateData.studentName} ${certificateData.studentSurname}`,
-                    studentUsername: certificateData.studentUsername,
-                    courseTitle: certificateData.courseName,
-                    courseSlug,
-                    courseDescription: certificateData.courseDescription,
-                    completionDate: certificateData.awardedOn,
-                    platformName: certificateData.platformName,
-                    platformLogoUrl: certificateData.platformLogoUrl,
-                    platformFooterContent: certificateData.platformFooterContent,
-                    courseSummary: certificateData.courseSummary,
-                    locale: locale,
-                });
+                // Get the certificate DOM element
+                const element = certificateRef.current?.getElement();
+                if (!element) {
+                    throw new Error('Certificate component not ready');
+                }
+
+                const certData = certificateDataViewModel.data.certificateData;
+
+                // Generate filename
+                const sanitizedStudentName = certData.studentUsername;
+                const sanitizedCourseTitle = courseSlug;
+                const filename = `Certificate_${sanitizedStudentName}_${sanitizedCourseTitle}.pdf`;
+
+                // Configure html2pdf options
+                const options = {
+                    margin: 0,
+                    filename: filename,
+                    image: { type: 'jpeg' as const, quality: 0.98 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#0C0A09'
+                    },
+                    jsPDF: {
+                        unit: 'mm' as const,
+                        format: 'a4' as const,
+                        orientation: 'landscape' as const
+                    },
+                    pagebreak: { mode: ['css', 'legacy'] as const }
+                };
+
+                // Generate and download PDF
+                await html2pdf().set(options).from(element).save();
             } catch (error) {
                 setCertificateError(typeof error === 'string' ? error : 'Failed to generate certificate');
             }
@@ -188,6 +212,32 @@ export default function EnrolledCourseHeading({
     if (courseViewModel.mode !== 'default') return null;
 
     return (
+        <>
+            {/* Hidden PaginatedCertificate component for PDF generation */}
+            {certificateDataViewModel?.mode === 'default' && certificateDataViewModel.data?.certificateData && (
+                <div className="fixed -left-[9999px] top-0">
+                    <PaginatedCertificate
+                        ref={certificateRef}
+                        studentName={`${certificateDataViewModel.data.certificateData.studentName} ${certificateDataViewModel.data.certificateData.studentSurname}`}
+                        courseTitle={certificateDataViewModel.data.certificateData.courseName}
+                        completionDate={new Date(certificateDataViewModel.data.certificateData.awardedOn).toLocaleDateString(locale, {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+                        certificateId={certificateDataViewModel.data.certificateData.certificateId}
+                        platformName={certificateDataViewModel.data.certificateData.platformName}
+                        awardedYear={new Date(certificateDataViewModel.data.certificateData.awardedOn).getFullYear().toString()}
+                        platformLogoUrl={certificateDataViewModel.data.certificateData.platformLogoUrl}
+                        courseDescription={certificateDataViewModel.data.certificateData.courseDescription}
+                        courseSummary={certificateDataViewModel.data.certificateData.courseSummary}
+                        showBadge={true}
+                        className=""
+                        locale={locale}
+                    />
+                </div>
+            )}
+
         <div className="flex flex-col space-y-4">
             {/* Title and Buttons Row */}
             <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -277,5 +327,6 @@ export default function EnrolledCourseHeading({
 
             </div>
         </div>
+        </>
     );
 }

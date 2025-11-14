@@ -10,14 +10,16 @@ import { trpc } from '../trpc/cms-client';
 import { useGetCourseStatusPresenter } from '../hooks/use-get-course-status-presenter';
 import { useGetCourseCertificateDataPresenter } from '../hooks/use-get-course-certificate-data-presenter';
 import { useCreateCourseReviewPresenter } from '../hooks/use-create-course-review-presenter';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import html2pdf from 'html2pdf.js';
 import {
     DefaultLoading,
     DefaultError,
     DefaultNotFound,
     CourseCompletionModal,
     ReviewDialog,
-    generateCertificatePDF,
+    PaginatedCertificate,
+    PaginatedCertificateHandle,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -40,6 +42,9 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     // Add state for error message
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const [certificateError, setCertificateError] = useState<string | null>(null);
+
+    // Ref for the PaginatedCertificate component
+    const certificateRef = useRef<PaginatedCertificateHandle>(null);
 
     // State for course status
     const [courseStatusResponse] = trpc.getCourseStatus.useSuspenseQuery({
@@ -119,28 +124,46 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
         }
     }, [isLoggedIn, router]);
 
-    // Handle download certificate
+    // Handle download certificate using PaginatedCertificate component
     const handleDownloadCertificate = async () => {
-        if (certificateDataViewModel?.mode === 'default') {
-
+        if (certificateDataViewModel?.mode === 'default' && certificateDataViewModel.data?.certificateData) {
             try {
                 setCertificateError(null); // Clear any previous errors
-                const certificateData = certificateDataViewModel.data.certificateData;
 
-                // Map the certificate data to the expected format
-                await generateCertificatePDF({
-                    studentName: `${certificateData.studentName} ${certificateData.studentSurname}`,
-                    studentUsername: certificateData.studentUsername,
-                    courseTitle: certificateData.courseName,
-                    courseSlug: slug,
-                    courseDescription: certificateData.courseDescription,
-                    completionDate: certificateData.awardedOn,
-                    platformName: certificateData.platformName,
-                    platformLogoUrl: certificateData.platformLogoUrl,
-                    platformFooterContent: certificateData.platformFooterContent,
-                    courseSummary: certificateData.courseSummary,
-                    locale: locale,
-                });
+                // Get the certificate DOM element
+                const element = certificateRef.current?.getElement();
+                if (!element) {
+                    throw new Error('Certificate component not ready');
+                }
+
+                const certData = certificateDataViewModel.data.certificateData;
+
+                // Generate filename
+                const sanitizedStudentName = certData.studentUsername;
+                const sanitizedCourseTitle = slug;
+                const filename = `Certificate_${sanitizedStudentName}_${sanitizedCourseTitle}.pdf`;
+
+                // Configure html2pdf options
+                const options = {
+                    margin: 0,
+                    filename: filename,
+                    image: { type: 'jpeg' as const, quality: 0.98 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#0C0A09'
+                    },
+                    jsPDF: {
+                        unit: 'mm' as const,
+                        format: 'a4' as const,
+                        orientation: 'landscape' as const
+                    },
+                    pagebreak: { mode: ['css', 'legacy'] as const }
+                };
+
+                // Generate and download PDF
+                await html2pdf().set(options).from(element).save();
             } catch (error) {
                 setCertificateError(typeof error === 'string' ? error : 'Failed to generate certificate');
             }
@@ -195,6 +218,30 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
 
     return (
         <>
+            {/* Hidden PaginatedCertificate component for PDF generation */}
+            {certificateDataViewModel?.mode === 'default' && certificateDataViewModel.data?.certificateData && (
+                <div className="fixed -left-[9999px] top-0">
+                    <PaginatedCertificate
+                        ref={certificateRef}
+                        studentName={`${certificateDataViewModel.data.certificateData.studentName} ${certificateDataViewModel.data.certificateData.studentSurname}`}
+                        courseTitle={certificateDataViewModel.data.certificateData.courseName}
+                        completionDate={new Date(certificateDataViewModel.data.certificateData.awardedOn).toLocaleDateString(locale, {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+                        certificateId={certificateDataViewModel.data.certificateData.certificateId}
+                        platformName={certificateDataViewModel.data.certificateData.platformName}
+                        awardedYear={new Date(certificateDataViewModel.data.certificateData.awardedOn).getFullYear().toString()}
+                        platformLogoUrl={certificateDataViewModel.data.certificateData.platformLogoUrl}
+                        courseDescription={certificateDataViewModel.data.certificateData.courseDescription}
+                        courseSummary={certificateDataViewModel.data.certificateData.courseSummary}
+                        showBadge={true}
+                        className=""
+                        locale={locale}
+                    />
+                </div>
+            )}
 
             {modalState === 'completion' && courseStatusData && certificateData && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

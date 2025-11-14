@@ -14,7 +14,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachingPagePresenter } from '../hooks/use-coaching-page-presenter';
 import { useSaveCoachingPagePresenter } from '../hooks/use-save-coaching-page-presenter';

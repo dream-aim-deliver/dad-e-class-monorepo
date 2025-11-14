@@ -33,8 +33,6 @@ import { HeroSection, CarouselSection, CoachingDemandSection, HowItWorksSection 
 import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
 import { useHomePageVideoUpload } from './common/hooks/use-homepage-video-upload';
 import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
-import { useRouter } from 'next/navigation';
-import { useRequiredPlatform } from '../context/platform-context';
 
 // Static default data - moved outside component for better performance
 const DEFAULT_HOME_PAGE_DATA: viewModels.TGetHomePageSuccess = {
@@ -76,7 +74,6 @@ export default function ManageHomepage() {
 	const platformTranslations = useTranslations('pages.managePagesGeneral');
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 	const router = useRouter();
-	const { platform } = useRequiredPlatform();
 
 	// Platform context
 	const platformContext = useRequiredPlatformLocale();
