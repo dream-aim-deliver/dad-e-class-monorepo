@@ -293,3 +293,5 @@ export { AssignmentOverviewList } from './components/assignment/assignment-overv
 
 export { ProfessionalInfo } from './components/profile/professional-info';
 export { BecomeACoachForm } from './components/profile/become-a-coach-form';
+
+export { AutoPlayVideoPlayer, type AutoPlayVideoPlayerProps } from './components/auto-play-video-player';
