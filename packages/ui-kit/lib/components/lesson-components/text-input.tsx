@@ -26,15 +26,13 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== FormElementType.TextInput)
         return dictionary.components.lessons.typeValidationText;
 
-    // Student validation: Check if user has entered content when required (actual form submission)
+    // Student validation: Always check if user has entered content (actual form submission)
     if (context === 'student') {
-        if (elementInstance.required) {
-            if (
-                !elementInstance.content ||
-                elementInstance.content.trim() === ''
-            ) {
-                return dictionary.components.formRenderer.fieldRequired;
-            }
+        if (
+            !elementInstance.content ||
+            elementInstance.content.trim() === ''
+        ) {
+            return dictionary.components.formRenderer.fieldRequired;
         }
         return undefined; // Student validation passed
     }

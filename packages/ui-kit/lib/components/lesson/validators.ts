@@ -5,6 +5,7 @@ import { getValidationError as getSingleChoiceValidationError } from "../lesson-
 import { getValidationError as getMultiCheckValidationError } from "../lesson-components/multi-check";
 import { getValidationError as getTextInputValidationError } from "../lesson-components/text-input";
 import { getValidationError as getHeadingTextValidationError } from "../lesson-components/heading-lesson";
+import { getValidationError as getUploadFilesFormValidationError } from "../lesson-components/upload-files";
 import { getValidationError as getVideoValidationError } from "../course-builder-lesson-component/video";
 import { getValidationError as getImageValidationError } from "../course-builder-lesson-component/image";
 import { getValidationError as getImageGalleryValidationError } from "../course-builder-lesson-component/image-gallery";
@@ -35,5 +36,6 @@ export const validatorPerType: Record<CourseElementType | FormElementType, Eleme
     [FormElementType.MultiCheck]: getMultiCheckValidationError,
     [FormElementType.TextInput]: getTextInputValidationError,
     [FormElementType.HeadingText]: getHeadingTextValidationError,
-    [FormElementType.OneOutOfThree]: getOneOutOfThreeValidationError
+    [FormElementType.OneOutOfThree]: getOneOutOfThreeValidationError,
+    [FormElementType.UploadFiles]: getUploadFilesFormValidationError
 }
