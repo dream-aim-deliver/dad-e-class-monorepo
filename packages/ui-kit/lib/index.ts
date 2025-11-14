@@ -136,6 +136,8 @@ export * from './components/dialog';
 export { CourseForm, useCourseForm, type CourseDetailsState } from './components/course-form';
 export * from './utils/file-utils';
 export { generateCertificatePDF, type CertificateData } from './utils/course-certificate-generator';
+export { CourseCertificate, type CourseCertificateProps } from './components/course-certificate';
+export { PaginatedCertificate, type PaginatedCertificateHandle } from './components/paginated-certificate';
 
 export { LessonHeader } from './components/lesson-header';
 
