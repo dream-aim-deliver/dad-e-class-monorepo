@@ -30,7 +30,6 @@ import { getQueryClient, trpc, prefetch, HydrateClient } from '../config/trpc/cm
 import VisitorPage from '../../client/pages/course/visitor-page';
 import { createGetCourseAccessPresenter } from '../presenter/get-course-access-presenter';
 import CMSTRPCClientProviders from '../../client/trpc/cms-client-provider';
-import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 
@@ -52,11 +51,14 @@ export default async function CourseServerComponent({
     lesson,
 }: CourseServerComponentProps) {
     const courseAccessViewModel = await fetchCourseAccess(slug);
-    if (courseAccessViewModel.mode !== 'default') {
-        throw new Error(courseAccessViewModel.data.message);
-    }
 
+    // Handle all access modes (not-found, unauthenticated, etc.)
     handleAccessModes(courseAccessViewModel);
+
+    // After handleAccessModes, we can safely assume mode is 'default'
+    if (courseAccessViewModel.mode !== 'default') {
+        throw new Error('Unexpected state after handleAccessModes');
+    }
 
     const { highestRole, roles, isAssessmentCompleted } =
         courseAccessViewModel.data;
