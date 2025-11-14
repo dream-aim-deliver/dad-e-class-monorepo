@@ -147,6 +147,7 @@ export function FormComponent({
     locale,
     onFileUpload,
     courseSlug,
+    disableValidation,
 }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.UploadFiles) return null;
 
@@ -158,19 +159,21 @@ export function FormComponent({
         elementInstance.userComment || '',
     );
 
-    const validationError = getValidationError({
-        elementInstance,
-        dictionary,
-        context: 'student',
-    });
-    if (validationError) {
-        return (
-            <DefaultError
-                locale={locale}
-                title={dictionary.components.lessons.elementValidationText}
-                description={validationError}
-            />
-        );
+    if (!disableValidation) {
+        const validationError = getValidationError({
+            elementInstance,
+            dictionary,
+            context: 'coach',
+        });
+        if (validationError) {
+            return (
+                <DefaultError
+                    locale={locale}
+                    title={dictionary.components.lessons.elementValidationText}
+                    description={validationError}
+                />
+            );
+        }
     }
 
     // Update element when files or comment change

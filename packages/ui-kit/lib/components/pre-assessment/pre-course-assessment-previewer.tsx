@@ -64,6 +64,7 @@ export function PreCourseAssessmentPreviewer({
                         submitValue={(id, element) => {
                             elementProgress.current.set(id, element);
                         }}
+                        disableValidation={true}
                     />
                 );
 
@@ -76,6 +77,7 @@ export function PreCourseAssessmentPreviewer({
                         submitValue={(id, element) => {
                             elementProgress.current.set(id, element);
                         }}
+                        disableValidation={true}
                     />
                 );
 
@@ -88,6 +90,7 @@ export function PreCourseAssessmentPreviewer({
                         submitValue={(id, element) => {
                             elementProgress.current.set(id, element);
                         }}
+                        disableValidation={true}
                     />
                 );
 
@@ -100,6 +103,7 @@ export function PreCourseAssessmentPreviewer({
                         submitValue={(id, element) => {
                             elementProgress.current.set(id, element);
                         }}
+                        disableValidation={true}
                     />
                 );
 
@@ -114,6 +118,7 @@ export function PreCourseAssessmentPreviewer({
                         }}
                         onFileUpload={onFileUpload}
                         courseSlug={courseSlug}
+                        disableValidation={true}
                     />
                 );
 
