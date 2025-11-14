@@ -11,7 +11,7 @@ export interface PaginatedCertificateHandle {
   getElement: () => HTMLDivElement | null;
 }
 
-interface PaginatedCertificateProps extends CourseCertificateProps {}
+type PaginatedCertificateProps = CourseCertificateProps;
 
 export const PaginatedCertificate = forwardRef<
   PaginatedCertificateHandle,
