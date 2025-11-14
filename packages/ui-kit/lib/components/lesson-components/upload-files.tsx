@@ -27,15 +27,14 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== FormElementType.UploadFiles)
         return dictionary.components.lessons.typeValidationText;
 
-    // Student validation: Check if files are uploaded when required (actual form submission)
+    // Student validation: Always check if files are uploaded (actual form submission)
+    // Note: Comment field is optional
     if (context === 'student') {
-        if (elementInstance.required) {
-            if (
-                !elementInstance.files ||
-                elementInstance.files.length === 0
-            ) {
-                return dictionary.components.formRenderer.fieldRequired;
-            }
+        if (
+            !elementInstance.files ||
+            elementInstance.files.length === 0
+        ) {
+            return dictionary.components.formRenderer.fieldRequired;
         }
         return undefined; // Student validation passed
     }

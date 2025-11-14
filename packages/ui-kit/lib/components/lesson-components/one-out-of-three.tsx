@@ -27,15 +27,13 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== FormElementType.OneOutOfThree)
         return dictionary.components.lessons.typeValidationText;
 
-    // Student validation: Check if user has made selections when required (actual form submission)
+    // Student validation: Always check if user has made selections for all rows (actual form submission)
     if (context === 'student') {
-        if (elementInstance.required) {
-            const allRowsHaveSelection = elementInstance.data?.rows?.every(
-                (row) => row.columns.some((col) => col.selected),
-            );
-            if (!allRowsHaveSelection) {
-                return dictionary.components.formRenderer.fieldRequired;
-            }
+        const allRowsHaveSelection = elementInstance.data?.rows?.every(
+            (row) => row.columns.some((col) => col.selected),
+        );
+        if (!allRowsHaveSelection) {
+            return dictionary.components.formRenderer.fieldRequired;
         }
         return undefined;
     }

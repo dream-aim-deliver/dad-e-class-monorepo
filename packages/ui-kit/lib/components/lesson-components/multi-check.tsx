@@ -26,15 +26,13 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== FormElementType.MultiCheck)
         return dictionary.components.lessons.typeValidationText;
 
-    // Student validation: Check if user has made at least one selection when required (actual form submission)
+    // Student validation: Always check if user has made at least one selection (actual form submission)
     if (context === 'student') {
-        if (elementInstance.required) {
-            const hasSelection =
-                elementInstance.options &&
-                elementInstance.options.some((option) => option.isSelected);
-            if (!hasSelection) {
-                return dictionary.components.formRenderer.fieldRequired;
-            }
+        const hasSelection =
+            elementInstance.options &&
+            elementInstance.options.some((option) => option.isSelected);
+        if (!hasSelection) {
+            return dictionary.components.formRenderer.fieldRequired;
         }
         return undefined; // Student validation passed
     }
