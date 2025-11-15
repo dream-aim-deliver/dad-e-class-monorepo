@@ -60,7 +60,7 @@ export default async function CourseServerComponent({
         throw new Error('Unexpected state after handleAccessModes');
     }
 
-    const { highestRole, roles, isAssessmentCompleted } =
+    const { highestRole, roles, isAssessmentCompleted, course } =
         courseAccessViewModel.data;
     const highestRoleParsed = highestRole ?? 'visitor';
     validateUserRole(highestRoleParsed);
@@ -73,7 +73,8 @@ export default async function CourseServerComponent({
     validateRoleAccess(currentRole, roles);
 
     if (shouldShowAssessment(currentRole, isAssessmentCompleted ?? false)) {
-        return renderAssessmentForm(slug);
+        const courseLanguage = course?.language?.code as TLocale;
+        return renderAssessmentForm(slug, courseLanguage);
     }
 
     // TODO: might differ base on the tab
@@ -154,7 +155,7 @@ function shouldShowAssessment(
     );
 }
 
-async function renderAssessmentForm(slug: string) {
+async function renderAssessmentForm(slug: string, courseLanguage?: TLocale) {
     // Streaming pattern: Fire prefetch without awaiting
     prefetch(
         trpc.listPreCourseAssessmentComponents.queryOptions({}),
@@ -163,7 +164,7 @@ async function renderAssessmentForm(slug: string) {
     return (
         <HydrateClient>
             <Suspense fallback={<DefaultLoadingWrapper />}>
-                <AssessmentForm courseSlug={slug} />
+                <AssessmentForm courseSlug={slug} courseLanguage={courseLanguage} />
             </Suspense>
         </HydrateClient>
     );

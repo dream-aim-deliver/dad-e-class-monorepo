@@ -107,9 +107,8 @@ const RenderElement = ({ attributes, children, element }: {
       return <h6 {...attributes} style={style} className={`text-sm font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h6>;
     case "horizontal-rule":
       return (
-        <div {...attributes} style={style}>
-          <hr className="my-4 border-t-2 border-base-neutral-500" />
-          {children}
+        <div {...attributes} style={style} className="w-full">
+          <hr className="my-4 border-t-2 border-base-neutral-500 w-full" />
         </div>
       );
     case "paragraph": {
@@ -132,8 +131,11 @@ const ElementNode = ({ element }: { element: any }) => {
   // Simulate Slate's attributes prop
   const attributes = { 'data-slate-node': 'element' };
 
+  // For void elements like horizontal-rule, don't render children
+  const isVoidElement = element.type === 'horizontal-rule';
+
   // Recursively render children elements or leaves
-  const children = element.children.map((child: any, index: number) => {
+  const children = isVoidElement ? null : element.children.map((child: any, index: number) => {
     if (child.children) {
       return <ElementNode key={index} element={child} />;
     }
