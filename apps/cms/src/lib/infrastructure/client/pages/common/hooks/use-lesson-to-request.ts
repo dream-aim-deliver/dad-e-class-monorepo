@@ -119,20 +119,19 @@ export function useLessonToRequest() {
             throw new Error('Invalid component type');
         }
 
-        // Extract unique column titles from all rows
-        const columnSet = new Set<string>();
-        component.data.rows.forEach((row) => {
-            row.columns.forEach((column) => {
-                columnSet.add(column.columnTitle);
-            });
-        });
+        // Use component.data.columns directly instead of extracting from rows
+        // This preserves the column names set by the user
+        const columns = component.data.columns || [];
 
         return {
             id: extractId(component.id),
             type: 'oneOutOfThree',
             position: order,
             title: component.data.tableTitle,
-            columns: Array.from(columnSet).map((name, index) => ({ name, id: String(index + 1) })),
+            columns: columns.map((col, index) => ({
+                name: col.columnTitle,
+                id: String(index + 1)
+            })),
             rows: component.data.rows.map((row, index) => ({
                 name: row.rowTitle,
                 id: String(index + 1),

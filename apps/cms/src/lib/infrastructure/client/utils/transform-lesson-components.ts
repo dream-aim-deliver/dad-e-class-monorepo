@@ -130,7 +130,11 @@ function transformOneOutOfThree(
                     columns: columns,
                 };
             }),
-            columns: []
+            columns: component.columns.map((column) => ({
+                id: column.id,
+                columnTitle: column.name,
+                selected: false
+            }))
         },
         required: component.required,
     };
