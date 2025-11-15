@@ -18,8 +18,10 @@ import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
+import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import env from '../../config/env';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import { useSession } from 'next-auth/react';
 
 interface OffersCourseHeadingProps {
     coachingIncluded: boolean;
@@ -71,6 +73,8 @@ export function OffersCourseList({
     const offersTranslations = useTranslations('pages.offers');
 
     const router = useRouter();
+    const sessionDTO = useSession();
+    const isLoggedIn = !!sessionDTO.data;
 
     // Checkout modal state
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -82,17 +86,12 @@ export function OffersCourseList({
         usePrepareCheckoutPresenter(setCheckoutViewModel);
     const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
 
-    const handleBuyCourse = async (
-        courseSlug: string,
-        withCoaching: boolean,
+    // Helper to execute checkout
+    const executeCheckout = async (
+        request: useCaseModels.TPrepareCheckoutRequest,
     ) => {
         try {
-            const response = await prepareCheckoutMutation.mutateAsync({
-                type: withCoaching
-                    ? 'StudentCoursePurchaseWithCoaching'
-                    : 'StudentCoursePurchase',
-                courseSlug,
-            });
+            const response = await prepareCheckoutMutation.mutateAsync(request);
             checkoutPresenter.present(response, checkoutViewModel);
 
             if (checkoutViewModel && checkoutViewModel.mode === 'default') {
@@ -102,6 +101,35 @@ export function OffersCourseList({
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
+    };
+
+    // Checkout intent hook for login flow preservation
+    const { saveIntent } = useCheckoutIntent({
+        onResumeCheckout: executeCheckout,
+    });
+
+    const handleBuyCourse = async (
+        courseSlug: string,
+        withCoaching: boolean,
+    ) => {
+        const request: useCaseModels.TPrepareCheckoutRequest = {
+            type: withCoaching
+                ? 'StudentCoursePurchaseWithCoaching'
+                : 'StudentCoursePurchase',
+            courseSlug,
+        };
+
+        // If user is not logged in, save intent and redirect to login
+        if (!isLoggedIn) {
+            saveIntent(request, window.location.pathname);
+            router.push(
+                `/${locale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`,
+            );
+            return;
+        }
+
+        // User is logged in, execute checkout
+        executeCheckout(request);
     };
 
     const handlePaymentComplete = (sessionId: string) => {

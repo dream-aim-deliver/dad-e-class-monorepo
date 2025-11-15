@@ -17,6 +17,7 @@ import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-co
 import { useSession } from 'next-auth/react';
 import { groupOfferings } from '../../utils/group-offerings';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
+import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import env from '../../config/env';
 
 function AvailableCoachings() {
@@ -111,25 +112,12 @@ export default function CoachingOfferingsPanel() {
         return coachingOfferingsViewModel.data.offerings[0]?.currency;
     }, [coachingOfferingsViewModel]);
 
-    const handleBuyCoachingSessions = async (
-        sessionsPerOffering: Record<string | number, number>,
+    // Helper to execute checkout
+    const executeCheckout = async (
+        request: useCaseModels.TPrepareCheckoutRequest,
     ) => {
         try {
-            // Find the first offering with a quantity > 0
-            const offeringId = Object.keys(sessionsPerOffering).find(
-                (id) => sessionsPerOffering[id] > 0,
-            );
-            const quantity = offeringId ? sessionsPerOffering[offeringId] : 0;
-
-            if (!offeringId || quantity === 0) {
-                return;
-            }
-
-            const response = await prepareCheckoutMutation.mutateAsync({
-                type: 'StudentCoachingSessionPurchase',
-                coachingOfferingId: Number(offeringId),
-                quantity,
-            });
+            const response = await prepareCheckoutMutation.mutateAsync(request);
             checkoutPresenter.present(response, checkoutViewModel);
 
             if (checkoutViewModel && checkoutViewModel.mode === 'default') {
@@ -139,6 +127,43 @@ export default function CoachingOfferingsPanel() {
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
+    };
+
+    // Checkout intent hook for login flow preservation
+    const { saveIntent } = useCheckoutIntent({
+        onResumeCheckout: executeCheckout,
+    });
+
+    const handleBuyCoachingSessions = async (
+        sessionsPerOffering: Record<string | number, number>,
+    ) => {
+        // Find the first offering with a quantity > 0
+        const offeringId = Object.keys(sessionsPerOffering).find(
+            (id) => sessionsPerOffering[id] > 0,
+        );
+        const quantity = offeringId ? sessionsPerOffering[offeringId] : 0;
+
+        if (!offeringId || quantity === 0) {
+            return;
+        }
+
+        const request: useCaseModels.TPrepareCheckoutRequest = {
+            type: 'StudentCoachingSessionPurchase',
+            coachingOfferingId: Number(offeringId),
+            quantity,
+        };
+
+        // If user is not logged in, save intent and redirect to login
+        if (!isLoggedIn) {
+            saveIntent(request, window.location.pathname);
+            router.push(
+                `/${locale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`,
+            );
+            return;
+        }
+
+        // User is logged in, execute checkout
+        executeCheckout(request);
     };
 
     const handlePaymentComplete = (sessionId: string) => {
