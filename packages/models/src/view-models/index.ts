@@ -149,3 +149,4 @@ export * from './remove-course-coach-view-model';
 export * from './add-course-coach-view-model';
 export * from './get-course-upcoming-coaching-session-view-model';
 export * from './delete-course-view-model';
+export * from './get-student-course-review-view-model';
