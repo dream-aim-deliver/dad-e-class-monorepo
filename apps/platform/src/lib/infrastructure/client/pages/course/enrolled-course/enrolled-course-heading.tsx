@@ -17,7 +17,6 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState, useRef } from 'react';
-import html2pdf from 'html2pdf.js';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/cms-client';
 
@@ -86,6 +85,9 @@ export default function EnrolledCourseHeading({
                 const sanitizedStudentName = certData.studentUsername;
                 const sanitizedCourseTitle = courseSlug;
                 const filename = `Certificate_${sanitizedStudentName}_${sanitizedCourseTitle}.pdf`;
+
+                // Dynamically import html2pdf (client-side only)
+                const html2pdf = (await import('html2pdf.js')).default;
 
                 // Configure html2pdf options
                 const options = {
