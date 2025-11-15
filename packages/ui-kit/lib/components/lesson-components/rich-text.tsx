@@ -188,10 +188,11 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     };
 
     return (
-        <div className="text-text-primary flex flex-col gap-2">
+        <div className="text-text-primary flex flex-col gap-2 w-full">
             <RichTextRenderer
                 content={elementInstance.content}
                 onDeserializationError={onDeserializationError}
+                className="w-full"
             />
         </div>
     );
