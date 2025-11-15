@@ -25,6 +25,7 @@ import {
 
 interface AssessmentFormProps {
     courseSlug: string;
+    courseLanguage?: TLocale;
 }
 
 export default function AssessmentForm(props: AssessmentFormProps) {
@@ -40,9 +41,6 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     >(undefined);
     const { presenter: assessmentsPresenter } =
         useListAssessmentComponentsPresenter(setComponentsViewModel);
-
-    // @ts-ignore
-    assessmentsPresenter.present(componentsResponse, componentsViewModel);
 
     const [submitAssessmentViewModel, setSubmitAssessmentViewModel] = useState<
         viewModels.TAssessmentProgressViewModel | undefined
@@ -80,6 +78,14 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         );
     };
 
+    // Present components data
+    useEffect(() => {
+        if (componentsResponse) {
+            // @ts-ignore
+            assessmentsPresenter.present(componentsResponse, componentsViewModel);
+        }
+    }, [componentsResponse, assessmentsPresenter, componentsViewModel]);
+
     useEffect(() => {
         if (getIsFormDisabled()) {
             submitMutation.mutate({
@@ -94,7 +100,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
             // @ts-ignore
             submitPresenter.present(submitMutation.data, submitAssessmentViewModel);
         }
-    }, [submitMutation.isSuccess]);
+    }, [submitMutation.isSuccess, submitPresenter, submitAssessmentViewModel]);
 
 
     if (!componentsViewModel || getIsFormDisabled()) {
