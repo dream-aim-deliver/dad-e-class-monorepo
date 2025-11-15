@@ -45,13 +45,45 @@ export interface GenerateCourseNotesPdfOptions {
 }
 
 /**
+ * Validates the structure of parsed notes to ensure it's safe
+ */
+function validateNotesStructure(notes: unknown): notes is Array<any> {
+  if (!Array.isArray(notes)) {
+    return false;
+  }
+
+  // Basic validation - ensure all elements are objects with a type property
+  return notes.every(node =>
+    typeof node === 'object' &&
+    node !== null &&
+    'type' in node
+  );
+}
+
+/**
+ * Sanitizes URLs to prevent XSS attacks
+ */
+function sanitizeUrl(url: string | undefined): string {
+  if (!url) return '#';
+
+  try {
+    const parsed = new URL(url);
+    // Only allow http, https, and mailto protocols
+    return ['http:', 'https:', 'mailto:'].includes(parsed.protocol) ? url : '#';
+  } catch {
+    // If URL parsing fails, return safe default
+    return '#';
+  }
+}
+
+/**
  * Parses rich text JSON notes and renders them with proper formatting
  */
 function renderRichTextContent(notes: string, contentDiv: HTMLElement): void {
   try {
     const parsedNotes = JSON.parse(notes);
 
-    if (!Array.isArray(parsedNotes)) {
+    if (!validateNotesStructure(parsedNotes)) {
       contentDiv.textContent = notes;
       return;
     }
@@ -155,8 +187,9 @@ function renderRichTextContent(notes: string, contentDiv: HTMLElement): void {
         contentDiv.appendChild(ol);
       } else if (node.type === 'link') {
         const a = document.createElement('a');
-        a.href = node.url || '#';
-        a.textContent = node.children?.[0]?.text || node.url;
+        // Sanitize URL to prevent XSS attacks
+        a.href = sanitizeUrl(node.url);
+        a.textContent = node.children?.[0]?.text || sanitizeUrl(node.url);
         a.style.color = '#2563eb';
         a.style.textDecoration = 'underline';
         a.style.margin = '0 0 8px 0';
@@ -359,17 +392,26 @@ export async function generateCourseNotesPdf(options: GenerateCourseNotesPdfOpti
 
   wrapper.appendChild(modulesContainer);
 
-  // Generate PDF with optimized settings
+  // Generate PDF with optimized settings for performance and quality
   const pdfOptions = {
     margin: 0,
     filename: `course-notes-${courseSlug}.pdf`,
     image: { type: 'jpeg' as const, quality: 0.98 },
     html2canvas: {
-      scale: 2,
+      // Use adaptive scaling based on device pixel ratio to reduce memory usage
+      scale: window.devicePixelRatio || 1,
       useCORS: true,
       letterRendering: true,
       backgroundColor: '#ffffff',
       logging: false,
+      // Optimize for PDF rendering
+      onclone: (clonedDoc: Document) => {
+        // Ensure all elements are visible for PDF rendering
+        const clonedWrapper = clonedDoc.querySelector('[style*="width: 210mm"]');
+        if (clonedWrapper instanceof HTMLElement) {
+          clonedWrapper.style.display = 'block';
+        }
+      }
     },
     jsPDF: {
       unit: 'mm' as const,
@@ -378,7 +420,8 @@ export async function generateCourseNotesPdf(options: GenerateCourseNotesPdfOpti
     },
     pagebreak: {
       mode: ['css', 'legacy'] as any,
-      avoid: 'h2'
+      // Avoid breaking headings and maintain readability
+      avoid: ['h2', 'h3']
     }
   };
 
