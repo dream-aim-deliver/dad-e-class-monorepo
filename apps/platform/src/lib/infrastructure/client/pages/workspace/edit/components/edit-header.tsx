@@ -47,6 +47,14 @@ export default function EditHeader({
     const canArchive = isSuperAdmin && courseStatus === 'live';
     const canDelete = isSuperAdmin && courseStatus === 'draft';
 
+    const [showPublishModal, setShowPublishModal] = useState(false);
+    const [publishSuccess, setPublishSuccess] = useState(false);
+    const [publishError, setPublishError] = useState<string | null>(null);
+
+    const [showArchiveModal, setShowArchiveModal] = useState(false);
+    const [archiveSuccess, setArchiveSuccess] = useState(false);
+    const [archiveError, setArchiveError] = useState<string | null>(null);
+
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteSuccess, setDeleteSuccess] = useState(false);
     const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -81,6 +89,8 @@ export default function EditHeader({
     const handlePublishConfirm = async () => {
         setPublishConfirmModal(false);
 
+    const handlePublishConfirm = async () => {
+        setPublishError(null);
         try {
             const result = await publishMutation.mutateAsync({ courseSlug: slug });
             if (result.success) {
@@ -117,6 +127,8 @@ export default function EditHeader({
     const handleArchiveConfirm = async () => {
         setArchiveConfirmModal(false);
 
+    const handleArchiveConfirm = async () => {
+        setArchiveError(null);
         try {
             const result = await archiveMutation.mutateAsync({ courseSlug: slug });
             if (result.success) {
@@ -332,7 +344,7 @@ export default function EditHeader({
     );
 }
 
-interface DeleteCourseModalProps {
+interface CourseActionModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
@@ -340,6 +352,151 @@ interface DeleteCourseModalProps {
     isSuccess: boolean;
     error: string | null;
     locale: TLocale;
+}
+
+function PublishCourseModal({
+    isOpen,
+    onClose,
+    onConfirm,
+    isLoading,
+    isSuccess,
+    error,
+    locale,
+}: CourseActionModalProps) {
+    const dictionary = getDictionary(locale);
+
+    return (
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()} defaultOpen={false}>
+            <DialogContent
+                showCloseButton={!isLoading && !isSuccess}
+                closeOnOverlayClick={!isLoading && !isSuccess}
+                closeOnEscape={!isLoading && !isSuccess}
+                className="max-w-md"
+            >
+                <DialogBody>
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <h2 className="text-xl font-semibold text-text-primary mb-2">
+                                {dictionary.components.editHeader.publishCourse}
+                            </h2>
+                            <p className="text-text-secondary mb-2">
+                                {dictionary.components.editHeader.publishConfirmation}
+                            </p>
+                            <p className="text-text-secondary text-sm whitespace-pre-line">
+                                {dictionary.components.editHeader.publishRequirements}
+                            </p>
+                        </div>
+
+                        {error && (
+                            <Banner
+                                style="error"
+                                title={dictionary.components.editHeader.publishError}
+                                description={error}
+                            />
+                        )}
+
+                        {isSuccess && (
+                            <Banner
+                                style="success"
+                                title={dictionary.components.editHeader.publishSuccess}
+                                description="Course is now live!"
+                            />
+                        )}
+
+                        {!isSuccess && (
+                            <div className="flex gap-3 justify-end">
+                                <Button
+                                    variant="secondary"
+                                    text="Cancel"
+                                    onClick={onClose}
+                                    disabled={isLoading}
+                                />
+                                <Button
+                                    variant="primary"
+                                    text={isLoading ? 'Publishing...' : 'Publish Course'}
+                                    onClick={onConfirm}
+                                    disabled={isLoading}
+                                    iconLeft={isLoading ? <IconLoaderSpinner classNames="animate-spin" /> : undefined}
+                                    hasIconLeft={isLoading}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </DialogBody>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+function ArchiveCourseModal({
+    isOpen,
+    onClose,
+    onConfirm,
+    isLoading,
+    isSuccess,
+    error,
+    locale,
+}: CourseActionModalProps) {
+    const dictionary = getDictionary(locale);
+
+    return (
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()} defaultOpen={false}>
+            <DialogContent
+                showCloseButton={!isLoading && !isSuccess}
+                closeOnOverlayClick={!isLoading && !isSuccess}
+                closeOnEscape={!isLoading && !isSuccess}
+                className="max-w-md"
+            >
+                <DialogBody>
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <h2 className="text-xl font-semibold text-text-primary mb-2">
+                                {dictionary.components.editHeader.archiveCourse}
+                            </h2>
+                            <p className="text-text-secondary">
+                                {dictionary.components.editHeader.archiveConfirmation}
+                            </p>
+                        </div>
+
+                        {error && (
+                            <Banner
+                                style="error"
+                                title={dictionary.components.editHeader.archiveError}
+                                description={error}
+                            />
+                        )}
+
+                        {isSuccess && (
+                            <Banner
+                                style="success"
+                                title={dictionary.components.editHeader.archiveSuccess}
+                                description="Reloading page..."
+                            />
+                        )}
+
+                        {!isSuccess && (
+                            <div className="flex gap-3 justify-end">
+                                <Button
+                                    variant="secondary"
+                                    text="Cancel"
+                                    onClick={onClose}
+                                    disabled={isLoading}
+                                />
+                                <Button
+                                    variant="primary"
+                                    text={isLoading ? 'Archiving...' : 'Archive Course'}
+                                    onClick={onConfirm}
+                                    disabled={isLoading}
+                                    iconLeft={isLoading ? <IconLoaderSpinner classNames="animate-spin" /> : undefined}
+                                    hasIconLeft={isLoading}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </DialogBody>
+            </DialogContent>
+        </Dialog>
+    );
 }
 
 function DeleteCourseModal({
@@ -350,7 +507,7 @@ function DeleteCourseModal({
     isSuccess,
     error,
     locale,
-}: DeleteCourseModalProps) {
+}: CourseActionModalProps) {
     const dictionary = getDictionary(locale);
 
     return (
