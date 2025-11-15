@@ -5,9 +5,15 @@ import {
     IconEyeHide,
     IconSave,
     Badge,
+    Dialog,
+    DialogContent,
+    DialogBody,
+    Banner,
+    IconLoaderSpinner,
 } from '@maany_shr/e-class-ui-kit';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { trpc } from '../../../../trpc/cms-client';
+import { useRouter } from 'next/navigation';
 
 interface EditHeaderProps {
     title: string;
@@ -39,12 +45,19 @@ export default function EditHeader({
     isReadOnlyContent = false,
 }: EditHeaderProps) {
     const dictionary = getDictionary(locale);
+    const router = useRouter();
     const isSuperAdmin = roles.includes('superadmin');
     const canPublish = isSuperAdmin && courseStatus === 'draft';
     const canArchive = isSuperAdmin && courseStatus === 'live';
+    const canDelete = isSuperAdmin && courseStatus === 'draft';
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteSuccess, setDeleteSuccess] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const publishMutation = trpc.publishCourse.useMutation();
     const archiveMutation = trpc.archiveCourse.useMutation();
+    const deleteMutation = trpc.deleteCourse.useMutation();
     const utils = trpc.useUtils();
 
     const handlePublish = async () => {
@@ -94,6 +107,45 @@ export default function EditHeader({
             }
         } catch (error: any) {
             alert(dictionary.components.editHeader.archiveError + ': ' + error.message);
+        }
+    };
+
+    const handleDeleteClick = () => {
+        setShowDeleteModal(true);
+        setDeleteSuccess(false);
+        setDeleteError(null);
+    };
+
+    const handleDeleteConfirm = async () => {
+        setDeleteError(null);
+        try {
+            const result = await deleteMutation.mutateAsync({ courseSlug: slug });
+            if (result.success) {
+                // Invalidate queries to refetch updated data
+                utils.listUserCourses.invalidate();
+                utils.listPlatformCoursesShort.invalidate();
+                utils.getOffersPageOutline.invalidate();
+                utils.getHomePage.invalidate();
+
+                // Show success state
+                setDeleteSuccess(true);
+
+                // Wait 5 seconds then redirect
+                setTimeout(() => {
+                    router.push('/workspace/courses');
+                }, 5000);
+            } else {
+                setDeleteError((result as any).data?.message || dictionary.components.editHeader.deleteError);
+            }
+        } catch (error: any) {
+            setDeleteError(error.message || dictionary.components.editHeader.deleteError);
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        if (!deleteMutation.isPending && !deleteSuccess) {
+            setShowDeleteModal(false);
+            setDeleteError(null);
         }
     };
 
@@ -182,7 +234,109 @@ export default function EditHeader({
                         disabled={isSaving || isPreviewing || archiveMutation.isPending}
                     />
                 )}
+                {canDelete && (
+                    <Button
+                        variant="primary"
+                        text={dictionary.components.editHeader.deleteCourse}
+                        onClick={handleDeleteClick}
+                        disabled={isSaving || isPreviewing}
+                        className="!bg-red-700 hover:!bg-red-800 active:!bg-red-900"
+                    />
+                )}
             </div>
+            {showDeleteModal && (
+                <DeleteCourseModal
+                    isOpen={showDeleteModal}
+                    onClose={handleDeleteCancel}
+                    onConfirm={handleDeleteConfirm}
+                    isLoading={deleteMutation.isPending}
+                    isSuccess={deleteSuccess}
+                    error={deleteError}
+                    locale={locale}
+                />
+            )}
         </div>
+    );
+}
+
+interface DeleteCourseModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    isLoading: boolean;
+    isSuccess: boolean;
+    error: string | null;
+    locale: TLocale;
+}
+
+function DeleteCourseModal({
+    isOpen,
+    onClose,
+    onConfirm,
+    isLoading,
+    isSuccess,
+    error,
+    locale,
+}: DeleteCourseModalProps) {
+    const dictionary = getDictionary(locale);
+
+    return (
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()} defaultOpen={false}>
+            <DialogContent
+                showCloseButton={!isLoading && !isSuccess}
+                closeOnOverlayClick={!isLoading && !isSuccess}
+                closeOnEscape={!isLoading && !isSuccess}
+                className="max-w-md"
+            >
+                <DialogBody>
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <h2 className="text-xl font-semibold text-text-primary mb-2">
+                                {dictionary.components.editHeader.deleteCourse}
+                            </h2>
+                            <p className="text-text-secondary">
+                                {dictionary.components.editHeader.deleteConfirmation}
+                            </p>
+                        </div>
+
+                        {error && (
+                            <Banner
+                                style="error"
+                                title={dictionary.components.editHeader.deleteError}
+                                description={error}
+                            />
+                        )}
+
+                        {isSuccess && (
+                            <Banner
+                                style="success"
+                                title={dictionary.components.editHeader.deleteSuccess}
+                                description="Redirecting to workspace courses..."
+                            />
+                        )}
+
+                        {!isSuccess && (
+                            <div className="flex gap-3 justify-end">
+                                <Button
+                                    variant="secondary"
+                                    text="Cancel"
+                                    onClick={onClose}
+                                    disabled={isLoading}
+                                />
+                                <Button
+                                    variant="primary"
+                                    text={isLoading ? 'Deleting...' : 'Delete Course'}
+                                    onClick={onConfirm}
+                                    disabled={isLoading}
+                                    iconLeft={isLoading ? <IconLoaderSpinner classNames="animate-spin" /> : undefined}
+                                    hasIconLeft={isLoading}
+                                    className="!bg-red-700 hover:!bg-red-800 active:!bg-red-900"
+                                />
+                            </div>
+                        )}
+                    </div>
+                </DialogBody>
+            </DialogContent>
+        </Dialog>
     );
 }

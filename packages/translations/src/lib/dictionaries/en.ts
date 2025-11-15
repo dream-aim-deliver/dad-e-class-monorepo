@@ -1305,6 +1305,10 @@ export const EN: TDictionary = {
       archiveConfirmation: 'Are you sure you want to archive this course? Students will no longer be able to enroll.',
       archiveSuccess: 'Course archived successfully!',
       archiveError: 'Failed to archive course',
+      deleteCourse: 'Delete course',
+      deleteConfirmation: 'Are you sure you want to delete this course? This action is PERMANENT and cannot be undone.',
+      deleteSuccess: 'Course deleted successfully!',
+      deleteError: 'Failed to delete course',
     },
     lessonComponentBar: {
       simpleText: 'Simple',
