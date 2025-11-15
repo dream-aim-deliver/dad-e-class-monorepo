@@ -93,7 +93,7 @@ export const AutoPlayVideoPlayer: React.FC<AutoPlayVideoPlayerProps> = ({
             {!isPlayerReady && !videoError && (
                 <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
                     <IconLoaderSpinner
-                        classNames="animate-spin text-text-primary "
+                        classNames="animate-spin text-text-primary"
                         size="6"
                     />
                 </div>
@@ -110,8 +110,8 @@ export const AutoPlayVideoPlayer: React.FC<AutoPlayVideoPlayerProps> = ({
                         playbackId={videoId}
                         accentColor="var(--color-base-brand-500)"
                         className="w-full h-full"
-                        autoPlay={true}
-                        muted={true}
+                        autoPlay
+                        muted
                         poster={thumbnailUrl}
                         onCanPlay={handlePlayerReady}
                         onError={handleVideoError}
