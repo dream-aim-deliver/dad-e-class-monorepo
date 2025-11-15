@@ -13,6 +13,19 @@ type TGetCourseAccessSuccessResponse = z.infer<
 
 const getCourseAccessMock: TGetCourseAccessSuccessResponse['data'] =
 {
+    course: {
+        id: 1,
+        slug: 'mock-course',
+        title: 'Mock Course',
+        language: {
+            id: 1,
+            code: 'en',
+            name: 'English',
+            state: 'created' as const,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    },
     roles: ['visitor'],
     isAssessmentCompleted: null,
 };
@@ -58,6 +71,19 @@ export const getCourseAccess = t.procedure
                 return {
                     success: true,
                     data: {
+                        course: {
+                            id: 2,
+                            slug: 'student-course',
+                            title: 'Student Course',
+                            language: {
+                                id: 1,
+                                code: 'en',
+                                name: 'English',
+                                state: 'created' as const,
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            },
+                        },
                         roles: ['visitor', 'student'],
                         isAssessmentCompleted: false,
                     },
@@ -68,6 +94,19 @@ export const getCourseAccess = t.procedure
                 return {
                     success: true,
                     data: {
+                        course: {
+                            id: 3,
+                            slug: 'progress-course',
+                            title: 'Progress Course',
+                            language: {
+                                id: 1,
+                                code: 'en',
+                                name: 'English',
+                                state: 'created' as const,
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            },
+                        },
                         roles: ['visitor', 'student'],
                         isAssessmentCompleted: true,
                     },
@@ -78,6 +117,19 @@ export const getCourseAccess = t.procedure
                 return {
                     success: true,
                     data: {
+                        course: {
+                            id: 4,
+                            slug: 'coach-course',
+                            title: 'Coach Course',
+                            language: {
+                                id: 1,
+                                code: 'en',
+                                name: 'English',
+                                state: 'created' as const,
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            },
+                        },
                         roles: ['visitor', 'student', 'coach'],
                         isAssessmentCompleted: null,
                     },
@@ -88,6 +140,19 @@ export const getCourseAccess = t.procedure
                 return {
                     success: true,
                     data: {
+                        course: {
+                            id: 5,
+                            slug: 'admin-course',
+                            title: 'Admin Course',
+                            language: {
+                                id: 1,
+                                code: 'en',
+                                name: 'English',
+                                state: 'created' as const,
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            },
+                        },
                         roles: ['visitor', 'student', 'coach', 'admin'],
                         isAssessmentCompleted: null,
                     },
