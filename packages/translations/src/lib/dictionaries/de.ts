@@ -1308,6 +1308,10 @@ export const DE: TDictionary = {
       archiveConfirmation: 'Sind Sie sicher, dass Sie diesen Kurs archivieren möchten? Studenten können sich nicht mehr anmelden.',
       archiveSuccess: 'Kurs erfolgreich archiviert!',
       archiveError: 'Fehler beim Archivieren des Kurses',
+      deleteCourse: 'Kurs löschen',
+      deleteConfirmation: 'Sind Sie sicher, dass Sie diesen Kurs löschen möchten? Diese Aktion ist PERMANENT und kann nicht rückgängig gemacht werden.',
+      deleteSuccess: 'Kurs erfolgreich gelöscht!',
+      deleteError: 'Fehler beim Löschen des Kurses',
     },
     lessonComponentBar: {
       simpleText: 'Einfach',

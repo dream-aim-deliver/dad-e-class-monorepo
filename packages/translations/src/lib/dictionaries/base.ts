@@ -1295,6 +1295,10 @@ export const DictionarySchema = z.object({
       archiveConfirmation: z.string(),
       archiveSuccess: z.string(),
       archiveError: z.string(),
+      deleteCourse: z.string(),
+      deleteConfirmation: z.string(),
+      deleteSuccess: z.string(),
+      deleteError: z.string(),
     }),
     lessonComponentBar: z.object({
       simpleText: z.string(),
