@@ -40,7 +40,6 @@ export const Hero: React.FC<HeroProps> = ({
                     videoId={videoId}
                     thumbnailUrl={thumbnailUrl}
                     locale={locale}
-                    onErrorCallback={(message, error) => console.log('error', message, error)}
                     className="w-full h-full"
                 />
             </div>
