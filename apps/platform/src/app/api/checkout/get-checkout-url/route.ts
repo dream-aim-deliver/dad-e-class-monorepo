@@ -10,13 +10,19 @@ function extractDiscountFromCoupon(coupon: string): number {
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const couponCode = searchParams.get('coupon');
+    const customerEmail = searchParams.get('email');
     const discountPercentage = couponCode ? extractDiscountFromCoupon(couponCode) : 0;
 
     const origin = env.NEXT_PUBLIC_APP_URL;
-    const checkoutSession = await createCheckoutSession(1000, origin, discountPercentage);
+    const checkoutSession = await createCheckoutSession(
+        1000,
+        origin,
+        discountPercentage,
+        customerEmail || undefined
+    );
 
     // Save the session ID and other details to your database
-    console.log('Created checkout session:', checkoutSession.id, 'with discount:', discountPercentage + '%');
+    console.log('Created checkout session:', checkoutSession.id, 'with discount:', discountPercentage + '%', 'for email:', customerEmail || 'none');
 
     return Response.json({
         clientSecret: checkoutSession.client_secret,

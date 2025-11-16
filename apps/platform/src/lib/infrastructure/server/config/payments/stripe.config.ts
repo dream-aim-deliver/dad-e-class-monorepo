@@ -7,7 +7,8 @@ export const stripe = new Stripe(env.STRIPE_SECRET_KEY)
 export const createCheckoutSession = async (
     amount: number,
     origin: string,
-    discountPercentage: number = 0
+    discountPercentage: number = 0,
+    customerEmail?: string
 ) => {
     const lineItems = [
         {
@@ -50,6 +51,7 @@ export const createCheckoutSession = async (
         line_items: lineItems,
         mode: 'payment',
         return_url: `${origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
+        ...(customerEmail && { customer_email: customerEmail }),
         ...(couponId && {
             discounts: [
                 {

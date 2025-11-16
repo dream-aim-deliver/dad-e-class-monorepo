@@ -240,6 +240,7 @@ export default function CoachingOfferingsPanel() {
                     stripePublishableKey={
                         env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
                     }
+                    customerEmail={sessionDTO.data?.user?.email}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
                 />
