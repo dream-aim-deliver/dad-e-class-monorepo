@@ -147,7 +147,7 @@ export const generateNextAuthConfig = (config: {
                         const idTokenExp = getJWTExpiration(account.id_token);
                         if (idTokenExp) {
                             token.idTokenExpires = idTokenExp * 1000; // Convert to milliseconds
-                            console.log('[Auth JWT] 📋 ID token expires at:', new Date(token.idTokenExpires).toISOString());
+                            console.log('[Auth JWT] 📋 ID token expires at:', new Date(token.idTokenExpires as number).toISOString());
                         } else {
                             console.warn('[Auth JWT] ⚠️ Could not extract ID token expiration, using default');
                             token.idTokenExpires = Date.now() + 3600 * 1000; // 1 hour from now

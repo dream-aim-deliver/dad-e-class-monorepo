@@ -1,112 +1,260 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
+import { trpc } from '../../../../../lib/infrastructure/client/trpc/client';
+import { checkoutSessionStorage } from '../../../../../lib/infrastructure/client/utils/checkout-session-storage';
+import env from '../../../../../lib/infrastructure/client/config/env';
+
+type PageState = 'loading' | 'success' | 'error';
 
 export default function CheckoutReturnPage() {
-    const searchParams = useSearchParams()
-    const router = useRouter()
-    const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
-    const [message, setMessage] = useState('')
-    const [email, setEmail] = useState<string | null>(null)
+    const router = useRouter();
+    const locale = useLocale();
+    const searchParams = useSearchParams();
+    const sessionId = searchParams?.get('session_id');
+
+    const [state, setState] = useState<PageState>('loading');
+    const [transaction, setTransaction] = useState<any>(null);
+    const [error, setError] = useState<string>('');
+    const [countdown, setCountdown] = useState(5);
+
+    const verifyMutation = trpc.verifyAndUnlockPurchase.useMutation();
 
     useEffect(() => {
-        const sessionId = searchParams.get('session_id')
-
         if (!sessionId) {
-            setStatus('error')
-            setMessage('Missing session information')
-            return
+            setState('error');
+            setError('No session ID provided');
+            return;
         }
 
-        // Fetch session status from our API
-        fetch(`/api/checkout/session-status?session_id=${sessionId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.status === 'complete') {
-                    setStatus('success')
-                    setEmail(data.customer_email)
-                } else if (data.status === 'open') {
-                    setStatus('error')
-                    setMessage('Payment not completed. Redirecting...')
-                    setTimeout(() => router.push('/checkout'), 2000)
-                } else {
-                    setStatus('error')
-                    setMessage('Unable to verify payment status')
-                }
-            })
-            .catch((error) => {
-                console.error('Error fetching session status:', error)
-                setStatus('error')
-                setMessage('An error occurred while verifying your payment')
-            })
-    }, [searchParams, router])
+        // Check if already processed
+        if (checkoutSessionStorage.isSessionCompleted(sessionId)) {
+            // Already processed - show simplified success
+            setState('success');
+            setTransaction({
+                alreadyProcessed: true,
+                customerEmail: '',
+            });
+            return;
+        }
 
-    if (status === 'loading') {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-2xl mx-auto text-center">
-                    <div className="flex items-center justify-center py-12">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                    </div>
-                    <p className="text-gray-600">Verifying your payment...</p>
-                </div>
-            </div>
-        )
+        // Process the payment
+        processPayment(sessionId);
+    }, [sessionId]);
+
+    const processPayment = async (sessionId: string) => {
+        try {
+            const result = await verifyMutation.mutateAsync({ sessionId });
+
+            if (result.success) {
+                checkoutSessionStorage.saveCompletedSession(sessionId);
+                setTransaction(result);
+                setState('success');
+
+                // Start countdown for auto-redirect
+                if (!result.alreadyProcessed) {
+                    startCountdown(result);
+                }
+            } else {
+                setState('error');
+                setError('Payment verification failed');
+            }
+        } catch (err: any) {
+            console.error('[CheckoutReturnPage] Error:', err);
+            setState('error');
+            setError(err.message || 'An error occurred processing your payment');
+        }
+    };
+
+    const startCountdown = (result: any) => {
+        const interval = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    redirectToDestination(result);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
+
+    const redirectToDestination = (result: any) => {
+        const path = getRedirectPath(
+            result.purchaseType,
+            result.purchaseIdentifier,
+            locale,
+        );
+        router.push(path);
+    };
+
+    const getRedirectPath = (
+        purchaseType: string,
+        identifier: any,
+        locale: string,
+    ) => {
+        switch (purchaseType) {
+            case 'StudentCoursePurchase':
+            case 'StudentCoursePurchaseWithCoaching':
+                return `/${locale}/courses/${identifier.courseSlug}`;
+            case 'StudentPackagePurchase':
+            case 'StudentPackagePurchaseWithCoaching':
+                return `/${locale}/workspace/courses`;
+            case 'StudentCoachingSessionPurchase':
+                return `/${locale}/offers`;
+            default:
+                return `/${locale}/workspace/courses`;
+        }
+    };
+
+    const getButtonText = (purchaseType: string): string => {
+        switch (purchaseType) {
+            case 'StudentCoursePurchase':
+            case 'StudentCoursePurchaseWithCoaching':
+                return 'Go to Course';
+            case 'StudentPackagePurchase':
+            case 'StudentPackagePurchaseWithCoaching':
+                return 'View My Courses';
+            case 'StudentCoachingSessionPurchase':
+                return 'Browse Offerings';
+            default:
+                return 'Continue';
+        }
     }
 
-    if (status === 'success') {
+    if (state === 'loading') {
         return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-2xl mx-auto text-center">
-                    <div className="mb-6">
-                        <svg
-                            className="w-16 h-16 text-green-600 mx-auto"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                        </svg>
+            <div className="flex items-center justify-center min-h-screen p-4">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                    <p className="text-lg text-gray-700">Processing your payment...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (state === 'error') {
+        return (
+            <div className="flex items-center justify-center min-h-screen p-4">
+                <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+                    <div className="text-center mb-6">
+                        <div className="text-red-600 text-6xl mb-4">✗</div>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                            Payment Error
+                        </h1>
+                        <p className="text-gray-700">{error}</p>
                     </div>
-                    <h1 className="text-3xl font-bold mb-4 text-green-600">
+
+                    <div className="bg-gray-50 p-4 rounded mb-6">
+                        <p className="text-sm font-semibold mb-2">Need help?</p>
+                        {env.NEXT_PUBLIC_CONTACT_EMAIL && (
+                            <p className="text-sm mb-1">
+                                Email:{' '}
+                                <a
+                                    href={`mailto:${env.NEXT_PUBLIC_CONTACT_EMAIL}`}
+                                    className="text-blue-600 hover:underline"
+                                >
+                                    {env.NEXT_PUBLIC_CONTACT_EMAIL}
+                                </a>
+                            </p>
+                        )}
+                        {env.NEXT_PUBLIC_CONTACT_PHONE && (
+                            <p className="text-sm">
+                                Phone:{' '}
+                                <a
+                                    href={`tel:${env.NEXT_PUBLIC_CONTACT_PHONE}`}
+                                    className="text-blue-600 hover:underline"
+                                >
+                                    {env.NEXT_PUBLIC_CONTACT_PHONE}
+                                </a>
+                            </p>
+                        )}
+                    </div>
+
+                    <button
+                        onClick={() => sessionId && processPayment(sessionId)}
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 mb-2"
+                    >
+                        Try Again
+                    </button>
+                    <button
+                        onClick={() => router.push(`/${locale}/checkout`)}
+                        className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300"
+                    >
+                        Back to Checkout
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // Success state
+    return (
+        <div className="flex items-center justify-center min-h-screen p-4">
+            <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+                <div className="text-center mb-6">
+                    <div className="text-green-600 text-6xl mb-4">✓</div>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
                         Payment Successful!
                     </h1>
-                    <p className="text-gray-600 mb-4">
-                        Thank you for your purchase!
-                        {email && (
-                            <> A confirmation email has been sent to{' '}
-                            <strong>{email}</strong>.</>
-                        )}
-                    </p>
-                    <p className="text-gray-500">
-                        If you have any questions, please contact our support team.
+                    {transaction?.customerEmail && (
+                        <p className="text-gray-600">
+                            Confirmation email sent to{' '}
+                            <span className="font-semibold">
+                                {transaction.customerEmail}
+                            </span>
+                        </p>
+                    )}
+                </div>
+
+                {transaction && !transaction.alreadyProcessed && transaction.transaction && (
+                    <div className="bg-gray-50 p-4 rounded mb-6">
+                        <h2 className="font-semibold mb-2">Transaction Receipt</h2>
+                        <p className="text-sm text-gray-600 mb-1">
+                            Transaction ID: {transaction.transaction.id}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            Amount:{' '}
+                            {(transaction.transaction.amount / 100).toFixed(2)}{' '}
+                            {transaction.transaction.currency.toUpperCase()}
+                        </p>
+                    </div>
+                )}
+
+                <div className="mb-6">
+                    <p className="text-sm text-gray-700 text-center">
+                        {transaction?.alreadyProcessed
+                            ? 'This purchase has already been processed and unlocked.'
+                            : 'Your purchase has been unlocked and is now available.'}
                     </p>
                 </div>
-            </div>
-        )
-    }
 
-    // Error state
-    return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="max-w-2xl mx-auto text-center">
-                <h1 className="text-3xl font-bold mb-6 text-red-600">Payment Issue</h1>
-                <p className="text-gray-600 mb-8">
-                    {message || 'Unable to confirm payment status. Please contact support if you believe this is an error.'}
-                </p>
-                <button
-                    onClick={() => router.push('/checkout')}
-                    className="inline-block px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                    Return to Checkout
-                </button>
+                {transaction && !transaction.alreadyProcessed && (
+                    <>
+                        <button
+                            onClick={() => redirectToDestination(transaction)}
+                            className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 mb-2"
+                        >
+                            {getButtonText(transaction.purchaseType)}
+                        </button>
+
+                        <p className="text-center text-sm text-gray-500">
+                            Redirecting in {countdown} seconds...
+                        </p>
+                    </>
+                )}
+
+                {transaction?.alreadyProcessed && (
+                    <button
+                        onClick={() => router.push(`/${locale}/workspace/courses`)}
+                        className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700"
+                    >
+                        Go to My Courses
+                    </button>
+                )}
             </div>
         </div>
-    )
+    );
 }

@@ -95,6 +95,8 @@ export default function CoachingOfferingsPanel() {
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [transactionDraft, setTransactionDraft] =
         useState<TransactionDraft | null>(null);
+    const [currentRequest, setCurrentRequest] =
+        useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] =
         useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const { presenter: checkoutPresenter } =
@@ -117,6 +119,7 @@ export default function CoachingOfferingsPanel() {
         request: useCaseModels.TPrepareCheckoutRequest,
     ) => {
         try {
+            setCurrentRequest(request); // Save current request for metadata
             const response = await prepareCheckoutMutation.mutateAsync(request);
             checkoutPresenter.present(response, checkoutViewModel);
         } catch (err) {
@@ -229,7 +232,7 @@ export default function CoachingOfferingsPanel() {
                 locale={locale}
             />
 
-            {transactionDraft && (
+            {transactionDraft && currentRequest && (
                 <CheckoutModal
                     isOpen={isCheckoutOpen}
                     onClose={() => {
@@ -241,6 +244,11 @@ export default function CoachingOfferingsPanel() {
                         env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
                     }
                     customerEmail={sessionDTO.data?.user?.email}
+                    purchaseType={currentRequest.type}
+                    purchaseIdentifier={{
+                        coachingOfferingId: currentRequest.coachingOfferingId,
+                        quantity: currentRequest.quantity,
+                    }}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
                 />

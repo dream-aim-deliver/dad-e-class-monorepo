@@ -80,6 +80,8 @@ export function OffersCourseList({
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [transactionDraft, setTransactionDraft] =
         useState<TransactionDraft | null>(null);
+    const [currentRequest, setCurrentRequest] =
+        useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] =
         useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const { presenter: checkoutPresenter } =
@@ -91,6 +93,7 @@ export function OffersCourseList({
         request: useCaseModels.TPrepareCheckoutRequest,
     ) => {
         try {
+            setCurrentRequest(request); // Save current request for metadata
             const response = await prepareCheckoutMutation.mutateAsync(request);
             checkoutPresenter.present(response, checkoutViewModel);
         } catch (err) {
@@ -251,7 +254,7 @@ export function OffersCourseList({
                 />
             )}
 
-            {transactionDraft && (
+            {transactionDraft && currentRequest && (
                 <CheckoutModal
                     isOpen={isCheckoutOpen}
                     onClose={() => {
@@ -263,6 +266,11 @@ export function OffersCourseList({
                         env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
                     }
                     customerEmail={sessionDTO.data?.user?.email}
+                    purchaseType={currentRequest.type}
+                    purchaseIdentifier={{
+                        courseSlug: currentRequest.courseSlug,
+                        withCoaching: currentRequest.type.includes('WithCoaching'),
+                    }}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
                 />
