@@ -13,7 +13,7 @@ export interface AssignmentOverviewBaseProps extends isLocalAware {
     module: number;
     lesson: number;
     title: string;
-    status: "waiting-feedback" | "long-wait" | "course-completed";
+    status: "waiting-feedback" | "long-wait" | "passed" | null;
     course: {
         imageUrl: string | null;
         title: string;
@@ -199,7 +199,7 @@ export type AssignmentOverviewProps = AssignmentOverviewStudentNoReplyProps | As
  * @param module Module number
  * @param lesson Lesson number
  * @param title Assignment title
- * @param status Current assignment status ("waiting-feedback", "long-wait", or "course-completed")
+ * @param status Current assignment status ("waiting-feedback", "long-wait", "passed", or null)
  * @param course Course information object with id, title, slug, and image
  * @param groupId ID of the associated group
  * @param groupName Name of the group (optional)

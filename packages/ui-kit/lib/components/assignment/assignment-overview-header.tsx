@@ -13,7 +13,7 @@ export interface AssignmentOverviewHeaderBaseProps extends isLocalAware {
     module: number;
     lesson: number;
     title: string;
-    status: "waiting-feedback" | "long-wait" | "course-completed";
+    status: "waiting-feedback" | "long-wait" | "passed" | null;
     course: {
         imageUrl: string | null;
         title: string;
@@ -69,7 +69,7 @@ export type AssignmentOverviewHeaderProps = AssignmentOverviewStudentHeaderProps
  * Status badges are color-coded:
  *   - "waiting-feedback": Warning (yellow/orange) badge
  *   - "long-wait": Error (red) badge indicating overdue or delayed feedback
- *   - "course-completed": Success (green) badge indicating assignment passed
+ *   - "passed": Success (green) badge indicating assignment passed
  * 
  * Navigation elements:
  *   - Course: Displays course avatar and title, clickable to view course details
@@ -165,7 +165,7 @@ export const AssignmentOverviewHeader: FC<AssignmentOverviewHeaderProps> = (prop
                     className="w-fit"
                 />
             )}
-            {props.status === 'course-completed' && (
+            {props.status === 'passed' && (
                 <Badge
                     text={dictionary.components.assignment.assignmentCard.passedText}
                     variant="successprimary"
