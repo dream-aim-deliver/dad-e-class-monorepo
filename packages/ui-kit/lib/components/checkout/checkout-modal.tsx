@@ -32,6 +32,15 @@ export interface CheckoutModalProps extends isLocalAware {
     onPaymentComplete?: (sessionId: string) => void;
     stripePublishableKey: string;
     customerEmail?: string;
+    purchaseType: string;
+    purchaseIdentifier: {
+        courseSlug?: string;
+        packageId?: number;
+        courseIds?: number[]; // For packages - which courses were selected
+        coachingOfferingId?: number;
+        quantity?: number;
+        withCoaching?: boolean; // For courses and packages - was coaching included
+    };
 }
 
 type ModalState = 'summary' | 'payment';
@@ -43,6 +52,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     onPaymentComplete,
     stripePublishableKey,
     customerEmail,
+    purchaseType,
+    purchaseIdentifier,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
@@ -161,6 +172,27 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             }
             if (customerEmail) {
                 params.append('email', customerEmail);
+            }
+
+            // Add purchase metadata
+            params.append('purchaseType', purchaseType);
+            if (purchaseIdentifier.courseSlug) {
+                params.append('courseSlug', purchaseIdentifier.courseSlug);
+            }
+            if (purchaseIdentifier.packageId) {
+                params.append('packageId', purchaseIdentifier.packageId.toString());
+            }
+            if (purchaseIdentifier.courseIds && purchaseIdentifier.courseIds.length > 0) {
+                params.append('courseIds', purchaseIdentifier.courseIds.join(','));
+            }
+            if (purchaseIdentifier.coachingOfferingId) {
+                params.append('coachingOfferingId', purchaseIdentifier.coachingOfferingId.toString());
+            }
+            if (purchaseIdentifier.quantity) {
+                params.append('quantity', purchaseIdentifier.quantity.toString());
+            }
+            if (purchaseIdentifier.withCoaching !== undefined) {
+                params.append('withCoaching', purchaseIdentifier.withCoaching.toString());
             }
 
             const url = params.toString()
