@@ -6,6 +6,7 @@ import { SSO_DE } from '../pages/sso/sso-de';
 import { TDictionary } from './base';
 import { Offers_DE } from '../pages/offers/offers-de';
 import { Coaching_DE } from '../pages/coaching/coaching-de';
+import { CheckoutReturn_DE } from '../pages/checkout-return/checkout-return-de';
 export const DE: TDictionary = {
   components: {
     paginationButton: {
@@ -3285,5 +3286,6 @@ export const DE: TDictionary = {
       description: "Verwalten Sie Kurse, Benutzer und Plattforminhalte.",
       ogDescription: "Leistungsstarkes Content Management für Ihre Lernplattform.",
     },
+    checkoutReturn: CheckoutReturn_DE,
   },
 };
