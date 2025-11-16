@@ -12,7 +12,7 @@ import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { LinkEdit, LinkPreview } from "../links";
 import { IconPlus } from "../icons/icon-plus";
 import { Dialog, DialogContent, DialogBody, DialogClose } from "../dialog";
-import { Banner } from "../banner";
+import Banner from "../banner";
 
 export interface ReplyPanelProps extends isLocalAware {
     role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
