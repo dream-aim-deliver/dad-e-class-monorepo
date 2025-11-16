@@ -1,4 +1,5 @@
 import { useSlate } from "slate-react";
+import { Editor, Element } from "slate";
 import {
   HEADINGS,
   RichTextAction,
@@ -14,6 +15,27 @@ import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
 export default function Toolbar({ locale }: isLocalAware) {
   const editor = useSlate();
+
+  // Get the current block type from the editor selection
+  const getCurrentBlockType = (): string => {
+    const { selection } = editor;
+    if (!selection) return "paragraph";
+
+    const [match] = Array.from(
+      Editor.nodes(editor, {
+        at: Editor.unhangRange(editor, selection),
+        match: (node) => !Editor.isEditor(node) && Element.isElement(node) && node.type !== undefined,
+      })
+    );
+
+    if (match && Element.isElement(match[0])) {
+      return match[0].type || "paragraph";
+    }
+
+    return "paragraph";
+  };
+
+  const currentBlockType = getCurrentBlockType();
 
   const onMarkClick = (id: RichTextAction) => {
     toggleMark(editor as EditorType, id as MarkKey);
@@ -63,10 +85,10 @@ export default function Toolbar({ locale }: isLocalAware) {
       <div className="flex items-center space-x-2">
         <select
           className="px-4 py-2 border border-neutral-500 rounded-md focus:outline-none focus:ring-1"
-          defaultValue={dictionary.components.richTextToolbar.paragraph}
+          value={currentBlockType}
           onChange={(e) => toggleBlock(editor as EditorType, e.target.value as ElementKey)}
         >
-          <option value={dictionary.components.richTextToolbar.paragraph}>{dictionary.components.richTextToolbar.paragraph}</option>
+          <option value="paragraph">{dictionary.components.richTextToolbar.paragraph}</option>
           {HEADINGS.map((heading) => (
             <option key={heading} value={heading}>
               {heading}
