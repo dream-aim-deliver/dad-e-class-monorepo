@@ -1898,7 +1898,7 @@ export const EN: TDictionary = {
         confirmAddTitle: 'Add Coach to Course',
         confirmAddMessage: 'Are you sure you want to add this coach to the course?',
         confirmRemoveTitle: 'Remove Coach from Course',
-        confirmRemoveMessage: 'Are you sure you want to remove this coach from the course? This action cannot be undone.',
+        confirmRemoveMessage: 'Are you sure you want to remove this coach from the course?',
         confirmButton: 'Confirm',
         cancelButton: 'Cancel',
         addingCoach: 'Adding coach...',
