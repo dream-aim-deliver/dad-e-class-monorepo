@@ -2178,6 +2178,7 @@ export const DE: TDictionary = {
       editProfile: 'Profil bearbeiten',
       viewCalendar: 'Kalender anzeigen',
       defaultDisplayName: 'Student',
+      redeemCoupon: 'Gutschein einlösen',
       yourCourses: "Deine Kurse",
       createCourse: "Kurs erstellen",
       viewAllCourses: "Alle Kurse anzeigen",
@@ -2186,7 +2187,13 @@ export const DE: TDictionary = {
       duplicatingCourse: "Kurs wird dupliziert, bitte warten...",
       duplicateSuccess: "Kurs erfolgreich dupliziert!",
       duplicateError: "Fehler beim Duplizieren des Kurses. Bitte versuchen Sie es erneut.",
-      redeemCoupon: 'Gutschein einlösen',
+      coupon: {
+        error: {
+          redeemFailedTitle: "Gutscheineinlösung fehlgeschlagen",
+          redeemFailed: "Gutschein konnte nicht eingelöst werden",
+          redeemFailedGeneric: "Der Gutscheincode konnte nicht eingelöst werden. Bitte überprüfen Sie den Code und versuchen Sie es erneut.",
+        },
+      },
     },
     manageTopics: {
       title: 'Themen verwalten (aka Fähigkeiten)',
@@ -2378,26 +2385,6 @@ export const DE: TDictionary = {
         accessDenied: 'Zugriff verweigert. Nur Coaches können auf beendete Gruppenkurs-Sitzungen zugreifen.',
         notFoundTitle: 'Keine Sitzungen gefunden',
         notFoundDescription: 'Es gibt keine beendeten Coaching-Sitzungen für diese Gruppe.',
-      },
-    },
-    userDashboard: {
-      editProfile: "Profil bearbeiten",
-      viewCalendar: "Kalender anzeigen",
-      redeemCoupon: "Gutschein einlösen",
-      yourCourses: "Deine Kurse",
-      createCourse: "Kurs erstellen",
-      viewAllCourses: "Alle Kurse anzeigen",
-      errorAccess: "Zugriff verweigert. Sie haben keine Berechtigung, auf das Dashboard zuzugreifen.",
-      errorFailed: "Fehler beim Laden der Dashboard-Daten. Bitte versuchen Sie es später erneut.",
-      duplicatingCourse: "Kurs wird dupliziert, bitte warten...",
-      duplicateSuccess: "Kurs erfolgreich dupliziert!",
-      duplicateError: "Fehler beim Duplizieren des Kurses. Bitte versuchen Sie es erneut.",
-      coupon: {
-        error: {
-          redeemFailedTitle: "Gutscheineinlösung fehlgeschlagen",
-          redeemFailed: "Gutschein konnte nicht eingelöst werden",
-          redeemFailedGeneric: "Der Gutscheincode konnte nicht eingelöst werden. Bitte überprüfen Sie den Code und versuchen Sie es erneut.",
-        },
       },
     },
     userCoachingSessions: {
