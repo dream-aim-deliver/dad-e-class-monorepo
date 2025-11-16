@@ -23,6 +23,7 @@ import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import CMSTRPCClientProviders from '../../../trpc/cms-client-provider';
 import { useCoachMutations } from './hooks/use-coach-mutations';
 import { TListCoachesSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
+import { useRouter } from 'next/navigation';
 
 interface EnrolledCoachesProps {
     courseSlug: string;
@@ -30,9 +31,19 @@ interface EnrolledCoachesProps {
 }
 type Coach = TListCoachesSuccessResponse['data']['coaches'][0];
 
+// Utility function to compute coach display name for avatar
+function getCoachDisplayName(coach: Coach): string {
+    if (coach.name && coach.surname) {
+        return `${coach.name} ${coach.surname}`;
+    }
+    // For username-only coaches, use username so UserAvatar shows first 2 letters
+    return coach.username;
+}
+
 function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.course.enrolledCoaches');
+    const router = useRouter();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [localAddedCoaches, setLocalAddedCoaches] = useState<number[]>([]);
 
@@ -400,10 +411,10 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                                 cardDetails: baseCardDetails,
                                 locale,
                                 onClickViewProfile: () => {
-                                    // TODO:Navigate to coach profile or show modal
+                                    window.open(`/coaches/${coach.username}`, '_blank');
                                 },
                                 onClickCourse: (slug: string) => {
-                                    // TODO: Navigate to course page
+                                    window.open(`/courses/${slug}`, '_blank');
                                 },
                             };
 
@@ -550,9 +561,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                 >
                     <AddCoachModal
                         locale={locale}
-                        onClose={() => {
-                            setIsAddModalOpen(false);
-                        }}
+                        onClose={() => setIsAddModalOpen(false)}
                         onAdd={handleAddCoachClick}
                         content={mappedAvailableCoaches}
                         addedCoachIds={addedCoachIds}
