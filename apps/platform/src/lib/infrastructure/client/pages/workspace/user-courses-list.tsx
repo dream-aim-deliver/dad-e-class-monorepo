@@ -214,6 +214,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                     onClickUser(course.author?.username || '')
                                 }
                                 onEdit={() => onCourseEdit(course.slug || '')}
+                                onGoToOffer={() => onCourseVisit(course.slug || '')}
                             />
                         );
                     }
