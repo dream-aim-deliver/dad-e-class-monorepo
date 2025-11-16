@@ -15,6 +15,10 @@ vi.mock('@maany_shr/e-class-translations', () => ({
                     yourCommentsText: 'Your Comments',
                     addLinkText: 'Add Link',
                     replyPlaceholderText: 'Type your comments here...',
+                    confirmPassTitle: 'Mark Assignment as Passed?',
+                    confirmPassMessage: 'Are you sure you want to mark this assignment as passed?',
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Confirm',
                 },
             },
         },
@@ -59,6 +63,13 @@ vi.mock('../lib/components/tooltip', () => ({
     default: ({ description }) => <span data-testid="tooltip">{description}</span>
 }));
 
+vi.mock('../lib/components/dialog', () => ({
+    Dialog: ({ children, open }) => open ? <div data-testid="dialog">{children}</div> : null,
+    DialogContent: ({ children }) => <div data-testid="dialog-content">{children}</div>,
+    DialogBody: ({ children }) => <div data-testid="dialog-body">{children}</div>,
+    DialogClose: ({ children, asChild }) => asChild === false ? <div>{children}</div> : children,
+}));
+
 const defaultProps = {
     role: 'coach',
     comment: 'This is my feedback',
@@ -94,6 +105,7 @@ const defaultProps = {
     onFileDownload: vi.fn(),
     onFileDelete: vi.fn(),
     onLinkDelete: vi.fn(),
+    onLinkDiscard: vi.fn(),
     onFilesChange: vi.fn().mockResolvedValue({ id: '3', name: 'newfile.pdf' }),
     onUploadComplete: vi.fn(),
     onCreateLink: vi.fn().mockResolvedValue({ linkId: 3, title: 'Link 3', url: 'https://link3.com' }),
@@ -150,9 +162,12 @@ describe('ReplyPanel Component', () => {
         expect(defaultProps.onClickSendMessage).toHaveBeenCalled();
     });
 
-    it('calls onClickMarkAsPassed when mark as passed button is clicked', () => {
+    it('calls onClickMarkAsPassed when mark as passed button is clicked and confirmed', () => {
         render(<ReplyPanel {...defaultProps} />);
+        // Click "Mark as Passed" to open the confirmation dialog
         fireEvent.click(screen.getByText('Mark as Passed'));
+        // Click "Confirm" button in the dialog
+        fireEvent.click(screen.getByText('Confirm'));
         expect(defaultProps.onClickMarkAsPassed).toHaveBeenCalled();
     });
 
@@ -162,7 +177,7 @@ describe('ReplyPanel Component', () => {
         expect(defaultProps.onClickAddLink).toHaveBeenCalled();
     });
 
-    it('renders LinkEdit when linkEditIndex matches and calls onCreateLink/onLinkDelete', async () => {
+    it('renders LinkEdit when linkEditIndex matches and calls onCreateLink/onLinkDiscard', async () => {
         const props = { ...defaultProps, linkEditIndex: 1 };
         render(<ReplyPanel {...props} />);
         expect(screen.getByTestId('link-edit')).toBeInTheDocument();
@@ -171,7 +186,7 @@ describe('ReplyPanel Component', () => {
         expect(props.onCreateLink).toHaveBeenCalledWith({ title: 'Edited Link', url: 'https://edited.com', customIcon: undefined, linkId: 2 }, 1);
 
         fireEvent.click(screen.getByTestId('discard-link'));
-        expect(props.onLinkDelete).toHaveBeenCalledWith(1);
+        expect(props.onLinkDiscard).toHaveBeenCalledWith(1);
     });
 
     it('calls onClickEditLink when Edit button of LinkPreview is clicked', () => {

@@ -142,11 +142,6 @@ const mockRedeemGroup = async (code: string) => {
     return { valid: false };
 };
 
-// Mock final redemption with delay
-const mockFinalRedeem = async (code: string, data: any) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log('Coupon redeemed:', code, data);
-};
 
 // State Stories
 export const DefaultState: StoryObj<typeof RedeemStandaloneCoupon> = {
@@ -154,13 +149,12 @@ export const DefaultState: StoryObj<typeof RedeemStandaloneCoupon> = {
     args: {
         locale: 'en',
         onRedeem: mockRedeemUniversal,
-        onFinalRedeem: mockFinalRedeem,
         onClose: () => console.log('Modal Closed'),
     },
     parameters: {
         docs: {
             description: {
-                story: 'Try these codes: COURSE2024, PACKAGE2024, COACHING2024, or GROUP2024. Any other code will show invalid state.',
+                story: 'Enter a coupon code and click "Redeem Coupon". Try these codes: COURSE2024, PACKAGE2024, COACHING2024, or GROUP2024. Any other code will show invalid state.',
             },
         },
     },
@@ -182,8 +176,8 @@ export const InvalidState: StoryObj<typeof RedeemStandaloneCoupon> = {
     },
 };
 
-export const LoadingState: StoryObj<typeof RedeemStandaloneCoupon> = {
-    name: '3. Loading State',
+export const RedeemingState: StoryObj<typeof RedeemStandaloneCoupon> = {
+    name: '3. Redeeming State',
     args: {
         locale: 'en',
         onRedeem: async (code: string) => {
@@ -195,109 +189,71 @@ export const LoadingState: StoryObj<typeof RedeemStandaloneCoupon> = {
     parameters: {
         docs: {
             description: {
-                story: 'Enter any valid code (COURSE2024, PACKAGE2024, COACHING2024, GROUP2024) to see the loading state for 5 seconds.',
-            },
-        },
-    },
-};
-
-export const ValidStateCourse: StoryObj<typeof RedeemStandaloneCoupon> = {
-    name: '4. Valid State - Course',
-    args: {
-        locale: 'en',
-        onRedeem: mockRedeemValid,
-        onFinalRedeem: mockFinalRedeem,
-        onClose: () => console.log('Modal Closed'),
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Enter the code "COURSE2024" to see the valid state showing a course is available. Any other code will show the invalid state.',
-            },
-        },
-    },
-};
-
-export const ValidStatePackage: StoryObj<typeof RedeemStandaloneCoupon> = {
-    name: '4. Valid State - Package',
-    args: {
-        locale: 'en',
-        onRedeem: mockRedeemPackage,
-        onFinalRedeem: mockFinalRedeem,
-        onClose: () => console.log('Modal Closed'),
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Enter the code "PACKAGE2024" to see the valid state showing a package is available. Any other code will show the invalid state.',
-            },
-        },
-    },
-};
-
-export const ValidStateCoaching: StoryObj<typeof RedeemStandaloneCoupon> = {
-    name: '4. Valid State - Coaching',
-    args: {
-        locale: 'en',
-        onRedeem: mockRedeemCoaching,
-        onFinalRedeem: mockFinalRedeem,
-        onClose: () => console.log('Modal Closed'),
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Enter the code "COACHING2024" to see the valid state showing a coaching session is available. Any other code will show the invalid state.',
-            },
-        },
-    },
-};
-
-export const ValidStateGroup: StoryObj<typeof RedeemStandaloneCoupon> = {
-    name: '4. Valid State - Group',
-    args: {
-        locale: 'en',
-        onRedeem: mockRedeemGroup,
-        onFinalRedeem: mockFinalRedeem,
-        onClose: () => console.log('Modal Closed'),
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Enter the code "GROUP2024" to see the valid state showing a group is available. Any other code will show the invalid state.',
+                story: 'Enter any valid code (COURSE2024, PACKAGE2024, COACHING2024, GROUP2024) and click "Redeem Coupon" to see the redeeming state with spinner for 5 seconds.',
             },
         },
     },
 };
 
 export const RedeemedStateCourse: StoryObj<typeof RedeemStandaloneCoupon> = {
-    name: '5. Redeemed State - Course',
+    name: '4. Redeemed State - Course',
     args: {
         locale: 'en',
         onRedeem: mockRedeemValid,
-        onFinalRedeem: mockFinalRedeem,
         onClose: () => console.log('Modal Closed'),
     },
     parameters: {
         docs: {
             description: {
-                story: 'Enter the code "COURSE2024", wait for validation, then click "Redeem Coupon" to see the success/redeemed state.',
+                story: 'Enter the code "COURSE2024" and click "Redeem Coupon" to see the success/redeemed state for a course.',
             },
         },
     },
 };
 
 export const RedeemedStatePackage: StoryObj<typeof RedeemStandaloneCoupon> = {
-    name: '5. Redeemed State - Package',
+    name: '4. Redeemed State - Package',
     args: {
         locale: 'en',
         onRedeem: mockRedeemPackage,
-        onFinalRedeem: mockFinalRedeem,
         onClose: () => console.log('Modal Closed'),
     },
     parameters: {
         docs: {
             description: {
-                story: 'Enter the code "PACKAGE2024", wait for validation, then click "Redeem Coupon" to see the success/redeemed state for a package.',
+                story: 'Enter the code "PACKAGE2024" and click "Redeem Coupon" to see the success/redeemed state for a package.',
+            },
+        },
+    },
+};
+
+export const RedeemedStateCoaching: StoryObj<typeof RedeemStandaloneCoupon> = {
+    name: '4. Redeemed State - Coaching',
+    args: {
+        locale: 'en',
+        onRedeem: mockRedeemCoaching,
+        onClose: () => console.log('Modal Closed'),
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Enter the code "COACHING2024" and click "Redeem Coupon" to see the success/redeemed state for a coaching session.',
+            },
+        },
+    },
+};
+
+export const RedeemedStateGroup: StoryObj<typeof RedeemStandaloneCoupon> = {
+    name: '4. Redeemed State - Group',
+    args: {
+        locale: 'en',
+        onRedeem: mockRedeemGroup,
+        onClose: () => console.log('Modal Closed'),
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Enter the code "GROUP2024" and click "Redeem Coupon" to see the success/redeemed state for a group.',
             },
         },
     },

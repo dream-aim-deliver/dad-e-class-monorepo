@@ -68,7 +68,8 @@ const ModalTemplate: FC<{
     locale: 'en' | 'de';
     role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     withReplies?: boolean;
-}> = ({ locale, role, withReplies }) => {
+    status?: 'active' | 'passed';
+}> = ({ locale, role, withReplies, status = 'active' }) => {
     const sender = role === 'coach' ? mockCoach : mockStudent;
 
     // Assignment-level state
@@ -84,18 +85,18 @@ const ModalTemplate: FC<{
         const file = generateFile();
         const link = generateLink();
 
-        return [
+        const baseMessages: assignment.TAssignmentReplyWithId[] = [
             {
                 replyId: 1,
-                timestamp: new Date().toISOString(),
-                type: "text",
+                timestamp: Math.floor((Date.now() - 172800000) / 1000), // 2 days ago in seconds
+                type: "text" as const,
                 comment: "Great job!",
                 sender: mockCoach,
             },
             {
                 replyId: 2,
-                timestamp: new Date().toISOString(),
-                type: "resources",
+                timestamp: Math.floor((Date.now() - 86400000) / 1000), // 1 day ago in seconds
+                type: "resources" as const,
                 comment: "Thanks for feedback!",
                 sender: mockStudent,
                 files: [file],
@@ -103,18 +104,31 @@ const ModalTemplate: FC<{
             },
             {
                 replyId: 3,
-                timestamp: new Date().toISOString(),
-                type: "resources",
+                timestamp: Math.floor((Date.now() - 3600000) / 1000), // 1 hour ago in seconds
+                type: "resources" as const,
                 comment: "Please check these resources.",
                 files: [file],
                 links: [link],
                 sender: mockCoach,
             },
         ];
+
+        // If status is passed, add a passed reply
+        if (status === 'passed') {
+            return [
+                ...baseMessages,
+                {
+                    replyId: 4,
+                    timestamp: Math.floor((Date.now() - 1800000) / 1000), // 30 minutes ago in seconds
+                    type: 'passed' as const,
+                    sender: mockCoach,
+                },
+            ];
+        }
+
+        return baseMessages;
     });
 
-    // Track per reply editing
-    const [messageLinkEditIndexes, setMessageLinkEditIndexes] = useState<Record<number, number | null>>({});
 
     // REPLY PANEL STATE
     const [replyComment, setReplyComment] = useState('');
@@ -134,7 +148,6 @@ const ModalTemplate: FC<{
                 // Assignment-level...
             },
             messages,
-            messagesLinkEditIndexes: messageLinkEditIndexes,
             replyPanel: {
                 replyComment,
                 replyFiles,
@@ -149,7 +162,6 @@ const ModalTemplate: FC<{
         links,
         linkEditIndex,
         messages,
-        messageLinkEditIndexes,
         replyComment,
         replyFiles,
         replyLinks,
@@ -158,6 +170,8 @@ const ModalTemplate: FC<{
     ]);
 
     const handleFileDownload = (id: string) => alert(`Download file ${id}`);
+
+    const handleMessageFileDownload = (file: fileMetadata.TFileMetadata) => alert(`Download file ${file.name}`);
 
     const handleFileDelete = (assignmentId: number, fileId: string) => {
         setFiles(prev => prev.filter(file => file.id !== fileId));
@@ -171,43 +185,22 @@ const ModalTemplate: FC<{
     };
 
     const handleImageChange = async (
-        image: fileMetadata.TFileMetadata,
+        fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
-    ) => {
-        if (linkEditIndex === null) return;
-        setLinks(links =>
-            links.map((link, idx) =>
-                idx === linkEditIndex
-                    ? { ...link, customIcon: { ...image, status: 'processing' as const } }
-                    : link
-            )
-        );
-        try {
-            await new Promise<void>((resolve, reject) => {
-                const timeout = setTimeout(resolve, 2000);
-                if (abortSignal) {
-                    abortSignal.addEventListener('abort', () => {
-                        clearTimeout(timeout);
-                        reject(new DOMException('Cancelled', 'AbortError'));
-                    });
-                }
-            });
+    ): Promise<fileMetadata.TFileMetadata> => {
+        const uploadedFile = await simulateFileUpload(fileRequest, abortSignal);
+
+        if (linkEditIndex !== null) {
             setLinks(links =>
                 links.map((link, idx) =>
                     idx === linkEditIndex
-                        ? { ...link, customIcon: { ...image, status: 'available' as const } }
-                        : link
-                )
-            );
-        } catch {
-            setLinks(links =>
-                links.map((link, idx) =>
-                    idx === linkEditIndex
-                        ? { ...link, customIcon: undefined }
+                        ? { ...link, customIcon: uploadedFile }
                         : link
                 )
             );
         }
+
+        return uploadedFile;
     };
 
     const handleDeleteIcon = (id: string) => {
@@ -222,69 +215,36 @@ const ModalTemplate: FC<{
     };
 
     const handleReplyImageChange = async (
-        image: fileMetadata.TFileMetadata,
+        fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
-    ) => {
+    ): Promise<fileMetadata.TFileMetadata> => {
+        const uploadedFile = await simulateFileUpload(fileRequest, abortSignal);
+
         // Use the index logic as in your robust reply story
         const editIdx = replyDraftLink ? replyLinks.length : replyLinkEditIndex;
-        if (typeof editIdx !== "number") return;
+        if (typeof editIdx === "number") {
+            const linksList = replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks;
 
-        const linksList = replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks;
-
-        // "processing" state
-        const updated = linksList.map((link, idx) =>
-            idx === editIdx
-                ? { ...link, customIcon: { ...image, status: 'processing' as const } }
-                : link
-        );
-        if (replyDraftLink) {
-            setReplyDraftLink(updated.pop()!);
-            setReplyLinks(updated);
-        } else {
-            setReplyLinks(updated);
-        }
-        try {
-            await new Promise<void>((resolve, reject) => {
-                const timeout = setTimeout(resolve, 2000);
-                if (abortSignal) {
-                    abortSignal.addEventListener('abort', () => {
-                        clearTimeout(timeout);
-                        reject(new DOMException('Cancelled', 'AbortError'));
-                    });
-                }
-            });
-            const available = (replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks).map((link, idx) =>
+            const updated = linksList.map((link, idx) =>
                 idx === editIdx
-                    ? { ...link, customIcon: { ...image, status: 'available' as const } }
+                    ? { ...link, customIcon: uploadedFile }
                     : link
             );
             if (replyDraftLink) {
-                setReplyDraftLink(available.pop()!);
-                setReplyLinks(available);
+                setReplyDraftLink(updated.pop()!);
+                setReplyLinks(updated);
             } else {
-                setReplyLinks(available);
-            }
-        } catch {
-            const removed = (replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks).map((link, idx) =>
-                idx === editIdx
-                    ? { ...link, customIcon: undefined }
-                    : link
-            );
-            if (replyDraftLink) {
-                setReplyDraftLink(removed.pop()!);
-                setReplyLinks(removed);
-            } else {
-                setReplyLinks(removed);
+                setReplyLinks(updated);
             }
         }
+
+        return uploadedFile;
     };
 
-    const handleReplyDeleteIcon = (id: string) => {
-        const editIdx = replyDraftLink ? replyLinks.length : replyLinkEditIndex;
-        if (typeof editIdx !== "number") return;
+    const handleReplyDeleteIcon = (index: number) => {
         const linksList = replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks;
         const updated = linksList.map((link, idx) =>
-            idx === editIdx && link.customIcon?.id === id
+            idx === index
                 ? { ...link, customIcon: undefined }
                 : link
         );
@@ -312,7 +272,7 @@ const ModalTemplate: FC<{
             {
                 ...reply,
                 replyId: Date.now(),
-                timestamp: new Date().toISOString(),
+                timestamp: Math.floor(Date.now() / 1000), // Convert to seconds
             },
         ]);
 
@@ -359,7 +319,8 @@ const ModalTemplate: FC<{
             return {
                 ...baseMetadata,
                 category: 'video' as const,
-                videoId: Math.floor(Math.random() * 1000),
+                videoId: String(Math.floor(Math.random() * 1000)),
+                url: URL.createObjectURL(file.file),
                 thumbnailUrl: 'https://via.placeholder.com/150x100?text=Video+Thumbnail',
             };
         } else if (
@@ -381,29 +342,6 @@ const ModalTemplate: FC<{
         }
     };
 
-    const handleMessageChange = (
-        updatedFiles: fileMetadata.TFileMetadata[],
-        updatedLinks: shared.TLinkWithId[],
-        linkEditIndex: number | null,
-        messageId: number
-    ) => {
-        setMessages(prev =>
-            prev.map(msg =>
-                msg.replyId === messageId
-                    ? {
-                        ...msg,
-                        type: "resources",
-                        files: updatedFiles,
-                        links: updatedLinks,
-                    }
-                    : msg
-            )
-        );
-        setMessageLinkEditIndexes(prev => ({
-            ...prev,
-            [messageId]: linkEditIndex,
-        }));
-    };
 
     return (
         <AssignmentModal
@@ -433,122 +371,20 @@ const ModalTemplate: FC<{
             onClose={() => alert("Modal closed")}
         >
             <div className="flex flex-col gap-4 w-full">
-                {messages.map((msg, index) => {
-                    const isResourcesType = msg.type === "resources";
+                {messages.map((msg) => (
+                    <Message
+                        key={msg.replyId}
+                        reply={msg}
+                        locale={locale}
+                        onFileDownload={handleMessageFileDownload}
+                    />
+                ))}
 
-                    // narrow the type to include `files` and `links`.
-                    const files = isResourcesType ? msg.files ?? [] : [];
-                    const links = isResourcesType ? msg.links ?? [] : [];
-
-                    const msgLinkEditIndex = messageLinkEditIndexes[msg.replyId] ?? null;
-
-                    const handleMessageImageChange = async (
-                        image: fileMetadata.TFileMetadata,
-                        abortSignal?: AbortSignal
-                    ) => {
-                        if (msgLinkEditIndex === null) return;
-
-                        const isResourcesType = msg.type === "resources";
-                        const files = isResourcesType ? msg.files ?? [] : [];
-                        const links = isResourcesType ? msg.links ?? [] : [];
-
-                        // Set status to processing for customIcon of editing link
-                        const updatedLinks = links.map((link, idx) =>
-                            idx === msgLinkEditIndex
-                                ? { ...link, customIcon: { ...image, status: 'processing' as const } }
-                                : link
-                        );
-                        handleMessageChange(files, updatedLinks, msgLinkEditIndex, msg.replyId);
-
-                        try {
-                            await new Promise<void>((resolve, reject) => {
-                                const timeout = setTimeout(resolve, 2000);
-                                if (abortSignal) {
-                                    abortSignal.addEventListener('abort', () => {
-                                        clearTimeout(timeout);
-                                        reject(new DOMException('Cancelled', 'AbortError'));
-                                    });
-                                }
-                            });
-
-                            // set status to available
-                            const readyLinks = links.map((link, idx) =>
-                                idx === msgLinkEditIndex
-                                    ? { ...link, customIcon: { ...image, status: 'available' as const } }
-                                    : link
-                            );
-                            handleMessageChange(files, readyLinks, msgLinkEditIndex, msg.replyId);
-                        } catch {
-                            // remove icon if aborted
-                            const removedLinks = links.map((link, idx) =>
-                                idx === msgLinkEditIndex
-                                    ? { ...link, customIcon: undefined }
-                                    : link
-                            );
-                            handleMessageChange(files, removedLinks, msgLinkEditIndex, msg.replyId);
-                        }
-                    };
-
-                    const handleMessageDeleteIcon = (id: string) => {
-                        if (msgLinkEditIndex === null) return;
-
-                        const isResourcesType = msg.type === "resources";
-                        const files = isResourcesType ? msg.files ?? [] : [];
-                        const links = isResourcesType ? msg.links ?? [] : [];
-
-                        const updatedLinks = links.map((link, idx) =>
-                            idx === msgLinkEditIndex && link.customIcon?.id === id
-                                ? { ...link, customIcon: undefined }
-                                : link
-                        );
-                        handleMessageChange(files, updatedLinks, msgLinkEditIndex, msg.replyId);
-                    };
-
-                    return (
-                        <Message
-                            key={msg.replyId}
-                            reply={msg}
-                            linkEditIndex={messageLinkEditIndexes[msg.replyId] ?? null}
-                            locale={locale}
-                            onFileDownload={handleFileDownload}
-                            onFileDelete={(_id, fileId) => {
-                                // only handle if resource type
-                                isResourcesType &&
-                                    handleMessageChange(
-                                        files.filter((f) => f.id !== fileId),
-                                        links,
-                                        null,
-                                        msg.replyId
-                                    );
-                            }}
-                            onLinkDelete={(_id, linkId) => {
-                                isResourcesType &&
-                                    handleMessageChange(
-                                        files,
-                                        links.filter((l) => l.linkId !== linkId),
-                                        null,
-                                        msg.replyId
-                                    );
-                            }}
-                            onChange={(newFiles, newLinks, newLinkEditIndex) =>
-                                handleMessageChange(
-                                    newFiles,
-                                    newLinks,
-                                    newLinkEditIndex ?? null,
-                                    msg.replyId
-                                )
-                            }
-                            onImageChange={handleMessageImageChange}
-                            onDeleteIcon={handleMessageDeleteIcon}
-                        />
-                    );
-                })}
-
-                <ReplyPanel
+                {status !== 'passed' && (
+                    <ReplyPanel
                     locale={locale}
                     role={role}
                     comment={replyComment}
-                    sender={sender}
                     files={replyFiles}
                     links={replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks}
                     linkEditIndex={replyDraftLink ? replyLinks.length : replyLinkEditIndex}
@@ -561,7 +397,17 @@ const ModalTemplate: FC<{
                     onUploadComplete={(file) =>
                         setReplyFiles((prev) => [...prev, file])
                     }
-                    onClickSendMessage={(reply) => handleSendMessage(reply)}
+                    onClickSendMessage={() => {
+                        // Construct reply from current state
+                        const reply: assignment.TAssignmentReply = {
+                            type: 'resources',
+                            comment: replyComment,
+                            sender: sender,
+                            files: replyFiles,
+                            links: replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks,
+                        };
+                        handleSendMessage(reply);
+                    }}
                     onClickAddLink={() => {
                         if (!replyDraftLink && replyLinkEditIndex === undefined) {
                             setReplyDraftLink({ linkId: 0, url: "", title: "" });
@@ -571,7 +417,7 @@ const ModalTemplate: FC<{
                         if (replyDraftLink) setReplyDraftLink(null);
                         setReplyLinkEditIndex(index);
                     }}
-                    onLinkDelete={(linkId, index) => {
+                    onLinkDelete={(index) => {
                         if (replyDraftLink && index === replyLinks.length) {
                             setReplyDraftLink(null);
                         } else {
@@ -603,7 +449,24 @@ const ModalTemplate: FC<{
                     }}
                     onImageChange={handleReplyImageChange}
                     onDeleteIcon={handleReplyDeleteIcon}
+                    onLinkDiscard={(index) => {
+                        if (replyDraftLink && index === replyLinks.length) {
+                            setReplyDraftLink(null);
+                        } else if (typeof replyLinkEditIndex === "number") {
+                            setReplyLinkEditIndex(undefined);
+                        }
+                    }}
+                    onClickMarkAsPassed={() => {
+                        // Simulate marking as passed
+                        const passedReply: assignment.TAssignmentReply = {
+                            type: 'passed' as const,
+                            sender: mockCoach,
+                        };
+                        handleSendMessage(passedReply);
+                        alert("Assignment marked as passed!");
+                    }}
                 />
+                )}
             </div>
         </AssignmentModal>
     );
@@ -624,5 +487,13 @@ export const WithMessages: Story = {
     args: {
         locale: "en",
         role: "coach",
+    },
+};
+
+export const PassedAssignment: Story = {
+    render: (args) => <ModalTemplate locale={args.locale} role={args.role} withReplies status="passed" />,
+    args: {
+        locale: "en",
+        role: "student",
     },
 };

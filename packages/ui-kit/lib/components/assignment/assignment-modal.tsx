@@ -210,8 +210,7 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                 onClickUser={onClickUser}
                 onClickGroup={onClickGroup}
                 locale={locale}
-                role={role}
-            />
+                role={role} description={''} assignmentId={0}            />
 
             <div className="w-full h-[1px] bg-divider" />
 
@@ -250,7 +249,12 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                                 initialCustomIcon={link.customIcon}
                                 onSave={(title, url, customIcon) =>
                                     handleSaveLink(
-                                        { title, url, customIcon },
+                                        {
+                                            url,
+                                            title,
+                                            linkId: link.linkId as number,
+                                            customIcon,
+                                        },
                                         index,
                                     )
                                 }

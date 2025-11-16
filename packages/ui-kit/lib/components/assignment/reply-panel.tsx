@@ -1,4 +1,6 @@
-import { FC } from "react";
+"use client";
+
+import { FC, useState } from "react";
 import { Button } from "../button";
 import { IconCoachingSession } from "../icons/icon-coaching-session";
 import Tooltip from "../tooltip";
@@ -9,6 +11,7 @@ import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { LinkEdit, LinkPreview } from "../links";
 import { IconPlus } from "../icons/icon-plus";
+import { Dialog, DialogContent, DialogBody, DialogClose } from "../dialog";
 
 export interface ReplyPanelProps extends isLocalAware {
     role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
@@ -95,6 +98,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
     onFileDownload,
     onFileDelete,
     onLinkDelete,
+    onLinkDiscard,
     onFilesChange,
     onUploadComplete,
     onCreateLink,
@@ -108,6 +112,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
     isSending,
 }) => {
     const dictionary = getDictionary(locale);
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
     const isFormInvalid = !comment && files.length === 0 && links.length === 0;
     // TODO: Implement spinning indicator during sending
@@ -129,7 +134,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                             iconLeft={<IconAssignmentPassed />}
                             hasIconLeft
                             text={dictionary.components.assignment.replyPanel.markAsPassedText}
-                            onClick={onClickMarkAsPassed}
+                            onClick={() => setShowConfirmDialog(true)}
                             disabled={isSending}
                         />
                     )}
@@ -158,7 +163,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                         initialUrl={link.url as string}
                                         initialCustomIcon={link.customIcon}
                                         onSave={(title, url, customIcon) => onCreateLink({ title, url, customIcon, linkId: link.linkId as number }, index)}
-                                        onDiscard={() => onLinkDelete(index)}
+                                        onDiscard={() => onLinkDiscard(index)}
                                         onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
                                         onDeleteIcon={() => onDeleteIcon(index)}
                                     />
@@ -218,6 +223,36 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                     disabled={isFormInvalid || isSending}
                 />
             </div>
+
+            <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog} defaultOpen={false}>
+                <DialogContent showCloseButton={true} closeOnOverlayClick={true} closeOnEscape={true}>
+                    <DialogBody>
+                        <div className="flex flex-col gap-4 p-2">
+                            <h3>
+                                {dictionary.components.assignment.replyPanel.confirmPassTitle}
+                            </h3>
+                            <p className="text-sm text-text-secondary">
+                                {dictionary.components.assignment.replyPanel.confirmPassMessage}
+                            </p>
+                            <div className="flex gap-2 justify-end items-center">
+                                <DialogClose asChild={false}>
+                                    <Button variant="secondary" size="medium" text={dictionary.components.assignment.replyPanel.cancelButton} />
+                                </DialogClose>
+                                <Button
+                                    variant="primary"
+                                    size="medium"
+                                    text={dictionary.components.assignment.replyPanel.confirmButton}
+                                    onClick={() => {
+                                        onClickMarkAsPassed();
+                                        setShowConfirmDialog(false);
+                                    }}
+                                    disabled={isSending}
+                                />
+                            </div>
+                        </div>
+                    </DialogBody>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
