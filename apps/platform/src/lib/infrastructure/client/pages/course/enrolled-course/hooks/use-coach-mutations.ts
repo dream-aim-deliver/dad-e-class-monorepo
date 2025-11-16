@@ -5,7 +5,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useAddCourseCoachPresenter } from '../../../../hooks/use-add-course-coach-presenter';
 import { useRemoveCourseCoachPresenter } from '../../../../hooks/use-remove-course-coach-presenter';
 
-export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<void>, onCoachAdded?: (coach: any) => void, onCoachRemoved?: (coachUsername: string) => void) {
+export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<void>, onCoachAdded?: (coach: any) => void, onCoachRemoved?: (coachId: number) => void) {
 
     // View models for mutation results
     const [addCoachViewModel, setAddCoachViewModel] = useState<viewModels.TAddCourseCoachViewModel | undefined>(undefined);
@@ -19,26 +19,15 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
     const addCoachMutation = trpc.addCourseCoach.useMutation();
     const removeCoachMutation = trpc.removeCourseCoach.useMutation();
 
-    const addCoach = async (coachId: string): Promise<{ success: boolean; addedCoach?: any; errorType?: string; message?: string }> => {
+    const addCoach = async (coachId: number): Promise<{ success: boolean; addedCoach?: any; errorType?: string; message?: string }> => {
         try {
             // Reset view model before new operation
             setAddCoachViewModel(undefined);
 
-            // TODO: Backend should accept username instead of numeric coachId for consistency
-            // Currently converting string coachId to number until backend is updated to use usernames
-            const coachIdNumber = parseInt(coachId, 10); // Temporary workaround - convert string to number
-            
-            if (isNaN(coachIdNumber)) {
-                return {
-                    success: false,
-                    message: 'Invalid coach ID format. Expected numeric ID.'
-                };
-            }
-
             // Perform the backend operation
             const result = await addCoachMutation.mutateAsync({
                 courseSlug,
-                coachId: coachIdNumber
+                coachId
             });
 
             // Use presenter to transform the result (this updates state asynchronously)
@@ -59,41 +48,30 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
             } else {
                 // Handle error case from result directly
                 const errorMessage = (result as any).data?.message;
-                return { 
-                    success: false,  
-                    message: errorMessage 
+                return {
+                    success: false,
+                    message: errorMessage
                 };
             }
         } catch (error) {
             console.error('Failed to add coach:', error);
             const errorMessage = 'Failed to add coach. Please try again.';
-            return { 
+            return {
                 success: false,
-                message: errorMessage 
+                message: errorMessage
             };
         }
     };
 
-    const removeCoach = async (coachId: string): Promise<{ success: boolean; removedCoach?: any; errorType?: string; message?: string }> => {
+    const removeCoach = async (coachId: number): Promise<{ success: boolean; removedCoach?: any; errorType?: string; message?: string }> => {
         try {
             // Reset view model before new operation
             setRemoveCoachViewModel(undefined);
 
-            // TODO: Backend should accept username instead of numeric coachId for consistency
-            // Currently converting string coachId to number until backend is updated to use usernames
-            const coachIdNumber = parseInt(coachId, 10); // Temporary workaround - convert string to number
-            
-            if (isNaN(coachIdNumber)) {
-                return {
-                    success: false,
-                    message: 'Invalid coach ID format. Expected numeric ID.'
-                };
-            }
-
             // Perform backend operation
             const result = await removeCoachMutation.mutateAsync({
                 courseSlug,
-                coachId: coachIdNumber
+                coachId
             });
 
             // Use presenter to transform the result (this updates state asynchronously)
@@ -105,7 +83,7 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
             if (result.success) {
                 const removedCoach = (result as any).data.removedCoach;
                 if (removedCoach && onCoachRemoved) {
-                    onCoachRemoved(removedCoach.username);
+                    onCoachRemoved(removedCoach.id);
                 }
                 return {
                     success: true,
@@ -114,17 +92,17 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
             } else {
                 // Handle error case from result directly
                 const errorMessage = (result as any).data?.message || 'Failed to remove coach';
-                return { 
-                    success: false, 
-                    message: errorMessage 
+                return {
+                    success: false,
+                    message: errorMessage
                 };
             }
         } catch (error) {
             console.error('Failed to remove coach:', error);
             const errorMessage = 'Failed to remove coach. Please try again.';
-            return { 
-                success: false, 
-                message: errorMessage 
+            return {
+                success: false,
+                message: errorMessage
             };
         }
     };

@@ -10,9 +10,11 @@ import {
     SearchInput,
     CoachCardListSkeleton,
     Dropdown,
+    ConfirmationModal,
+    Banner,
 } from '@maany_shr/e-class-ui-kit';
 import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
-import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachesPresenter } from '../../../hooks/use-coaches-presenter';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -20,30 +22,44 @@ import { trpc } from '../../../trpc/cms-client';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import CMSTRPCClientProviders from '../../../trpc/cms-client-provider';
 import { useCoachMutations } from './hooks/use-coach-mutations';
+import { TListCoachesSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 interface EnrolledCoachesProps {
     courseSlug: string;
     currentRole: string;
 }
-type Coach = useCaseModels.TListCoachesSuccessResponse['data']['coaches'][0];
+type Coach = TListCoachesSuccessResponse['data']['coaches'][0];
 
 function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.course.enrolledCoaches');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [localAddedCoaches, setLocalAddedCoaches] = useState<string[]>([]);
+    const [localAddedCoaches, setLocalAddedCoaches] = useState<number[]>([]);
 
-    // Fetch course-specific coaches data using real TRPC Client
+    // Confirmation modal state
+    const [confirmModal, setConfirmModal] = useState<{
+        isOpen: boolean;
+        type: 'add' | 'remove';
+        coachId: number | null;
+        coachName: string | null;
+    }>({
+        isOpen: false,
+        type: 'add',
+        coachId: null,
+        coachName: null,
+    });
+
+    // Success/Error message state
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+
     const [courseCoachesResponse, { refetch: refetchCoaches }] =
-        // TODO: Add courseSlug as input parameter when implemented in backend
         trpc.listCoaches.useSuspenseQuery({
-            pagination: { pageSize: 50, page: 1 },
-            skillSlugs: null
+            courseSlug: props.courseSlug,
         });
 
     const [availableCoachesResponse] = trpc.listCoaches.useSuspenseQuery({
-        pagination: { pageSize: 100, page: 1 },
-        skillSlugs: null
     });
 
     // Set up presenter for transforming the response to view model
@@ -79,7 +95,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     // Map available coaches to CoachContent format for AddCoachModal
     const mappedAvailableCoaches = useMemo(() => {
         return availableCoaches.map((coach) => ({
-            id: coach.username,
+            id: String(coach.id),
             coachName: `${coach.name} ${coach.surname}`,
             coachAvatarUrl: coach.avatarUrl || '',
             totalRating: coach.reviewCount,
@@ -99,12 +115,12 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         // Add locally added coaches that aren't already in the server data
         localAddedCoaches.forEach((coachId) => {
             const alreadyExists = baseCoaches.some(
-                (coach) => coach.username === coachId,
+                (coach) => coach.id === coachId,
             );
             if (!alreadyExists) {
                 // Find the full coach data from availableCoaches instead of reconstructing from mappedAvailableCoaches
                 const availableCoach = availableCoaches.find(
-                    (ac) => ac.username === coachId,
+                    (ac) => ac.id === coachId,
                 );
                 if (availableCoach) {
                     baseCoaches.push(availableCoach);
@@ -117,9 +133,10 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
 
     // Derive addedCoachIds from server coaches and locally added coach ids so the UI reflects newly added coaches immediately
     const addedCoachIds = useMemo(() => {
-        const serverIds = serverCoaches.map((coach) => coach.username);
+        const serverIds = serverCoaches.map((coach) => String(coach.id));
+        const localIds = localAddedCoaches.map((id) => String(id));
         const allIds = Array.from(
-            new Set([...serverIds, ...localAddedCoaches]),
+            new Set([...serverIds, ...localIds]),
         );
         return allIds;
     }, [serverCoaches, localAddedCoaches]);
@@ -173,46 +190,91 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         props.courseSlug,
         undefined,
         (addedCoach) => {
-            setLocalAddedCoaches((prev) => [...prev, addedCoach.username]);
+            setLocalAddedCoaches((prev) => [...prev, addedCoach.id]);
         },
-        (removedCoachUsername) => {
+        (removedCoachId) => {
             setLocalAddedCoaches((prev) =>
-                prev.filter((id) => id !== removedCoachUsername),
+                prev.filter((id) => id !== removedCoachId),
             );
         },
     );
 
-    // Handler functions with enhanced error handling using presenter
-    const handleAddCoach = async (coachId: string) => {
-        // Find the coach from available coaches (full data)
-        const coachToAdd = availableCoaches.find(
-            (coach) => coach.username === coachId,
-        );
-        if (!coachToAdd) {
+    // Handler to show confirmation modal before adding
+    const handleAddCoachClick = (coachId: string) => {
+        const numericCoachId = parseInt(coachId, 10);
+        const coach = availableCoaches.find((c) => c.id === numericCoachId);
+        if (!coach) {
             console.error('Coach not found in available coaches:', coachId);
             return;
         }
 
-        // Clear any previous errors
+        setConfirmModal({
+            isOpen: true,
+            type: 'add',
+            coachId: numericCoachId,
+            coachName: `${coach.name} ${coach.surname}`,
+        });
+    };
+
+    // Handler to show confirmation modal before removing
+    const handleRemoveCoachClick = (coachId: number) => {
+        const coach = coaches.find((c) => c.id === coachId);
+        if (!coach) {
+            console.error('Coach not found:', coachId);
+            return;
+        }
+
+        setConfirmModal({
+            isOpen: true,
+            type: 'remove',
+            coachId,
+            coachName: `${coach.name} ${coach.surname}`,
+        });
+    };
+
+    // Actual add coach handler after confirmation
+    const handleConfirmAddCoach = async () => {
+        if (!confirmModal.coachId) return;
+
+        // Clear messages
+        setSuccessMessage(null);
+        setErrorMessage(null);
         clearError();
 
+        // Close modals
+        setConfirmModal({ isOpen: false, type: 'add', coachId: null, coachName: null });
         setIsAddModalOpen(false);
 
-        const result = await addCoach(coachId);
+        const result = await addCoach(confirmModal.coachId);
 
-        if (!result.success) {
+        if (result.success) {
+            setSuccessMessage(t('addSuccess'));
+            setTimeout(() => setSuccessMessage(null), 5000);
+        } else {
+            setErrorMessage(result.message || t('addError'));
             setIsAddModalOpen(true);
         }
     };
 
-    const handleRemoveCoach = async (coachId: string) => {
+    // Actual remove coach handler after confirmation
+    const handleConfirmRemoveCoach = async () => {
+        if (!confirmModal.coachId) return;
+
+        // Clear messages
+        setSuccessMessage(null);
+        setErrorMessage(null);
         clearError();
 
-        const result = await removeCoach(coachId);
+        // Close modal
+        setConfirmModal({ isOpen: false, type: 'remove', coachId: null, coachName: null });
 
-        if (!result.success) {
-            console.error('Error removing coach:', result.message);
-            // Error details are shown via removeCoachViewModel in the UI
+        const result = await removeCoach(confirmModal.coachId);
+
+        if (result.success) {
+            setSuccessMessage(t('removeSuccess'));
+            setTimeout(() => setSuccessMessage(null), 5000);
+        } else {
+            setErrorMessage(result.message || t('removeError'));
         }
     };
 
@@ -294,7 +356,6 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                         />
                     ) : (
                         displayedCoaches.map((coach) => {
-                            const isCoach = props.currentRole === 'coach';
                             const baseCardDetails = {
                                 coachName: `${coach.name} ${coach.surname}`,
                                 coachImage: coach.avatarUrl || undefined,
@@ -325,17 +386,17 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             return (
                                 <CoachCard
                                     key={coach.username}
-                                    {...(isCoach
+                                    {...(isAdmin
                                         ? {
-                                            ...baseProps,
-                                            variant: 'coach' as const,
-                                        }
-                                        : {
                                             ...baseProps,
                                             variant: 'courseCreator' as const,
                                             onClickRemoveFromCourse: () => {
-                                                handleRemoveCoach(coach.username);
+                                                handleRemoveCoachClick(coach.id);
                                             },
+                                        }
+                                        : {
+                                            ...baseProps,
+                                            variant: 'coach' as const,
                                         })}
                                 />
                             );
@@ -357,22 +418,46 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         );
     };
 
+    const isAdmin = props.currentRole === 'admin' || props.currentRole === 'superadmin';
+
     return (
         <div className="space-y-6">
             <header className="flex justify-between items-center">
                 <h2>{t('title')}</h2>
-                <Button
-                    hasIconLeft
-                    iconLeft={<IconPlus />}
-                    text={t('addCoachButton')}
-                    variant="primary"
-                    disabled={isMutating}
-                    onClick={() => {
-                        setIsAddModalOpen(true);
-                    }}
-                />
+                {isAdmin && (
+                    <Button
+                        hasIconLeft
+                        iconLeft={<IconPlus />}
+                        text={t('addCoachButton')}
+                        variant="primary"
+                        disabled={isMutating}
+                        onClick={() => {
+                            setIsAddModalOpen(true);
+                        }}
+                    />
+                )}
             </header>
             <hr className="h-px bg-divider w-full border-0" />
+
+            {/* Success Message Banner */}
+            {successMessage && (
+                <Banner
+                    style="success"
+                    title={successMessage}
+                    closeable
+                    onClose={() => setSuccessMessage(null)}
+                />
+            )}
+
+            {/* Error Message Banner */}
+            {errorMessage && (
+                <Banner
+                    style="error"
+                    title={errorMessage}
+                    closeable
+                    onClose={() => setErrorMessage(null)}
+                />
+            )}
 
             {/* Search Coaches */}
             {props.currentRole !== 'coach' && coaches.length > 0 && (
@@ -444,12 +529,51 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                         onClose={() => {
                             setIsAddModalOpen(false);
                         }}
-                        onAdd={handleAddCoach}
+                        onAdd={handleAddCoachClick}
                         content={mappedAvailableCoaches}
                         addedCoachIds={addedCoachIds}
                     />
                 </div>
             )}
+
+            {/* Confirmation Modal for Add/Remove */}
+            <ConfirmationModal
+                type="accept"
+                isOpen={confirmModal.isOpen}
+                onClose={() =>
+                    setConfirmModal({
+                        isOpen: false,
+                        type: 'add',
+                        coachId: null,
+                        coachName: null,
+                    })
+                }
+                onConfirm={
+                    confirmModal.type === 'add'
+                        ? handleConfirmAddCoach
+                        : handleConfirmRemoveCoach
+                }
+                title={
+                    confirmModal.type === 'add'
+                        ? t('confirmAddTitle')
+                        : t('confirmRemoveTitle')
+                }
+                message={
+                    confirmModal.type === 'add'
+                        ? t('confirmAddMessage')
+                        : t('confirmRemoveMessage')
+                }
+                confirmText={
+                    isMutating
+                        ? confirmModal.type === 'add'
+                            ? t('addingCoach')
+                            : t('removingCoach')
+                        : t('confirmButton')
+                }
+                cancelText={t('cancelButton')}
+                locale={locale}
+                isLoading={isMutating}
+            />
         </div>
     );
 }
