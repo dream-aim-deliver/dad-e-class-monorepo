@@ -8,7 +8,8 @@ export const createCheckoutSession = async (
     amount: number,
     origin: string,
     discountPercentage: number = 0,
-    customerEmail?: string
+    customerEmail?: string,
+    metadata?: Record<string, string>
 ) => {
     const lineItems = [
         {
@@ -52,6 +53,7 @@ export const createCheckoutSession = async (
         mode: 'payment',
         return_url: `${origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
         ...(customerEmail && { customer_email: customerEmail }),
+        ...(metadata && { metadata }),
         ...(couponId && {
             discounts: [
                 {

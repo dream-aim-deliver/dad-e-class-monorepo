@@ -18,6 +18,9 @@ export async function GET(req: Request) {
             status: session.status,
             customer_email: session.customer_details?.email,
             payment_status: session.payment_status,
+            amount_total: session.amount_total,
+            currency: session.currency,
+            metadata: session.metadata,
         });
     } catch (error) {
         console.error('Error retrieving session:', error);
