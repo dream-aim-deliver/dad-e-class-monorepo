@@ -6,12 +6,20 @@ import { useLocale } from 'next-intl';
 import { trpc } from '../../../../../lib/infrastructure/client/trpc/client';
 import { checkoutSessionStorage } from '../../../../../lib/infrastructure/client/utils/checkout-session-storage';
 import env from '../../../../../lib/infrastructure/client/config/env';
+import {
+    Button,
+    IconSuccess,
+    IconError,
+    IconLoaderSpinner,
+} from '@maany_shr/e-class-ui-kit';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
 type PageState = 'loading' | 'success' | 'error';
 
 export default function CheckoutReturnPage() {
     const router = useRouter();
     const locale = useLocale();
+    const dictionary = getDictionary(locale as TLocale);
     const searchParams = useSearchParams();
     const sessionId = searchParams?.get('session_id');
 
@@ -113,23 +121,28 @@ export default function CheckoutReturnPage() {
         switch (purchaseType) {
             case 'StudentCoursePurchase':
             case 'StudentCoursePurchaseWithCoaching':
-                return 'Go to Course';
+                return dictionary.pages.checkoutReturn.actions.goToCourse;
             case 'StudentPackagePurchase':
             case 'StudentPackagePurchaseWithCoaching':
-                return 'View My Courses';
+                return dictionary.pages.checkoutReturn.actions.viewMyCourses;
             case 'StudentCoachingSessionPurchase':
-                return 'Browse Offerings';
+                return dictionary.pages.checkoutReturn.actions.browseOfferings;
             default:
-                return 'Continue';
+                return dictionary.pages.checkoutReturn.actions.continue;
         }
     }
 
     if (state === 'loading') {
         return (
-            <div className="flex items-center justify-center min-h-screen p-4">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p className="text-lg text-gray-700">Processing your payment...</p>
+            <div className="container mx-auto px-4 py-8">
+                <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+                    <IconLoaderSpinner
+                        size="8"
+                        classNames="text-button-primary-fill animate-spin"
+                    />
+                    <p className="text-lg text-text-secondary">
+                        {dictionary.pages.checkoutReturn.loading.processing}
+                    </p>
                 </div>
             </div>
         );
@@ -137,54 +150,67 @@ export default function CheckoutReturnPage() {
 
     if (state === 'error') {
         return (
-            <div className="flex items-center justify-center min-h-screen p-4">
-                <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
-                    <div className="text-center mb-6">
-                        <div className="text-red-600 text-6xl mb-4">✗</div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                            Payment Error
-                        </h1>
-                        <p className="text-gray-700">{error}</p>
-                    </div>
+            <div className="container mx-auto px-4 py-8">
+                <div className="max-w-md mx-auto">
+                    <div className="border border-card-stroke rounded-lg bg-card-fill shadow-md p-6">
+                        <div className="text-center mb-6">
+                            <div className="flex justify-center mb-4">
+                                <IconError
+                                    size="12"
+                                    classNames="text-feedback-error-primary"
+                                />
+                            </div>
+                            <h1 className="text-2xl font-bold text-text-primary mb-2">
+                                {dictionary.pages.checkoutReturn.error.title}
+                            </h1>
+                            <p className="text-text-secondary">{error}</p>
+                        </div>
 
-                    <div className="bg-gray-50 p-4 rounded mb-6">
-                        <p className="text-sm font-semibold mb-2">Need help?</p>
-                        {env.NEXT_PUBLIC_CONTACT_EMAIL && (
-                            <p className="text-sm mb-1">
-                                Email:{' '}
-                                <a
-                                    href={`mailto:${env.NEXT_PUBLIC_CONTACT_EMAIL}`}
-                                    className="text-blue-600 hover:underline"
-                                >
-                                    {env.NEXT_PUBLIC_CONTACT_EMAIL}
-                                </a>
+                        <div className="bg-base-neutral-800 border border-card-stroke p-4 rounded-medium mb-6">
+                            <p className="text-sm font-semibold text-text-primary mb-2">
+                                {dictionary.pages.checkoutReturn.error.needHelp}
                             </p>
-                        )}
-                        {env.NEXT_PUBLIC_CONTACT_PHONE && (
-                            <p className="text-sm">
-                                Phone:{' '}
-                                <a
-                                    href={`tel:${env.NEXT_PUBLIC_CONTACT_PHONE}`}
-                                    className="text-blue-600 hover:underline"
-                                >
-                                    {env.NEXT_PUBLIC_CONTACT_PHONE}
-                                </a>
-                            </p>
-                        )}
-                    </div>
+                            {env.NEXT_PUBLIC_CONTACT_EMAIL && (
+                                <p className="text-sm text-text-secondary mb-1">
+                                    {dictionary.pages.checkoutReturn.error.email}{' '}
+                                    <a
+                                        href={`mailto:${env.NEXT_PUBLIC_CONTACT_EMAIL}`}
+                                        className="text-button-primary-fill hover:underline"
+                                    >
+                                        {env.NEXT_PUBLIC_CONTACT_EMAIL}
+                                    </a>
+                                </p>
+                            )}
+                            {env.NEXT_PUBLIC_CONTACT_PHONE && (
+                                <p className="text-sm text-text-secondary">
+                                    {dictionary.pages.checkoutReturn.error.phone}{' '}
+                                    <a
+                                        href={`tel:${env.NEXT_PUBLIC_CONTACT_PHONE}`}
+                                        className="text-button-primary-fill hover:underline"
+                                    >
+                                        {env.NEXT_PUBLIC_CONTACT_PHONE}
+                                    </a>
+                                </p>
+                            )}
+                        </div>
 
-                    <button
-                        onClick={() => sessionId && processPayment(sessionId)}
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 mb-2"
-                    >
-                        Try Again
-                    </button>
-                    <button
-                        onClick={() => router.push(`/${locale}/checkout`)}
-                        className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300"
-                    >
-                        Back to Checkout
-                    </button>
+                        <div className="flex flex-col gap-3">
+                            <Button
+                                variant="primary"
+                                size="big"
+                                text={dictionary.pages.checkoutReturn.error.tryAgain}
+                                onClick={() => sessionId && processPayment(sessionId)}
+                                className="w-full"
+                            />
+                            <Button
+                                variant="secondary"
+                                size="big"
+                                text={dictionary.pages.checkoutReturn.error.backToCheckout}
+                                onClick={() => router.push(`/${locale}/checkout`)}
+                                className="w-full"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -192,68 +218,106 @@ export default function CheckoutReturnPage() {
 
     // Success state
     return (
-        <div className="flex items-center justify-center min-h-screen p-4">
-            <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
-                <div className="text-center mb-6">
-                    <div className="text-green-600 text-6xl mb-4">✓</div>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                        Payment Successful!
-                    </h1>
-                    {transaction?.customerEmail && (
-                        <p className="text-gray-600">
-                            Confirmation email sent to{' '}
-                            <span className="font-semibold">
-                                {transaction.customerEmail}
-                            </span>
-                        </p>
-                    )}
-                </div>
+        <div className="container mx-auto px-4 py-8">
+            <div className="max-w-md mx-auto">
+                <div className="border border-card-stroke rounded-lg bg-card-fill shadow-md p-6">
+                    <div className="text-center mb-6">
+                        <div className="flex justify-center mb-4">
+                            <IconSuccess
+                                size="12"
+                                classNames="text-feedback-success-primary"
+                            />
+                        </div>
+                        <h1 className="text-2xl font-bold text-text-primary mb-2">
+                            {dictionary.pages.checkoutReturn.success.title}
+                        </h1>
+                        {transaction?.customerEmail && (
+                            <p className="text-text-secondary">
+                                {
+                                    dictionary.pages.checkoutReturn.success
+                                        .confirmationEmailSent
+                                }{' '}
+                                <span className="font-semibold">
+                                    {transaction.customerEmail}
+                                </span>
+                            </p>
+                        )}
+                    </div>
 
-                {transaction && !transaction.alreadyProcessed && transaction.transaction && (
-                    <div className="bg-gray-50 p-4 rounded mb-6">
-                        <h2 className="font-semibold mb-2">Transaction Receipt</h2>
-                        <p className="text-sm text-gray-600 mb-1">
-                            Transaction ID: {transaction.transaction.id}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            Amount:{' '}
-                            {(transaction.transaction.amount / 100).toFixed(2)}{' '}
-                            {transaction.transaction.currency.toUpperCase()}
+                    {transaction &&
+                        !transaction.alreadyProcessed &&
+                        transaction.transaction && (
+                            <div className="bg-base-neutral-800 border border-card-stroke p-4 rounded-medium mb-6">
+                                <h2 className="font-semibold text-text-primary mb-2">
+                                    {
+                                        dictionary.pages.checkoutReturn.success
+                                            .transactionReceipt
+                                    }
+                                </h2>
+                                <p className="text-sm text-text-secondary mb-1">
+                                    {
+                                        dictionary.pages.checkoutReturn.success
+                                            .transactionId
+                                    }{' '}
+                                    {transaction.transaction.id}
+                                </p>
+                                <p className="text-sm text-text-secondary">
+                                    {
+                                        dictionary.pages.checkoutReturn.success
+                                            .amount
+                                    }{' '}
+                                    {(
+                                        transaction.transaction.amount / 100
+                                    ).toFixed(2)}{' '}
+                                    {transaction.transaction.currency.toUpperCase()}
+                                </p>
+                            </div>
+                        )}
+
+                    <div className="mb-6">
+                        <p className="text-sm text-text-secondary text-center">
+                            {transaction?.alreadyProcessed
+                                ? dictionary.pages.checkoutReturn.success
+                                      .alreadyProcessed
+                                : dictionary.pages.checkoutReturn.success
+                                      .purchaseUnlocked}
                         </p>
                     </div>
-                )}
 
-                <div className="mb-6">
-                    <p className="text-sm text-gray-700 text-center">
-                        {transaction?.alreadyProcessed
-                            ? 'This purchase has already been processed and unlocked.'
-                            : 'Your purchase has been unlocked and is now available.'}
-                    </p>
+                    {transaction && !transaction.alreadyProcessed && (
+                        <div className="flex flex-col gap-4">
+                            <Button
+                                variant="primary"
+                                size="big"
+                                text={getButtonText(transaction.purchaseType)}
+                                onClick={() => redirectToDestination(transaction)}
+                                className="w-full"
+                            />
+
+                            <p className="text-center text-sm text-text-secondary">
+                                {dictionary.pages.checkoutReturn.success.redirectingIn.replace(
+                                    '{countdown}',
+                                    countdown.toString(),
+                                )}
+                            </p>
+                        </div>
+                    )}
+
+                    {transaction?.alreadyProcessed && (
+                        <Button
+                            variant="primary"
+                            size="big"
+                            text={
+                                dictionary.pages.checkoutReturn.actions
+                                    .viewMyCourses
+                            }
+                            onClick={() =>
+                                router.push(`/${locale}/workspace/courses`)
+                            }
+                            className="w-full"
+                        />
+                    )}
                 </div>
-
-                {transaction && !transaction.alreadyProcessed && (
-                    <>
-                        <button
-                            onClick={() => redirectToDestination(transaction)}
-                            className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 mb-2"
-                        >
-                            {getButtonText(transaction.purchaseType)}
-                        </button>
-
-                        <p className="text-center text-sm text-gray-500">
-                            Redirecting in {countdown} seconds...
-                        </p>
-                    </>
-                )}
-
-                {transaction?.alreadyProcessed && (
-                    <button
-                        onClick={() => router.push(`/${locale}/workspace/courses`)}
-                        className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700"
-                    >
-                        Go to My Courses
-                    </button>
-                )}
             </div>
         </div>
     );
