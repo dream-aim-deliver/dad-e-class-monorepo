@@ -1947,6 +1947,8 @@ export const DictionarySchema = z.object({
         addCoachButton: z.string(),
         searchPlaceholder: z.string(),
         sortByLabel: z.string(),
+        sortByNameAZ: z.string(),
+        sortByNameZA: z.string(),
         sortBySessionsHighToLow: z.string(),
         sortBySessionsLowToHigh: z.string(),
         sortByDropdownText: z.string(),

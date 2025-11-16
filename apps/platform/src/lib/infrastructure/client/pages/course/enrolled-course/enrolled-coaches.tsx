@@ -163,16 +163,26 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const [searchQuery, setSearchQuery] = useState('');
 
     // State for sorting
-    const [sortOrder, setSortOrder] = useState('desc');
+    const [sortOrder, setSortOrder] = useState('sessions-desc');
 
     // Sorting function
     const sortCoaches = useCallback(
         (coaches: Coach[]) => {
             return [...coaches].sort((a, b) => {
-                const aVal = a.coachingSessionCount;
-                const bVal = b.coachingSessionCount;
-                const result = sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
-                return result;
+                if (sortOrder === 'sessions-asc') {
+                    return a.coachingSessionCount - b.coachingSessionCount;
+                } else if (sortOrder === 'sessions-desc') {
+                    return b.coachingSessionCount - a.coachingSessionCount;
+                } else if (sortOrder === 'name-asc') {
+                    const aName = getCoachDisplayName(a).toLowerCase();
+                    const bName = getCoachDisplayName(b).toLowerCase();
+                    return aName.localeCompare(bName);
+                } else if (sortOrder === 'name-desc') {
+                    const aName = getCoachDisplayName(a).toLowerCase();
+                    const bName = getCoachDisplayName(b).toLowerCase();
+                    return bName.localeCompare(aName);
+                }
+                return 0;
             });
         },
         [sortOrder],
@@ -513,6 +523,14 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             type="simple"
                             options={[
                                 {
+                                    label: t('sortByNameAZ'),
+                                    value: 'name-asc',
+                                },
+                                {
+                                    label: t('sortByNameZA'),
+                                    value: 'name-desc',
+                                },
+                                {
                                     label: t('sortBySessionsHighToLow'),
                                     value: 'sessions-desc',
                                 },
@@ -521,11 +539,10 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                                     value: 'sessions-asc',
                                 },
                             ]}
-                            defaultValue={`sessions-${sortOrder}`}
+                            defaultValue={sortOrder}
                             onSelectionChange={(selected) => {
                                 if (typeof selected === 'string') {
-                                    const order = selected.split('-')[1];
-                                    setSortOrder(order);
+                                    setSortOrder(selected);
                                 }
                             }}
                             text={{ simpleText: t('sortByDropdownText') }}
