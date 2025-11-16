@@ -15,9 +15,22 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
     const { presenter: addCoachPresenter } = useAddCourseCoachPresenter(setAddCoachViewModel);
     const { presenter: removeCoachPresenter } = useRemoveCourseCoachPresenter(setRemoveCoachViewModel);
 
-    // Mutations for add/remove coaches
-    const addCoachMutation = trpc.addCourseCoach.useMutation();
-    const removeCoachMutation = trpc.removeCourseCoach.useMutation();
+    // Get TRPC utils for query invalidation
+    const utils = trpc.useUtils();
+
+    // Mutations for add/remove coaches with query invalidation
+    const addCoachMutation = trpc.addCourseCoach.useMutation({
+        onSuccess: () => {
+            // Invalidate the course coaches query to refresh the list
+            utils.listCoaches.invalidate({ courseSlug });
+        },
+    });
+    const removeCoachMutation = trpc.removeCourseCoach.useMutation({
+        onSuccess: () => {
+            // Invalidate the course coaches query to refresh the list
+            utils.listCoaches.invalidate({ courseSlug });
+        },
+    });
 
     const addCoach = async (coachId: number): Promise<{ success: boolean; addedCoach?: any; errorType?: string; message?: string }> => {
         try {
