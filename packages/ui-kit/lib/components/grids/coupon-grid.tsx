@@ -80,11 +80,16 @@ const OutcomeCellRenderer = (params: { value: CouponRow['outcome']; locale: TLoc
             );
         }
         case 'freeCourses': {
-            const titles = (outcome.courses ?? []).map(c => c.title).join(', ');
+            const displayTitles = (outcome.courses ?? [])
+                .map(c => c.withCoaching ? `${c.title} (${dictionary.withCoachingSessionsShort})` : c.title)
+                .join(', ');
+            const hoverTitles = (outcome.courses ?? [])
+                .map(c => c.withCoaching ? `${c.title} (${dictionary.withCoachingSessions})` : c.title)
+                .join(', ');
             return (
                 <div className="flex flex-col">
                     <span className="text-text-primary text-sm">{dictionary.freeCourses}</span>
-                    <span className="text-text-secondary text-xs">{titles}</span>
+                    <span className="text-text-secondary text-xs" title={hoverTitles}>{displayTitles}</span>
                 </div>
             );
         }
@@ -357,7 +362,9 @@ export const CouponGrid = (props: CouponGridProps) => {
                 return `${dictionary.discountPercent}: ${outcome.percentage}%`;
             }
             case 'freeCourses': {
-                const titles = (outcome.courses ?? []).map(c => c.title).join(', ');
+                const titles = (outcome.courses ?? [])
+                    .map(c => c.withCoaching ? `${c.title} (${dictionary.withCoachingSessions})` : c.title)
+                    .join(', ');
                 return `${dictionary.freeCourses}${titles ? `: ${titles}` : ''}`;
             }
             case 'freeBundles': {

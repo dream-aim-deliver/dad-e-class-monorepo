@@ -34,6 +34,15 @@ export const CourseMaterialsAccordion: React.FC<
     const { data, locale } = props;
     const { modules, moduleCount } = data;
     const dictionary = getDictionary(locale);
+
+    // Filter modules to only include those with lessons that have materials
+    const modulesWithMaterials = modules?.map(module => ({
+        ...module,
+        lessons: module.lessons?.filter(lesson =>
+            lesson.materials && lesson.materials.length > 0
+        ) || [],
+    })).filter(module => module.lessons.length > 0);
+
     const renderMaterial = (material: useCaseModels.TCourseMaterial) => {
         switch (material.type) {
             case 'richText':
@@ -117,9 +126,10 @@ export const CourseMaterialsAccordion: React.FC<
         <Accordion
             className={cn('flex flex-col gap-6')}
             type="multiple"
-            defaultValue={modules?.[0]?.id ? [modules[0].id] : []}
+            defaultValue={modulesWithMaterials?.[0]?.id ? [modulesWithMaterials[0].id] : []}
         >
-            {modules?.map((module, moduleIndex) => (
+            {modulesWithMaterials?.map((module, moduleIndex) => {
+                return (
                 <AccordionItem
                     key={module.id}
                     value={module.id!}
@@ -230,18 +240,6 @@ export const CourseMaterialsAccordion: React.FC<
                                                             material,
                                                         ),
                                                 )}
-                                                {(!lesson.materials ||
-                                                    lesson.materials.length ===
-                                                        0) && (
-                                                    <div className="text-text-secondary">
-                                                        {
-                                                            dictionary
-                                                                .components
-                                                                .courseMaterialsAccordion
-                                                                .noMaterials
-                                                        }
-                                                    </div>
-                                                )}
                                             </div>
                                         </AccordionContent>
                                     </AccordionItem>
@@ -250,7 +248,8 @@ export const CourseMaterialsAccordion: React.FC<
                         </div>
                     </AccordionContent>
                 </AccordionItem>
-            ))}
+                );
+            })}
         </Accordion>
     );
 };
