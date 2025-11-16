@@ -79,7 +79,7 @@ export default function RedeemStandaloneCoupon(
                 setState('invalid');
                 setCouponData(null);
             }
-        } catch (error) {
+        } catch {
             setState('invalid');
             setCouponData(null);
         }
@@ -110,7 +110,7 @@ export default function RedeemStandaloneCoupon(
     };
 
     // Text for what type of coupon is (course, package, coaching and group)
-    const getTypeLabel = (type: CouponType, isMultiple: boolean = false) => {
+    const getTypeLabel = (type: CouponType, isMultiple = false) => {
         switch (type) {
             case 'course':
                 return isMultiple ? dictionary.courses : dictionary.course;
@@ -123,20 +123,7 @@ export default function RedeemStandaloneCoupon(
         }
     };
 
-    const getAvailableText = (type: CouponType, isMultiple: boolean = false) => {
-        switch (type) {
-            case 'course':
-                return isMultiple ? dictionary.freeCoursesAvailable : dictionary.freeCourseAvailable;
-            case 'package':
-                return dictionary.freePackageAvailable;
-            case 'coaching':
-                return dictionary.freeCoachingAvailable;
-            case 'group':
-                return dictionary.freeGroupAvailable;
-        }
-    };
-
-    const getRedeemedText = (type: CouponType, isMultiple: boolean = false) => {
+    const getRedeemedText = (type: CouponType, isMultiple = false) => {
         switch (type) {
             case 'course':
                 return isMultiple ? dictionary.freeCoursesRedeemed : dictionary.freeCourseRedeemed;
@@ -191,7 +178,7 @@ export default function RedeemStandaloneCoupon(
                                     {getTypeLabel(couponData.type, isMultipleCourses)}
                                 </span>
                             </div>
-                            {couponData.courses!.map((course, index) => (
+                            {couponData.courses?.map((course, index) => (
                                 <div key={index} className="flex items-center gap-2 ml-8">
                                     <UserAvatar
                                         size="xSmall"
