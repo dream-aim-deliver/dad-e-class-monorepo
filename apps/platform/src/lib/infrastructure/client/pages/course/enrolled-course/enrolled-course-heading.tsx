@@ -174,8 +174,11 @@ export default function EnrolledCourseHeading({
         }
 
         const options: { label: string; value: string }[] = [];
+        const seenLabels = new Set<string>();
+
         for (const role of roles) {
             let label: string | undefined;
+            let normalizedValue = role;
 
             switch (role) {
                 case 'student':
@@ -191,15 +194,22 @@ export default function EnrolledCourseHeading({
                     label = courseTranslations('roleDropdown.creator');
                     break;
                 case 'admin':
+                case 'superadmin':
                     label = courseTranslations('roleDropdown.admin');
+                    // Normalize superadmin to admin for deduplication
+                    normalizedValue = 'admin';
                     break;
             }
 
             if (!label) continue;
 
+            // Skip if we've already added this label
+            if (seenLabels.has(label)) continue;
+            seenLabels.add(label);
+
             options.push({
                 label,
-                value: role,
+                value: normalizedValue,
             });
         }
         return options;
@@ -317,10 +327,10 @@ export default function EnrolledCourseHeading({
                             </span>
                             <Dropdown
                                 type="simple"
-                                className="w-fit"
+                                className="min-w-[150px]"
                                 options={roleOptions}
-                                defaultValue={currentRole}
-                                text={{}}
+                                defaultValue={currentRole === 'superadmin' ? 'admin' : currentRole}
+                                text={{ simpleText: '' }}
                                 onSelectionChange={onRoleChange}
                             />
                         </div>
