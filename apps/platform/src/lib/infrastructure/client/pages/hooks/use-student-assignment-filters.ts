@@ -160,7 +160,7 @@ export function useStudentAssignmentFilters({
                     const statusOrder = {
                         'waiting-feedback': 1,
                         'long-wait': 2,
-                        'course-completed': 3,
+                        'passed': 3,
                     };
                     return (
                         (statusOrder[
