@@ -1452,6 +1452,8 @@ export const EN: TDictionary = {
       discountPercent: 'Discount',
       loadMore: 'Load more...',
       emptyState: 'No coupons found',
+      withCoachingSessions: 'with Coaching Sessions',
+      withCoachingSessionsShort: '+ CS',
     },
     couponGridFilterModal: {
       title: 'Filter coupons',

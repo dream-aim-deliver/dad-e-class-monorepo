@@ -1442,6 +1442,8 @@ export const DictionarySchema = z.object({
       discountPercent: z.string(),
       loadMore: z.string(),
       emptyState: z.string(),
+      withCoachingSessions: z.string(),
+      withCoachingSessionsShort: z.string(),
     }),
     couponGridFilterModal: z.object({
       title: z.string(),
