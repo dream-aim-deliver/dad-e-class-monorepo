@@ -400,12 +400,15 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
               uploadProgress={logoUploadProgress}
               file={logo}
             />
+            <p className="text-xs text-text-secondary">
+              {t('fields.logoRecommendation')}
+            </p>
           </div>
 
           {/* Background Image Upload */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-text-primary">
-              {t('fields.backgroundImage') ?? 'Background Image'}
+              ({t('fields.backgroundImage') ?? 'Background Image'})
             </label>
             <Uploader
               type="single"
@@ -422,6 +425,9 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
               uploadProgress={backgroundUploadProgress}
               file={backgroundImage}
             />
+            <p className="text-xs text-text-secondary">
+              ({t('fields.backgroundImageRecommendation')})
+            </p>
           </div>
         </div>
       </div>

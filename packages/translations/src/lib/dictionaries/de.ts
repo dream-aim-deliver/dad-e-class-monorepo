@@ -2926,7 +2926,9 @@ export const DE: TDictionary = {
         companyUuid: 'Unternehmens-UUID',
         companyUuidPlaceholder: 'Unternehmens-UUID eingeben',
         logo: 'Plattform-Logo',
+        logoRecommendation: 'Empfohlene Größe: quadratisch < 30 KB',
         backgroundImage: 'Hintergrundbild',
+        backgroundImageRecommendation: 'Empfohlene Größe: 1920×1080, komprimiert auf < 300 KB',
         readOnly: 'Schreibgeschützt',
       },
       error: {

@@ -2961,7 +2961,9 @@ export const DictionarySchema = z.object({
         companyUuid: z.string(),
         companyUuidPlaceholder: z.string(),
         logo: z.string(),
+        logoRecommendation: z.string(),
         backgroundImage: z.string(),
+        backgroundImageRecommendation: z.string(),
         readOnly: z.string(),
       }),
       error: z.object({

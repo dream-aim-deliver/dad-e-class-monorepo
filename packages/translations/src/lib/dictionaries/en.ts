@@ -2923,7 +2923,9 @@ export const EN: TDictionary = {
         companyUuid: 'Company UUID',
         companyUuidPlaceholder: 'Enter company UUID',
         logo: 'Platform Logo',
+        logoRecommendation: 'Recommended size: square < 30 KB',
         backgroundImage: 'Background Image',
+        backgroundImageRecommendation: 'Recommended size: 1920×1080, compressed to < 300 KB',
         readOnly: 'Read-only',
       },
       error: {
