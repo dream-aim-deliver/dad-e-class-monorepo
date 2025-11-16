@@ -1889,7 +1889,7 @@ export const DE: TDictionary = {
       enrolledCoaches: {
         title: 'Coaches',
         addCoachButton: 'Coach hinzufügen',
-        searchPlaceholder: 'Eingeschriebene Coaches suchen...',
+        searchPlaceholder: 'Kurs-Coaches suchen...',
         sortByLabel: 'Sortieren nach',
         sortBySessionsHighToLow: 'Sitzungen (Hoch zu Niedrig)',
         sortBySessionsLowToHigh: 'Sitzungen (Niedrig zu Hoch)',

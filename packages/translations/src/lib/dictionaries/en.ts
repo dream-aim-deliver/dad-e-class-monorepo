@@ -1886,7 +1886,7 @@ export const EN: TDictionary = {
       enrolledCoaches: {
         title: 'Coaches',
         addCoachButton: 'Add Coach',
-        searchPlaceholder: 'Search enrolled coaches...',
+        searchPlaceholder: 'Search course coaches...',
         sortByLabel: 'Sort by',
         sortBySessionsHighToLow: 'Sessions (High to Low)',
         sortBySessionsLowToHigh: 'Sessions (Low to High)',
