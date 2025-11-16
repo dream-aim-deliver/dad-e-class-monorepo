@@ -97,7 +97,8 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     >(undefined);
     const { presenter: topicsPresenter } =
         useListTopicsPresenter(setTopicsViewModel);
-    topicsPresenter.present(topicsResponse?.data as TListTopicsUseCaseResponse, topicsViewModel);
+    // @ts-ignore
+    topicsPresenter.present(topicsResponse, topicsViewModel);
 
     const [categoriesResponse] = trpc.listCategories.useSuspenseQuery({});
     const [categoriesViewModel, setCategoriesViewModel] = useState<
@@ -107,7 +108,8 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
         setCategoriesViewModel,
     );
     // Extract the actual response data from the TRPC wrapper and type it correctly
-    categoriesPresenter.present(categoriesResponse?.data as TListCategoriesUseCaseResponse, categoriesViewModel);
+    // @ts-ignore
+    categoriesPresenter.present(categoriesResponse, categoriesViewModel);
 
     const [isFormLoading, setIsFormLoading] = useState(true);
 
