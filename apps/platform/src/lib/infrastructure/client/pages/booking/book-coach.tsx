@@ -13,6 +13,7 @@ import {
     Dialog,
     DialogContent,
     CalendarNavigationHeader,
+    Button,
 } from '@maany_shr/e-class-ui-kit';
 import ScheduledOfferingContent from './dialogs/scheduled-offering-content';
 import {
@@ -24,16 +25,19 @@ import { useGetStudentCoachingSessionPresenter } from '../../hooks/use-student-c
 interface BookCoachPageProps {
     coachUsername: string;
     sessionId?: number;
+    returnTo?: string;
 }
 
 interface BookCoachPageContentProps {
     coachUsername: string;
     defaultSession: ScheduledOffering | null;
+    returnTo?: string;
 }
 
 function BookCoachPageContent({
     coachUsername,
     defaultSession,
+    returnTo,
 }: BookCoachPageContentProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -51,6 +55,7 @@ function BookCoachPageContent({
     const [newSession, setNewSession] = useState<ScheduledOffering | null>(
         defaultSession,
     );
+    const [bookingSuccess, setBookingSuccess] = useState(false);
 
     const setNewSessionStart = (startTime: Date) => {
         setNewSession((prev) => {
@@ -107,11 +112,7 @@ function BookCoachPageContent({
                         );
                         return;
                     }
-                    setNewSession(defaultSession);
-                    setIsDialogOpen(false);
-                    if (defaultSession) {
-                        router.push('/workspace/coaching-sessions');
-                    }
+                    setBookingSuccess(true);
                     // Query invalidation handled by mutation's onSuccess callback
                 },
                 onError: (error) => {
@@ -164,15 +165,35 @@ function BookCoachPageContent({
                         onSubmit={onSubmit}
                         isSubmitting={requestSessionMutation.isPending}
                         submitError={submitError}
+                        bookingSuccess={bookingSuccess}
+                        returnTo={returnTo}
+                        onReturnToCourse={() => {
+                            if (returnTo) {
+                                router.push(returnTo);
+                            }
+                        }}
+                        onViewSessions={() => {
+                            router.push('/workspace/coaching-sessions');
+                        }}
                         closeDialog={() => {
                             setIsDialogOpen(false);
                             setNewSession(defaultSession);
                             setSubmitError(undefined);
+                            setBookingSuccess(false);
                         }}
                     />
                 </DialogContent>
             </Dialog>
             <div className="flex flex-col h-screen">
+                {returnTo && (
+                    <div className="mb-4">
+                        <Button
+                            variant="text"
+                            text="← Back to Course"
+                            onClick={() => router.push(returnTo)}
+                        />
+                    </div>
+                )}
                 <div className="max-h-full flex-row hidden md:flex">
                     <div className="w-full rounded-lg bg-card-fill p-4 flex-1">
                         <CalendarNavigationHeader
@@ -209,11 +230,13 @@ function BookCoachPageContent({
 interface BookCoachWithSessionPageProps {
     coachUsername: string;
     sessionId: number;
+    returnTo?: string;
 }
 
 function BookCoachWithSessionPage({
     coachUsername,
     sessionId,
+    returnTo,
 }: BookCoachWithSessionPageProps) {
     const locale = useLocale() as TLocale;
 
@@ -267,6 +290,7 @@ function BookCoachWithSessionPage({
             <BookCoachPageContent
                 coachUsername={coachUsername}
                 defaultSession={defaultSession}
+                returnTo={returnTo}
             />
         </div>
     );
@@ -275,15 +299,17 @@ function BookCoachWithSessionPage({
 export default function BookCoachPage({
     coachUsername,
     sessionId,
+    returnTo,
 }: BookCoachPageProps) {
     if (sessionId) {
         return (
             <BookCoachWithSessionPage
                 coachUsername={coachUsername}
                 sessionId={sessionId}
+                returnTo={returnTo}
             />
         );
     }
 
-    return <BookCoachPageContent coachUsername={coachUsername} defaultSession={null} />;
+    return <BookCoachPageContent coachUsername={coachUsername} defaultSession={null} returnTo={returnTo} />;
 }

@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 interface BookingServerComponentProps {
     coachUsername: string;
     sessionId?: string;
+    returnTo?: string;
 }
 
 export default async function BookingServerComponent(
@@ -33,7 +34,7 @@ export default async function BookingServerComponent(
 
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>
-            <BookCoachPage coachUsername={props.coachUsername} sessionId={sessionIdNumber} />
+            <BookCoachPage coachUsername={props.coachUsername} sessionId={sessionIdNumber} returnTo={props.returnTo} />
         </Suspense>
     );
 }

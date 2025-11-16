@@ -43,7 +43,7 @@ import { useFileUploadContext } from '../course/utils/file-upload';
 import { useAssignmentView } from '../course/utils/assignment-view';
 import { trpc } from '../../trpc/cms-client';
 import { useListCoachesPresenter } from '../../hooks/use-coaches-presenter';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCourseSlug } from '../course/utils/course-slug-context';
 
@@ -382,7 +382,7 @@ function LinksComponent({
     );
 }
 
-function CourseCoachList({ sessionId }: { sessionId: number | string }) {
+function CourseCoachList({ sessionId, returnTo }: { sessionId: number | string; returnTo?: string }) {
     const courseSlug = useCourseSlug();
     const session = useSession();
     const locale = useLocale() as TLocale;
@@ -439,9 +439,8 @@ function CourseCoachList({ sessionId }: { sessionId: number | string }) {
                         // TODO: Implement profile click logic
                     }}
                     onClickBook={() => {
-                        router.push(
-                            `/coaches/${coach.username}/book?sessionId=${sessionId}`,
-                        );
+                        const url = `/coaches/${coach.username}/book?sessionId=${sessionId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}`;
+                        router.push(url);
                     }}
                     locale={locale}
                 />
@@ -457,6 +456,8 @@ function CoachingSessionComponent({
 }: ComponentRendererProps) {
     const element = formElement as CoachingSessionElement;
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     // This statement is needed for debugging
     console.log(
@@ -473,7 +474,10 @@ function CoachingSessionComponent({
             );
         }
         if (element.progress.session.status === 'unscheduled') {
-            return <CourseCoachList sessionId={element.progress.session.id} />;
+            // Construct the return URL from current location
+            const currentSearch = searchParams.toString();
+            const returnTo = pathname + (currentSearch ? `?${currentSearch}` : '');
+            return <CourseCoachList sessionId={element.progress.session.id} returnTo={returnTo} />;
         }
         return (
             <div className="flex flex-col gap-4">
