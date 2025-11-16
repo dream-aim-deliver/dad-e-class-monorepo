@@ -35,7 +35,7 @@ const fakeLink = (): shared.TLinkWithId => ({
 
 const fakeReply = (overrides = {}): assignment.TAssignmentReplyWithId => ({
     replyId: Math.floor(Math.random() * 99999),
-    timestamp: new Date(Date.now() - 86400000).toISOString(),
+    timestamp: Date.now() - 86400000, // 1 day ago
     type: "resources",
     comment: "Here is my submission.",
     sender: mockStudent,
@@ -95,9 +95,9 @@ const CardTemplate = ({
             ? status === "Passed"
                 ? [{
                     replyId: 1,
-                    timestamp: new Date().toISOString(),
+                    timestamp: Date.now(),
                     sender: mockSenderCoach,
-                    type: 'passed',
+                    type: 'passed' as const,
                 }]
                 : [fakeReply()]
             : []
@@ -170,16 +170,31 @@ const CardTemplate = ({
         setLinkEditIndex(typeof newEditIndex === "number" ? newEditIndex : -1);
     };
 
-    const handleImageChange = async (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => {
-        if (linkEditIndex === null) return;  // not editing
+    const handleImageChange = async (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal
+    ): Promise<fileMetadata.TFileMetadata> => {
+        // Simulate file upload
+        const uploadedFile: fileMetadata.TFileMetadata = {
+            id: Math.random().toString(36).substring(2),
+            name: fileRequest.name,
+            size: fileRequest.file.size,
+            status: 'processing' as const,
+            category: 'image' as const,
+            url: URL.createObjectURL(fileRequest.file),
+            thumbnailUrl: URL.createObjectURL(fileRequest.file),
+        };
 
-        // Set status to 'processing' immediately
-        const updatedLinks = links.map((link, idx) =>
-            idx === linkEditIndex
-                ? { ...link, customIcon: { ...image, status: 'processing' as const } }
-                : link
-        );
-        setLinks(updatedLinks);
+        // Update link with processing status
+        if (linkEditIndex !== -1) {
+            setLinks(links =>
+                links.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: uploadedFile }
+                        : link
+                )
+            );
+        }
 
         try {
             // Simulate async upload with abort
@@ -194,22 +209,31 @@ const CardTemplate = ({
             });
 
             // Finished upload, mark as 'available'
-            setLinks(currentLinks =>
-                currentLinks.map((link, idx) =>
-                    idx === linkEditIndex
-                        ? { ...link, customIcon: { ...image, status: 'available' as const } }
-                        : link
-                )
-            );
+            const finalFile = { ...uploadedFile, status: 'available' as const };
+
+            if (linkEditIndex !== -1) {
+                setLinks(currentLinks =>
+                    currentLinks.map((link, idx) =>
+                        idx === linkEditIndex
+                            ? { ...link, customIcon: finalFile }
+                            : link
+                    )
+                );
+            }
+
+            return finalFile;
         } catch (error) {
             // Remove if aborted or error
-            setLinks(currentLinks =>
-                currentLinks.map((link, idx) =>
-                    idx === linkEditIndex
-                        ? { ...link, customIcon: undefined }
-                        : link
-                )
-            );
+            if (linkEditIndex !== -1) {
+                setLinks(currentLinks =>
+                    currentLinks.map((link, idx) =>
+                        idx === linkEditIndex
+                            ? { ...link, customIcon: undefined }
+                            : link
+                    )
+                );
+            }
+            throw error;
         }
     };
 
@@ -240,22 +264,36 @@ const CardTemplate = ({
         setReplyLinkEditIndex(typeof newEditIndex === "number" ? newEditIndex : -1);
     };
 
-    const handleReplyImageChange = async (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => {
-        if (replyLinkEditIndex === -1) return;
+    const handleReplyImageChange = async (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal
+    ): Promise<fileMetadata.TFileMetadata> => {
+        // Simulate file upload
+        const uploadedFile: fileMetadata.TFileMetadata = {
+            id: Math.random().toString(36).substring(2),
+            name: fileRequest.name,
+            size: fileRequest.file.size,
+            status: 'processing' as const,
+            category: 'image' as const,
+            url: URL.createObjectURL(fileRequest.file),
+            thumbnailUrl: URL.createObjectURL(fileRequest.file),
+        };
 
         // Set status to 'processing'
-        setReplies(prev => [
-            prev[0].type === 'resources'
-                ? {
-                    ...prev[0],
-                    links: (prev[0].links ?? []).map((link, idx) =>
-                        idx === replyLinkEditIndex
-                            ? { ...link, customIcon: { ...image, status: 'processing' as const } }
-                            : link
-                    )
-                }
-                : prev[0]
-        ]);
+        if (replyLinkEditIndex !== -1) {
+            setReplies(prev => [
+                prev[0].type === 'resources'
+                    ? {
+                        ...prev[0],
+                        links: (prev[0].links ?? []).map((link, idx) =>
+                            idx === replyLinkEditIndex
+                                ? { ...link, customIcon: uploadedFile }
+                                : link
+                        )
+                    }
+                    : prev[0]
+            ]);
+        }
 
         try {
             await new Promise<void>((resolve, reject) => {
@@ -269,32 +307,41 @@ const CardTemplate = ({
             });
 
             // On success: mark as 'available'
-            setReplies(prev => [
-                prev[0].type === 'resources'
-                    ? {
-                        ...prev[0],
-                        links: (prev[0].links ?? []).map((link, idx) =>
-                            idx === replyLinkEditIndex
-                                ? { ...link, customIcon: { ...image, status: 'available' as const } }
-                                : link
-                        )
-                    }
-                    : prev[0]
-            ]);
+            const finalFile = { ...uploadedFile, status: 'available' as const };
+
+            if (replyLinkEditIndex !== -1) {
+                setReplies(prev => [
+                    prev[0].type === 'resources'
+                        ? {
+                            ...prev[0],
+                            links: (prev[0].links ?? []).map((link, idx) =>
+                                idx === replyLinkEditIndex
+                                    ? { ...link, customIcon: finalFile }
+                                    : link
+                            )
+                        }
+                        : prev[0]
+                ]);
+            }
+
+            return finalFile;
         } catch (error) {
             // On abort/failure: remove customIcon
-            setReplies(prev => [
-                prev[0].type === 'resources'
-                    ? {
-                        ...prev[0],
-                        links: (prev[0].links ?? []).map((link, idx) =>
-                            idx === replyLinkEditIndex && link.customIcon?.id === image.id
-                                ? { ...link, customIcon: undefined }
-                                : link
-                        )
-                    }
-                    : prev[0]
-            ]);
+            if (replyLinkEditIndex !== -1) {
+                setReplies(prev => [
+                    prev[0].type === 'resources'
+                        ? {
+                            ...prev[0],
+                            links: (prev[0].links ?? []).map((link, idx) =>
+                                idx === replyLinkEditIndex
+                                    ? { ...link, customIcon: undefined }
+                                    : link
+                            )
+                        }
+                        : prev[0]
+                ]);
+            }
+            throw error;
         }
     };
 

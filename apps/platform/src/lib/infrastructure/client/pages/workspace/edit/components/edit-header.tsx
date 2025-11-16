@@ -5,6 +5,7 @@ import {
     IconEyeHide,
     IconSave,
     Badge,
+    ConfirmationModal,
 } from '@maany_shr/e-class-ui-kit';
 import { useState } from 'react';
 import { trpc } from '../../../../trpc/cms-client';
@@ -47,14 +48,30 @@ export default function EditHeader({
     const archiveMutation = trpc.archiveCourse.useMutation();
     const utils = trpc.useUtils();
 
-    const handlePublish = async () => {
-        const confirmed = window.confirm(
-            dictionary.components.editHeader.publishConfirmation +
-            '\n\n' +
-            dictionary.components.editHeader.publishRequirements
-        );
+    // Modal states
+    const [publishConfirmModal, setPublishConfirmModal] = useState(false);
+    const [archiveConfirmModal, setArchiveConfirmModal] = useState(false);
+    const [errorModal, setErrorModal] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+    });
+    const [successModal, setSuccessModal] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+    });
 
-        if (!confirmed) return;
+    const handlePublishConfirm = async () => {
+        setPublishConfirmModal(false);
 
         try {
             const result = await publishMutation.mutateAsync({ courseSlug: slug });
@@ -65,35 +82,63 @@ export default function EditHeader({
                 utils.listPlatformCoursesShort.invalidate();
                 utils.getOffersPageOutline.invalidate();
                 utils.getHomePage.invalidate();
-                alert(dictionary.components.editHeader.publishSuccess);
+
+                setSuccessModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.publishSuccessTitle,
+                    message: dictionary.components.editHeader.publishSuccess,
+                });
                 // ✅ No reload needed - query invalidation handles UI update
             } else {
-                alert(dictionary.components.editHeader.publishError + ': ' + (result as any).data?.message);
+                const errorMessage = (result as any).data?.message || dictionary.components.editHeader.publishErrorGeneric;
+                setErrorModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.publishErrorTitle,
+                    message: `${dictionary.components.editHeader.publishError}: ${errorMessage}`,
+                });
             }
         } catch (error: any) {
-            alert(dictionary.components.editHeader.publishError + ': ' + error.message);
+            setErrorModal({
+                isOpen: true,
+                title: dictionary.components.editHeader.publishErrorTitle,
+                message: `${dictionary.components.editHeader.publishError}: ${error.message || dictionary.components.editHeader.publishErrorGeneric}`,
+            });
         }
     };
 
-    const handleArchive = async () => {
-        const confirmed = window.confirm(
-            dictionary.components.editHeader.archiveConfirmation
-        );
-
-        if (!confirmed) return;
+    const handleArchiveConfirm = async () => {
+        setArchiveConfirmModal(false);
 
         try {
             const result = await archiveMutation.mutateAsync({ courseSlug: slug });
             if (result.success) {
                 // Invalidate queries to refetch updated data
                 utils.listUserCourses.invalidate();
-                alert(dictionary.components.editHeader.archiveSuccess);
-                window.location.reload();
+
+                setSuccessModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.archiveSuccessTitle,
+                    message: dictionary.components.editHeader.archiveSuccess,
+                });
+
+                // Reload after user acknowledges success
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
             } else {
-                alert(dictionary.components.editHeader.archiveError + ': ' + (result as any).data?.message);
+                const errorMessage = (result as any).data?.message || dictionary.components.editHeader.archiveErrorGeneric;
+                setErrorModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.archiveErrorTitle,
+                    message: `${dictionary.components.editHeader.archiveError}: ${errorMessage}`,
+                });
             }
         } catch (error: any) {
-            alert(dictionary.components.editHeader.archiveError + ': ' + error.message);
+            setErrorModal({
+                isOpen: true,
+                title: dictionary.components.editHeader.archiveErrorTitle,
+                message: `${dictionary.components.editHeader.archiveError}: ${error.message || dictionary.components.editHeader.archiveErrorGeneric}`,
+            });
         }
     };
 
@@ -132,56 +177,110 @@ export default function EditHeader({
     };
 
     return (
-        <div className="flex md:flex-row flex-col md:items-center justify-between gap-5 bg-neutral-950/50 sticky top-18 z-50 p-2">
-            <div className="flex flex-col gap-2">
-                <h1>{title}</h1>
-                {courseStatus && (
-                    <Badge
-                        text={getStatusText(courseStatus)}
-                        variant={getStatusBadgeVariant(courseStatus)}
-                        size="medium"
+        <>
+            <div className="flex md:flex-row flex-col md:items-center justify-between gap-5 bg-neutral-950/50 sticky top-18 z-50 p-2">
+                <div className="flex flex-col gap-2">
+                    <h1>{title}</h1>
+                    {courseStatus && (
+                        <Badge
+                            text={getStatusText(courseStatus)}
+                            variant={getStatusBadgeVariant(courseStatus)}
+                            size="medium"
+                        />
+                    )}
+                </div>
+                <div className="flex sm:flex-row flex-col sm:items-center gap-3">
+                    <Button
+                        variant="text"
+                        iconLeft={isPreviewing ? <IconEyeHide /> : <IconEyeShow />}
+                        hasIconLeft
+                        text={previewButtonText}
+                        className="px-0"
+                        onClick={onPreview}
+                        disabled={disablePreview || isSaving}
                     />
-                )}
-            </div>
-            <div className="flex sm:flex-row flex-col sm:items-center gap-3">
-                <Button
-                    variant="text"
-                    iconLeft={isPreviewing ? <IconEyeHide /> : <IconEyeShow />}
-                    hasIconLeft
-                    text={previewButtonText}
-                    className="px-0"
-                    onClick={onPreview}
-                    disabled={disablePreview || isSaving}
-                />
-                <Button
-                    variant="primary"
-                    iconLeft={<IconSave />}
-                    hasIconLeft
-                    text={
-                        isSaving
-                            ? dictionary.components.editHeader.savingText
-                            : dictionary.components.editHeader.saveText
-                    }
-                    onClick={onSave}
-                    disabled={isSaving || isPreviewing}
-                />
-                {canPublish && (
                     <Button
                         variant="primary"
-                        text={dictionary.components.editHeader.publishCourse}
-                        onClick={handlePublish}
-                        disabled={isSaving || isPreviewing || publishMutation.isPending}
+                        iconLeft={<IconSave />}
+                        hasIconLeft
+                        text={
+                            isSaving
+                                ? dictionary.components.editHeader.savingText
+                                : dictionary.components.editHeader.saveText
+                        }
+                        onClick={onSave}
+                        disabled={isSaving || isPreviewing}
                     />
-                )}
-                {canArchive && (
-                    <Button
-                        variant="primary"
-                        text={dictionary.components.editHeader.archiveCourse}
-                        onClick={handleArchive}
-                        disabled={isSaving || isPreviewing || archiveMutation.isPending}
-                    />
-                )}
+                    {canPublish && (
+                        <Button
+                            variant="primary"
+                            text={dictionary.components.editHeader.publishCourse}
+                            onClick={() => setPublishConfirmModal(true)}
+                            disabled={isSaving || isPreviewing || publishMutation.isPending}
+                        />
+                    )}
+                    {canArchive && (
+                        <Button
+                            variant="primary"
+                            text={dictionary.components.editHeader.archiveCourse}
+                            onClick={() => setArchiveConfirmModal(true)}
+                            disabled={isSaving || isPreviewing || archiveMutation.isPending}
+                        />
+                    )}
+                </div>
             </div>
-        </div>
+
+            {/* Publish Confirmation Modal */}
+            <ConfirmationModal
+            type="accept"
+            isOpen={publishConfirmModal}
+            onClose={() => setPublishConfirmModal(false)}
+            onConfirm={handlePublishConfirm}
+            title={dictionary.components.editHeader.publishConfirmationTitle}
+            message={`${dictionary.components.editHeader.publishConfirmation}\n\n${dictionary.components.editHeader.publishRequirements}`}
+            confirmText={dictionary.components.editHeader.confirmPublish}
+            cancelText={dictionary.components.editHeader.cancel}
+            locale={locale}
+            isLoading={publishMutation.isPending}
+        />
+
+        {/* Archive Confirmation Modal */}
+        <ConfirmationModal
+            type="accept"
+            isOpen={archiveConfirmModal}
+            onClose={() => setArchiveConfirmModal(false)}
+            onConfirm={handleArchiveConfirm}
+            title={dictionary.components.editHeader.archiveConfirmationTitle}
+            message={dictionary.components.editHeader.archiveConfirmation}
+            confirmText={dictionary.components.editHeader.confirmArchive}
+            cancelText={dictionary.components.editHeader.cancel}
+            locale={locale}
+            isLoading={archiveMutation.isPending}
+        />
+
+        {/* Error Modal */}
+        <ConfirmationModal
+            type="accept"
+            isOpen={errorModal.isOpen}
+            onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+            onConfirm={() => setErrorModal({ ...errorModal, isOpen: false })}
+            title={errorModal.title}
+            message={errorModal.message}
+            confirmText="OK"
+            locale={locale}
+        />
+
+        {/* Success Modal */}
+        <ConfirmationModal
+            type="accept"
+            isOpen={successModal.isOpen}
+            onClose={() => setSuccessModal({ ...successModal, isOpen: false })}
+            onConfirm={() => setSuccessModal({ ...successModal, isOpen: false })}
+            title={successModal.title}
+            message={successModal.message}
+            confirmText="OK"
+            locale={locale}
+        />
+    </>
     );
 }

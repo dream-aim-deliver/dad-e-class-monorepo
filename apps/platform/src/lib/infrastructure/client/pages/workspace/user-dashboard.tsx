@@ -17,6 +17,7 @@ import {
     DefaultLoading,
     RedeemStandaloneCoupon,
     IconCoupon,
+    ConfirmationModal,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -149,9 +150,21 @@ function CreateCourseDialog({
 
 function RedeemCouponDialogContent() {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.userDashboard');
     const { setIsOpen } = useDialog();
     const router = useRouter();
     const utils = trpc.useUtils();
+
+    // Error modal state
+    const [errorModal, setErrorModal] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+    });
 
     // Set up view model and presenter
     const [redeemViewModel, setRedeemViewModel] = useState<
@@ -208,6 +221,10 @@ function RedeemCouponDialogContent() {
                         break;
                 }
 
+                // Invalidate queries to refetch user data after successful redemption
+                void utils.listUserCourses.invalidate();
+                void utils.listUpcomingStudentCoachingSessions.invalidate();
+
                 return {
                     valid: true,
                     data: {
@@ -221,35 +238,40 @@ function RedeemCouponDialogContent() {
             return {
                 valid: false,
             };
-        } catch (error) {
-            console.error('Error redeeming coupon:', error);
+        } catch (error: any) {
+            setErrorModal({
+                isOpen: true,
+                title: t('coupon.error.redeemFailedTitle'),
+                message: `${t('coupon.error.redeemFailed')}: ${error.message || t('coupon.error.redeemFailedGeneric')}`,
+            });
             return {
                 valid: false,
             };
         }
     };
 
-    const handleFinalRedeem = async (
-        _couponCode: string,
-        data: { type: 'course' | 'package' | 'coaching' | 'group'; title: string; imageUrl?: string }
-    ) => {
-        // Invalidate queries to refetch user data after successful redemption
-        void utils.listUserCourses.invalidate();
-        void utils.listUpcomingStudentCoachingSessions.invalidate();
-
-        // Note: Modal will stay open to show success state
-        // User can close it manually or component will handle navigation
-    };
-
     return (
-        <div className="p-6">
-            <RedeemStandaloneCoupon
+        <>
+            <div className="p-6">
+                <RedeemStandaloneCoupon
+                    locale={locale}
+                    onRedeem={handleRedeem}
+                    onClose={() => setIsOpen(false)}
+                />
+            </div>
+
+            {/* Error Modal */}
+            <ConfirmationModal
+                type="accept"
+                isOpen={errorModal.isOpen}
+                onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+                onConfirm={() => setErrorModal({ ...errorModal, isOpen: false })}
+                title={errorModal.title}
+                message={errorModal.message}
+                confirmText="OK"
                 locale={locale}
-                onRedeem={handleRedeem}
-                onFinalRedeem={handleFinalRedeem}
-                onClose={() => setIsOpen(false)}
             />
-        </div>
+        </>
     );
 }
 

@@ -8,6 +8,7 @@ import {
     IconGroup,
     IconLogOut,
     IconSales,
+    IconSendEmail,
     IconStar,
     SideMenu,
 } from '@maany_shr/e-class-ui-kit';
@@ -37,6 +38,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
         calendar: '/workspace/calendar',
         students: '/workspace/students',
         reviews: '/workspace/your-reviews',
+        notifications: '/workspace/notifications',
         profile: '/workspace/profile',
         orderPayments: '/workspace/billing',
     };
@@ -55,6 +57,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             '/workspace/calendar': sidebarTranslations('calendar'),
             '/workspace/students': sidebarTranslations('yourStudents'),
             '/workspace/your-reviews': sidebarTranslations('yourReviews'),
+            '/workspace/notifications': sidebarTranslations('notifications'),
             '/profile': sidebarTranslations('yourProfile'),
             '/orders': sidebarTranslations('orderPayments'),
             '/billing': sidebarTranslations('orderPayments'),
@@ -103,6 +106,11 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                     label: sidebarTranslations('calendar'),
                     onClick: () => router.push(routeMap.calendar),
                 },
+                {
+                    icon: <IconSendEmail />,
+                    label: sidebarTranslations('notifications'),
+                    onClick: () => router.push(routeMap.notifications),
+                },
                 ...(!isStudent
                     ? [
                         {
@@ -115,6 +123,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                             label: sidebarTranslations('yourReviews'),
                             onClick: () => router.push(routeMap.reviews),
                         },
+                        
                     ]
                     : []),
             ],
