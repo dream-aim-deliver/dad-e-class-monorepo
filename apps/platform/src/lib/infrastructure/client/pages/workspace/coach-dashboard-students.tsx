@@ -38,7 +38,7 @@ interface WaitingFeedbackCourseAssignment extends DefaultCourseAssignment {
 }
 
 interface CourseCompletedCourseAssignment extends DefaultCourseAssignment {
-    status: 'course-completed';
+    status: 'passed';
     completedCourseDate: Date;
 }
 
@@ -49,11 +49,11 @@ type CourseAssignment =
     | CourseCompletedCourseAssignment;
 
 function mapAssignmentStatusToCourseStatus(
-    status: string,
+    status: string | null,
 ): CourseAssignment['status'] {
     switch (status) {
         case 'Passed':
-            return 'course-completed';
+            return 'passed';
         case 'AwaitingReview':
             return 'waiting-feedback';
         case 'AwaitingForLongTime':
@@ -173,12 +173,12 @@ export default function CoachDashboardStudents() {
                                 let status = 'no-assignment';
                                 let assignmentTitle: string | undefined;
 
-                                if (course.lastAssignment) {
+                                if (course.longestAwaitAssignment) {
                                     status = mapAssignmentStatusToCourseStatus(
-                                        course.lastAssignment.status,
+                                        course.longestAwaitAssignment.status,
                                     );
                                     assignmentTitle =
-                                        course.lastAssignment.title;
+                                        course.longestAwaitAssignment.title;
                                 }
 
                                 if (course.courseCompletionDate) {
@@ -187,7 +187,7 @@ export default function CoachDashboardStudents() {
                                     );
                                 }
 
-                                if (!course.lastAssignment) {
+                                if (!course.longestAwaitAssignment) {
                                     return {
                                         courseName: course.title,
                                         courseImageUrl: course.imageUrl || '',
@@ -209,7 +209,7 @@ export default function CoachDashboardStudents() {
                                                 `/${locale}/course/${course.slug || ''}`,
                                             );
                                         },
-                                        status: 'course-completed' as const,
+                                        status: 'passed' as const,
                                         completedCourseDate:
                                             completedCourseDate,
                                     };
