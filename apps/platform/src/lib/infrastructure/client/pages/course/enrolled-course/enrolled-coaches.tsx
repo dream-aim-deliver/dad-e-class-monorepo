@@ -106,19 +106,12 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     // Map available coaches to CoachContent format for AddCoachModal
     const mappedAvailableCoaches = useMemo(() => {
         return availableCoaches.map((coach) => {
-            // Fall back to username if name/surname are empty
-            const fullName = coach.name && coach.surname
-                ? `${coach.name} ${coach.surname}`.trim()
-                : coach.username;
-
-            // Include username in display for better client-side filtering
-            const displayName = coach.name && coach.surname
-                ? `${fullName} (${coach.username})`
-                : coach.username;
+            // Use full name for display and avatar
+            const fullName = getCoachDisplayName(coach);
 
             return {
                 id: String(coach.id),
-                coachName: displayName,
+                coachName: fullName,
                 coachAvatarUrl: coach.avatarUrl || '',
                 totalRating: coach.reviewCount,
                 rating: coach.averageRating || 0,
