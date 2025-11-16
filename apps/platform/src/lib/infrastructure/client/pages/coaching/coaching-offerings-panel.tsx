@@ -1,6 +1,6 @@
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/client';
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useMemo, useState, useEffect, useCallback } from 'react';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
 import {
     AvailableCoachingSessions,
@@ -113,21 +113,24 @@ export default function CoachingOfferingsPanel() {
     }, [coachingOfferingsViewModel]);
 
     // Helper to execute checkout
-    const executeCheckout = async (
+    const executeCheckout = useCallback(async (
         request: useCaseModels.TPrepareCheckoutRequest,
     ) => {
         try {
             const response = await prepareCheckoutMutation.mutateAsync(request);
             checkoutPresenter.present(response, checkoutViewModel);
-
-            if (checkoutViewModel && checkoutViewModel.mode === 'default') {
-                setTransactionDraft(checkoutViewModel.data.transaction);
-                setIsCheckoutOpen(true);
-            }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
-    };
+    }, [prepareCheckoutMutation, checkoutPresenter, checkoutViewModel]);
+
+    // Watch for checkoutViewModel changes and open modal when ready
+    useEffect(() => {
+        if (checkoutViewModel && checkoutViewModel.mode === 'default') {
+            setTransactionDraft(checkoutViewModel.data.transaction);
+            setIsCheckoutOpen(true);
+        }
+    }, [checkoutViewModel]);
 
     // Checkout intent hook for login flow preservation
     const { saveIntent } = useCheckoutIntent({
@@ -157,7 +160,7 @@ export default function CoachingOfferingsPanel() {
         if (!isLoggedIn) {
             saveIntent(request, window.location.pathname);
             router.push(
-                `/${locale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`,
+                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
             );
             return;
         }

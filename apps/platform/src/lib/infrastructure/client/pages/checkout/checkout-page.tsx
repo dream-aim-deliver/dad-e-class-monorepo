@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocale } from 'next-intl';
 import {
     Button,
@@ -71,22 +71,24 @@ export default function CheckoutPage() {
     const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
 
     // Helper to execute checkout
-    const executeCheckout = async (
+    const executeCheckout = useCallback(async (
         request: useCaseModels.TPrepareCheckoutRequest,
     ) => {
         try {
             const response = await prepareCheckoutMutation.mutateAsync(request);
             presenter.present(response, viewModel);
-
-            // Check view model state and handle accordingly
-            if (viewModel && viewModel.mode === 'default') {
-                setTransactionDraft(viewModel.data.transaction);
-                setIsCheckoutOpen(true);
-            }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
-    };
+    }, [prepareCheckoutMutation, presenter, viewModel]);
+
+    // Watch for viewModel changes and open modal when ready
+    useEffect(() => {
+        if (viewModel && viewModel.mode === 'default') {
+            setTransactionDraft(viewModel.data.transaction);
+            setIsCheckoutOpen(true);
+        }
+    }, [viewModel]);
 
     // Checkout intent hook for login flow preservation
     const { saveIntent } = useCheckoutIntent({
@@ -98,7 +100,7 @@ export default function CheckoutPage() {
         if (!isLoggedIn) {
             saveIntent(request, window.location.pathname);
             router.push(
-                `/${locale}/auth/login?returnUrl=${encodeURIComponent(window.location.pathname)}`,
+                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
             );
             return;
         }
