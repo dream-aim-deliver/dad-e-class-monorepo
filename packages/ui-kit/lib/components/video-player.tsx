@@ -100,13 +100,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         setIsPlayerReady(true);
     };
 
-    const hasThumbnail: boolean = !showPlayer && thumbnailUrl !== undefined;
+    const hasThumbnail: boolean = !showPlayer && !!thumbnailUrl && thumbnailUrl !== "";
 
     // Fixed aspect ratio container with absolute positioning for all content
     return (
         <div className={`relative ${className}`}>
             {/* Thumbnail state */}
-            {hasThumbnail && (
+            {hasThumbnail && thumbnailUrl && (
                 <div className="absolute inset-0 w-full h-full">
                     <img
                         src={thumbnailUrl}
