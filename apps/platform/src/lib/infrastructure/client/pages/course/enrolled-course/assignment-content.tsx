@@ -103,6 +103,7 @@ function AssignmentInteraction({
     const [links, setLinks] = useState<shared.TLinkWithId[]>([]);
 
     const [linkEditIndex, setLinkEditIndex] = useState<number | null>(null);
+    const [showSuccessBanner, setShowSuccessBanner] = useState<boolean>(false);
 
     const { uploadFile, uploadError } = useRealProgressUpload({
         lessonId: assignment.lesson.id,
@@ -190,6 +191,12 @@ function AssignmentInteraction({
                     setComment('');
                     setFiles([]);
                     setLinks([]);
+                    // Show success banner
+                    setShowSuccessBanner(true);
+                    // Auto-dismiss success banner after 5 seconds
+                    setTimeout(() => {
+                        setShowSuccessBanner(false);
+                    }, 5000);
                     // Invalidate assignment query to refetch fresh data
                     utils.getAssignment.invalidate({ assignmentId, studentUsername });
                 },
@@ -257,6 +264,8 @@ function AssignmentInteraction({
             onClickSendMessage={onClickSendMessage}
             onClickMarkAsPassed={onClickMarkAsPassed}
             isSending={isSending}
+            showSuccessBanner={showSuccessBanner}
+            onCloseSuccessBanner={() => setShowSuccessBanner(false)}
         />
     );
 }
