@@ -13,6 +13,10 @@ interface ScheduledOfferingContentProps {
     onSubmit: () => void;
     isSubmitting?: boolean;
     submitError?: string;
+    bookingSuccess?: boolean;
+    returnTo?: string;
+    onReturnToCourse?: () => void;
+    onViewSessions?: () => void;
     closeDialog?: () => void;
 }
 
@@ -22,11 +26,41 @@ export default function ScheduledOfferingContent({
     onSubmit,
     submitError,
     isSubmitting,
+    bookingSuccess,
+    returnTo,
+    onReturnToCourse,
+    onViewSessions,
     closeDialog,
 }: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
 
     if (!session) return null;
+
+    // Show success state after booking
+    if (bookingSuccess) {
+        return (
+            <div className="flex flex-col gap-4">
+                <h2 className="text-xl font-bold text-text-primary">Booking Request Sent!</h2>
+                <p className="text-text-secondary">
+                    Your coaching session request has been sent successfully. The coach will review and confirm your request.
+                </p>
+                <div className="flex flex-col gap-2">
+                    {returnTo && (
+                        <Button
+                            variant="primary"
+                            text="← Back to Course"
+                            onClick={onReturnToCourse}
+                        />
+                    )}
+                    <Button
+                        variant={returnTo ? "secondary" : "primary"}
+                        text="View All Sessions"
+                        onClick={onViewSessions}
+                    />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-3">
