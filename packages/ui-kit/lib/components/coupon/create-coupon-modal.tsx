@@ -126,6 +126,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   // Form state
   const [couponName, setCouponName] = useState('');
   const [usagesAllowed, setUsagesAllowed] = useState<number | null>(null);
+  const [usagesAllowedPerUser, setUsagesAllowedPerUser] = useState<number | null>(null);
   const [expirationDate, setExpirationDate] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<CouponType | null>(null);
 
@@ -145,6 +146,9 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   const [couponNameTouched, setCouponNameTouched] = useState<boolean>(false);
   const [usagesAllowedTouched, setUsagesAllowedTouched] = useState<boolean>(false);
   const [usagesAllowedInput, setUsagesAllowedInput] = useState<string>('');
+  const [usagesAllowedPerUserTouched, setUsagesAllowedPerUserTouched] = useState<boolean>(false);
+  const [usagesAllowedPerUserInput, setUsagesAllowedPerUserInput] = useState<string>('');
+  const [expirationDateTouched, setExpirationDateTouched] = useState<boolean>(false);
 
   // Coupon name validation
   const validateCouponName = (): string | null => {
@@ -165,6 +169,28 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
     return null;
   };
 
+  // Usages allowed per user validation
+  const validateUsagesAllowedPerUser = (): string | null => {
+    if (usagesAllowedPerUserInput && /[^0-9]/.test(usagesAllowedPerUserInput)) {
+      return 'Only numbers are allowed';
+    }
+    return null;
+  };
+
+  // Expiration date validation
+  const validateExpirationDate = (): string | null => {
+    if (!expirationDate) return null;
+
+    const selectedDate = new Date(expirationDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset to start of day for fair comparison
+
+    if (selectedDate < today) {
+      return 'Expiration date cannot be in the past';
+    }
+    return null;
+  };
+
   // Validation function
   const validateForm = (): string[] => {
     const errors: string[] = [];
@@ -177,6 +203,15 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
 
     if (usagesAllowedInput && /[^0-9]/.test(usagesAllowedInput)) {
       errors.push('Only numbers are allowed for usages');
+    }
+
+    if (usagesAllowedPerUserInput && /[^0-9]/.test(usagesAllowedPerUserInput)) {
+      errors.push('Only numbers are allowed for usages per user');
+    }
+
+    const expirationError = validateExpirationDate();
+    if (expirationError) {
+      errors.push(expirationError);
     }
 
     if (!selectedType) {
@@ -288,6 +323,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
     const mutationData = {
       name: couponName,
       usagesAllowed: usagesAllowed,
+      usagesAllowedPerUser: usagesAllowedPerUser,
       expirationDate: expirationDate,
       couponContent: couponContent
     };
@@ -403,13 +439,45 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
               <p className="text-red-600 text-sm">{validateUsagesAllowed()}</p>
             )}
           </div>
-          
-          <DateInput
-            label={dictionary.expirationDate}
-            value={expirationDate || ''}
-            onChange={(value) => setExpirationDate(value || null)}
-            locale={locale}
-          />
+
+          <div className="flex flex-col gap-1">
+            <TextInput
+              label={dictionary.usagesAllowedPerUser}
+              inputField={{
+                value: usagesAllowedPerUserInput,
+                setValue: (value) => {
+                  setUsagesAllowedPerUserTouched(true);
+                  setUsagesAllowedPerUserInput(value);
+                  // Only set the actual number if it's valid
+                  if (value === '' || value === null) {
+                    setUsagesAllowedPerUser(null);
+                  } else if (/^[0-9]+$/.test(value)) {
+                    setUsagesAllowedPerUser(parseInt(value));
+                  }
+                },
+                inputText: dictionary.usagesAllowedPerUserPlaceholder,
+                type: 'text',
+              }}
+            />
+            {usagesAllowedPerUserTouched && validateUsagesAllowedPerUser() && (
+              <p className="text-red-600 text-sm">{validateUsagesAllowedPerUser()}</p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <DateInput
+              label={dictionary.expirationDate}
+              value={expirationDate || ''}
+              onChange={(value) => {
+                setExpirationDateTouched(true);
+                setExpirationDate(value || null);
+              }}
+              locale={locale}
+            />
+            {expirationDateTouched && validateExpirationDate() && (
+              <p className="text-red-600 text-sm">{validateExpirationDate()}</p>
+            )}
+          </div>
         </div>
 
         {/* Coupon Type Selection */}
