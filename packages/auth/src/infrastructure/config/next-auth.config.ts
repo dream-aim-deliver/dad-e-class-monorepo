@@ -9,6 +9,29 @@ import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { TAppRouter } from '@dream-aim-deliver/e-class-cms-rest';
 import superjson from 'superjson';
 import { TEClassRole } from "@dream-aim-deliver/e-class-cms-rest/lib/core";
+
+/**
+ * Decodes a JWT token and extracts the expiration timestamp
+ * @param token - The JWT token to decode
+ * @returns The expiration timestamp in seconds, or null if unable to decode
+ */
+function getJWTExpiration(token: string): number | null {
+    try {
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+            console.error('[Auth JWT] Invalid JWT structure');
+            return null;
+        }
+
+        // Decode the payload (second part)
+        const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+        return payload.exp || null;
+    } catch (error) {
+        console.error('[Auth JWT] Error decoding JWT:', error);
+        return null;
+    }
+}
+
 /**
  * Generates the NextAuth configuration object.
  *
@@ -115,34 +138,69 @@ export const generateNextAuthConfig = (config: {
                 }
                 if (account) {
                     token.account = account;
-                    // Store when the access token expires
+                    // Store when the access token expires (from Auth0 OAuth response)
                     token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : Date.now() + 3600 * 1000;
+
+                    // CRITICAL: Also store when the ID token expires (from JWT exp claim)
+                    // This is what's sent to the server, so we must validate this expiration
+                    if (account.id_token) {
+                        const idTokenExp = getJWTExpiration(account.id_token);
+                        if (idTokenExp) {
+                            token.idTokenExpires = idTokenExp * 1000; // Convert to milliseconds
+                            console.log('[Auth JWT] 📋 ID token expires at:', new Date(token.idTokenExpires).toISOString());
+                        } else {
+                            console.warn('[Auth JWT] ⚠️ Could not extract ID token expiration, using default');
+                            token.idTokenExpires = Date.now() + 3600 * 1000; // 1 hour from now
+                        }
+                    }
                 }
 
-                // Ensure we have a token expiration time
+                // Ensure we have token expiration times
                 if (!token.accessTokenExpires) {
                     // This can happen on first session check after login if the token wasn't properly initialized
                     // Set a default expiration time to prevent false expiration detection
-                    console.warn('[Auth JWT] ⚠️ Token expiration time not found, initializing with default (1 hour)');
+                    console.warn('[Auth JWT] ⚠️ Access token expiration time not found, initializing with default (1 hour)');
                     token.accessTokenExpires = Date.now() + 3600 * 1000; // 1 hour from now
                 }
 
-                // Return previous token if the access token has not expired yet
-                const currentTime = Date.now();
-                const tokenExpires = token.accessTokenExpires as number;
-                const timeUntilExpiry = tokenExpires - currentTime;
-                const minutesUntilExpiry = Math.floor(timeUntilExpiry / 1000 / 60);
+                if (!token.idTokenExpires) {
+                    console.warn('[Auth JWT] ⚠️ ID token expiration time not found, initializing with default (1 hour)');
+                    token.idTokenExpires = Date.now() + 3600 * 1000; // 1 hour from now
+                }
 
-                // Refresh token 5 minutes before expiration to avoid edge cases
-                const shouldRefresh = timeUntilExpiry < 5 * 60 * 1000;
+                // CRITICAL: Check ID token expiration (this is what's sent to the server)
+                // The server validates the ID token, so we must refresh based on its expiration
+                const currentTime = Date.now();
+                const idTokenExpires = token.idTokenExpires as number;
+                const accessTokenExpires = token.accessTokenExpires as number;
+
+                // Clock skew tolerance: 5 minutes (matching server-side validation)
+                const clockSkewMs = 5 * 60 * 1000; // 5 minutes
+
+                // Calculate time until ID token expiration
+                const timeUntilIdTokenExpiry = idTokenExpires - currentTime;
+                const minutesUntilIdTokenExpiry = Math.floor(timeUntilIdTokenExpiry / 1000 / 60);
+
+                // Calculate time until access token expiration (for logging)
+                const timeUntilAccessTokenExpiry = accessTokenExpires - currentTime;
+                const minutesUntilAccessTokenExpiry = Math.floor(timeUntilAccessTokenExpiry / 1000 / 60);
+
+                // Refresh token if ID token has expired (with clock skew tolerance) or will expire soon
+                // We add clock skew tolerance to the refresh threshold to match server behavior
+                const refreshThreshold = 5 * 60 * 1000; // Refresh 5 minutes before expiration
+                const shouldRefresh = timeUntilIdTokenExpiry < (refreshThreshold + clockSkewMs);
 
                 if (!shouldRefresh) {
-                    console.log(`[Auth JWT] ✅ Token still valid, no refresh needed (expires in ${minutesUntilExpiry} minutes)`);
+                    console.log(`[Auth JWT] ✅ Tokens still valid, no refresh needed`);
+                    console.log(`[Auth JWT] 📊 ID token (used by server): expires in ${minutesUntilIdTokenExpiry} minutes`);
+                    console.log(`[Auth JWT] 📊 Access token: expires in ${minutesUntilAccessTokenExpiry} minutes`);
                     return token;
                 }
 
-                // Access token has expired or will expire soon, try to refresh it
-                console.log(`[Auth JWT] 🔄 Access token expired or expiring soon (${minutesUntilExpiry} minutes left), attempting refresh...`);
+                // ID token has expired or will expire soon, try to refresh it
+                console.log(`[Auth JWT] 🔄 ID token expired or expiring soon, attempting refresh...`);
+                console.log(`[Auth JWT] 📊 ID token: ${minutesUntilIdTokenExpiry} minutes left`);
+                console.log(`[Auth JWT] 📊 Access token: ${minutesUntilAccessTokenExpiry} minutes left`);
                 const refreshToken = (token.account as Account)?.refresh_token;
 
                 if (!refreshToken) {
@@ -190,10 +248,21 @@ export const generateNextAuthConfig = (config: {
                             refresh_token: refreshedTokens.refresh_token || refreshToken,
                         };
 
+                        // Extract ID token expiration from the new ID token
+                        let newIdTokenExpires = Date.now() + 3600 * 1000; // Default to 1 hour
+                        if (refreshedTokens.id_token) {
+                            const idTokenExp = getJWTExpiration(refreshedTokens.id_token);
+                            if (idTokenExp) {
+                                newIdTokenExpires = idTokenExp * 1000; // Convert to milliseconds
+                                console.log('[Auth JWT] 📋 Refreshed ID token expires at:', new Date(newIdTokenExpires).toISOString());
+                            }
+                        }
+
                         return {
                             ...token,
                             account: updatedAccount,
                             accessTokenExpires: (updatedAccount.expires_at || 0) * 1000,
+                            idTokenExpires: newIdTokenExpires,
                             error: undefined,
                         };
                     } catch (error) {
