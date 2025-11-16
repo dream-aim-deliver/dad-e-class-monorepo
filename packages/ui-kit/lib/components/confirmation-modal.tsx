@@ -77,7 +77,7 @@ export const ConfirmationModal: React.FC<ModalProps> = ({
                         <h2 className="text-xl font-semibold text-text-primary">
                             {title}
                         </h2>
-                        <p className="text-text-secondary">
+                        <p className="text-text-secondary whitespace-pre-line">
                             {message}
                         </p>
                         {type === 'decline' && setDeclineReason && (

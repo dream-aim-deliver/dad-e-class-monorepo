@@ -43,6 +43,7 @@ export interface CourseCreatorCardProps extends isLocalAware {
         currency: string;
     };
     onEdit?: () => void;
+    onGoToOffer?: () => void;
     onClickUser?: () => void;
     onDuplicate?: () => void;
 }
@@ -129,6 +130,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     status,
     locale,
     onEdit,
+    onGoToOffer,
     onClickUser,
     onDuplicate,
 }) => {
@@ -239,6 +241,19 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                                     .editCourseButton
                             }
                         />
+
+                        {status !== 'draft' && onGoToOffer && (
+                            <Button
+                                onClick={onGoToOffer}
+                                className="w-full"
+                                variant="text"
+                                size="medium"
+                                text={
+                                    dictionary.components.courseCard
+                                        .goToOfferButton
+                                }
+                            />
+                        )}
 
                         {onDuplicate && (
                             <Button

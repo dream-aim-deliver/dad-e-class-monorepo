@@ -336,6 +336,7 @@ export const DictionarySchema = z.object({
       group: z.string(),
       manageButton: z.string(),
       editCourseButton: z.string(),
+      goToOfferButton: z.string(),
       duplicateButton: z.string(),
       beginCourseButton: z.string(),
       resumeCourseButton: z.string(),

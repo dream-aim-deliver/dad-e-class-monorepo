@@ -227,6 +227,7 @@ export const DE: TDictionary = {
       group: 'Gruppe',
       manageButton: 'Verwalten',
       editCourseButton: 'Kurs bearbeiten',
+      goToOfferButton: 'Zum Angebot',
       duplicateButton: 'Duplizieren',
       beginCourseButton: 'Kurs starten',
       resumeCourseButton: 'Fortsetzen',
