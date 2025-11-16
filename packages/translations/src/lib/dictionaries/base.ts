@@ -2213,6 +2213,7 @@ export const DictionarySchema = z.object({
       editProfile: z.string(),
       viewCalendar: z.string(),
       defaultDisplayName: z.string(),
+      redeemCoupon: z.string(),
       yourCourses: z.string(),
       createCourse: z.string(),
       viewAllCourses: z.string(),
@@ -2221,7 +2222,13 @@ export const DictionarySchema = z.object({
       duplicatingCourse: z.string(),
       duplicateSuccess: z.string(),
       duplicateError: z.string(),
-      redeemCoupon: z.string(),
+      coupon: z.object({
+        error: z.object({
+          redeemFailedTitle: z.string(),
+          redeemFailed: z.string(),
+          redeemFailedGeneric: z.string(),
+        }),
+      }),
     }),
     manageTopics: z.object({
       title: z.string(),
@@ -2413,26 +2420,6 @@ export const DictionarySchema = z.object({
         accessDenied: z.string(),
         notFoundTitle: z.string(),
         notFoundDescription: z.string(),
-      }),
-    }),
-    userDashboard: z.object({
-      editProfile: z.string(),
-      viewCalendar: z.string(),
-      redeemCoupon: z.string(),
-      yourCourses: z.string(),
-      createCourse: z.string(),
-      viewAllCourses: z.string(),
-      errorAccess: z.string(),
-      errorFailed: z.string(),
-      duplicatingCourse: z.string(),
-      duplicateSuccess: z.string(),
-      duplicateError: z.string(),
-      coupon: z.object({
-        error: z.object({
-          redeemFailedTitle: z.string(),
-          redeemFailed: z.string(),
-          redeemFailedGeneric: z.string(),
-        }),
       }),
     }),
     userCoachingSessions: z.object({

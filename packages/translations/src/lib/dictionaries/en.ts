@@ -2175,6 +2175,7 @@ export const EN: TDictionary = {
       editProfile: 'Edit Profile',
       viewCalendar: 'View Calendar',
       defaultDisplayName: 'Student',
+      redeemCoupon: "Redeem Coupon",
       yourCourses: "Your Courses",
       createCourse: "Create Course",
       viewAllCourses: "View All Courses",
@@ -2183,7 +2184,13 @@ export const EN: TDictionary = {
       duplicatingCourse: "Duplicating course, please wait...",
       duplicateSuccess: "Course duplicated successfully!",
       duplicateError: "Failed to duplicate course. Please try again.",
-      redeemCoupon: "Redeem Coupon",
+      coupon: {
+        error: {
+          redeemFailedTitle: "Coupon Redemption Failed",
+          redeemFailed: "Failed to redeem coupon",
+          redeemFailedGeneric: "The coupon code could not be redeemed. Please check the code and try again.",
+        },
+      },
     },
     manageTopics: {
       title: 'Manage Topics (aka Skills)',
@@ -2375,26 +2382,6 @@ export const EN: TDictionary = {
         accessDenied: 'Access denied. Only coaches can access ended group coaching sessions.',
         notFoundTitle: 'No sessions found',
         notFoundDescription: 'There are no ended coaching sessions for this group.',
-      },
-    },
-    userDashboard: {
-      editProfile: "Edit Profile",
-      viewCalendar: "View Calendar",
-      redeemCoupon: "Redeem Coupon",
-      yourCourses: "Your Courses",
-      createCourse: "Create Course",
-      viewAllCourses: "View All Courses",
-      errorAccess: "Access denied. You do not have permission to access the dashboard.",
-      errorFailed: "Failed to load dashboard data, please try again later.",
-      duplicatingCourse: "Duplicating course, please wait...",
-      duplicateSuccess: "Course duplicated successfully!",
-      duplicateError: "Failed to duplicate course. Please try again.",
-      coupon: {
-        error: {
-          redeemFailedTitle: "Coupon Redemption Failed",
-          redeemFailed: "Failed to redeem coupon",
-          redeemFailedGeneric: "The coupon code could not be redeemed. Please check the code and try again.",
-        },
       },
     },
     userCoachingSessions: {
