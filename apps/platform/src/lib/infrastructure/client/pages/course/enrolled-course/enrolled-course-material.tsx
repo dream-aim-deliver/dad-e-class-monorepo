@@ -57,9 +57,16 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
 
     const successData = courseMaterialsViewModel.data; // typed as TCourseMaterialsListSuccess
 
+    // Check if there are any lessons with materials across all modules
+    const hasAnyMaterials = successData.modules?.some(module =>
+        module.lessons?.some(lesson =>
+            lesson.materials && lesson.materials.length > 0
+        )
+    );
+
     return (
         <div className="flex flex-col space-y-6">
-            {successData.moduleCount === 0 ? (
+            {!hasAnyMaterials ? (
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                     <p className="text-text-primary text-md">
                         {dictionary.pages.course.materials.noMaterialsAvailable}
