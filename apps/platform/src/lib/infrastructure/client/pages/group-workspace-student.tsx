@@ -297,12 +297,12 @@ export default function GroupWorkspaceStudent({
         );
       }
 
-      if (status === "course-completed") {
+      if (status === "passed") {
         return (
           <StudentCard
             {...baseProps}
             key={key}
-            status="course-completed"
+            status="passed"
             completedCourseDate={member.courseCompletionDate ? new Date(member.courseCompletionDate) : new Date()}
           />
         );

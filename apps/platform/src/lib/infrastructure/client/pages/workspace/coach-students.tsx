@@ -113,16 +113,16 @@ export default function CoachStudents(props: CoachStudentsProps) {
             filtered = filtered.filter((student) => {
                 return student.courses.some((course) => {
                     if (
-                        !course.lastAssignment &&
+                        !course.longestAwaitAssignment &&
                         appliedFilters.assignmentStatus!.includes(
                             'no-assignment',
                         )
                     ) {
                         return true;
                     }
-                    if (course.lastAssignment) {
+                    if (course.longestAwaitAssignment) {
                         const status = mapAssignmentStatusToCourseStatus(
-                            course.lastAssignment.status,
+                            course.longestAwaitAssignment.status,
                         );
                         return appliedFilters.assignmentStatus!.includes(
                             status,
@@ -136,10 +136,10 @@ export default function CoachStudents(props: CoachStudentsProps) {
         setFilteredStudents(filtered);
     }, [studentsViewModel, appliedFilters, searchResults, searchQuery]);
 
-    const mapAssignmentStatusToCourseStatus = (status: string): string => {
+    const mapAssignmentStatusToCourseStatus = (status: string | null): string => {
         switch (status) {
             case 'Passed':
-                return 'course-completed';
+                return 'passed';
             case 'AwaitingReview':
                 return 'waiting-feedback';
             case 'AwaitingForLongTime':
@@ -257,8 +257,8 @@ export default function CoachStudents(props: CoachStudentsProps) {
                     filteredStudents !== undefined
                         ? filteredStudents
                         : studentsViewModel?.mode === 'default'
-                          ? studentsViewModel.data.students
-                          : []
+                            ? studentsViewModel.data.students
+                            : []
                 }
                 isLoading={isFetching}
                 error={error}

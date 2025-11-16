@@ -181,7 +181,7 @@ export function CourseStudents(
             }
 
             if (completedCourseDate) {
-                return <StudentCard {...commonProps} key={key} status="course-completed" completedCourseDate={completedCourseDate} />;
+                return <StudentCard {...commonProps} key={key} status="passed" completedCourseDate={completedCourseDate} />;
             }
 
             // for 'no-assignment' status (when lastAssignment is null)

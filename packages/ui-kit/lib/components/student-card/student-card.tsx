@@ -38,7 +38,7 @@ export interface WaitingFeedbackStudentCardProps
 }
 
 export interface CompletedStudentCardProps extends DefaultStudentCardProps {
-    status: 'course-completed';
+    status: 'passed';
     completedCourseDate: Date;
 }
 
@@ -56,7 +56,7 @@ export type StudentCardProps =
  * - `'no-assignment'`: The student has no current assignment.
  * - `'long-wait'`: The student has an assignment pending feedback for a long time.
  * - `'waiting-feedback'`: The student is awaiting feedback on a recent assignment.
- * - `'course-completed'`: The student has completed the course.
+ * - `'passed'`: The student has completed the course.
  *
  * It provides interactive buttons for viewing student details, course information, coach details,
  * and the assignment (if applicable).
@@ -75,13 +75,13 @@ export type StudentCardProps =
  * @param {() => void} props.onClickCourse - Callback triggered when clicking on the course name/avatar.
  *
  * For status-specific props:
- * @param {'no-assignment' | 'long-wait' | 'waiting-feedback' | 'course-completed'} props.status - Current status of the student.
+ * @param {'no-assignment' | 'long-wait' | 'waiting-feedback' | 'passed'} props.status - Current status of the student.
  *
  * If status is `'long-wait'` or `'waiting-feedback'`:
  * @param {string} props.assignmentTitle - Title of the pending assignment.
  * @param {() => void} props.onViewAssignment - Callback invoked when clicking the "view assignment" button.
  *
- * If status is `'course-completed'`:
+ * If status is `'passed'`:
  * @param {Date} props.completedCourseDate - The date when the course was completed.
  */
 
@@ -213,7 +213,7 @@ export const StudentCard = (props: StudentCardProps) => {
 
             {/* Course completed badge */}
             <div className="flex flex-col mb-2 items-start justify-between">
-                {props.status === 'course-completed' &&
+                {props.status === 'passed' &&
                     props.completedCourseDate && (
                         <Badge
                             variant="successprimary"

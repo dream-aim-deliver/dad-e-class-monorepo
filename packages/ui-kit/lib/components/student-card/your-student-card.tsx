@@ -29,7 +29,7 @@ export interface WaitingFeedbackCourseAssignment
 
 export interface CourseCompletedCourseAssignment
     extends DefaultCourseAssignment {
-    status: 'course-completed';
+    status: 'passed';
     completedCourseDate: Date;
 }
 
@@ -55,9 +55,9 @@ export interface YourStudentCardProps extends isLocalAware {
  * - 'no-assignment': course without any current assignment.
  * - 'long-wait': assignment is pending for a long time, shows an alert badge and a button to view assignment.
  * - 'waiting-feedback': assignment submitted and waiting for feedback, shows a warning badge and view button.
- * - 'course-completed': course is finished, shows completion date badge.
+ * - 'passed': course is finished, shows completion date badge.
  *
- * Courses are sorted by status priority: long-wait, waiting-feedback, no-assignment, course-completed.
+ * Courses are sorted by status priority: long-wait, waiting-feedback, no-assignment, passed.
  *
  * ### Props
  * @param {string} studentName - Full name of the student.
@@ -85,7 +85,7 @@ export const YourStudentCard = ({
             'long-wait': 1,
             'waiting-feedback': 2,
             'no-assignment': 3,
-            'course-completed': 4,
+            'passed': 4,
         };
         return priority[a.status] - priority[b.status];
     });
@@ -136,7 +136,7 @@ export const YourStudentCard = ({
                             }
                         />
                         {/* Course completed badge */}
-                        {course.status === 'course-completed' &&
+                        {course.status === 'passed' &&
                             course.completedCourseDate && (
                                 <Badge
                                     variant="successprimary"

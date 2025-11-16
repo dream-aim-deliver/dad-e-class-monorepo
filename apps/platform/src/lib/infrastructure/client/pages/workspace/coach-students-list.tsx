@@ -30,7 +30,7 @@ interface WaitingFeedbackCourseAssignment extends DefaultCourseAssignment {
 }
 
 interface CourseCompletedCourseAssignment extends DefaultCourseAssignment {
-    status: 'course-completed';
+    status: 'passed';
     completedCourseDate: Date;
 }
 
@@ -50,7 +50,7 @@ interface CoachStudentsListProps {
 function mapAssignmentStatusToCourseStatus(status: string): CourseAssignment['status'] {
     switch (status) {
         case 'Passed':
-            return 'course-completed';
+            return 'passed';
         case 'AwaitingReview':
             return 'waiting-feedback';
         case 'AwaitingForLongTime':
@@ -168,7 +168,7 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
                     onClickCourse: () => {
                         // TODO: Navigate to course
                     },
-                    status: 'course-completed' as const,
+                    status: 'passed' as const,
                     completedCourseDate: completedCourseDate,
                 };
             }
