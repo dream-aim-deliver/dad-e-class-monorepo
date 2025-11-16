@@ -5,13 +5,9 @@ import {
     IconEyeHide,
     IconSave,
     Badge,
-    Dialog,
-    DialogContent,
-    DialogBody,
-    Banner,
-    IconLoaderSpinner,
+    ConfirmationModal,
 } from '@maany_shr/e-class-ui-kit';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { trpc } from '../../../../trpc/cms-client';
 import { useRouter } from 'next/navigation';
 
@@ -51,31 +47,39 @@ export default function EditHeader({
     const canArchive = isSuperAdmin && courseStatus === 'live';
     const canDelete = isSuperAdmin && courseStatus === 'draft';
 
-    const [showPublishModal, setShowPublishModal] = useState(false);
-    const [publishSuccess, setPublishSuccess] = useState(false);
-    const [publishError, setPublishError] = useState<string | null>(null);
-
-    const [showArchiveModal, setShowArchiveModal] = useState(false);
-    const [archiveSuccess, setArchiveSuccess] = useState(false);
-    const [archiveError, setArchiveError] = useState<string | null>(null);
-
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [deleteSuccess, setDeleteSuccess] = useState(false);
-    const [deleteError, setDeleteError] = useState<string | null>(null);
-
     const publishMutation = trpc.publishCourse.useMutation();
     const archiveMutation = trpc.archiveCourse.useMutation();
     const deleteMutation = trpc.deleteCourse.useMutation();
     const utils = trpc.useUtils();
 
-    const handlePublishClick = () => {
-        setShowPublishModal(true);
-        setPublishSuccess(false);
-        setPublishError(null);
-    };
+    // Confirmation modal states
+    const [publishConfirmModal, setPublishConfirmModal] = useState(false);
+    const [archiveConfirmModal, setArchiveConfirmModal] = useState(false);
+    const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
+
+    // Success/Error modal states
+    const [successModal, setSuccessModal] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+    });
+
+    const [errorModal, setErrorModal] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+    });
 
     const handlePublishConfirm = async () => {
-        setPublishError(null);
+        setPublishConfirmModal(false);
         try {
             const result = await publishMutation.mutateAsync({ courseSlug: slug });
             if (result.success) {
@@ -86,73 +90,67 @@ export default function EditHeader({
                 utils.getOffersPageOutline.invalidate();
                 utils.getHomePage.invalidate();
 
-                // Show success state
-                setPublishSuccess(true);
-
-                // Wait 3 seconds then close modal
-                setTimeout(() => {
-                    setShowPublishModal(false);
-                    setPublishSuccess(false);
-                }, 3000);
+                // Show success modal
+                setSuccessModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.publishSuccess,
+                    message: 'Course is now live!',
+                });
             } else {
-                setPublishError((result as any).data?.message || dictionary.components.editHeader.publishError);
+                const errorMessage = (result as any).data?.message || dictionary.components.editHeader.publishError;
+                setErrorModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.publishError,
+                    message: errorMessage,
+                });
             }
         } catch (error: any) {
-            setPublishError(error.message || dictionary.components.editHeader.publishError);
+            setErrorModal({
+                isOpen: true,
+                title: dictionary.components.editHeader.publishError,
+                message: error.message || dictionary.components.editHeader.publishError,
+            });
         }
-    };
-
-    const handlePublishCancel = () => {
-        if (!publishMutation.isPending && !publishSuccess) {
-            setShowPublishModal(false);
-            setPublishError(null);
-        }
-    };
-
-    const handleArchiveClick = () => {
-        setShowArchiveModal(true);
-        setArchiveSuccess(false);
-        setArchiveError(null);
     };
 
     const handleArchiveConfirm = async () => {
-        setArchiveError(null);
+        setArchiveConfirmModal(false);
         try {
             const result = await archiveMutation.mutateAsync({ courseSlug: slug });
             if (result.success) {
                 // Invalidate queries to refetch updated data
                 utils.listUserCourses.invalidate();
 
-                // Show success state
-                setArchiveSuccess(true);
+                // Show success modal
+                setSuccessModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.archiveSuccess,
+                    message: 'Reloading page...',
+                });
 
-                // Wait 3 seconds then reload
+                // Reload after showing success
                 setTimeout(() => {
                     window.location.reload();
-                }, 3000);
+                }, 1500);
             } else {
-                setArchiveError((result as any).data?.message || dictionary.components.editHeader.archiveError);
+                const errorMessage = (result as any).data?.message || dictionary.components.editHeader.archiveError;
+                setErrorModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.archiveError,
+                    message: errorMessage,
+                });
             }
         } catch (error: any) {
-            setArchiveError(error.message || dictionary.components.editHeader.archiveError);
+            setErrorModal({
+                isOpen: true,
+                title: dictionary.components.editHeader.archiveError,
+                message: error.message || dictionary.components.editHeader.archiveError,
+            });
         }
-    };
-
-    const handleArchiveCancel = () => {
-        if (!archiveMutation.isPending && !archiveSuccess) {
-            setShowArchiveModal(false);
-            setArchiveError(null);
-        }
-    };
-
-    const handleDeleteClick = () => {
-        setShowDeleteModal(true);
-        setDeleteSuccess(false);
-        setDeleteError(null);
     };
 
     const handleDeleteConfirm = async () => {
-        setDeleteError(null);
+        setDeleteConfirmModal(false);
         try {
             const result = await deleteMutation.mutateAsync({ courseSlug: slug });
             if (result.success) {
@@ -162,25 +160,31 @@ export default function EditHeader({
                 utils.getOffersPageOutline.invalidate();
                 utils.getHomePage.invalidate();
 
-                // Show success state
-                setDeleteSuccess(true);
+                // Show success modal
+                setSuccessModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.deleteSuccess,
+                    message: 'Redirecting to workspace courses...',
+                });
 
-                // Wait 5 seconds then redirect
+                // Redirect after showing success
                 setTimeout(() => {
                     router.push('/workspace/courses');
-                }, 5000);
+                }, 2000);
             } else {
-                setDeleteError((result as any).data?.message || dictionary.components.editHeader.deleteError);
+                const errorMessage = (result as any).data?.message || dictionary.components.editHeader.deleteError;
+                setErrorModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.deleteError,
+                    message: errorMessage,
+                });
             }
         } catch (error: any) {
-            setDeleteError(error.message || dictionary.components.editHeader.deleteError);
-        }
-    };
-
-    const handleDeleteCancel = () => {
-        if (!deleteMutation.isPending && !deleteSuccess) {
-            setShowDeleteModal(false);
-            setDeleteError(null);
+            setErrorModal({
+                isOpen: true,
+                title: dictionary.components.editHeader.deleteError,
+                message: error.message || dictionary.components.editHeader.deleteError,
+            });
         }
     };
 
@@ -219,326 +223,134 @@ export default function EditHeader({
     };
 
     return (
-        <div className="flex md:flex-row flex-col md:items-center justify-between gap-5 bg-neutral-950/50 sticky top-18 z-50 p-2">
-            <div className="flex flex-col gap-2">
-                <h1>{title}</h1>
-                {courseStatus && (
-                    <Badge
-                        text={getStatusText(courseStatus)}
-                        variant={getStatusBadgeVariant(courseStatus)}
-                        size="medium"
-                        className='w-fit'
+        <>
+            <div className="flex md:flex-row flex-col md:items-center justify-between gap-5 bg-neutral-950/50 sticky top-18 z-50 p-2">
+                <div className="flex flex-col gap-2">
+                    <h1>{title}</h1>
+                    {courseStatus && (
+                        <Badge
+                            text={getStatusText(courseStatus)}
+                            variant={getStatusBadgeVariant(courseStatus)}
+                            size="medium"
+                            className='w-fit'
+                        />
+                    )}
+                </div>
+                <div className="flex sm:flex-row flex-col sm:items-center gap-3">
+                    <Button
+                        variant="text"
+                        iconLeft={isPreviewing ? <IconEyeHide /> : <IconEyeShow />}
+                        hasIconLeft
+                        text={previewButtonText}
+                        className="px-0"
+                        onClick={onPreview}
+                        disabled={disablePreview || isSaving}
                     />
-                )}
+                    <Button
+                        variant="primary"
+                        iconLeft={<IconSave />}
+                        hasIconLeft
+                        text={
+                            isSaving
+                                ? dictionary.components.editHeader.savingText
+                                : dictionary.components.editHeader.saveText
+                        }
+                        onClick={onSave}
+                        disabled={isSaving || isPreviewing}
+                    />
+                    {canPublish && (
+                        <Button
+                            variant="primary"
+                            text={dictionary.components.editHeader.publishCourse}
+                            onClick={() => setPublishConfirmModal(true)}
+                            disabled={isSaving || isPreviewing || publishMutation.isPending}
+                        />
+                    )}
+                    {canArchive && (
+                        <Button
+                            variant="primary"
+                            text={dictionary.components.editHeader.archiveCourse}
+                            onClick={() => setArchiveConfirmModal(true)}
+                            disabled={isSaving || isPreviewing || archiveMutation.isPending}
+                        />
+                    )}
+                    {canDelete && (
+                        <Button
+                            variant="primary"
+                            text={dictionary.components.editHeader.deleteCourse}
+                            onClick={() => setDeleteConfirmModal(true)}
+                            disabled={isSaving || isPreviewing || deleteMutation.isPending}
+                            className="!bg-red-700 hover:!bg-red-800 active:!bg-red-900"
+                        />
+                    )}
+                </div>
             </div>
-            <div className="flex sm:flex-row flex-col sm:items-center gap-3">
-                <Button
-                    variant="text"
-                    iconLeft={isPreviewing ? <IconEyeHide /> : <IconEyeShow />}
-                    hasIconLeft
-                    text={previewButtonText}
-                    className="px-0"
-                    onClick={onPreview}
-                    disabled={disablePreview || isSaving}
-                />
-                <Button
-                    variant="primary"
-                    iconLeft={<IconSave />}
-                    hasIconLeft
-                    text={
-                        isSaving
-                            ? dictionary.components.editHeader.savingText
-                            : dictionary.components.editHeader.saveText
-                    }
-                    onClick={onSave}
-                    disabled={isSaving || isPreviewing}
-                />
-                {canPublish && (
-                    <Button
-                        variant="primary"
-                        text={dictionary.components.editHeader.publishCourse}
-                        onClick={handlePublishClick}
-                        disabled={isSaving || isPreviewing}
-                    />
-                )}
-                {canArchive && (
-                    <Button
-                        variant="primary"
-                        text={dictionary.components.editHeader.archiveCourse}
-                        onClick={handleArchiveClick}
-                        disabled={isSaving || isPreviewing}
-                    />
-                )}
-                {canDelete && (
-                    <Button
-                        variant="primary"
-                        text={dictionary.components.editHeader.deleteCourse}
-                        onClick={handleDeleteClick}
-                        disabled={isSaving || isPreviewing}
-                        className="!bg-red-700 hover:!bg-red-800 active:!bg-red-900"
-                    />
-                )}
-            </div>
-            {showPublishModal && (
-                <PublishCourseModal
-                    isOpen={showPublishModal}
-                    onClose={handlePublishCancel}
-                    onConfirm={handlePublishConfirm}
-                    isLoading={publishMutation.isPending}
-                    isSuccess={publishSuccess}
-                    error={publishError}
-                    locale={locale}
-                />
-            )}
-            {showArchiveModal && (
-                <ArchiveCourseModal
-                    isOpen={showArchiveModal}
-                    onClose={handleArchiveCancel}
-                    onConfirm={handleArchiveConfirm}
-                    isLoading={archiveMutation.isPending}
-                    isSuccess={archiveSuccess}
-                    error={archiveError}
-                    locale={locale}
-                />
-            )}
-            {showDeleteModal && (
-                <DeleteCourseModal
-                    isOpen={showDeleteModal}
-                    onClose={handleDeleteCancel}
-                    onConfirm={handleDeleteConfirm}
-                    isLoading={deleteMutation.isPending}
-                    isSuccess={deleteSuccess}
-                    error={deleteError}
-                    locale={locale}
-                />
-            )}
-        </div>
-    );
-}
 
-interface CourseActionModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    isLoading: boolean;
-    isSuccess: boolean;
-    error: string | null;
-    locale: TLocale;
-}
+            {/* Publish Confirmation Modal - with your specific localized messages */}
+            <ConfirmationModal
+                type="accept"
+                isOpen={publishConfirmModal}
+                onClose={() => setPublishConfirmModal(false)}
+                onConfirm={handlePublishConfirm}
+                title={dictionary.components.editHeader.publishCourse}
+                message={`${dictionary.components.editHeader.publishConfirmation}\n\n${dictionary.components.editHeader.publishRequirements}`}
+                confirmText={publishMutation.isPending ? 'Publishing...' : 'Publish Course'}
+                cancelText="Cancel"
+                locale={locale}
+                isLoading={publishMutation.isPending}
+            />
 
-function PublishCourseModal({
-    isOpen,
-    onClose,
-    onConfirm,
-    isLoading,
-    isSuccess,
-    error,
-    locale,
-}: CourseActionModalProps) {
-    const dictionary = getDictionary(locale);
+            {/* Archive Confirmation Modal */}
+            <ConfirmationModal
+                type="accept"
+                isOpen={archiveConfirmModal}
+                onClose={() => setArchiveConfirmModal(false)}
+                onConfirm={handleArchiveConfirm}
+                title={dictionary.components.editHeader.archiveCourse}
+                message={dictionary.components.editHeader.archiveConfirmation}
+                confirmText={archiveMutation.isPending ? 'Archiving...' : 'Archive Course'}
+                cancelText="Cancel"
+                locale={locale}
+                isLoading={archiveMutation.isPending}
+            />
 
-    return (
-        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()} defaultOpen={false}>
-            <DialogContent
-                showCloseButton={!isLoading && !isSuccess}
-                closeOnOverlayClick={!isLoading && !isSuccess}
-                closeOnEscape={!isLoading && !isSuccess}
-                className="max-w-md"
-            >
-                <DialogBody>
-                    <div className="flex flex-col gap-4">
-                        <div>
-                            <h2 className="text-xl font-semibold text-text-primary mb-2">
-                                {dictionary.components.editHeader.publishCourse}
-                            </h2>
-                            <p className="text-text-secondary mb-2">
-                                {dictionary.components.editHeader.publishConfirmation}
-                            </p>
-                            <p className="text-text-secondary text-sm whitespace-pre-line">
-                                {dictionary.components.editHeader.publishRequirements}
-                            </p>
-                        </div>
+            {/* Delete Confirmation Modal */}
+            <ConfirmationModal
+                type="accept"
+                isOpen={deleteConfirmModal}
+                onClose={() => setDeleteConfirmModal(false)}
+                onConfirm={handleDeleteConfirm}
+                title={dictionary.components.editHeader.deleteCourse}
+                message={dictionary.components.editHeader.deleteConfirmation}
+                confirmText={deleteMutation.isPending ? 'Deleting...' : 'Delete Course'}
+                cancelText="Cancel"
+                locale={locale}
+                isLoading={deleteMutation.isPending}
+            />
 
-                        {error && (
-                            <Banner
-                                style="error"
-                                title={dictionary.components.editHeader.publishError}
-                                description={error}
-                            />
-                        )}
+            {/* Success Modal */}
+            <ConfirmationModal
+                type="accept"
+                isOpen={successModal.isOpen}
+                onClose={() => setSuccessModal({ ...successModal, isOpen: false })}
+                onConfirm={() => setSuccessModal({ ...successModal, isOpen: false })}
+                title={successModal.title}
+                message={successModal.message}
+                confirmText="OK"
+                locale={locale}
+            />
 
-                        {isSuccess && (
-                            <Banner
-                                style="success"
-                                title={dictionary.components.editHeader.publishSuccess}
-                                description="Course is now live!"
-                            />
-                        )}
-
-                        {!isSuccess && (
-                            <div className="flex gap-3 justify-end">
-                                <Button
-                                    variant="secondary"
-                                    text="Cancel"
-                                    onClick={onClose}
-                                    disabled={isLoading}
-                                />
-                                <Button
-                                    variant="primary"
-                                    text={isLoading ? 'Publishing...' : 'Publish Course'}
-                                    onClick={onConfirm}
-                                    disabled={isLoading}
-                                    iconLeft={isLoading ? <IconLoaderSpinner classNames="animate-spin" /> : undefined}
-                                    hasIconLeft={isLoading}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </DialogBody>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
-function ArchiveCourseModal({
-    isOpen,
-    onClose,
-    onConfirm,
-    isLoading,
-    isSuccess,
-    error,
-    locale,
-}: CourseActionModalProps) {
-    const dictionary = getDictionary(locale);
-
-    return (
-        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()} defaultOpen={false}>
-            <DialogContent
-                showCloseButton={!isLoading && !isSuccess}
-                closeOnOverlayClick={!isLoading && !isSuccess}
-                closeOnEscape={!isLoading && !isSuccess}
-                className="max-w-md"
-            >
-                <DialogBody>
-                    <div className="flex flex-col gap-4">
-                        <div>
-                            <h2 className="text-xl font-semibold text-text-primary mb-2">
-                                {dictionary.components.editHeader.archiveCourse}
-                            </h2>
-                            <p className="text-text-secondary">
-                                {dictionary.components.editHeader.archiveConfirmation}
-                            </p>
-                        </div>
-
-                        {error && (
-                            <Banner
-                                style="error"
-                                title={dictionary.components.editHeader.archiveError}
-                                description={error}
-                            />
-                        )}
-
-                        {isSuccess && (
-                            <Banner
-                                style="success"
-                                title={dictionary.components.editHeader.archiveSuccess}
-                                description="Reloading page..."
-                            />
-                        )}
-
-                        {!isSuccess && (
-                            <div className="flex gap-3 justify-end">
-                                <Button
-                                    variant="secondary"
-                                    text="Cancel"
-                                    onClick={onClose}
-                                    disabled={isLoading}
-                                />
-                                <Button
-                                    variant="primary"
-                                    text={isLoading ? 'Archiving...' : 'Archive Course'}
-                                    onClick={onConfirm}
-                                    disabled={isLoading}
-                                    iconLeft={isLoading ? <IconLoaderSpinner classNames="animate-spin" /> : undefined}
-                                    hasIconLeft={isLoading}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </DialogBody>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
-function DeleteCourseModal({
-    isOpen,
-    onClose,
-    onConfirm,
-    isLoading,
-    isSuccess,
-    error,
-    locale,
-}: CourseActionModalProps) {
-    const dictionary = getDictionary(locale);
-
-    return (
-        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()} defaultOpen={false}>
-            <DialogContent
-                showCloseButton={!isLoading && !isSuccess}
-                closeOnOverlayClick={!isLoading && !isSuccess}
-                closeOnEscape={!isLoading && !isSuccess}
-                className="max-w-md"
-            >
-                <DialogBody>
-                    <div className="flex flex-col gap-4">
-                        <div>
-                            <h2 className="text-xl font-semibold text-text-primary mb-2">
-                                {dictionary.components.editHeader.deleteCourse}
-                            </h2>
-                            <p className="text-text-secondary">
-                                {dictionary.components.editHeader.deleteConfirmation}
-                            </p>
-                        </div>
-
-                        {error && (
-                            <Banner
-                                style="error"
-                                title={dictionary.components.editHeader.deleteError}
-                                description={error}
-                            />
-                        )}
-
-                        {isSuccess && (
-                            <Banner
-                                style="success"
-                                title={dictionary.components.editHeader.deleteSuccess}
-                                description="Redirecting to workspace courses..."
-                            />
-                        )}
-
-                        {!isSuccess && (
-                            <div className="flex gap-3 justify-end">
-                                <Button
-                                    variant="secondary"
-                                    text="Cancel"
-                                    onClick={onClose}
-                                    disabled={isLoading}
-                                />
-                                <Button
-                                    variant="primary"
-                                    text={isLoading ? 'Deleting...' : 'Delete Course'}
-                                    onClick={onConfirm}
-                                    disabled={isLoading}
-                                    iconLeft={isLoading ? <IconLoaderSpinner classNames="animate-spin" /> : undefined}
-                                    hasIconLeft={isLoading}
-                                    className="!bg-red-700 hover:!bg-red-800 active:!bg-red-900"
-                                />
-                            </div>
-                        )}
-                    </div>
-                </DialogBody>
-            </DialogContent>
-        </Dialog>
+            {/* Error Modal */}
+            <ConfirmationModal
+                type="accept"
+                isOpen={errorModal.isOpen}
+                onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+                onConfirm={() => setErrorModal({ ...errorModal, isOpen: false })}
+                title={errorModal.title}
+                message={errorModal.message}
+                confirmText="OK"
+                locale={locale}
+            />
+        </>
     );
 }

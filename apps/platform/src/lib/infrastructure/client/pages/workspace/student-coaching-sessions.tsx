@@ -294,7 +294,7 @@ export default function StudentCoachingSessions() {
     };
 
     const handleNavigateWorkspace = () => {
-        // TODO: Implement navigation to workspace
+        router.push('/workspace');
     };
 
     const handleNavigateCoachingSessions = () => {

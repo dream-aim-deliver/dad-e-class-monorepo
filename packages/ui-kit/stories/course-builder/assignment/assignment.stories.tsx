@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import assignmentElement from "../../../lib/components/course-builder-lesson-component/assignment";
 import { CourseElementType } from "../../../lib/components/course-builder/types";
-import { assignment, fileMetadata, shared } from "@maany_shr/e-class-models";
-import { AssignmentBuilderViewTypes, CreateAssignmentBuilderViewTypes } from "../../../lib/components/course-builder-lesson-component/types";
+import { fileMetadata, shared } from "@maany_shr/e-class-models";
+import { AssignmentElement, AssignmentStatus } from "../../../lib/components/course-builder-lesson-component/types";
 import { TLocale } from "@maany_shr/e-class-translations";
 
 // --- Mock data
@@ -11,58 +11,62 @@ const mockFiles: fileMetadata.TFileMetadata[] = [
     {
         id: "file-1",
         name: "ProblemSet.pdf",
-        mimeType: "application/pdf",
         size: 102400,
-        checksum: "abc123",
         status: "available",
         category: "document",
         url: "#",
     },
 ];
 
-const mockLinks: shared.TLinkWithId[] = [
+const mockLinks: shared.TLink[] = [
     {
-        linkId: 1,
         title: "Reference Article",
         url: "https://www.example.com/article",
     },
 ];
 
-const BASE_ASSIGNMENT: assignment.TAssignmentBase = {
+const BASE_ASSIGNMENT: AssignmentElement = {
+    type: CourseElementType.Assignment,
+    id: "assignment-1",
     title: "Sample Assignment Title",
     description: "This is a sample assignment description for preview and editing.",
     files: mockFiles,
     links: mockLinks,
 };
 
-const initialDesignerAssignment: CreateAssignmentBuilderViewTypes = {
+const initialPreviewAssignment: AssignmentElement = {
     type: CourseElementType.Assignment,
-    id: 1,
-    order: 1,
-    assignmentData: BASE_ASSIGNMENT,
-    onChange: () => alert("Change triggered"),
-    onFilesChange: async () => mockFiles[0],
-    onUploadComplete: () => alert("Upload complete"),
-    onFileDelete: () => alert("File deleted"),
-    onFileDownload: () => alert("File downloaded"),
-    onLinkDelete: () => alert("Link deleted"),
-    onLinkEdit: () => alert("Link edited"),
-    linkEditIndex: null,
-    onClickEditLink: () => alert("Edit link clicked"),
-    onImageChange: () => alert("Image changed"),
-    onDeleteIcon: () => alert("Delete icon clicked"),
-    onClickAddLink: () => alert("Add link clicked"),
-    locale: "en",
+    id: "assignment-preview-1",
+    title: "Sample Assignment Title",
+    description: "This is a sample assignment description for preview and editing.",
+    files: mockFiles,
+    links: mockLinks,
 };
 
-const initialPreviewAssignment: AssignmentBuilderViewTypes = {
+const passedAssignment: AssignmentElement = {
     type: CourseElementType.Assignment,
-    id: 1,
-    order: 1,
-    assignmentData: BASE_ASSIGNMENT,
-    locale: "en",
-    onFileDownload: () => alert("onFileDownload"),
-    onFileCancel: (id: string) => alert(`File with id ${id} cancelled`)
+    id: "assignment-passed-1",
+    title: "Completed Assignment",
+    description: "This assignment has been completed and marked as passed.",
+    files: mockFiles,
+    links: mockLinks,
+    progress: {
+        status: AssignmentStatus.Passed,
+        lastReply: {
+            sentAt: Date.now() - 86400000, // 1 day ago
+            comment: "Great work! Assignment completed successfully.",
+            files: [],
+            links: [],
+            sender: {
+                id: "coach-1",
+                username: "coach_smith",
+                name: "John",
+                surname: "Smith",
+                avatarUrl: "https://i.pravatar.cc/150?img=33",
+                role: 'coach',
+            }
+        }
+    }
 };
 
 
@@ -119,7 +123,8 @@ const simulateFileUpload = async (
         return {
             ...baseMetadata,
             category: 'video' as const,
-            videoId: Math.floor(Math.random() * 1000),
+            videoId: String(Math.floor(Math.random() * 1000)),
+            url: URL.createObjectURL(file.file),
             thumbnailUrl: 'https://via.placeholder.com/150x100?text=Video+Thumbnail',
         };
     } else if (
@@ -158,12 +163,12 @@ export default meta;
 
 // --- Designer Assignment Story as a React component (stateful!)
 function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
-    const [assignmentData, setAssignmentData] = useState<assignment.TAssignmentBaseWithId>(BASE_ASSIGNMENT);
+    const [elementInstance, setElementInstance] = useState<AssignmentElement>(BASE_ASSIGNMENT);
     const [linkEditIndex, setLinkEditIndex] = useState<number | null>(null);
 
     useEffect(() => {
-        console.log("Assignment Data Changed:", assignmentData);
-    }, [assignmentData]);
+        console.log("Assignment Data Changed:", elementInstance);
+    }, [elementInstance]);
 
     // File actions
     const handleFilesChange = async (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => {
@@ -172,89 +177,38 @@ function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
     };
 
     const handleUploadComplete = (file: fileMetadata.TFileMetadata) => {
-        const files = assignmentData.files || [];
+        const files = elementInstance.files || [];
         const updatedFiles = files.some((f) => f.id === file.id)
             ? files.map((f) => f.id === file.id ? file : f)
             : [...files, file];
-        setAssignmentData((ad) => ({
+        setElementInstance((ad) => ({
             ...ad,
             files: updatedFiles,
         }));
     };
 
     const handleFileDelete = (id: string) => {
-        setAssignmentData((ad) => ({
+        setElementInstance((ad) => ({
             ...ad,
             files: (ad.files || []).filter(f => f.id !== id),
         }));
     };
 
     const handleImageChange = async (
-        image: fileMetadata.TFileMetadata,
+        fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
-        if (typeof linkEditIndex !== 'number') return;
-
-        // Set status to "processing"
-        setAssignmentData(ad => {
-            const links = ad.links || [];
-            return {
-                ...ad,
-                links: links.map((link, idx) =>
-                    idx === linkEditIndex
-                        ? { ...link, customIcon: { ...image, status: 'processing' as const } }
-                        : link
-                ),
-            };
-        });
-
-        try {
-            await new Promise<void>((resolve, reject) => {
-                const timeout = setTimeout(resolve, 2000);
-                if (abortSignal) {
-                    abortSignal.addEventListener('abort', () => {
-                        clearTimeout(timeout);
-                        reject(new DOMException('Cancelled', 'AbortError'));
-                    });
-                }
-            });
-
-            // Set status to "available"
-            setAssignmentData(ad => {
-                const links = ad.links || [];
-                return {
-                    ...ad,
-                    links: links.map((link, idx) =>
-                        idx === linkEditIndex
-                            ? { ...link, customIcon: { ...image, status: 'available' as const } }
-                            : link
-                    ),
-                };
-            });
-        } catch {
-            // Remove icon if aborted/failed
-            setAssignmentData(ad => {
-                const links = ad.links || [];
-                return {
-                    ...ad,
-                    links: links.map((link, idx) =>
-                        idx === linkEditIndex
-                            ? { ...link, customIcon: undefined }
-                            : link
-                    ),
-                };
-            });
-        }
+        const uploadedFile = await simulateFileUpload(fileRequest, abortSignal);
+        return uploadedFile;
     };
 
-    const handleDeleteIcon = (id: string) => {
-        if (typeof linkEditIndex !== 'number') return;
-        setAssignmentData(ad => {
+    const handleDeleteIcon = (index: number) => {
+        setElementInstance(ad => {
             const links = ad.links || [];
             return {
                 ...ad,
                 links: links.map((link, idx) =>
-                    idx === linkEditIndex && link.customIcon?.id === id
+                    idx === index
                         ? { ...link, customIcon: undefined }
                         : link
                 ),
@@ -263,16 +217,16 @@ function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
     };
 
     // Link actions
-    const handleLinkDelete = (linkId: number) => {
-        setAssignmentData((ad) => ({
+    const handleLinkDelete = (index: number) => {
+        setElementInstance((ad) => ({
             ...ad,
-            links: (ad.links || []).filter((l) => l.linkId !== linkId),
+            links: (ad.links || []).filter((_, i) => i !== index),
         }));
         setLinkEditIndex(null);
     };
 
     const handleLinkEdit = (data: shared.TLink, idx: number) => {
-        setAssignmentData((ad) => {
+        setElementInstance((ad) => {
             const links = ad.links || [];
             const updatedLinks = links.map((l, i) => i === idx ? { ...l, ...data } : l);
             return { ...ad, links: updatedLinks };
@@ -280,23 +234,26 @@ function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
         setLinkEditIndex(null);
     };
 
+    const handleLinkDiscard = () => {
+        setLinkEditIndex(null);
+    };
+
     const handleClickAddLink = () => {
         // Prevent creating a draft if already editing one
         if (typeof linkEditIndex === 'number') return;
-        setAssignmentData((ad) => {
+        setElementInstance((ad) => {
             const links = ad.links || [];
-            return { ...ad, links: [...links, { linkId: Date.now(), title: "", url: "" }] };
+            return { ...ad, links: [...links, { title: "", url: "" }] };
         });
-        setLinkEditIndex(assignmentData.links?.length ?? 0);
+        setLinkEditIndex(elementInstance.links?.length ?? 0);
     };
 
     const handleClickEditLink = (idx: number) => {
-        setAssignmentData(ad => {
+        setElementInstance(ad => {
             const links = ad.links || [];
             // If the last link is a draft (empty), remove it before editing another
             if (
                 links.length > 0 &&
-                links[links.length - 1].linkId !== undefined &&
                 links[links.length - 1].title === '' &&
                 links[links.length - 1].url === ''
             ) {
@@ -311,35 +268,30 @@ function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
     };
 
     // Main change handler for title/description
-    const handleChange = (data: {
-        type: CourseElementType.Assignment;
-        id: number;
-        order: number;
-        assignmentData: assignment.TAssignmentBase;
-    }) => {
-        setAssignmentData(data.assignmentData);
+    const handleChange = (newInstance: AssignmentElement) => {
+        setElementInstance(newInstance);
     };
+
+    const DesignerComp = assignmentElement.designerComponent as React.ComponentType<any>;
 
     return (
         <div style={{ maxWidth: 750, margin: "auto", padding: 24 }}>
-            <assignmentElement.designerComponent
-                elementInstance={{
-                    ...initialDesignerAssignment,
-                    assignmentData,
-                    linkEditIndex,
-                    onChange: handleChange,
-                    onFilesChange: handleFilesChange,
-                    onUploadComplete: handleUploadComplete,
-                    onFileDelete: handleFileDelete,
-                    onLinkDelete: handleLinkDelete,
-                    onLinkEdit: handleLinkEdit,
-                    onImageChange: handleImageChange,
-                    onDeleteIcon: handleDeleteIcon,
-                    onClickAddLink: handleClickAddLink,
-                    onClickEditLink: handleClickEditLink,
-                    locale,
-                }}
+            <DesignerComp
+                elementInstance={elementInstance}
                 locale={locale}
+                onChange={handleChange}
+                onFilesChange={handleFilesChange}
+                onUploadComplete={handleUploadComplete}
+                onFileDelete={handleFileDelete}
+                onFileDownload={(id: string) => alert(`Download file: ${id}`)}
+                onLinkDelete={handleLinkDelete}
+                onLinkEdit={handleLinkEdit}
+                onLinkDiscard={handleLinkDiscard}
+                onImageChange={handleImageChange}
+                onDeleteIcon={handleDeleteIcon}
+                onClickAddLink={handleClickAddLink}
+                onClickEditLink={handleClickEditLink}
+                linkEditIndex={linkEditIndex}
                 onUpClick={() => alert("Move up")}
                 onDownClick={() => alert("Move down")}
                 onDeleteClick={() => alert("Delete")}
@@ -359,13 +311,38 @@ export const Designer: StoryObj<PreviewStoryArgs> = {
 export const Preview: StoryObj<PreviewStoryArgs> = {
     name: "Preview – Assignment",
     render: (args) => {
-        return assignmentElement.formComponent({
-            elementInstance: {
-                ...initialPreviewAssignment,
-                locale: args.locale,
-            },
-            locale: args.locale,
-        });
+        const FormComp = assignmentElement.formComponent as React.ComponentType<any>;
+        return (
+            <div style={{ maxWidth: 750, margin: "auto", padding: 24 }}>
+                <FormComp
+                    elementInstance={initialPreviewAssignment}
+                    locale={args.locale}
+                    onFileDownload={(file: fileMetadata.TFileMetadata) => {
+                        alert(`Download file: ${file.name}`);
+                    }}
+                />
+            </div>
+        );
+    },
+    args: { locale: "en" },
+};
+
+// --- Passed Assignment Story (Shows completed state)
+export const PassedAssignment: StoryObj<PreviewStoryArgs> = {
+    name: "Passed Assignment – Preview",
+    render: (args) => {
+        const FormComp = assignmentElement.formComponent as React.ComponentType<any>;
+        return (
+            <div style={{ maxWidth: 750, margin: "auto", padding: 24 }}>
+                <FormComp
+                    elementInstance={passedAssignment}
+                    locale={args.locale}
+                    onFileDownload={(file: fileMetadata.TFileMetadata) => {
+                        alert(`Download file: ${file.name}`);
+                    }}
+                />
+            </div>
+        );
     },
     args: { locale: "en" },
 };

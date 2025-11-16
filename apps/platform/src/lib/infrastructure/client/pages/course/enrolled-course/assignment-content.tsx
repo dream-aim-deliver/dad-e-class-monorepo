@@ -228,6 +228,11 @@ function AssignmentInteraction({
 
     const isStudent = session.data?.user?.name === studentUsername;
 
+    // Don't show reply panel if assignment is already passed
+    if (assignment.progress?.passedDetails) {
+        return null;
+    }
+
     // TODO: display uploadError somewhere in the UI
     return (
         <ReplyPanel

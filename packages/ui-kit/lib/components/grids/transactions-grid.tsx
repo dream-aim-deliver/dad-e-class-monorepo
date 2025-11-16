@@ -125,15 +125,13 @@ const DetailsCellRenderer = (params: { value: TransactionContent; data: Transact
 
 const ActionsCellRenderer = (params: { data: TransactionRow; onDelete: (id: string | number) => void; onInvoice: (id: string | number, url?: string | null) => void; locale: TLocale }) => {
     const { data } = params;
-    const hasInvoice = Boolean(data.invoiceUrl);
     const dictionary = getDictionary(params.locale).components.transactionsGrid;
 
     return (
         <div className="flex items-center gap-2 justify-center">
             <button
                 onClick={() => params.onInvoice(data.id, data.invoiceUrl)}
-                className={`inline-flex items-center text-sm font-medium ${hasInvoice ? 'text-blue-600 hover:text-blue-800' : 'text-gray-400 cursor-not-allowed'}`}
-                disabled={!hasInvoice}
+                className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
             >
                 <span className="mr-1 inline-flex"><IconFile width={16} height={16} /></span>
                 {dictionary.invoiceButton}

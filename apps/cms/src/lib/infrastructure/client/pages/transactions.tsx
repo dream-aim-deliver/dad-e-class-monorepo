@@ -8,7 +8,8 @@ import {
   Breadcrumbs,
   TransactionsGrid,
   AddTransactionModal,
-  Button
+  Button,
+  ConfirmationModal
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -17,6 +18,7 @@ import { useListTransactionsPresenter } from '../hooks/use-list-transactions-pre
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { useRequiredPlatform } from '../context/platform-context';
 import { useRouter } from 'next/navigation';
+import { generateInvoicePdf } from '../utils/generate-invoice-pdf';
 
 interface TransactionsProps {
   locale: TLocale;
@@ -45,6 +47,19 @@ export default function Transactions(_props: TransactionsProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [deletingTransactionId, setDeletingTransactionId] = useState<string | number | null>(null);
   const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(null);
+
+  // Error modal state for PDF generation
+  const [errorModal, setErrorModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+  });
+
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState<string | null>(null);
 
   const utils = trpc.useUtils();
 
@@ -183,7 +198,7 @@ export default function Transactions(_props: TransactionsProps) {
     setDeleteErrorMessage(null);
   };
 
-  const handleOpenInvoice = (transactionId: string | number, invoiceUrl?: string | null) => {
+  const handleOpenInvoice = async (transactionId: string | number, invoiceUrl?: string | null) => {
     if (invoiceUrl) {
       try {
         window.open(invoiceUrl, '_blank');
@@ -192,8 +207,149 @@ export default function Transactions(_props: TransactionsProps) {
       }
       return;
     }
-    // TODO: Implement generateInvoicePdf use case and then navigate/open the generated URL
-    console.info('generateInvoicePdf is not implemented yet for transaction', transactionId);
+
+    // Generate PDF for transactions without invoiceUrl
+    const allTransactions = transactionsData?.transactions || [];
+    const transaction = allTransactions.find((t: any) => t.id === transactionId);
+
+    if (!transaction) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('invoice.transactionNotFound'),
+      });
+      return;
+    }
+
+    // Get coach data from the transaction's user field (user is the coach receiving payment)
+    const coachUserId = transaction.user?.id;
+
+    if (!coachUserId) {
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('invoice.coachDataFetchFailed'),
+      });
+      return;
+    }
+
+    // Handle different possible response structures from listPlatformCoaches
+    let coaches: any[] = [];
+    if (coachesQuery.data) {
+      // Try to extract coaches from the response
+      const responseData = coachesQuery.data as any;
+      if (responseData.coaches) {
+        coaches = responseData.coaches;
+      } else if (responseData.data?.coaches) {
+        coaches = responseData.data.coaches;
+      } else if (Array.isArray(responseData)) {
+        coaches = responseData;
+      }
+    }
+
+    const coachData = coaches.find((c: any) => c.id === coachUserId || c.userId === coachUserId);
+
+    if (!coachData) {
+      console.error('Coach data not found. CoachUserId:', coachUserId, 'Available coaches:', coaches);
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('invoice.coachDataFetchFailed'),
+      });
+      return;
+    }
+
+    console.log('Found coach data:', coachData);
+    console.log('Transaction user data:', transaction.user);
+
+    // Validate that coach has filled in required profile fields
+    // Check both coachData.profile and transaction.user for name/surname
+    const profileName = coachData.profile?.name || transaction.user?.name;
+    const profileSurname = coachData.profile?.surname || transaction.user?.surname;
+    const profileEmail = coachData.profile?.email || transaction.user?.email;
+
+    if (!profileName || !profileSurname) {
+      console.error('Missing name/surname. CoachData:', coachData, 'Transaction.user:', transaction.user);
+      setErrorModal({
+        isOpen: true,
+        title: t('error.title'),
+        message: t('invoice.coachDataMissing'),
+      });
+      return;
+    }
+
+    setIsGeneratingPdf(String(transactionId));
+
+    try {
+      // Transform transaction to match InvoiceTransactionData interface
+      const invoiceTransaction = {
+        id: transaction.id,
+        createdAt: transaction.createdAt,
+        currency: transaction.currency,
+        content: {
+          type: 'coachingOffers' as const,
+          unitPrice: 0,
+          items: (transaction.content?.items || []).map((item: any) => ({
+            title: item.description,
+            duration: item.duration || '0',
+            unitPrice: item.unitPrice,
+            quantity: item.quantity,
+          })),
+        },
+      };
+
+      // Generate PDF with coach as customer
+      await generateInvoicePdf({
+        transaction: invoiceTransaction,
+        platformData: {
+          name: platform.name,
+          logoUrl: platform.logo?.downloadUrl || '',
+          domainName: platform.domainName,
+          companyName: platform.companyName,
+          companyAddress: platform.companyAddress,
+          companyUid: platform.companyUuid,
+        },
+        customerData: {
+          name: profileName,
+          surname: profileSurname,
+          email: coachData.profile?.email || transaction.user?.email,
+          phone: coachData.profile?.phone || transaction.user?.phone,
+          companyDetails: coachData.profile?.companyDetails,
+        },
+        locale: locale,
+        translations: {
+          invoiceNo: t('invoice.invoiceNo'),
+          invoiceDate: t('invoice.invoiceDate'),
+          customerDetails: t('invoice.customerDetails'),
+          fullName: t('invoice.fullName'),
+          email: t('invoice.email'),
+          phoneNumber: t('invoice.phoneNumber'),
+          companyName: t('invoice.companyName'),
+          companyUidVat: t('invoice.companyUidVat'),
+          companyEmail: t('invoice.companyEmail'),
+          companyAddress: t('invoice.companyAddress'),
+          orderId: t('invoice.orderId'),
+          pricePerUnit: t('invoice.pricePerUnit'),
+          units: t('invoice.units'),
+          total: t('invoice.total'),
+          course: t('invoice.course'),
+          coachingSession: t('invoice.coachingSession'),
+          package: t('invoice.package'),
+          totalLabel: t('invoice.totalLabel'),
+          paymentMethod: t('invoice.paymentMethod'),
+          type: t('invoice.type'),
+          description: t('invoice.description'),
+        },
+      });
+    } catch (error: any) {
+      setErrorModal({
+        isOpen: true,
+        title: t('invoice.generationFailedTitle'),
+        message: `${t('invoice.generationFailed')}: ${error.message || t('invoice.generationFailedGeneric')}`,
+      });
+    } finally {
+      setIsGeneratingPdf(null);
+    }
   };
 
 
@@ -297,6 +453,18 @@ export default function Transactions(_props: TransactionsProps) {
           </div>
         </div>
       )}
+
+      {/* Error Modal for PDF Generation */}
+      <ConfirmationModal
+        type="accept"
+        isOpen={errorModal.isOpen}
+        onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+        onConfirm={() => setErrorModal({ ...errorModal, isOpen: false })}
+        title={errorModal.title}
+        message={errorModal.message}
+        confirmText="OK"
+        locale={locale}
+      />
     </div>
   );
 }
