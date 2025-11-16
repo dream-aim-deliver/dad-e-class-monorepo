@@ -1071,6 +1071,8 @@ export const EN: TDictionary = {
         sendMessageText: 'Send message',
         replyPlaceholderText: 'Write any additional comment here',
         addLinkText: 'Add link',
+        sendingMessageText: 'Sending message...',
+        messageSentSuccessText: 'Message sent successfully!',
       },
       assignmentBuilder: {
         assignmentText: 'Assignment',

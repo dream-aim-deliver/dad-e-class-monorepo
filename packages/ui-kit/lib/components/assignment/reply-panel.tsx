@@ -9,6 +9,7 @@ import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { LinkEdit, LinkPreview } from "../links";
 import { IconPlus } from "../icons/icon-plus";
+import Banner from "../banner";
 
 export interface ReplyPanelProps extends isLocalAware {
     role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
@@ -31,6 +32,8 @@ export interface ReplyPanelProps extends isLocalAware {
     onClickSendMessage: () => void;
     onClickMarkAsPassed: () => void;
     isSending?: boolean;
+    showSuccessBanner?: boolean;
+    onCloseSuccessBanner?: () => void;
 };
 
 /**
@@ -106,14 +109,23 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
     onClickMarkAsPassed,
     locale,
     isSending,
+    showSuccessBanner,
+    onCloseSuccessBanner,
 }) => {
     const dictionary = getDictionary(locale);
 
     const isFormInvalid = !comment && files.length === 0 && links.length === 0;
-    // TODO: Implement spinning indicator during sending
 
     return (
         <div className="flex flex-col gap-[27px] p-4 bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium">
+            {showSuccessBanner && (
+                <Banner
+                    title={dictionary.components.assignment.replyPanel.messageSentSuccessText}
+                    style="success"
+                    closeable={true}
+                    onClose={onCloseSuccessBanner}
+                />
+            )}
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between pb-2 border-b-1 border-divider">
                     <div className="flex gap-1 items-center justify-center">
@@ -213,7 +225,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                 <Button
                     size='medium'
                     variant="primary"
-                    text={dictionary.components.assignment.replyPanel.sendMessageText}
+                    text={isSending ? dictionary.components.assignment.replyPanel.sendingMessageText : dictionary.components.assignment.replyPanel.sendMessageText}
                     onClick={onClickSendMessage}
                     disabled={isFormInvalid || isSending}
                 />
