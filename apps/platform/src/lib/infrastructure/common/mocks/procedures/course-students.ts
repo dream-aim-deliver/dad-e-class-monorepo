@@ -22,7 +22,7 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 lastAssignment: {
                     assignmentId: 'assign-123',
                     assignmentTitle: 'Assignment 1',
-                    assignmentStatus: 'course-completed',
+                    assignmentStatus: 'passed',
                 },
             },
             {
@@ -64,7 +64,7 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 lastAssignment: {
                     assignmentId: 'assign-125',
                     assignmentTitle: 'Assignment 3',
-                    assignmentStatus: 'course-completed',
+                    assignmentStatus: 'passed',
                 },
             },
             {
@@ -123,7 +123,7 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 lastAssignment: {
                     assignmentId: 'assign-128',
                     assignmentTitle: 'Assignment 6',
-                    assignmentStatus: 'course-completed',
+                    assignmentStatus: 'passed',
                 },
             },
             {
@@ -144,7 +144,7 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 lastAssignment: {
                     assignmentId: 'assign-129',
                     assignmentTitle: 'Assignment 7',
-                    assignmentStatus: 'course-completed',
+                    assignmentStatus: 'passed',
                 },
             },
             {
