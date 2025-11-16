@@ -4,6 +4,7 @@ import { Login_EN } from '../pages/login/login-en';
 import { SSO_EN } from '../pages/sso/sso-en';
 import { Offers_EN } from '../pages/offers/offers-en';
 import { Coaching_EN } from '../pages/coaching/coaching-en';
+import { CheckoutReturn_EN } from '../pages/checkout-return/checkout-return-en';
 
 
 export const EN: TDictionary = {
@@ -2919,5 +2920,6 @@ export const EN: TDictionary = {
         },
       },
     },
+    checkoutReturn: CheckoutReturn_EN,
   },
 };

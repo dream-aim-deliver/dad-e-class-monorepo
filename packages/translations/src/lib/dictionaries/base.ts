@@ -2957,6 +2957,35 @@ export const DictionarySchema = z.object({
         }),
       }),
     }),
+    checkoutReturn: z.object({
+      loading: z.object({
+        processing: z.string(),
+      }),
+      error: z.object({
+        title: z.string(),
+        needHelp: z.string(),
+        email: z.string(),
+        phone: z.string(),
+        tryAgain: z.string(),
+        backToCheckout: z.string(),
+      }),
+      success: z.object({
+        title: z.string(),
+        confirmationEmailSent: z.string(),
+        transactionReceipt: z.string(),
+        transactionId: z.string(),
+        amount: z.string(),
+        alreadyProcessed: z.string(),
+        purchaseUnlocked: z.string(),
+        redirectingIn: z.string(),
+      }),
+      actions: z.object({
+        goToCourse: z.string(),
+        viewMyCourses: z.string(),
+        browseOfferings: z.string(),
+        continue: z.string(),
+      }),
+    }),
   }),
 });
 
