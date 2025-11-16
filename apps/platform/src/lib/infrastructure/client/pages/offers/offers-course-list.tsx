@@ -9,7 +9,7 @@ import {
     VisitorCourseCard,
     type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
@@ -88,21 +88,24 @@ export function OffersCourseList({
     const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
 
     // Helper to execute checkout
-    const executeCheckout = async (
+    const executeCheckout = useCallback(async (
         request: useCaseModels.TPrepareCheckoutRequest,
     ) => {
         try {
             const response = await prepareCheckoutMutation.mutateAsync(request);
             checkoutPresenter.present(response, checkoutViewModel);
-
-            if (checkoutViewModel && checkoutViewModel.mode === 'default') {
-                setTransactionDraft(checkoutViewModel.data.transaction);
-                setIsCheckoutOpen(true);
-            }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
-    };
+    }, [prepareCheckoutMutation, checkoutPresenter, checkoutViewModel]);
+
+    // Watch for checkoutViewModel changes and open modal when ready
+    useEffect(() => {
+        if (checkoutViewModel && checkoutViewModel.mode === 'default') {
+            setTransactionDraft(checkoutViewModel.data.transaction);
+            setIsCheckoutOpen(true);
+        }
+    }, [checkoutViewModel]);
 
     // Checkout intent hook for login flow preservation
     const { saveIntent } = useCheckoutIntent({
@@ -124,7 +127,7 @@ export function OffersCourseList({
         if (!isLoggedIn) {
             saveIntent(request, window.location.pathname);
             router.push(
-                `/${locale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`,
+                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
             );
             return;
         }
