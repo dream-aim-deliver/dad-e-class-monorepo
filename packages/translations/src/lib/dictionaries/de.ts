@@ -1901,7 +1901,7 @@ export const DE: TDictionary = {
         confirmAddTitle: 'Coach zum Kurs hinzufügen',
         confirmAddMessage: 'Möchten Sie diesen Coach wirklich zum Kurs hinzufügen?',
         confirmRemoveTitle: 'Coach aus Kurs entfernen',
-        confirmRemoveMessage: 'Möchten Sie diesen Coach wirklich aus dem Kurs entfernen? Diese Aktion kann nicht rückgängig gemacht werden.',
+        confirmRemoveMessage: 'Möchten Sie diesen Coach wirklich aus dem Kurs entfernen?',
         confirmButton: 'Bestätigen',
         cancelButton: 'Abbrechen',
         addingCoach: 'Coach wird hinzugefügt...',
