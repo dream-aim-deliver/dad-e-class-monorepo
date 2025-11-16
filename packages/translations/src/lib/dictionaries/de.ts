@@ -1073,6 +1073,8 @@ export const DE: TDictionary = {
         markAsPassedText: 'Als bestanden markieren',
         yourCommentsText: 'Deine Kommentare',
         sendMessageText: 'Nachricht senden',
+        sendingMessageText: 'Nachricht wird gesendet...',
+        messageSentSuccessText: 'Nachricht erfolgreich gesendet!',
         replyPlaceholderText: 'Gebe hier weitere Kommentare ein.',
         addLinkText: 'Link hinzufügen',
         confirmPassTitle: 'Bestätigung: Als bestanden markieren',

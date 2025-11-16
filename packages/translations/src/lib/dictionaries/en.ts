@@ -1069,6 +1069,8 @@ export const EN: TDictionary = {
         markAsPassedText: 'Mark as passed',
         yourCommentsText: 'Your comments',
         sendMessageText: 'Send message',
+        sendingMessageText: 'Sending message...',
+        messageSentSuccessText: 'Message sent successfully!',
         replyPlaceholderText: 'Write any additional comment here',
         addLinkText: 'Add link',
         confirmPassTitle: 'Confirm Mark as Passed',
