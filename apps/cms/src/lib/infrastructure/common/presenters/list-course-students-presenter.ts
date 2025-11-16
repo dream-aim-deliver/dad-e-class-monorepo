@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TListCourseStudentsErrorResponse,
+    TListCourseStudentsResponse,
+    ListCourseStudentsResponseSchema
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TListCourseStudentsPresenterUtilities = {};
 
 export const ListCourseStudentsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListCourseStudentsUseCaseResponse,
+        TListCourseStudentsResponse,
         viewModels.TListCourseStudentsViewModel,
         TListCourseStudentsPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const ListCourseStudentsResponseMiddleware =
 type TListCourseStudentsResponseMiddleware = typeof ListCourseStudentsResponseMiddleware;
 
 export default class ListCourseStudentsPresenter extends BasePresenter<
-    useCaseModels.TListCourseStudentsUseCaseResponse,
+    TListCourseStudentsResponse,
     viewModels.TListCourseStudentsViewModel,
     TListCourseStudentsPresenterUtilities,
     TListCourseStudentsResponseMiddleware
@@ -29,7 +34,7 @@ export default class ListCourseStudentsPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.ListCourseStudentsUseCaseResponseSchema,
+                responseModel: ListCourseStudentsResponseSchema,
                 viewModel: viewModels.ListCourseStudentsViewModelSchema
             },
             middleware: ListCourseStudentsResponseMiddleware,
@@ -40,7 +45,7 @@ export default class ListCourseStudentsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListCourseStudentsUseCaseResponse,
+            TListCourseStudentsResponse,
             { success: true }
         >,
     ): viewModels.TListCourseStudentsViewModel {
@@ -53,7 +58,7 @@ export default class ListCourseStudentsPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListCourseStudentsUseCaseErrorResponse,
+            TListCourseStudentsErrorResponse,
             TListCourseStudentsResponseMiddleware
         >,
     ): viewModels.TListCourseStudentsViewModel {

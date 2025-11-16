@@ -138,10 +138,11 @@ export function CourseStudents(
             let status: StudentCardProps["status"] = "no-assignment";
             let assignmentTitle: string | undefined;
             let completedCourseDate: Date | undefined;
+            const assignmentStatus = student.lastAssignment?.assignmentStatus;
 
             // If there's a last assignment, use its status directly
             if (student.lastAssignment) {
-                status = student.lastAssignment.assignmentStatus;
+                status = assignmentStatus ? assignmentStatus : "no-assignment";
                 assignmentTitle = student.lastAssignment.assignmentTitle;
             }
             // If no assignment, status remains "no-assignment"
