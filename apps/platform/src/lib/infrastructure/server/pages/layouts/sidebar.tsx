@@ -60,7 +60,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             '/workspace/your-reviews': sidebarTranslations('yourReviews'),
             '/workspace/notifications': sidebarTranslations('notifications'),
             '/workspace/profile': sidebarTranslations('yourProfile'),
-            '/billing': sidebarTranslations('orderPayments'),
+            '/workspace/billing': sidebarTranslations('orderPayments'),
             '/workspace/pre-course-assessment': 'Pre-Course Assessment',
         };
 
