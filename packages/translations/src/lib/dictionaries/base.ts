@@ -1065,6 +1065,8 @@ export const DictionarySchema = z.object({
         markAsPassedText: z.string(),
         yourCommentsText: z.string(),
         sendMessageText: z.string(),
+        sendingMessageText: z.string(),
+        messageSentSuccessText: z.string(),
         replyPlaceholderText: z.string(),
         addLinkText: z.string(),
         confirmPassTitle: z.string(),
