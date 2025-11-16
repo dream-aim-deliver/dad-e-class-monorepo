@@ -11,7 +11,6 @@ import { useGetCourseStatusPresenter } from '../hooks/use-get-course-status-pres
 import { useGetCourseCertificateDataPresenter } from '../hooks/use-get-course-certificate-data-presenter';
 import { useCreateCourseReviewPresenter } from '../hooks/use-create-course-review-presenter';
 import { useState, useEffect, useRef } from 'react';
-import html2pdf from 'html2pdf.js';
 import {
     DefaultLoading,
     DefaultError,
@@ -142,6 +141,9 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                 const sanitizedStudentName = certData.studentUsername;
                 const sanitizedCourseTitle = slug;
                 const filename = `Certificate_${sanitizedStudentName}_${sanitizedCourseTitle}.pdf`;
+
+                // Dynamically import html2pdf (client-side only)
+                const html2pdf = (await import('html2pdf.js')).default;
 
                 // Configure html2pdf options
                 const options = {
