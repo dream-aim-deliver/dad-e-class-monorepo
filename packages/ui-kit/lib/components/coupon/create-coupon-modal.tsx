@@ -131,7 +131,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   const [selectedType, setSelectedType] = useState<CouponType | null>(null);
 
   // Type-specific form states
-  const [selectedCourse, setSelectedCourse] = useState<SingleCourse | null>(null);
+  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
   const [selectedPackages, setSelectedPackages] = useState<SelectedPackage[]>([]);
   const [coachingDuration, setCoachingDuration] = useState<number | null>(null);
   const [isCoachingPartOfCourse, setIsCoachingPartOfCourse] = useState(false);
@@ -140,6 +140,9 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   const [discountPercentage, setDiscountPercentage] = useState<number | null>(null);
   const [selectedGroupCourse, setSelectedGroupCourse] = useState<number | null>(null);
   const [groupName, setGroupName] = useState('');
+
+  // Search state
+  const [courseSearchQuery, setCourseSearchQuery] = useState('');
 
   // Validation state
   const [showValidationErrors, setShowValidationErrors] = useState<boolean>(false);
@@ -220,7 +223,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
 
     switch (selectedType) {
       case 'freeCourses':
-        if (!selectedCourse) {
+        if (selectedCourses.length === 0) {
           errors.push(dictionary.validationErrors.courseRequired);
         }
         break;
@@ -269,15 +272,15 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
 
     switch (selectedType) {
       case 'freeCourses':
-        if (!selectedCourse) {
-          throw new Error('Course is required for free course coupon');
+        if (selectedCourses.length === 0) {
+          throw new Error('At least one course is required for free course coupon');
         }
         couponContent = {
           type: 'freeCourses',
-          courseIds: [{
-            id: selectedCourse.id,
-            withCoaching: selectedCourse.withCoaching
-          }]
+          courseIds: selectedCourses.map(course => ({
+            id: course.id,
+            withCoaching: course.withCoaching
+          }))
         };
         break;
       case 'freeBundles':
@@ -336,27 +339,17 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
     // TODO: Show toast notification
   };
 
-  const handleCourseSelection = (courseId: string | string[]) => {
-    if (!coursesQuery?.data?.data?.courses) return;
-
-    // Handle single selection
-    const selectedId = typeof courseId === 'string' ? courseId : null;
-    if (!selectedId) {
-      setSelectedCourse(null);
-      return;
-    }
-
-    const course = coursesQuery.data.data.courses.find((c: any) =>
-      c.id.toString() === selectedId
-    );
-
-    if (course) {
-      setSelectedCourse({
-        id: course.id,
-        title: course.title,
-        withCoaching: false
-      });
-    }
+  const handleCourseToggle = (courseId: number, courseTitle: string, courseSlug: string) => {
+    setSelectedCourses(prev => {
+      const exists = prev.find(c => c.id === courseId);
+      if (exists) {
+        // Remove course
+        return prev.filter(c => c.id !== courseId);
+      } else {
+        // Add course
+        return [...prev, { id: courseId, title: courseTitle, withCoaching: false }];
+      }
+    });
   };
 
   const handlePackageSelection = (packageIds: string[]) => {
@@ -375,13 +368,14 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
     setSelectedPackages(newSelectedPackages);
   };
 
-  const toggleCourseCoaching = () => {
-    if (selectedCourse) {
-      setSelectedCourse({
-        ...selectedCourse,
-        withCoaching: !selectedCourse.withCoaching
-      });
-    }
+  const toggleCourseCoaching = (courseId: number) => {
+    setSelectedCourses(prev =>
+      prev.map(course =>
+        course.id === courseId
+          ? { ...course, withCoaching: !course.withCoaching }
+          : course
+      )
+    );
   };
 
   const togglePackageCoaching = (packageId: number) => {
@@ -544,34 +538,63 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                     <p className="text-sm text-gray-600">Loading courses...</p>
                   </div>
                 ) : coursesQuery?.data?.data?.courses ? (
-                  <>
-                    <Dropdown
-                      type="simple"
-                      options={coursesQuery.data.data.courses.map((course: any) => ({
-                        label: course.title,
-                        value: course.id.toString()
-                      }))}
-                      onSelectionChange={(selected) => handleCourseSelection(selected as string)}
-                      text={{ simpleText: dictionary.selectCourse }}
-                      defaultValue={selectedCourse?.id.toString()}
-                      className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
+                  <div className="flex flex-col gap-3">
+                    {/* Search Input */}
+                    <TextInput
+                      label=""
+                      inputField={{
+                        value: courseSearchQuery,
+                        setValue: setCourseSearchQuery,
+                        inputText: "Search courses...",
+                      }}
                     />
 
-                    {/* Selected Course with Coaching Checkbox */}
-                    {selectedCourse && (
+                    {/* Course Selection List */}
+                    <div className="flex flex-col gap-2 max-h-64 overflow-y-auto border border-divider rounded-md p-2">
+                      {coursesQuery.data.data.courses
+                        .filter((course: any) => {
+                          const searchLower = courseSearchQuery.toLowerCase();
+                          return (
+                            course.title.toLowerCase().includes(searchLower) ||
+                            course.slug.toLowerCase().includes(searchLower)
+                          );
+                        })
+                        .sort((a: any, b: any) => a.title.localeCompare(b.title))
+                        .map((course: any) => {
+                          const isSelected = selectedCourses.some(c => c.id === course.id);
+                          return (
+                            <div key={course.id} className="flex flex-col gap-2">
+                              <CheckBox
+                                name={`course-select-${course.id}`}
+                                value={`course-select-${course.id}`}
+                                label={`${course.title} (${course.slug})`}
+                                checked={isSelected}
+                                onChange={() => handleCourseToggle(course.id, course.title, course.slug)}
+                                withText
+                              />
+                            </div>
+                          );
+                        })}
+                    </div>
+
+                    {/* Selected Courses with Coaching Toggles */}
+                    {selectedCourses.length > 0 && (
                       <div className="flex flex-col gap-2">
                         <h5 className="font-medium text-sm">{dictionary.withCoaching}</h5>
-                        <CheckBox
-                          name={`course-${selectedCourse.id}`}
-                          value={`course-${selectedCourse.id}`}
-                          label={selectedCourse.title}
-                          checked={selectedCourse.withCoaching}
-                          onChange={toggleCourseCoaching}
-                          withText
-                        />
+                        {selectedCourses.map(course => (
+                          <CheckBox
+                            key={`coaching-${course.id}`}
+                            name={`course-coaching-${course.id}`}
+                            value={`course-coaching-${course.id}`}
+                            label={course.title}
+                            checked={course.withCoaching}
+                            onChange={() => toggleCourseCoaching(course.id)}
+                            withText
+                          />
+                        ))}
                       </div>
                     )}
-                  </>
+                  </div>
                 ) : (
                   <div className="p-4 bg-red-50 rounded-md">
                     <p className="text-sm text-red-600">Failed to load courses</p>
