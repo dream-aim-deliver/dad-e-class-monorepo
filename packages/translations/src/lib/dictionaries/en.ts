@@ -281,7 +281,7 @@ export const EN: TDictionary = {
     languageSelector: {
       title: 'Languages spoken fluently (C1 and above)',
       choosetext: '',
-      interface: 'Interface language',
+      interface: 'Preferred language',
       chooseLanguage: 'Choose language',
       chooseColor: 'Choose color',
       chooseOptions: 'Choose options',
@@ -321,7 +321,7 @@ export const EN: TDictionary = {
       profilePicture: 'Profile Picture',
       platformPreferences: 'Platform Preference',
       platformPP: 'Languages spoken fluently (C1 and above)',
-      interfaceLang: 'Interface Language',
+      interfaceLang: 'Preferred Language',
       checkboxtext2: 'Receive Newsletter',
       buttontext1: 'Discard',
       buttontext2: 'Save changes',
