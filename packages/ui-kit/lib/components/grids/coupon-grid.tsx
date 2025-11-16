@@ -208,6 +208,7 @@ export const CouponGrid = (props: CouponGridProps) => {
             sortable: true,
             flex: 1,
             minWidth: 130,
+            sort: 'desc' as const, // Default sort: newest first
             valueFormatter: (params: any) => {
                 const date = new Date(params.value);
                 return formatDate(date);
