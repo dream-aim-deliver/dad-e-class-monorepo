@@ -31,6 +31,7 @@ export interface CheckoutModalProps extends isLocalAware {
     transactionDraft: TransactionDraft;
     onPaymentComplete?: (sessionId: string) => void;
     stripePublishableKey: string;
+    customerEmail?: string;
 }
 
 type ModalState = 'summary' | 'payment';
@@ -41,6 +42,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     transactionDraft,
     onPaymentComplete,
     stripePublishableKey,
+    customerEmail,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
@@ -152,8 +154,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         setIsLoadingPayment(true);
 
         try {
-            const url = appliedCoupon
-                ? `/api/checkout/get-checkout-url?coupon=${encodeURIComponent(appliedCoupon)}`
+            // Build query parameters
+            const params = new URLSearchParams();
+            if (appliedCoupon) {
+                params.append('coupon', appliedCoupon);
+            }
+            if (customerEmail) {
+                params.append('email', customerEmail);
+            }
+
+            const url = params.toString()
+                ? `/api/checkout/get-checkout-url?${params.toString()}`
                 : '/api/checkout/get-checkout-url';
 
             const response = await fetch(url);
