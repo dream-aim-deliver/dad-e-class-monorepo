@@ -195,14 +195,18 @@ function RedeemCouponDialogContent() {
 
                 // Determine the type based on outcome
                 let type: 'course' | 'package' | 'coaching' | 'group' = 'course';
-                let title = '';
+                let title: string | undefined = undefined;
                 let imageUrl: string | undefined = undefined;
+                let courses: { title: string; imageUrl?: string }[] | undefined = undefined;
 
                 switch (outcome.type) {
                     case 'freeCourses':
                         type = 'course';
-                        title = outcome.courses[0]?.title || 'Free Course';
-                        imageUrl = outcome.courses[0]?.imageUrl || undefined;
+                        // Map all courses from the response
+                        courses = outcome.courses.map((course: any) => ({
+                            title: course.title,
+                            imageUrl: course.imageUrl || undefined,
+                        }));
                         break;
                     case 'freeBundles':
                         type = 'package';
@@ -231,6 +235,7 @@ function RedeemCouponDialogContent() {
                         type,
                         title,
                         imageUrl,
+                        courses,
                     },
                 };
             }

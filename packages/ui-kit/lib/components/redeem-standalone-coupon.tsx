@@ -18,10 +18,16 @@ import { IconError, IconLoaderSpinner } from './icons';
 
 type CouponType = 'course' | 'package' | 'coaching' | 'group';
 
-interface CouponData {
-    type: CouponType;
+interface CourseItem {
     title: string;
     imageUrl?: string;
+}
+
+interface CouponData {
+    type: CouponType;
+    title?: string;
+    imageUrl?: string;
+    courses?: CourseItem[];
 }
 
 interface RedeemStandaloneCouponProps extends isLocalAware {
@@ -104,10 +110,10 @@ export default function RedeemStandaloneCoupon(
     };
 
     // Text for what type of coupon is (course, package, coaching and group)
-    const getTypeLabel = (type: CouponType) => {
+    const getTypeLabel = (type: CouponType, isMultiple: boolean = false) => {
         switch (type) {
             case 'course':
-                return dictionary.course;
+                return isMultiple ? dictionary.courses : dictionary.course;
             case 'package':
                 return dictionary.package;
             case 'coaching':
@@ -117,10 +123,10 @@ export default function RedeemStandaloneCoupon(
         }
     };
 
-    const getAvailableText = (type: CouponType) => {
+    const getAvailableText = (type: CouponType, isMultiple: boolean = false) => {
         switch (type) {
             case 'course':
-                return dictionary.freeCourseAvailable;
+                return isMultiple ? dictionary.freeCoursesAvailable : dictionary.freeCourseAvailable;
             case 'package':
                 return dictionary.freePackageAvailable;
             case 'coaching':
@@ -130,10 +136,10 @@ export default function RedeemStandaloneCoupon(
         }
     };
 
-    const getRedeemedText = (type: CouponType) => {
+    const getRedeemedText = (type: CouponType, isMultiple: boolean = false) => {
         switch (type) {
             case 'course':
-                return dictionary.freeCourseRedeemed;
+                return isMultiple ? dictionary.freeCoursesRedeemed : dictionary.freeCourseRedeemed;
             case 'package':
                 return dictionary.freePackageRedeemed;
             case 'coaching':
@@ -145,6 +151,9 @@ export default function RedeemStandaloneCoupon(
 
     // Redeemed State
     if (state === 'redeemed' && couponData) {
+        const isMultipleCourses = couponData.type === 'course' && couponData.courses && couponData.courses.length > 1;
+        const hasCoursesList = couponData.type === 'course' && couponData.courses && couponData.courses.length > 0;
+
         return (
             <div className="flex flex-col gap-5">
                 {/* Header */}
@@ -167,33 +176,59 @@ export default function RedeemStandaloneCoupon(
                     {/* Success Badge */}
                     <Badge
                         variant="successprimary"
-                        text={getRedeemedText(couponData.type)}
+                        text={getRedeemedText(couponData.type, isMultipleCourses)}
                         size="big"
                         className="w-fit"
                     />
                     <Divider className="my-2" />
 
                     {/* Course/Package Info */}
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            {getTypeIcon(couponData.type)}
-                            <span className="text-text-secondary text-sm md:text-md">
-                                {getTypeLabel(couponData.type)}
-                            </span>
-                            {(couponData.type === 'course' ||
-                                couponData.type === 'package') && (
-                                <UserAvatar
-                                    size="xSmall"
-                                    imageUrl={couponData.imageUrl}
-                                    fullName={couponData.title}
-                                    className="rounded-small"
-                                />
-                            )}
-                            <span className="text-text-primary font-important text-sm md:text-md">
-                                {couponData.title}
-                            </span>
+                    {hasCoursesList ? (
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-2">
+                                {getTypeIcon(couponData.type)}
+                                <span className="text-text-secondary text-sm md:text-md">
+                                    {getTypeLabel(couponData.type, isMultipleCourses)}
+                                </span>
+                            </div>
+                            {couponData.courses!.map((course, index) => (
+                                <div key={index} className="flex items-center gap-2 ml-8">
+                                    <UserAvatar
+                                        size="xSmall"
+                                        imageUrl={course.imageUrl}
+                                        fullName={course.title}
+                                        className="rounded-small"
+                                    />
+                                    <span className="text-text-primary font-important text-sm md:text-md">
+                                        {course.title}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
-                    </div>
+                    ) : (
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
+                                {getTypeIcon(couponData.type)}
+                                <span className="text-text-secondary text-sm md:text-md">
+                                    {getTypeLabel(couponData.type)}
+                                </span>
+                                {(couponData.type === 'course' ||
+                                    couponData.type === 'package') && couponData.title && (
+                                    <>
+                                        <UserAvatar
+                                            size="xSmall"
+                                            imageUrl={couponData.imageUrl}
+                                            fullName={couponData.title}
+                                            className="rounded-small"
+                                        />
+                                        <span className="text-text-primary font-important text-sm md:text-md">
+                                            {couponData.title}
+                                        </span>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Close Button */}
