@@ -47,7 +47,7 @@ function IntroductionBanner({ courseSlug }: CourseIntroductionProps) {
             onErrorCallback={() => {
                 // TODO: Handle error case, e.g., show a toast or log the error
             }}
-            thumbnailUrl={introduction.video?.thumbnailUrl ?? undefined}
+            thumbnailUrl={introduction.video?.thumbnailUrl || undefined}
         />
     );
 }

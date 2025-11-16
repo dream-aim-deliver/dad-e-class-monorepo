@@ -101,7 +101,7 @@ export default function HomePage() {
                     locale={locale}
                     title={homePage.banner.title}
                     description={homePage.banner.description}
-                    thumbnailUrl={homePage.banner.thumbnailImage?.downloadUrl ?? ''}
+                    thumbnailUrl={homePage.banner.thumbnailImage?.downloadUrl || undefined}
                     videoId={homePage.banner.video?.playbackId ?? ''}
                 />
                 <Divider />

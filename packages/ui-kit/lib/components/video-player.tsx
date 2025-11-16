@@ -62,14 +62,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const [videoError, setVideoError] = useState(!videoId);
     const [isPlayerReady, setIsPlayerReady] = useState(false);
     const [thumbnailLoaded, setThumbnailLoaded] = useState<boolean | undefined>(
-        thumbnailUrl !== undefined ? true : undefined,
+        thumbnailUrl !== undefined ? false : undefined,
     );
 
     useEffect(() => {
         setVideoError(!videoId);
         setIsPlayerReady(false);
         setAutoPlay(false);
-        setThumbnailLoaded(thumbnailUrl !== undefined ? true : undefined); // Only set to false if there's actually a thumbnail to load
+        setThumbnailLoaded(thumbnailUrl !== undefined ? false : undefined); // Start as false, becomes true on image load
         if (!thumbnailUrl) setShowPlayer(true);
     }, [videoId, thumbnailUrl]);
 

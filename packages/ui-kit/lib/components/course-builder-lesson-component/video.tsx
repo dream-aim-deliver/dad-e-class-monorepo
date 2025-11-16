@@ -198,7 +198,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
             <div className="w-full max-w-[1000px]">
                 <VideoPlayer
                     videoId={videoFile.file?.videoId ?? undefined}
-                    thumbnailUrl={videoFile.file?.thumbnailUrl ?? undefined}
+                    thumbnailUrl={videoFile.file?.thumbnailUrl || undefined}
                     locale={locale}
                     className="aspect-video w-full"
                 />

@@ -4,7 +4,7 @@ export const HomeBannerSchema = z.object({
     title: z.string(),
     description: z.string(),
     videoId: z.string(),
-    thumbnailUrl: z.string(),
+    thumbnailUrl: z.string().optional(),
 });
 /**
  * Schema for a home banner.
