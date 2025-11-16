@@ -130,23 +130,25 @@ const CoachCard: FC<CoachCardProps> = (props) => {
           <p className="leading-[150%] line-clamp-4 ">{cardDetails.description}</p>
         </div>
 
-        {/* Teaches Section */}
-        <div className="flex flex-wrap gap-2 items-center min-h-18">
-          <span className="text-sm">{dictionary.components.coachCard.teaches}:</span>
-          {cardDetails.courses.slice(0, 3).map((course) => (
-            <Button
-              key={course.title}
-              className="p-0 gap-1 text-sm truncate"
-              size='small'
-              title={course.title}
-              variant="text"
-              hasIconLeft
-              iconLeft={<UserAvatar fullName={course.title} imageUrl={course.image} className="rounded-small" size="small" />}
-              text={course.title}
-              onClick={() => onClickCourse?.(course.slug)}
-            />
-          ))}
-        </div>
+        {/* Teaches Section - only show if there are courses */}
+        {cardDetails.courses.length > 0 && (
+          <div className="flex flex-wrap gap-2 items-center min-h-18">
+            <span className="text-sm">{dictionary.components.coachCard.teaches}:</span>
+            {cardDetails.courses.slice(0, 3).map((course) => (
+              <Button
+                key={course.title}
+                className="p-0 gap-1 text-sm truncate"
+                size='small'
+                title={course.title}
+                variant="text"
+                hasIconLeft
+                iconLeft={<UserAvatar fullName={course.title} imageUrl={course.image} className="rounded-small" size="small" />}
+                text={course.title}
+                onClick={() => onClickCourse?.(course.slug)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Card Footer */}
