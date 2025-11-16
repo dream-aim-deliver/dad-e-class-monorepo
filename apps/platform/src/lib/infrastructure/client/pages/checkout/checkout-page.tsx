@@ -12,6 +12,9 @@ import env from '../../config/env';
 import { trpc } from '../../trpc/client';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
+import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface SimulationCardProps {
     title: string;
@@ -54,6 +57,10 @@ function SimulationCard({
 
 export default function CheckoutPage() {
     const locale = useLocale() as TLocale;
+    const router = useRouter();
+    const sessionDTO = useSession();
+    const isLoggedIn = !!sessionDTO.data;
+
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [transactionDraft, setTransactionDraft] =
         useState<TransactionDraft | null>(null);
@@ -63,7 +70,10 @@ export default function CheckoutPage() {
 
     const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
 
-    const handleTest = async (request: useCaseModels.TPrepareCheckoutRequest) => {
+    // Helper to execute checkout
+    const executeCheckout = async (
+        request: useCaseModels.TPrepareCheckoutRequest,
+    ) => {
         try {
             const response = await prepareCheckoutMutation.mutateAsync(request);
             presenter.present(response, viewModel);
@@ -76,6 +86,25 @@ export default function CheckoutPage() {
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
+    };
+
+    // Checkout intent hook for login flow preservation
+    const { saveIntent } = useCheckoutIntent({
+        onResumeCheckout: executeCheckout,
+    });
+
+    const handleTest = async (request: useCaseModels.TPrepareCheckoutRequest) => {
+        // If user is not logged in, save intent and redirect to login
+        if (!isLoggedIn) {
+            saveIntent(request, window.location.pathname);
+            router.push(
+                `/${locale}/auth/login?returnUrl=${encodeURIComponent(window.location.pathname)}`,
+            );
+            return;
+        }
+
+        // User is logged in, execute checkout
+        executeCheckout(request);
     };
 
     const handlePaymentComplete = (sessionId: string) => {
