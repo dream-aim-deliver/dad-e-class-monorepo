@@ -47,7 +47,7 @@ interface CoachStudentsListProps {
     hasActiveFiltersOrSearch?: boolean;
 }
 
-function mapAssignmentStatusToCourseStatus(status: string): CourseAssignment['status'] {
+function mapAssignmentStatusToCourseStatus(status: string | null): CourseAssignment['status'] {
     switch (status) {
         case 'Passed':
             return 'passed';
@@ -102,7 +102,7 @@ function EmptyState({ locale, hasActiveFiltersOrSearch }: { locale: TLocale; has
     if (hasActiveFiltersOrSearch) {
         return (
             <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] animate-pulse">
-                    <p className="text-text-primary text-md">{pageTranslations('noStudentsFound')}</p>
+                <p className="text-text-primary text-md">{pageTranslations('noStudentsFound')}</p>
             </div>
         );
     }
@@ -137,11 +137,11 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
             let completedCourseDate: Date | undefined;
             let status = 'no-assignment';
             let assignmentTitle: string | undefined;
-            
+
             // If there's a last assignment, use its status directly
-            if (course.lastAssignment) {
-                status = mapAssignmentStatusToCourseStatus(course.lastAssignment.status);
-                assignmentTitle = course.lastAssignment.title;
+            if (course.longestAwaitAssignment) {
+                status = mapAssignmentStatusToCourseStatus(course.longestAwaitAssignment.status);
+                assignmentTitle = course.longestAwaitAssignment.title;
             }
             // If no assignment, status remains "no-assignment"
 
@@ -150,7 +150,7 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
                 completedCourseDate = new Date(course.courseCompletionDate);
             }
 
-            if (!course.lastAssignment) {
+            if (!course.longestAwaitAssignment) {
                 return {
                     courseName: course.title,
                     courseImageUrl: course.imageUrl || '',
