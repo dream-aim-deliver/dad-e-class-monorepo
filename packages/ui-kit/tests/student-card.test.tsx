@@ -136,7 +136,7 @@ describe('StudentCard', () => {
         render(
             <StudentCard
                 {...baseProps}
-                status="course-completed"
+                status="passed"
                 completedCourseDate={new Date('2025-04-10')}
             />
         );
