@@ -233,7 +233,7 @@ export default function CoachingOfferingsPanel() {
                 locale={locale}
             />
 
-            {transactionDraft && currentRequest && (
+            {transactionDraft && currentRequest && currentRequest.type === 'StudentCoachingSessionPurchase' && (
                 <CheckoutModal
                     isOpen={isCheckoutOpen}
                     onClose={() => {

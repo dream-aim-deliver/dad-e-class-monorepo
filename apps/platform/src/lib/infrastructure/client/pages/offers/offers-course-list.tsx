@@ -254,7 +254,7 @@ export function OffersCourseList({
                 />
             )}
 
-            {transactionDraft && currentRequest && (
+            {transactionDraft && currentRequest && (currentRequest.type === 'StudentCoursePurchase' || currentRequest.type === 'StudentCoursePurchaseWithCoaching') && (
                 <CheckoutModal
                     isOpen={isCheckoutOpen}
                     onClose={() => {
@@ -269,7 +269,7 @@ export function OffersCourseList({
                     purchaseType={currentRequest.type}
                     purchaseIdentifier={{
                         courseSlug: currentRequest.courseSlug,
-                        withCoaching: currentRequest.type.includes('WithCoaching'),
+                        withCoaching: currentRequest.type === 'StudentCoursePurchaseWithCoaching',
                     }}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}

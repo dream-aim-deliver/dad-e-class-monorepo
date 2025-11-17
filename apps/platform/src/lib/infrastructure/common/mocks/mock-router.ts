@@ -67,7 +67,6 @@ import { getStudentDetails } from './procedures/student-details';
 import { getStudentCoachingSession } from './procedures/student-coaching-session';
 import { listGroupCoachingSessions, listCoachCoachingSessions, createGroupCoachingSession } from './procedures/group-coaching-sessions';
 import { prepareCheckout } from './procedures/prepare-checkout';
-import { verifyAndUnlockPurchase } from './procedures/verify-and-unlock-purchase';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -137,7 +136,6 @@ export const mockRouter = t.router({
     listCoachCoachingSessions,
     createGroupCoachingSession,
     prepareCheckout,
-    verifyAndUnlockPurchase,
 });
 
 export type MockRouter = typeof mockRouter;
