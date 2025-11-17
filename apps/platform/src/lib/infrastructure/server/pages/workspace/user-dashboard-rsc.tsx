@@ -32,10 +32,16 @@ export default async function UserDashboardServerComponent() {
     // Pending queries will be dehydrated and sent to client
     prefetch(trpc.listUserCourses.queryOptions({}));
     prefetch(trpc.getPersonalProfile.queryOptions({}));
+    prefetch(trpc.listNotifications.queryOptions({
+        pagination: {
+            page: 1,
+            pageSize: 5,
+        },
+    }));
 
     // TSK-PERF-014: Add coaching sessions prefetch for all users
     prefetch(trpc.listUpcomingStudentCoachingSessions.queryOptions({
-        studentId: 1  // TODO: Get from session if needed
+        studentUsername: session.user.name || ''
     }));
 
     // Add coach-specific data prefetching

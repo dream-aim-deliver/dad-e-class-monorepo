@@ -8,7 +8,6 @@ import {
     UserAvatar,
     Badge,
     IconStar,
-    CreateCourseModal,
     Dialog,
     DialogContent,
     DialogTrigger,
@@ -38,116 +37,6 @@ interface UserDashboardProps {
     roles: string[];
 }
 
-function useDebounce(value: any, delay: number): any {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [value, delay]);
-
-    return debouncedValue;
-}
-
-interface CreateCourseDialogContentProps {
-    onDuplicationSuccess: () => void;
-}
-
-function CreateCourseDialogContent({
-    onDuplicationSuccess,
-}: CreateCourseDialogContentProps) {
-    const locale = useLocale() as TLocale;
-    const router = useRouter();
-
-    const { setIsOpen } = useDialog();
-
-    const [searchQuery, setSearchQuery] = useState('');
-    const debouncedSearchQuery = useDebounce(searchQuery, 250);
-
-    const {
-        data: coursesResponse,
-        isFetching,
-        error,
-    } = trpc.listPlatformCoursesShort.useQuery({});
-
-    const duplicateCourseMutation = trpc.duplicateCourse.useMutation();
-
-    const courses = coursesResponse?.success && (coursesResponse as any).data.courses
-        ? (coursesResponse as any).data.courses.filter((course: any) =>
-            course.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-        )
-        : [];
-
-    return (
-        <div className="p-6">
-            <CreateCourseModal
-                locale={locale}
-                isLoading={isFetching}
-                onCreateNew={() => {
-                    router.push('/create/course');
-                    setIsOpen(false);
-                }}
-                onDuplicate={async (course) => {
-                    await duplicateCourseMutation.mutateAsync({
-                        sourceCourseSlug: course.slug,
-                    });
-                    setIsOpen(false);
-                    onDuplicationSuccess();
-                }}
-                onQueryChange={(query) => {
-                    setSearchQuery(query);
-                }}
-                courses={courses.map((course: any) => ({
-                    id: course.id,
-                    slug: course.slug,
-                    title: course.title,
-                    author: {
-                        name: '',
-                        surname: '',
-                        isYou: false,
-                    },
-                }))}
-                onClose={() => setIsOpen(false)}
-                hasSearchError={!!error || (coursesResponse?.success === false)}
-            />
-        </div>
-    );
-}
-
-interface CreateCourseDialogProps {
-    onDuplicationSuccess: () => void;
-}
-
-function CreateCourseDialog({
-    onDuplicationSuccess,
-}: CreateCourseDialogProps) {
-    const t = useTranslations('pages.userCourses');
-
-    return (
-        <Dialog
-            open={undefined}
-            onOpenChange={() => {
-                // This function is called when the dialog is opened or closed
-            }}
-            defaultOpen={false}
-        >
-            <DialogTrigger asChild>
-                <Button text={t('createCourse')} />
-            </DialogTrigger>
-            <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
-                <CreateCourseDialogContent
-                    onDuplicationSuccess={onDuplicationSuccess}
-                />
-            </DialogContent>
-        </Dialog>
-    );
-}
-
 function RedeemCouponDialogContent() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.userDashboard');
@@ -175,7 +64,13 @@ function RedeemCouponDialogContent() {
     );
 
     // Mutation for validating and redeeming coupon
-    const redeemCouponMutation = trpc.redeemStandaloneCoupon.useMutation();
+    const redeemCouponMutation = trpc.redeemStandaloneCoupon.useMutation({
+        onSuccess: () => {
+            // Invalidate queries to refetch user data after successful redemption
+            void utils.listUserCourses.invalidate();
+            void utils.listUpcomingStudentCoachingSessions.invalidate();
+        }
+    });
 
     const handleRedeem = async (couponCode: string) => {
         try {
@@ -307,7 +202,7 @@ function RedeemCouponDialog() {
     );
 }
 
- 
+
 export default function UserDashboard({ roles }: UserDashboardProps) {
     const { data: session } = useSession();
     const router = useRouter();
@@ -315,18 +210,8 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const t = useTranslations('pages.userDashboard');
 
-    const utils = trpc.useUtils();
-
-    // Duplication handler
-    const handleDuplicationSuccess = useCallback(() => {
-        // Invalidate and refetch user courses
-        utils.listUserCourses.invalidate();
-        utils.listPlatformCoursesShort.invalidate();
-    }, [utils]);
-
     // Determine if user is a coach
     const isCoach = useMemo(() => roles.includes('coach'), [roles]);
-    const isAdmin = useMemo(() => roles.includes('admin'), [roles]);
 
     // Fetch personal profile to get full name
     const { data: personalProfileResponse } = trpc.getPersonalProfile.useQuery({});
@@ -345,7 +230,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
             // @ts-ignore
             personalProfilePresenter.present(personalProfileResponse, personalProfileViewModel);
         }
-    }, [personalProfileResponse, personalProfilePresenter, personalProfileViewModel]);
+    }, [personalProfileResponse, personalProfilePresenter]);
 
     // Fetch coach reviews if user is a coach
     const { data: reviewsResponse } = trpc.listCoachReviews.useQuery(
@@ -412,8 +297,8 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     }, [roles]);
 
     if (!session) {
-        // TODO: Handle unauthenticated state appropriately
-        return null; // Or a loading state, or redirect to login
+        // redirect to login
+        router.push('/auth/login');
     }
 
     // Handle loading state
@@ -513,25 +398,18 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                     <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
                         <div className="xl:col-span-3 lg:col-span-2 space-y-6">
                             <UserCoachingSessions
-                                studentId={session?.user?.id ? Number(session.user.id) : undefined}
+                                studentUsername={session?.user?.name}
                             />
 
-                            {/* Your courses and Create course button and modal */}
-                            <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
-                                <div className="flex items-center">
-                                    <h3> {t('yourCourses')} </h3>
-                                    <Button
-                                        variant="text"
-                                        size="small"
-                                        onClick={handleViewAllCourses}
-                                        text={t('viewAllCourses')}
-                                    />
-                                </div>
-                                {isAdmin && (
-                                    <CreateCourseDialog
-                                        onDuplicationSuccess={handleDuplicationSuccess}
-                                    />
-                                )}
+                            {/* Your courses */}
+                            <div className="flex items-center">
+                                <h3> {t('yourCourses')} </h3>
+                                <Button
+                                    variant="text"
+                                    size="small"
+                                    onClick={handleViewAllCourses}
+                                    text={t('viewAllCourses')}
+                                />
                             </div>
                             <UserCoursesList maxItems={3} />
 
@@ -549,7 +427,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                             <h3> {t('yourCourses')} </h3>
                             <UserCoursesList maxItems={3} />
                             <UserCoachingSessions
-                                studentId={session?.user?.id ? Number(session.user.id) : undefined}
+                                studentUsername={session?.user?.name}
                             />
                         </div>
                         <div className="xl:col-span-1 lg:col-span-1">

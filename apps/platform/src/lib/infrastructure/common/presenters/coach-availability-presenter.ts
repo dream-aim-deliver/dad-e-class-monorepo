@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TGetCoachAvailabilityUseCaseErrorResponse,
+    TGetCoachAvailabilityUseCaseResponse,
+    GetCoachAvailabilityUseCaseResponseSchema,
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TCoachAvailabilityPresenterUtilities = {};
 
 export const GetCoachAvailabilityResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetCoachAvailabilityUseCaseResponse,
+        TGetCoachAvailabilityUseCaseResponse,
         viewModels.TCoachAvailabilityViewModel,
         TCoachAvailabilityPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TGetCoachAvailabilityResponseMiddleware =
     typeof GetCoachAvailabilityResponseMiddleware;
 
 export default class CoachAvailabilityPresenter extends BasePresenter<
-    useCaseModels.TGetCoachAvailabilityUseCaseResponse,
+    TGetCoachAvailabilityUseCaseResponse,
     viewModels.TCoachAvailabilityViewModel,
     TCoachAvailabilityPresenterUtilities,
     TGetCoachAvailabilityResponseMiddleware
@@ -33,7 +38,7 @@ export default class CoachAvailabilityPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.GetCoachAvailabilityUseCaseResponseSchema,
+                    GetCoachAvailabilityUseCaseResponseSchema,
                 viewModel: viewModels.CoachAvailabilityViewModelSchema,
             },
             middleware: GetCoachAvailabilityResponseMiddleware,
@@ -44,7 +49,7 @@ export default class CoachAvailabilityPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetCoachAvailabilityUseCaseResponse,
+            TGetCoachAvailabilityUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCoachAvailabilityViewModel {
@@ -58,7 +63,7 @@ export default class CoachAvailabilityPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetCoachAvailabilityUseCaseErrorResponse,
+            TGetCoachAvailabilityUseCaseErrorResponse,
             TGetCoachAvailabilityResponseMiddleware
         >,
     ): viewModels.TCoachAvailabilityViewModel {

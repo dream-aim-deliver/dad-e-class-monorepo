@@ -88,7 +88,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
             // @ts-ignore
             presenter.present(coursesResponse, coursesViewModel);
         }
-    }, [coursesResponse, presenter, coursesViewModel]);
+    }, [coursesResponse, presenter]);
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default' || !coursesViewModel.data) {

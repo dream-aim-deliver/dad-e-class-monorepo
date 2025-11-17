@@ -1,12 +1,14 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { Button, CoachReviewCard } from '@maany_shr/e-class-ui-kit';
+import { Button, CoachReviewCard, DefaultError } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListCoachReviewsPresenter } from '../../hooks/use-list-coach-reviews-presenter';
 
 export default function CoachDashboardReviews() {
     const router = useRouter();
@@ -14,28 +16,27 @@ export default function CoachDashboardReviews() {
     const { data: session } = useSession();
     const t = useTranslations('pages.coachDashboardReviews');
 
-    const {
-        data: reviewsResponse,
-        isLoading,
-        error,
-    } = trpc.listCoachReviews.useQuery(
-        {
-            coachUsername: session?.user?.name || '',
-        },
-        {
-            enabled: !!session?.user?.name,
-        }
-    );
+    // Fetch reviews using useSuspenseQuery
+    const [reviewsResponse] = trpc.listCoachReviews.useSuspenseQuery({
+        coachUsername: session?.user?.name || '',
+    });
+
+    // Set up view model state and presenter
+    const [reviewsViewModel, setReviewsViewModel] = useState<
+        viewModels.TListCoachReviewsViewModel | undefined
+    >(undefined);
+    const { presenter } = useListCoachReviewsPresenter(setReviewsViewModel);
+
+    // Call presenter directly in render
+    // @ts-ignore
+    presenter.present(reviewsResponse, reviewsViewModel);
 
     const handleViewAllReviews = useCallback(() => {
         router.push(`/${locale}/workspace/your-reviews`);
     }, [router, locale]);
 
-    // @ts-ignore - tRPC response structure
-    const reviews = reviewsResponse?.data?.reviews || [];
-    const hasReviews = reviews.length > 0;
-
-    if (isLoading) {
+    // Handle loading state
+    if (!reviewsViewModel) {
         return (
             <div className="flex flex-col space-y-4">
                 <div className="flex justify-between items-center">
@@ -51,6 +52,17 @@ export default function CoachDashboardReviews() {
             </div>
         );
     }
+
+    // Handle error state
+    if (reviewsViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
+    }
+
+    // Extract reviews from view model
+    const reviews = reviewsViewModel.mode === 'default'
+        ? reviewsViewModel.data.reviews
+        : [];
+    const hasReviews = reviews.length > 0;
 
     return (
         <div className="rounded-lg">

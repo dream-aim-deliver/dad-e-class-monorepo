@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TGetStudentCoachingSessionUseCaseErrorResponse,
+    TGetStudentCoachingSessionUseCaseResponse,
+    GetStudentCoachingSessionUseCaseResponseSchema,
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TStudentCoachingSessionPresenterUtilities = {};
 
 export const GetStudentCoachingSessionResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetStudentCoachingSessionUseCaseResponse,
+        TGetStudentCoachingSessionUseCaseResponse,
         viewModels.TStudentCoachingSessionViewModel,
         TStudentCoachingSessionPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TGetStudentCoachingSessionResponseMiddleware =
     typeof GetStudentCoachingSessionResponseMiddleware;
 
 export default class StudentCoachingSessionPresenter extends BasePresenter<
-    useCaseModels.TGetStudentCoachingSessionUseCaseResponse,
+    TGetStudentCoachingSessionUseCaseResponse,
     viewModels.TStudentCoachingSessionViewModel,
     TStudentCoachingSessionPresenterUtilities,
     TGetStudentCoachingSessionResponseMiddleware
@@ -32,7 +37,7 @@ export default class StudentCoachingSessionPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetStudentCoachingSessionUseCaseResponseSchema,
+                responseModel: GetStudentCoachingSessionUseCaseResponseSchema,
                 viewModel: viewModels.StudentCoachingSessionViewModelSchema,
             },
             middleware: GetStudentCoachingSessionResponseMiddleware,
@@ -43,7 +48,7 @@ export default class StudentCoachingSessionPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetStudentCoachingSessionUseCaseResponse,
+            TGetStudentCoachingSessionUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TStudentCoachingSessionViewModel {
@@ -57,7 +62,7 @@ export default class StudentCoachingSessionPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetStudentCoachingSessionUseCaseErrorResponse,
+            TGetStudentCoachingSessionUseCaseErrorResponse,
             TGetStudentCoachingSessionResponseMiddleware
         >,
     ): viewModels.TStudentCoachingSessionViewModel {
