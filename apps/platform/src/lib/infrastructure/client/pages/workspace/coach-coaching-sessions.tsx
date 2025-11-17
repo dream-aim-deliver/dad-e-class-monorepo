@@ -11,7 +11,6 @@ import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading,
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-coaching-session-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
-import { useCreateNotificationPresenter } from "../../hooks/use-create-notification-presenter";
 import { useCheckTimeLeft } from "../../../hooks/use-check-time-left";
 import { TListCoachCoachingSessionsSuccessResponse } from "@dream-aim-deliver/e-class-cms-rest";
 
@@ -69,12 +68,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             utils.getCoachAvailability.invalidate();
         },
     });
-    const createNotificationMutation = trpc.createNotification.useMutation({
-        onSuccess: () => {
-            // Invalidate notifications to refetch fresh data
-            utils.listNotifications.invalidate();
-        },
-    });
 
     const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
         viewModels.TListCoachCoachingSessionsViewModel | undefined
@@ -88,10 +81,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         viewModels.TUnscheduleCoachingSessionViewModel | undefined
     >(undefined);
 
-    const [createNotificationViewModel, setCreateNotificationViewModel] = useState<
-        viewModels.TCreateNotificationViewModel | undefined
-    >(undefined);
-
     const { presenter } = useListCoachCoachingSessionsPresenter(
         setStudentCoachingSessionsViewModel,
     );
@@ -102,10 +91,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
     const { presenter: unschedulePresenter } = useUnscheduleCoachingSessionPresenter(
         setUnscheduleViewModel,
-    );
-
-    const { presenter: createNotificationPresenter } = useCreateNotificationPresenter(
-        setCreateNotificationViewModel,
     );
 
     // @ts-ignore
@@ -229,34 +214,12 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             return;
         }
 
-        // Step 2: Create notification (only if unschedule was successful)
-        if (unscheduleViewModel && unscheduleViewModel.mode === 'default') {
-            // Get the session details for notification
-            const session = allSessions.find(s => s.id === sessionId);
-            if (session) {
-                const notificationResult = await createNotificationMutation.mutateAsync({
-                    message: "",
-                    actionTitle: "View Details",
-                    actionUrl: `/coaching-session/${sessionId}`,
-                    senderId: 1, // TODO: Get actual coach ID
-                    receiverId: 1, // TODO: Get actual student ID - session.student doesn't have id property
-                    sendEmail: false,
-                });
-
-                // Present the notification result
-                //@ts-ignore
-                createNotificationPresenter.present(notificationResult, createNotificationViewModel);
-
-            }
-        }
-
         // Success - close modal and reset state
         const timeoutId = setTimeout(() => {
             setIsModalOpen(false);
             setModalType(null);
             setSessionId(null);
             setUnscheduleViewModel(undefined);
-            setCreateNotificationViewModel(undefined);
         }, 2000);
 
         return () => clearTimeout(timeoutId);
