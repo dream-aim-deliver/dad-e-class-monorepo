@@ -318,14 +318,13 @@ export default function StudentCoachingSessions() {
     };
 
     const handleDownloadRecording = (sessionId: number | string) => {
-        // TODO: Implement download recording functionality
+        // TODO: Implement download recording functionality if available in stack
         const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
         console.log('Download recording for session:', numericId);
     };
 
     const handleBookSession = (coachUsername: string) => {
-        // TODO: Implement booking session navigation
-        router.push(`/coaches/${coachUsername}`);
+        router.push(`/coaches/${coachUsername}/book`);
     };
 
     const handleBuyMoreSessions = () => {

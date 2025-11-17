@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    ListCoachesUseCaseResponseSchema,
+    TListCoachesUseCaseResponse,
+    TListCoachesErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TCourseCoachesPresenterUtilities = {};
 
 export const ListCourseCoachesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListCoachesUseCaseResponse,
+        TListCoachesUseCaseResponse,
         viewModels.TCoachListViewModel,
         TCourseCoachesPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const ListCourseCoachesResponseMiddleware =
 type TListCourseCoachesResponseMiddleware = typeof ListCourseCoachesResponseMiddleware;
 
 export default class CourseCoachesPresenter extends BasePresenter<
-    useCaseModels.TListCoachesUseCaseResponse,
+    TListCoachesUseCaseResponse,
     viewModels.TCoachListViewModel,
     TCourseCoachesPresenterUtilities,
     TListCourseCoachesResponseMiddleware
@@ -29,7 +34,7 @@ export default class CourseCoachesPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.ListCoachesUseCaseResponseSchema,
+                responseModel: ListCoachesUseCaseResponseSchema,
                 viewModel: viewModels.CoachListViewModelSchema
             },
             middleware: ListCourseCoachesResponseMiddleware,
@@ -40,7 +45,7 @@ export default class CourseCoachesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListCoachesUseCaseResponse,
+            TListCoachesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCoachListViewModel {
@@ -51,10 +56,10 @@ export default class CourseCoachesPresenter extends BasePresenter<
             }
         };
     }
-    
+
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListCoachesUseCaseErrorResponse,
+            TListCoachesErrorResponse,
             TListCourseCoachesResponseMiddleware
         >,
     ): viewModels.TCoachListViewModel {
