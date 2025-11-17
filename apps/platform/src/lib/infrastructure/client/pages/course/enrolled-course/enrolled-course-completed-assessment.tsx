@@ -6,30 +6,36 @@ import {
     DefaultLoading,
     AssessmentSubmissionRenderer,
     FormElement,
-    DefaultNotFound,
+    EmptyState,
 } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListAssessmentProgressesPresenter } from '../../../hooks/use-assessment-progresses-presenter';
-import { useSession } from 'next-auth/react';
 
 interface EnrolledCourseCompletedAssessmentProps {
     courseSlug: string;
+    studentUsername?: string; // Optional: if provided, coach is viewing this student's PCA
 }
 
 export default function EnrolledCourseCompletedAssessment(
     props: EnrolledCourseCompletedAssessmentProps,
 ) {
     const locale = useLocale() as TLocale;
-    const { data: session } = useSession();
-    
-    // Get student ID from session (user.id is the student/user ID)
-    const studentId = session?.user?.id;
+
+    // Determine if this is a coach viewing a student's PCA
+    const isCoachView = !!props.studentUsername;
 
     const [progressResponse] = trpc.listAssessmentProgresses.useSuspenseQuery({
         courseSlug: props.courseSlug,
-        studentId: studentId, // Pass student ID to get the correct student's progress
+        requestDetails: isCoachView
+            ? {
+                requestType: 'other',
+                studentUsername: props.studentUsername!,
+            }
+            : {
+                requestType: 'self',
+            },
     });
 
     const [progressViewModel, setProgressViewModel] = useState<
@@ -46,9 +52,13 @@ export default function EnrolledCourseCompletedAssessment(
             return [];
         }
 
-        const components = progressViewModel.data.components;
-
-        return transformLessonComponents(components) as FormElement[];
+        try {
+            const components = progressViewModel.data.components;
+            return transformLessonComponents(components) as FormElement[];
+        } catch (error) {
+            console.error('Error transforming lesson components:', error);
+            return [];
+        }
     }, [progressViewModel]);
 
     if (!progressViewModel) {
@@ -62,20 +72,29 @@ export default function EnrolledCourseCompletedAssessment(
     // @ts-ignore - Handle not-found mode if it exists
     if (progressViewModel.mode === 'not-found') {
         return (
-            <DefaultNotFound
+            <EmptyState
                 locale={locale}
-                title="Pre course assessment not found"
-                description="This course does not have a pre-course assessment."
+                message="This course does not have a pre-course assessment."
             />
         );
     }
 
-    if (progressViewModel.data.components.length === 0) {
+    // Check if we have data before accessing components
+    if (progressViewModel.mode === 'default' && progressViewModel.data.components.length === 0) {
         return (
-            <DefaultNotFound
+            <EmptyState
                 locale={locale}
-                title="Pre course assessment progress not found"
-                description="No submitted pre course assessment found for this course."
+                message="No submitted pre course assessment found for this course."
+            />
+        );
+    }
+
+    // If formElements is empty due to transformation error, show error
+    if (progressViewModel.mode === 'default' && formElements.length === 0 && progressViewModel.data.components.length > 0) {
+        return (
+            <DefaultError
+                locale={locale}
+                description="Failed to load assessment components. Please try refreshing the page."
             />
         );
     }

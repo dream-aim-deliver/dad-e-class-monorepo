@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TListAssessmentProgressesUseCaseResponse,
+    TListAssessmentProgressesUseCaseErrorResponse,
+    ListAssessmentProgressesUseCaseResponseSchema
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TAssessmentProgressesPresenterUtilities = {};
 
 export const ListAssessmentProgressesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListAssessmentProgressesUseCaseResponse,
+        TListAssessmentProgressesUseCaseResponse,
         viewModels.TAssessmentProgressListViewModel,
         TAssessmentProgressesPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TListAssessmentProgressesResponseMiddleware =
     typeof ListAssessmentProgressesResponseMiddleware;
 
 export default class AssessmentProgressesPresenter extends BasePresenter<
-    useCaseModels.TListAssessmentProgressesUseCaseResponse,
+    TListAssessmentProgressesUseCaseResponse,
     viewModels.TAssessmentProgressListViewModel,
     TAssessmentProgressesPresenterUtilities,
     TListAssessmentProgressesResponseMiddleware
@@ -33,7 +38,7 @@ export default class AssessmentProgressesPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.ListAssessmentProgressesUseCaseResponseSchema,
+                    ListAssessmentProgressesUseCaseResponseSchema,
                 viewModel: viewModels.AssessmentProgressListViewModelSchema
             },
             middleware: ListAssessmentProgressesResponseMiddleware,
@@ -44,7 +49,7 @@ export default class AssessmentProgressesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListAssessmentProgressesUseCaseResponse,
+            TListAssessmentProgressesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TAssessmentProgressListViewModel {
@@ -58,7 +63,7 @@ export default class AssessmentProgressesPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListAssessmentProgressesUseCaseErrorResponse,
+            TListAssessmentProgressesUseCaseErrorResponse,
             TListAssessmentProgressesResponseMiddleware
         >,
     ): viewModels.TAssessmentProgressListViewModel {

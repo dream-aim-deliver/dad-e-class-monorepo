@@ -157,7 +157,35 @@ const mockThird: useCaseModels.TListAssessmentProgressesSuccessResponse['data'] 
 export const listAssessmentProgresses = t.procedure
     .input(useCaseModels.ListAssessmentProgressesRequestSchema)
     .query(
-        async (): Promise<useCaseModels.TListAssessmentProgressesUseCaseResponse> => {
+        async (opts): Promise<useCaseModels.TListAssessmentProgressesUseCaseResponse> => {
+            const { courseSlug } = opts.input;
+
+            // Return empty components for courses without PCA
+            if (courseSlug === 'student-course' || courseSlug === 'coach-course') {
+                return {
+                    success: true,
+                    data: {
+                        components: [],
+                    },
+                };
+            }
+
+            // Return different mock data based on course
+            if (courseSlug === 'progress-course') {
+                return {
+                    success: true,
+                    data: mockFirst,
+                };
+            }
+
+            if (courseSlug === 'admin-course') {
+                return {
+                    success: true,
+                    data: mockSecond,
+                };
+            }
+
+            // Default: return mockThird for other courses
             return {
                 success: true,
                 data: mockThird,

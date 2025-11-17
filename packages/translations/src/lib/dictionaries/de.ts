@@ -1979,6 +1979,7 @@ export const DE: TDictionary = {
       selectCourseToViewInteractions: 'Bitte wähle einen Kurs, um die Interaktionen anzuzeigen',
       selectCourseToViewAssessment: 'Bitte wähle einen Kurs, um die Vorab-Bewertung anzuzeigen',
       studentInteractions: 'Schüler-Interaktionen',
+      noInteractionsFound: 'Keine Interaktionen für diesen Kurs gefunden',
       tabs: {
         assignments: 'Aufgaben',
         interactions: 'Interaktionen',

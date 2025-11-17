@@ -1976,6 +1976,7 @@ export const EN: TDictionary = {
       selectCourseToViewInteractions: 'Please select a course to view interactions',
       selectCourseToViewAssessment: 'Please select a course to view the pre-course assessment',
       studentInteractions: 'Student Interactions',
+      noInteractionsFound: 'No interactions found for this course',
       tabs: {
         assignments: 'Assignments',
         interactions: 'Interactions',

@@ -330,6 +330,7 @@ export default function SingleStudent({
                         >
                             <EnrolledCourseCompletedAssessment
                                 courseSlug={selectedCourse}
+                                studentUsername={slug}
                             />
                         </Suspense>
                     ) : (

@@ -2035,6 +2035,7 @@ export const DictionarySchema = z.object({
       selectCourseToViewInteractions: z.string(),
       selectCourseToViewAssessment: z.string(),
       studentInteractions: z.string(),
+      noInteractionsFound: z.string(),
       tabs: z.object({
         assignments: z.string(),
         interactions: z.string(),
