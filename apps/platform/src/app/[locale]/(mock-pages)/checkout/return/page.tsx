@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { trpc } from '../../../../../lib/infrastructure/client/trpc/client';
 import { checkoutSessionStorage } from '../../../../../lib/infrastructure/client/utils/checkout-session-storage';
 import env from '../../../../../lib/infrastructure/client/config/env';
 import {
@@ -27,8 +26,6 @@ export default function CheckoutReturnPage() {
     const [transaction, setTransaction] = useState<any>(null);
     const [error, setError] = useState<string>('');
     const [countdown, setCountdown] = useState(5);
-
-    const verifyMutation = trpc.verifyAndUnlockPurchase.useMutation();
 
     useEffect(() => {
         if (!sessionId) {
@@ -54,7 +51,21 @@ export default function CheckoutReturnPage() {
 
     const processPayment = async (sessionId: string) => {
         try {
-            const result = await verifyMutation.mutateAsync({ sessionId });
+            // Call the verify-and-unlock API route
+            const response = await fetch('/api/checkout/verify-and-unlock', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ sessionId }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || errorData.message || 'Payment verification failed');
+            }
+
+            const result = await response.json();
 
             if (result.success) {
                 checkoutSessionStorage.saveCompletedSession(sessionId);
