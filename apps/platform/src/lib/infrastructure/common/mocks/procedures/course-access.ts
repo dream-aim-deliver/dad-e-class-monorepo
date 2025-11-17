@@ -17,6 +17,8 @@ const getCourseAccessMock: TGetCourseAccessSuccessResponse['data'] =
         id: 1,
         slug: 'mock-course',
         title: 'Mock Course',
+        status: 'live' as const,
+        public: true,
         language: {
             id: 1,
             code: 'en',
@@ -75,6 +77,8 @@ export const getCourseAccess = t.procedure
                             id: 2,
                             slug: 'student-course',
                             title: 'Student Course',
+                            status: 'live' as const,
+                            public: true,
                             language: {
                                 id: 1,
                                 code: 'en',
@@ -98,6 +102,8 @@ export const getCourseAccess = t.procedure
                             id: 3,
                             slug: 'progress-course',
                             title: 'Progress Course',
+                            status: 'live' as const,
+                            public: true,
                             language: {
                                 id: 1,
                                 code: 'en',
@@ -121,6 +127,8 @@ export const getCourseAccess = t.procedure
                             id: 4,
                             slug: 'coach-course',
                             title: 'Coach Course',
+                            status: 'live' as const,
+                            public: true,
                             language: {
                                 id: 1,
                                 code: 'en',
@@ -144,6 +152,8 @@ export const getCourseAccess = t.procedure
                             id: 5,
                             slug: 'admin-course',
                             title: 'Admin Course',
+                            status: 'live' as const,
+                            public: true,
                             language: {
                                 id: 1,
                                 code: 'en',

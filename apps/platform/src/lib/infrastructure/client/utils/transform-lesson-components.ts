@@ -409,13 +409,6 @@ function transformCoachingSession(
 function transformAssignment(
     component: Extract<TLessonComponent, { type: 'assignment' }>,
 ): AssignmentElement {
-    const getReplyRole = (): 'student' | 'coach' => {
-        if (component.progress?.lastActivity?.sender.role === 'student') {
-            return 'student';
-        }
-        return 'coach';
-    };
-
     const getStatus = (): AssignmentStatus => {
         if (!component.progress?.lastActivity) {
             return AssignmentStatus.NotStarted;
@@ -442,6 +435,7 @@ function transformAssignment(
         progress: component.progress ? {
             status: getStatus(),
             lastReply: component.progress.lastActivity ? {
+                replyType: 'reply' as const,
                 sentAt: component.progress.lastActivity.sentAt,
                 comment: component.progress.lastActivity.comment,
                 files: component.progress.lastActivity.files.map((file) => ({
@@ -453,12 +447,13 @@ function transformAssignment(
                 })),
                 links: component.progress.lastActivity.links,
                 sender: {
-                    id: component.progress.lastActivity.sender.id.toString(),
+                    id: component.progress.lastActivity.sender.id,
                     username: component.progress.lastActivity.sender.username,
                     name: component.progress.lastActivity.sender.name ?? undefined,
                     surname: component.progress.lastActivity.sender.surname ?? undefined,
                     avatarUrl: component.progress.lastActivity.sender.avatarUrl ?? undefined,
-                    role: getReplyRole(),
+                    role: component.progress.lastActivity.sender.role,
+                    isCurrentUser: component.progress.lastActivity.sender.isCurrentUser,
                 },
             } : undefined,
         } : undefined,

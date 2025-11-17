@@ -1,21 +1,18 @@
 import { FC } from 'react';
 import { IconButton } from '../icon-button';
 import { IconClose, IconAssignment } from '../icons';
-import { AssignmentHeader } from './assignment-header';
+import { AssignmentHeader, AssignmentHeaderProps } from './assignment-header';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import {
-    assignment,
     fileMetadata,
-    role,
     shared,
 } from '@maany_shr/e-class-models';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { LinkEdit, LinkPreview } from '../links';
 
 export interface AssignmentModalProps
-    extends Omit<assignment.TAssignmentWithId, 'replies'>,
+    extends Omit<AssignmentHeaderProps, 'locale'>,
         isLocalAware {
-    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     linkEditIndex: number;
     children: React.ReactNode;
     onFileDownload: (id: string) => void;
@@ -31,9 +28,6 @@ export interface AssignmentModalProps
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
     onDeleteIcon: (id: string) => void;
-    onClickCourse: () => void;
-    onClickUser: () => void;
-    onClickGroup: () => void;
     onClose: () => void;
 }
 

@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TGetAssignmentUseCaseResponse,
+    TGetAssignmentUseCaseErrorResponse,
+    GetAssignmentUseCaseResponseSchema,
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TAssignmentPresenterUtilities = {};
 
 export const GetAssignmentResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetAssignmentUseCaseResponse,
+        TGetAssignmentUseCaseResponse,
         viewModels.TAssignmentViewModel,
         TAssignmentPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TGetAssignmentResponseMiddleware =
     typeof GetAssignmentResponseMiddleware;
 
 export default class AssignmentPresenter extends BasePresenter<
-    useCaseModels.TGetAssignmentUseCaseResponse,
+    TGetAssignmentUseCaseResponse,
     viewModels.TAssignmentViewModel,
     TAssignmentPresenterUtilities,
     TGetAssignmentResponseMiddleware
@@ -32,7 +37,7 @@ export default class AssignmentPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetAssignmentUseCaseResponseSchema,
+                responseModel: GetAssignmentUseCaseResponseSchema,
                 viewModel: viewModels.AssignmentViewModelSchema,
             },
             middleware: GetAssignmentResponseMiddleware,
@@ -43,7 +48,7 @@ export default class AssignmentPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetAssignmentUseCaseResponse,
+            TGetAssignmentUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TAssignmentViewModel {
@@ -57,7 +62,7 @@ export default class AssignmentPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetAssignmentUseCaseErrorResponse,
+            TGetAssignmentUseCaseErrorResponse,
             TGetAssignmentResponseMiddleware
         >,
     ): viewModels.TAssignmentViewModel {

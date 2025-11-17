@@ -1,22 +1,25 @@
 import { FC } from 'react';
 import { Button } from '../button';
 import {
-    assignment,
     fileMetadata,
     role,
     shared,
 } from '@maany_shr/e-class-models';
-import { AssignmentHeader } from './assignment-header';
+import { AssignmentHeader, AssignmentHeaderProps } from './assignment-header';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Message } from './message';
 import { cn } from '../../utils/style-utils';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { LinkEdit, LinkPreview } from '../links';
+import type {
+    TAssignmentReplyResponse,
+    TAssignmentPassedResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 
-export interface AssignmentCardProps
-    extends assignment.TAssignmentWithId,
-        isLocalAware {
-    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
+type AssignmentReply = TAssignmentReplyResponse | TAssignmentPassedResponse;
+
+export interface AssignmentCardProps extends Omit<AssignmentHeaderProps, 'locale'>, isLocalAware {
+    replies?: AssignmentReply[];
     onFileDownload: (id: string) => void;
     onFileDelete: (assignmentId: number, fileId: string) => void;
     onLinkDelete: (assignmentId: number, linkId: number) => void;
@@ -44,9 +47,6 @@ export interface AssignmentCardProps
         links: shared.TLinkWithId[],
         replyLinkEditIndex: number,
     ) => void;
-    onClickCourse: () => void;
-    onClickUser: () => void;
-    onClickGroup: () => void;
     onClickView: () => void;
 }
 
@@ -161,13 +161,13 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     locale,
 }) => {
     const dictionary = getDictionary(locale);
-    const getLatestReply = (replies: assignment.TAssignmentReplyWithId[]) => {
+    const getLatestReply = (replies: AssignmentReply[]) => {
         if (replies.length === 0) return undefined;
-        return replies.reduce((latest, current) =>
-            (current.timestamp ?? 0) > (latest.timestamp ?? 0)
-                ? current
-                : latest,
-        );
+        return replies.reduce((latest, current) => {
+            const currentTime = current.replyType === 'passed' ? current.passedAt : current.sentAt;
+            const latestTime = latest.replyType === 'passed' ? latest.passedAt : latest.sentAt;
+            return currentTime > latestTime ? current : latest;
+        });
     };
 
     const handleSaveLink = (data: shared.TLinkWithId, index: number) => {
@@ -184,7 +184,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
         <div
             className={cn(
                 'flex flex-col p-4 bg-card-fill border-1 border-card-stroke rounded-medium',
-                (replies as assignment.TAssignmentReplyWithId[]).length > 0 ? 'gap-2' : 'gap-4',
+                (replies?.length ?? 0) > 0 ? 'gap-2' : 'gap-4',
             )}
         >
             <AssignmentHeader
@@ -205,10 +205,10 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                 locale={locale}
                 role={role}
             />
-            {(replies as assignment.TAssignmentReplyWithId[]).length > 0
+            {(replies?.length ?? 0) > 0
                 ? // Show latest reply if there are replies
                   (() => {
-                      const latestReply = getLatestReply(replies as assignment.TAssignmentReplyWithId[]);
+                      const latestReply = replies ? getLatestReply(replies) : undefined;
                       return latestReply ? (
                           <div className="flex flex-col gap-2">
                               <h6 className="text-md text-text-primary font-bold leading-[120%]">
