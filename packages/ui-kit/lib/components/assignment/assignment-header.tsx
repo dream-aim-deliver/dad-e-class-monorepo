@@ -1,17 +1,34 @@
 import { FC } from "react";
 import { Badge } from "../badge";
-import { assignment, role } from '@maany_shr/e-class-models';
+import { role, fileMetadata, shared } from '@maany_shr/e-class-models';
 import { Button } from "../button";
 import { UserAvatar } from "../avatar/user-avatar";
 import { IconGroup } from "../icons/icon-group";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
-export interface AssignmentHeaderProps extends Omit<assignment.TAssignmentWithId, 'replies'>, isLocalAware {
+export interface AssignmentHeaderProps extends isLocalAware {
+    assignmentId?: number;
+    title?: string;
+    description?: string;
+    files?: fileMetadata.TFileMetadata[];
+    links?: shared.TLinkWithId[];
+    course?: {
+        title?: string;
+        imageUrl?: string;
+    };
+    module?: number;
+    lesson?: number;
+    status?: string;
+    student?: {
+        name?: string;
+        image?: string;
+    };
+    groupName?: string;
     role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     onClickCourse: () => void;
     onClickUser: () => void;
     onClickGroup: () => void;
-};
+}
 
 export const AssignmentHeader: FC<AssignmentHeaderProps> = ({
     title,

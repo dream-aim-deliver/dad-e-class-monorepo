@@ -4,7 +4,6 @@ import { trpc } from '../../../trpc/cms-client';
 import {
     fileMetadata,
     shared,
-    useCaseModels,
     viewModels,
 } from '@maany_shr/e-class-models';
 import { useLocale } from 'next-intl';
@@ -20,6 +19,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useSession } from 'next-auth/react';
 import { useRealProgressUpload } from '../utils/file-upload';
+
 
 interface AssignmentContentProps {
     assignmentId: string;
@@ -301,7 +301,7 @@ function AssignmentModalWrapper({
             title={assignment.title}
             course={{
                 title: assignment.course.title,
-                imageUrl: assignment.course.imageUrl,
+                imageUrl: assignment.course.imageUrl ? assignment.course.imageUrl : undefined,
             }}
             onClickCourse={() => {
                 // TODO: navigate to course by slug
@@ -364,9 +364,11 @@ function transformLinks(links: viewModels.TAssignmentSuccess['links']) {
     }));
 }
 
+type TAssignmentProgress = NonNullable<viewModels.TAssignmentSuccess['progress']>;
+
 interface RepliesListProps {
-    replies: useCaseModels.TAssignmentReply[];
-    passedDetails: useCaseModels.TAssignmentPassedData | undefined;
+    replies: TAssignmentProgress['replies'];
+    passedDetails: TAssignmentProgress['passedDetails'];
     locale: TLocale;
     currentUserId: string;
 }
@@ -382,10 +384,7 @@ function RepliesList({
         const components = replies.map((reply, index) => (
             <Message
                 key={`reply-${index}`}
-                reply={{
-                    replyId: index,
-                    ...transformReplyData(reply, currentUserId, locale),
-                }}
+                reply={transformReplyData(reply, currentUserId, locale)}
                 onFileDownload={(file) => {
                     downloadFile(file.url, file.name);
                 }}
@@ -397,14 +396,9 @@ function RepliesList({
                 <Message
                     key={`reply-passed`}
                     reply={{
-                        replyId: replies.length,
-                        timestamp: passedDetails.passedAt,
-                        type: 'passed',
-                        sender: transformReplySender(
-                            passedDetails.sender,
-                            currentUserId,
-                            locale,
-                        ),
+                        replyType: 'passed' as const,
+                        passedAt: passedDetails.passedAt,
+                        sender: passedDetails.sender,
                     }}
                     onFileDownload={(file) => {
                         downloadFile(file.url, file.name);
@@ -414,57 +408,37 @@ function RepliesList({
             );
         }
         return components;
-    }, [replies, locale, passedDetails]);
+    }, [replies, locale, passedDetails, currentUserId]);
 
     return messageComponents;
 }
 
 // Transform reply data for Message component
+// Adds url field (alias for downloadUrl) and status for TFileMetadata compatibility
 function transformReplyData(
-    reply: useCaseModels.TAssignmentReply,
-    currentUserId: string,
-    locale: TLocale,
+    reply: TAssignmentProgress['replies'][number],
+    _currentUserId: string,
+    _locale: TLocale,
 ) {
     return {
-        type: 'resources' as const,
-        comment: reply.comment,
-        timestamp: reply.sentAt,
-        sender: transformReplySender(reply.sender, currentUserId, locale),
-        files: reply.files.map((file: any) => ({
-            ...file,
-            category: 'generic' as const,
-            status: 'available' as const,
-            url: file.downloadUrl,
-        })),
-        links: reply.links.map((link: any, linkIndex: number) => ({
-            linkId: linkIndex,
-            title: link.title,
-            url: link.url,
-            customIcon: link.iconFile
-                ? {
-                    ...link.iconFile,
-                    status: 'available' as const,
-                    url: link.iconFile.downloadUrl,
-                    thumbnailUrl: link.iconFile.downloadUrl,
-                }
-                : undefined,
-        })),
-    };
-}
+        ...reply,
+        files: reply.files.map((file) => {
+            const baseFile = {
+                ...file,
+                url: file.downloadUrl, // Add url field for TFileMetadata compatibility
+                status: 'available' as const,
+            };
 
-function transformReplySender(
-    sender: useCaseModels.TAssignmentReply['sender'],
-    currentUserId: string,
-    locale: TLocale,
-) {
-    // TODO: Handle translation for anonymous user
-    // TODO: Determine if the sender is the current user
-    return {
-        id: sender.id.toString(),
-        name: sender.name ?? 'Anonymous User',
-        email: '',
-        role: sender.role as 'student' | 'coach',
-        image: sender.avatarUrl ?? '',
-        isCurrentUser: sender.id.toString() === currentUserId,
+            // Add videoId for video files to match TFileMetadataVideo
+            if (file.category === 'video') {
+                return { ...baseFile, videoId: null };
+            }
+
+            return baseFile;
+        }),
+        links: reply.links.map((link) => ({
+            ...link,
+            iconFile: link.iconFile ?? null,
+        })),
     };
 }

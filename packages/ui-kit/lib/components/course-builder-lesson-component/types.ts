@@ -1,6 +1,10 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import { CourseElementType } from "../course-builder/types";
 import { assignment, fileMetadata, shared } from "@maany_shr/e-class-models";
+import type {
+    TAssignmentReplyResponse,
+    TAssignmentPassedResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 interface BaseCourseFormElement {
     type: CourseElementType;
@@ -111,20 +115,7 @@ export interface UploadFilesElement extends BaseCourseFormElement {
     userComment?: string | null;
 }
 
-interface AssignmentReply {
-    sentAt: number;
-    comment: string;
-    files: fileMetadata.TFileMetadata[];
-    links: shared.TLink[];
-    sender: {
-        id: string;
-        username: string;
-        name?: string;
-        surname?: string;
-        avatarUrl?: string;
-        role: 'coach' | 'student';
-    }
-}
+export type AssignmentReply = TAssignmentReplyResponse | TAssignmentPassedResponse;
 
 export enum AssignmentStatus {
     NotStarted,

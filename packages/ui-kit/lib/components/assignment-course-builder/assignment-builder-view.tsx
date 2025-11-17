@@ -135,28 +135,7 @@ export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
                             }
                         </h6>
                         <Message
-                            reply={{
-                                replyId: 0,
-                                comment: lastReply.comment,
-                                type: 'resources',
-                                timestamp: lastReply.sentAt,
-                                sender: {
-                                    id: lastReply.sender.id,
-                                    // TODO: Handle translation for anonymous user
-                                    name:
-                                        lastReply.sender.name ??
-                                        'Anonymous User',
-                                    email: '',
-                                    role: lastReply.sender.role,
-                                    image: lastReply.sender.avatarUrl ?? '',
-                                    isCurrentUser: false,
-                                },
-                                files: lastReply.files,
-                                links: lastReply.links.map((link) => ({
-                                    linkId: 0,
-                                    ...link,
-                                })),
-                            }}
+                            reply={lastReply}
                             onFileDownload={onFileDownload}
                             locale={locale}
                         />

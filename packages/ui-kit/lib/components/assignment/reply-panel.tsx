@@ -6,7 +6,7 @@ import { IconCoachingSession } from "../icons/icon-coaching-session";
 import Tooltip from "../tooltip";
 import { TextAreaInput } from "../text-areaInput";
 import { IconAssignmentPassed } from "../icons/icon-assignment-passed";
-import { assignment, fileMetadata, role, shared } from '@maany_shr/e-class-models';
+import { fileMetadata, role, shared } from '@maany_shr/e-class-models';
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { LinkEdit, LinkPreview } from "../links";

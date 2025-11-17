@@ -297,3 +297,6 @@ export { BecomeACoachForm } from './components/profile/become-a-coach-form';
 
 export { AutoPlayVideoPlayer, type AutoPlayVideoPlayerProps } from './components/auto-play-video-player';
 export { PaginationButton, type PaginationButtonProps } from './components/pagination-button';
+
+// Assignment types from cms-rest (authoritative backend schema)
+export type { AssignmentReply, TAssignmentSenderResponse, TAssignmentReplyResponse, TAssignmentPassedResponse } from './types/assignment-types';
