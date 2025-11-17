@@ -6,7 +6,7 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { ListAssessmentProgressesSuccessResponseSchema } from '../usecase-models/list-assessment-progresses-usecase-models';
+import { ListAssessmentProgressesSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
 export const AssessmentProgressListSuccessSchema = ListAssessmentProgressesSuccessResponseSchema.shape.data;
 

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useLocale, useTranslations , } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { DefaultError, DefaultLoading, CoachStudentInteractionCard, UserAvatar } from '@maany_shr/e-class-ui-kit';
+import { DefaultError, DefaultLoading, CoachStudentInteractionCard, UserAvatar, EmptyState } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListStudentInteractionsPresenter } from '../../hooks/use-list-student-interactions-presenter';
@@ -68,6 +68,16 @@ export default function StudentInteractionsTab({
             ) || []
         }))
         .filter(module => module.lessons.length > 0);
+
+    // Show empty state if no interactions found
+    if (modulesWithInteractions.length === 0) {
+        return (
+            <EmptyState
+                locale={locale}
+                message={t('noInteractionsFound')}
+            />
+        );
+    }
 
     return (
         <div className="flex flex-col gap-4">
