@@ -293,6 +293,18 @@ function AssignmentModalWrapper({
     assignment,
     locale,
 }: AssignmentModalWrapperProps) {
+    const handleClickCourse = () => {
+        const courseUrl = `/${locale}/course/${assignment.course.slug}`;
+        window.open(courseUrl, '_blank', 'noopener,noreferrer');
+    };
+
+    const handleClickUser = () => {
+        if (assignment.progress?.student?.username) {
+            const userUrl = `/${locale}/student/${assignment.progress.student.username}`;
+            window.open(userUrl, '_blank', 'noopener,noreferrer');
+        }
+    };
+
     return (
         <AssignmentModalContent
             resources={transformResources(assignment.resources)}
@@ -303,12 +315,10 @@ function AssignmentModalWrapper({
                 title: assignment.course.title,
                 imageUrl: assignment.course.imageUrl ? assignment.course.imageUrl : undefined,
             }}
-            onClickCourse={() => {
-                // TODO: navigate to course by slug
-            }}
+            onClickCourse={handleClickCourse}
             group={undefined}
             onClickGroup={() => {
-                // TODO: navigate to group workspace
+                // Group functionality not yet implemented
             }}
             student={
                 assignment.progress?.student && {
@@ -319,9 +329,7 @@ function AssignmentModalWrapper({
                     isYou: false,
                 }
             }
-            onClickUser={() => {
-                // TODO: navigate to student profile
-            }}
+            onClickUser={handleClickUser}
             modulePosition={assignment.module.position}
             lessonPosition={assignment.lesson.position}
             status={AssignmentStatus.NotStarted}

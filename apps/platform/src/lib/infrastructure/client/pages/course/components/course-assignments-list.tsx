@@ -201,10 +201,14 @@ function CourseAssignmentsListContent({
                                 {...assignment}
                                 locale={locale}
                                 role="coach"
-                                onClickCourse={() => router.push(`/${locale}/courses/${assignment.course.slug}`)}
+                                onClickCourse={() => {
+                                    const courseUrl = `/${locale}/course/${assignment.course.slug}`;
+                                    window.open(courseUrl, '_blank', 'noopener,noreferrer');
+                                }}
                                 onClickUser={() => {
-                                    if (assignment.student?.id) {
-                                        router.push(`/${locale}/workspace/students/${assignment.student.id}`);
+                                    if (assignment.student?.username) {
+                                        const userUrl = `/${locale}/student/${assignment.student.username}`;
+                                        window.open(userUrl, '_blank', 'noopener,noreferrer');
                                     }
                                 }}
                                 onClickView={() => {
@@ -215,7 +219,8 @@ function CourseAssignmentsListContent({
                                 }}
                                 onClickGroup={() => {
                                     if (assignment.groupId) {
-                                        router.push(`/${locale}/workspace/courses/${assignment.course.slug}/groups/${assignment.groupId}`);
+                                        const groupUrl = `/${locale}/workspace/courses/${assignment.course.slug}/groups/${assignment.groupId}`;
+                                        window.open(groupUrl, '_blank', 'noopener,noreferrer');
                                     }
                                 }}
                                 onFileDownload={(url, name) => downloadFile(url, name)}
@@ -227,7 +232,10 @@ function CourseAssignmentsListContent({
                                 role="student"
                                 isReplied={true as any}
                                 locale={locale}
-                                onClickCourse={() => router.push(`/${locale}/courses/${assignment.course.slug}`)}
+                                onClickCourse={() => {
+                                    const courseUrl = `/${locale}/course/${assignment.course.slug}`;
+                                    window.open(courseUrl, '_blank', 'noopener,noreferrer');
+                                }}
                                 onClickView={() => {
                                     setSelectedAssignment({
                                         id: assignment.id,
@@ -236,7 +244,8 @@ function CourseAssignmentsListContent({
                                 }}
                                 onClickGroup={() => {
                                     if (assignment.groupId) {
-                                        router.push(`/${locale}/workspace/courses/${assignment.course.slug}/groups/${assignment.groupId}`);
+                                        const groupUrl = `/${locale}/workspace/courses/${assignment.course.slug}/groups/${assignment.groupId}`;
+                                        window.open(groupUrl, '_blank', 'noopener,noreferrer');
                                     }
                                 }}
                                 onFileDownload={(url, name) => downloadFile(url, name)}
