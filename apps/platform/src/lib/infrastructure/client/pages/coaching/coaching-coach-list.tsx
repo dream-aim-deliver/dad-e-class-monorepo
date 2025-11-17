@@ -28,6 +28,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
         viewModels.TCoachListViewModel | undefined
     >(undefined);
     const { presenter } = useListCoachesPresenter(setCoachesViewModel);
+        // @ts-ignore
         presenter.present(coachesResponse, coachesViewModel);
 
     const t = useTranslations('components.paginationButton');

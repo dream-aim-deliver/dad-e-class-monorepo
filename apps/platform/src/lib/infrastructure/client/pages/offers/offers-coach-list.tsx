@@ -32,6 +32,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
         viewModels.TCoachListViewModel | undefined
     >(undefined);
     const { presenter } = useListCoachesPresenter(setCoachesViewModel);
+    // @ts-ignore
     presenter.present(coachesResponse, coachesViewModel);
 
     const paginationTranslations = useTranslations(
