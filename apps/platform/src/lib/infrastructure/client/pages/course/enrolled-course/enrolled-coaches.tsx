@@ -515,7 +515,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             onQueryChange={setSearchQuery}
                         />
                     </div>
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-2 items-center relative">
                         <label className="text-sm md:text-md text-base-white">
                             {t('sortByLabel')}
                         </label>

@@ -104,19 +104,25 @@ const CoachCard: FC<CoachCardProps> = (props) => {
         </div>
 
         {/* Language & Session Count */}
-        <div className="flex items-start gap-y-2 gap-x-4 w-full flex-wrap">
-          <p className="flex items-center gap-1 lg:truncate">
-            <IconLanguage classNames='flex-shrink-0' size="4" />
-            <span className="capitalize truncate">{cardDetails.languages.join(', ')}</span>
-          </p>
-          <p className="flex items-center gap-1 truncate">
-            <IconCoachingSession classNames='flex-shrink-0' size="4" />
-            <span className="capitalize truncate">
-              {cardDetails.sessionCount} {dictionary.components.coachCard.coachingSession}
-              {cardDetails.sessionCount > 1 ? 's' : ''}
-            </span>
-          </p>
-        </div>
+        {(cardDetails.languages.length > 0 || cardDetails.sessionCount > 0) && (
+          <div className="flex items-start gap-y-2 gap-x-4 w-full flex-wrap">
+            {cardDetails.languages.length > 0 && (
+              <p className="flex items-center gap-1 lg:truncate">
+                <IconLanguage classNames='flex-shrink-0' size="4" />
+                <span className="capitalize truncate">{cardDetails.languages.join(', ')}</span>
+              </p>
+            )}
+            {cardDetails.sessionCount > 0 && (
+              <p className="flex items-center gap-1 truncate">
+                <IconCoachingSession classNames='flex-shrink-0' size="4" />
+                <span className="capitalize truncate">
+                  {cardDetails.sessionCount} {dictionary.components.coachCard.coachingSession}
+                  {cardDetails.sessionCount > 1 ? 's' : ''}
+                </span>
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Skills section*/}

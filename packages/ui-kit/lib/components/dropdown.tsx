@@ -213,7 +213,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   const dropdownClassName = cn(
     'mt-2',
-    absolutePosition && 'z-50 absolute w-full',
+    absolutePosition && 'z-50 absolute right-0',
     absolutePosition && position === 'bottom' ? 'mt-2' : absolutePosition && 'bottom-12',
   )
 
@@ -226,7 +226,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       >
         <div
           ref={buttonTextRef}
-          className="text-base-white truncate text-sm leading-[100%] whitespace-nowrap"
+          className="text-base-white truncate text-sm leading-[150%] whitespace-nowrap"
         >
           {buttonText}
         </div>
@@ -252,13 +252,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
         <div className={dropdownClassName}>
           {/* Simple Dropdown */}
           {type === 'simple' && (
-            <div className="py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">
+            <div className="py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-max min-w-full">
               <ul>
                 {options.map((option) => (
                   <li
                     key={option.value}
                     className={clsx(
-                      'py-3 px-4 cursor-pointer hover:bg-base-neutral-700 text-sm leading-[100%] whitespace-nowrap group relative',
+                      'py-3 px-4 cursor-pointer hover:bg-base-neutral-700 text-sm leading-[150%] whitespace-nowrap group relative',
                       selectedOption === option.value
                         ? 'text-button-text-text'
                         : 'text-text-primary',
