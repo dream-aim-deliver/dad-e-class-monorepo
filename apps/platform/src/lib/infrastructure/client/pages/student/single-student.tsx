@@ -12,6 +12,7 @@ import {
     DefaultLoading,
     DefaultNotFound,
     Dropdown,
+    EmptyState,
     Tabs,
     UserAvatar,
 } from '@maany_shr/e-class-ui-kit';
@@ -22,6 +23,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachStudentCoursesPresenter } from '../../hooks/use-list-coach-student-courses-presenter';
 import { useGetStudentDetailsPresenter } from '../../hooks/use-get-student-details-presenter';
 import { CourseAssignmentsList } from '../course/components/course-assignments-list';
+import EnrolledCourseCompletedAssessment from '../course/enrolled-course/enrolled-course-completed-assessment';
 
 interface SingleStudentProps {
     slug: string;
@@ -116,7 +118,7 @@ export default function SingleStudent({
         viewModels.TGetStudentDetailsViewModel | undefined
     >(undefined);
 
-    const [selectedCourse, setSelectedCourse] = useState<string>(courseSlug);
+    const [selectedCourse, setSelectedCourse] = useState<string>(courseSlug || '');
     const [selectedCourseData, setSelectedCourseData] = useState<{
         title: string;
         id: number;
@@ -188,19 +190,19 @@ export default function SingleStudent({
                         {
                             label: breadcrumbsTranslations('workspace'),
                             onClick: () => {
-                                // TODO: Implement navigation to workspace
+                                router.push(`/${locale}/workspace`);
                             },
                         },
                         {
                             label: breadcrumbsTranslations('yourStudents'),
                             onClick: () => {
-                                // TODO: Implement navigation to your students page
+                                router.push(`/${locale}/workspace/students`);
                             },
                         },
                         {
                             label: slug,
                             onClick: () => {
-                                // TODO: Implement navigation to current student page
+                                // Current page - no action needed
                             },
                         },
                     ]}
@@ -213,36 +215,55 @@ export default function SingleStudent({
                             size="xLarge"
                         />
                         <h1 className='text-text-primary md:text-4xl text-2xl font-bold'>
-                            {profile.name} {profile.surname}
+                            {slug}
                         </h1>
                     </div>
                     <div className='flex items-center gap-4'>
                         <p className='text-text-secondary md:text-sm text-xs'>
                             {t('course')}
                         </p>
-                        <div className='w-64'>
+                        <div className='w-72'>
                             <Dropdown
                                 type="simple"
-                                options={courses.map(course => ({
-                                    label: (
-                                        <div className="flex items-center gap-2">
-                                            <UserAvatar
-                                                fullName={course.title}
-                                                size="small"
-                                                imageUrl={course.image?.downloadUrl}
-                                            />
-                                            <p className="text-sm truncate">{course.title}</p>
-                                        </div>
-                                    ),
-                                    value: course.slug
-                                }))}
+                                options={[
+                                    {
+                                        label: (
+                                            <div className="flex items-center gap-2">
+                                                <p className="text-sm text-text-secondary italic">{t('deselectCourse')}</p>
+                                            </div>
+                                        ),
+                                        value: ''
+                                    },
+                                    ...courses.map(course => ({
+                                        label: (
+                                            <div className="flex items-center gap-2">
+                                                <UserAvatar
+                                                    fullName={course.title}
+                                                    size="small"
+                                                    imageUrl={course.image?.downloadUrl}
+                                                />
+                                                <p className="text-sm truncate">{course.title}</p>
+                                            </div>
+                                        ),
+                                        value: course.slug
+                                    }))
+                                ]}
                                 onSelectionChange={(selected) => {
-                                    if (selected && typeof selected === 'string') {
+                                    if (typeof selected === 'string') {
                                         setSelectedCourse(selected);
-                                        const courseData = courses.find(c => c.slug === selected);
-                                        setSelectedCourseData(courseData || null);
-                                        // Update URL searchParams
-                                        updateSearchParams(selected);
+                                        if (selected) {
+                                            const courseData = courses.find(c => c.slug === selected);
+                                            setSelectedCourseData(courseData || null);
+                                            updateSearchParams(selected);
+                                        } else {
+                                            setSelectedCourseData(null);
+                                            // Clear courseSlug from URL
+                                            const current = new URLSearchParams(Array.from(searchParams.entries()));
+                                            current.delete('courseSlug');
+                                            const search = current.toString();
+                                            const query = search ? `?${search}` : '';
+                                            router.push(`${window.location.pathname}${query}`);
+                                        }
                                     }
                                 }}
                                 defaultValue={selectedCourse}
@@ -258,30 +279,65 @@ export default function SingleStudent({
             <Tabs.Root defaultTab={defaultTab}>
                 <StudentTabList />
                 <Tabs.Content value={StudentTab.ASSIGNMENTS} className={tabContentClass}>
-                    <Suspense
-                        fallback={
-                            <DefaultLoading locale={locale} variant="minimal" />
-                        }
-                    >
-                        <CourseAssignmentsList
-                            courseSlug={selectedCourse}
-                            studentUsername={slug}
-                            role="coach"
+                    {selectedCourse ? (
+                        <Suspense
+                            fallback={
+                                <DefaultLoading locale={locale} variant="minimal" />
+                            }
+                        >
+                            <CourseAssignmentsList
+                                courseSlug={selectedCourse}
+                                studentUsername={slug}
+                                role="coach"
+                            />
+                        </Suspense>
+                    ) : (
+                        <EmptyState
+                            locale={locale}
+                            message={t('selectCourseToViewAssignments')}
                         />
-                    </Suspense>
+                    )}
                 </Tabs.Content>
 
                 <Tabs.Content value={StudentTab.INTERACTIONS} className={tabContentClass}>
-                    <StudentInteractionsTab
-                        studentId={studentId}
-                        courseSlug={selectedCourse}
-                        courseImageUrl={currentSelectedCourseData?.image?.downloadUrl || ""}
-                        courseTitle={currentSelectedCourseData?.title || ""}
-                    />
+                    {selectedCourse ? (
+                        <Suspense
+                            fallback={
+                                <DefaultLoading locale={locale} variant="minimal" />
+                            }
+                        >
+                            <StudentInteractionsTab
+                                studentId={studentId}
+                                courseSlug={selectedCourse}
+                                courseImageUrl={currentSelectedCourseData?.image?.downloadUrl || ""}
+                                courseTitle={currentSelectedCourseData?.title || ""}
+                            />
+                        </Suspense>
+                    ) : (
+                        <EmptyState
+                            locale={locale}
+                            message={t('selectCourseToViewInteractions')}
+                        />
+                    )}
                 </Tabs.Content>
 
                 <Tabs.Content value={StudentTab.PRE_COURSE_ASSESSMENT} className={tabContentClass}>
-                    <DefaultError locale={locale} />
+                    {selectedCourse ? (
+                        <Suspense
+                            fallback={
+                                <DefaultLoading locale={locale} variant="minimal" />
+                            }
+                        >
+                            <EnrolledCourseCompletedAssessment
+                                courseSlug={selectedCourse}
+                            />
+                        </Suspense>
+                    ) : (
+                        <EmptyState
+                            locale={locale}
+                            message={t('selectCourseToViewAssessment')}
+                        />
+                    )}
                 </Tabs.Content>
             </Tabs.Root>
         </div>

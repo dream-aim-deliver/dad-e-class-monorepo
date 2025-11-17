@@ -186,7 +186,7 @@ function AssignmentInteraction({
                 })),
             },
             {
-                onSuccess: () => {
+                onSuccess: async () => {
                     // Reset the form state
                     setComment('');
                     setFiles([]);
@@ -197,8 +197,11 @@ function AssignmentInteraction({
                     setTimeout(() => {
                         setShowSuccessBanner(false);
                     }, 5000);
-                    // Invalidate assignment query to refetch fresh data
-                    utils.getAssignment.invalidate({ assignmentId, studentUsername });
+                    // Invalidate all affected queries to refetch fresh data
+                    await Promise.all([
+                        utils.getAssignment.invalidate({ assignmentId, studentUsername }),
+                        utils.listStudentAssignments.invalidate(),
+                    ]);
                 },
                 onError: (error) => {
                     // TODO: set error state and display to the user
@@ -219,9 +222,12 @@ function AssignmentInteraction({
                 studentUsername,
             },
             {
-                onSuccess: () => {
-                    // Invalidate assignment query to refetch fresh data
-                    utils.getAssignment.invalidate({ assignmentId, studentUsername });
+                onSuccess: async () => {
+                    // Invalidate all affected queries to refetch fresh data
+                    await Promise.all([
+                        utils.getAssignment.invalidate({ assignmentId, studentUsername }),
+                        utils.listStudentAssignments.invalidate(),
+                    ]);
                 },
                 onError: (error) => {
                     // TODO: set error state and display to the user
@@ -306,8 +312,8 @@ function AssignmentModalWrapper({
             }}
             student={
                 assignment.progress?.student && {
-                    // TODO: translate 'Anonymous User'
-                    name: assignment.progress.student.name ?? 'Anonymous User',
+                    name: assignment.progress.student.name ?? '',
+                    username: assignment.progress.student.username,
                     avatarUrl:
                         assignment.progress.student.avatarUrl ?? undefined,
                     isYou: false,

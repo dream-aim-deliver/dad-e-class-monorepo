@@ -59,6 +59,17 @@ export default function EnrolledCourseCompletedAssessment(
         return <DefaultError locale={locale} />;
     }
 
+    // @ts-ignore - Handle not-found mode if it exists
+    if (progressViewModel.mode === 'not-found') {
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title="Pre course assessment not found"
+                description="This course does not have a pre-course assessment."
+            />
+        );
+    }
+
     if (progressViewModel.data.components.length === 0) {
         return (
             <DefaultNotFound

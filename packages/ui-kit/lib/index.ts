@@ -31,6 +31,7 @@ export { ProfileTabs, DragAndDrop, Badge };
 export { CoachBanner } from './components/coach-banner';
 export { CourseCard } from './components/course-card/course-card';
 export { CourseCardList } from './components/course-card/course-card-list';
+export { EmptyState } from './components/course-card/empty-state';
 export { default as BuyCoachingSession, type BuyCoachingSessionProps } from './components/buy-coaching-session';
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/accordion';
 export * as contexts from './contexts';
@@ -295,3 +296,4 @@ export { ProfessionalInfo } from './components/profile/professional-info';
 export { BecomeACoachForm } from './components/profile/become-a-coach-form';
 
 export { AutoPlayVideoPlayer, type AutoPlayVideoPlayerProps } from './components/auto-play-video-player';
+export { PaginationButton, type PaginationButtonProps } from './components/pagination-button';

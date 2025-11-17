@@ -59,6 +59,16 @@ export default function StudentInteractionsTab({
         );
     }
 
+    // Filter modules to only include those with lessons that have interactions
+    const modulesWithInteractions = interactions.modules
+        .map(module => ({
+            ...module,
+            lessons: module.lessons?.filter(lesson =>
+                lesson.textInputs && lesson.textInputs.length > 0
+            ) || []
+        }))
+        .filter(module => module.lessons.length > 0);
+
     return (
         <div className="flex flex-col gap-4">
             <h2 className="md:text-3xl text-xl text-text-primary font-bold">
@@ -76,9 +86,9 @@ export default function StudentInteractionsTab({
                         {courseTitle}
                     </h3>
                 </div>
-                <hr className="flex-grow border-t border-divider" /> 
+                <hr className="flex-grow border-t border-divider" />
                 <CoachStudentInteractionCard
-                    modules={interactions.modules || []}
+                    modules={modulesWithInteractions}
                     locale={locale}
                     onViewLessonsClick={(moduleId: string, lessonId: string) => {
                         // TODO: handle view lessons click

@@ -28,6 +28,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
 
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const pageTranslations = useTranslations('pages.coachStudents');
+    const paginationTranslations = useTranslations('components.paginationButton');
 
     // Filter states
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -43,14 +44,18 @@ export default function CoachStudents(props: CoachStudentsProps) {
     >(undefined);
     const [searchQuery, setSearchQuery] = useState('');
 
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 20;
+
     const {
         data: studentsResponse,
         isFetching,
         error,
     } = trpc.listCoachStudents.useQuery({
         pagination: {
-            page: 1,
-            pageSize: 20,
+            page: currentPage,
+            pageSize: pageSize,
         },
     });
 
@@ -166,6 +171,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
         setAppliedFilters({});
         setSearchQuery('');
         setSearchResults(undefined);
+        setCurrentPage(1);
     };
 
     const handleSearchResults = (
@@ -191,6 +197,26 @@ export default function CoachStudents(props: CoachStudentsProps) {
         }) || searchQuery.trim() !== '';
 
     const router = useRouter();
+
+    // Calculate pagination data
+    const currentStudentsCount = studentsViewModel?.mode === 'default'
+        ? studentsViewModel.data.students.length
+        : 0;
+    // If we get a full page, assume there might be more pages
+    const hasNextPage = currentStudentsCount === pageSize;
+    const hasPreviousPage = currentPage > 1;
+
+    const handleNextPage = () => {
+        if (hasNextPage) {
+            setCurrentPage(prev => prev + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (hasPreviousPage) {
+            setCurrentPage(prev => prev - 1);
+        }
+    };
 
     return (
         <div className="flex flex-col space-y-2">
@@ -264,6 +290,33 @@ export default function CoachStudents(props: CoachStudentsProps) {
                 error={error}
                 hasActiveFiltersOrSearch={hasActiveFiltersOrSearch}
             />
+
+            {/* Pagination Controls */}
+            {!hasActiveFiltersOrSearch && (hasNextPage || hasPreviousPage) && (
+                <div className="flex justify-center mt-6">
+                    <div className="flex items-center gap-4 text-text-primary text-sm">
+                        <button
+                            onClick={handlePreviousPage}
+                            disabled={!hasPreviousPage}
+                            className="px-3 py-2 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-800 disabled:hover:bg-transparent"
+                        >
+                            {paginationTranslations('previous')}
+                        </button>
+
+                        <span className="text-text-secondary">
+                            {paginationTranslations('page')} {currentPage}
+                        </span>
+
+                        <button
+                            onClick={handleNextPage}
+                            disabled={!hasNextPage}
+                            className="px-3 py-2 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-800 disabled:hover:bg-transparent"
+                        >
+                            {paginationTranslations('next')}
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Filter Modal */}
             {isFilterModalOpen && (

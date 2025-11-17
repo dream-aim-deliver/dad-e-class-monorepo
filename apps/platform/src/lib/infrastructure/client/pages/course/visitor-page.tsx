@@ -14,6 +14,7 @@ import {
     TeachCourseBanner,
     Breadcrumbs,
     DefaultNotFound,
+    RichTextRenderer,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TGetCourseIntroductionUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
@@ -172,7 +173,14 @@ export default function VisitorPage({
                 return (
                     <CourseGeneralInformationVisitor
                         title={courseData.data.title}
-                        longDescription={courseData.data.description}
+                        longDescription={
+                            <RichTextRenderer
+                                content={courseData.data.description}
+                                onDeserializationError={(message, error) => {
+                                    console.error('Rich text deserialization error:', message, error);
+                                }}
+                            />
+                        }
                         language={{ code: 'en', name: 'English' }}
                         description={''}
                         duration={{
@@ -201,7 +209,7 @@ export default function VisitorPage({
                             avatarUrl: coach.avatarUrl || '',
                         }))}
                         totalCoachesCount={courseData.data.coaches.length}
-                        coachingIncluded={false}
+                        coachingIncluded={true}
                         onCoachingIncludedChange={handleCoachingIncludedChange}
                         onClickBook={handleClickBook}
                         onClickBuyCourse={handleClickBuyCourse}

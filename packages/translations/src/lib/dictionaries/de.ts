@@ -11,6 +11,10 @@ export const DE: TDictionary = {
     paginationButton: {
       loadMore: 'Mehr laden...',
       viewAll: 'Alle ansehen',
+      previous: 'Zurück',
+      next: 'Weiter',
+      page: 'Seite',
+      of: 'von',
     },
     defaultLoading: {
       loading: 'Laden...',
@@ -1966,6 +1970,21 @@ export const DE: TDictionary = {
       clearAllFilters: 'Alle Filter löschen',
       search: 'Suchen',
     },
+    student: {
+      course: 'Kurs',
+      deselectCourse: 'Kurs abwählen',
+      selectACourse: 'Einen Kurs wählen',
+      noCourseSelected: 'Kein Kurs ausgewählt',
+      selectCourseToViewAssignments: 'Bitte wähle einen Kurs, um die Aufgaben anzuzeigen',
+      selectCourseToViewInteractions: 'Bitte wähle einen Kurs, um die Interaktionen anzuzeigen',
+      selectCourseToViewAssessment: 'Bitte wähle einen Kurs, um die Vorab-Bewertung anzuzeigen',
+      studentInteractions: 'Schüler-Interaktionen',
+      tabs: {
+        assignments: 'Aufgaben',
+        interactions: 'Interaktionen',
+        preCourseAssessment: 'Vorab-Bewertung',
+      },
+    },
     createCourse: {
       createTitle: "Kurs erstellen",
       saveDraftButton: "Entwurf speichern",
@@ -2155,16 +2174,6 @@ export const DE: TDictionary = {
     },
     offerInformation: {
       title: 'Angebotsinformationen',
-    },
-    student: {
-      tabs: {
-        assignments: 'Aufgaben',
-        interactions: 'Interaktionen',
-        preCourseAssessment: 'Vorab-Assessment',
-      },
-      studentInteractions: 'Interaktionen zwischen Schülern',
-      course: 'Kurs',
-      selectACourse: 'Wählen Sie einen Kurs aus',
     },
     studentCoachingSessions: {
       yourCoachingSessions: 'Ihre Coaching-Sitzungen',

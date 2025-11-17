@@ -122,7 +122,7 @@ export const Message: FC<MessageProps> = ({
                 <p className="text-xs text-text-primary font-bold leading-[100%]">
                     {(reply.sender as any).isCurrentUser
                         ? dictionary.components.assignment.message.youText
-                        : (reply.sender as any).name}
+                        : (reply.sender as any).username}
                 </p>
                 <p className="text-2xs text-text-secondary font-bold leading-[100%]">
                     {(formattedDateTime as any).formattedDate}{' '}
@@ -161,7 +161,7 @@ export const Message: FC<MessageProps> = ({
                         <UserAvatar
                             imageUrl={(reply.sender as any).image as string}
                             size="xSmall"
-                            fullName={(reply.sender as any).name as string}
+                            fullName={(reply.sender as any).username as string}
                         />
                     </div>
                 </div>
@@ -171,7 +171,7 @@ export const Message: FC<MessageProps> = ({
                         <UserAvatar
                             imageUrl={(reply.sender as any).image as string}
                             size="xSmall"
-                            fullName={(reply.sender as any).name as string}
+                            fullName={(reply.sender as any).username as string}
                         />
                     </div>
                     {messageBubble}

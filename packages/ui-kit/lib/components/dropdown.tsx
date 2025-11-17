@@ -226,7 +226,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       >
         <div
           ref={buttonTextRef}
-          className="text-base-white truncate text-sm leading-[150%] whitespace-nowrap"
+          className="text-base-white truncate text-sm leading-[150%] whitespace-nowrap pr-2"
         >
           {buttonText}
         </div>

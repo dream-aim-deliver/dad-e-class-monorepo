@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
+import { useRouter } from 'next/navigation';
 
 // Define the CourseAssignment type based on the UI kit's definition
 interface DefaultCourseAssignment {
@@ -85,7 +86,7 @@ function LoadingSkeleton({ locale }: { locale: TLocale }) {
     );
 }
 
-function ErrorState({ locale, error }: { locale: TLocale; error: any }) {
+function ErrorState({ locale }: { locale: TLocale }) {
     const pageTranslations = useTranslations('pages.coachStudents');
 
     return (
@@ -113,6 +114,7 @@ function EmptyState({ locale, hasActiveFiltersOrSearch }: { locale: TLocale; has
 export default function CoachStudentsList({ students, isLoading, error, hasActiveFiltersOrSearch }: CoachStudentsListProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('components.paginationButton');
+    const router = useRouter();
 
     const {
         displayedItems: displayedStudents,
@@ -125,7 +127,7 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
     }
 
     if (error) {
-        return <ErrorState locale={locale} error={error} />;
+        return <ErrorState locale={locale} />;
     }
 
     if (!students || students.length === 0) {
@@ -177,12 +179,12 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
                 courseName: course.title,
                 courseImageUrl: course.imageUrl || '',
                 onClickCourse: () => {
-                    // TODO: Navigate to course
+                    router.push(`/${locale}/courses/${course.slug}`);
                 },
                 status: status,
                 assignmentTitle: assignmentTitle!,
                 onViewAssignment: () => {
-                    // TODO: Navigate to assignment
+                    router.push(`/${locale}/students/${student.username}`);
                 },
             } as CourseAssignment;
         });
@@ -191,11 +193,11 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
             <YourStudentCard
                 key={student.id}
                 locale={locale}
-                studentName={`${student.name} ${student.surname}`}
+                studentName={student.username}
                 studentImageUrl={student.avatarUrl || ''}
                 coachingSessionsLeft={student.coachingSessionCount > 0 ? student.coachingSessionCount : undefined}
                 onStudentDetails={() => {
-                    // TODO: Navigate to student details
+                    router.push(`/${locale}/students/${student.username}`);
                 }}
                 courses={courses}
             />
