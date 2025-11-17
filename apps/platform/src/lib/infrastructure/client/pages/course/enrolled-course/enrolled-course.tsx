@@ -116,11 +116,6 @@ function CourseTabList({ role }: { role: string }) {
                     label: courseTranslations('tabs.students'),
                 },
                 {
-                    icon: <IconAssignment />,
-                    value: CoachCourseTab.ASSIGNMENTS,
-                    label: courseTranslations('tabs.assignments'),
-                },
-                {
                     icon: <IconCoach />,
                     value: CoachCourseTab.COACHES,
                     label: courseTranslations('tabs.coaches'),
