@@ -25,15 +25,6 @@ export default function UserNotifications() {
     const [viewModel, setViewModel] = useState<viewModels.TListNotificationsViewModel | null>(null);
     const { presenter } = useListNotificationsPresenter(setViewModel);
 
-    // URL validation helper
-    const isValidUrl = useCallback((url: string): boolean => {
-        try {
-            const urlObj = new URL(url);
-            return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-        } catch {
-            return false;
-        }
-    }, []);
 
     // Get a valid user ID - memoized for performance
     const getUserId = useCallback((): number => {
@@ -74,14 +65,12 @@ export default function UserNotifications() {
                 layout="vertical"
                 locale={locale}
                 onClickActivity={(url: string) => () => {
-                    if (url && url !== '#' && isValidUrl(url)) {
-                        window.open(url, '_blank', 'noopener,noreferrer');
-                    }
+                    window.open(url, '_blank', 'noopener,noreferrer');
                 }
                 }
             />
         ));
-    }, [viewModel, locale, isValidUrl, platform.name]);
+    }, [viewModel, locale, platform.name]);
 
     const markAsReadMutation = trpc.markNotificationsAsRead.useMutation({
         onSuccess: () => {
