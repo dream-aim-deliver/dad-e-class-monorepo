@@ -324,7 +324,7 @@ export default function StudentCoachingSessions() {
     };
 
     const handleBookSession = (coachUsername: string) => {
-        router.push(`/coaches/${coachUsername}/book`);
+        window.open(`/coaches/${coachUsername}/book`, '_blank');
     };
 
     const handleBuyMoreSessions = () => {
