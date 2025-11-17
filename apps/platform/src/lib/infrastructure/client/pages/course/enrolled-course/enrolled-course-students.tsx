@@ -2,8 +2,9 @@ import { TLocale } from "@maany_shr/e-class-translations";
 import { Button, DefaultError, DefaultLoading, SearchInput, StudentCard, StudentCardList, StudentCardListSkeleton, Tabs } from "@maany_shr/e-class-ui-kit";
 import { useLocale, useTranslations } from "next-intl";
 import { Suspense, useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { trpc } from "../../../trpc/cms-client";
-import { viewModels } from "@maany_shr/e-class-models";
+import { coachingOffer, viewModels } from "@maany_shr/e-class-models";
 import { useListCourseStudentsPresenter } from "../../../hooks/use-list-course-students-presenter";
 import CMSTRPCClientProviders from "../../../trpc/cms-client-provider";
 import { StudentCardProps } from "packages/ui-kit/lib/components/student-card/student-card";
@@ -19,6 +20,7 @@ export function CourseStudents(
 ) {
     const { courseSlug } = props;
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
     // Search state
     const [filteredAllStudents, setFilteredAllStudents] = useState<viewModels.TListCourseStudentsSuccess['students']>([]);
@@ -161,9 +163,17 @@ export function CourseStudents(
                 courseName: student.courseTitle,
                 coachingSessionsLeft: student.lastAssignmentCoach?.coachingSessionCount,
                 isYou: student.isStudentOfCoach,
-                onStudentDetails: () => alert(`Student Details: ${student.fullName}`),
-                onClickCourse: () => alert(`Course Clicked: ${student.courseTitle}`),
-                onClickCoach: () => alert(`Coach Clicked: ${student.lastAssignmentCoach?.coachFullName || "N/A"}`),
+                onStudentDetails: () => {
+                    // Navigate to student profile in a new tab
+                    window.open(`/${locale}/workspace/students/${student.studentId}`, '_blank');
+                },
+                onClickCourse: () => {
+                    // Navigate to course page in a new tab
+                    window.open(`/${locale}/courses/${student.courseSlug}`, '_blank');
+                },
+                onClickCoach: () => {
+                    window.open(`/coaches/${student.lastAssignmentCoach?.coachUsername}`, '_blank');
+                },
                 locale,
             };
 
@@ -176,7 +186,10 @@ export function CourseStudents(
                         key={key}
                         status={status}
                         assignmentTitle={assignmentTitle!}
-                        onViewAssignment={() => alert(`View Assignment: ${assignmentTitle}`)}
+                        onViewAssignment={() => {
+                            // Navigate to student profile where assignment can be reviewed
+                            window.open(`/${locale}/workspace/students/${student.studentId}`, '_blank');
+                        }}
                     />
                 );
             }

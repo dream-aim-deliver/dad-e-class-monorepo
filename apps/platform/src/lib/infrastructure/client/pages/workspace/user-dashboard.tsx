@@ -41,7 +41,6 @@ function RedeemCouponDialogContent() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.userDashboard');
     const { setIsOpen } = useDialog();
-    const router = useRouter();
     const utils = trpc.useUtils();
 
     // Error modal state
@@ -214,7 +213,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     const isCoach = useMemo(() => roles.includes('coach'), [roles]);
 
     // Fetch personal profile to get full name
-    const { data: personalProfileResponse } = trpc.getPersonalProfile.useQuery({});
+    const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
 
     // Set up view model and presenter for personal profile
     const [personalProfileViewModel, setPersonalProfileViewModel] = useState<
@@ -232,15 +231,12 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
         }
     }, [personalProfileResponse, personalProfilePresenter]);
 
-    // Fetch coach reviews if user is a coach
-    const { data: reviewsResponse } = trpc.listCoachReviews.useQuery(
-        {
+    // Fetch coach reviews if user is a coach (matches server prefetch)
+    const [reviewsResponse] = isCoach
+        ? trpc.listCoachReviews.useSuspenseQuery({
             coachUsername: session?.user?.name || '',
-        },
-        {
-            enabled: isCoach && !!session?.user?.name,
-        },
-    );
+        })
+        : [null];
 
     // Calculate average rating from reviews
     const averageRating = useMemo(() => {
