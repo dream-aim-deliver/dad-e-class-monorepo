@@ -213,8 +213,8 @@ export const AssignmentOverviewHeader: FC<AssignmentOverviewHeaderProps> = (prop
                             iconLeft={
                                 <UserAvatar
                                     size="xSmall"
-                                    imageUrl={props.student.avatarUrl || undefined}
-                                    fullName={`${props.student.name} ${props.student.surname}`}
+                                    imageUrl={props.student.avatarUrl ?? undefined}
+                                    fullName={`${props.student.name || ''} ${props.student.surname || ''}`.trim() || props.student.username}
                                 />
                             }
                         />
