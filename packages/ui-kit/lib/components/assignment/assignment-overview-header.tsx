@@ -206,14 +206,15 @@ export const AssignmentOverviewHeader: FC<AssignmentOverviewHeaderProps> = (prop
                             size="small"
                             variant="text"
                             className="p-0 gap-1 text-sm truncate"
-                            text={props.student.name}
+                            text={props.student.username}
                             onClick={props.onClickUser}
-                            title={props.student.name}
+                            title={`${props.student.name} ${props.student.surname} (${props.student.username})`}
                             hasIconLeft
                             iconLeft={
                                 <UserAvatar
                                     size="xSmall"
                                     imageUrl={props.student.avatarUrl || undefined}
+                                    fullName={`${props.student.name} ${props.student.surname}`}
                                 />
                             }
                         />

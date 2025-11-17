@@ -40,7 +40,8 @@ export default async function SingleStudentServerComponent({
 
     // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
     // React will stream HTML while queries are pending
-    prefetch(trpc.listStudentInteractions.queryOptions({ studentId, courseSlug }));
+    // Note: We don't prefetch course-dependent queries (listStudentInteractions, etc.)
+    // since there's no default course selection - they'll be fetched client-side after user selects a course
     prefetch(trpc.listCoachStudentCourses.queryOptions({ studentUsername: slug }));
     prefetch(trpc.getStudentDetails.queryOptions({ username: slug }));
 

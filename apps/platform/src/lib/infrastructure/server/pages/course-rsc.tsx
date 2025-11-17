@@ -21,7 +21,7 @@
  */
 
 import { viewModels } from '@maany_shr/e-class-models';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import AssessmentForm from '../../client/pages/course/assessment-form';
 import EnrolledCourse from '../../client/pages/course/enrolled-course/enrolled-course';
 import { Suspense } from 'react';
@@ -52,12 +52,40 @@ export default async function CourseServerComponent({
 }: CourseServerComponentProps) {
     const courseAccessViewModel = await fetchCourseAccess(slug);
 
-    // Handle all access modes (not-found, unauthenticated, etc.)
-    handleAccessModes(courseAccessViewModel);
+    // Handle not-found first (doesn't depend on course visibility)
+    if (courseAccessViewModel.mode === 'not-found') {
+        notFound();
+    }
 
-    // After handleAccessModes, we can safely assume mode is 'default'
+    // For unauthenticated users, check if course is public and live
+    if (courseAccessViewModel.mode === 'unauthenticated') {
+        // Try to get course data to check visibility
+        // If the course is public and live, show visitor view
+        // Otherwise, show 404
+        const courseData = courseAccessViewModel.data as any;
+
+        console.log('[DEBUG] Unauthenticated access attempt:', {
+            slug,
+            courseData,
+            public: courseData?.course?.public,
+            status: courseData?.course?.status,
+        });
+
+        const isPublic = courseData?.course?.public !== false;
+        const isLive = courseData?.course?.status === 'live';
+
+        if (isPublic && isLive) {
+            // Course is public and live - allow unauthenticated visitor view
+            return renderVisitorView(slug, locale);
+        } else {
+            // Course is not public or not live - show 404
+            notFound();
+        }
+    }
+
+    // Handle other error modes
     if (courseAccessViewModel.mode !== 'default') {
-        throw new Error('Unexpected state after handleAccessModes');
+        throw new Error(courseAccessViewModel.data.message);
     }
 
     const { highestRole, roles, isAssessmentCompleted, course } =
@@ -66,6 +94,8 @@ export default async function CourseServerComponent({
     validateUserRole(highestRoleParsed);
 
     if (highestRoleParsed === 'visitor') {
+        // Validate course visibility for visitors
+        validateCourseVisibility(course);
         return renderVisitorView(slug, locale);
     }
 
@@ -114,24 +144,6 @@ async function fetchCourseAccess(
     return courseAccessViewModel;
 }
 
-function handleAccessModes(
-    courseAccessViewModel: viewModels.TGetCourseAccessViewModel,
-): void {
-    switch (courseAccessViewModel.mode) {
-        case 'not-found':
-            notFound();
-            break;
-        case 'unauthenticated':
-            redirect('/login');
-            break;
-        case 'default':
-            // Continue with normal flow
-            break;
-        default:
-            throw new Error(courseAccessViewModel.data.message);
-    }
-}
-
 function validateUserRole(highestRole: string | undefined): void {
     if (!highestRole) {
         throw new Error('No user role found');
@@ -141,6 +153,19 @@ function validateUserRole(highestRole: string | undefined): void {
 function validateRoleAccess(currentRole: string, roles: string[]): void {
     if (!roles.includes(currentRole)) {
         throw new Error('Access denied for current role');
+    }
+}
+
+function validateCourseVisibility(
+    course: viewModels.TGetCourseAccessSuccess['course']
+): void {
+    // For authenticated visitors, only check if course is live
+    // The 'public' property only applies to unauthenticated users
+
+    // Backend fields being added: status
+    if (course.status !== 'live') {
+        // Course is not live - show 404
+        notFound();
     }
 }
 

@@ -25,7 +25,7 @@ interface RequiredCourse {
 export interface CourseGeneralInformationVisitorProps
     extends TCourseMetadata,
     isLocalAware {
-    longDescription: string;
+    longDescription: string | React.ReactNode;
     onClickBook: () => void;
     onClickBuyCourse: (coachingIncluded: boolean) => void;
     coaches: Coach[];
@@ -365,21 +365,23 @@ export const CourseGeneralInformationVisitor: FC<
                         </div>
 
                         {/* Taught by */}
-                        <div className="flex flex-col gap-2 items-start">
-                            <h6 className="text-text-primary text-lg">
-                                {
-                                    dictionary.components
-                                        .courseGeneralInformationView.taughtBy
-                                }
-                            </h6>
-                            <UserAvatarReel
-                                users={coaches}
-                                totalUsersCount={
-                                    totalCoachesCount ?? coaches.length
-                                }
-                                locale={locale}
-                            />
-                        </div>
+                        {coaches.length > 0 && (
+                            <div className="flex flex-col gap-2 items-start">
+                                <h6 className="text-text-primary text-lg">
+                                    {
+                                        dictionary.components
+                                            .courseGeneralInformationView.taughtBy
+                                    }
+                                </h6>
+                                <UserAvatarReel
+                                    users={coaches}
+                                    totalUsersCount={
+                                        totalCoachesCount ?? coaches.length
+                                    }
+                                    locale={locale}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Requirements */}
@@ -444,7 +446,7 @@ export const CourseGeneralInformationVisitor: FC<
                     {/* Button */}
                     <Button
                         size="huge"
-                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${(pricing as any).currency as string} ${(pricing as any).fullPrice as number})`}
+                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${(pricing as any).currency as string} ${coachingIncluded ? (pricing as any).fullPrice as number : (pricing as any).partialPrice as number})`}
                         onClick={() => onClickBuyCourse(coachingIncluded)}
                         className="w-full text-lg lg:text-2xl"
                     />

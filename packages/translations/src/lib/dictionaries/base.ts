@@ -6,6 +6,10 @@ export const DictionarySchema = z.object({
     paginationButton: z.object({
       loadMore: z.string(),
       viewAll: z.string(),
+      previous: z.string(),
+      next: z.string(),
+      page: z.string(),
+      of: z.string(),
     }),
     defaultLoading: z.object({
       loading: z.string(),
@@ -2022,6 +2026,21 @@ export const DictionarySchema = z.object({
       clearAllFilters: z.string(),
       search: z.string(),
     }),
+    student: z.object({
+      course: z.string(),
+      deselectCourse: z.string(),
+      selectACourse: z.string(),
+      noCourseSelected: z.string(),
+      selectCourseToViewAssignments: z.string(),
+      selectCourseToViewInteractions: z.string(),
+      selectCourseToViewAssessment: z.string(),
+      studentInteractions: z.string(),
+      tabs: z.object({
+        assignments: z.string(),
+        interactions: z.string(),
+        preCourseAssessment: z.string(),
+      }),
+    }),
     createCourse: z.object({
       createTitle: z.string(),
       saveDraftButton: z.string(),
@@ -2190,16 +2209,6 @@ export const DictionarySchema = z.object({
     }),
     offerInformation: z.object({
       title: z.string(),
-    }),
-    student: z.object({
-      tabs: z.object({
-        assignments: z.string(),
-        interactions: z.string(),
-        preCourseAssessment: z.string(),
-      }),
-      studentInteractions: z.string(),
-      course: z.string(),
-      selectACourse: z.string(),
     }),
     studentCoachingSessions: z.object({
       yourCoachingSessions: z.string(),

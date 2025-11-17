@@ -18,6 +18,7 @@ export default async function middleware(req: NextRequest) {
                          pathname.includes('/api/') ||
                          pathname.includes('/_next/') ||
                          pathname.includes('/favicon') ||
+                         pathname.includes('/courses/') ||
                          pathname.endsWith('.png') ||
                          pathname.endsWith('.jpg') ||
                          pathname.endsWith('.svg') ||

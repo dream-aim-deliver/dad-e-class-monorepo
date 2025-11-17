@@ -11,6 +11,10 @@ export const EN: TDictionary = {
     paginationButton: {
       loadMore: 'Load more...',
       viewAll: 'View all',
+      previous: 'Previous',
+      next: 'Next',
+      page: 'Page',
+      of: 'of',
     },
     defaultLoading: {
       loading: 'Loading...',
@@ -1963,6 +1967,21 @@ export const EN: TDictionary = {
       clearAllFilters: 'Clear All Filters',
       search: 'Search',
     },
+    student: {
+      course: 'Course',
+      deselectCourse: 'Deselect course',
+      selectACourse: 'Select a course',
+      noCourseSelected: 'No course selected',
+      selectCourseToViewAssignments: 'Please select a course to view assignments',
+      selectCourseToViewInteractions: 'Please select a course to view interactions',
+      selectCourseToViewAssessment: 'Please select a course to view the pre-course assessment',
+      studentInteractions: 'Student Interactions',
+      tabs: {
+        assignments: 'Assignments',
+        interactions: 'Interactions',
+        preCourseAssessment: 'Pre-Course Assessment',
+      },
+    },
     createCourse: {
       createTitle: "Create course",
       saveDraftButton: "Save draft",
@@ -2152,16 +2171,6 @@ export const EN: TDictionary = {
     },
     offerInformation: {
       title: 'Offer Information',
-    },
-    student: {
-      tabs: {
-        assignments: 'Assignments',
-        interactions: 'Interactions',
-        preCourseAssessment: 'Pre-course Assessment',
-      },
-      studentInteractions: 'Student interactions',
-      course: 'Course',
-      selectACourse: 'Select a course',
     },
     studentCoachingSessions: {
       yourCoachingSessions: 'Your coaching sessions',

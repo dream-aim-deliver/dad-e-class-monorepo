@@ -2,7 +2,6 @@ import { useCourseIntroductionForm } from '@maany_shr/e-class-ui-kit';
 import { useGetCourseIntroductionPresenter } from '../../../../hooks/use-course-introduction-presenter';
 import { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
-import { TGetCourseIntroductionUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useIntroductionVideoUpload } from './use-introduction-video-upload';
 import { useTranslations } from 'next-intl';
 import { trpc } from '../../../../trpc/cms-client';
@@ -18,9 +17,9 @@ export function useCourseIntroduction(slug: string) {
     const { presenter } = useGetCourseIntroductionPresenter(
         setIntroductionViewModel,
     );
-    // Extract the actual response data from the TRPC wrapper and type it correctly
-    const actualResponse = introductionResponse?.data as TGetCourseIntroductionUseCaseResponse;
-    presenter.present(actualResponse, introductionViewModel);
+
+    // @ts-ignore
+    presenter.present(introductionResponse, introductionViewModel);
 
     return introductionViewModel;
 }

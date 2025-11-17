@@ -22,6 +22,7 @@ interface AssignmentHeaderProps extends isLocalAware {
     onClickGroup: () => void;
     student?: {
         name: string;
+        username: string;
         avatarUrl?: string;
         isYou: boolean;
     };
@@ -134,14 +135,15 @@ export function AssignmentHeader({
                             size="small"
                             variant="text"
                             className="p-0 gap-1 text-sm truncate"
-                            text={student.name}
+                            text={student.username}
                             onClick={onClickUser}
-                            title={student.name}
+                            title={student.username}
                             hasIconLeft
                             iconLeft={
                                 <UserAvatar
                                     size="xSmall"
                                     imageUrl={student.avatarUrl}
+                                    fullName={student.username}
                                 />
                             }
                         />
