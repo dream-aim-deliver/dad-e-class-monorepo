@@ -154,14 +154,24 @@ export function CourseStudents(
                 completedCourseDate = new Date(student.courseCompletionDate);
             }
 
+            // Check if student has a coach assigned
+            const hasCoach = student.lastAssignmentCoach !== null && student.lastAssignmentCoach !== undefined;
+
+            // Handle coach name: use full name if available, otherwise default to username, or empty if no coach
+            const coachName = hasCoach
+                ? (student.lastAssignmentCoach?.coachFullName && student.lastAssignmentCoach.coachFullName.trim() !== ""
+                    ? student.lastAssignmentCoach.coachFullName
+                    : student.lastAssignmentCoach?.coachUsername ?? "")
+                : "";
+
             const commonProps = {
                 studentName: student.fullName,
                 studentImageUrl: student.avatarUrl ?? "",
-                coachName: student.lastAssignmentCoach?.coachFullName ?? "",
-                coachImageUrl: student.lastAssignmentCoach?.avatarUrl ?? "",
+                coachName: coachName,
+                coachImageUrl: hasCoach ? (student.lastAssignmentCoach?.avatarUrl ?? "") : "",
                 courseImageUrl: student.courseImageUrl ?? "",
                 courseName: student.courseTitle,
-                coachingSessionsLeft: student.lastAssignmentCoach?.coachingSessionCount,
+                coachingSessionsLeft: hasCoach ? student.lastAssignmentCoach?.coachingSessionCount : undefined,
                 isYou: student.isStudentOfCoach,
                 onStudentDetails: () => {
                     // Navigate to student profile in a new tab
@@ -172,7 +182,9 @@ export function CourseStudents(
                     window.open(`/${locale}/courses/${student.courseSlug}`, '_blank');
                 },
                 onClickCoach: () => {
-                    window.open(`/coaches/${student.lastAssignmentCoach?.coachUsername}`, '_blank');
+                    if (hasCoach && student.lastAssignmentCoach?.coachUsername) {
+                        window.open(`/coaches/${student.lastAssignmentCoach.coachUsername}`, '_blank');
+                    }
                 },
                 locale,
             };

@@ -113,39 +113,41 @@ export const StudentCard = (props: StudentCardProps) => {
                 </div>
             </div>
 
-            {/* Coach details */}
-            <div className="flex flex-wrap items-center gap-2">
-                <IconCoachingOffer classNames="text-text-secondary" size="4" />
-                <p className="text-text-secondary text-sm">
-                    {dictionary.coach}
-                </p>
-                {props.isYou ? (
-                    <div className="flex items-center gap-1 text-sm text-text-primary font-important">
-                        <UserAvatar
-                            fullName={props.coachName}
-                            size="small"
-                            imageUrl={props.coachImageUrl}
-                        />
-                        <span>{dictionary.you}</span>
-                    </div>
-                ) : (
-                    <Button
-                        className="p-0 gap-1 text-sm truncate"
-                        size="small"
-                        variant="text"
-                        hasIconLeft
-                        iconLeft={
+            {/* Coach details - only show if coach exists */}
+            {props.coachName && props.coachName.trim() !== '' && (
+                <div className="flex flex-wrap items-center gap-2">
+                    <IconCoachingOffer classNames="text-text-secondary" size="4" />
+                    <p className="text-text-secondary text-sm">
+                        {dictionary.coach}
+                    </p>
+                    {props.isYou ? (
+                        <div className="flex items-center gap-1 text-sm text-text-primary font-important">
                             <UserAvatar
                                 fullName={props.coachName}
                                 size="small"
                                 imageUrl={props.coachImageUrl}
                             />
-                        }
-                        text={props.coachName}
-                        onClick={props.onClickCoach}
-                    />
-                )}
-            </div>
+                            <span>{dictionary.you}</span>
+                        </div>
+                    ) : (
+                        <Button
+                            className="p-0 gap-1 text-sm truncate"
+                            size="small"
+                            variant="text"
+                            hasIconLeft
+                            iconLeft={
+                                <UserAvatar
+                                    fullName={props.coachName}
+                                    size="small"
+                                    imageUrl={props.coachImageUrl}
+                                />
+                            }
+                            text={props.coachName}
+                            onClick={props.onClickCoach}
+                        />
+                    )}
+                </div>
+            )}
 
             {/* Course details */}
             <div className="flex flex-wrap items-center gap-2">

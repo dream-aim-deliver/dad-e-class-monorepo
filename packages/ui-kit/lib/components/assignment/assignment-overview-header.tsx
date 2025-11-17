@@ -194,14 +194,6 @@ export const AssignmentOverviewHeader: FC<AssignmentOverviewHeaderProps> = (prop
                             text={props.course.title}
                             onClick={props.onClickCourse}
                             title={props.course.title}
-                            hasIconLeft
-                            iconLeft={
-                                <UserAvatar
-                                    className="rounded-small"
-                                    size="xSmall"
-                                    imageUrl={props.course.imageUrl || undefined}
-                                />
-                            }
                         />
                     </div>
                 )}
