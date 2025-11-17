@@ -126,8 +126,7 @@ function BookCoachPageContent({
 
     useEffect(() => {
         if (coachAvailabilityViewModel?.mode === 'unauthenticated') {
-            // TODO: navigate to existing page with a redirect
-            router.push('/login');
+            router.push('/auth/login');
         }
     }, [coachAvailabilityViewModel, router]);
 
@@ -229,7 +228,7 @@ function BookCoachPageContent({
 
 interface BookCoachWithSessionPageProps {
     coachUsername: string;
-    sessionId: number;
+    sessionId: number | string;
     returnTo?: string;
 }
 
@@ -240,14 +239,17 @@ function BookCoachWithSessionPage({
 }: BookCoachWithSessionPageProps) {
     const locale = useLocale() as TLocale;
 
+    const sessionIdNumber = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
+
     const [coachingSessionResponse] =
-        trpc.getStudentCoachingSession.useSuspenseQuery({ id: sessionId });
+        trpc.getStudentCoachingSession.useSuspenseQuery({ id: sessionIdNumber });
     const [coachingSessionViewModel, setCoachingSessionViewModel] = useState<
         viewModels.TStudentCoachingSessionViewModel | undefined
     >(undefined);
     const { presenter } = useGetStudentCoachingSessionPresenter(
         setCoachingSessionViewModel,
     );
+    // @ts-ignore
     presenter.present(coachingSessionResponse, coachingSessionViewModel);
 
     if (!coachingSessionViewModel) {
@@ -270,9 +272,13 @@ function BookCoachWithSessionPage({
         );
     }
 
+    const coachingSessionId = typeof coachingSession.session.id === 'string'
+        ? parseInt(coachingSession.session.id, 10)
+        : coachingSession.session.id;
+
     const defaultSession: ScheduledOffering = {
         session: {
-            id: coachingSession.session.id,
+            id: coachingSessionId,
             name: coachingSession.session.coachingOfferingTitle,
             duration: coachingSession.session.coachingOfferingDuration,
         },

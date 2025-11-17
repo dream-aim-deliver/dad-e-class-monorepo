@@ -11,39 +11,36 @@ import { Button, CoachingSessionCard, Tabs } from '@maany_shr/e-class-ui-kit';
 import { useListUpcomingStudentCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-student-coaching-sessions-presenter';
 import { trpc } from '../../trpc/cms-client';
 interface UserCoachingSessionsProps {
-    studentId: number | undefined;
+    studentUsername: string | undefined | null;
 }
 
 function isUpcomingSession(session: TUpcomingStudentCoachingSession): session is TUpcomingStudentCoachingSession {
     return session.status === 'scheduled';
 }
 
- 
+
 export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const router = useRouter();
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.studentCoachingSessions');
     const paginationT = useTranslations('components.paginationButton');
 
-    const { studentId } = props;
+    const { studentUsername } = props;
 
     const [viewModel, setViewModel] = useState<viewModels.TListUpcomingStudentCoachingSessionsViewModel | null>(null);
     const { presenter } = useListUpcomingStudentCoachingSessionsPresenter(setViewModel);
     const [activeTab, setActiveTab] = useState<string>('upcoming');
 
-    const [upcomingSessionsResponse] = trpc.listUpcomingStudentCoachingSessions.useSuspenseQuery(
-        { studentId: studentId ?? 0 },
-        {
-            retry: false
-        }
-    );
+    const [upcomingSessionsResponse] = trpc.listUpcomingStudentCoachingSessions.useSuspenseQuery({
+        studentUsername: studentUsername || ''
+    });
 
     useEffect(() => {
 
         // @ts-ignore
         presenter.present(upcomingSessionsResponse, viewModel);
 
-    }, [upcomingSessionsResponse, presenter, viewModel]);
+    }, [upcomingSessionsResponse, presenter]);
 
     const handleViewAllCoachingSessions = useCallback(() => {
         router.push(`/${locale}/workspace/coaching-sessions`);

@@ -67,11 +67,7 @@ export default function CoachDashboardStudents() {
     const router = useRouter();
     const locale = useLocale() as TLocale;
 
-    const {
-        data: studentsResponse,
-        isLoading,
-        error,
-    } = trpc.listCoachStudents.useQuery({
+    const [studentsResponse] = trpc.listCoachStudents.useSuspenseQuery({
         pagination: {
             page: 1,
             pageSize: 8,
@@ -89,7 +85,7 @@ export default function CoachDashboardStudents() {
             // @ts-ignore
             presenter.present(studentsResponse, studentsViewModel);
         }
-    }, [studentsResponse, presenter, studentsViewModel]);
+    }, [studentsResponse, presenter]);
 
     const handleViewAllStudents = useCallback(() => {
         router.push(`/${locale}/workspace/students`);
@@ -102,33 +98,7 @@ export default function CoachDashboardStudents() {
             ? studentsViewModel.data.students
             : [];
     const hasStudents = students.length > 0;
-    const hasError = error || studentsViewModel?.mode === 'kaboom';
-
-    if (isLoading) {
-        return (
-            <div className="flex flex-col space-y-4 pb-15">
-                <div className="flex items-center">
-                    <h3> {t('title')} </h3>
-                    <Button
-                        variant="text"
-                        size="small"
-                        onClick={handleViewAllStudents}
-                        text={t('viewAllStudents')}
-                    />
-                </div>
-                <div className="animate-pulse">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {[1, 2, 3].map((i) => (
-                            <div
-                                key={i}
-                                className="h-64 bg-neutral-800 border border-neutral-700 rounded-medium"
-                            ></div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    const hasError = studentsViewModel?.mode === 'kaboom';
 
     if (hasError) {
         return (

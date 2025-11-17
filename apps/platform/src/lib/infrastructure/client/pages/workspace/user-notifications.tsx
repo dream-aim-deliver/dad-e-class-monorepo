@@ -44,18 +44,15 @@ export default function UserNotifications() {
 
     // Handle view all callback at top level
     const handleViewAll = useCallback(() => {
-        // TODO: Navigate to full notifications page
-        console.log('Navigate to full notifications page - implement navigation');
+        window.open(`/workspace/notifications`, '_blank');
     }, []);
 
-    // TODO: Uncomment pagination once implemented
     // TRPC queries
     const [notificationsResponse] = trpc.listNotifications.useSuspenseQuery({
-        // userId: getUserId(),
-        // pagination: {
-        //    pageSize: 5,
-        //    page: 1
-        //}
+        pagination: {
+            page: 1,
+            pageSize: 5
+        }
     });
 
     const utils = trpc.useUtils();
@@ -99,7 +96,7 @@ export default function UserNotifications() {
             // @ts-ignore
             presenter.present(notificationsResponse, viewModel ?? undefined);
         }
-    }, [notificationsResponse, presenter, viewModel]);
+    }, [notificationsResponse, presenter]);
 
     // Handle loading state
     if (!viewModel) {

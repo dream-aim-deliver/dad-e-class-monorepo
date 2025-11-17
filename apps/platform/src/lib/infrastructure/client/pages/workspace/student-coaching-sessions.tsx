@@ -63,7 +63,7 @@ export default function StudentCoachingSessions() {
 
     // For the available tab - coaches data
     const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
-        // TODO: Add pastStudentCoaches filter when backend supports it
+        pastCoaches: true,
     });
 
     const [coachesViewModel, setCoachesViewModel] = useState<
