@@ -137,8 +137,8 @@ function validateCoupon(
 export const prepareCheckout = t.procedure
     .input(useCaseModels.PrepareCheckoutRequestSchema)
     .mutation(async (opts): Promise<useCaseModels.TPrepareCheckoutUseCaseResponse> => {
-        const { type, courseSlug, packageId, coachingOfferingId, quantity, couponCode } =
-            opts.input;
+        const input = opts.input;
+        const { type, couponCode } = input;
 
         // Validate coupon if provided
         const couponError = validateCoupon(couponCode);
@@ -152,7 +152,7 @@ export const prepareCheckout = t.procedure
         // Generate line items based on purchase type
         switch (type) {
             case 'StudentCoursePurchase': {
-                const slug = courseSlug || 'intro-to-programming';
+                const slug = input.courseSlug || 'intro-to-programming';
                 const course =
                     mockCourses[slug as keyof typeof mockCourses] ||
                     mockCourses['intro-to-programming'];
@@ -170,7 +170,7 @@ export const prepareCheckout = t.procedure
             }
 
             case 'StudentCoursePurchaseWithCoaching': {
-                const slug = courseSlug || 'intro-to-programming';
+                const slug = input.courseSlug || 'intro-to-programming';
                 const course =
                     mockCourses[slug as keyof typeof mockCourses] ||
                     mockCourses['intro-to-programming'];
@@ -196,7 +196,7 @@ export const prepareCheckout = t.procedure
             }
 
             case 'StudentPackagePurchase': {
-                const pkgId = packageId || 1;
+                const pkgId = input.packageId || 1;
                 const pkg =
                     mockPackages[pkgId as keyof typeof mockPackages] ||
                     mockPackages[1];
@@ -214,7 +214,7 @@ export const prepareCheckout = t.procedure
             }
 
             case 'StudentPackagePurchaseWithCoaching': {
-                const pkgId = packageId || 1;
+                const pkgId = input.packageId || 1;
                 const pkg =
                     mockPackages[pkgId as keyof typeof mockPackages] ||
                     mockPackages[1];
@@ -240,8 +240,8 @@ export const prepareCheckout = t.procedure
             }
 
             case 'StudentCoachingSessionPurchase': {
-                const offerId = coachingOfferingId || 1;
-                const qty = quantity || 1;
+                const offerId = input.coachingOfferingId || 1;
+                const qty = input.quantity || 1;
                 const offering =
                     mockCoachingOfferings[
                         offerId as keyof typeof mockCoachingOfferings

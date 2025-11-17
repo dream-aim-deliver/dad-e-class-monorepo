@@ -118,6 +118,29 @@ export default function CheckoutPage() {
         setTransactionDraft(null);
     };
 
+    // Helper to build purchase identifier from request (handles discriminated union)
+    const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+        switch (request.type) {
+            case 'StudentCoursePurchase':
+            case 'StudentCoursePurchaseWithCoaching':
+                return {
+                    courseSlug: request.courseSlug,
+                    withCoaching: request.type === 'StudentCoursePurchaseWithCoaching',
+                };
+            case 'StudentPackagePurchase':
+            case 'StudentPackagePurchaseWithCoaching':
+                return {
+                    packageId: request.packageId,
+                    withCoaching: request.type === 'StudentPackagePurchaseWithCoaching',
+                };
+            case 'StudentCoachingSessionPurchase':
+                return {
+                    coachingOfferingId: request.coachingOfferingId,
+                    quantity: request.quantity,
+                };
+        }
+    };
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-6xl mx-auto">
@@ -290,13 +313,7 @@ export default function CheckoutPage() {
                         }
                         customerEmail={sessionDTO.data?.user?.email}
                         purchaseType={currentRequest.type}
-                        purchaseIdentifier={{
-                            courseSlug: currentRequest.courseSlug,
-                            packageId: currentRequest.packageId,
-                            coachingOfferingId: currentRequest.coachingOfferingId,
-                            quantity: currentRequest.quantity,
-                            withCoaching: currentRequest.type.includes('WithCoaching'),
-                        }}
+                        purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
                         locale={locale}
                         onPaymentComplete={handlePaymentComplete}
                     />

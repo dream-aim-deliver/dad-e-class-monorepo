@@ -41,26 +41,60 @@ export const TransactionDraftSchema = z.object({
 export type TTransactionDraft = z.infer<typeof TransactionDraftSchema>;
 
 /**
- * Request to prepare checkout
+ * Request to prepare checkout - Discriminated union based on purchase type
  */
-export const PrepareCheckoutRequestSchema = z.object({
-    type: PurchaseTypeSchema,
 
-    // For course purchases
-    courseId: z.number().int().optional(),
-    courseSlug: z.string().optional(),
-
-    // For package purchases
-    packageId: z.number().int().optional(),
-    selectedCourseIds: z.array(z.number().int()).optional(),
-
-    // For coaching purchases
-    coachingOfferingId: z.number().int().optional(),
-    quantity: z.number().int().min(1).optional(),
-
-    // Optional coupon
+// Base schema for common fields
+const BasePrepareCheckoutRequestSchema = z.object({
     couponCode: z.string().nullable().optional(),
 });
+
+// Course purchase (without coaching)
+const StudentCoursePurchaseRequestSchema = BasePrepareCheckoutRequestSchema.extend({
+    type: z.literal('StudentCoursePurchase'),
+    courseSlug: z.string(),
+    // Legacy support
+    courseId: z.number().int().optional(),
+});
+
+// Course purchase (with coaching)
+const StudentCoursePurchaseWithCoachingRequestSchema = BasePrepareCheckoutRequestSchema.extend({
+    type: z.literal('StudentCoursePurchaseWithCoaching'),
+    courseSlug: z.string(),
+    // Legacy support
+    courseId: z.number().int().optional(),
+});
+
+// Package purchase (without coaching)
+const StudentPackagePurchaseRequestSchema = BasePrepareCheckoutRequestSchema.extend({
+    type: z.literal('StudentPackagePurchase'),
+    packageId: z.number().int(),
+    selectedCourseIds: z.array(z.number().int()).optional(), // Optional - defaults to all courses
+});
+
+// Package purchase (with coaching)
+const StudentPackagePurchaseWithCoachingRequestSchema = BasePrepareCheckoutRequestSchema.extend({
+    type: z.literal('StudentPackagePurchaseWithCoaching'),
+    packageId: z.number().int(),
+    selectedCourseIds: z.array(z.number().int()).optional(),
+});
+
+// Coaching session purchase
+const StudentCoachingSessionPurchaseRequestSchema = BasePrepareCheckoutRequestSchema.extend({
+    type: z.literal('StudentCoachingSessionPurchase'),
+    coachingOfferingId: z.number().int(),
+    quantity: z.number().int().min(1).default(1),
+});
+
+// Discriminated union
+export const PrepareCheckoutRequestSchema = z.discriminatedUnion('type', [
+    StudentCoursePurchaseRequestSchema,
+    StudentCoursePurchaseWithCoachingRequestSchema,
+    StudentPackagePurchaseRequestSchema,
+    StudentPackagePurchaseWithCoachingRequestSchema,
+    StudentCoachingSessionPurchaseRequestSchema,
+]);
+
 export type TPrepareCheckoutRequest = z.infer<typeof PrepareCheckoutRequestSchema>;
 
 /**
