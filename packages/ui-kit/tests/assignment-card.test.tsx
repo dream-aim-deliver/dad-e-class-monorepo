@@ -166,7 +166,7 @@ describe('AssignmentCard Component', () => {
 
         // Reply Section
         expect(screen.getByText('Last Activity')).toBeInTheDocument();
-        expect(screen.getByTestId('message-reply')).toHaveTextContent('Most recent reply');
+        expect(screen.getByTestId('message-reply')).toHaveTextContent('Latest activity here');
 
         // View Button
         expect(screen.getByText('View Assignment')).toBeInTheDocument();
@@ -187,6 +187,6 @@ describe('AssignmentCard Component', () => {
     it('renders latest reply when replies exist', () => {
         render(<AssignmentCard {...defaultProps} />);
         expect(screen.getByText('Last Activity')).toBeInTheDocument();
-        expect(screen.getByTestId('message-reply')).toHaveTextContent('Most recent reply');
+        expect(screen.getByTestId('message-reply')).toHaveTextContent('Latest activity here');
     });
 });
