@@ -11,7 +11,7 @@ RUN dnf -y update && \
     rm -rf /var/cache/dnf
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip && \
-    python3 -m pip install --no-cache-dir --upgrade setuptools
+    python3 -m pip install --no-cache-dir --upgrade --ignore-installed setuptools
 RUN python3 -m pip install --no-cache-dir j2cli
 
 RUN rm -rf /etc/httpd/conf.d/ssl.conf
