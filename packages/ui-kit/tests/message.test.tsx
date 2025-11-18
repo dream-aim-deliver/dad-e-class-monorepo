@@ -1,8 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 import { Message } from '../lib/components/assignment/message';
-import { assignment, fileMetadata } from '@maany_shr/e-class-models';
+import { fileMetadata } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { TAssignmentReplyResponse, TAssignmentPassedResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 vi.mock('@maany_shr/e-class-translations', () => ({
     getDictionary: () => ({
@@ -43,25 +44,31 @@ vi.mock('../lib/components/banner', () => ({
     default: ({ title }: any) => <div data-testid="banner">{title}</div>,
 }));
 
-const mockReply: assignment.TAssignmentReplyWithId = {
-    replyId: 123,
-    type: 'resources',
+const mockReply: TAssignmentReplyResponse = {
+    replyType: 'reply',
     comment: 'See attached resources!',
-    sender: { name: 'Alice', isCurrentUser: true, image: 'http://avatar.url', id: '1', role: 'student', email: 'alice@example.com' } as any,
-    timestamp: 1717930620, // Unix timestamp in seconds
+    sender: {
+        id: 1,
+        username: 'Alice',
+        name: 'Alice',
+        surname: null,
+        avatarUrl: 'http://avatar.url',
+        role: 'student',
+        isCurrentUser: true
+    },
+    sentAt: 1717930620, // Unix timestamp in seconds
     files: [
         {
             id: 'f1',
             name: 'file1.pdf',
             size: 123456,
-            mimeType: 'application/pdf',
-            status: 'available',
             category: 'generic',
-            url: 'http://example.com/file1.pdf'
-        } as fileMetadata.TFileMetadata
+            downloadUrl: 'http://example.com/file1.pdf',
+            thumbnailUrl: null
+        }
     ],
     links: [
-        { linkId: 1, title: 'Resource Link', url: 'https://resource.com' }
+        { title: 'Resource Link', url: 'https://resource.com' }
     ]
 };
 
@@ -91,7 +98,16 @@ describe('Message Component', () => {
     it('calls onFileDownload when download clicked', () => {
         render(<Message {...defaultProps} />);
         fireEvent.click(screen.getByTestId('download-btn-f1'));
-        expect(defaultProps.onFileDownload).toHaveBeenCalledWith(mockReply.files![0]);
+        // The component transforms the backend file format to TFileMetadata
+        expect(defaultProps.onFileDownload).toHaveBeenCalledWith(
+            expect.objectContaining({
+                id: 'f1',
+                name: 'file1.pdf',
+                size: 123456,
+                category: 'generic',
+                downloadUrl: 'http://example.com/file1.pdf',
+            })
+        );
     });
 
     it('renders link previews (read-only)', () => {
@@ -101,12 +117,11 @@ describe('Message Component', () => {
     });
 
     it('displays as a passed banner if reply.type="passed"', () => {
-        const passedReply: assignment.TAssignmentReplyWithId = {
-            ...mockReply,
-            type: 'passed',
-            replyId: 456,
-            timestamp: 1717930620,
-        } as any;
+        const passedReply: TAssignmentPassedResponse = {
+            replyType: 'passed',
+            passedAt: 1717930620,
+            sender: mockReply.sender
+        };
         render(<Message {...defaultProps} reply={passedReply} />);
         expect(screen.getByText('Marked as Passed')).toBeInTheDocument();
     });
@@ -121,31 +136,33 @@ describe('Message Component', () => {
             {...defaultProps}
             reply={{
                 ...mockReply,
-                sender: { ...mockReply.sender, name: 'Bob', isCurrentUser: false }
+                sender: { ...mockReply.sender, username: 'Bob', name: 'Bob', isCurrentUser: false }
             }}
         />);
         expect(screen.getByTestId('user-avatar')).toHaveTextContent('Bob');
     });
 
     it('renders plain text for "text" reply', () => {
-        const textReply: assignment.TAssignmentReplyWithId = {
-            replyId: 789,
-            type: 'text',
+        const textReply: TAssignmentReplyResponse = {
+            replyType: 'reply',
             comment: 'A simple message',
             sender: mockReply.sender,
-            timestamp: 1717930620,
+            sentAt: 1717930620,
+            files: [],
+            links: []
         };
         render(<Message {...defaultProps} reply={textReply} />);
         expect(screen.getByText('A simple message')).toBeInTheDocument();
     });
 
     it('does not show resources section for text reply', () => {
-        const textReply: assignment.TAssignmentReplyWithId = {
-            replyId: 789,
-            type: 'text',
+        const textReply: TAssignmentReplyResponse = {
+            replyType: 'reply',
             comment: 'Just text',
             sender: mockReply.sender,
-            timestamp: 1717930620,
+            sentAt: 1717930620,
+            files: [],
+            links: []
         };
         render(<Message {...defaultProps} reply={textReply} />);
         expect(screen.queryByTestId('file-preview-f1')).not.toBeInTheDocument();

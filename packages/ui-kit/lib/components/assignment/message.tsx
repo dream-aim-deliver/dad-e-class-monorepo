@@ -164,8 +164,14 @@ export const Message: FC<MessageProps> = ({
                         : reply.sender.username}
                 </p>
                 <p className="text-2xs text-text-secondary font-bold leading-[100%]">
-                    {(formattedDateTime as any).formattedDate}{' '}
-                    {(formattedDateTime as any).formattedTime}
+                    {formattedDateTime ? (
+                        <>
+                            {(formattedDateTime as any).formattedDate}{' '}
+                            {(formattedDateTime as any).formattedTime}
+                        </>
+                    ) : (
+                        '-'
+                    )}
                 </p>
             </div>
             {reply.replyType === 'passed' ? (
