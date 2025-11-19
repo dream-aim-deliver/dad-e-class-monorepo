@@ -242,7 +242,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             }
                         />
 
-                        {status !== 'draft' && onGoToOffer && (
+                        {onGoToOffer && (
                             <Button
                                 onClick={onGoToOffer}
                                 className="w-full"
