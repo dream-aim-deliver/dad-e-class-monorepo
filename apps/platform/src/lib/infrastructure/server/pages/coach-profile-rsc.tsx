@@ -26,9 +26,7 @@ export default async function CoachProfileServerComponent(props: CoachProfilePro
 	prefetch(trpc.getCoachIntroduction.queryOptions({ coachUsername: props.username }));
 	prefetch(trpc.listCoachReviews.queryOptions({ coachUsername: props.username }));
 	// TSK-PERF-014: Match client logic - forStudent depends on login status
-	// TODO: Add coachUsername parameter instead of coachId
-	// prefetch(trpc.listCoachCourses.queryOptions({ forStudent: isLoggedIn ,  coachUsername: props.username }));
-	prefetch(trpc.listCoachCourses.queryOptions({ forStudent: isLoggedIn }));
+	prefetch(trpc.listCoachCourses.queryOptions({ forStudent: isLoggedIn, coachUsername: props.username }));
 	prefetch(trpc.getCoachProfileAccess.queryOptions({ coachUsername: props.username }));
 
 	return (
