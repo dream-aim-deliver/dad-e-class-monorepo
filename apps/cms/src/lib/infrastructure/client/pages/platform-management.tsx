@@ -72,7 +72,8 @@ export default function PlatformManagement() {
         viewModels.TTopicListViewModel | undefined
     >(undefined);
     const { presenter: topicsPresenter } = useListTopicsPresenter(setTopicsViewModel);
-    topicsPresenter.present(topicsResponse?.data as TListTopicsUseCaseResponse, topicsViewModel);
+    // @ts-ignore
+    topicsPresenter.present(topicsResponse, topicsViewModel);
 
     // Categories data fetching and presentation
     const [categoriesResponse, { refetch: refetchCategories }] = trpc.listCategories.useSuspenseQuery({});
@@ -80,7 +81,8 @@ export default function PlatformManagement() {
         viewModels.TCategoryListViewModel | undefined
     >(undefined);
     const { presenter: categoriesPresenter } = useListCategoriesPresenter(setCategoriesViewModel);
-    categoriesPresenter.present(categoriesResponse?.data as TListCategoriesUseCaseResponse, categoriesViewModel);
+    // @ts-ignore
+    categoriesPresenter.present(categoriesResponse, categoriesViewModel);
 
     // Loading state
     if (!topicsViewModel || !categoriesViewModel) {

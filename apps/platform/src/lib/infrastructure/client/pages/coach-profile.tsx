@@ -20,6 +20,7 @@ import { useGetCoachProfileAccessPresenter } from '../hooks/use-get-coach-profil
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../utils/use-client-side-pagination';
+import { StudentCourseTab } from '../utils/course-tabs';
 
 interface CoachProfileProps {
 	locale: TLocale;
@@ -54,16 +55,9 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		coachUsername: username,
 	});
 
-	// Fetch coach courses - conditional based on login status
-	// If logged in: forStudent=true (shows enrolled/in-progress courses)
-	// If NOT logged in: forStudent=false (shows all public courses)
-	// TODO: Add coachUsername parameter instead of coachId and uncomment below line and comment line afterwards once backend is ready
-	// const [coachCoursesResponse] = trpc.listCoachCourses.useSuspenseQuery({
-	// 	forStudent: isLoggedIn,
-	// 	coachUsername: username,
-	// });
 	const [coachCoursesResponse, { refetch: refetchCoachCourses }] = trpc.listCoachCourses.useSuspenseQuery({
 		forStudent: isLoggedIn,
+		coachUsername: username,
 	});
 
 	// Mutation for creating course reviews - must be declared before any conditional returns
@@ -104,9 +98,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		{ status: unknown }
 	>;
 
-	// TODO: In listCoachCourses procedure add studentReview object for completed courses if student has reviewed the course otherwise use studentReview as null and then uncomment line 108 and comment line 109
-	// const [reviewingCourse, setReviewingCourse] = useState<CourseWithStatus | null>(null);
-	const [reviewingCourse, setReviewingCourse] = useState<any>(null);
+	const [reviewingCourse, setReviewingCourse] = useState<CourseWithStatus | null>(null);
 
 	const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
 	const [reviewError, setReviewError] = useState<boolean>(false);
@@ -136,376 +128,10 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 
 
 	const courses = useMemo(() => {
-		// TODO: Remove hardcoded courses and use API data when backend is ready
-		// if (!coachCoursesViewModel || coachCoursesViewModel.mode !== 'default' || !coachCoursesViewModel.data) {
-		// 	return [];
-		// }
-		// return coachCoursesViewModel.data.courses || [];
-		return [
-			{
-				status: {
-					status: "completed" as const,
-					completionDate: "2025-09-01"
-				},
-				title: "Mastering Batting Techniques",
-				currency: "INR",
-				rating: 4.7,
-				languages: [
-					{
-						name: "English",
-						code: "en",
-						id: "lang1",
-						state: "created" as const,
-						createdAt: new Date("2023-01-10"),
-						updatedAt: new Date("2025-01-10")
-					},
-					{
-						name: "Hindi",
-						code: "hi",
-						id: "lang2",
-						state: "created" as const,
-						createdAt: new Date("2023-02-05"),
-						updatedAt: new Date("2025-02-05")
-					}
-				],
-				id: 101,
-				briefDescription: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Intensive course focused on batting skills for competitive cricket.',
-							},
-						],
-					},
-				]),
-				basePrice: 4999,
-				ratingCount: 320,
-				creator: {
-					name: "Suresh",
-					surname: "Kumar",
-					username: "suresh_k",
-					avatarImage: {
-						name: "suresh_avatar.png",
-						id: "img101",
-						size: 1024,
-						category: "image" as const,
-						downloadUrl: "https://example.com/avatars/suresh_avatar.png"
-					}
-				},
-				coachingSessionCount: 25,
-				durationMinutes: 180,
-				salesCount: 1450,
-				// TODO: Add student reviews in listCoachCourses API response
-				studentReview: {
-					rating: 4.5,
-					courseSlug: "mastering-batting-techniques",
-					review: "Excellent course! The batting techniques taught here really improved my game. The coach's explanations were clear and the practice sessions were very helpful."
-				}
-			},
-			{
-				status: {
-					status: "inProgress" as const,
-					progress: 65
-				},
-				title: "Cricket Fitness and Conditioning",
-				currency: "INR",
-				rating: 4.0,
-				languages: [
-					{
-						name: "English",
-						code: "en",
-						id: "lang4",
-						state: "created" as const,
-						createdAt: new Date("2023-03-01"),
-						updatedAt: new Date("2025-03-01")
-					},
-					{
-						name: "Telugu",
-						code: "te",
-						id: "lang5",
-						state: "created" as const,
-						createdAt: new Date("2023-03-15"),
-						updatedAt: new Date("2025-03-15")
-					}
-				],
-				id: 103,
-				briefDescription: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Enhance your physical fitness tailored for cricket.',
-							},
-						],
-					},
-				]),
-				basePrice: 2999,
-				ratingCount: 150,
-				creator: {
-					name: "Anita",
-					surname: "Rao",
-					username: "anita_rao",
-					avatarImage: {
-						name: "anita_avatar.jpg",
-						id: "img102",
-						size: 1100,
-						category: "image" as const,
-						downloadUrl: "https://example.com/avatars/anita_avatar.jpg"
-					}
-				},
-				coachingSessionCount: 20,
-				durationMinutes: 120,
-				salesCount: 900
-			},
-			{
-				status: {
-					status: "completed" as const,
-					completionDate: "2025-07-15"
-				},
-				title: "Wicket Keeping Skills",
-				currency: "INR",
-				rating: 4.8,
-				languages: [
-					{
-						name: "English",
-						code: "en",
-						id: "lang7",
-						state: "created" as const,
-						createdAt: new Date("2023-05-20"),
-						updatedAt: new Date("2025-05-20")
-					},
-					{
-						name: "Marathi",
-						code: "mr",
-						id: "lang8",
-						state: "created" as const,
-						createdAt: new Date("2023-06-01"),
-						updatedAt: new Date("2025-06-01")
-					}
-				],
-				id: 105,
-				briefDescription: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Master the essential wicket keeping techniques and reflexes.',
-							},
-						],
-					},
-				]),
-				basePrice: 4500,
-				ratingCount: 260,
-				creator: {
-					name: "Rohit",
-					surname: "Patil",
-					username: "rohit_p",
-					avatarImage: null
-				},
-				coachingSessionCount: 28,
-				durationMinutes: 200,
-				salesCount: 1300
-			},
-			{
-				status: {
-					status: "inProgress" as const,
-					progress: 40
-				},
-				title: "Fielding and Catching Techniques",
-				currency: "INR",
-				rating: 4.1,
-				languages: [
-					{
-						name: "English",
-						code: "en",
-						id: "lang10",
-						state: "created" as const,
-						createdAt: new Date("2023-08-05"),
-						updatedAt: new Date("2025-08-05")
-					}
-				],
-				id: 107,
-				briefDescription: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Improve your fielding, catching, and throwing skills.',
-							},
-						],
-					},
-				]),
-				basePrice: 3200,
-				ratingCount: 190,
-				creator: {
-					name: "Arjun",
-					surname: "Singh",
-					username: "arjun_s",
-					avatarImage: null
-				},
-				coachingSessionCount: 22,
-				durationMinutes: 160,
-				salesCount: 1005
-			},
-			{
-				description: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Learn the art of fast bowling focusing on pace, line, and length.',
-							},
-						],
-					},
-				]),
-				title: "Fast Bowling Basics",
-				currency: "USD",
-				rating: 4.5,
-				languages: [
-					{
-						name: "English",
-						code: "en",
-						id: "lang3",
-						state: "created" as const,
-						createdAt: new Date("2022-08-15"),
-						updatedAt: new Date("2025-08-15")
-					}
-				],
-				id: 102,
-				briefDescription: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Bowling course designed for beginner to intermediate levels.',
-							},
-						],
-					},
-				]),
-				basePrice: 350,
-				ratingCount: 210,
-				creator: {
-					name: "John",
-					surname: "Doe",
-					username: "john_d",
-					avatarImage: null
-				},
-				coachingSessionCount: 30,
-				durationMinutes: 150,
-				salesCount: 1200
-			},
-			{
-				description: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Course on the fundamentals of spin bowling including grips and deliveries.',
-							},
-						],
-					},
-				]),
-				title: "Spin Bowling Fundamentals",
-				currency: "USD",
-				rating: 3.9,
-				languages: [
-					{
-						name: "English",
-						code: "en",
-						id: "lang6",
-						state: "created" as const,
-						createdAt: new Date("2023-04-10"),
-						updatedAt: new Date("2025-04-10")
-					}
-				],
-				id: 104,
-				briefDescription: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Build strong spin bowling skills through practical drills.',
-							},
-						],
-					},
-				]),
-				basePrice: 400,
-				ratingCount: 180,
-				creator: {
-					name: "Michael",
-					surname: "Smith",
-					username: "michael_s",
-					avatarImage: {
-						name: "michael_avatar.png",
-						id: "img103",
-						size: 1300,
-						category: "image" as const,
-						downloadUrl: "https://example.com/avatars/michael_avatar.png"
-					}
-				},
-				coachingSessionCount: 15,
-				durationMinutes: 140,
-				salesCount: 850
-			},
-			{
-				description: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Mental preparation and focus training for competitive cricket players.',
-							},
-						],
-					},
-				]),
-				title: "Mental Toughness Training",
-				currency: "USD",
-				rating: 4.6,
-				languages: [
-					{
-						name: "English",
-						code: "en",
-						id: "lang9",
-						state: "created" as const,
-						createdAt: new Date("2023-07-10"),
-						updatedAt: new Date("2025-07-10")
-					}
-				],
-				id: 106,
-				status: {
-					status: "inProgress" as const,
-					progress: 0
-				},
-				briefDescription: JSON.stringify([
-					{
-						type: 'paragraph',
-						children: [
-							{
-								text: 'Develop your mental game to perform under pressure.',
-							},
-						],
-					},
-				]),
-				basePrice: 380,
-				ratingCount: 220,
-				creator: {
-					name: "Sophia",
-					surname: "Turner",
-					username: "sophia_t",
-					avatarImage: {
-						name: "sophia_avatar.jpg",
-						id: "img104",
-						size: 1200,
-						category: "image" as const,
-						downloadUrl: "https://example.com/avatars/sophia_avatar.jpg"
-					}
-				},
-				coachingSessionCount: 18,
-				durationMinutes: 100,
-				salesCount: 1100
-			}
-		];
+		if (!coachCoursesViewModel || coachCoursesViewModel.mode !== 'default' || !coachCoursesViewModel.data) {
+			return [];
+		}
+		return coachCoursesViewModel.data.courses || [];
 	}, [coachCoursesViewModel]);
 
 
@@ -517,336 +143,12 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	});
 
 	const coachReviews = useMemo(() => {
-		// TODO: Remove hardcoded reviews and use API data when backend is ready
-		// if (!coachReviewsViewModel || coachReviewsViewModel.mode !== 'default' || !coachReviewsViewModel.data) {
-		// 	return [];
-		// }
-		// return coachReviewsViewModel.data.reviews || [];
-		return [
-			{
-				rating: 4.8,
-				neededMoreTime: false,
-				student: {
-					name: "Rahul",
-					surname: "Sharma",
-					avatarImage: {
-						name: "rahul_avatar.png",
-						id: "a12b34",
-						size: 1024,
-						category: "image",
-						downloadUrl: "https://example.com/avatars/rahul_avatar.png"
-					}
-				},
-				id: "r101",
-				state: "created",
-				createdAt: new Date("2025-08-10T10:30:00Z"),
-				updatedAt: new Date("2025-08-15T12:00:00Z"),
-				coachingSession: {
-					status: "completed",
-					startTime: "2025-08-10T14:00:00Z",
-					endTime: "2025-08-10T15:00:00Z",
-					id: "cs101",
-					state: "created",
-					createdAt: new Date("2025-08-01T09:00:00Z"),
-					updatedAt: new Date("2025-08-05T10:00:00Z"),
-					publicationDate: "2025-07-31",
-					coachingOfferingTitle: "Advanced Cricket Techniques",
-					coachingOfferingDuration: 60,
-					meetingUrl: "https://meet.example.com/session/cs101"
-				},
-				course: {
-					title: "Cricket Fundamentals",
-					image: {
-						name: "cricket_course.png",
-						id: "c101",
-						size: 2048,
-						category: "image",
-						downloadUrl: "https://example.com/images/cricket_course.png"
-					},
-					id: 501
-				},
-				notes: "Rahul has shown remarkable improvement in his batting technique over the last few sessions. His focus and determination are commendable. The coach's tailored training plan really helped him work on his foot placement and shot selection. Rahul is steadily gaining confidence and has started implementing the strategies during matches, which has reflected positively in his recent performances."
-			},
-			{
-				rating: 4.2,
-				neededMoreTime: true,
-				student: {
-					name: "Sneha",
-					surname: "Reddy",
-					avatarImage: null
-				},
-				id: 102,
-				state: "created",
-				createdAt: new Date("2025-09-05T11:15:00Z"),
-				updatedAt: new Date("2025-09-06T10:45:00Z"),
-				coachingSession: {
-					status: "scheduled",
-					startTime: "2025-09-10T09:00:00Z",
-					endTime: "2025-09-10T10:30:00Z",
-					id: 502,
-					state: "created",
-					createdAt: new Date("2025-09-01T08:00:00Z"),
-					updatedAt: new Date("2025-09-03T07:55:00Z"),
-					publicationDate: "2025-08-28",
-					coachingOfferingTitle: "Batting Improvement",
-					coachingOfferingDuration: 90,
-					meetingUrl: null
-				},
-				course: {
-					title: "Batting Masterclass",
-					image: null,
-					id: 502
-				},
-				notes: "Sneha has great potential but needs more time to refine her techniques, especially under pressure. During the sessions, she shows enthusiasm and is quick to learn when given clear and structured feedback. Focusing on her backlift and balance will be crucial in the upcoming weeks to help her convert practice into match-winning performances."
-			},
-			{
-				rating: 4.9,
-				neededMoreTime: false,
-				student: {
-					name: "Amit",
-					surname: "Kumar",
-					avatarImage: {
-						name: "amit_avatar.jpg",
-						id: "a5678",
-						size: 1500,
-						category: "image",
-						downloadUrl: "https://example.com/avatars/amit_avatar.jpg"
-					}
-				},
-				id: "r103",
-				state: "created",
-				createdAt: new Date("2025-07-21T09:00:00Z"),
-				updatedAt: new Date("2025-07-25T14:30:00Z"),
-				coachingSession: {
-					status: "completed",
-					startTime: "2025-07-22T16:00:00Z",
-					endTime: "2025-07-22T17:30:00Z",
-					id: "cs103",
-					state: "created",
-					createdAt: new Date("2025-07-10T10:00:00Z"),
-					updatedAt: new Date("2025-07-15T15:00:00Z"),
-					publicationDate: "2025-07-18",
-					coachingOfferingTitle: "Bowling Accuracy and Pace",
-					coachingOfferingDuration: 90,
-					meetingUrl: "https://meet.example.com/session/cs103"
-				},
-				course: {
-					title: "Fast Bowling Techniques",
-					image: {
-						name: "fast_bowling.png",
-						id: "c103",
-						size: 1800,
-						category: "image",
-						downloadUrl: "https://example.com/images/fast_bowling.png"
-					},
-					id: 503
-				},
-				notes: "Amit's commitment to improving his bowling has been outstanding. He has significantly improved his line and length, which has started to trouble batsmen in local matches. The drills focusing on his run-up and release point have paid off. His mental focus during sessions is excellent, and he continues to work hard on fitness and technique."
-			},
-			{
-				rating: 3.7,
-				neededMoreTime: true,
-				student: {
-					name: "Nisha",
-					surname: "Patel",
-					avatarImage: {
-						name: "nisha_avatar.png",
-						id: "a91011",
-						size: 1100,
-						category: "image",
-						downloadUrl: "https://example.com/avatars/nisha_avatar.png"
-					}
-				},
-				id: "r104",
-				state: "created",
-				createdAt: new Date("2025-06-15T08:30:00Z"),
-				updatedAt: new Date("2025-06-18T09:45:00Z"),
-				coachingSession: {
-					status: "requested",
-					startTime: "2025-06-20T10:00:00Z",
-					endTime: "2025-06-20T11:30:00Z",
-					id: "cs104",
-					state: "created",
-					createdAt: new Date("2025-06-01T07:00:00Z"),
-					updatedAt: new Date("2025-06-10T08:00:00Z"),
-					publicationDate: "2025-05-30",
-					coachingOfferingTitle: "Fielding and Agility",
-					coachingOfferingDuration: 90,
-					meetingUrl: null
-				},
-				course: {
-					title: "Fielding Excellence",
-					image: null,
-					id: 504
-				},
-				notes: "Nisha is progressing but needs more focused attention on footwork and reaction times. Energy levels in afternoon sessions are sometimes low, indicating a need for better conditioning. The coach suggests more stamina building and agility drills. With perseverance, she can become a key fielder in the team."
-			},
-			{
-				rating: 5.0,
-				neededMoreTime: false,
-				student: {
-					name: "Vikram",
-					surname: "Singh",
-					avatarImage: {
-						name: "vikram_avatar.jpg",
-						id: "a121314",
-						size: 1300,
-						category: "image",
-						downloadUrl: "https://example.com/avatars/vikram_avatar.jpg"
-					}
-				},
-				id: "r105",
-				state: "created",
-				createdAt: new Date("2025-10-01T10:00:00Z"),
-				updatedAt: new Date("2025-10-05T11:30:00Z"),
-				coachingSession: {
-					status: "completed",
-					startTime: "2025-10-03T15:00:00Z",
-					endTime: "2025-10-03T16:30:00Z",
-					id: "cs105",
-					state: "created",
-					createdAt: new Date("2025-09-25T11:00:00Z"),
-					updatedAt: new Date("2025-09-29T12:00:00Z"),
-					publicationDate: "2025-09-20",
-					coachingOfferingTitle: "Mental Toughness Training",
-					coachingOfferingDuration: 90,
-					meetingUrl: "https://meet.example.com/session/cs105"
-				},
-				course: {
-					title: "Mindset for Winning",
-					image: {
-						name: "mental_training.png",
-						id: "c105",
-						size: 1700,
-						category: "image",
-						downloadUrl: "https://example.com/images/mental_training.png"
-					},
-					id: 505
-				},
-				notes: "Vikram has exhibited a tremendous mental shift during these sessions. His ability to remain calm under pressure has improved drastically. The coach's focus on visualization and routine-building has been instrumental. This mental toughness is already helping Vikram perform better in tight match situations."
-			},
-			{
-				rating: 3.9,
-				neededMoreTime: true,
-				student: {
-					name: "Anjali",
-					surname: "Desai",
-					avatarImage: null
-				},
-				id: "r106",
-				state: "created",
-				createdAt: new Date("2025-05-12T09:30:00Z"),
-				updatedAt: new Date("2025-05-15T10:30:00Z"),
-				coachingSession: {
-					status: "canceled",
-					startTime: "2025-05-20T14:00:00Z",
-					endTime: "2025-05-20T15:30:00Z",
-					id: "cs106",
-					state: "created",
-					createdAt: new Date("2025-05-10T08:00:00Z"),
-					updatedAt: new Date("2025-05-15T10:00:00Z"),
-					publicationDate: "2025-05-05",
-					coachingOfferingTitle: "Spin Bowling Basics",
-					coachingOfferingDuration: 90,
-					meetingUrl: null
-				},
-				course: {
-					title: "Spin Bowling Techniques",
-					image: null,
-					id: 506
-				},
-				notes: "Anjali has shown interest in spin bowling but has struggled with consistency. Sessions were unfortunately canceled due to scheduling conflicts, but she remains committed to learning. The coach recommends focusing on grip and release mechanics once sessions resume to develop better control."
-			},
-			{
-				rating: 4.5,
-				neededMoreTime: false,
-				student: {
-					name: "Rohit",
-					surname: "Gupta",
-					avatarImage: {
-						name: "rohit_avatar.png",
-						id: "a151617",
-						size: 1250,
-						category: "image",
-						downloadUrl: "https://example.com/avatars/rohit_avatar.png"
-					}
-				},
-				id: "r107",
-				state: "created",
-				createdAt: new Date("2025-07-30T11:00:00Z"),
-				updatedAt: new Date("2025-08-02T12:15:00Z"),
-				coachingSession: {
-					status: "completed",
-					startTime: "2025-07-31T13:00:00Z",
-					endTime: "2025-07-31T14:30:00Z",
-					id: "cs107",
-					state: "created",
-					createdAt: new Date("2025-07-20T09:30:00Z"),
-					updatedAt: new Date("2025-07-25T10:30:00Z"),
-					publicationDate: "2025-07-18",
-					coachingOfferingTitle: "Power Hitting Workshop",
-					coachingOfferingDuration: 90,
-					meetingUrl: "https://meet.example.com/session/cs107"
-				},
-				course: {
-					title: "Power Hitting Techniques",
-					image: {
-						name: "power_hitting.png",
-						id: "c107",
-						size: 1900,
-						category: "image",
-						downloadUrl: "https://example.com/images/power_hitting.png"
-					},
-					id: 507
-				},
-				notes: "Rohit's power hitting has improved dramatically. His timing and shot selection during sessions have been outstanding. The coach praises his quick adaptation to technique adjustments and his enthusiasm in practice matches has increased accordingly."
-			},
-			{
-				rating: 4.1,
-				neededMoreTime: false,
-				student: {
-					name: "Kavya",
-					surname: "Iyer",
-					avatarImage: {
-						name: "kavya_avatar.png",
-						id: "a181920",
-						size: 1175,
-						category: "image",
-						downloadUrl: "https://example.com/avatars/kavya_avatar.png"
-					}
-				},
-				id: "r108",
-				state: "created",
-				createdAt: new Date("2025-08-18T10:45:00Z"),
-				updatedAt: new Date("2025-08-22T11:55:00Z"),
-				coachingSession: {
-					status: "completed",
-					startTime: "2025-08-20T15:00:00Z",
-					endTime: "2025-08-20T16:00:00Z",
-					id: "cs108",
-					state: "created",
-					createdAt: new Date("2025-08-10T09:00:00Z"),
-					updatedAt: new Date("2025-08-15T10:00:00Z"),
-					publicationDate: "2025-08-05",
-					coachingOfferingTitle: "Fielding Drills and Strategy",
-					coachingOfferingDuration: 60,
-					meetingUrl: "https://meet.example.com/session/cs108"
-				},
-				course: {
-					title: "Advanced Fielding",
-					image: {
-						name: "advanced_fielding.png",
-						id: "c108",
-						size: 1650,
-						category: "image",
-						downloadUrl: "https://example.com/images/advanced_fielding.png"
-					},
-					id: 508
-				},
-				notes: "Kavya's agility and quick reflexes stand out during fielding sessions. She has responded well to coaching on positioning and anticipation. There is noticeable improvement in her throwing accuracy, and her energy on the field is commendable."
-			}
-		];
+		if (!coachReviewsViewModel || coachReviewsViewModel.mode !== 'default' || !coachReviewsViewModel.data) {
+			return [];
+		}
+		return coachReviewsViewModel.data.reviews || [];
 	}, [coachReviewsViewModel]);
+
 
 	// Apply filters and sorting to reviews using useMemo for performance
 	const filteredReviews = useMemo(() => {
@@ -877,7 +179,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	// Apply sorting to filtered reviews
 	const filteredAndSortedReviews = useMemo(() => {
 		const sortedReviews = [...filteredReviews];
-		
+
 		sortedReviews.sort((a, b) => {
 			switch (sortBy) {
 				case 'mostRecent':
@@ -912,66 +214,31 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
-	// TODO: Uncomment error handling when backend APIs are ready
 	// Error handling - not found
-	// if (coachIntroductionViewModel.mode === 'not-found' || coachReviewsViewModel.mode === 'not-found' || coachCoursesViewModel.mode === 'not-found' || coachProfileAccessViewModel.mode === 'not-found') {
-	// 	return <DefaultNotFound locale={locale} />;
-	// }
-
-	// TODO: Uncomment error handling when backend APIs are ready
-	// Error handling - kaboom
-	// if (coachIntroductionViewModel.mode === 'kaboom' || coachReviewsViewModel.mode === 'kaboom' || coachCoursesViewModel.mode === 'kaboom' || coachProfileAccessViewModel.mode === 'kaboom') {
-	// 	return <DefaultError locale={locale} />;
-	// }
-
-	// Access control check - if profile access is denied, show not found
-	if (coachProfileAccessViewModel.mode === 'default' && !coachProfileAccessViewModel.data.access) {
+	if (coachIntroductionViewModel?.mode === 'not-found' ||
+		coachReviewsViewModel?.mode === 'not-found' ||
+		coachCoursesViewModel?.mode === 'not-found' ||
+		coachProfileAccessViewModel?.mode === 'not-found') {
 		return <DefaultNotFound locale={locale} />;
 	}
 
-	// TODO: Remove hardcoded introduction and use API data when backend is ready
-	// const coachIntroduction = coachIntroductionViewModel.data.coach;
-	const coachIntroduction: viewModels.TGetCoachIntroductionSuccess['coach'] = {
-		name: "Alex",
-		surname: "Morgan",
-		rating: 4.8,
-		bio: "Alex is a certified fitness coach with over 10 years of experience helping clients achieve their performance goals. He specializes in strength training, nutrition, and mindset development.",
-		skills: [
-			{
-				name: "Strength Training",
-				id: "skill-001",
-				state: "created",
-				createdAt: new Date("2023-05-15T10:00:00Z"),
-				updatedAt: new Date("2024-03-20T15:30:00Z"),
-				slug: "strength-training"
-			},
-			{
-				name: "Nutrition Planning",
-				id: "skill-002",
-				state: "created",
-				createdAt: new Date("2023-06-10T09:00:00Z"),
-				updatedAt: new Date("2024-04-01T11:45:00Z"),
-				slug: "nutrition-planning"
-			},
-			{
-				name: "Mindset Coaching",
-				id: "skill-003",
-				state: "created",
-				createdAt: new Date("2023-07-01T08:30:00Z"),
-				updatedAt: new Date("2024-05-10T14:00:00Z"),
-				slug: "mindset-coaching"
-			}
-		],
-		avatarImage: {
-			name: "alex-morgan-avatar.jpg",
-			id: "img-98765",
-			size: 245678,
-			category: "image",
-			downloadUrl: "https://example.com/images/alex-morgan-avatar.jpg"
-		},
-		ratingCount: 128,
-		isCourseCreator: true
-	};
+	// Error handling - kaboom (API errors)
+	if (coachIntroductionViewModel?.mode === 'kaboom' ||
+		coachReviewsViewModel?.mode === 'kaboom' ||
+		coachCoursesViewModel?.mode === 'kaboom' ||
+		coachProfileAccessViewModel?.mode === 'kaboom') {
+		return <DefaultError locale={locale} />;
+	}
+
+	// Access control check - if profile access is denied, show not found
+	if (coachProfileAccessViewModel?.mode === 'default' && !coachProfileAccessViewModel.data.access) {
+		return <DefaultNotFound locale={locale} />;
+	}
+
+	// Extract coach introduction from view model
+	const coachIntroduction = coachIntroductionViewModel?.mode === 'default'
+		? coachIntroductionViewModel.data.coach
+		: null;
 
 	// Sort and filter functions
 	const sortOptions = [
@@ -999,9 +266,8 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		// Reset error state before submitting
 		setReviewError(false);
 
-		// TODO: add course slug in listCoachCourses procedure and replace below line
-		const courseSlug = 'the-first-course';
-		// const courseSlug = reviewingCourse.slug;
+		// Get course slug from reviewing course
+		const courseSlug = reviewingCourse.slug;
 
 		createReviewMutation.mutate(
 			{
@@ -1037,9 +303,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	};
 
 	// Handle review functionality - shows modal or snippet based on existing review
-	// TODO: Replace 'any' with 'CourseWithStatus' once type is available
-	// const handleReviewAction = (course: CourseWithStatus) => {
-	const handleReviewAction = (course: any) => {
+	const handleReviewAction = (course: CourseWithStatus) => {
 		setReviewingCourse(course);
 		setReviewSubmitted(false);
 		setReviewError(false);
@@ -1090,24 +354,20 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						name: `${course.creator.name} ${course.creator.surname}`,
 						image: course.creator.avatarImage?.downloadUrl || ''
 					},
-					// TODO: Need two prices one for full and one for partial instead of single price basePrice
 					pricing: {
-						fullPrice: course.basePrice,
+						fullPrice: course.fullPrice || 0,
 						currency: course.currency,
-						partialPrice: course.basePrice,
+						partialPrice: course.partialPrice || 0,
 					},
 					duration: {
 						video: course.durationMinutes || 0,
 						coaching: 0,
 						selfStudy: 0
 					},
-					// TODO: Need a single language instead of an array
-					language: course.languages[0],
-					// TODO: Add course image in listCoachCourses Procedure
-					imageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg'
+					language: course.language,
+					imageUrl: course.image?.downloadUrl || 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg'
 				},
-				// TODO: Need a single language instead of an array
-				language: course.languages[0],
+				language: course.language,
 				onClickUser: () => {
 					route.push(`/${locale}/coaches/${course.creator.username}`);
 				},
@@ -1116,36 +376,36 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 			if (isPurchased) {
 				const progress = course.status.status === 'inProgress' ? course.status.progress : 100;
 				return (
-					<CourseCard 
+					<CourseCard
 						{...baseProps}
 						key={key}
 						userType="student"
 						sales={course.salesCount}
 						progress={progress}
 						onBegin={() => {
-							// TODO: Implement resume course functionality
+							route.push(`/${locale}/courses/${course.slug}`);
 						}}
 						onResume={() => {
-							// TODO: Implement resume course functionality
+							route.push(`/${locale}/courses/${course.slug}?tab=${StudentCourseTab.STUDY}`);
 						}}
 						onReview={() => {
 							handleReviewAction(course);
 						}}
 						onDetails={() => {
-							// TODO: Implement course details functionality
+							window.open(`/${locale}/courses/${course.slug}`, '_blank');
 						}}
 					/>
 				);
 			} else {
 				return (
-					<CourseCard 
+					<CourseCard
 						key={key}
 						{...baseProps}
 						userType="visitor"
 						sessions={course.coachingSessionCount}
 						sales={course.salesCount}
 						onDetails={() => {
-							// TODO: Implement course details functionality
+							window.open(`/${locale}/courses/${course.slug}`, '_blank');
 						}}
 						onBuy={() => {
 							// TODO: Implement course purchase functionality
@@ -1181,7 +441,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 								onClick: () => route.push(`/${locale}/coaches`),
 							},
 							{
-								label: `${coachIntroduction.name} ${coachIntroduction.surname}`,
+								label: coachIntroduction ? `${coachIntroduction.name} ${coachIntroduction.surname}` : username,
 								onClick: () => route.push(`/${locale}/coaches/${username}`),
 							},
 						]}
@@ -1190,33 +450,35 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 			)}
 
 			{/* Coach Introduction Section */}
-			{isLoggedIn ? (
-				<BookSessionWith
-					coachName={`${coachIntroduction.name} ${coachIntroduction.surname}`}
-					coachAvatarUrl={coachIntroduction?.avatarImage?.downloadUrl || ""}
-					description={coachIntroduction.bio}
-					coachRating={coachIntroduction.rating}
-					totalRatings={coachIntroduction.ratingCount}
-					onBookSessionWith={() => {
-						// TODO: Implement booking logic
-					}}
-					isCourseCreator={coachIntroduction.isCourseCreator}
-					locale={locale}
-				/>
-			) : (
-				<BuyCoachingSessionBanner
-					coachName={`${coachIntroduction.name} ${coachIntroduction.surname}`}
-					coachAvatarUrl={coachIntroduction?.avatarImage?.downloadUrl || ""}
-					description={coachIntroduction.bio}
-					coachRating={coachIntroduction.rating}
-					totalRatings={coachIntroduction.ratingCount}
-					onBookSessionWith={() => { 
-						// TODO: Implement booking logic
-					}}
-					isCourseCreator={coachIntroduction.isCourseCreator}
-					skills={coachIntroduction.skills.map(skill => skill.name)}
-					locale={locale}
-				/>
+			{coachIntroduction && (
+				isLoggedIn ? (
+					<BookSessionWith
+						coachName={`${coachIntroduction.name} ${coachIntroduction.surname}`}
+						coachAvatarUrl={coachIntroduction?.avatarImage?.downloadUrl || ""}
+						description={coachIntroduction.bio}
+						coachRating={coachIntroduction.rating}
+						totalRatings={coachIntroduction.ratingCount}
+						onBookSessionWith={() => {
+							window.open(`/${locale}/coaches/${username}/book`, '_blank');
+						}}
+						isCourseCreator={coachIntroduction.isCourseCreator}
+						locale={locale}
+					/>
+				) : (
+					<BuyCoachingSessionBanner
+						coachName={`${coachIntroduction.name} ${coachIntroduction.surname}`}
+						coachAvatarUrl={coachIntroduction?.avatarImage?.downloadUrl || ""}
+						description={coachIntroduction.bio}
+						coachRating={coachIntroduction.rating}
+						totalRatings={coachIntroduction.ratingCount}
+						onBookSessionWith={() => {
+							window.open(`/${locale}/coaches/${username}/book`, '_blank');
+						}}
+						isCourseCreator={coachIntroduction.isCourseCreator}
+						skills={coachIntroduction.skills.map(skill => skill.name)}
+						locale={locale}
+					/>
+				)
 			)}
 
 			{/* Coach Courses Section for visitors */}
@@ -1228,14 +490,14 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 					<CourseCardList
 						locale={locale}
 						onEmptyStateButtonClick={() => {
-							// TODO: Navigate to courses exploration page
+							window.open(`/${locale}/offers`, '_blank');
 						}}
 						emptyStateMessage={coachProfileTranslations('emptyStateCourses')}
 						emptyStateButtonText={coachProfileTranslations('exploreCourses')}
 					>
 						{renderCourseCards(displayedCourses)}
 					</CourseCardList>
-					
+
 					{hasMoreCourses && (
 						<Button
 							variant="text"
@@ -1292,8 +554,8 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 							workshopTitle={review.coachingSession.coachingOfferingTitle}
 							date={review.createdAt}
 							time={new Date(review.createdAt).toLocaleTimeString(locale)}
-							courseTitle={review.course.title}
-							courseImage={review.course.image?.downloadUrl || ''}
+							courseTitle={review.course?.title || ''}
+							courseImage={review.course?.image?.downloadUrl || ''}
 						/>
 					))}
 				</CoachReviewCardList>
@@ -1327,14 +589,14 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 					<CourseCardList
 						locale={locale}
 						onEmptyStateButtonClick={() => {
-							// TODO: Navigate to courses exploration page
+							window.open(`/${locale}/offers`, '_blank');
 						}}
 						emptyStateMessage={coachProfileTranslations('emptyStateCourses')}
 						emptyStateButtonText={coachProfileTranslations('exploreCourses')}
 					>
 						{renderCourseCards(displayedCourses)}
 					</CourseCardList>
-					
+
 					{hasMoreCourses && (
 						<Button
 							variant="text"
