@@ -66,8 +66,8 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
   const { presenter: userRolesPresenter } = useListUserRolesPresenter(setUserRolesVM);
   const { presenter: coachCoursesPresenter } = useListCoachCoursesPresenter(setCoachCoursesVM);
 
-  const [personalProfileResponse, { refetch: refetchPersonalProfile }] = trpc.getPersonalProfile.useSuspenseQuery({ username });
-  const [professionalProfileResponse, { refetch: refetchProfessionalProfile }] = trpc.getProfessionalProfile.useSuspenseQuery({ username });
+  const [personalProfileResponse, { refetch: refetchPersonalProfile }] = trpc.getPersonalProfile.useSuspenseQuery({ username: username });
+  const [professionalProfileResponse, { refetch: refetchProfessionalProfile }] = trpc.getProfessionalProfile.useSuspenseQuery({ username: username });
   const [studentCoursesResponse] = trpc.listStudentCourses.useSuspenseQuery({ studentUsername: username });
   const [coachReviewsResponse] = trpc.listCoachReviews.useSuspenseQuery({ coachUsername: username });
   const [userRolesResponse, { refetch: refetchUserRoles }] = trpc.listUserRoles.useSuspenseQuery({ username: username });
@@ -378,7 +378,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
       {/* Courses Section */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-row justify-between items-center">
-          <h3>{t('courses')}</h3>
+          <h3>{t('studentCourses')}</h3>
         </div>
         {!studentCoursesVM ? (
           <DefaultLoading locale={currentLocale} variant="minimal" />
