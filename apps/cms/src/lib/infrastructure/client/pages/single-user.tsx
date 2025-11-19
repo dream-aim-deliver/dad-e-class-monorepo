@@ -15,17 +15,16 @@
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { z } from 'zod';
 import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
-import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard, Button, Dropdown, ConfirmationModal, CoachReviewCard, Banner } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard, Dropdown, ConfirmationModal, CoachReviewCard, Banner } from '@maany_shr/e-class-ui-kit';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
 import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
 import { useListStudentCoursesPresenter } from '../hooks/use-list-student-courses-presenter';
 import { useListCoachReviewsPresenter } from '../hooks/use-list-coach-reviews-presenter';
 import { useListUserRolesPresenter } from '../hooks/use-list-user-roles-presenter';
 import { useListCoachCoursesPresenter } from '../hooks/use-list-coach-courses-presenter';
-import { getHighestRole, sortRolesByHierarchy } from '../../common/utils/role-utils';
+import { getHighestRole } from '../../common/utils/role-utils';
 import { TEClassRole } from '@dream-aim-deliver/e-class-cms-rest';
 
 interface SingleUserProps {
@@ -69,10 +68,10 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
 
   const [personalProfileResponse, { refetch: refetchPersonalProfile }] = trpc.getPersonalProfile.useSuspenseQuery({ username });
   const [professionalProfileResponse, { refetch: refetchProfessionalProfile }] = trpc.getProfessionalProfile.useSuspenseQuery({ username });
-  const [studentCoursesResponse, { refetch: refetchStudentCourses }] = trpc.listStudentCourses.useSuspenseQuery({ studentUsername: username });
-  const [coachReviewsResponse, { refetch: refetchCoachReviews }] = trpc.listCoachReviews.useSuspenseQuery({ coachUsername: username });
+  const [studentCoursesResponse] = trpc.listStudentCourses.useSuspenseQuery({ studentUsername: username });
+  const [coachReviewsResponse] = trpc.listCoachReviews.useSuspenseQuery({ coachUsername: username });
   const [userRolesResponse, { refetch: refetchUserRoles }] = trpc.listUserRoles.useSuspenseQuery({ username: username });
-  const [coachCoursesResponse, { refetch: refetchCoachCourses }] = trpc.listCoachCourses.useSuspenseQuery({ forStudent: false, coachUsername: username });
+  const [coachCoursesResponse] = trpc.listCoachCourses.useSuspenseQuery({ forStudent: false, coachUsername: username });
 
   // Mutation for updating user roles
   const updateUserRolesMutation = trpc.updateUserRoles.useMutation();
@@ -420,11 +419,21 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                   }}
                   progress={progress}
                   sales={course.salesCount}
-                  onBegin={() => { }}
-                  onResume={() => { }}
-                  onReview={() => { }}
-                  onDetails={() => { }}
-                  onClickUser={() => { }}
+                  onBegin={() => {
+                    // TODO: Implement begin course action
+                  }}
+                  onResume={() => {
+                    // TODO: Implement resume course action
+                  }}
+                  onReview={() => {
+                    // TODO: Implement review course action
+                  }}
+                  onDetails={() => {
+                    // TODO: Implement view course details action
+                  }}
+                  onClickUser={() => {
+                    // TODO: Implement view user profile action
+                  }}
                 />
               );
             })}
@@ -478,8 +487,12 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                     creatorStatus={"draft"}
                     sessions={course.coachingSessionCount}
                     sales={course.salesCount || 0}
-                    onEdit={() => { }}
-                    onClickUser={() => { }}
+                    onEdit={() => {
+                      // TODO: Implement edit course action
+                    }}
+                    onClickUser={() => {
+                      // TODO: Implement view user profile action
+                    }}
                   />
                 );
               })}
