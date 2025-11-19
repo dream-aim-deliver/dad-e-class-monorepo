@@ -2,7 +2,7 @@ import {
     CardListLayout,
     DefaultError,
     DefaultLoading,
-    DefaultNotFound,
+    EmptyState,
     PackageCard,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
@@ -35,10 +35,9 @@ export default function PackageList() {
 
     if (packagesViewModel.mode === 'not-found') {
         return (
-            <DefaultNotFound
+            <EmptyState
                 locale={locale}
-                title={t('packagesNotFound.title')}
-                description={t('packagesNotFound.description')}
+                message={t('packagesNotFound.description')}
             />
         );
     }
@@ -50,7 +49,12 @@ export default function PackageList() {
     const packages = packagesViewModel.data.packages;
 
     if (packages.length === 0) {
-        return <DefaultNotFound locale={locale} />;
+        return (
+            <EmptyState
+                locale={locale}
+                message={t('packagesNotFound.description')}
+            />
+        );
     }
 
     return (

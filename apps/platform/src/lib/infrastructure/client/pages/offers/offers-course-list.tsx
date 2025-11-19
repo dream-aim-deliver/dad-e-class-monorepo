@@ -4,7 +4,7 @@ import {
     CheckBox,
     DefaultError,
     DefaultLoading,
-    DefaultNotFound,
+    EmptyState,
     VisitorCourseCard,
 } from '@maany_shr/e-class-ui-kit';
 import { useMemo, useState } from 'react';
@@ -104,10 +104,9 @@ export function OffersCourseList({
         displayedCourses.length === 0
     ) {
         return (
-            <DefaultNotFound
+            <EmptyState
                 locale={locale}
-                title={offersTranslations('coursesNotFound.title')}
-                description={offersTranslations('coursesNotFound.description')}
+                message={offersTranslations('coursesNotFound.description')}
             />
         );
     }
