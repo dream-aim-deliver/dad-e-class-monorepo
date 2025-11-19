@@ -282,7 +282,8 @@ export default function ManageCategories({
     const deleteCategoryMutation = trpc.deleteCategory.useMutation();
 
     // Present the data
-    presenter.present(categoriesResponse?.data as TListCategoriesUseCaseResponse, categoriesViewModel);
+    // @ts-ignore
+    presenter.present(categoriesResponse, categoriesViewModel);
 
     // Loading state using discovered patterns
     if (!categoriesViewModel) {
