@@ -8,7 +8,7 @@ import {
     CoachCard,
     DefaultError,
     DefaultLoading,
-    DefaultNotFound,
+    EmptyState,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -70,11 +70,10 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
 
     if (coachesViewModel.mode === 'not-found') {
         return (
-            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] animate-pulse">
-                <p className="text-text-primary text-md">
-                    {coachingT('noCoachesFound')}
-                </p>
-            </div>
+            <EmptyState
+                locale={locale}
+                message={coachingT('noCoachesFound')}
+            />
         );
     }
 
@@ -84,11 +83,10 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
 
     if (displayedCoaches.length === 0) {
         return (
-            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] h-fit animate-pulse">
-                <p className="text-text-primary text-md">
-                    {coachingT('noCoachesFound')}
-                </p>
-            </div>
+            <EmptyState
+                locale={locale}
+                message={coachingT('noCoachesFound')}
+            />
         );
     }
 
