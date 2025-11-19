@@ -209,23 +209,18 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		itemsPerPage2xl: 8,
 	});
 
-	// Loading state
-	if (!coachIntroductionViewModel || !coachReviewsViewModel || !coachCoursesViewModel || !coachProfileAccessViewModel) {
+	// Loading state - only for page-critical data
+	if (!coachIntroductionViewModel || !coachProfileAccessViewModel) {
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
-	// Error handling - not found
+	// Error handling - only for page-critical data
 	if (coachIntroductionViewModel?.mode === 'not-found' ||
-		coachReviewsViewModel?.mode === 'not-found' ||
-		coachCoursesViewModel?.mode === 'not-found' ||
 		coachProfileAccessViewModel?.mode === 'not-found') {
 		return <DefaultNotFound locale={locale} />;
 	}
 
-	// Error handling - kaboom (API errors)
 	if (coachIntroductionViewModel?.mode === 'kaboom' ||
-		coachReviewsViewModel?.mode === 'kaboom' ||
-		coachCoursesViewModel?.mode === 'kaboom' ||
 		coachProfileAccessViewModel?.mode === 'kaboom') {
 		return <DefaultError locale={locale} />;
 	}
@@ -487,25 +482,33 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 					<h3 className='md:text-2xl text-lg font-bold text-text-primary leading-[110%]'>
 						{coachProfileTranslations('coachCourses')}
 					</h3>
-					<CourseCardList
-						locale={locale}
-						onEmptyStateButtonClick={() => {
-							window.open(`/${locale}/offers`, '_blank');
-						}}
-						emptyStateMessage={coachProfileTranslations('emptyStateCourses')}
-						emptyStateButtonText={coachProfileTranslations('exploreCourses')}
-					>
-						{renderCourseCards(displayedCourses)}
-					</CourseCardList>
+					{!coachCoursesViewModel ? (
+						<DefaultLoading locale={locale} variant="minimal" />
+					) : coachCoursesViewModel.mode === 'kaboom' ? (
+						<DefaultError locale={locale} />
+					) : (
+						<>
+							<CourseCardList
+								locale={locale}
+								onEmptyStateButtonClick={() => {
+									window.open(`/${locale}/offers`, '_blank');
+								}}
+								emptyStateMessage={coachProfileTranslations('emptyStateCourses')}
+								emptyStateButtonText={coachProfileTranslations('exploreCourses')}
+							>
+								{renderCourseCards(displayedCourses)}
+							</CourseCardList>
 
-					{hasMoreCourses && (
-						<Button
-							variant="text"
-							text={paginationTranslations('loadMore')}
-							onClick={handleLoadMoreCourses}
-							size="medium"
-							className="pt-10"
-						/>
+							{hasMoreCourses && (
+								<Button
+									variant="text"
+									text={paginationTranslations('loadMore')}
+									onClick={handleLoadMoreCourses}
+									size="medium"
+									className="pt-10"
+								/>
+							)}
+						</>
 					)}
 				</div>
 			)}
@@ -542,31 +545,41 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						/>
 					</div>
 				</div>
-				<CoachReviewCardList locale={locale}>
-					{displayedReviews.map((review) => (
-						<CoachReviewCard
-							key={review.id}
-							locale={locale}
-							rating={review.rating}
-							reviewerName={`${review.student.name} ${review.student.surname}`}
-							reviewerAvatar={review.student.avatarImage?.downloadUrl || ''}
-							reviewText={review.notes || ''}
-							workshopTitle={review.coachingSession.coachingOfferingTitle}
-							date={review.createdAt}
-							time={new Date(review.createdAt).toLocaleTimeString(locale)}
-							courseTitle={review.course?.title || ''}
-							courseImage={review.course?.image?.downloadUrl || ''}
-						/>
-					))}
-				</CoachReviewCardList>
-				{hasMoreReviews && (
-					<Button
-						variant="text"
-						text={paginationTranslations('loadMore')}
-						onClick={handleLoadMoreReviews}
-						size="medium"
-						className="pt-10"
-					/>
+				{!coachReviewsViewModel ? (
+					<DefaultLoading locale={locale} variant="minimal" />
+				) : coachReviewsViewModel.mode === 'kaboom' ? (
+					<DefaultError locale={locale} />
+				) : (
+					<>
+						<CoachReviewCardList locale={locale}>
+							{displayedReviews
+								.filter(review => review && review.student && review.coachingSession && review.course)
+								.map((review) => (
+									<CoachReviewCard
+										key={review.id}
+										locale={locale}
+										rating={review.rating}
+										reviewerName={`${review.student.name} ${review.student.surname}`}
+										reviewerAvatar={review.student.avatarImage?.downloadUrl || ''}
+										reviewText={review.notes || ''}
+										workshopTitle={review.coachingSession.coachingOfferingTitle}
+										date={review.createdAt}
+										time={new Date(review.createdAt).toLocaleTimeString(locale)}
+										courseTitle={review.course?.title || ''}
+										courseImage={review.course?.image?.downloadUrl || ''}
+									/>
+								))}
+						</CoachReviewCardList>
+						{hasMoreReviews && (
+							<Button
+								variant="text"
+								text={paginationTranslations('loadMore')}
+								onClick={handleLoadMoreReviews}
+								size="medium"
+								className="pt-10"
+							/>
+						)}
+					</>
 				)}
 			</div>
 
@@ -586,25 +599,33 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 					<h3 className='md:text-2xl text-lg font-bold text-text-primary leading-[110%]'>
 						{coachProfileTranslations('coachCourses')}
 					</h3>
-					<CourseCardList
-						locale={locale}
-						onEmptyStateButtonClick={() => {
-							window.open(`/${locale}/offers`, '_blank');
-						}}
-						emptyStateMessage={coachProfileTranslations('emptyStateCourses')}
-						emptyStateButtonText={coachProfileTranslations('exploreCourses')}
-					>
-						{renderCourseCards(displayedCourses)}
-					</CourseCardList>
+					{!coachCoursesViewModel ? (
+						<DefaultLoading locale={locale} variant="minimal" />
+					) : coachCoursesViewModel.mode === 'kaboom' ? (
+						<DefaultError locale={locale} />
+					) : (
+						<>
+							<CourseCardList
+								locale={locale}
+								onEmptyStateButtonClick={() => {
+									window.open(`/${locale}/offers`, '_blank');
+								}}
+								emptyStateMessage={coachProfileTranslations('emptyStateCourses')}
+								emptyStateButtonText={coachProfileTranslations('exploreCourses')}
+							>
+								{renderCourseCards(displayedCourses)}
+							</CourseCardList>
 
-					{hasMoreCourses && (
-						<Button
-							variant="text"
-							text={paginationTranslations('loadMore')}
-							onClick={handleLoadMoreCourses}
-							size="medium"
-							className="pt-10"
-						/>
+							{hasMoreCourses && (
+								<Button
+									variant="text"
+									text={paginationTranslations('loadMore')}
+									onClick={handleLoadMoreCourses}
+									size="medium"
+									className="pt-10"
+								/>
+							)}
+						</>
 					)}
 				</div>
 			)}
