@@ -13,25 +13,47 @@ const i18n = createMiddleware({
 export default async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
+    // Extract locale from pathname
+    const pathnameLocale = i18nConfig.locales.find(
+        locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+    );
+
+    // Normalize pathname by removing locale prefix if it exists
+    // This allows checking both /offers and /en/offers with the same logic
+    const normalizedPath = pathnameLocale
+        ? pathname.replace(new RegExp(`^/${pathnameLocale}`), '') || '/'
+        : pathname;
+
     // Skip auth check for public routes, auth routes, API routes, and static files
     const isPublicRoute = pathname.includes('/auth/') ||
                          pathname.includes('/api/') ||
                          pathname.includes('/_next/') ||
                          pathname.includes('/favicon') ||
-                         pathname.includes('/courses/') ||
                          pathname.endsWith('.png') ||
                          pathname.endsWith('.jpg') ||
                          pathname.endsWith('.svg') ||
-                         pathname.endsWith('.ico');
+                         pathname.endsWith('.ico') ||
+                         normalizedPath === '/' ||
+                         normalizedPath.startsWith('/offers') ||
+                         normalizedPath.startsWith('/courses/') ||
+                         normalizedPath.startsWith('/packages/') ||
+                         normalizedPath.startsWith('/coaches/') ||
+                         normalizedPath.startsWith('/coaching') ||
+                         normalizedPath.startsWith('/about') ||
+                         normalizedPath.startsWith('/privacy-policy') ||
+                         normalizedPath.startsWith('/terms-of-use') ||
+                         normalizedPath.startsWith('/impressum') ||
+                         normalizedPath.startsWith('/rules') ||
+                         normalizedPath.startsWith('/offer-information') ||
+                         normalizedPath.startsWith('/become-a-coach') ||
+                         normalizedPath.startsWith('/students/') ||
+                         normalizedPath.startsWith('/checkout');
 
     if (!isPublicRoute) {
         // Get the session using NextAuth's auth function
         const session = await auth();
 
-        // Extract locale from pathname
-        const pathnameLocale = i18nConfig.locales.find(
-            locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-        );
+        // Use extracted locale or default
         const locale = pathnameLocale || i18nConfig.defaultLocale;
 
         // Check if user is authenticated
