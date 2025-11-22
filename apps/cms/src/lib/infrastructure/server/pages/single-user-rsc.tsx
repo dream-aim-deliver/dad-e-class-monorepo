@@ -27,16 +27,19 @@ export default async function SingleUserServerComponent(
 
   // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
   // React will stream HTML while queries are pending
+
+  // Only prefetch essential queries for role management
   prefetch(trpc.listUserRoles.queryOptions({
     username: props.username
   }));
   prefetch(trpc.getPersonalProfile.queryOptions({
     username: props.username,
   }));
-  prefetch(trpc.listStudentCourses.queryOptions({
-    studentUsername: props.username,
-  }));
 
+  // TEMPORARILY DISABLED: These prefetches will be re-enabled once the app is optimized end-to-end
+  //prefetch(trpc.listStudentCourses.queryOptions({
+  //  studentUsername: props.username,
+  //}));
   //prefetch(trpc.getProfessionalProfile.queryOptions({}));
   //prefetch(trpc.listCoachReviews.queryOptions({
   //coachUsername: props.username,

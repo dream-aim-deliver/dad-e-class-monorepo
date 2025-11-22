@@ -19,11 +19,13 @@ import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard, Dropdown, ConfirmationModal, CoachReviewCard, Banner } from '@maany_shr/e-class-ui-kit';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
-import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
-import { useListStudentCoursesPresenter } from '../hooks/use-list-student-courses-presenter';
-import { useListCoachReviewsPresenter } from '../hooks/use-list-coach-reviews-presenter';
 import { useListUserRolesPresenter } from '../hooks/use-list-user-roles-presenter';
-import { useListCoachCoursesPresenter } from '../hooks/use-list-coach-courses-presenter';
+
+// TEMPORARILY DISABLED: These imports will be re-enabled once the app is optimized end-to-end
+// import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
+// import { useListStudentCoursesPresenter } from '../hooks/use-list-student-courses-presenter';
+// import { useListCoachReviewsPresenter } from '../hooks/use-list-coach-reviews-presenter';
+// import { useListCoachCoursesPresenter } from '../hooks/use-list-coach-courses-presenter';
 import { getHighestRole } from '../../common/utils/role-utils';
 import { TEClassRole } from '@dream-aim-deliver/e-class-cms-rest';
 
@@ -42,13 +44,13 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
 
   // View models
   const [personalProfileVM, setPersonalProfileVM] = useState<viewModels.TGetPersonalProfileViewModel | undefined>(undefined);
-  const [professionalProfileVM, setProfessionalProfileVM] = useState<viewModels.TGetProfessionalProfileViewModel | undefined>(undefined);
-
-  const [studentCoursesVM, setStudentCoursesVM] = useState<viewModels.TListStudentCoursesViewModel | undefined>(undefined);
-  const [coachReviewsVM, setCoachReviewsVM] = useState<viewModels.TListCoachReviewsViewModel | undefined>(undefined);
-  const [coachCoursesVM, setCoachCoursesVM] = useState<viewModels.TListCoachCoursesViewModel | undefined>(undefined);
-
   const [userRolesVM, setUserRolesVM] = useState<viewModels.TListUserRolesViewModel | undefined>(undefined);
+
+  // TEMPORARILY DISABLED: These view models will be re-enabled once the app is optimized end-to-end
+  // const [professionalProfileVM, setProfessionalProfileVM] = useState<viewModels.TGetProfessionalProfileViewModel | undefined>(undefined);
+  // const [studentCoursesVM, setStudentCoursesVM] = useState<viewModels.TListStudentCoursesViewModel | undefined>(undefined);
+  // const [coachReviewsVM, setCoachReviewsVM] = useState<viewModels.TListCoachReviewsViewModel | undefined>(undefined);
+  // const [coachCoursesVM, setCoachCoursesVM] = useState<viewModels.TListCoachCoursesViewModel | undefined>(undefined);
 
   // Role management state
   const [selectedRole, setSelectedRole] = useState<string>('');
@@ -56,22 +58,26 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
   const [roleUpdateSuccess, setRoleUpdateSuccess] = useState<string | null>(null);
   const [roleUpdateError, setRoleUpdateError] = useState<string | null>(null);
 
-  // Review sorting state
-  const [reviewSortOrder, setReviewSortOrder] = useState<string>('highest');
+  // TEMPORARILY DISABLED: Review sorting state will be re-enabled once the app is optimized end-to-end
+  // const [reviewSortOrder, setReviewSortOrder] = useState<string>('highest');
 
   const { presenter: personalProfilePresenter } = useGetPersonalProfilePresenter(setPersonalProfileVM);
-  const { presenter: professionalProfilePresenter } = useGetProfessionalProfilePresenter(setProfessionalProfileVM);
-  const { presenter: studentCoursesPresenter } = useListStudentCoursesPresenter(setStudentCoursesVM);
-  const { presenter: coachReviewsPresenter } = useListCoachReviewsPresenter(setCoachReviewsVM);
   const { presenter: userRolesPresenter } = useListUserRolesPresenter(setUserRolesVM);
-  const { presenter: coachCoursesPresenter } = useListCoachCoursesPresenter(setCoachCoursesVM);
+
+  // TEMPORARILY DISABLED: These presenters will be re-enabled once the app is optimized end-to-end
+  // const { presenter: professionalProfilePresenter } = useGetProfessionalProfilePresenter(setProfessionalProfileVM);
+  // const { presenter: studentCoursesPresenter } = useListStudentCoursesPresenter(setStudentCoursesVM);
+  // const { presenter: coachReviewsPresenter } = useListCoachReviewsPresenter(setCoachReviewsVM);
+  // const { presenter: coachCoursesPresenter } = useListCoachCoursesPresenter(setCoachCoursesVM);
 
   const [personalProfileResponse, { refetch: refetchPersonalProfile }] = trpc.getPersonalProfile.useSuspenseQuery({ username: username });
-  const [professionalProfileResponse, { refetch: refetchProfessionalProfile }] = trpc.getProfessionalProfile.useSuspenseQuery({ username: username });
-  const [studentCoursesResponse] = trpc.listStudentCourses.useSuspenseQuery({ studentUsername: username });
-  const [coachReviewsResponse] = trpc.listCoachReviews.useSuspenseQuery({ coachUsername: username });
   const [userRolesResponse, { refetch: refetchUserRoles }] = trpc.listUserRoles.useSuspenseQuery({ username: username });
-  const [coachCoursesResponse] = trpc.listCoachCourses.useSuspenseQuery({ forStudent: false, coachUsername: username });
+
+  // TEMPORARILY DISABLED: These queries will be re-enabled once the app is optimized end-to-end
+  // const [professionalProfileResponse, { refetch: refetchProfessionalProfile }] = trpc.getProfessionalProfile.useSuspenseQuery({ username: username });
+  // const [studentCoursesResponse] = trpc.listStudentCourses.useSuspenseQuery({ studentUsername: username });
+  // const [coachReviewsResponse] = trpc.listCoachReviews.useSuspenseQuery({ coachUsername: username });
+  // const [coachCoursesResponse] = trpc.listCoachCourses.useSuspenseQuery({ forStudent: false, coachUsername: username });
 
   // Mutation for updating user roles
   const updateUserRolesMutation = trpc.updateUserRoles.useMutation();
@@ -80,31 +86,30 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
   // @ts-ignore
   personalProfilePresenter.present(personalProfileResponse, personalProfileVM);
   // @ts-ignore
-  professionalProfilePresenter.present(professionalProfileResponse, professionalProfileVM);
-  // @ts-ignore
-  studentCoursesPresenter.present(studentCoursesResponse, studentCoursesVM);
-  // @ts-ignore
-  coachReviewsPresenter.present(coachReviewsResponse, coachReviewsVM);
-  // @ts-ignore
   userRolesPresenter.present(userRolesResponse, userRolesVM);
-  // @ts-ignore
-  coachCoursesPresenter.present(coachCoursesResponse, coachCoursesVM);
+
+  // TEMPORARILY DISABLED: These presenters will be re-enabled once the app is optimized end-to-end
+  // // @ts-ignore
+  // professionalProfilePresenter.present(professionalProfileResponse, professionalProfileVM);
+  // // @ts-ignore
+  // studentCoursesPresenter.present(studentCoursesResponse, studentCoursesVM);
+  // // @ts-ignore
+  // coachReviewsPresenter.present(coachReviewsResponse, coachReviewsVM);
+  // // @ts-ignore
+  // coachCoursesPresenter.present(coachCoursesResponse, coachCoursesVM);
 
   // Loading state - only for page-critical data
-  if (!personalProfileVM || !professionalProfileVM || !userRolesVM) {
+  if (!personalProfileVM || !userRolesVM) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
   }
 
   // Error handling - only for page-critical data
-  if (personalProfileVM.mode === 'kaboom' ||
-    professionalProfileVM.mode === 'kaboom' ||
-    userRolesVM.mode === 'kaboom') {
+  if (personalProfileVM.mode === 'kaboom' || userRolesVM.mode === 'kaboom') {
     return (
       <DefaultError
         locale={currentLocale}
         onRetry={() => {
           refetchPersonalProfile();
-          refetchProfessionalProfile();
           refetchUserRoles();
         }}
       />
@@ -113,7 +118,6 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
 
 
   const personalProfile = personalProfileVM.mode === 'default' ? personalProfileVM.data : null;
-  const professionalProfile = professionalProfileVM.mode === 'default' ? professionalProfileVM.data : null;
   const userRoles = userRolesVM.mode === 'default' ? userRolesVM.data : null;
 
   // Construct full name from name and surname
@@ -121,39 +125,32 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
     ? `${personalProfile.profile.name} ${personalProfile.profile.surname}`
     : personalProfile?.profile.name || personalProfile?.profile.surname || username;
 
-  // Extract data directly from view models (like coach-profile pattern)
-  const studentCourses = studentCoursesVM?.mode === 'default' && studentCoursesVM.data
-    ? studentCoursesVM.data.courses || []
-    : [];
-
-  const coachCourses = coachCoursesVM?.mode === 'default' && coachCoursesVM.data
-    ? coachCoursesVM.data.courses || []
-    : [];
-
-  const coachReviews = coachReviewsVM?.mode === 'default' && coachReviewsVM.data
-    ? coachReviewsVM.data.reviews || []
-    : [];
-
-  const averageRating = coachReviews && coachReviews.length > 0
-    ? coachReviews.reduce((sum, review) => sum + (review.rating || 0), 0) / coachReviews.length
-    : 0;
-
-  const totalReviews = coachReviews?.length || 0;
-
-  // Determine if user is coach or higher (coach, course-creator, admin)
-  const isCoachOrHigher = userRoles?.roles && userRoles.roles.some(role =>
-    ['coach', 'course-creator', 'admin'].includes(role.toLowerCase())
-  );
-
-  // Sort reviews based on selected sort order
-  const sortedReviews = [...coachReviews].sort((a, b) => {
-    if (reviewSortOrder === 'highest') {
-      return (b.rating || 0) - (a.rating || 0);
-    } else if (reviewSortOrder === 'lowest') {
-      return (a.rating || 0) - (b.rating || 0);
-    }
-    return 0;
-  });
+  // TEMPORARILY DISABLED: These data extractions will be re-enabled once the app is optimized end-to-end
+  // const professionalProfile = professionalProfileVM.mode === 'default' ? professionalProfileVM.data : null;
+  // const studentCourses = studentCoursesVM?.mode === 'default' && studentCoursesVM.data
+  //   ? studentCoursesVM.data.courses || []
+  //   : [];
+  // const coachCourses = coachCoursesVM?.mode === 'default' && coachCoursesVM.data
+  //   ? coachCoursesVM.data.courses || []
+  //   : [];
+  // const coachReviews = coachReviewsVM?.mode === 'default' && coachReviewsVM.data
+  //   ? coachReviewsVM.data.reviews || []
+  //   : [];
+  // const averageRating = coachReviews && coachReviews.length > 0
+  //   ? coachReviews.reduce((sum, review) => sum + (review.rating || 0), 0) / coachReviews.length
+  //   : 0;
+  // const totalReviews = coachReviews?.length || 0;
+  // const isCoachOrHigher = userRoles?.roles && userRoles.roles.some(role =>
+  //   ['coach', 'course-creator', 'admin'].includes(role.toLowerCase())
+  // );
+  // const sortedReviews = [...coachReviews].sort((a, b) => {
+  //   if (reviewSortOrder === 'highest') {
+  //     return (b.rating || 0) - (a.rating || 0);
+  //   } else if (reviewSortOrder === 'lowest') {
+  //     return (a.rating || 0) - (b.rating || 0);
+  //   }
+  //   return 0;
+  // });
 
   // Handle role change
   const handleRoleChange = (value: string | string[] | null) => {
@@ -211,12 +208,12 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
     setSelectedRole('');
   };
 
-  // Handle review sort change
-  const handleReviewSortChange = (value: string | string[] | null) => {
-    if (typeof value === 'string') {
-      setReviewSortOrder(value);
-    }
-  };
+  // TEMPORARILY DISABLED: Review sort handler will be re-enabled once the app is optimized end-to-end
+  // const handleReviewSortChange = (value: string | string[] | null) => {
+  //   if (typeof value === 'string') {
+  //     setReviewSortOrder(value);
+  //   }
+  // };
 
   const roleOptions = [
     { label: tRoles('student'), value: 'student' },
@@ -225,10 +222,11 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
     { label: tRoles('admin'), value: 'admin' },
   ];
 
-  const reviewSortOptions = [
-    { label: t('highestRating'), value: 'highest' },
-    { label: t('lowestRating'), value: 'lowest' },
-  ];
+  // TEMPORARILY DISABLED: Review sort options will be re-enabled once the app is optimized end-to-end
+  // const reviewSortOptions = [
+  //   { label: t('highestRating'), value: 'highest' },
+  //   { label: t('lowestRating'), value: 'lowest' },
+  // ];
 
   // Check if user is superadmin - if so, disable role changes
   const isSuperadmin = userRoles?.roles && userRoles.roles.includes('superadmin');
@@ -307,8 +305,8 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                 );
               })()}
 
-              {/* Reviews - Only show if there are reviews */}
-              {totalReviews > 0 && (
+              {/* TEMPORARILY DISABLED: Reviews display will be re-enabled once the app is optimized end-to-end */}
+              {/* {totalReviews > 0 && (
                 <div className="flex flex-row gap-2 items-center">
                   <StarRating
                     rating={averageRating}
@@ -321,7 +319,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                     ({totalReviews})
                   </span>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -349,8 +347,8 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
           </div>
         </div>
 
-        {/* Professional Profile Information - Only for coaches and above */}
-        {isCoachOrHigher && professionalProfile && (
+        {/* TEMPORARILY DISABLED: Professional Profile section will be re-enabled once the app is optimized end-to-end */}
+        {/* {isCoachOrHigher && professionalProfile && (
           <div className="flex flex-col gap-3 border-t border-card-stroke pt-4">
             <h3 className="text-text-primary">{t('professionalInformation')}</h3>
             <div className="flex flex-col gap-4">
@@ -372,11 +370,11 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
 
-      {/* Courses Section */}
-      <div className="flex flex-col gap-4">
+      {/* TEMPORARILY DISABLED: Student Courses section will be re-enabled once the app is optimized end-to-end */}
+      {/* <div className="flex flex-col gap-4">
         <div className="flex flex-row justify-between items-center">
           <h3>{t('studentCourses')}</h3>
         </div>
@@ -441,10 +439,10 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
         ) : (
           <p className="text-text-secondary">{t('noCoursesFound')}</p>
         )}
-      </div>
+      </div> */}
 
-      {/* Coach Courses Section - Only for coaches and above */}
-      {isCoachOrHigher && (
+      {/* TEMPORARILY DISABLED: Coach Courses section will be re-enabled once the app is optimized end-to-end */}
+      {/* {isCoachOrHigher && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center">
             <h3>{t('coachCourses')}</h3>
@@ -501,10 +499,10 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
             <p className="text-text-secondary">{t('noCoursesFound')}</p>
           )}
         </div>
-      )}
+      )} */}
 
-      {/* Coach Reviews Section - Only for coaches and above */}
-      {isCoachOrHigher && (
+      {/* TEMPORARILY DISABLED: Coach Reviews section will be re-enabled once the app is optimized end-to-end */}
+      {/* {isCoachOrHigher && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center">
             <h3>{t('coachReviews')}</h3>
@@ -554,7 +552,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
             <p className="text-text-secondary">{t('noReviewsFound')}</p>
           )}
         </div>
-      )}
+      )} */}
 
       {/* Confirmation Modal for Role Changes */}
       {showConfirmation && (
