@@ -26,7 +26,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { 
+import {
     TListCategoriesUseCaseResponse,
     TCreateCategoryUseCaseResponse,
     TUpdateCategoryUseCaseResponse,
@@ -61,7 +61,8 @@ function CreateCategoryDialogContent({ onSuccess }: { onSuccess: () => void }) {
 
     useEffect(() => {
         if (createCategoryMutation.isSuccess && createCategoryMutation.data) {
-            presenter.present(createCategoryMutation.data?.data as TCreateCategoryUseCaseResponse, createCategoryViewModel);
+            // @ts-ignore            
+            presenter.present(createCategoryMutation, createCategoryViewModel);
         }
     }, [createCategoryMutation.isSuccess, createCategoryMutation.data, presenter, createCategoryViewModel]);
 
@@ -131,7 +132,8 @@ function EditCategoryDialogContent({
 
     useEffect(() => {
         if (updateCategoryMutation.isSuccess && updateCategoryMutation.data) {
-            updatePresenter.present(updateCategoryMutation.data?.data as TUpdateCategoryUseCaseResponse, updateCategoryViewModel);
+            // @ts-ignore  
+            updatePresenter.present(updateCategoryMutation, updateCategoryViewModel);
         }
     }, [
         updateCategoryMutation.isSuccess,
@@ -142,7 +144,8 @@ function EditCategoryDialogContent({
 
     useEffect(() => {
         if (deleteCategoryMutation.isSuccess && deleteCategoryMutation.data) {
-            deletePresenter.present(deleteCategoryMutation.data?.data as TDeleteCategoryUseCaseResponse, deleteCategoryViewModel);
+            // @ts-ignore
+            deletePresenter.present(deleteCategoryMutation, deleteCategoryViewModel);
         }
     }, [
         deleteCategoryMutation.isSuccess,
@@ -256,7 +259,6 @@ export default function ManageCategories({
     // Content locale - the locale for platform content (may differ from app UI locale)
     const contentLocale = useContentLocale();
 
-    // TODO: Add TRPC query for categories data
     const [categoriesResponse, { refetch: refetchCategories }] =
         trpc.listCategories.useSuspenseQuery({
             withCounts: true
