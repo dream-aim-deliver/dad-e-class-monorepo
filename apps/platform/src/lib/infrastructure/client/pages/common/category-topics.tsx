@@ -1,6 +1,8 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListTopicsByCategoryPresenter } from '../../hooks/use-list-topics-by-category-presenter';
-import { trpc } from '../../trpc/client';
+import { useListTopicsPresenter } from '../../hooks/use-list-topics-presenter';
+import { useListCategoriesPresenter } from '../../hooks/use-categories-presenter';
+import { trpc } from '../../trpc/cms-client';
 import { useEffect, useMemo, useState } from 'react';
 import {
     DefaultError,
@@ -10,7 +12,6 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useListTopicsPresenter } from '../../hooks/use-list-topics-presenter';
 
 const CONTENT_CLASS_NAME = 'mt-8';
 
@@ -31,16 +32,26 @@ export default function CategoryTopics({
     const categoryTopicsTranslations = useTranslations('pages.categoryTopics');
 
     // Data fetching and presentation logic
+    // Fetch categories independently
+    const [categoriesResponse] = trpc.listCategories.useSuspenseQuery({});
+    const [categoriesViewModel, setCategoriesViewModel] = useState<
+        viewModels.TCategoryListViewModel | undefined
+    >(undefined);
+    const { presenter: categoriesPresenter } = useListCategoriesPresenter(
+        setCategoriesViewModel,
+    );
+
+    // Fetch topics by category for relationship mapping
     const [topicsByCategoryResponse] =
         trpc.listTopicsByCategory.useSuspenseQuery({});
     const [topicsByCategoryViewModel, setTopicsByCategoryViewModel] = useState<
         viewModels.TListTopicsByCategoryViewModel | undefined
     >(undefined);
-
     const { presenter } = useListTopicsByCategoryPresenter(
         setTopicsByCategoryViewModel,
     );
     
+    // Fetch all topics
     const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
     const [topicsViewModel, setTopicsViewModel] = useState<
         viewModels.TListTopicsViewModel | undefined
@@ -49,6 +60,13 @@ export default function CategoryTopics({
         useListTopicsPresenter(setTopicsViewModel);
 
     // Present data using useEffect to prevent render loops
+    useEffect(() => {
+        if (categoriesResponse.success === true) {
+            // @ts-ignore - tRPC response structure compatibility issue
+            categoriesPresenter.present(categoriesResponse, categoriesViewModel);
+        }
+    }, [categoriesResponse, categoriesPresenter, categoriesViewModel]);
+
     useEffect(() => {
         if (topicsByCategoryResponse.success === true) {
             // @ts-ignore - tRPC response structure compatibility issue
@@ -64,16 +82,32 @@ export default function CategoryTopics({
     }, [topicsResponse, topicsPresenter, topicsViewModel]);
 
     // Validation and derived state
+    const isCategoriesViewModelValid =
+        categoriesViewModel &&
+        categoriesViewModel.mode === 'default'; 
+    
     const isMapViewModelValid =
         topicsByCategoryViewModel &&
         topicsByCategoryViewModel.mode === 'default';
 
     const isTopicsViewModelValid =
-        topicsViewModel && topicsViewModel.mode === 'default';
+        topicsViewModel && 
+        topicsViewModel.mode === 'default';  
 
+    // Get categories from listCategories (independent of topics)
     const categories = useMemo(() => {
-        if (!isMapViewModelValid) return [];
-        return topicsByCategoryViewModel.data.categories.map((c) => c.name);
+        if (!isCategoriesViewModelValid) return [];
+        return categoriesViewModel.data.categories.map((c) => c.name);
+    }, [isCategoriesViewModelValid, categoriesViewModel]);
+
+    // Create a map of category name to topics for relationship logic
+    const categoryToTopicsMap = useMemo(() => {
+        if (!isMapViewModelValid) return new Map<string, viewModels.TMatrixTopic[]>();
+        const map = new Map<string, viewModels.TMatrixTopic[]>();
+        for (const category of topicsByCategoryViewModel.data.categories) {
+            map.set(category.name, category.topics);
+        }
+        return map;
     }, [isMapViewModelValid, topicsByCategoryViewModel]);
 
     const allTopics = useMemo(() => {
@@ -110,7 +144,6 @@ export default function CategoryTopics({
     ]);
 
     // URL synchronization
-    // TODO: Validate whether this is truly necessary
     useEffect(() => {
         const url = new URL(window.location.toString());
         url.searchParams.set('topics', selectedTopics.join(','));
@@ -118,12 +151,13 @@ export default function CategoryTopics({
     }, [selectedTopics]);
 
     // Loading state
-    if (!topicsByCategoryViewModel || !topicsViewModel) {
+    if (!categoriesViewModel || !topicsByCategoryViewModel || !topicsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     // Error state
     if (
+        categoriesViewModel.mode === 'kaboom' ||
         topicsByCategoryViewModel.mode === 'kaboom' ||
         topicsViewModel.mode === 'kaboom'
     ) {
@@ -155,12 +189,8 @@ export default function CategoryTopics({
     );
 
     const renderCategoryContent = (category: string) => {
-        if (!isMapViewModelValid) return null;
-        const categoryItem = topicsByCategoryViewModel.data.categories.find(
-            (c) => c.name === category,
-        );
-        if (!categoryItem) return null;
-        const topics = categoryItem.topics || [];
+        // Get topics for this category from the relationship map
+        const topics = categoryToTopicsMap.get(category) || [];
 
         return (
             <Tabs.Content
