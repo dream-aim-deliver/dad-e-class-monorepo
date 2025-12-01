@@ -2245,7 +2245,7 @@ export const EN: TDictionary = {
     },
     manageCategories: {
       title: 'Manage Categories',
-      description: 'Maximum 4 topics for each platform',
+      description: 'Maximum 4 Categories for each platform',
       createCategory: 'New Category',
       deleteCategoryConfirmation: 'Are you sure you want to delete this category?',
     },
