@@ -16,6 +16,7 @@ import { useSession } from 'next-auth/react';
 import { groupOfferings } from '../../utils/group-offerings';
 
 function AvailableCoachings() {
+    const router = useRouter();
     const [availableCoachingsResponse] =
         trpc.listAvailableCoachings.useSuspenseQuery({});
     const [availableCoachingsViewModel, setAvailableCoachingsViewModel] =
@@ -63,9 +64,8 @@ function AvailableCoachings() {
             locale={locale}
             availableCoachingSessionsData={groupedOfferings}
             onClickBuyMoreSessions={() => {
-                // TODO: Implement buy more sessions functionality
+                router.push('/checkout');
             }}
-            hideButton
         />
     );
 }
@@ -131,7 +131,7 @@ export default function CoachingOfferingsPanel() {
                             hideButton
                             availableCoachingSessionsData={[]}
                             onClickBuyMoreSessions={() => {
-                                // TODO: Implement buy more sessions functionality
+                                router.push('/checkout');
                             }}
                         />
                     }

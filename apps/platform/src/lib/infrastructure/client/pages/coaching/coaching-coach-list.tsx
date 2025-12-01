@@ -1,7 +1,8 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useMemo, useState } from 'react';
 import { useListCoachesPresenter } from '../../hooks/use-coaches-presenter';
+import useClientSidePagination from '../../utils/use-client-side-pagination';
 import {
     Button,
     CardListLayout,
@@ -13,7 +14,6 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
-import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { useSession } from 'next-auth/react';
 
 interface CoachListProps {
@@ -23,7 +23,9 @@ interface CoachListProps {
 export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
     const session = useSession();
 
-    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({});
+    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
+        publicCoaches: true,
+    });
     const [coachesViewModel, setCoachesViewModel] = useState<
         viewModels.TCoachListViewModel | undefined
     >(undefined);
