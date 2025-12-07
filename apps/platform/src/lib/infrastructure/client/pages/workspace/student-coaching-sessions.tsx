@@ -35,6 +35,7 @@ export default function StudentCoachingSessions() {
         onSuccess: () => {
             // Invalidate related queries to refetch fresh data
             utils.listStudentCoachingSessions.invalidate();
+            utils.listCoachCoachingSessions.invalidate();
         },
     });
 
@@ -215,6 +216,7 @@ export default function StudentCoachingSessions() {
         // This is IMPORTANT: It refreshes the UI so the session card shows
         // "has review" instead of "add review" and displays the new review data
         utils.listStudentCoachingSessions.invalidate();
+        utils.listCoachCoachingSessions.invalidate();
     };
 
     const handleReviewSkip = () => {
@@ -250,8 +252,10 @@ export default function StudentCoachingSessions() {
         }
 
         // Refetch to get fresh data immediately before closing modal
-        await refetchStudentCoachingSessions();
         utils.getCoachAvailability.invalidate();
+        utils.listCoachCoachingSessions.invalidate();
+        utils.listStudentCoachingSessions.invalidate();
+        await refetchStudentCoachingSessions();
 
         // Success - close modal and reset state
         setIsCancelModalOpen(false);
@@ -283,8 +287,10 @@ export default function StudentCoachingSessions() {
         }
 
         // Refetch to get fresh data immediately before navigating
-        await refetchStudentCoachingSessions();
         utils.getCoachAvailability.invalidate();
+        utils.listCoachCoachingSessions.invalidate();
+        utils.listStudentCoachingSessions.invalidate();
+        await refetchStudentCoachingSessions();
 
         // Redirect to the coach's calendar page
         router.push(`/coaches/${coachUsername}`);
