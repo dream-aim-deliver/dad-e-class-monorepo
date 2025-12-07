@@ -13,6 +13,5 @@ export enum CoachCourseTab {
     STUDENTS = 'students',
     ASSIGNMENTS = 'assignments',
     COACHES = 'coaches',
-    GROUPS = 'groups',
     MATERIAL = 'material',
 }
