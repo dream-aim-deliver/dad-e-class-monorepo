@@ -77,8 +77,10 @@ export default function StudentCoachingSessions() {
     const { presenter: unschedulePresenter } = useUnscheduleCoachingSessionPresenter(
         setUnscheduleViewModel,
     );
+
     // @ts-ignore
     presenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
+
     // @ts-ignore
     coachesPresenter.present(coachesResponse, coachesViewModel);
 
@@ -200,8 +202,8 @@ export default function StudentCoachingSessions() {
         // @ts-ignore Present the result using the presenter
         createReviewPresenter.present(result, createReviewViewModel);
 
-        // Check if the presentation resulted in an error
-        if (createReviewViewModel && createReviewViewModel.mode === 'kaboom') {
+        // Check if the mutation failed using the result directly (viewModel state is async)
+        if (!result.success) {
             // Error occurred, don't proceed with success actions
             return;
         }
@@ -209,7 +211,7 @@ export default function StudentCoachingSessions() {
         // Success - update UI state and invalidate cache
         setReviewSubmitted(true);
         // Invalidate and refetch the sessions to show the updated review
-        // This is IMPORTANT: It refreshes the UI so the session card shows 
+        // This is IMPORTANT: It refreshes the UI so the session card shows
         // "has review" instead of "add review" and displays the new review data
         utils.listStudentCoachingSessions.invalidate();
     };
@@ -236,10 +238,12 @@ export default function StudentCoachingSessions() {
             coachingSessionId: numericId,
             declineReason: cancelReason,
         });
-        //@ts-ignore Present the response to the view model
+
+        //@ts-ignore
         unschedulePresenter.present(response, unscheduleViewModel);
-        // Check if the presentation resulted in an error
-        if (unscheduleViewModel && unscheduleViewModel.mode === 'kaboom') {
+
+        // Check if the mutation failed using the result directly (viewModel state is async)
+        if (!response.success) {
             // Error occurred, don't proceed with success actions
             return;
         }
@@ -271,8 +275,8 @@ export default function StudentCoachingSessions() {
         // @ts-ignore Present the response to the view model
         unschedulePresenter.present(response, unscheduleViewModel);
 
-        // Check if the presentation resulted in an error
-        if (unscheduleViewModel && unscheduleViewModel.mode === 'kaboom') {
+        // Check if the mutation failed using the result directly (viewModel state is async)
+        if (!response.success) {
             // Error occurred, don't proceed with success actions
             return;
         }
@@ -667,6 +671,7 @@ export default function StudentCoachingSessions() {
                             if (cancelSessionId) handleCancel(cancelSessionId, reason);
                         }}
                         isLoading={unscheduleMutation.isPending}
+                        isError={unscheduleViewModel?.mode === 'kaboom'}
                     />
                 </div>
             )}

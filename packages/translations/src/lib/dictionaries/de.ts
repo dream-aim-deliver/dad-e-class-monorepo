@@ -546,6 +546,7 @@ export const DE: TDictionary = {
       yesCancelText: 'Ja, Abbrechen',
       modalText: 'Möchten Sie diese Coaching-Sitzung wirklich abbrechen?',
       cancelReasonPlaceholder: 'Gib hier deinen Stornierungsgrund ein...',
+      errorMessage: 'Beim Stornieren der Sitzung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
     },
     deleteConfirmationModal: {
       noText: 'NEIN',
