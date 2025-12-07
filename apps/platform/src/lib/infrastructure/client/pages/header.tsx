@@ -75,7 +75,6 @@ export default function Header({
     locale,
     session,
 }: HeaderProps) {
-    // TODO: handle notifications
     const pathname = usePathname();
     const router = useRouter();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -123,6 +122,10 @@ export default function Header({
         // logout is handled by the Navbar component itself
     };
 
+    const handleNotificationClick = () => {
+        router.push(`/${locale}/workspace/notifications`);
+    };
+
     if (platformViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
@@ -159,6 +162,7 @@ export default function Header({
             dropdownOptions={dropdownOptions}
             onDropdownSelection={handleDropdownSelection}
             dropdownTriggerText={t('workspace')}
+            onNotificationClick={handleNotificationClick}
         >
             <NavLinks locale={locale} pathname={pathname} />
         </Navbar>
