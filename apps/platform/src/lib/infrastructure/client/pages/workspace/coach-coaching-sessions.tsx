@@ -46,6 +46,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         newSearchParams.set('role', roleValue);
         router.push(`?${newSearchParams.toString()}`);
     };
+
     const [coachCoachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachCoachingSessions.useSuspenseQuery({});
     const utils = trpc.useUtils();
 

@@ -37,6 +37,7 @@ export default function StudentCoachingSessions() {
             utils.listStudentCoachingSessions.invalidate();
         },
     });
+
     const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation();
 
     const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
