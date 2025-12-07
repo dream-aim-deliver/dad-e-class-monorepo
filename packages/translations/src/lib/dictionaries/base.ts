@@ -547,6 +547,7 @@ export const DictionarySchema = z.object({
       yesCancelText: z.string(),
       modalText: z.string(),
       cancelReasonPlaceholder: z.string(),
+      errorMessage: z.string(),
     }),
     deleteConfirmationModal: z.object({
       noText: z.string(),

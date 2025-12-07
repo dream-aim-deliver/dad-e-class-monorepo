@@ -63,6 +63,16 @@ export default class ListCoachCoachingSessionsPresenter extends BasePresenter<
             TListCoachCoachingSessionsResponseMiddleware
         >,
     ): viewModels.TListCoachCoachingSessionsViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {

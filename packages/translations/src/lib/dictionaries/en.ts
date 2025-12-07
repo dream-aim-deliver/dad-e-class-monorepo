@@ -543,6 +543,7 @@ export const EN: TDictionary = {
       yesCancelText: 'Yes, cancel',
       modalText: 'Are you sure you want to cancel this coaching session?',
       cancelReasonPlaceholder: 'Enter your reason for cancelling...',
+      errorMessage: 'An error occurred while cancelling the session. Please try again.',
     },
     deleteConfirmationModal: {
       noText: 'Go Back',

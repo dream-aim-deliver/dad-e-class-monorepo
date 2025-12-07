@@ -8,11 +8,13 @@ import { IconClose } from '../icons/icon-close';
 import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import { TextAreaInput } from '../text-areaInput';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import Banner from '../banner';
 
 export interface CancelCoachingSessionModalProps extends isLocalAware {
     onClose: () => void;
     onCancel: (reason: string) => void;
     isLoading?: boolean;
+    isError?: boolean;
 }
 
 /**
@@ -36,6 +38,7 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
     onCancel,
     locale,
     isLoading = false,
+    isError = false,
 }) => {
     const dictionary = getDictionary(locale);
     const [cancelReason, setCancelReason] = useState('');
@@ -83,6 +86,12 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
                         iconLeft={isLoading ? <IconLoaderSpinner classNames="animate-spin" /> : undefined}
                     />
                 </div>
+                {isError && (
+                    <Banner
+                        style="error"
+                        description={dictionary.components.coachingSessionCancelModal.errorMessage || 'An error occurred. Please try again.'}
+                    />
+                )}
             </div>
         </div>
     );

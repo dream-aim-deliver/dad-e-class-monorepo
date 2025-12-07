@@ -46,16 +46,13 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         newSearchParams.set('role', roleValue);
         router.push(`?${newSearchParams.toString()}`);
     };
-    const [studentCoachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachCoachingSessions.useSuspenseQuery({}, {
-        refetchInterval: 2 * 60 * 1000,
-    });
-
+    const [coachCoachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachCoachingSessions.useSuspenseQuery({});
     const utils = trpc.useUtils();
 
     const scheduleMutation = trpc.scheduleCoachingSession.useMutation();
     const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation();
 
-    const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
+    const [coachCoachingSessionsViewModel, setCoachCoachingSessionsViewModel] = useState<
         viewModels.TListCoachCoachingSessionsViewModel | undefined
     >(undefined);
 
@@ -68,7 +65,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     >(undefined);
 
     const { presenter } = useListCoachCoachingSessionsPresenter(
-        setStudentCoachingSessionsViewModel,
+        setCoachCoachingSessionsViewModel,
     );
 
     const { presenter: schedulePresenter } = useScheduleCoachingSessionPresenter(
@@ -80,7 +77,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     );
 
     // @ts-ignore
-    presenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
+    presenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
 
     // Helper functions for navigation and actions
     const handleStudentClick = (studentId: number) => {
@@ -105,11 +102,11 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
     // Get all sessions from the view model
     const allSessions = useMemo(() => {
-        if (!studentCoachingSessionsViewModel || studentCoachingSessionsViewModel.mode !== 'default') {
+        if (!coachCoachingSessionsViewModel || coachCoachingSessionsViewModel.mode !== 'default' || !coachCoachingSessionsViewModel.data) {
             return [];
         }
-        return (studentCoachingSessionsViewModel.data as TListCoachCoachingSessionsSuccessResponse['data']).sessions;
-    }, [studentCoachingSessionsViewModel]);
+        return coachCoachingSessionsViewModel.data.sessions || [];
+    }, [coachCoachingSessionsViewModel]);
 
     // Filter sessions by status for each tab
     const upcomingSessions = useMemo(() => {
@@ -165,8 +162,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         // @ts-ignore
         schedulePresenter.present(result, scheduleViewModel);
 
-        // Check if the presentation resulted in an error
-        if (scheduleViewModel && scheduleViewModel.mode === 'kaboom') {
+        // Check if the mutation failed using the result directly (viewModel state is async)
+        if (!result.success) {
             // Error occurred, don't close modal - let user see the error
             return;
         }
@@ -187,18 +184,17 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         if (!sessionId) return;
 
         // Unschedule the coaching session
-        // declineReason is supported by backend but not yet in @dream-aim-deliver/e-class-cms-rest types
-        const unscheduleResult = await unscheduleMutation.mutateAsync({
+
+        const response = await unscheduleMutation.mutateAsync({
             coachingSessionId: sessionId,
             declineReason,
-        } as Parameters<typeof unscheduleMutation.mutateAsync>[0]);
+        });
 
-        // Present the unschedule result
         // @ts-ignore
-        unschedulePresenter.present(unscheduleResult, unscheduleViewModel);
+        unschedulePresenter.present(response, unscheduleViewModel);
 
-        // Check if unschedule was successful
-        if (unscheduleViewModel && unscheduleViewModel.mode === 'kaboom') {
+        // Check if the mutation failed using the result directly (viewModel state is async)
+        if (!response.success) {
             return;
         }
 
@@ -266,11 +262,11 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         }
     };
 
-    if (!studentCoachingSessionsViewModel) {
+    if (!coachCoachingSessionsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    if (studentCoachingSessionsViewModel.mode === 'kaboom') {
+    if (coachCoachingSessionsViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
     }
 
