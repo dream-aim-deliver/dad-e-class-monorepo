@@ -235,12 +235,13 @@ export default function StudentCoachingSessions() {
     };
 
     // Cancel handler - just unschedule the session
-    const handleCancel = async (sessionId: number | string) => {
+    const handleCancel = async (sessionId: number | string, cancelReason: string) => {
         const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
         setIsCancelModalOpen(false);
         setCancelSessionId(null);
         const response = await unscheduleMutation.mutateAsync({
             coachingSessionId: numericId,
+            declineReason: cancelReason,
         });
         //@ts-ignore Present the response to the view model
         unschedulePresenter.present(response, unscheduleViewModel);
@@ -265,6 +266,7 @@ export default function StudentCoachingSessions() {
         const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
         const response = await unscheduleMutation.mutateAsync({
             coachingSessionId: numericId,
+            declineReason: 'Rescheduling session',
         });
 
         // @ts-ignore Present the response to the view model
@@ -661,8 +663,8 @@ export default function StudentCoachingSessions() {
                             setIsCancelModalOpen(false);
                             setCancelSessionId(null);
                         }}
-                        onCancel={() => {
-                            if (cancelSessionId) handleCancel(cancelSessionId);
+                        onCancel={(reason: string) => {
+                            if (cancelSessionId) handleCancel(cancelSessionId, reason);
                         }}
                     />
                 </div>

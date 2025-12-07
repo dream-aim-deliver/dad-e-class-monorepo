@@ -34,6 +34,7 @@ interface BookCoachPageContentProps {
     defaultSession: ScheduledOffering | null;
     returnTo?: string;
     lessonComponentId?: string;
+    onBookingInitiated?: () => void;
 }
 
 function BookCoachPageContent({
@@ -41,6 +42,7 @@ function BookCoachPageContent({
     defaultSession,
     returnTo,
     lessonComponentId,
+    onBookingInitiated,
 }: BookCoachPageContentProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -108,6 +110,7 @@ function BookCoachPageContent({
 
         // TODO: Check if there is availability for the selected time
 
+        // briefing and lessonComponentId are supported by the backend but not yet in @dream-aim-deliver/e-class-cms-rest types
         requestSessionMutation.mutate(
             {
                 coachUsername,
@@ -115,7 +118,7 @@ function BookCoachPageContent({
                 startTime: newSession.startTime.toISOString(),
                 briefing,
                 ...(lessonComponentId && { lessonComponentId }),
-            },
+            } as Parameters<typeof requestSessionMutation.mutate>[0],
             {
                 onSuccess: (data) => {
                     if (!data.success) {
@@ -126,6 +129,7 @@ function BookCoachPageContent({
                         return;
                     }
                     setBookingSuccess(true);
+                    onBookingInitiated?.();
                     // Query invalidation handled by mutation's onSuccess callback
                 },
                 onError: (error) => {
@@ -260,6 +264,9 @@ function BookCoachWithSessionPage({
 
     const sessionIdNumber = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
 
+    // Track if booking was initiated to avoid showing error after successful request
+    const [bookingInitiated, setBookingInitiated] = useState(false);
+
     const [coachingSessionResponse] =
         trpc.getStudentCoachingSession.useSuspenseQuery({ id: sessionIdNumber });
     const [coachingSessionViewModel, setCoachingSessionViewModel] = useState<
@@ -281,7 +288,15 @@ function BookCoachWithSessionPage({
 
     const coachingSession = coachingSessionViewModel.data;
 
-    if (coachingSession.session.status !== 'unscheduled') {
+    // Guard against undefined data or session
+    if (!coachingSession?.session) {
+        return <DefaultError locale={locale} />;
+    }
+
+    // Only check unscheduled status if booking hasn't been initiated
+    // After booking, status changes to 'requested' which would incorrectly trigger error
+    // When bookingInitiated is true, we skip this check so user can continue viewing calendar
+    if (coachingSession.session.status !== 'unscheduled' && !bookingInitiated) {
         return (
             <DefaultError
                 locale={locale}
@@ -317,6 +332,7 @@ function BookCoachWithSessionPage({
                 defaultSession={defaultSession}
                 returnTo={returnTo}
                 lessonComponentId={lessonComponentId}
+                onBookingInitiated={() => setBookingInitiated(true)}
             />
         </div>
     );

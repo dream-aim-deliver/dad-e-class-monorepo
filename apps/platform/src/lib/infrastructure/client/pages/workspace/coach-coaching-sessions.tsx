@@ -197,12 +197,13 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
     };
 
-    const handleConfirmDecline = async () => {
+    const handleConfirmDecline = async (declineReason: string) => {
         if (!sessionId) return;
 
         // Step 1: Unschedule the coaching session
         const unscheduleResult = await unscheduleMutation.mutateAsync({
-            coachingSessionId: sessionId
+            coachingSessionId: sessionId,
+            declineReason,
         });
 
         // Present the unschedule result
@@ -227,7 +228,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     };
 
     // Unified confirm handler using switch condition
-    const handleConfirm = async () => {
+    const handleConfirm = async (reason?: string) => {
         if (!sessionId || !modalType) return;
 
         switch (modalType) {
@@ -235,7 +236,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                 await handleConfirmAccept();
                 break;
             case 'decline':
-                await handleConfirmDecline();
+                await handleConfirmDecline(reason || '');
                 break;
         }
     };
@@ -264,7 +265,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                     message: t('confirmDeclineMessage'),
                     confirmText: t('decline'),
                     isLoading: unscheduleMutation.isPending,
-                    viewModel: unscheduleViewModel
+                    viewModel: unscheduleViewModel,
+                    declineReasonPlaceholder: t('declineReasonPlaceholder'),
                 };
             default:
                 return {
@@ -522,6 +524,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                 isLoading={getModalConfig().isLoading}
                 viewModel={getModalConfig().viewModel}
                 locale={locale}
+                declineReasonPlaceholder={getModalConfig().declineReasonPlaceholder}
             />
         </div>
     );
