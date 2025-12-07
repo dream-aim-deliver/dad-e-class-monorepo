@@ -9,6 +9,8 @@ export const RequestCoachingSessionRequestSchema = z.object({
   sessionId: z.number(),
   coachUsername: z.string(),
   startTime: z.string(),
+  briefing: z.string(),
+  lessonComponentId: z.string().optional(),
 });
 
 export type TRequestCoachingSessionRequest = z.infer<typeof RequestCoachingSessionRequestSchema>;

@@ -25,6 +25,7 @@ export interface CourseOrderHistoryProps extends BaseOrderHistoryCardProps {
     courseTitle: string;
     courseImageUrl: string;
     onClickCourse: () => void;
+    coachingSessionCount?: number | null;
 }
 
 /* Coaching Variant */
@@ -161,7 +162,9 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
                             />
                         </div>
                         <p className="text-text-secondary text-sm md:text-md">
-                            {dictionary.course}
+                            {props.coachingSessionCount && props.coachingSessionCount > 0
+                                ? dictionary.courseWithCoaching
+                                : dictionary.course}
                         </p>
                     </div>
                     <Button
@@ -180,6 +183,19 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
                         text={props.courseTitle}
                         onClick={props.onClickCourse}
                     />
+                    {props.coachingSessionCount && props.coachingSessionCount > 0 && (
+                        <div className="flex flex-row items-center gap-2 mt-1">
+                            <div className="flex bg-base-neutral-700 border border-base-neutral-600 rounded-medium">
+                                <IconCoachingSession
+                                    classNames="text-text-primary m-1"
+                                    size="4"
+                                />
+                            </div>
+                            <p className="text-text-secondary text-xs md:text-sm">
+                                {props.coachingSessionCount} {dictionary.coachingSessionsIncluded}
+                            </p>
+                        </div>
+                    )}
                 </div>
             )}
 

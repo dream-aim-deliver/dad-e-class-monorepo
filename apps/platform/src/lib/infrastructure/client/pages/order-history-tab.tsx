@@ -266,6 +266,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             total={`${transaction.content.unitPrice} ${transaction.currency}`}
             courseTitle={course.title}
             courseImageUrl={course.imageUrl || ''}
+            coachingSessionCount={course.coachingSessionCount}
             onClickCourse={() => {
               router.push(`/courses/${course.slug}`);
             }}

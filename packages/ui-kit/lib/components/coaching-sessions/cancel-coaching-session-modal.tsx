@@ -1,12 +1,16 @@
+'use client';
+
 import * as React from 'react';
+import { useState } from 'react';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
 import { IconClose } from '../icons/icon-close';
+import { TextAreaInput } from '../text-areaInput';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface CancelCoachingSessionModalProps extends isLocalAware {
     onClose: () => void;
-    onCancel: () => void;
+    onCancel: (reason: string) => void;
 }
 
 /**
@@ -31,9 +35,10 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
     locale,
 }) => {
     const dictionary = getDictionary(locale);
+    const [cancelReason, setCancelReason] = useState('');
 
     return (
-        <div className="flex flex-col items-end gap-4 p-6 rounded-lg border border-card-stroke bg-card-fill max-w-[340px] shadow-[0_4px_12px_rgba(12,10,9,1)] relative">
+        <div className="flex flex-col items-end gap-4 p-6 rounded-lg border border-card-stroke bg-card-fill max-w-[400px] shadow-[0_4px_12px_rgba(12,10,9,1)] relative">
             <div className="absolute right-0 top-0">
                 <IconButton
                     data-testid="close-modal-button"
@@ -48,6 +53,12 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
                 <p className='text-xl text-text-primary'>
                     {dictionary.components.coachingSessionCancelModal.modalText}
                 </p>
+                <TextAreaInput
+                    className="min-h-[80px]"
+                    placeholder={dictionary.components.coachingSessionCancelModal.cancelReasonPlaceholder}
+                    value={cancelReason}
+                    setValue={setCancelReason}
+                />
                 <div className='flex justify-between items-center w-full gap-2'>
                     <Button
                         className='w-full'
@@ -61,7 +72,7 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
                         variant="primary"
                         size="medium"
                         text={dictionary.components.coachingSessionCancelModal.yesCancelText}
-                        onClick={onCancel}
+                        onClick={() => onCancel(cancelReason)}
                     />
                 </div>
             </div>

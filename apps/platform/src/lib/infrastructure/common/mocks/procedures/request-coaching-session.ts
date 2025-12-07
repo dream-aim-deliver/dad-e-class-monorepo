@@ -4,14 +4,16 @@ import { t } from '../trpc-setup';
 export const requestCoachingSession = t.procedure
     .input(useCaseModels.RequestCoachingSessionRequestSchema)
     .mutation<useCaseModels.TRequestCoachingSessionUseCaseResponse>((opts) => {
-        const { sessionId, coachUsername, startTime } = opts.input;
+        const { sessionId, coachUsername, startTime, briefing, lessonComponentId } = opts.input;
 
         // Mock logic: Create a new coaching session request
         // In a real app, this would call the backend
         console.log(`Requesting coaching session:`, {
             sessionId,
             coachUsername,
-            startTime
+            startTime,
+            briefing,
+            lessonComponentId,
         });
 
         return {

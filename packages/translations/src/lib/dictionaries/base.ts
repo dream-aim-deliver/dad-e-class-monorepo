@@ -546,6 +546,7 @@ export const DictionarySchema = z.object({
       noText: z.string(),
       yesCancelText: z.string(),
       modalText: z.string(),
+      cancelReasonPlaceholder: z.string(),
     }),
     deleteConfirmationModal: z.object({
       noText: z.string(),
@@ -1801,6 +1802,8 @@ export const DictionarySchema = z.object({
     orderHistoryCard: z.object({
       orderIdLabel: z.string(),
       course: z.string(),
+      courseWithCoaching: z.string(),
+      coachingSessionsIncluded: z.string(),
       at: z.string(),
       invoice: z.string(),
       total: z.string(),
@@ -2115,6 +2118,7 @@ export const DictionarySchema = z.object({
       accept: z.string(),
       confirmDecline: z.string(),
       confirmDeclineMessage: z.string(),
+      declineReasonPlaceholder: z.string(),
       decline: z.string(),
       roleCoach: z.string(),
       roleStudent: z.string(),
