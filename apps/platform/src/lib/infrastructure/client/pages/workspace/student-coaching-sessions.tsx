@@ -28,7 +28,7 @@ export default function StudentCoachingSessions() {
     const [activeTab, setActiveTab] = useState<string>('upcoming');
     const router = useRouter();
 
-    const [studentCoachingSessionsResponse] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
+    const [studentCoachingSessionsResponse, { refetch: refetchStudentCoachingSessions }] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
     const utils = trpc.useUtils();
 
     const createReviewMutation = trpc.createCoachingSessionReview.useMutation({
@@ -37,13 +37,7 @@ export default function StudentCoachingSessions() {
             utils.listStudentCoachingSessions.invalidate();
         },
     });
-    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation({
-        onSuccess: () => {
-            // Invalidate related queries to refetch fresh data
-            utils.listStudentCoachingSessions.invalidate();
-            utils.getCoachAvailability.invalidate();
-        },
-    });
+    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation();
 
     const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
         viewModels.TStudentCoachingSessionsListViewModel | undefined
@@ -237,8 +231,7 @@ export default function StudentCoachingSessions() {
     // Cancel handler - just unschedule the session
     const handleCancel = async (sessionId: number | string, cancelReason: string) => {
         const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
-        setIsCancelModalOpen(false);
-        setCancelSessionId(null);
+
         const response = await unscheduleMutation.mutateAsync({
             coachingSessionId: numericId,
             declineReason: cancelReason,
@@ -250,8 +243,14 @@ export default function StudentCoachingSessions() {
             // Error occurred, don't proceed with success actions
             return;
         }
-        // Invalidate and refetch the sessions list to reflect the change
-        utils.listStudentCoachingSessions.invalidate();
+
+        // Refetch to get fresh data immediately before closing modal
+        await refetchStudentCoachingSessions();
+        utils.getCoachAvailability.invalidate();
+
+        // Success - close modal and reset state
+        setIsCancelModalOpen(false);
+        setCancelSessionId(null);
     };
 
     // Open cancel modal instead of direct cancel
@@ -278,8 +277,9 @@ export default function StudentCoachingSessions() {
             return;
         }
 
-        // Invalidate and refetch the sessions list to reflect the change
-        utils.listStudentCoachingSessions.invalidate();
+        // Refetch to get fresh data immediately before navigating
+        await refetchStudentCoachingSessions();
+        utils.getCoachAvailability.invalidate();
 
         // Redirect to the coach's calendar page
         router.push(`/coaches/${coachUsername}`);
@@ -666,6 +666,7 @@ export default function StudentCoachingSessions() {
                         onCancel={(reason: string) => {
                             if (cancelSessionId) handleCancel(cancelSessionId, reason);
                         }}
+                        isLoading={unscheduleMutation.isPending}
                     />
                 </div>
             )}

@@ -5,12 +5,14 @@ import { useState } from 'react';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
 import { IconClose } from '../icons/icon-close';
+import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import { TextAreaInput } from '../text-areaInput';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface CancelCoachingSessionModalProps extends isLocalAware {
     onClose: () => void;
     onCancel: (reason: string) => void;
+    isLoading?: boolean;
 }
 
 /**
@@ -33,6 +35,7 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
     onClose,
     onCancel,
     locale,
+    isLoading = false,
 }) => {
     const dictionary = getDictionary(locale);
     const [cancelReason, setCancelReason] = useState('');
@@ -47,6 +50,7 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
                     size="small"
                     onClick={onClose}
                     className="text-button-text-text p-1"
+                    disabled={isLoading}
                 />
             </div>
             <div className='flex flex-col gap-4 w-full'>
@@ -66,13 +70,17 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
                         size="medium"
                         text={dictionary.components.coachingSessionCancelModal.noText}
                         onClick={onClose}
+                        disabled={isLoading}
                     />
                     <Button
                         className="w-full"
                         variant="primary"
                         size="medium"
-                        text={dictionary.components.coachingSessionCancelModal.yesCancelText}
+                        text={isLoading ? '' : dictionary.components.coachingSessionCancelModal.yesCancelText}
                         onClick={() => onCancel(cancelReason)}
+                        disabled={isLoading}
+                        hasIconLeft={isLoading}
+                        iconLeft={isLoading ? <IconLoaderSpinner classNames="animate-spin" /> : undefined}
                     />
                 </div>
             </div>
