@@ -1,15 +1,17 @@
 'use client';
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import React, { Suspense, useEffect } from 'react';
-import { Button, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { Button, DefaultLoading, TextAreaInput } from '@maany_shr/e-class-ui-kit';
 import ConfirmTimeContent from '../../common/confirm-time-content';
 import ChooseCoachingSessionContent from './choose-coaching-session-content';
 
 interface ScheduledOfferingContentProps {
     offering: ScheduledOffering | null;
     setOffering: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
+    briefing: string;
+    setBriefing: React.Dispatch<React.SetStateAction<string>>;
     onSubmit: () => void;
     isSubmitting?: boolean;
     submitError?: string;
@@ -23,6 +25,8 @@ interface ScheduledOfferingContentProps {
 export default function ScheduledOfferingContent({
     offering: session,
     setOffering: setSession,
+    briefing,
+    setBriefing,
     onSubmit,
     submitError,
     isSubmitting,
@@ -33,6 +37,7 @@ export default function ScheduledOfferingContent({
     closeDialog,
 }: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.coaching');
 
     if (!session) return null;
 
@@ -78,6 +83,27 @@ export default function ScheduledOfferingContent({
                 <Suspense fallback={<DefaultLoading locale={locale} />}>
                     <ChooseCoachingSessionContent setSession={setSession} />
                 </Suspense>
+            )}
+            {session.session && (
+                <div className="flex flex-col gap-3">
+                    <h3 className="text-lg font-semibold text-text-primary">
+                        {t('briefingTitle')}
+                    </h3>
+                    <p className="text-text-secondary text-sm">
+                        {t('briefingDescription')}
+                    </p>
+                    <ul className="list-disc list-inside text-text-secondary text-sm space-y-1">
+                        <li>{t('briefingMotivation')}</li>
+                        <li>{t('briefingSkills')}</li>
+                        <li>{t('briefingOutcome')}</li>
+                    </ul>
+                    <TextAreaInput
+                        className="min-h-[104px]"
+                        placeholder={t('briefingPlaceholder')}
+                        value={briefing}
+                        setValue={setBriefing}
+                    />
+                </div>
             )}
             {session.session && session.startTime && session.endTime && (
                 <ConfirmTimeContent

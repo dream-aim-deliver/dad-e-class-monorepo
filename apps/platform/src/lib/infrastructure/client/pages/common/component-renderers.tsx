@@ -382,7 +382,7 @@ function LinksComponent({
     );
 }
 
-function CourseCoachList({ sessionId, returnTo }: { sessionId: number | string; returnTo?: string }) {
+function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId: number | string; lessonComponentId: string; returnTo?: string }) {
     const courseSlug = useCourseSlug();
     const session = useSession();
     const locale = useLocale() as TLocale;
@@ -439,7 +439,7 @@ function CourseCoachList({ sessionId, returnTo }: { sessionId: number | string; 
                         // TODO: Implement profile click logic
                     }}
                     onClickBook={() => {
-                        const url = `/coaches/${coach.username}/book?sessionId=${sessionId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}`;
+                        const url = `/coaches/${coach.username}/book?sessionId=${sessionId}&lessonComponentId=${lessonComponentId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}`;
                         router.push(url);
                     }}
                     locale={locale}
@@ -477,7 +477,7 @@ function CoachingSessionComponent({
             // Construct the return URL from current location
             const currentSearch = searchParams.toString();
             const returnTo = pathname + (currentSearch ? `?${currentSearch}` : '');
-            return <CourseCoachList sessionId={element.progress.session.id} returnTo={returnTo} />;
+            return <CourseCoachList sessionId={element.progress.session.id} lessonComponentId={element.id} returnTo={returnTo} />;
         }
         return (
             <div className="flex flex-col gap-4">

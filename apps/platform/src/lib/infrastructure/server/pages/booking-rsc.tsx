@@ -8,6 +8,7 @@ interface BookingServerComponentProps {
     coachUsername: string;
     sessionId?: string;
     returnTo?: string;
+    lessonComponentId?: string;
 }
 
 export default async function BookingServerComponent(
@@ -34,7 +35,7 @@ export default async function BookingServerComponent(
 
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>
-            <BookCoachPage coachUsername={props.coachUsername} sessionId={sessionIdNumber} returnTo={props.returnTo} />
+            <BookCoachPage coachUsername={props.coachUsername} sessionId={sessionIdNumber} returnTo={props.returnTo} lessonComponentId={props.lessonComponentId} />
         </Suspense>
     );
 }
