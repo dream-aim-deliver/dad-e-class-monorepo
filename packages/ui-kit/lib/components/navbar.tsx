@@ -27,6 +27,7 @@ interface NavbarProps extends isLocalAware {
   dropdownOptions?: { label: string; value: string }[];
   onDropdownSelection?: (selected: string) => void;
   dropdownTriggerText?: string;
+  onNotificationClick?: () => void;
 }
 
 interface NavBarDropdownProps {
@@ -169,6 +170,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   dropdownOptions = [],
   onDropdownSelection,
   dropdownTriggerText = '',
+  onNotificationClick,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dictionary = getDictionary(locale);
@@ -239,7 +241,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         {isLoggedIn ? (
           <>
             {userProfile || defaultUserProfile}
-            <div className="relative flex items-center">
+            <div
+              className="relative flex items-center"
+              onClick={onNotificationClick}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && onNotificationClick?.()}
+            >
               <IconChat size="6" classNames="cursor-pointer" />
               {notificationCount > 0 && (
                 <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
@@ -301,7 +309,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   isMobile={true}
                 />
               </div>
-              <div className="relative flex items-center">
+              <div
+                className="relative flex items-center"
+                onClick={onNotificationClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && onNotificationClick?.()}
+              >
                 <IconChat size="6" classNames="cursor-pointer" />
                 {notificationCount > 0 && (
                   <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
