@@ -1886,6 +1886,13 @@ export const DictionarySchema = z.object({
       chooseCategory: z.string(),
       filterByTopic: z.string(),
       noCoachesFound: z.string(),
+      briefingTitle: z.string(),
+      briefingDescription: z.string(),
+      briefingMotivation: z.string(),
+      briefingSkills: z.string(),
+      briefingOutcome: z.string(),
+      briefingButtonText: z.string(),
+      briefingPlaceholder: z.string(),
     }),
     login: z.object({
       title: z.string(),

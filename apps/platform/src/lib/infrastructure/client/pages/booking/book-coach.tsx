@@ -3,8 +3,8 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { trpc } from '../../trpc/client';
-import React, { useEffect, useMemo, useState } from 'react';
+import { trpc } from '../../trpc/cms-client';
+import React, { useEffect, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../hooks/use-coach-availability-presenter';
 import {
@@ -26,18 +26,21 @@ interface BookCoachPageProps {
     coachUsername: string;
     sessionId?: number;
     returnTo?: string;
+    lessonComponentId?: string;
 }
 
 interface BookCoachPageContentProps {
     coachUsername: string;
     defaultSession: ScheduledOffering | null;
     returnTo?: string;
+    lessonComponentId?: string;
 }
 
 function BookCoachPageContent({
     coachUsername,
     defaultSession,
     returnTo,
+    lessonComponentId,
 }: BookCoachPageContentProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -49,6 +52,7 @@ function BookCoachPageContent({
     const { presenter } = useGetCoachAvailabilityPresenter(
         setCoachAvailabilityViewModel,
     );
+    // @ts-ignore
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -56,6 +60,7 @@ function BookCoachPageContent({
         defaultSession,
     );
     const [bookingSuccess, setBookingSuccess] = useState(false);
+    const [briefing, setBriefing] = useState('');
 
     const setNewSessionStart = (startTime: Date) => {
         setNewSession((prev) => {
@@ -89,6 +94,12 @@ function BookCoachPageContent({
         if (!newSession.session) return;
         if (!newSession.startTime) return;
 
+        // Check if briefing is provided
+        if (!briefing.trim()) {
+            setSubmitError('Please provide a briefing for your coach.');
+            return;
+        }
+
         // Check if session is scheduled for the past
         if (newSession.startTime < new Date()) {
             setSubmitError('Cannot schedule a session in the past.');
@@ -102,6 +113,8 @@ function BookCoachPageContent({
                 coachUsername,
                 sessionId: newSession.session.id,
                 startTime: newSession.startTime.toISOString(),
+                briefing,
+                ...(lessonComponentId && { lessonComponentId }),
             },
             {
                 onSuccess: (data) => {
@@ -148,6 +161,7 @@ function BookCoachPageContent({
                     if (!isDialogOpen) {
                         setNewSession(defaultSession);
                         setSubmitError(undefined);
+                        setBriefing('');
                     }
                     setIsDialogOpen(isDialogOpen);
                 }}
@@ -161,6 +175,8 @@ function BookCoachPageContent({
                     <ScheduledOfferingContent
                         offering={newSession}
                         setOffering={setNewSession}
+                        briefing={briefing}
+                        setBriefing={setBriefing}
                         onSubmit={onSubmit}
                         isSubmitting={requestSessionMutation.isPending}
                         submitError={submitError}
@@ -179,6 +195,7 @@ function BookCoachPageContent({
                             setNewSession(defaultSession);
                             setSubmitError(undefined);
                             setBookingSuccess(false);
+                            setBriefing('');
                         }}
                     />
                 </DialogContent>
@@ -230,12 +247,14 @@ interface BookCoachWithSessionPageProps {
     coachUsername: string;
     sessionId: number | string;
     returnTo?: string;
+    lessonComponentId?: string;
 }
 
 function BookCoachWithSessionPage({
     coachUsername,
     sessionId,
     returnTo,
+    lessonComponentId,
 }: BookCoachWithSessionPageProps) {
     const locale = useLocale() as TLocale;
 
@@ -297,6 +316,7 @@ function BookCoachWithSessionPage({
                 coachUsername={coachUsername}
                 defaultSession={defaultSession}
                 returnTo={returnTo}
+                lessonComponentId={lessonComponentId}
             />
         </div>
     );
@@ -306,6 +326,7 @@ export default function BookCoachPage({
     coachUsername,
     sessionId,
     returnTo,
+    lessonComponentId,
 }: BookCoachPageProps) {
     if (sessionId) {
         return (
@@ -313,9 +334,10 @@ export default function BookCoachPage({
                 coachUsername={coachUsername}
                 sessionId={sessionId}
                 returnTo={returnTo}
+                lessonComponentId={lessonComponentId}
             />
         );
     }
 
-    return <BookCoachPageContent coachUsername={coachUsername} defaultSession={null} returnTo={returnTo} />;
+    return <BookCoachPageContent coachUsername={coachUsername} defaultSession={null} returnTo={returnTo} lessonComponentId={lessonComponentId} />;
 }
