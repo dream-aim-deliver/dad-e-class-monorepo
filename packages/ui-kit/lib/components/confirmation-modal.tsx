@@ -82,7 +82,6 @@ export const ConfirmationModal: React.FC<ModalProps> = ({
                         </p>
                         {type === 'decline' && setDeclineReason && (
                             <TextAreaInput
-                                label="Reason for declining"
                                 value={declineReason}
                                 setValue={setDeclineReason}
                                 placeholder={declineReasonPlaceholder}

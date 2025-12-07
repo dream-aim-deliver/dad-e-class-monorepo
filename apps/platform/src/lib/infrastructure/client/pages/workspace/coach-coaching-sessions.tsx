@@ -46,28 +46,14 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         newSearchParams.set('role', roleValue);
         router.push(`?${newSearchParams.toString()}`);
     };
-    const [studentCoachingSessionsResponse] = trpc.listCoachCoachingSessions.useSuspenseQuery({}, {
+    const [studentCoachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachCoachingSessions.useSuspenseQuery({}, {
         refetchInterval: 2 * 60 * 1000,
     });
 
     const utils = trpc.useUtils();
 
-    const scheduleMutation = trpc.scheduleCoachingSession.useMutation({
-        onSuccess: () => {
-            // Invalidate related queries to refetch fresh data
-            utils.listCoachCoachingSessions.invalidate();
-            utils.listStudentCoachingSessions.invalidate();
-            utils.getCoachAvailability.invalidate();
-        },
-    });
-    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation({
-        onSuccess: () => {
-            // Invalidate related queries to refetch fresh data
-            utils.listCoachCoachingSessions.invalidate();
-            utils.listStudentCoachingSessions.invalidate();
-            utils.getCoachAvailability.invalidate();
-        },
-    });
+    const scheduleMutation = trpc.scheduleCoachingSession.useMutation();
+    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation();
 
     const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
         viewModels.TListCoachCoachingSessionsViewModel | undefined
@@ -173,7 +159,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     const handleConfirmAccept = async () => {
         if (!sessionId) return;
 
-
         const result = await scheduleMutation.mutateAsync({ coachingSessionId: sessionId });
 
         // Present the result using the presenter
@@ -186,25 +171,27 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             return;
         }
 
-        // Success - show success banner for 2 seconds before closing
-        setTimeout(() => {
-            setIsModalOpen(false);
-            setModalType(null);
-            setSessionId(null);
-            setScheduleViewModel(undefined);
-        }, 1000);
+        // Refetch to get fresh data immediately before closing modal
+        await refetchCoachingSessions();
+        utils.listStudentCoachingSessions.invalidate();
+        utils.getCoachAvailability.invalidate();
 
-
+        // Success - close modal
+        setIsModalOpen(false);
+        setModalType(null);
+        setSessionId(null);
+        setScheduleViewModel(undefined);
     };
 
     const handleConfirmDecline = async (declineReason: string) => {
         if (!sessionId) return;
 
-        // Step 1: Unschedule the coaching session
+        // Unschedule the coaching session
+        // declineReason is supported by backend but not yet in @dream-aim-deliver/e-class-cms-rest types
         const unscheduleResult = await unscheduleMutation.mutateAsync({
             coachingSessionId: sessionId,
             declineReason,
-        });
+        } as Parameters<typeof unscheduleMutation.mutateAsync>[0]);
 
         // Present the unschedule result
         // @ts-ignore
@@ -215,16 +202,16 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             return;
         }
 
+        // Refetch to get fresh data immediately before closing modal
+        await refetchCoachingSessions();
+        utils.listStudentCoachingSessions.invalidate();
+        utils.getCoachAvailability.invalidate();
+
         // Success - close modal and reset state
-        const timeoutId = setTimeout(() => {
-            setIsModalOpen(false);
-            setModalType(null);
-            setSessionId(null);
-            setUnscheduleViewModel(undefined);
-        }, 2000);
-
-        return () => clearTimeout(timeoutId);
-
+        setIsModalOpen(false);
+        setModalType(null);
+        setSessionId(null);
+        setUnscheduleViewModel(undefined);
     };
 
     // Unified confirm handler using switch condition
