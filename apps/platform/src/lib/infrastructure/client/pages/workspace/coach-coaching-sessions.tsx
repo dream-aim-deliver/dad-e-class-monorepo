@@ -170,9 +170,10 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         }
 
         // Refetch to get fresh data immediately before closing modal
-        await refetchCoachingSessions();
         utils.listStudentCoachingSessions.invalidate();
+        utils.listCoachCoachingSessions.invalidate();
         utils.getCoachAvailability.invalidate();
+        await refetchCoachingSessions();
 
         // Success - close modal
         setIsModalOpen(false);
@@ -200,9 +201,10 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         }
 
         // Refetch to get fresh data immediately before closing modal
-        await refetchCoachingSessions();
         utils.listStudentCoachingSessions.invalidate();
+        utils.listCoachCoachingSessions.invalidate();
         utils.getCoachAvailability.invalidate();
+        await refetchCoachingSessions();
 
         // Success - close modal and reset state
         setIsModalOpen(false);
