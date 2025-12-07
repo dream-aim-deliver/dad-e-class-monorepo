@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../trpc/cms-client";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListCoachCoachingSessionsPresenter } from "../../hooks/use-list-coach-coaching-sessions-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, ConfirmationModal, Breadcrumbs, Dropdown } from "@maany_shr/e-class-ui-kit";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, ConfirmationModal, CancelCoachingSessionModal, Breadcrumbs, Dropdown } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-coaching-session-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
@@ -137,27 +137,28 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         items: endedSessions,
     });
 
-    // Unified modal state for accept/decline functionality
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalType, setModalType] = useState<'accept' | 'decline' | null>('accept');
-    const [sessionId, setSessionId] = useState<number | null>(null);
+    // Accept modal state
+    const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+    const [acceptSessionId, setAcceptSessionId] = useState<number | null>(null);
+
+    // Decline/Cancel modal state (using CancelCoachingSessionModal like student page)
+    const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+    const [declineSessionId, setDeclineSessionId] = useState<number | null>(null);
 
     const handleAcceptClick = (sessionId: number) => {
-        setSessionId(sessionId);
-        setModalType('accept');
-        setIsModalOpen(true);
+        setAcceptSessionId(sessionId);
+        setIsAcceptModalOpen(true);
     };
 
     const handleDeclineClick = (sessionId: number) => {
-        setSessionId(sessionId);
-        setModalType('decline');
-        setIsModalOpen(true);
+        setDeclineSessionId(sessionId);
+        setIsDeclineModalOpen(true);
     };
 
     const handleConfirmAccept = async () => {
-        if (!sessionId) return;
+        if (!acceptSessionId) return;
 
-        const result = await scheduleMutation.mutateAsync({ coachingSessionId: sessionId });
+        const result = await scheduleMutation.mutateAsync({ coachingSessionId: acceptSessionId });
 
         // Present the result using the presenter
         // @ts-ignore
@@ -170,25 +171,23 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         }
 
         // Refetch to get fresh data immediately before closing modal
-        utils.listStudentCoachingSessions.invalidate();
-        utils.listCoachCoachingSessions.invalidate();
         utils.getCoachAvailability.invalidate();
+        utils.listCoachCoachingSessions.invalidate();
+        utils.listStudentCoachingSessions.invalidate();
         await refetchCoachingSessions();
 
         // Success - close modal
-        setIsModalOpen(false);
-        setModalType(null);
-        setSessionId(null);
+        setIsAcceptModalOpen(false);
+        setAcceptSessionId(null);
         setScheduleViewModel(undefined);
     };
 
-    const handleConfirmDecline = async (declineReason: string) => {
-        if (!sessionId) return;
-
-        // Unschedule the coaching session
+    // Decline/Cancel handler - matches student page's handleCancel pattern
+    const handleDecline = async (sessionId: number | string, declineReason: string) => {
+        const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
 
         const response = await unscheduleMutation.mutateAsync({
-            coachingSessionId: sessionId,
+            coachingSessionId: numericId,
             declineReason,
         });
 
@@ -197,72 +196,19 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
         // Check if the mutation failed using the result directly (viewModel state is async)
         if (!response.success) {
+            // Error occurred, don't proceed with success actions
             return;
         }
 
         // Refetch to get fresh data immediately before closing modal
-        utils.listStudentCoachingSessions.invalidate();
-        utils.listCoachCoachingSessions.invalidate();
         utils.getCoachAvailability.invalidate();
+        utils.listCoachCoachingSessions.invalidate();
+        utils.listStudentCoachingSessions.invalidate();
         await refetchCoachingSessions();
 
         // Success - close modal and reset state
-        setIsModalOpen(false);
-        setModalType(null);
-        setSessionId(null);
-        setUnscheduleViewModel(undefined);
-    };
-
-    // Unified confirm handler using switch condition
-    const handleConfirm = async (reason?: string) => {
-        if (!sessionId || !modalType) return;
-
-        switch (modalType) {
-            case 'accept':
-                await handleConfirmAccept();
-                break;
-            case 'decline':
-                await handleConfirmDecline(reason || '');
-                break;
-        }
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setModalType(null);
-        setSessionId(null);
-
-    };
-
-    // Get modal configuration based on type using switch condition - memoized for performance
-    const getModalConfig = () => {
-        switch (modalType) {
-            case 'accept':
-                return {
-                    title: t('confirmAcceptance'),
-                    message: t('confirmAcceptanceMessage'),
-                    confirmText: t('accept'),
-                    isLoading: scheduleMutation.isPending,
-                    viewModel: scheduleViewModel
-                };
-            case 'decline':
-                return {
-                    title: t('confirmDecline'),
-                    message: t('confirmDeclineMessage'),
-                    confirmText: t('decline'),
-                    isLoading: unscheduleMutation.isPending,
-                    viewModel: unscheduleViewModel,
-                    declineReasonPlaceholder: t('declineReasonPlaceholder'),
-                };
-            default:
-                return {
-                    title: '',
-                    message: '',
-                    confirmText: '',
-                    isLoading: false,
-                    viewModel: undefined
-                };
-        }
+        setIsDeclineModalOpen(false);
+        setDeclineSessionId(null);
     };
 
     if (!coachCoachingSessionsViewModel) {
@@ -498,20 +444,42 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
             </Tabs.Root>
 
-            {/* Unified Accept/Decline Modal using Switch Condition */}
-            <ConfirmationModal
-                type={modalType || 'accept'}
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                onConfirm={handleConfirm}
-                title={getModalConfig().title}
-                message={getModalConfig().message}
-                confirmText={getModalConfig().confirmText}
-                isLoading={getModalConfig().isLoading}
-                viewModel={getModalConfig().viewModel}
-                locale={locale}
-                declineReasonPlaceholder={getModalConfig().declineReasonPlaceholder}
-            />
+            {/* Accept Modal */}
+            {isAcceptModalOpen && (
+                <ConfirmationModal
+                    type="accept"
+                    isOpen={true}
+                    onClose={() => {
+                        setIsAcceptModalOpen(false);
+                        setAcceptSessionId(null);
+                    }}
+                    onConfirm={handleConfirmAccept}
+                    title={t('confirmAcceptance')}
+                    message={t('confirmAcceptanceMessage')}
+                    confirmText={t('accept')}
+                    isLoading={scheduleMutation.isPending}
+                    viewModel={scheduleViewModel}
+                    locale={locale}
+                />
+            )}
+
+            {/* Decline/Cancel Modal - using same component as student page */}
+            {isDeclineModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
+                    <CancelCoachingSessionModal
+                        locale={locale}
+                        onClose={() => {
+                            setIsDeclineModalOpen(false);
+                            setDeclineSessionId(null);
+                        }}
+                        onCancel={(reason: string) => {
+                            if (declineSessionId) handleDecline(declineSessionId, reason);
+                        }}
+                        isLoading={unscheduleMutation.isPending}
+                        isError={unscheduleViewModel?.mode === 'kaboom'}
+                    />
+                </div>
+            )}
         </div>
     );
 }
