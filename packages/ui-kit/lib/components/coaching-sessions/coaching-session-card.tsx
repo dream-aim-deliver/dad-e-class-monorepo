@@ -47,7 +47,8 @@ type StudentUpcomingEditableCard = BaseCardSharedProps & {
     creatorName: string;
     creatorImageUrl: string;
     onClickCreator: () => void;
-    onClickReschedule: () => void;
+    /** Optional reschedule handler. If not provided, the reschedule button won't render */
+    onClickReschedule?: () => void;
     onClickCancel: () => void;
 };
 

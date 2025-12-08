@@ -136,20 +136,22 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                         text={`${timeValue} ${timeText}`}
                     />
                     <div className="flex gap-[9px] justify-between">
-                        <Button
-                            onClick={props.onClickReschedule}
-                            variant="primary"
-                            size="small"
-                            hasIconLeft
-                            className="w-full"
-                            iconLeft={<IconCalendarAlt size="5" />}
-                            text={dictionary.components.coachingSessionCard.rescheduleText}
-                        />
+                        {props.onClickReschedule && (
+                            <Button
+                                onClick={props.onClickReschedule}
+                                variant="primary"
+                                size="small"
+                                hasIconLeft
+                                className="w-full"
+                                iconLeft={<IconCalendarAlt size="5" />}
+                                text={dictionary.components.coachingSessionCard.rescheduleText}
+                            />
+                        )}
                         <Button
                             onClick={props.onClickCancel}
-                            variant="secondary"
+                            variant={props.onClickReschedule ? "secondary" : "primary"}
                             size="small"
-                            className="max-w-full"
+                            className={props.onClickReschedule ? "max-w-full" : "w-full"}
                             hasIconLeft
                             iconLeft={<IconTrashAlt size="5" />}
                             text={dictionary.components.coachingSessionCard.cancelText}
