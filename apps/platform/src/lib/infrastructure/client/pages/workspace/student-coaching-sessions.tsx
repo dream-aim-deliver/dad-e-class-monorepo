@@ -1,6 +1,6 @@
 "use client";
 
-import { TLocale } from "@maany_shr/e-class-translations";
+import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, useMemo } from "react";
 import { viewModels } from "@maany_shr/e-class-models";
@@ -16,6 +16,7 @@ import { trpc } from "../../trpc/cms-client";
 
 export default function StudentCoachingSessions() {
     const locale = useLocale() as TLocale;
+    const dictionary = getDictionary(locale);
 
     const coachingSessionTranslations = useTranslations(
         'pages.studentCoachingSessions',
@@ -182,6 +183,10 @@ export default function StudentCoachingSessions() {
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [cancelSessionId, setCancelSessionId] = useState<number | null>(null);
 
+    // Reschedule modal state
+    const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
+    const [rescheduleSessionId, setRescheduleSessionId] = useState<number | null>(null);
+
     // Review handlers
     const handleReviewClick = (sessionId: number | string) => {
         const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
@@ -269,12 +274,18 @@ export default function StudentCoachingSessions() {
         setIsCancelModalOpen(true);
     };
 
-    // Reschedule handler - unschedule and redirect to coach calendar
-    const handleReschedule = async (sessionId: number | string, coachUsername: string) => {
+    // Open reschedule modal
+    const handleOpenRescheduleModal = (sessionId: number | string) => {
         const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
+        setRescheduleSessionId(numericId);
+        setIsRescheduleModalOpen(true);
+    };
+
+    // Reschedule handler - unschedule session (no redirect)
+    const handleReschedule = async (sessionId: number, reason: string) => {
         const response = await unscheduleMutation.mutateAsync({
-            coachingSessionId: numericId,
-            declineReason: 'Rescheduling session',
+            coachingSessionId: sessionId,
+            declineReason: reason || 'Rescheduling session',
         });
 
         // @ts-ignore Present the response to the view model
@@ -286,14 +297,15 @@ export default function StudentCoachingSessions() {
             return;
         }
 
-        // Refetch to get fresh data immediately before navigating
+        // Refetch to get fresh data
         utils.getCoachAvailability.invalidate();
         utils.listCoachCoachingSessions.invalidate();
         utils.listStudentCoachingSessions.invalidate();
         await refetchStudentCoachingSessions();
 
-        // Redirect to the coach's calendar page
-        router.push(`/coaches/${coachUsername}`);
+        // Close the modal
+        setIsRescheduleModalOpen(false);
+        setRescheduleSessionId(null);
     };
 
     // Navigation handlers
@@ -547,7 +559,13 @@ export default function StudentCoachingSessions() {
                         />
                     );
                 } else {
-                    const hoursLeftToEdit = Math.max(0, Math.floor((startDateTime.getTime() - Date.now()) / (1000 * 60 * 60)) - 24);
+                    // Calculate time remaining before 24-hour lock
+                    const msUntilLock = startDateTime.getTime() - Date.now() - (24 * 60 * 60 * 1000);
+                    const hoursLeftToEdit = Math.max(0, Math.floor(msUntilLock / (1000 * 60 * 60)));
+                    // Calculate remaining minutes when hours is 0
+                    const minutesLeftToEdit = hoursLeftToEdit === 0
+                        ? Math.max(0, Math.floor(msUntilLock / (1000 * 60)))
+                        : undefined;
 
                     return (
                         <CoachingSessionCard
@@ -555,7 +573,8 @@ export default function StudentCoachingSessions() {
                             {...commonProps}
                             status="upcoming-editable"
                             hoursLeftToEdit={hoursLeftToEdit}
-                            onClickReschedule={() => handleReschedule(session.id!, coach.username || '')}
+                            minutesLeftToEdit={minutesLeftToEdit}
+                            onClickReschedule={() => handleOpenRescheduleModal(session.id!)}
                             onClickCancel={() => handleOpenCancelModal(session.id!)}
                         />
                     );
@@ -679,6 +698,27 @@ export default function StudentCoachingSessions() {
                         }}
                         isLoading={unscheduleMutation.isPending}
                         isError={unscheduleViewModel?.mode === 'kaboom'}
+                    />
+                </div>
+            )}
+
+            {/* Reschedule Coaching Session Modal */}
+            {isRescheduleModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
+                    <CancelCoachingSessionModal
+                        locale={locale}
+                        onClose={() => {
+                            setIsRescheduleModalOpen(false);
+                            setRescheduleSessionId(null);
+                        }}
+                        onCancel={(reason: string) => {
+                            if (rescheduleSessionId) handleReschedule(rescheduleSessionId, reason);
+                        }}
+                        isLoading={unscheduleMutation.isPending}
+                        isError={unscheduleViewModel?.mode === 'kaboom'}
+                        customModalText={dictionary.components.coachingSessionRescheduleModal.modalText}
+                        customPlaceholder={dictionary.components.coachingSessionRescheduleModal.rescheduleReasonPlaceholder}
+                        customConfirmText={dictionary.components.coachingSessionRescheduleModal.yesRescheduleText}
                     />
                 </div>
             )}

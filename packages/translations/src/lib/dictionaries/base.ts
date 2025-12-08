@@ -519,6 +519,7 @@ export const DictionarySchema = z.object({
       joinMeetingText: z.string(),
       studentText: z.string(),
       hoursLeftToEditText: z.string(),
+      minutesLeftToEditText: z.string(),
       rescheduleText: z.string(),
       cancelText: z.string(),
       meetingLinkVisibilityInfo: z.string(),
@@ -547,6 +548,12 @@ export const DictionarySchema = z.object({
       yesCancelText: z.string(),
       modalText: z.string(),
       cancelReasonPlaceholder: z.string(),
+      errorMessage: z.string(),
+    }),
+    coachingSessionRescheduleModal: z.object({
+      modalText: z.string(),
+      rescheduleReasonPlaceholder: z.string(),
+      yesRescheduleText: z.string(),
       errorMessage: z.string(),
     }),
     deleteConfirmationModal: z.object({

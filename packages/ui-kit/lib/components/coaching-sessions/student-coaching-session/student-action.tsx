@@ -119,14 +119,21 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                 </div>
             );
 
-        case 'upcoming-editable':
+        case 'upcoming-editable': {
+            // Show minutes if hours is 0 and minutesLeftToEdit is provided
+            const showMinutes = props.hoursLeftToEdit === 0 && props.minutesLeftToEdit !== undefined;
+            const timeValue = showMinutes ? props.minutesLeftToEdit : props.hoursLeftToEdit;
+            const timeText = showMinutes
+                ? dictionary.components.coachingSessionCard.minutesLeftToEditText
+                : dictionary.components.coachingSessionCard.hoursLeftToEditText;
+
             return (
                 <div className="flex flex-col gap-2 w-full">
                     <Badge
                         className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
                         variant="info"
                         size="big"
-                        text={`${props.hoursLeftToEdit} ${dictionary.components.coachingSessionCard.hoursLeftToEditText}`}
+                        text={`${timeValue} ${timeText}`}
                     />
                     <div className="flex gap-[9px] justify-between">
                         <Button
@@ -150,6 +157,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                     </div>
                 </div>
             );
+        }
 
         case 'upcoming-locked':
             return (

@@ -334,7 +334,14 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         />
                     );
                 } else {
-                    const hoursLeftToEdit = Math.floor((startDateTime.getTime() - Date.now()) / (1000 * 60 * 60));
+                    // Calculate time remaining before 24-hour lock
+                    const msUntilLock = startDateTime.getTime() - Date.now() - (24 * 60 * 60 * 1000);
+                    const hoursLeftToEdit = Math.max(0, Math.floor(msUntilLock / (1000 * 60 * 60)));
+                    // Calculate remaining minutes when hours is 0
+                    const minutesLeftToEdit = hoursLeftToEdit === 0
+                        ? Math.max(0, Math.floor(msUntilLock / (1000 * 60)))
+                        : undefined;
+
                     return (
                         <CoachingSessionCard
                             key={session.id}
@@ -351,6 +358,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             onClickStudent={() => handleStudentClick(parseInt(`${session.id}`))}
                             onClickCancel={() => handleDeclineClick(parseInt(`${session.id}`))}
                             hoursLeftToEdit={hoursLeftToEdit}
+                            minutesLeftToEdit={minutesLeftToEdit}
                         />
                     );
                 }

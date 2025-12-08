@@ -15,6 +15,12 @@ export interface CancelCoachingSessionModalProps extends isLocalAware {
     onCancel: (reason: string) => void;
     isLoading?: boolean;
     isError?: boolean;
+    /** Custom modal title/text. If not provided, uses default cancel text from dictionary */
+    customModalText?: string;
+    /** Custom placeholder for reason input. If not provided, uses default from dictionary */
+    customPlaceholder?: string;
+    /** Custom confirm button text. If not provided, uses default from dictionary */
+    customConfirmText?: string;
 }
 
 /**
@@ -39,6 +45,9 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
     locale,
     isLoading = false,
     isError = false,
+    customModalText,
+    customPlaceholder,
+    customConfirmText,
 }) => {
     const dictionary = getDictionary(locale);
     const [cancelReason, setCancelReason] = useState('');
@@ -58,11 +67,11 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
             </div>
             <div className='flex flex-col gap-4 w-full'>
                 <p className='text-xl text-text-primary'>
-                    {dictionary.components.coachingSessionCancelModal.modalText}
+                    {customModalText ?? dictionary.components.coachingSessionCancelModal.modalText}
                 </p>
                 <TextAreaInput
                     className="min-h-[80px]"
-                    placeholder={dictionary.components.coachingSessionCancelModal.cancelReasonPlaceholder}
+                    placeholder={customPlaceholder ?? dictionary.components.coachingSessionCancelModal.cancelReasonPlaceholder}
                     value={cancelReason}
                     setValue={setCancelReason}
                 />
@@ -79,7 +88,7 @@ export const CancelCoachingSessionModal: React.FC<CancelCoachingSessionModalProp
                         className="w-full"
                         variant="primary"
                         size="medium"
-                        text={isLoading ? '' : dictionary.components.coachingSessionCancelModal.yesCancelText}
+                        text={isLoading ? '' : (customConfirmText ?? dictionary.components.coachingSessionCancelModal.yesCancelText)}
                         onClick={() => onCancel(cancelReason)}
                         disabled={isLoading}
                         hasIconLeft={isLoading}
