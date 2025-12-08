@@ -439,7 +439,7 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
                         // TODO: Implement profile click logic
                     }}
                     onClickBook={() => {
-                        const url = `/coaches/${coach.username}/book?sessionId=${sessionId}&lessonComponentId=${lessonComponentId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}`;
+                        const url = `/coaches/${coach.username}/book?sessionId=${sessionId}&lessonComponentId=${lessonComponentId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}${courseSlug ? `&courseSlug=${encodeURIComponent(courseSlug)}` : ''}`;
                         router.push(url);
                     }}
                     locale={locale}

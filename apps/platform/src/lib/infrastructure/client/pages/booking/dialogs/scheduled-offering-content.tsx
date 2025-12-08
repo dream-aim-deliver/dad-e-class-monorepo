@@ -17,6 +17,7 @@ interface ScheduledOfferingContentProps {
     submitError?: string;
     bookingSuccess?: boolean;
     returnTo?: string;
+    courseSlug?: string;
     onReturnToCourse?: () => void;
     onViewSessions?: () => void;
     closeDialog?: () => void;
@@ -32,6 +33,7 @@ export default function ScheduledOfferingContent({
     isSubmitting,
     bookingSuccess,
     returnTo,
+    courseSlug,
     onReturnToCourse,
     onViewSessions,
     closeDialog,
@@ -81,7 +83,7 @@ export default function ScheduledOfferingContent({
             )}
             {!session.session && (
                 <Suspense fallback={<DefaultLoading locale={locale} />}>
-                    <ChooseCoachingSessionContent setSession={setSession} />
+                    <ChooseCoachingSessionContent setSession={setSession} courseSlug={courseSlug} />
                 </Suspense>
             )}
             {session.session && (

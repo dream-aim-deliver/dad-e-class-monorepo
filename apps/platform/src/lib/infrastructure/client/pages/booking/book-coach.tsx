@@ -27,6 +27,7 @@ interface BookCoachPageProps {
     sessionId?: number;
     returnTo?: string;
     lessonComponentId?: string;
+    courseSlug?: string;
 }
 
 interface BookCoachPageContentProps {
@@ -34,6 +35,7 @@ interface BookCoachPageContentProps {
     defaultSession: ScheduledOffering | null;
     returnTo?: string;
     lessonComponentId?: string;
+    courseSlug?: string;
     onBookingInitiated?: () => void;
 }
 
@@ -42,6 +44,7 @@ function BookCoachPageContent({
     defaultSession,
     returnTo,
     lessonComponentId,
+    courseSlug,
     onBookingInitiated,
 }: BookCoachPageContentProps) {
     const locale = useLocale() as TLocale;
@@ -49,11 +52,13 @@ function BookCoachPageContent({
 
     const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
         trpc.getCoachAvailability.useSuspenseQuery({ coachUsername });
+
     const [coachAvailabilityViewModel, setCoachAvailabilityViewModel] =
         useState<viewModels.TCoachAvailabilityViewModel | undefined>(undefined);
     const { presenter } = useGetCoachAvailabilityPresenter(
         setCoachAvailabilityViewModel,
     );
+
     // @ts-ignore
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
@@ -186,6 +191,7 @@ function BookCoachPageContent({
                         submitError={submitError}
                         bookingSuccess={bookingSuccess}
                         returnTo={returnTo}
+                        courseSlug={courseSlug}
                         onReturnToCourse={() => {
                             if (returnTo) {
                                 router.push(returnTo);
@@ -252,6 +258,7 @@ interface BookCoachWithSessionPageProps {
     sessionId: number | string;
     returnTo?: string;
     lessonComponentId?: string;
+    courseSlug?: string;
 }
 
 function BookCoachWithSessionPage({
@@ -259,6 +266,7 @@ function BookCoachWithSessionPage({
     sessionId,
     returnTo,
     lessonComponentId,
+    courseSlug,
 }: BookCoachWithSessionPageProps) {
     const locale = useLocale() as TLocale;
 
@@ -269,9 +277,11 @@ function BookCoachWithSessionPage({
 
     const [coachingSessionResponse] =
         trpc.getStudentCoachingSession.useSuspenseQuery({ id: sessionIdNumber });
+
     const [coachingSessionViewModel, setCoachingSessionViewModel] = useState<
         viewModels.TStudentCoachingSessionViewModel | undefined
     >(undefined);
+
     const { presenter } = useGetStudentCoachingSessionPresenter(
         setCoachingSessionViewModel,
     );
@@ -332,6 +342,7 @@ function BookCoachWithSessionPage({
                 defaultSession={defaultSession}
                 returnTo={returnTo}
                 lessonComponentId={lessonComponentId}
+                courseSlug={courseSlug}
                 onBookingInitiated={() => setBookingInitiated(true)}
             />
         </div>
@@ -343,6 +354,7 @@ export default function BookCoachPage({
     sessionId,
     returnTo,
     lessonComponentId,
+    courseSlug,
 }: BookCoachPageProps) {
     if (sessionId) {
         return (
@@ -351,9 +363,10 @@ export default function BookCoachPage({
                 sessionId={sessionId}
                 returnTo={returnTo}
                 lessonComponentId={lessonComponentId}
+                courseSlug={courseSlug}
             />
         );
     }
 
-    return <BookCoachPageContent coachUsername={coachUsername} defaultSession={null} returnTo={returnTo} lessonComponentId={lessonComponentId} />;
+    return <BookCoachPageContent coachUsername={coachUsername} defaultSession={null} returnTo={returnTo} lessonComponentId={lessonComponentId} courseSlug={courseSlug} />;
 }

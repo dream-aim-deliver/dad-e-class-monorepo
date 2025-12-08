@@ -2,7 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import React, { useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import {
@@ -18,6 +18,7 @@ import { groupOfferings } from '../../../utils/group-offerings';
 
 interface ChooseCoachingSessionContentProps {
     setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
+    courseSlug?: string;
 }
 
 function CoachingSessionsNotFound() {
@@ -36,9 +37,12 @@ function CoachingSessionsNotFound() {
 
 export default function ChooseCoachingSessionContent({
     setSession,
+    courseSlug,
 }: ChooseCoachingSessionContentProps) {
+    // courseSlug filters available coaching sessions by course context
+    // NOTE: courseSlug support requires backend update in @dream-aim-deliver/e-class-cms-rest
     const [availableCoachingsResponse] =
-        trpc.listAvailableCoachings.useSuspenseQuery({});
+        trpc.listAvailableCoachings.useSuspenseQuery({ courseSlug } as Parameters<typeof trpc.listAvailableCoachings.useSuspenseQuery>[0]);
     const [availableCoachingsViewModel, setAvailableCoachingsViewModel] =
         useState<viewModels.TAvailableCoachingListViewModel | undefined>(
             undefined,
@@ -46,6 +50,7 @@ export default function ChooseCoachingSessionContent({
     const { presenter } = useListAvailableCoachingsPresenter(
         setAvailableCoachingsViewModel,
     );
+    // @ts-ignore
     presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
 
     const locale = useLocale() as TLocale;
