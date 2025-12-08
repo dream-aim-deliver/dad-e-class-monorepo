@@ -562,6 +562,19 @@ export default function StudentCoachingSessions() {
                     // Calculate time remaining before 24-hour lock
                     const msUntilLock = startDateTime.getTime() - Date.now() - (24 * 60 * 60 * 1000);
                     const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+
+                    // If no time left to edit, show as locked
+                    if (totalMinutesLeft === 0) {
+                        return (
+                            <CoachingSessionCard
+                                key={session.id}
+                                {...commonProps}
+                                status="upcoming-locked"
+                                onClickJoinMeeting={() => handleJoinMeeting(meetingUrl || '')}
+                            />
+                        );
+                    }
+
                     const hoursLeftToEdit = Math.floor(totalMinutesLeft / 60);
                     // Calculate remaining minutes when hours is 0
                     const minutesLeftToEdit = hoursLeftToEdit === 0 ? totalMinutesLeft : undefined;
