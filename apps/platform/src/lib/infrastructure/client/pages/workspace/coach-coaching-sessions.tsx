@@ -336,11 +336,10 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                 } else {
                     // Calculate time remaining before 24-hour lock
                     const msUntilLock = startDateTime.getTime() - Date.now() - (24 * 60 * 60 * 1000);
-                    const hoursLeftToEdit = Math.max(0, Math.floor(msUntilLock / (1000 * 60 * 60)));
+                    const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+                    const hoursLeftToEdit = Math.floor(totalMinutesLeft / 60);
                     // Calculate remaining minutes when hours is 0
-                    const minutesLeftToEdit = hoursLeftToEdit === 0
-                        ? Math.max(0, Math.floor(msUntilLock / (1000 * 60)))
-                        : undefined;
+                    const minutesLeftToEdit = hoursLeftToEdit === 0 ? totalMinutesLeft : undefined;
 
                     return (
                         <CoachingSessionCard

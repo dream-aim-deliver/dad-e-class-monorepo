@@ -561,11 +561,10 @@ export default function StudentCoachingSessions() {
                 } else {
                     // Calculate time remaining before 24-hour lock
                     const msUntilLock = startDateTime.getTime() - Date.now() - (24 * 60 * 60 * 1000);
-                    const hoursLeftToEdit = Math.max(0, Math.floor(msUntilLock / (1000 * 60 * 60)));
+                    const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+                    const hoursLeftToEdit = Math.floor(totalMinutesLeft / 60);
                     // Calculate remaining minutes when hours is 0
-                    const minutesLeftToEdit = hoursLeftToEdit === 0
-                        ? Math.max(0, Math.floor(msUntilLock / (1000 * 60)))
-                        : undefined;
+                    const minutesLeftToEdit = hoursLeftToEdit === 0 ? totalMinutesLeft : undefined;
 
                     return (
                         <CoachingSessionCard
@@ -574,7 +573,8 @@ export default function StudentCoachingSessions() {
                             status="upcoming-editable"
                             hoursLeftToEdit={hoursLeftToEdit}
                             minutesLeftToEdit={minutesLeftToEdit}
-                            onClickReschedule={() => handleOpenRescheduleModal(session.id!)}
+                            // Reschedule is commented out - it's functionally the same as cancel for students
+                            // onClickReschedule={() => handleOpenRescheduleModal(session.id!)}
                             onClickCancel={() => handleOpenCancelModal(session.id!)}
                         />
                     );
