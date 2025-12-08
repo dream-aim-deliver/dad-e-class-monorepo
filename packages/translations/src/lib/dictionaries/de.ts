@@ -516,6 +516,7 @@ export const DE: TDictionary = {
       joinMeetingText: 'Sitzung beitreten',
       studentText: 'Studierende',
       hoursLeftToEditText: 'Stunden übrig, um das Ereignis zu bearbeiten',
+      minutesLeftToEditText: 'Minuten übrig, um das Ereignis zu bearbeiten',
       rescheduleText: 'Umbuchen',
       cancelText: 'Stornieren',
       meetingLinkVisibilityInfo:
@@ -547,6 +548,12 @@ export const DE: TDictionary = {
       modalText: 'Möchten Sie diese Coaching-Sitzung wirklich abbrechen?',
       cancelReasonPlaceholder: 'Gib hier deinen Stornierungsgrund ein...',
       errorMessage: 'Beim Stornieren der Sitzung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+    },
+    coachingSessionRescheduleModal: {
+      modalText: 'Möchten Sie diese Coaching-Sitzung wirklich verschieben? Die aktuelle Sitzung wird storniert.',
+      rescheduleReasonPlaceholder: 'Gib hier deinen Grund für die Verschiebung ein...',
+      yesRescheduleText: 'Ja, verschieben',
+      errorMessage: 'Beim Verschieben der Sitzung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
     },
     deleteConfirmationModal: {
       noText: 'NEIN',

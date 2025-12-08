@@ -42,6 +42,8 @@ type StudentUpcomingEditableCard = BaseCardSharedProps & {
     userType: 'student';
     status: 'upcoming-editable';
     hoursLeftToEdit: number;
+    /** Minutes remaining when hoursLeftToEdit is 0. If provided and hours is 0, shows minutes instead */
+    minutesLeftToEdit?: number;
     creatorName: string;
     creatorImageUrl: string;
     onClickCreator: () => void;
@@ -172,6 +174,8 @@ type CoachUpcomingEditableCard = BaseCardSharedProps & {
     userType: 'coach';
     status: 'upcoming-editable';
     hoursLeftToEdit: number;
+    /** Minutes remaining when hoursLeftToEdit is 0. If provided and hours is 0, shows minutes instead */
+    minutesLeftToEdit?: number;
     studentName: string;
     studentImageUrl: string;
     onClickStudent: () => void;

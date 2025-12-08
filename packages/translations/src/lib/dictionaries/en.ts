@@ -513,6 +513,7 @@ export const EN: TDictionary = {
       joinMeetingText: 'Join Meeting',
       studentText: 'Student',
       hoursLeftToEditText: 'hours left to edit event',
+      minutesLeftToEditText: 'minutes left to edit event',
       rescheduleText: 'Reschedule',
       cancelText: 'Cancel',
       meetingLinkVisibilityInfo:
@@ -544,6 +545,12 @@ export const EN: TDictionary = {
       modalText: 'Are you sure you want to cancel this coaching session?',
       cancelReasonPlaceholder: 'Enter your reason for cancelling...',
       errorMessage: 'An error occurred while cancelling the session. Please try again.',
+    },
+    coachingSessionRescheduleModal: {
+      modalText: 'Are you sure you want to reschedule this coaching session? The current session will be unscheduled.',
+      rescheduleReasonPlaceholder: 'Enter your reason for rescheduling...',
+      yesRescheduleText: 'Yes, reschedule',
+      errorMessage: 'An error occurred while rescheduling the session. Please try again.',
     },
     deleteConfirmationModal: {
       noText: 'Go Back',
