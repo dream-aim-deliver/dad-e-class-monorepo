@@ -1,5 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { Suspense, useMemo, useState } from 'react';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
 import {
@@ -26,6 +26,7 @@ function AvailableCoachings() {
     const { presenter } = useListAvailableCoachingsPresenter(
         setAvailableCoachingsViewModel,
     );
+    // @ts-ignore
     presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
 
     const locale = useLocale() as TLocale;

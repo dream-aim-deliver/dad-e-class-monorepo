@@ -1,5 +1,4 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
 import {
     CarouselSkeleton,
     DefaultError,

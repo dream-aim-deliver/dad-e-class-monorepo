@@ -11,7 +11,7 @@ import { useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useListCoursesPresenter } from '../../hooks/use-list-courses-presenter';
 import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
@@ -59,6 +59,7 @@ export function OffersCourseList({
         viewModels.TCourseListViewModel | undefined
     >(undefined);
     const { presenter } = useListCoursesPresenter(setCoursesViewModel);
+    // @ts-ignore
     presenter.present(coursesResponse, coursesViewModel);
     const locale = useLocale() as TLocale;
     const paginationTranslations = useTranslations(
