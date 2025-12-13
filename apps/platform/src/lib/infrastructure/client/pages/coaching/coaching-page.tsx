@@ -74,9 +74,7 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
                 filterText={t('filterByTopic')}
             />
             <div className="flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-5">
-                <div className="flex flex-col space-y-5 lg:min-w-[400px] lg:w-[400px]">
-                    <CoachingOfferingsPanel />
-                </div>
+                <CoachingOfferingsPanel />
                 <Suspense fallback={<CoachCardListSkeleton />}>
                     <CoachingCoachList selectedTopics={selectedTopics} />
                 </Suspense>

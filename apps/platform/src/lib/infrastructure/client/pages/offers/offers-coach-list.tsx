@@ -1,5 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useState } from 'react';
 import { useListCoachesPresenter } from '../../hooks/use-coaches-presenter';
 import {
