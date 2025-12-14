@@ -13,7 +13,7 @@ import { IconPayments, IconClose, IconCheck } from '../icons';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface TransactionDraft {
-    invoiceLineItems: Array<{
+    lineItems: Array<{
         name: string;
         description: string;
         quantity: number;
@@ -40,6 +40,7 @@ export interface CheckoutModalProps extends isLocalAware {
         coachingOfferingId?: number;
         quantity?: number;
         withCoaching?: boolean; // For courses and packages - was coaching included
+        lessonComponentIds?: string[]; // For StudentCourseCoachingSessionPurchase
     };
 }
 
@@ -84,20 +85,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     // Calculate discount amount
     const discountAmount = useMemo(() => {
         if (!appliedCoupon || discountPercentage === 0) return 0;
-        const subtotal = transactionDraft.invoiceLineItems.reduce(
+        const subtotal = transactionDraft.lineItems.reduce(
             (sum, item) => sum + item.totalPrice,
             0,
         );
         return Math.round((subtotal * discountPercentage) / 100);
-    }, [appliedCoupon, discountPercentage, transactionDraft.invoiceLineItems]);
+    }, [appliedCoupon, discountPercentage, transactionDraft.lineItems]);
 
     // Calculate totals
     const subtotal = useMemo(() => {
-        return transactionDraft.invoiceLineItems.reduce(
+        return transactionDraft.lineItems.reduce(
             (sum, item) => sum + item.totalPrice,
             0,
         );
-    }, [transactionDraft.invoiceLineItems]);
+    }, [transactionDraft.lineItems]);
 
     const total = useMemo(() => {
         return subtotal - discountAmount;
@@ -194,6 +195,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             if (purchaseIdentifier.withCoaching !== undefined) {
                 params.append('withCoaching', purchaseIdentifier.withCoaching.toString());
             }
+            if (purchaseIdentifier.lessonComponentIds && purchaseIdentifier.lessonComponentIds.length > 0) {
+                params.append('lessonComponentIds', purchaseIdentifier.lessonComponentIds.join(','));
+            }
 
             const url = params.toString()
                 ? `/api/checkout/get-checkout-url?${params.toString()}`
@@ -278,7 +282,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                             .lineItems
                                     }
                                 </h3>
-                                {transactionDraft.invoiceLineItems.map(
+                                {transactionDraft.lineItems.map(
                                     (item, index) => (
                                         <div
                                             key={index}
