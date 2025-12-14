@@ -15,6 +15,10 @@ const serverEnvSchema = clientEnvSchema.merge(z.object({
     S3_HOSTNAME: z.string().min(1),
     S3_PORT: z.string().min(1),
     S3_PROTOCOL: z.enum(['http', 'https']),
+    // OpenTelemetry Configuration
+    OTEL_ENABLED: z.boolean().optional(),
+    OTEL_SERVICE_NAME: z.string().optional(),
+    OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
 }));
 
 export type TEnv = z.infer<typeof serverEnvSchema>;
@@ -44,6 +48,14 @@ const runtimeEnv = {
     S3_HOSTNAME: process.env.S3_HOSTNAME || (isBuildTime ? 'localhost' : undefined),
     S3_PORT: process.env.S3_PORT || (isBuildTime ? '9000' : undefined),
     S3_PROTOCOL: process.env.S3_PROTOCOL === 'https' ? 'https' : 'http',
+    // OpenTelemetry Configuration (Server)
+    OTEL_ENABLED: process.env.OTEL_ENABLED?.trim().toLowerCase() === 'true',
+    OTEL_SERVICE_NAME: process.env.OTEL_SERVICE_NAME || 'e-class-cms',
+    OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+    // OpenTelemetry Configuration (Browser - from client schema)
+    NEXT_PUBLIC_OTEL_ENABLED: process.env.NEXT_PUBLIC_OTEL_ENABLED,
+    NEXT_PUBLIC_OTEL_SERVICE_NAME: process.env.NEXT_PUBLIC_OTEL_SERVICE_NAME || 'cms-browser',
+    NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT: process.env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT,
 };
 
 const envValidationResult = serverEnvSchema.safeParse(runtimeEnv);

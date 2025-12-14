@@ -5,6 +5,10 @@ const clientEnvSchema = z.object({
     NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: z.string(),
     NEXT_PUBLIC_APP_URL: z.string().url(),
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: z.string().url(),
+    // OpenTelemetry Browser Configuration
+    NEXT_PUBLIC_OTEL_ENABLED: z.string().optional(),
+    NEXT_PUBLIC_OTEL_SERVICE_NAME: z.string().optional(),
+    NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
 });
 
 export { clientEnvSchema };
@@ -16,6 +20,10 @@ const runtimeEnv = {
     NEXT_PUBLIC_APP_URL:
         process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173',
+    // OpenTelemetry Browser Configuration
+    NEXT_PUBLIC_OTEL_ENABLED: process.env.NEXT_PUBLIC_OTEL_ENABLED,
+    NEXT_PUBLIC_OTEL_SERVICE_NAME: process.env.NEXT_PUBLIC_OTEL_SERVICE_NAME || 'e-class-platform-browser',
+    NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT: process.env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT,
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);

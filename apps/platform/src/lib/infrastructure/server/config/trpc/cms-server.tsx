@@ -62,6 +62,19 @@ async function createServerHeaders(): Promise<Record<string, string>> {
     } catch (error) {
         console.warn('Failed to get platform name for server-side TRPC:', error);
     }
+
+    // Inject OpenTelemetry trace context for distributed tracing
+    // This adds traceparent header if there's an active span
+    // Only load OTel API when enabled to prevent side effects
+    if (process.env.OTEL_ENABLED === 'true') {
+        try {
+            const { context, propagation } = await import('@opentelemetry/api');
+            propagation.inject(context.active(), headers);
+        } catch {
+            // Silently fail - tracing should not break functionality
+        }
+    }
+
     return headers;
 }
 

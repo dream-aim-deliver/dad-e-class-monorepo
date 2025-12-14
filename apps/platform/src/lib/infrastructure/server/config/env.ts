@@ -14,6 +14,10 @@ const serverEnvSchema = clientEnvSchema.merge(z.object({
     S3_PORT: z.string().min(1),
     S3_PROTOCOL: z.enum(['http', 'https']),
     DEFAULT_THEME: z.enum(['just-do-ad', 'job-brand-me', 'bewerbeagentur', 'cms']),
+    // OpenTelemetry Configuration
+    OTEL_ENABLED: z.boolean().optional(),
+    OTEL_SERVICE_NAME: z.string().optional(),
+    OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
 }));
 
 export type TEnv = z.infer<typeof serverEnvSchema>;
@@ -42,6 +46,10 @@ const runtimeEnv = {
     S3_PORT: process.env.S3_PORT || (isBuildTime ? '9000' : undefined),
     S3_PROTOCOL: process.env.S3_PROTOCOL === 'https' ? 'https' : 'http',
     DEFAULT_THEME: (process.env.DEFAULT_THEME as 'just-do-ad' | 'job-brand-me' | 'bewerbeagentur' | 'cms') || 'just-do-ad',
+    // OpenTelemetry Configuration
+    OTEL_ENABLED: process.env.OTEL_ENABLED?.trim().toLowerCase() === 'true',
+    OTEL_SERVICE_NAME: process.env.OTEL_SERVICE_NAME || 'e-class-platform',
+    OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
 };
 
 const envValidationResult = serverEnvSchema.safeParse(runtimeEnv);
