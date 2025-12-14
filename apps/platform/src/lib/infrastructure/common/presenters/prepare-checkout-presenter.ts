@@ -56,7 +56,7 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TPrepareCheckoutUseCaseErrorResponse,
+            useCaseModels.TPrepareCheckoutErrorResponse,
             TPrepareCheckoutResponseMiddleware
         >,
     ): viewModels.TPrepareCheckoutViewModel {

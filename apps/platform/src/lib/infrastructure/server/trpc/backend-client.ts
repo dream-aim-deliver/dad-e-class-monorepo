@@ -10,73 +10,7 @@
  * 3. Forward authentication headers
  */
 
-import { z } from 'zod';
-
-// ============================================================================
-// Type Definitions (matching cms-fastapi schemas)
-// ============================================================================
-
-const CoachingOfferingSchema = z.object({
-    coachingOfferingId: z.number(),
-    quantity: z.number(),
-});
-
-const PurchaseItemSchema = z.discriminatedUnion('type', [
-    z.object({
-        type: z.literal('course'),
-        courseSlug: z.string(),
-        withCoaching: z.boolean(),
-    }),
-    z.object({
-        type: z.literal('package'),
-        packageId: z.number(),
-        selectedCourseIds: z.array(z.number()),
-        withCoaching: z.boolean(),
-    }),
-    z.object({
-        type: z.literal('coaching_sessions'),
-        offerings: z.array(CoachingOfferingSchema),
-    }),
-]);
-
-const TransactionDataSchema = z.object({
-    stripeSessionId: z.string(),
-    amount: z.number(),
-    currency: z.string(),
-    customerEmail: z.string(),
-    paymentStatus: z.string(),
-    metadata: z.record(z.any()),
-});
-
-const ProcessPurchaseRequestSchema = z.object({
-    userId: z.string(),
-    transactionData: TransactionDataSchema,
-    purchaseType: z.string(),
-    purchaseItems: z.array(PurchaseItemSchema),
-});
-
-const EnrollmentResultSchema = z.object({
-    courseId: z.number(),
-    enrollmentId: z.string(),
-    coachingIncluded: z.boolean(),
-});
-
-const CoachingSessionResultSchema = z.object({
-    offeringId: z.number(),
-    quantity: z.number(),
-    totalAvailable: z.number(),
-});
-
-const ProcessPurchaseSuccessSchema = z.object({
-    success: z.literal(true),
-    alreadyProcessed: z.boolean(),
-    transactionId: z.string(),
-    enrollments: z.array(EnrollmentResultSchema),
-    coachingSessions: z.array(CoachingSessionResultSchema),
-});
-
-type ProcessPurchaseRequest = z.infer<typeof ProcessPurchaseRequestSchema>;
-type ProcessPurchaseSuccess = z.infer<typeof ProcessPurchaseSuccessSchema>;
+import { useCaseModels } from '@maany_shr/e-class-models';
 
 // ============================================================================
 // Mock Storage (temporary - will be replaced by cms-fastapi database)
@@ -84,7 +18,8 @@ type ProcessPurchaseSuccess = z.infer<typeof ProcessPurchaseSuccessSchema>;
 
 interface MockTransaction {
     id: string;
-    stripeSessionId: string;
+    paymentExternalId: string;
+    paymentProvider: string;
     userId: string;
     purchaseType: string;
     amount: number;
@@ -123,40 +58,43 @@ const mockCourseCoachingOfferings = new Map<number, Array<{ offeringId: number; 
  * Mock implementation of processPurchase
  * This mimics what cms-fastapi will do
  */
-async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<ProcessPurchaseSuccess> {
+async function mockProcessPurchase(input: useCaseModels.TProcessPurchaseRequest): Promise<useCaseModels.TProcessPurchaseSuccessResponse> {
     const { userId, transactionData, purchaseType, purchaseItems } = input;
 
     // Phase 1: Check idempotency
-    const existingTx = mockTransactions.get(transactionData.stripeSessionId);
+    const existingTx = mockTransactions.get(transactionData.paymentExternalId);
     if (existingTx && existingTx.status === 'processed') {
-        console.log('[mockProcessPurchase] Transaction already processed:', transactionData.stripeSessionId);
+        console.log('[mockProcessPurchase] Transaction already processed:', transactionData.paymentExternalId);
 
         // Build response from existing data
-        const enrollments = Array.from(mockUserEnrollments.get(userId) || []).map(courseId => ({
+        const enrollments = Array.from(mockUserEnrollments.get(userId) || []).map((courseId) => ({
             courseId,
-            enrollmentId: `enroll-${userId}-${courseId}`,
             coachingIncluded: false, // Would need to track this
         }));
 
-        const coachingSessions = Array.from(mockCoachingCredits.get(userId) || new Map()).map(([offeringId, count]) => ({
-            offeringId,
-            quantity: 0, // Can't determine what was added in this specific transaction
-            totalAvailable: count,
+        const coachingSessions = Array.from(mockCoachingCredits.get(userId) || new Map()).map(([offeringId], idx) => ({
+            offeringId: offeringId,
+            sessionId: idx + 1, // Mock session ID
+            courseId: null, // Not tracking course linkage in mock
         }));
 
         return {
             success: true,
-            alreadyProcessed: true,
-            transactionId: existingTx.id,
-            enrollments,
-            coachingSessions,
+            data: {
+                success: true,
+                alreadyProcessed: true,
+                transactionId: existingTx.id,
+                enrollments,
+                coachingSessions,
+            },
         };
     }
 
     // Phase 2: Create transaction
     const transaction: MockTransaction = {
         id: `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        stripeSessionId: transactionData.stripeSessionId,
+        paymentExternalId: transactionData.paymentExternalId,
+        paymentProvider: transactionData.paymentProvider,
         userId,
         purchaseType,
         amount: transactionData.amount,
@@ -166,11 +104,13 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
         processedAt: Date.now(),
     };
 
-    mockTransactions.set(transactionData.stripeSessionId, transaction);
+    mockTransactions.set(transactionData.paymentExternalId, transaction);
 
     // Phase 3: Process purchase items
-    const enrollments: Array<{ courseId: number; enrollmentId: string; coachingIncluded: boolean }> = [];
-    const coachingSessions: Array<{ offeringId: number; quantity: number; totalAvailable: number }> = [];
+    const enrollments: Array<{ courseId: number; coachingIncluded: boolean }> = [];
+    const coachingSessions: Array<{ offeringId: number | null; sessionId: number; courseId: number | null }> = [];
+
+    let sessionIdCounter = 1;
 
     for (const item of purchaseItems) {
         if (item.type === 'course') {
@@ -186,7 +126,6 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
 
             enrollments.push({
                 courseId: course.id,
-                enrollmentId: `enroll-${userId}-${course.id}`,
                 coachingIncluded: item.withCoaching,
             });
 
@@ -201,11 +140,14 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
                     userCredits.set(offeringId, currentCount + defaultQuantity);
                     mockCoachingCredits.set(userId, userCredits);
 
-                    coachingSessions.push({
-                        offeringId,
-                        quantity: defaultQuantity,
-                        totalAvailable: currentCount + defaultQuantity,
-                    });
+                    // Create individual session records
+                    for (let i = 0; i < defaultQuantity; i++) {
+                        coachingSessions.push({
+                            offeringId: offeringId,
+                            sessionId: sessionIdCounter++,
+                            courseId: course.id,
+                        });
+                    }
 
                     console.log(`[mockProcessPurchase] Added ${defaultQuantity} coaching sessions (offering ${offeringId}) for user ${userId}`);
                 }
@@ -217,7 +159,7 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
                 throw new Error(`Package not found: ${item.packageId}`);
             }
 
-            const courseIdsToEnroll = item.selectedCourseIds.length > 0
+            const courseIdsToEnroll = item.selectedCourseIds && item.selectedCourseIds.length > 0
                 ? item.selectedCourseIds
                 : pkg.courseIds;
 
@@ -228,7 +170,6 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
 
                 enrollments.push({
                     courseId,
-                    enrollmentId: `enroll-${userId}-${courseId}`,
                     coachingIncluded: item.withCoaching,
                 });
 
@@ -243,11 +184,14 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
                         userCredits.set(offeringId, currentCount + defaultQuantity);
                         mockCoachingCredits.set(userId, userCredits);
 
-                        coachingSessions.push({
-                            offeringId,
-                            quantity: defaultQuantity,
-                            totalAvailable: currentCount + defaultQuantity,
-                        });
+                        // Create individual session records
+                        for (let i = 0; i < defaultQuantity; i++) {
+                            coachingSessions.push({
+                                offeringId: offeringId,
+                                sessionId: sessionIdCounter++,
+                                courseId: courseId,
+                            });
+                        }
 
                         console.log(`[mockProcessPurchase] Added ${defaultQuantity} coaching sessions (offering ${offeringId}) for user ${userId}`);
                     }
@@ -261,14 +205,34 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
                 userCredits.set(offering.coachingOfferingId, currentCount + offering.quantity);
                 mockCoachingCredits.set(userId, userCredits);
 
-                coachingSessions.push({
-                    offeringId: offering.coachingOfferingId,
-                    quantity: offering.quantity,
-                    totalAvailable: currentCount + offering.quantity,
-                });
+                // Create individual session records
+                for (let i = 0; i < offering.quantity; i++) {
+                    coachingSessions.push({
+                        offeringId: offering.coachingOfferingId,
+                        sessionId: sessionIdCounter++,
+                        courseId: null, // Standalone sessions not linked to a course
+                    });
+                }
 
                 console.log(`[mockProcessPurchase] Added ${offering.quantity} coaching sessions (offering ${offering.coachingOfferingId}) for user ${userId}`);
             }
+        } else if (item.type === 'course_coaching_sessions') {
+            // Course-specific coaching sessions for lesson components
+            const course = mockCourses.find(c => c.slug === item.courseSlug);
+            if (!course) {
+                throw new Error(`Course not found: ${item.courseSlug}`);
+            }
+
+            // Mock: Create a coaching session for each lesson component
+            for (const _componentId of item.lessonComponentIds) {
+                coachingSessions.push({
+                    offeringId: null, // Component-based coaching doesn't use offerings
+                    sessionId: sessionIdCounter++,
+                    courseId: course.id,
+                });
+            }
+
+            console.log(`[mockProcessPurchase] Added ${item.lessonComponentIds.length} component coaching sessions for course ${item.courseSlug}`);
         }
     }
 
@@ -278,10 +242,13 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
     // Phase 5: Return success
     return {
         success: true,
-        alreadyProcessed: false,
-        transactionId: transaction.id,
-        enrollments,
-        coachingSessions,
+        data: {
+            success: true,
+            alreadyProcessed: false,
+            transactionId: transaction.id,
+            enrollments,
+            coachingSessions,
+        },
     };
 }
 
@@ -313,9 +280,9 @@ async function mockProcessPurchase(input: ProcessPurchaseRequest): Promise<Proce
  */
 export const backendTrpc = {
     processPurchase: {
-        mutate: async (input: ProcessPurchaseRequest): Promise<ProcessPurchaseSuccess> => {
+        mutate: async (input: useCaseModels.TProcessPurchaseRequest): Promise<useCaseModels.TProcessPurchaseSuccessResponse> => {
             // Validate input
-            const validatedInput = ProcessPurchaseRequestSchema.parse(input);
+            const validatedInput = useCaseModels.ProcessPurchaseRequestSchema.parse(input);
 
             // Call mock implementation
             return mockProcessPurchase(validatedInput);

@@ -84,7 +84,8 @@ export async function POST(req: NextRequest) {
 
         // Step 5: Call backend to process purchase
         const transactionData = {
-            stripeSessionId: sessionId,
+            paymentExternalId: (stripeSession.payment_intent as string) || sessionId,
+            paymentProvider: 'stripe',
             amount: stripeSession.amount_total || 0,
             currency: stripeSession.currency || 'chf',
             customerEmail: stripeSession.customer_details?.email || '',
@@ -104,16 +105,16 @@ export async function POST(req: NextRequest) {
         // Step 6: Build response that matches what the UI expects
         const response = {
             success: result.success,
-            alreadyProcessed: result.alreadyProcessed,
+            alreadyProcessed: result.data.alreadyProcessed,
             transaction: {
-                id: result.transactionId,
+                id: result.data.transactionId,
                 amount: transactionData.amount,
                 currency: transactionData.currency.toUpperCase(),
             },
             purchaseType,
             purchaseIdentifier: extractPurchaseIdentifier(purchaseType, metadata),
             customerEmail: transactionData.customerEmail,
-            purchasedItems: result.enrollments.map(e => ({
+            purchasedItems: result.data.enrollments.map((e: { courseId: number; coachingIncluded: boolean }) => ({
                 name: `Course ${e.courseId}`,
                 description: e.coachingIncluded ? 'With coaching' : 'Course access',
             })),
@@ -190,6 +191,17 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
             });
             break;
 
+        case 'StudentCourseCoachingSessionPurchase':
+            // Course-specific coaching sessions for lesson components
+            items.push({
+                type: 'course_coaching_sessions' as const,
+                courseSlug: metadata.courseSlug,
+                lessonComponentIds: metadata.lessonComponentIds
+                    ? metadata.lessonComponentIds.split(',')
+                    : [],
+            });
+            break;
+
         default:
             throw new Error(`Unknown purchase type: ${purchaseType}`);
     }
@@ -240,6 +252,12 @@ function extractPurchaseIdentifier(purchaseType: string, metadata: Record<string
         case 'StudentCoachingSessionPurchase':
             return {
                 offeringId: parseInt(metadata.coachingOfferingId || metadata.offerings?.split(':')[0] || '0'),
+            };
+
+        case 'StudentCourseCoachingSessionPurchase':
+            return {
+                courseSlug: metadata.courseSlug,
+                lessonComponentIds: metadata.lessonComponentIds?.split(',') || [],
             };
 
         default:

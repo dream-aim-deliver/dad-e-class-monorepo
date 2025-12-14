@@ -75,7 +75,7 @@ const mockCoachingOfferings = {
 // Helper to validate coupon and return error if invalid
 function validateCoupon(
     couponCode: string | null | undefined,
-): useCaseModels.TPrepareCheckoutUseCaseErrorResponse | null {
+): useCaseModels.TPrepareCheckoutErrorResponse | null {
     if (!couponCode) return null;
 
     // Mock coupon validation
@@ -163,6 +163,7 @@ export const prepareCheckout = t.procedure
                     unitPrice: course.basePrice,
                     quantity: 1,
                     totalPrice: course.basePrice,
+                    currency: 'CHF',
                 });
 
                 subtotal = course.basePrice;
@@ -181,6 +182,7 @@ export const prepareCheckout = t.procedure
                     unitPrice: course.basePrice,
                     quantity: 1,
                     totalPrice: course.basePrice,
+                    currency: 'CHF',
                 });
 
                 lineItems.push({
@@ -189,6 +191,7 @@ export const prepareCheckout = t.procedure
                     unitPrice: course.coachingPrice,
                     quantity: 1,
                     totalPrice: course.coachingPrice,
+                    currency: 'CHF',
                 });
 
                 subtotal = course.basePrice + course.coachingPrice;
@@ -207,6 +210,7 @@ export const prepareCheckout = t.procedure
                     unitPrice: pkg.basePrice,
                     quantity: 1,
                     totalPrice: pkg.basePrice,
+                    currency: 'CHF',
                 });
 
                 subtotal = pkg.basePrice;
@@ -225,6 +229,7 @@ export const prepareCheckout = t.procedure
                     unitPrice: pkg.basePrice,
                     quantity: 1,
                     totalPrice: pkg.basePrice,
+                    currency: 'CHF',
                 });
 
                 lineItems.push({
@@ -233,6 +238,7 @@ export const prepareCheckout = t.procedure
                     unitPrice: pkg.coachingPrice,
                     quantity: 1,
                     totalPrice: pkg.coachingPrice,
+                    currency: 'CHF',
                 });
 
                 subtotal = pkg.basePrice + pkg.coachingPrice;
@@ -253,9 +259,29 @@ export const prepareCheckout = t.procedure
                     unitPrice: offering.price,
                     quantity: qty,
                     totalPrice: offering.price * qty,
+                    currency: 'CHF',
                 });
 
                 subtotal = offering.price * qty;
+                break;
+            }
+
+            case 'StudentCourseCoachingSessionPurchase': {
+                const courseSlug = input.courseSlug;
+                const componentIds = input.lessonComponentIds;
+                // Mock pricing: 50 CHF per lesson component coaching
+                const pricePerComponent = 5000;
+
+                lineItems.push({
+                    name: `Course Coaching - ${courseSlug}`,
+                    description: `Coaching for ${componentIds.length} lesson component(s)`,
+                    unitPrice: pricePerComponent,
+                    quantity: componentIds.length,
+                    totalPrice: pricePerComponent * componentIds.length,
+                    currency: 'CHF',
+                });
+
+                subtotal = pricePerComponent * componentIds.length;
                 break;
             }
 
@@ -282,6 +308,7 @@ export const prepareCheckout = t.procedure
                     unitPrice: -discount,
                     quantity: 1,
                     totalPrice: -discount,
+                    currency: 'CHF',
                 });
             }
         }
@@ -296,22 +323,19 @@ export const prepareCheckout = t.procedure
             unitPrice: vat,
             quantity: 1,
             totalPrice: vat,
+            currency: 'CHF',
         });
 
         const finalPrice = subtotalAfterDiscount + vat;
 
-        // Create transaction draft
-        const transaction: useCaseModels.TTransactionDraft = {
-            invoiceLineItems: lineItems,
-            currency: 'CHF',
-            couponCode: couponCode || null,
-            finalPrice,
-        };
-
+        // Return success response matching PrepareCheckoutSuccessDataSchema
         return {
             success: true,
             data: {
-                transaction,
+                lineItems: lineItems,
+                currency: 'CHF',
+                finalPrice: finalPrice,
+                couponCode: couponCode,
             },
         };
     });
