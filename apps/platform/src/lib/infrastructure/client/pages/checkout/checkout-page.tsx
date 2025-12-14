@@ -88,7 +88,7 @@ export default function CheckoutPage() {
     // Watch for viewModel changes and open modal when ready
     useEffect(() => {
         if (viewModel && viewModel.mode === 'default') {
-            setTransactionDraft(viewModel.data.transaction);
+            setTransactionDraft(viewModel.data);
             setIsCheckoutOpen(true);
         }
     }, [viewModel]);
@@ -137,6 +137,11 @@ export default function CheckoutPage() {
                 return {
                     coachingOfferingId: request.coachingOfferingId,
                     quantity: request.quantity,
+                };
+            case 'StudentCourseCoachingSessionPurchase':
+                return {
+                    courseSlug: request.courseSlug,
+                    lessonComponentIds: request.lessonComponentIds,
                 };
         }
     };
@@ -227,6 +232,20 @@ export default function CheckoutPage() {
                                 type: 'StudentCoachingSessionPurchase',
                                 coachingOfferingId: 1,
                                 quantity: 2,
+                            })
+                        }
+                    />
+
+                    <SimulationCard
+                        title="Course Component Coaching"
+                        description="Purchase coaching for specific lesson components within a course"
+                        icon="🎯"
+                        isLoading={prepareCheckoutMutation.isPending}
+                        onTest={() =>
+                            handleTest({
+                                type: 'StudentCourseCoachingSessionPurchase',
+                                courseSlug: 'intro-to-programming',
+                                lessonComponentIds: ['comp-001', 'comp-002', 'comp-003'],
                             })
                         }
                     />

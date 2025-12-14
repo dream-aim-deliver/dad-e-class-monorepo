@@ -130,7 +130,7 @@ export default function CoachingOfferingsPanel() {
     // Watch for checkoutViewModel changes and open modal when ready
     useEffect(() => {
         if (checkoutViewModel && checkoutViewModel.mode === 'default') {
-            setTransactionDraft(checkoutViewModel.data.transaction);
+            setTransactionDraft(checkoutViewModel.data);
             setIsCheckoutOpen(true);
         }
     }, [checkoutViewModel]);
