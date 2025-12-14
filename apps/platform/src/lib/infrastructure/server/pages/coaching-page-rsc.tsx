@@ -21,8 +21,8 @@ export default async function CoachingPageServerComponent(props: CoachingPagePro
     // Prefetch Data related to Coaching Page
     prefetch(trpc.getCoachingPage.queryOptions({}));
 
-    // Prefetch Data related to Public Coaches
-    prefetch(trpc.listCoaches.queryOptions({ publicCoaches: true }));
+    // Prefetch Data related to Coaches (publicCoaches only for non-signed-in users)
+    prefetch(trpc.listCoaches.queryOptions(isSignedIn ? {} : { publicCoaches: true }));
 
     // Prefetch Data related to Coaching Offerings
     prefetch(trpc.listCoachingOfferings.queryOptions({}));

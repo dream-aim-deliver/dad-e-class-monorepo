@@ -22,9 +22,10 @@ interface CoachListProps {
 
 export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
     const session = useSession();
+    const isLoggedIn = !!session.data;
 
     const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
-        publicCoaches: true,
+        publicCoaches: isLoggedIn ? false : true,
     });
     const [coachesViewModel, setCoachesViewModel] = useState<
         viewModels.TCoachListViewModel | undefined
@@ -100,7 +101,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
                         key={`coach-${coach.username}`}
                         locale={locale}
                         cardDetails={{
-                            coachName: coach.name + ' ' + coach.surname,
+                            coachName: [coach.name, coach.surname].filter(Boolean).join(' ') || coach.username,
                             coachImage: coach.avatarUrl ?? undefined,
                             languages: coach.languages,
                             sessionCount: coach.coachingSessionCount,
