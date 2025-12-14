@@ -18,6 +18,7 @@ import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/contex
 import { connection } from 'next/server';
 import env from '../../../lib/infrastructure/server/config/env';
 import NextTopLoaderWrapper from '../../../lib/infrastructure/client/components/next-top-loader-wrapper';
+import { OTelBrowserProvider } from '../../../lib/infrastructure/client/telemetry';
 
 
 export const metadata = {
@@ -101,6 +102,18 @@ export default async function RootLayout({
         NEXT_PUBLIC_E_CLASS_CMS_REST_URL: env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
     };
 
+    // OpenTelemetry browser configuration
+    // Note: propagateToUrls uses strings (not RegExp) because RegExp can't be serialized to Client Components
+    const otelConfig = env.NEXT_PUBLIC_OTEL_ENABLED === 'true' ? {
+        serviceName: env.NEXT_PUBLIC_OTEL_SERVICE_NAME || 'e-class-cms-browser',
+        otlpEndpoint: env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT || '',
+        enabled: true,
+        propagateToUrls: [
+            // Propagate trace headers to CMS REST API (will be converted to RegExp on client side)
+            env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
+        ],
+    } : undefined;
+
     // Authentication is handled in middleware.ts
     // Only authenticated users with admin role can reach this point
     const authGateway = new NextAuthGateway(nextAuth);
@@ -119,11 +132,13 @@ export default async function RootLayout({
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <RuntimeConfigProvider config={runtimeConfig}>
-                            <SessionMonitorWrapper locale={locale}>
-                                <Layout availableLocales={availableLocales}>
-                                    {children}
-                                </Layout>
-                            </SessionMonitorWrapper>
+                            <OTelBrowserProvider config={otelConfig}>
+                                <SessionMonitorWrapper locale={locale}>
+                                    <Layout availableLocales={availableLocales}>
+                                        {children}
+                                    </Layout>
+                                </SessionMonitorWrapper>
+                            </OTelBrowserProvider>
                         </RuntimeConfigProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>

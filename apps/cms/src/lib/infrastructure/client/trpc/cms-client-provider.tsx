@@ -12,6 +12,7 @@ import superjson from 'superjson';
 import { useSession } from 'next-auth/react';
 import { useLocale } from 'next-intl';
 import { useRuntimeConfig } from '../context/runtime-config-context';
+import { injectTraceContext } from '../telemetry/trace-context';
 
 interface PlatformContext {
     platformSlug: string;
@@ -81,8 +82,8 @@ export default function CMSTRPCClientProviders({
                                 headers['x-eclass-platform'] = platformSlug;
                                 headers['x-eclass-platform-language'] = platformLanguageCode;
                             }
-
-                            return headers;
+                            // Inject OpenTelemetry trace context for distributed tracing
+                            return injectTraceContext(headers);
                         },
                     }),
                 ],

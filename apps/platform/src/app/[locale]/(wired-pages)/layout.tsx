@@ -24,6 +24,7 @@ import { getRuntimeConfig } from '../../../lib/infrastructure/server/utils/get-r
 import NextTopLoaderWrapper from '../../../lib/infrastructure/client/components/next-top-loader-wrapper';
 import DefaultLoadingWrapper from '../../../lib/infrastructure/client/wrappers/default-loading';
 import { getPlatformCached } from '../../../lib/infrastructure/server/utils/get-platform-cached';
+import { OTelBrowserProvider } from '../../../lib/infrastructure/client/telemetry';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -134,6 +135,19 @@ export default async function RootLayout({
     const runtimeConfig = getRuntimeConfig();
     timings.runtimeConfig = performance.now() - configStart;
 
+    // OpenTelemetry browser configuration
+    // Note: propagateToUrls uses strings (not RegExp) because RegExp can't be serialized to Client Components
+    const otelConfig = process.env.NEXT_PUBLIC_OTEL_ENABLED === 'true' ? {
+        serviceName: process.env.NEXT_PUBLIC_OTEL_SERVICE_NAME || 'e-class-platform-browser',
+        otlpEndpoint: process.env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT || '',
+        enabled: true,
+        appInstance: runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME || 'default',
+        propagateToUrls: [
+            // Propagate trace headers to CMS REST API (will be converted to RegExp on client side)
+            runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
+        ],
+    } : undefined;
+
     // Performance logging (development only)
     const totalTime = performance.now() - perfStart;
     if (process.env.NODE_ENV === 'development') {
@@ -162,19 +176,21 @@ export default async function RootLayout({
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <RuntimeConfigProvider config={runtimeConfig}>
-                            <CMSTRPCClientProviders>
-                                <HydrateClient>
-                                    <Suspense fallback={<DefaultLoadingWrapper />}>
-                                        <SessionMonitorWrapper locale={locale}>
-                                            <PlatformProviderWithSuspense platform={platformData}>
-                                                <Layout availableLocales={availableLocales}>
-                                                    {children}
-                                                </Layout>
-                                            </PlatformProviderWithSuspense>
-                                        </SessionMonitorWrapper>
-                                    </Suspense>
-                                </HydrateClient>
-                            </CMSTRPCClientProviders>
+                            <OTelBrowserProvider config={otelConfig}>
+                                <CMSTRPCClientProviders>
+                                    <HydrateClient>
+                                        <Suspense fallback={<DefaultLoadingWrapper />}>
+                                            <SessionMonitorWrapper locale={locale}>
+                                                <PlatformProviderWithSuspense platform={platformData}>
+                                                    <Layout availableLocales={availableLocales}>
+                                                        {children}
+                                                    </Layout>
+                                                </PlatformProviderWithSuspense>
+                                            </SessionMonitorWrapper>
+                                        </Suspense>
+                                    </HydrateClient>
+                                </CMSTRPCClientProviders>
+                            </OTelBrowserProvider>
                         </RuntimeConfigProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>

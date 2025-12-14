@@ -11,6 +11,7 @@ import superjson from 'superjson';
 import { useSession } from 'next-auth/react';
 import { useLocale } from 'next-intl';
 import { useRuntimeConfig } from '../context/runtime-config-context';
+import { injectTraceContext } from '../telemetry/trace-context';
 
 interface ClientProvidersProps {
     children: ReactNode;
@@ -72,7 +73,8 @@ export default function CMSTRPCClientProviders({
                                 console.warn('[TRPC Headers] ⚠️ Missing platform header');
                             }
 
-                            return headers;
+                            // Inject OpenTelemetry trace context for distributed tracing
+                            return injectTraceContext(headers);
                         },
                     }),
                 ],

@@ -83,6 +83,18 @@ async function createServerHeaders(platformContext?: PlatformContext): Promise<R
         });
     }
 
+    // Inject OpenTelemetry trace context for distributed tracing
+    // This adds traceparent header if there's an active span
+    // Only load OTel API when enabled to prevent side effects
+    if (process.env.OTEL_ENABLED === 'true') {
+        try {
+            const { context, propagation } = await import('@opentelemetry/api');
+            propagation.inject(context.active(), headers);
+        } catch {
+            // Silently fail - tracing should not break functionality
+        }
+    }
+
     console.log('[createServerHeaders] Final headers:', headers);
     return headers;
 }

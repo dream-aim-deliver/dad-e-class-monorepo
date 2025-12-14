@@ -6,6 +6,10 @@ const clientEnvSchema = z.object({
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: z.string().url(),
     NEXT_PUBLIC_CONTACT_EMAIL: z.string().email().optional(),
     // NEXT_PUBLIC_CMS_BACKGROUND_IMAGE_URL: z.string().url().optional(),
+    // OpenTelemetry Browser Configuration
+    NEXT_PUBLIC_OTEL_ENABLED: z.string().optional(),
+    NEXT_PUBLIC_OTEL_SERVICE_NAME: z.string().optional(),
+    NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
 });
 
 export { clientEnvSchema };
@@ -21,6 +25,10 @@ const runtimeEnv = {
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: process.env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL || 'http://localhost:5173',
     NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL || (isBuildTime ? 'build-time@placeholder.com' : undefined),
     // NEXT_PUBLIC_CMS_BACKGROUND_IMAGE_URL: process.env.NEXT_PUBLIC_CMS_BACKGROUND_IMAGE_URL,
+    // OpenTelemetry Browser Configuration
+    NEXT_PUBLIC_OTEL_ENABLED: process.env.NEXT_PUBLIC_OTEL_ENABLED,
+    NEXT_PUBLIC_OTEL_SERVICE_NAME: process.env.NEXT_PUBLIC_OTEL_SERVICE_NAME || 'e-class-cms-browser',
+    NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT: process.env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT,
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);
