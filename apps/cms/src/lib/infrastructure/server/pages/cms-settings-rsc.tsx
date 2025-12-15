@@ -29,6 +29,7 @@ export default async function CmsSettingsServerComponent({
 
   // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
   prefetch(trpc.getPlatform.queryOptions({}));
+  prefetch(trpc.getEmailConfig.queryOptions({}));
 
   return (
     <HydrateClient>
