@@ -25,6 +25,7 @@ import {
 import { viewModels } from '@maany_shr/e-class-models';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useGetPlatformPresenter } from '../hooks/use-get-platform-presenter';
+import { useGetEmailConfigPresenter } from '../hooks/use-get-email-config-presenter';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { useRequiredPlatform } from '../context/platform-context';
 import { useRouter } from 'next/navigation';
@@ -55,17 +56,31 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
   // Fetch platform data
   const [getPlatformResponse, { refetch: refetchPlatform }] = trpc.getPlatform.useSuspenseQuery({});
 
+  // Fetch email config data
+  const [getEmailConfigResponse, { refetch: refetchEmailConfig }] = trpc.getEmailConfig.useSuspenseQuery({});
+
   const [platformViewModel, setPlatformViewModel] = useState<
     viewModels.TGetPlatformViewModel | undefined
   >(undefined);
 
-  const { presenter: platformPresenter } = useGetPlatformPresenter(setPlatformViewModel);
+  const [emailConfigViewModel, setEmailConfigViewModel] = useState<
+    viewModels.TGetEmailConfigViewModel | undefined
+  >(undefined);
 
-  // Present data on mount and when response changes
+  const { presenter: platformPresenter } = useGetPlatformPresenter(setPlatformViewModel);
+  const { presenter: emailConfigPresenter } = useGetEmailConfigPresenter(setEmailConfigViewModel);
+
+  // Present platform data on mount and when response changes
   useEffect(() => {
     // @ts-ignore - Presenter doesn't handle progress states
     platformPresenter.present(getPlatformResponse, platformViewModel);
   }, [getPlatformResponse, platformPresenter, platformViewModel]);
+
+  // Present email config data on mount and when response changes
+  useEffect(() => {
+    // @ts-ignore - Presenter doesn't handle progress states
+    emailConfigPresenter.present(getEmailConfigResponse, emailConfigViewModel);
+  }, [getEmailConfigResponse, emailConfigPresenter, emailConfigViewModel]);
 
   // Upload progress tracking
   const [logoUploadProgress, setLogoUploadProgress] = useState<number | undefined>(undefined);
@@ -90,7 +105,12 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
   const [currency, setCurrency] = useState<string>('');
   const [domainName, setDomainName] = useState<string>('');
 
-  // Save mutation
+  // Email configuration fields
+  const [templateId, setTemplateId] = useState<string>('');
+  const [emailAddress, setEmailAddress] = useState<string>('');
+  const [emailName, setEmailName] = useState<string>('');
+
+  // Save platform mutation
   const updatePlatformMutation = trpc.updatePlatform.useMutation({
     onSuccess: (data) => {
       if (data.success) {
@@ -109,8 +129,29 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
     },
   });
 
+  // Save email config mutation
+  const saveEmailConfigMutation = trpc.saveEmailConfig.useMutation({
+    onSuccess: (data) => {
+      if (data.success) {
+        setEmailSaveStatus('success');
+        setEmailSaveMessage(t('saveSuccess') ?? 'Settings saved successfully!');
+        refetchEmailConfig();
+      } else {
+        setEmailSaveStatus('error');
+        setEmailSaveMessage(t('saveError') ?? 'Failed to save settings');
+      }
+    },
+    onError: (error) => {
+      setEmailSaveStatus('error');
+      setEmailSaveMessage((error.message ?? t('saveError')) ?? 'An error occurred while saving');
+      console.error('Error saving email config:', error);
+    },
+  });
+
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [emailSaveStatus, setEmailSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [emailSaveMessage, setEmailSaveMessage] = useState<string | null>(null);
 
   // Initialize form state from fetched data
   useEffect(() => {
@@ -152,8 +193,18 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
     }
   }, [platformViewModel]);
 
+  // Initialize email config state from fetched data
+  useEffect(() => {
+    if (emailConfigViewModel?.mode === 'default' && emailConfigViewModel.data) {
+      const data = emailConfigViewModel.data;
+      setTemplateId(data.templateId ?? '');
+      setEmailAddress(data.email ?? '');
+      setEmailName(data.emailName ?? '');
+    }
+  }, [emailConfigViewModel]);
+
   // Loading state
-  if (!platformViewModel) {
+  if (!platformViewModel || !emailConfigViewModel) {
     return <DefaultLoading locale={locale} variant="minimal" />;
   }
 
@@ -182,6 +233,18 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
     );
   }
 
+  // Error handling for email config
+  if (emailConfigViewModel.mode === 'kaboom') {
+    return (
+      <DefaultError
+        locale={locale}
+        onRetry={() => {
+          refetchEmailConfig();
+        }}
+      />
+    );
+  }
+
   // Handle logo upload
   const handleLogoUpload = async (
     uploadRequest: fileMetadata.TFileUploadRequest,
@@ -200,7 +263,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
     return uploadedFile;
   };
 
-  // Handle save
+  // Handle save for platform settings
   const handleSave = () => {
     setSaveStatus('idle');
     setSaveMessage(null);
@@ -212,6 +275,16 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
       companyUuid: companyUuid || '',
       logoId: logo?.id ? Number(logo.id) : null,
       backgroundImageId: backgroundImage?.id ? Number(backgroundImage.id) : null,
+    });
+
+    // Also save email config
+    setEmailSaveStatus('idle');
+    setEmailSaveMessage(null);
+
+    saveEmailConfigMutation.mutate({
+      templateId: templateId || null,
+      email: emailAddress || null,
+      emailName: emailName || null,
     });
   };
 
@@ -245,27 +318,28 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
           {t('description')} | Platform: {platform.name}
         </p>
       </div>
-      <div className="sticky top-18 z-50 flex justify-end"> 
+      <div className="sticky top-18 z-50 flex justify-end">
           <Button
             variant="primary"
             size="medium"
             text={
-              updatePlatformMutation.isPending
+              (updatePlatformMutation.isPending || saveEmailConfigMutation.isPending)
                 ? (t('saving') ?? 'Saving...')
                 : (t('saveButton') ?? 'Save Changes')
             }
             onClick={handleSave}
-            disabled={updatePlatformMutation.isPending}
+            disabled={updatePlatformMutation.isPending || saveEmailConfigMutation.isPending}
             className='shadow-lg'
           />
       </div>
 
       {/* Save Status Banner */}
-      {updatePlatformMutation.isPending && (
+      {(updatePlatformMutation.isPending || saveEmailConfigMutation.isPending) && (
         <Banner style="success" title={t('saving') ?? 'Saving changes...'} />
       )}
       {saveStatus === 'success' && saveMessage && <Banner style="success" title={saveMessage} />}
       {saveStatus === 'error' && saveMessage && <Banner style="error" title={saveMessage} />}
+      {emailSaveStatus === 'error' && emailSaveMessage && <Banner style="error" title={emailSaveMessage} />}
       {logoUpload.uploadError && <Banner style="error" title={logoUpload.uploadError} />}
       {backgroundUpload.uploadError && <Banner style="error" title={backgroundUpload.uploadError} />}
 
@@ -427,6 +501,60 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
             />
             <p className="text-xs text-text-secondary">
               ({t('fields.backgroundImageRecommendation')})
+            </p>
+          </div>
+        </div>
+
+        <Divider className='my-1'/>
+
+        {/* Email Configuration Section */}
+        <div className="flex flex-col gap-4">
+          <h2>
+            {t('sections.email') ?? 'Email Configuration'}
+          </h2>
+
+          {/* Template ID */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-text-primary">
+              {t('fields.templateId') ?? 'Email Template ID'}
+            </label>
+            <InputField
+              inputText={t('fields.templateIdPlaceholder') ?? 'e.g., d-abc123def456'}
+              value={templateId}
+              setValue={setTemplateId}
+            />
+            <p className="text-xs text-text-secondary">
+              {t('fields.templateIdDescription') ?? 'The SendGrid template ID used for automated emails'}
+            </p>
+          </div>
+
+          {/* Email Address */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-text-primary">
+              {t('fields.emailAddress') ?? 'Sender Email Address'}
+            </label>
+            <InputField
+              inputText={t('fields.emailAddressPlaceholder') ?? 'e.g., noreply@platform.com'}
+              value={emailAddress}
+              setValue={setEmailAddress}
+            />
+            <p className="text-xs text-text-secondary">
+              {t('fields.emailAddressDescription') ?? 'The email address from which automated emails will be sent'}
+            </p>
+          </div>
+
+          {/* Email Name */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-text-primary">
+              {t('fields.emailName') ?? 'Sender Name'}
+            </label>
+            <InputField
+              inputText={t('fields.emailNamePlaceholder') ?? 'e.g., Platform Team'}
+              value={emailName}
+              setValue={setEmailName}
+            />
+            <p className="text-xs text-text-secondary">
+              {t('fields.emailNameDescription') ?? 'The display name that appears alongside the sender email address'}
             </p>
           </div>
         </div>

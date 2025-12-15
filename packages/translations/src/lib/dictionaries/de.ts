@@ -2996,6 +2996,7 @@ export const DE: TDictionary = {
         basicInfo: 'Grundinformationen',
         companyInfo: 'Unternehmensinformationen',
         branding: 'Branding',
+        email: 'E-Mail-Konfiguration',
       },
       fields: {
         name: 'Plattform-Name',
@@ -3017,6 +3018,15 @@ export const DE: TDictionary = {
         backgroundImage: 'Hintergrundbild',
         backgroundImageRecommendation: 'Empfohlene Größe: 1920×1080, komprimiert auf < 300 KB',
         readOnly: 'Schreibgeschützt',
+        templateId: 'E-Mail-Vorlagen-ID',
+        templateIdPlaceholder: 'z.B. d-abc123def456',
+        templateIdDescription: 'Die SendGrid-Vorlagen-ID für automatisierte E-Mails',
+        emailAddress: 'Absender-E-Mail-Adresse',
+        emailAddressPlaceholder: 'z.B. noreply@plattform.de',
+        emailAddressDescription: 'Die E-Mail-Adresse, von der automatisierte E-Mails gesendet werden',
+        emailName: 'Absendername',
+        emailNamePlaceholder: 'z.B. Plattform-Team',
+        emailNameDescription: 'Der Anzeigename, der neben der Absender-E-Mail-Adresse erscheint',
       },
       error: {
         title: 'Fehler',

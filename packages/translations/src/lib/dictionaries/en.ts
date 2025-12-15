@@ -2993,6 +2993,7 @@ export const EN: TDictionary = {
         basicInfo: 'Basic Information',
         companyInfo: 'Company Information',
         branding: 'Branding',
+        email: 'Email Configuration',
       },
       fields: {
         name: 'Platform Name',
@@ -3014,6 +3015,15 @@ export const EN: TDictionary = {
         backgroundImage: 'Background Image',
         backgroundImageRecommendation: 'Recommended size: 1920×1080, compressed to < 300 KB',
         readOnly: 'Read-only',
+        templateId: 'Email Template ID',
+        templateIdPlaceholder: 'e.g., d-abc123def456',
+        templateIdDescription: 'The SendGrid template ID used for automated emails',
+        emailAddress: 'Sender Email Address',
+        emailAddressPlaceholder: 'e.g., noreply@platform.com',
+        emailAddressDescription: 'The email address from which automated emails will be sent',
+        emailName: 'Sender Name',
+        emailNamePlaceholder: 'e.g., Platform Team',
+        emailNameDescription: 'The display name that appears alongside the sender email address',
       },
       error: {
         title: 'Error',

@@ -3038,6 +3038,7 @@ export const DictionarySchema = z.object({
         basicInfo: z.string(),
         companyInfo: z.string(),
         branding: z.string(),
+        email: z.string(),
       }),
       fields: z.object({
         name: z.string(),
@@ -3059,6 +3060,15 @@ export const DictionarySchema = z.object({
         backgroundImage: z.string(),
         backgroundImageRecommendation: z.string(),
         readOnly: z.string(),
+        templateId: z.string(),
+        templateIdPlaceholder: z.string(),
+        templateIdDescription: z.string(),
+        emailAddress: z.string(),
+        emailAddressPlaceholder: z.string(),
+        emailAddressDescription: z.string(),
+        emailName: z.string(),
+        emailNamePlaceholder: z.string(),
+        emailNameDescription: z.string(),
       }),
       error: z.object({
         title: z.string(),
