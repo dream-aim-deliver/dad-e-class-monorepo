@@ -11,6 +11,9 @@ interface LessonNotesPanelProps {
 }
 
 export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
+    // TRPC utils for query invalidation
+    const utils = trpc.useUtils();
+
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.lessonNotes');
 
@@ -26,7 +29,7 @@ export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
     });
 
     // Query for getting the lesson note
-    const { data: noteData, isLoading: isLoadingNote, refetch } = trpc.getLessonNote.useQuery(
+    const { data: noteData, isLoading: isLoadingNote } = trpc.getLessonNote.useQuery(
         { lessonId },
         {
             staleTime: 0,
@@ -37,8 +40,8 @@ export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
     // Mutation for saving the lesson note
     const saveMutation = trpc.saveLessonNote.useMutation({
         onSuccess: () => {
-            // Refetch the note data to get updated timestamp
-            refetch();
+            // Invalidate query to trigger refetch with updated timestamp
+            utils.getLessonNote.invalidate({ lessonId });
         }
     });
 

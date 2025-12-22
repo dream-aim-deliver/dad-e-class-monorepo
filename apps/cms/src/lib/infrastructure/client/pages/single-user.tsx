@@ -38,6 +38,9 @@ interface SingleUserProps {
 
 
 export default function SingleUser({ locale, platformSlug, platformLocale, username }: SingleUserProps) {
+  // TRPC utils for query invalidation
+  const utils = trpc.useUtils();
+
   const t = useTranslations('pages.singleUser');
   const tRoles = useTranslations('common.roles');
   const currentLocale = useLocale() as TLocale;
@@ -179,8 +182,8 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
 
       // Check if the mutation actually succeeded
       if (result && result.success === true) {
-        // On success
-        refetchUserRoles();
+        // On success - invalidate query to trigger refetch
+        await utils.listUserRoles.invalidate({ username });
         setRoleUpdateSuccess(t('roleUpdateSuccess', { role: selectedRole }));
         // Auto-dismiss after 5 seconds
         setTimeout(() => setRoleUpdateSuccess(null), 5000);

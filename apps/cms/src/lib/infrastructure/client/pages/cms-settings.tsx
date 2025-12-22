@@ -39,6 +39,9 @@ interface CmsSettingsProps {
 }
 
 export default function CmsSettings({ platformSlug, platformLocale }: CmsSettingsProps) {
+  // TRPC utils for query invalidation
+  const utils = trpc.useUtils();
+
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.cmsSettings');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
@@ -112,11 +115,12 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
 
   // Save platform mutation
   const updatePlatformMutation = trpc.updatePlatform.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data.success) {
         setSaveStatus('success');
         setSaveMessage(t('saveSuccess') ?? 'Settings saved successfully!');
-        refetchPlatform();
+        // Invalidate query to trigger refetch
+        await utils.getPlatform.invalidate();
       } else {
         setSaveStatus('error');
         setSaveMessage(t('saveError') ?? 'Failed to save settings');
@@ -131,11 +135,12 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
 
   // Save email config mutation
   const saveEmailConfigMutation = trpc.saveEmailConfig.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data.success) {
         setEmailSaveStatus('success');
         setEmailSaveMessage(t('saveSuccess') ?? 'Settings saved successfully!');
-        refetchEmailConfig();
+        // Invalidate query to trigger refetch
+        await utils.getEmailConfig.invalidate();
       } else {
         setEmailSaveStatus('error');
         setEmailSaveMessage(t('saveError') ?? 'Failed to save settings');
