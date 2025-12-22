@@ -66,6 +66,9 @@ const DEFAULT_HOME_PAGE_DATA: viewModels.TGetHomePageSuccess = {
  * - Accordion section
  */
 export default function ManageHomepage() {
+	// TRPC utils for query invalidation
+	const utils = trpc.useUtils();
+
 	// App locale - used for UI elements
 	const appLocale = useLocale() as TLocale;
 
@@ -357,8 +360,8 @@ export default function ManageHomepage() {
 					})),
 				},
 			});
-			// Refetch to get fresh data - useFormState will auto-sync when new data arrives
-			await refetchHomePage();
+			// Invalidate query to trigger refetch - useFormState will auto-sync when new data arrives
+			await utils.getHomePage.invalidate();
 		} catch (error) {
 			// Error handled by useEffect
 		}

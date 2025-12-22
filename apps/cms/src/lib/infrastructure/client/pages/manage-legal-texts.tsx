@@ -36,6 +36,9 @@ interface ManageLegalTextsProps {
 }
 
 export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) {
+  // TRPC utils for query invalidation
+  const utils = trpc.useUtils();
+
   const t = useTranslations('pages.manageLegalTexts');
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();
@@ -125,14 +128,16 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
   // Save mutation
   const saveLegalTextsMutation = trpc.savePlatformLanguageLegalTexts.useMutation();
 
-  const handleSave = () => {
-    saveLegalTextsMutation.mutate({
+  const handleSave = async () => {
+    await saveLegalTextsMutation.mutateAsync({
       impressumContent,
       privacyPolicyContent,
       termsOfUse: termsOfUseContent,
       rules: rulesContent,
       offerInformation: offerInformationContent,
     });
+    // Invalidate query to trigger refetch
+    await utils.getPlatformLanguage.invalidate();
   };
 
   if (platformLanguageViewModel?.mode === 'kaboom') {

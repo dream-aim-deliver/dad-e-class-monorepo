@@ -33,6 +33,9 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 
 export default function ManageAboutPage() {
+	// TRPC utils for query invalidation
+	const utils = trpc.useUtils();
+
 	// Platform context
 	const platformContext = useRequiredPlatformLocale();
 	const { platform } = useRequiredPlatform();
@@ -141,10 +144,12 @@ export default function ManageAboutPage() {
 			await saveAboutPageMutation.mutateAsync({
 				aboutPageContent: currentContent,
 			});
+			// Invalidate query to trigger refetch
+			await utils.getPlatformLanguage.invalidate();
 		} catch (error) {
 			// Error handled by useEffect
 		}
-	}, [currentContent, saveAboutPageMutation]);
+	}, [currentContent, saveAboutPageMutation, utils.getPlatformLanguage]);
 
 	if (platformLanguageViewModel?.mode === 'kaboom') {
 		return (

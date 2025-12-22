@@ -139,7 +139,6 @@ export default function Header({
                 platformViewModel.data.logo?.downloadUrl ? (
                     <Image
                         priority
-                        unoptimized={true}
                         src={platformViewModel.data.logo.downloadUrl}
                         alt={platformViewModel.data.name}
                         width={48}

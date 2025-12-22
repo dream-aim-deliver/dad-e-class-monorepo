@@ -67,6 +67,9 @@ export default function ManageCoachingPage({
   platformSlug,
   platformLocale,
 }: ManageCoachingPageProps) {
+  // TRPC utils for query invalidation
+  const utils = trpc.useUtils();
+
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.manageCoachingPage');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
@@ -254,6 +257,8 @@ export default function ManageCoachingPage({
           buttonLink: formState.value.banner.buttonLink,
         },
       });
+      // Invalidate query to trigger refetch
+      await utils.getCoachingPage.invalidate();
     } catch (error) {
       // Error handled by useEffect
     }

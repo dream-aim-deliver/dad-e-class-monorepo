@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
         svgr: false,
     },
     images: {
+        formats: ['image/avif', 'image/webp'],
+        // Cache optimized images for 1 hour minimum, matching signed URL TTL from MinIO
+        minimumCacheTTL: 3600,
         remotePatterns: [
             {
                 protocol: 'https',
@@ -26,6 +29,7 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'static.wixstatic.com',
             },
+            // Custom S3/MinIO (configured via environment variables)
             ...(process.env.S3_HOSTNAME ? [{
                 protocol: (process.env.S3_PROTOCOL || 'http') as 'http' | 'https',
                 hostname: process.env.S3_HOSTNAME,
@@ -33,6 +37,11 @@ const nextConfig: NextConfig = {
             }] : []),
         ],
     },
+    compiler: process.env.NODE_ENV === 'production' ? {
+        removeConsole: {
+            exclude: ['error', 'warn'],
+        },
+    }: undefined,
 };
 
 const plugins = [

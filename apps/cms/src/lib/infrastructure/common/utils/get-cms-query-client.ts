@@ -28,7 +28,18 @@ export function getTRPCUrl() {
 export function makeQueryClient() {
     return new QueryClient({
         defaultOptions: {
-            // TODO: define default options for queries
+            queries: {
+                // Disable automatic refetch on window focus to reduce unnecessary requests
+                refetchOnWindowFocus: false,
+                // Consider data stale after 2 minutes
+                staleTime: 2 * 60 * 1000,
+                // Refetch when component mounts if data is stale
+                refetchOnMount: true,
+                // Refetch when network reconnects
+                refetchOnReconnect: true,
+                // Only retry failed queries once
+                retry: 1,
+            },
             dehydrate: {
                 serializeData: superjson.serialize,
                 shouldDehydrateQuery: (query) => {

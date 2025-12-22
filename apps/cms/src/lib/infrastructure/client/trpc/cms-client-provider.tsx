@@ -7,7 +7,7 @@ import {
 } from '../../common/utils/get-cms-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { trpc } from '../trpc/cms-client';
-import { httpLink } from '@trpc/client'; // DEBUG: Temporarily using httpLink instead of httpBatchLink to test batching issue
+import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 import { useSession } from 'next-auth/react';
 import { useLocale } from 'next-intl';
@@ -72,7 +72,7 @@ export default function CMSTRPCClientProviders({
 
             return trpc.createClient({
                 links: [
-                    httpLink({ // DEBUG: Using httpLink instead of httpBatchLink to test if batching causes mutation hangs
+                    httpBatchLink({
                         transformer: superjson,
                         url: trpcUrl,
                         headers() {
