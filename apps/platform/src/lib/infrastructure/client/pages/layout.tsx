@@ -2,10 +2,7 @@
 
 import Header from './header';
 import Footer from './footer';
-import { useState, useEffect, useRef } from 'react';
-import { viewModels } from '@maany_shr/e-class-models';
-import { useGetPlatformPresenter } from '../hooks/use-get-platform-presenter';
-import { DefaultError, DefaultLoading, DefaultNotFound } from '@maany_shr/e-class-ui-kit';
+import { useMemo, useEffect, useRef } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
@@ -45,32 +42,14 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
 
     // Get platform data from context (already fetched server-side with 15-minute cache)
     const { platform } = useRequiredPlatform();
-    const [platformViewModel, setPlatformViewModel] = useState<
-        viewModels.TGetPlatformViewModel | undefined
-    >(undefined);
-    const { presenter: platformPresenter } =
-        useGetPlatformPresenter(setPlatformViewModel);
 
-    // Construct response object expected by presenter
-    const platformResponse = {
-        success: true as const,
+    // Transform platform data to view model format
+    // Since platform comes from required context (throws if missing) and is already
+    // validated server-side, we can safely construct the 'default' mode view model
+    const platformViewModel = useMemo(() => ({
+        mode: 'default' as const,
         data: platform,
-    };
-
-    // @ts-ignore
-    platformPresenter.present(platformResponse, platformViewModel);
-
-    if (!platformViewModel)
-        return <DefaultLoading locale={locale} variant="minimal" />;
-
-    if (platformViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
-    }
-
-    if (platformViewModel.mode === 'not-found')
-    {
-        return <DefaultNotFound locale={locale} />;
-    }
+    }), [platform]);
 
     return (
         <div

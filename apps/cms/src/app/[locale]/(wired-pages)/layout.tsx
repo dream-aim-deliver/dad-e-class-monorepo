@@ -30,21 +30,25 @@ const nunito = Nunito({
     weight: ['300', '400', '700'],
     variable: '--font-nunito',
     subsets: ['latin'],
+    display: 'swap',
 });
 const raleway = Raleway({
     weight: ['300', '400', '700'],
     variable: '--font-raleway',
     subsets: ['latin'],
+    display: 'swap',
 });
 const roboto = Roboto({
     weight: ['300', '400', '700'],
     variable: '--font-roboto',
     subsets: ['latin'],
+    display: 'swap',
 });
 const figtree = Figtree({
     weight: ['300', '400', '700'],
     variable: '--font-figtree',
     subsets: ['latin'],
+    display: 'swap',
 });
 
 export default async function RootLayout({
