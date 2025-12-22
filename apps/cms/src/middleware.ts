@@ -45,26 +45,20 @@ export default async function middleware(req: NextRequest) {
 
         // Check if user has admin role (but skip this check for access-denied page)
         if (!isAccessDeniedPage) {
-            // Debug: Log the session structure to verify TRPC roles
-            console.log('[Middleware Debug] Full session structure:', JSON.stringify(session, null, 2));
-            console.log('[Middleware Debug] session.user:', JSON.stringify(session?.user, null, 2));
-            console.log('[Middleware Debug] session.user.roles:', session?.user?.roles);
-
             const userRoles = session?.user?.roles || [];
-            console.log('[Middleware Debug] Extracted userRoles:', userRoles);
-            console.log('[Middleware Debug] userRoles type:', typeof userRoles);
-            console.log('[Middleware Debug] userRoles isArray:', Array.isArray(userRoles));
-
             const isAdmin = userRoles.includes('admin') || userRoles.includes('superadmin');
-            console.log('[Middleware Debug] isAdmin:', isAdmin);
+
+            // Debug logging only in development
+            if (process.env.NODE_ENV === 'development') {
+                console.log('[Middleware Debug] Full session structure:', JSON.stringify(session, null, 2));
+                console.log('[Middleware Debug] session.user.roles:', session?.user?.roles);
+                console.log('[Middleware Debug] isAdmin:', isAdmin);
+            }
 
             if (!isAdmin) {
-                console.log('[Middleware Debug] Redirecting to access denied - user roles:', userRoles);
                 // Redirect to access denied page
                 const accessDeniedUrl = new URL(`/${locale}/auth/access-denied`, req.url);
                 return NextResponse.redirect(accessDeniedUrl);
-            } else {
-                console.log('[Middleware Debug] Admin access granted!');
             }
         }
     }
