@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo, useRef, useEffect } from 'react';
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import { getQueryClient } from '../../common/utils/get-cms-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -29,9 +29,35 @@ export default function CMSTRPCClientProviders({
     const cmsRestUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
     const platformSlug = runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
 
+    // Store token in ref to avoid client recreation on token refresh
+    const tokenRef = useRef<string | undefined>(undefined);
+    const sessionIdRef = useRef<string | undefined>(undefined);
+
+    // Update refs when session changes (doesn't trigger client recreation)
+    useEffect(() => {
+        tokenRef.current = session?.user?.idToken;
+        sessionIdRef.current = session?.user?.sessionId;
+    }, [session?.user?.idToken, session?.user?.sessionId]);
+
+    // Track user ID to detect user change and clear cache
+    const prevUserIdRef = useRef<string | undefined>(undefined);
+
+    useEffect(() => {
+        const currentUserId = session?.user?.id;
+
+        // Clear cache on logout (user -> no user) or user change
+        if (prevUserIdRef.current !== undefined && prevUserIdRef.current !== currentUserId) {
+            console.log('[TRPC] Clearing query cache - user changed');
+            queryClient.clear();
+        }
+
+        prevUserIdRef.current = currentUserId;
+    }, [session?.user?.id, queryClient]);
+
     const trpcClient = useMemo(
         () => {
-            // Creating new TRPC client - only when token, locale, or config URLs change
+            // Creating new TRPC client - only when locale or config URLs change
+            // Token is stored in ref to avoid recreation on token refresh
             const trpcUrl = `${cmsRestUrl}/api/trpc`;
 
             return trpc.createClient({
@@ -42,22 +68,13 @@ export default function CMSTRPCClientProviders({
                         headers() {
                             const headers: Record<string, string> = {};
 
-                            // Only add auth header if session has token
-                            // Note: status check removed - headers function checks token directly
-                            if (session?.user?.idToken) {
-                                headers['Authorization'] =
-                                    `Bearer ${session.user.idToken}`;
-                            } else if (status !== 'loading' && !session?.user?.idToken) {
-                                console.warn('[TRPC Headers] ⚠️ Missing Authorization header - no idToken found', {
-                                    hasSession: !!session,
-                                    hasUser: !!session?.user,
-                                    sessionStatus: status,
-                                    isAuthenticated: status === 'authenticated'
-                                });
+                            // Read token from ref (updated via useEffect, doesn't trigger client recreation)
+                            if (tokenRef.current) {
+                                headers['Authorization'] = `Bearer ${tokenRef.current}`;
                             }
 
                             // Add session ID header (defaults to "public" if no session)
-                            headers['x-eclass-session-id'] = session?.user?.sessionId || 'public';
+                            headers['x-eclass-session-id'] = sessionIdRef.current || 'public';
 
                             // Add locale header
                             if (locale) {
@@ -80,10 +97,9 @@ export default function CMSTRPCClientProviders({
                 ],
             });
         },
-        // Only recreate client when token or locale changes
-        // Removed 'status' - unnecessary, headers check token directly
-        // Replaced 'runtimeConfig' with specific values for stability
-        [session?.user?.idToken, locale, cmsRestUrl, platformSlug],
+        // Token NOT in deps - stored in ref to prevent client recreation on token refresh
+        // Client only recreates when locale or config URLs change
+        [locale, cmsRestUrl, platformSlug],
     );
 
     // Handle potential errors in TRPC provider setup

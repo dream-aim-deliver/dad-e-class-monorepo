@@ -9,6 +9,20 @@ import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { TAppRouter } from '@dream-aim-deliver/e-class-cms-rest';
 import superjson from 'superjson';
 import { TEClassRole } from "@dream-aim-deliver/e-class-cms-rest/lib/core";
+
+/**
+ * Cached user data structure stored in JWT token
+ */
+interface CachedUserData {
+    roles: TEClassRole[];
+    userDetails: {
+        id: string;
+        email: string;
+        username: string;
+        avatarImage?: string;
+    } | null;
+}
+
 /**
  * Generates the NextAuth configuration object.
  *
@@ -60,6 +74,90 @@ export const generateNextAuthConfig = (config: {
             return null;
         }
     })
+
+    /**
+     * Helper function to fetch user roles and details via tRPC.
+     * Called during initial sign-in and token refresh to cache data in JWT.
+     */
+    const fetchUserDataForCache = async (
+        idToken: string,
+        jti: string | undefined,
+        userSub: string,
+        defaultImage: string | undefined
+    ): Promise<CachedUserData> => {
+        const defaultRoles: TEClassRole[] = ["visitor", "student"];
+        const defaultResult: CachedUserData = { roles: defaultRoles, userDetails: null };
+
+        try {
+            const trpcClient = createTRPCClient<TAppRouter>({
+                links: [
+                    httpBatchLink({
+                        transformer: superjson,
+                        url: config.trpc.getTrpcUrl(),
+                        async headers() {
+                            const headers: Record<string, string> = config.trpc.getPlatformHeaders();
+                            headers['Authorization'] = `Bearer ${idToken}`;
+                            headers['x-eclass-session-id'] = jti || 'public';
+
+                            const locale = await config.trpc.getLocale?.();
+                            if (locale) {
+                                headers['Accept-Language'] = locale;
+                            }
+
+                            return headers;
+                        },
+                    }),
+                ],
+            });
+
+            // Fetch roles
+            let roles: TEClassRole[] = defaultRoles;
+            try {
+                const userRolesDTO = await trpcClient.listUserRoles.query({});
+                if (userRolesDTO.success && userRolesDTO.data) {
+                    const allowedRoles = ["visitor", "student", "coach", "course_creator", "admin", "superadmin"] as const;
+                    const fetchedRoles = (userRolesDTO.data as any).roles as TEClassRole[];
+                    if (Array.isArray(fetchedRoles)) {
+                        roles = fetchedRoles.filter(
+                            (role): role is typeof allowedRoles[number] => allowedRoles.includes(role as any)
+                        );
+                    }
+                }
+            } catch (error) {
+                console.error('[Auth JWT] Failed to fetch user roles:', error);
+            }
+
+            // Fetch user details
+            let userDetails: CachedUserData['userDetails'] = null;
+            try {
+                const getUserForSessionDTO = await trpcClient.getUserDetailsForSession.query({
+                    userSub: userSub,
+                    defaultImage: defaultImage
+                });
+                if (getUserForSessionDTO.success && getUserForSessionDTO.data) {
+                    const responseData = getUserForSessionDTO.data as { id: number; email: string; username: string; avatarImage?: string };
+                    userDetails = {
+                        id: responseData.id.toString(),
+                        email: responseData.email,
+                        username: responseData.username,
+                        avatarImage: responseData.avatarImage || undefined,
+                    };
+                }
+            } catch (error) {
+                console.error('[Auth JWT] Failed to fetch user details:', error);
+            }
+
+            console.log('[Auth JWT] Cached user data fetched successfully', {
+                roles,
+                hasUserDetails: !!userDetails
+            });
+
+            return { roles, userDetails };
+        } catch (error) {
+            console.error('[Auth JWT] Failed to create tRPC client for user data fetch:', error);
+            return defaultResult;
+        }
+    };
 
     const nextAuthConfig: NextAuthConfig = {
         trustHost: true,
@@ -115,6 +213,20 @@ export const generateNextAuthConfig = (config: {
                 }
                 if (account) {
                     token.account = account;
+
+                    // On initial sign-in, fetch and cache user roles and details
+                    if (account.id_token) {
+                        console.log('[Auth JWT] Initial sign-in detected, fetching user data for cache...');
+                        const userData = user as TAuthProviderProfileDTO;
+                        const cachedData = await fetchUserDataForCache(
+                            account.id_token,
+                            token.jti,
+                            userData.sub,
+                            userData.image
+                        );
+                        token.cachedRoles = cachedData.roles;
+                        token.cachedUserDetails = cachedData.userDetails;
+                    }
                 }
 
                 // Use token.user.expires as the source of truth for token expiration
@@ -210,12 +322,23 @@ export const generateNextAuthConfig = (config: {
                             expires: newExpiresAt,
                         };
 
+                        // Re-fetch and cache user data with the new token
+                        console.log('[Auth JWT] Fetching user data after token refresh...');
+                        const cachedData = await fetchUserDataForCache(
+                            refreshedTokens.id_token,
+                            token.jti,
+                            (token.user as TAuthProviderProfileDTO).sub,
+                            (token.user as TAuthProviderProfileDTO).image
+                        );
+
                         return {
                             ...token,
                             user: updatedUser,
                             account: updatedAccount,
                             accessTokenExpires: newExpiresAt * 1000,
                             error: undefined,
+                            cachedRoles: cachedData.roles,
+                            cachedUserDetails: cachedData.userDetails,
                         };
                     } catch (error) {
                         lastError = error as Error;
@@ -252,7 +375,9 @@ export const generateNextAuthConfig = (config: {
                 const nextAuthToken = token as DefaultJWT & {
                     user: TAuthProviderProfileDTO,
                     account: Account,
-                    error?: string
+                    error?: string,
+                    cachedRoles?: TEClassRole[],
+                    cachedUserDetails?: CachedUserData['userDetails']
                 }
 
                 // Propagate error to session for client-side handling
@@ -261,67 +386,11 @@ export const generateNextAuthConfig = (config: {
                     (session as any).error = nextAuthToken.error;
                 }
 
-                // Create TRPC client with authorization header
-                const trpcClient = createTRPCClient<TAppRouter>({
-                    links: [
-                        httpBatchLink({
-                            transformer: superjson,
-                            url: config.trpc.getTrpcUrl(),
-                            async headers() {
-                                const headers: Record<string, string> = config.trpc.getPlatformHeaders();
-
-                                // Add Authorization header if we have an ID token
-                                if (nextAuthToken.account?.id_token) {
-                                    headers['Authorization'] = `Bearer ${nextAuthToken.account.id_token}`;
-                                    headers['x-eclass-session-id'] = nextAuthToken.jti? nextAuthToken.jti : 'public';
-                                } else {
-                                    console.warn('[Auth TRPC] ⚠️ Missing ID token in NextAuth session callback', {
-                                        hasAccount: !!nextAuthToken.account,
-                                        accountKeys: nextAuthToken.account ? Object.keys(nextAuthToken.account) : [],
-                                        hasAccessToken: !!nextAuthToken.account?.access_token
-                                    });
-                                }
-
-                                // Add Accept-Language header if locale is available
-                                const locale = await config.trpc.getLocale?.();
-                                if (locale) {
-                                    headers['Accept-Language'] = locale;
-                                } else {
-                                    console.warn('[Auth TRPC] ⚠️ No locale available for NextAuth TRPC client');
-                                }
-
-                                return headers;
-                            },
-                        }),
-                    ],
-                });
-
-                try {
-                    // console.log("[Auth Session] 🚀 Requesting User Roles for session callback");
-                    const userRolesDTO = await trpcClient.listUserRoles.query({});
-                    // console.log("[Auth Session] 📦 User Roles Response:", JSON.stringify(userRolesDTO, null, 2));
-                    if (userRolesDTO.success && userRolesDTO.data) {
-                        const allowedRoles = ["visitor", "student", "coach", "course_creator", "admin", "superadmin"] as const;
-                        // The response has data.roles, not data as an array
-                        const roles = (userRolesDTO.data as any).roles as TEClassRole[];
-                        if (Array.isArray(roles)) {
-                            session.user.roles = roles.filter(
-                                (role): role is typeof allowedRoles[number] => allowedRoles.includes(role as any)
-                            );
-                        }
-                    } else {
-                        session.user.roles = defaultSessionRoles
-                    }
-
-                } catch (error) {
-                    console.error('[Auth Session] ❌ Failed to fetch user roles in session callback:', error);
-                    if (error instanceof Error) {
-                        console.error('[Auth Session] Error details:', {
-                            message: error.message,
-                            stack: error.stack?.slice(0, 500)
-                        });
-                    }
-                    session.user.roles = defaultSessionRoles
+                // Read roles from JWT cache (populated in JWT callback during sign-in/refresh)
+                if (nextAuthToken.cachedRoles && Array.isArray(nextAuthToken.cachedRoles)) {
+                    session.user.roles = nextAuthToken.cachedRoles;
+                } else {
+                    session.user.roles = defaultSessionRoles;
                 }
 
                 // CRITICAL [WE SHOULD REMOVE THIS AND PROXY VIA A SERVER SIDE CACHE/ROUTE]: Set the tokens on the session so they're available client-side
@@ -332,29 +401,12 @@ export const generateNextAuthConfig = (config: {
                     return session;
                 }
 
-                try {
-                    // console.log("[Auth Session] 🚀 Requesting User Details for session callback");
-                    const getUserForSessionDTO = await trpcClient.getUserDetailsForSession.query({
-                        userSub: nextAuthToken.user.sub,
-                        defaultImage: nextAuthToken.user.image
-                    });
-                    // console.log("[Auth Session] 📦 User Details Response:", JSON.stringify(getUserForSessionDTO, null, 2));
-                    if (getUserForSessionDTO.success == true && getUserForSessionDTO.data) {
-                        const responseData = getUserForSessionDTO.data as unknown as typeof getUserForSessionDTO.data.data; // getting around the type issue temporarily
-                        session.user.id = responseData.id.toString();
-                        session.user.email = responseData.email;
-                        session.user.name = responseData.username;
-                        session.user.image = responseData.avatarImage || undefined;
-                        // console.log("[Auth Session] ✅ User details populated successfully");
-                    }
-                } catch (error) {
-                    console.error('[Auth Session] ❌ Failed to fetch user details in session callback:', error);
-                    if (error instanceof Error) {
-                        console.error('[Auth Session] Error details:', {
-                            message: error.message,
-                            stack: error.stack?.slice(0, 500)
-                        });
-                    }
+                // Read user details from JWT cache (populated in JWT callback during sign-in/refresh)
+                if (nextAuthToken.cachedUserDetails) {
+                    session.user.id = nextAuthToken.cachedUserDetails.id;
+                    session.user.email = nextAuthToken.cachedUserDetails.email;
+                    session.user.name = nextAuthToken.cachedUserDetails.username;
+                    session.user.image = nextAuthToken.cachedUserDetails.avatarImage || undefined;
                 }
 
                 // console.log('[Auth Session] ✅ Session prepared with:', {
