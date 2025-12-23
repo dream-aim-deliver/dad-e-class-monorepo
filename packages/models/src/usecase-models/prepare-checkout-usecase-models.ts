@@ -10,6 +10,7 @@ import { PriceAdjustmentSchema } from '../entity/purchase-eligibility';
 /**
  * Enumeration of possible error types for prepare checkout operation
  */
+/* eslint-disable no-unused-vars */
 export enum PrepareCheckoutErrorType {
     USER_ALREADY_ENROLLED = 'user_already_enrolled',
     COURSE_NOT_FOUND = 'course_not_found',
@@ -24,6 +25,7 @@ export enum PrepareCheckoutErrorType {
     COMPONENT_COACHING_ALREADY_PURCHASED = 'component_coaching_already_purchased',
     LESSON_COMPONENT_NOT_FOUND = 'lesson_component_not_found',
 }
+/* eslint-enable no-unused-vars */
 
 // Purchase Type Enum
 export const PurchaseTypeEnumSchema = z.enum([
@@ -43,7 +45,7 @@ const PrepareCheckoutBaseRequestSchema = z.object({
 
 // Course Purchase Request (without coaching)
 export const PrepareCheckoutCoursePurchaseRequestSchema = PrepareCheckoutBaseRequestSchema.extend({
-    type: z.literal('StudentCoursePurchase'),
+    purchaseType: z.literal('StudentCoursePurchase'),
     courseSlug: z.string(),
     courseId: z.number().optional(), // Legacy support
 });
@@ -51,7 +53,7 @@ export type TPrepareCheckoutCoursePurchaseRequest = z.infer<typeof PrepareChecko
 
 // Course Purchase Request (with coaching)
 export const PrepareCheckoutCourseWithCoachingRequestSchema = PrepareCheckoutBaseRequestSchema.extend({
-    type: z.literal('StudentCoursePurchaseWithCoaching'),
+    purchaseType: z.literal('StudentCoursePurchaseWithCoaching'),
     courseSlug: z.string(),
     courseId: z.number().optional(), // Legacy support
 });
@@ -59,7 +61,7 @@ export type TPrepareCheckoutCourseWithCoachingRequest = z.infer<typeof PrepareCh
 
 // Package Purchase Request (without coaching)
 export const PrepareCheckoutPackagePurchaseRequestSchema = PrepareCheckoutBaseRequestSchema.extend({
-    type: z.literal('StudentPackagePurchase'),
+    purchaseType: z.literal('StudentPackagePurchase'),
     packageId: z.number(),
     selectedCourseIds: z.array(z.number()).optional(), // Defaults to all courses
 });
@@ -67,7 +69,7 @@ export type TPrepareCheckoutPackagePurchaseRequest = z.infer<typeof PrepareCheck
 
 // Package Purchase Request (with coaching)
 export const PrepareCheckoutPackageWithCoachingRequestSchema = PrepareCheckoutBaseRequestSchema.extend({
-    type: z.literal('StudentPackagePurchaseWithCoaching'),
+    purchaseType: z.literal('StudentPackagePurchaseWithCoaching'),
     packageId: z.number(),
     selectedCourseIds: z.array(z.number()).optional(),
 });
@@ -75,7 +77,7 @@ export type TPrepareCheckoutPackageWithCoachingRequest = z.infer<typeof PrepareC
 
 // Coaching Session Purchase Request
 export const PrepareCheckoutCoachingSessionRequestSchema = PrepareCheckoutBaseRequestSchema.extend({
-    type: z.literal('StudentCoachingSessionPurchase'),
+    purchaseType: z.literal('StudentCoachingSessionPurchase'),
     coachingOfferingId: z.number(),
     quantity: z.number().default(1),
 });
@@ -83,14 +85,14 @@ export type TPrepareCheckoutCoachingSessionRequest = z.infer<typeof PrepareCheck
 
 // Course Coaching Session Purchase Request (specific components from a course)
 export const PrepareCheckoutCourseCoachingSessionRequestSchema = PrepareCheckoutBaseRequestSchema.extend({
-    type: z.literal('StudentCourseCoachingSessionPurchase'),
+    purchaseType: z.literal('StudentCourseCoachingSessionPurchase'),
     courseSlug: z.string(),
     lessonComponentIds: z.array(z.string()), // MongoDB ObjectIds of LessonComponentDocument
 });
 export type TPrepareCheckoutCourseCoachingSessionRequest = z.infer<typeof PrepareCheckoutCourseCoachingSessionRequestSchema>;
 
 // Discriminated Union Request Schema
-export const PrepareCheckoutRequestSchema = z.discriminatedUnion('type', [
+export const PrepareCheckoutRequestSchema = z.discriminatedUnion('purchaseType', [
     PrepareCheckoutCoursePurchaseRequestSchema,
     PrepareCheckoutCourseWithCoachingRequestSchema,
     PrepareCheckoutPackagePurchaseRequestSchema,
