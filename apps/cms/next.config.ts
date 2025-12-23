@@ -34,7 +34,12 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'cdn.auth0.com',
             },
-            // Custom S3/MinIO (configured via environment variables)
+            // DigitalOcean Spaces (production)
+            {
+                protocol: 'https',
+                hostname: 'fra1.digitaloceanspaces.com',
+            },
+            // Custom S3/MinIO (configured via environment variables for local dev)
             ...(process.env.S3_HOSTNAME ? [{
                 protocol: (process.env.S3_PROTOCOL || 'http') as 'http' | 'https',
                 hostname: process.env.S3_HOSTNAME,
