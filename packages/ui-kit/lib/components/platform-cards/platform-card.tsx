@@ -5,6 +5,7 @@ import { Badge } from '../badge';
 import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 export interface PlatformCardProps extends isLocalAware {
     imageUrl?: string;
@@ -42,6 +43,7 @@ export const PlatformCard = ({
 }: PlatformCardProps) => {
     const dictionary = getDictionary(locale);
     const [isImageError, setIsImageError] = useState(false);
+    const ImageComponent = useImageComponent();
 
     const handleImageError = () => {
         setIsImageError(true);
@@ -59,9 +61,11 @@ export const PlatformCard = ({
                 />
             ) : (
                 <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-                    <img
+                    <ImageComponent
                         src={imageUrl}
                         alt={title}
+                        width={64}
+                        height={64}
                         onError={handleImageError}
                         className="w-full h-full object-cover"
                     />

@@ -9,6 +9,7 @@ import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { useState } from "react";
 import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
@@ -155,6 +156,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
 
+    const ImageComponent = useImageComponent();
     const dictionary = getDictionary(locale);
     const validationError = getValidationError({ elementInstance, dictionary });
     if (validationError) {
@@ -173,7 +175,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     return (
         <section className="w-full flex justify-center p-4 rounded-lg">
             <div className="w-full max-w-[976px]">
-                <img
+                <ImageComponent
                     src={imageFile.file?.url}
                     alt="Uploaded image content"
                     className="w-full h-auto object-cover rounded-xl"

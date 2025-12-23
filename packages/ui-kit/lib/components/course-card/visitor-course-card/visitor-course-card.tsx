@@ -7,6 +7,7 @@ import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../../rich-text-element/renderer';
+import { useImageComponent } from '../../../contexts/image-component-context';
 
 // Extend the existing type with the properties we need that aren't in TCourseMetadata
 export interface VisitorCourseCardProps extends course.TCourseMetadata {
@@ -72,6 +73,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     onClickUser,
     onBuy,
 }) => {
+    const ImageComponent = useImageComponent();
     const [isImageError, setIsImageError] = React.useState(false);
     const dictionary = getDictionary(locale);
 
@@ -115,7 +117,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             </span>
                         </div>
                     ) : (
-                        <img
+                        <ImageComponent
                             loading="lazy"
                             src={imageUrl}
                             alt={title}

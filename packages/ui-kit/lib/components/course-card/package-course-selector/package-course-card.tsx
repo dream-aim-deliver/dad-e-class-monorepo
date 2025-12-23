@@ -9,6 +9,7 @@ import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { PackageCourseActions } from './package-course-actions';
 import { cn } from "../../../utils/style-utils";
+import { useImageComponent } from '../../../contexts/image-component-context';
 
 
 export interface PackageCourseCardProps extends course.TCourseMetadata {
@@ -95,6 +96,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
     const formattedDuration = formatDuration(totalDurationInMinutes);
 
     const dictionary = getDictionary(locale);
+    const ImageComponent = useImageComponent();
     const [isImageError, setIsImageError] = useState(false);
 
     const handleImageError = () => {
@@ -114,10 +116,12 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
                         </span>
                     </div>
                 ) : (
-                    <img
+                    <ImageComponent
                         loading="lazy"
                         src={imageUrl}
                         alt={title}
+                        width={430}
+                        height={200}
                         className="w-full aspect-[2.15] object-cover"
                         onError={handleImageError}
                     />

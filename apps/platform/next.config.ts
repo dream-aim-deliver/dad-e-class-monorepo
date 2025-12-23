@@ -29,6 +29,15 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'static.wixstatic.com',
             },
+            // Gravatar for user avatars
+            {
+                protocol: 'https',
+                hostname: 's.gravatar.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'cdn.auth0.com',
+            },
             // Custom S3/MinIO (configured via environment variables)
             ...(process.env.S3_HOSTNAME ? [{
                 protocol: (process.env.S3_PROTOCOL || 'http') as 'http' | 'https',

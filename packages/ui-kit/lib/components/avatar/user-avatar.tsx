@@ -1,6 +1,7 @@
 'use client';
 import { FC, useState, useMemo } from 'react';
 import { cn } from '../../utils/style-utils';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 export interface UserAvatarProps {
   size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
@@ -38,6 +39,7 @@ export interface UserAvatarProps {
  */
 
 export const UserAvatar: FC<UserAvatarProps> = (props) => {
+  const ImageComponent = useImageComponent();
   const { size = 'medium', className, imageUrl, fullName = '' } = props;
   const [isImageValid, setIsImageValid] = useState(Boolean(imageUrl));
 
@@ -48,6 +50,15 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
     medium: 'w-12 h-12 text-sm',
     large: 'w-16 h-16 text-sm',
     xLarge: 'w-20 h-20 text-sm',
+  };
+
+  // Pixel dimensions for Next.js Image optimization
+  const sizeDimensions = {
+    xSmall: 24,
+    small: 32,
+    medium: 48,
+    large: 64,
+    xLarge: 80,
   };
 
   const initials = useMemo(() => {
@@ -93,12 +104,13 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
       aria-label={fullName || 'User avatar'}
     >
       {!shouldShowInitials ? (
-        <img
+        <ImageComponent
           src={imageUrl}
           alt={fullName || 'User profile'}
+          width={sizeDimensions[size]}
+          height={sizeDimensions[size]}
           className="w-full h-full object-cover object-center"
           onError={handleImageError}
-          title={props.title || ''}
         />
       ) : (
         <span className="uppercase">{initials}</span>

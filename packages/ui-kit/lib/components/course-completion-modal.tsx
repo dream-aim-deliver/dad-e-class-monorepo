@@ -10,6 +10,7 @@ import { Badge } from "./badge";
 import { IconSuccess } from "./icons/icon-success";
 import { useState } from "react";
 import { cn } from "../utils/style-utils";
+import { useImageComponent } from "../contexts/image-component-context";
 
 export interface CourseCompletionModalProps extends isLocalAware {
     courseImage: string;
@@ -59,6 +60,7 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
     locale,
 }) => {
     const dictionary = getDictionary(locale);
+    const ImageComponent = useImageComponent();
     const [isImageError, setIsImageError] = useState(false);
 
     // Handle image loading error
@@ -103,10 +105,12 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
                                     </span>
                                 </div>
                             ) : (
-                                <img
+                                <ImageComponent
                                     loading="lazy"
                                     src={courseImage}
                                     alt={courseTitle}
+                                    width={48}
+                                    height={48}
                                     onError={handleImageError}
                                     className="w-12 h-12 rounded-medium"
                                 />

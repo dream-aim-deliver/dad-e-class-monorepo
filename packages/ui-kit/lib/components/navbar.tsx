@@ -10,6 +10,7 @@ import { IconChat } from './icons/icon-chat';
 import { IconChevronDown } from './icons/icon-chevron-down';
 import { UserAvatar } from './avatar/user-avatar';
 import DefaultLoading from './default-loading';
+import { useImageComponent } from '../contexts/image-component-context';
 
 interface NavbarProps extends isLocalAware {
   isLoggedIn: boolean;
@@ -174,6 +175,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dictionary = getDictionary(locale);
+  const ImageComponent = useImageComponent();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -225,7 +227,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="flex items-center">
         <a href="/" className="block h-12">
           {logo}
-          {logoSrc && <img
+          {logoSrc && <ImageComponent
             src={logoSrc}
             alt="Logo"
             className="h-full w-auto"
@@ -345,7 +347,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="absolute top-3 left-0 right-0 flex justify-between items-center px-4 w-full">
             <a href="/" className="block h-12">
               {logo}
-              {logoSrc && <img
+              {logoSrc && <ImageComponent
                 src={logoSrc}
                 alt="Logo"
                 className="h-full w-auto"

@@ -12,6 +12,7 @@ import {
 } from '@maany_shr/e-class-translations';
 import { IconCheck } from '../../icons/icon-check';
 import { IconEdit } from '../../icons/icon-edit';
+import { useImageComponent } from '../../../contexts/image-component-context';
 
 export type CourseStatus = 'live' | 'draft' | 'archived';
 
@@ -134,6 +135,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     onClickUser,
     onDuplicate,
 }) => {
+    const ImageComponent = useImageComponent();
     const [isImageError, setIsImageError] = React.useState(false);
     // Calculate total course duration in minutes and format as "Xh Ym"
     const { video = 0, coaching = 0, selfStudy = 0 } = duration;
@@ -173,7 +175,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             </span>
                         </div>
                     ) : (
-                        <img
+                        <ImageComponent
                             loading="lazy"
                             src={imageUrl || ''}
                             alt={title}

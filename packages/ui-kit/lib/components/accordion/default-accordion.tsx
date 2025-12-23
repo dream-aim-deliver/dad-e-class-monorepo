@@ -4,6 +4,7 @@ import { cn } from '../../utils/style-utils';
 import AccordionTrigger from "./accordion-trigger";
 import AccordionContent from "./accordion-content";
 import RichTextRenderer from "./../rich-text-element/renderer";
+import { useImageComponent } from '../../contexts/image-component-context';
 
 interface DefaultAccordionProps {
     items: {
@@ -18,6 +19,7 @@ interface DefaultAccordionProps {
 }
 
 export function DefaultAccordion({ items, children, showNumbers, className }: DefaultAccordionProps) {
+    const ImageComponent = useImageComponent();
     const defaultValue = items?.length ? [items[0].title] : [];
 
     return <Accordion
@@ -46,9 +48,11 @@ export function DefaultAccordion({ items, children, showNumbers, className }: De
                                 )}
                                 <div className="flex items-center gap-4">
                                     {item.iconImageUrl && (
-                                        <img
+                                        <ImageComponent
                                             alt={item.title}
                                             src={item.iconImageUrl}
+                                            width={32}
+                                            height={32}
                                             className="w-8 h-8"
                                         />
                                     )}

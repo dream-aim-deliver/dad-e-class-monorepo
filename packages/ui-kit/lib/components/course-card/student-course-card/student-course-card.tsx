@@ -10,6 +10,7 @@ import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../../rich-text-element/renderer';
+import { useImageComponent } from '../../../contexts/image-component-context';
 
 export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
 
@@ -83,6 +84,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   onDetails,
   onClickUser,
 }) => {
+  const ImageComponent = useImageComponent();
   // Helper function to extract plain text from rich text content
   const extractPlainText = (content: string | any[]): string => {
     try {
@@ -158,7 +160,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               </span>
             </div>
           ) : (
-            <img
+            <ImageComponent
               loading="lazy"
               src={imageUrl}
               alt={title}

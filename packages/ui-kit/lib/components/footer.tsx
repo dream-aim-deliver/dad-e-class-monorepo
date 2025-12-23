@@ -1,6 +1,7 @@
 import React from 'react';
 import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { Dropdown } from './dropdown';
+import { useImageComponent } from '../contexts/image-component-context';
 
 interface FooterProps extends isLocalAware {
     logoSrc?: string;
@@ -47,6 +48,7 @@ export const Footer: React.FC<FooterProps> = ({
     footerChildren,
     availableLocales,
 }) => {
+    const ImageComponent = useImageComponent();
 
     const handleLocaleChange = (newLocale: TLocale) => {
         if (availableLocales.includes(newLocale) && onChangeLanguage) {
@@ -72,9 +74,11 @@ export const Footer: React.FC<FooterProps> = ({
                             <a href="/" className="block h-12 w-fit">
                                 {logo}
                                 {logoSrc && (
-                                    <img
+                                    <ImageComponent
                                         src={logoSrc}
                                         alt="Logo"
+                                        width={160}
+                                        height={48}
                                         className="w-auto h-full"
                                     />
                                 )}
@@ -124,9 +128,11 @@ export const Footer: React.FC<FooterProps> = ({
                         <a href="/" className="block h-12 w-fit">
                             {logo}
                             {logoSrc && (
-                                <img
+                                <ImageComponent
                                     src={logoSrc}
                                     alt="Logo"
+                                    width={160}
+                                    height={48}
                                     className="w-auto h-full"
                                 />
                             )}

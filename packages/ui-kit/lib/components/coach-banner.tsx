@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "./button";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
+import { useImageComponent } from "../contexts/image-component-context";
 
 interface CoachBannerProps {
   title: string;
@@ -42,6 +43,7 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
   buttonText,
   onClick
 }) => {
+  const ImageComponent = useImageComponent();
   const dictionary = getDictionary(locale);
   const [isImageError, setIsImageError] = useState(false);
 
@@ -75,7 +77,7 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
               <span className="text-text-secondary text-md"> {dictionary.components.coachBanner.placeHolderText} </span>
             </div>
           ) : (
-            <img
+            <ImageComponent
               src={imageUrl}
               alt="Banner image"
               className="rounded-xl w-full h-auto lg:max-h-[320px] md:h-auto object-cover mb-4 md:mb-0"
