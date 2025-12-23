@@ -168,6 +168,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         try {
             // Build query parameters
             const params = new URLSearchParams();
+            // Pass the final price in cents (Stripe expects cents)
+            // finalPrice is in CHF, so multiply by 100 to convert to cents
+            params.append('amount', (transactionDraft.finalPrice * 100).toString());
             if (appliedCoupon) {
                 params.append('coupon', appliedCoupon);
             }
@@ -239,7 +242,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     };
 
     const formatPrice = (amount: number) => {
-        return `${(amount / 100).toFixed(2)} ${transactionDraft.currency}`;
+        return `${amount.toFixed(2)} ${transactionDraft.currency}`;
     };
 
     return (
