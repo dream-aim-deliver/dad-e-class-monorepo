@@ -30,13 +30,13 @@ const PurchaseTypeEnumSchema = z.enum([
 ]);
 
 const PurchaseItemCourseSchema = z.object({
-    type: z.literal("course"),
+    purchaseType: z.literal("course"),
     courseSlug: z.string(),
     withCoaching: z.boolean().optional().default(false),
 });
 
 const PurchaseItemPackageSchema = z.object({
-    type: z.literal("package"),
+    purchaseType: z.literal("package"),
     packageId: z.number().int(),
     selectedCourseIds: z.array(z.number().int()).optional(),
     withCoaching: z.boolean().optional().default(false),
@@ -48,17 +48,17 @@ const CoachingOfferingSchema = z.object({
 });
 
 const PurchaseItemCoachingSessionsSchema = z.object({
-    type: z.literal("coaching_sessions"),
+    purchaseType: z.literal("coaching_sessions"),
     offerings: z.array(CoachingOfferingSchema),
 });
 
 const PurchaseItemCourseCoachingSessionsSchema = z.object({
-    type: z.literal("course_coaching_sessions"),
+    purchaseType: z.literal("course_coaching_sessions"),
     courseSlug: z.string(),
     lessonComponentIds: z.array(z.string()), // MongoDB ObjectIds of LessonComponentDocument
 });
 
-const PurchaseItemSchema = z.discriminatedUnion("type", [
+const PurchaseItemSchema = z.discriminatedUnion("purchaseType", [
     PurchaseItemCourseSchema,
     PurchaseItemPackageSchema,
     PurchaseItemCoachingSessionsSchema,
@@ -104,7 +104,7 @@ const ProcessPurchaseSuccessDataSchema = z.object({
     coachingSessions: z.array(CoachingSessionResultSchema),
 });
 
-const ProcessPurchaseSuccessResponseSchema = BaseSuccessSchemaFactory(
+export const ProcessPurchaseSuccessResponseSchema = BaseSuccessSchemaFactory(
     ProcessPurchaseSuccessDataSchema,
 );
 
