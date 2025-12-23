@@ -4,6 +4,7 @@ import { Button } from "../button";
 import { Badge } from "../badge";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { homePage } from "@maany_shr/e-class-models";
+import { useImageComponent } from "../../contexts/image-component-context";
 
 interface GeneralCardProps extends homePage.TGeneralCard, isLocalAware {
   onButtonClick: () => void;
@@ -45,6 +46,7 @@ export const GeneralCard: React.FC<GeneralCardProps> = React.memo(
     buttonUrl,
     onButtonClick,
   }) => {
+    const ImageComponent = useImageComponent();
     const [isImageError, setIsImageError] = useState(false);
     const dictionary = getDictionary(locale);
 
@@ -66,10 +68,12 @@ export const GeneralCard: React.FC<GeneralCardProps> = React.memo(
                 </span>
               </div>
             ) : (
-              <img
+              <ImageComponent
                 loading="lazy"
                 src={imageUrl}
                 alt={title || ""} // Use title for accessibility or empty for decorative
+                width={350}
+                height={262}
                 onError={handleImageError}
                 className="object-cover w-full h-full rounded-t-medium"
               />

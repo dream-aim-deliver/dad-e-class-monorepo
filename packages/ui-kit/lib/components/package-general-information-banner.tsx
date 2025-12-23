@@ -7,6 +7,7 @@ import { CheckBox } from './checkbox';
 import { Button } from './button';
 import { FC, useState } from 'react';
 import { IconClock } from './icons/icon-clock';
+import { useImageComponent } from '../contexts/image-component-context';
 
 export interface PackageGeneralInformationView
     extends eClassPackage.TEClassPackage,
@@ -53,6 +54,7 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
     const dictionary =
         getDictionary(locale).components.packageGeneralInformation;
     const [isImageError, setIsImageError] = useState(false);
+    const ImageComponent = useImageComponent();
 
     // Handle image loading errors
     const handleImageError = () => {
@@ -97,11 +99,12 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                             </span>
                         </div>
                     ) : (
-                        <img
+                        <ImageComponent
                             loading="lazy"
                             src={imageUrl}
                             className="w-full h-full object-cover rounded-medium"
                             onError={handleImageError}
+                            alt={title}
                         />
                     )}
                 </div>
@@ -155,11 +158,12 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                         </span>
                     </div>
                 ) : (
-                    <img
+                    <ImageComponent
                         loading="lazy"
                         src={imageUrl}
                         className="w-full h-full object-cover rounded-medium"
                         onError={handleImageError}
+                        alt={title}
                     />
                 )}
             </div>

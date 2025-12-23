@@ -8,6 +8,7 @@ import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import { useImageComponent } from '../../../contexts/image-component-context';
 
 export interface CourseCardAddToPackageProps extends course.TCourseMetadata {
     reviewCount: number;
@@ -83,6 +84,7 @@ export const CourseCardAddToPackage: React.FC<CourseCardAddToPackageProps> = ({
     locale,
 }) => {
     const dictionary = getDictionary(locale);
+    const ImageComponent = useImageComponent();
     const [isImageError, setIsImageError] = useState(false);
 
     const addOrRemoveButtonText = courseAdded
@@ -122,10 +124,12 @@ export const CourseCardAddToPackage: React.FC<CourseCardAddToPackageProps> = ({
                     </div>
                 ) : (
                     // Card with image
-                    <img
+                    <ImageComponent
                         loading="lazy"
                         src={imageUrl}
                         alt={title}
+                        width={430}
+                        height={200}
                         className="w-full rounded-t-medium aspect-[2.15] object-cover"
                         onError={handleImageError}
                     />

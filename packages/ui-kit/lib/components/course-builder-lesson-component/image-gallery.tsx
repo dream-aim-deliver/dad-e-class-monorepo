@@ -12,6 +12,7 @@ import { IconChevronRight } from "../icons/icon-chevron-right";
 import { cn } from "../../utils/style-utils";
 import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
@@ -166,6 +167,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
 
+    const ImageComponent = useImageComponent();
     const dictionary = getDictionary(locale);
     const validationError = getValidationError({ elementInstance, dictionary });
     if (validationError) {
@@ -240,7 +242,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         <section className="w-full flex justify-center p-4 rounded-lg">
             <div className="w-full max-w-[1000px]">
                 {/* Featured image */}
-                <img
+                <ImageComponent
                     className="max-w-[700px] object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-neutral-700 mb-6 mx-auto block"
                     src={imageElements[currentIndex].url}
                     alt={`Image ${currentIndex + 1}`}
@@ -260,7 +262,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                                 className={cn("flex-shrink-0 p-1 transition-all duration-300 min-w-0", index === currentIndex && "ring-2 ring-button-primary-fill ring-offset-2 ring-offset-base-neutral-900 rounded-lg shadow-lg scale-105")}
                                 style={{ width: `calc(${thumbWidthPercent}% - ${(imageElements.length - 1) * 0.5 / imageElements.length}rem)` }}
                             >
-                                <img
+                                <ImageComponent
                                     className="w-full h-24 object-cover cursor-pointer rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 border border-base-neutral-600"
                                     src={image?.url}
                                     alt={`Image ${index}`}

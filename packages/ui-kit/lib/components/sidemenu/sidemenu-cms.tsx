@@ -6,6 +6,7 @@ import { IconChevronLeft } from '../icons/icon-chevron-left';
 import { Dropdown } from '../dropdown';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { cn } from '../../utils/style-utils';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 export interface SideMenuCMSProps {
     platformName: string;
@@ -53,6 +54,7 @@ export const SideMenuCMS: FC<SideMenuCMSProps> = ({
     availableLocales = [],
     onChangeLanguage,
 }) => {
+    const ImageComponent = useImageComponent();
     const languageOptions = availableLocales.map((loc) => ({
         label: loc.toUpperCase(),
         value: loc,
@@ -81,9 +83,11 @@ export const SideMenuCMS: FC<SideMenuCMSProps> = ({
                 <div className={cn('flex flex-col gap-4 h-auto items-start')}>
                     {platformLogoUrl && (
                         <div className={cn('flex items-center flex-shrink-0')}>
-                            <img
+                            <ImageComponent
                                 src={platformLogoUrl}
                                 alt={`${platformName} logo`}
+                                width={isCollapsed ? 32 : 48}
+                                height={isCollapsed ? 32 : 48}
                                 className={cn(
                                     'object-contain',
                                     isCollapsed ? 'w-8 h-8' : 'w-12 h-12',

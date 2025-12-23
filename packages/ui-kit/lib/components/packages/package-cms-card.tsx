@@ -7,6 +7,7 @@ import { IconClock } from '../icons/icon-clock';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { eClassPackage } from '@maany_shr/e-class-models';
 import { IconEdit, IconTrashAlt } from '../icons';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 interface PackageCmsBaseCardProps extends eClassPackage.TEClassPackage, isLocalAware {
     courseCount: number;
@@ -108,6 +109,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
     const [isImageError, setIsImageError] = useState(false);
     const titleRef = useRef<HTMLHeadingElement>(null);
     const [isTruncated, setIsTruncated] = useState(false);
+    const ImageComponent = useImageComponent();
 
     // Helper function to format duration in hours and minutes
     const formatDuration = (duration: number | undefined): string => {
@@ -152,10 +154,12 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                 </div>
             ) : (
                 <div className="relative w-full rounded-t-medium overflow-hidden">
-                    <img
+                    <ImageComponent
                         loading="lazy"
                         src={imageUrl}
                         alt={title}
+                        width={400}
+                        height={192}
                         onError={handleImageError}
                         className="object-cover w-full h-[12rem] rounded-t-medium "
                     />

@@ -12,6 +12,7 @@ import { Descendant, Node } from 'slate';
 import Banner from './banner';
 import { IconCourse } from './icons/icon-course';
 import { Divider } from './divider';
+import { useImageComponent } from '../contexts/image-component-context';
 
 interface CourseRequirement {
     id: number;
@@ -193,6 +194,7 @@ export function useCourseForm(
 
 // Main unified form component
 export function CourseForm(props: CourseFormProps) {
+    const ImageComponent = useImageComponent();
     const dictionary = getDictionary(props.locale);
     const {
         mode,
@@ -249,10 +251,12 @@ export function CourseForm(props: CourseFormProps) {
         }
 
         return (
-            <img
+            <ImageComponent
                 className="w-6 h-6 rounded-md"
                 src={imageUrlString}
                 alt={duplicationCourse?.title}
+                width={24}
+                height={24}
                 onError={() => setHasDuplicationThumbnailError(true)}
             />
         );

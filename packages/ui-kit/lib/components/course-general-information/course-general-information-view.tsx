@@ -10,6 +10,7 @@ import { IconClock } from '../icons/icon-clock';
 import RichTextRenderer from '../rich-text-element/renderer';
 import { IconCheck } from '../icons';
 import { UserAvatarReel } from '../avatar/user-avatar-reel';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 interface Student {
     name: string;
@@ -119,6 +120,7 @@ export const CourseGeneralInformationView: FC<
 
     const dictionary = getDictionary(props.locale);
     const [isImageError, setIsImageError] = useState(false);
+    const ImageComponent = useImageComponent();
 
     // Handle image loading errors
     const handleImageError = () => {
@@ -381,11 +383,14 @@ export const CourseGeneralInformationView: FC<
                         </span>
                     </div>
                 ) : (
-                    <img
+                    <ImageComponent
                         loading="lazy"
                         src={imageUrl}
+                        width={600}
+                        height={400}
                         className="w-full h-full object-cover rounded-medium"
                         onError={handleImageError}
+                        alt={props.title || ''}
                     />
                 )}
             </div>

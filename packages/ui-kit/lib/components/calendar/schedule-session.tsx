@@ -6,6 +6,7 @@ import { UserAvatar } from '../avatar/user-avatar';
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import type { Meta, StoryObj } from '@storybook/react';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 export interface ScheduleSessionProps extends isLocalAware {
   user: 'student' | 'coach';
@@ -103,6 +104,7 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
   onClickGroup,
   locale,
 }) => {
+  const ImageComponent = useImageComponent();
   const [isImageError, setIsImageError] = useState(false);
   const dictionary = getDictionary(locale);
   const handleImageError = () => {
@@ -139,9 +141,11 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
                 <span className="text-text-secondary text-xs">{dictionary.components.scheduleSession.na}</span>
               </div>
             ) : (
-              <img
+              <ImageComponent
                 src={courseImageUrl}
                 alt="Course Image"
+                width={24}
+                height={24}
                 className="w-6 h-6 rounded object-cover"
                 onError={handleImageError}
               />

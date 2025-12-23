@@ -8,6 +8,8 @@ import { useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { useRequiredPlatform } from '../context/platform-context';
+import { ImageProvider } from '@maany_shr/e-class-ui-kit';
+import { OptimizedImage } from '../components/optimized-image';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -52,32 +54,34 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
     }), [platform]);
 
     return (
-        <div
-            className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
-            style={{
-                // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImage?.downloadUrl ?? ''})`,
-                backgroundSize: '100% auto',
-                // TODO: have a fallback color
-                backgroundColor: '#141414',
-            }}
-        >
-            <Header
-                platformViewModel={platformViewModel}
-                availableLocales={availableLocales}
-                locale={locale}
-                session={session}
-            />
-            <main className="flex-grow w-full mx-auto py-25 justify-center items-center">
-                <div ref={contentRef} className="page-content-entrance w-full">
-                    {children}
-                </div>
-            </main>
-            <Footer
-                locale={locale}
-                availableLocales={availableLocales}
-                platformViewModel={platformViewModel}
-            />
-        </div>
+        <ImageProvider value={OptimizedImage}>
+            <div
+                className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
+                style={{
+                    // Temporary linear gradient to match the Figma. Should be uploaded this dark.
+                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImage?.downloadUrl ?? ''})`,
+                    backgroundSize: '100% auto',
+                    // TODO: have a fallback color
+                    backgroundColor: '#141414',
+                }}
+            >
+                <Header
+                    platformViewModel={platformViewModel}
+                    availableLocales={availableLocales}
+                    locale={locale}
+                    session={session}
+                />
+                <main className="flex-grow w-full mx-auto py-25 justify-center items-center">
+                    <div ref={contentRef} className="page-content-entrance w-full">
+                        {children}
+                    </div>
+                </main>
+                <Footer
+                    locale={locale}
+                    availableLocales={availableLocales}
+                    platformViewModel={platformViewModel}
+                />
+            </div>
+        </ImageProvider>
     );
 }

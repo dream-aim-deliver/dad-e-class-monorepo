@@ -13,6 +13,7 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { FeedBackMessage } from '../feedback-message';
 import { IconImage } from '../icons/icon-image';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 interface DeletionAllowed {
     isAllowed: true;
@@ -76,6 +77,7 @@ const getFileTypeFromExtension = (
 
 export const FilePreview = (props: FilePreviewProps) => {
     const { uploadResponse, onDownload, locale } = props;
+    const ImageComponent = useImageComponent();
     const dictionary = getDictionary(locale);
     const [thumbnailError, setThumbnailError] = useState(false);
     const [thumbnailLoading, setThumbnailLoading] = useState(true);
@@ -156,9 +158,11 @@ export const FilePreview = (props: FilePreviewProps) => {
                 return (
                     <div className="relative  flex items-center justify-center">
                         <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-secondary" />
-                        <img
+                        <ImageComponent
                             src={imageUrl}
                             alt={uploadResponse.name}
+                            width={40}
+                            height={40}
                             className="absolute inset-0 w-full h-full object-cover rounded-small opacity-0"
                             onLoad={() => setThumbnailLoading(false)}
                             onError={() => {
@@ -171,9 +175,11 @@ export const FilePreview = (props: FilePreviewProps) => {
             }
 
             return (
-                <img
+                <ImageComponent
                     src={imageUrl}
                     alt={uploadResponse.name}
+                    width={40}
+                    height={40}
                     className="w-10 h-10 object-cover rounded-small"
                     onError={() => setThumbnailError(true)}
                 />

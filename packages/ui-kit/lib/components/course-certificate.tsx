@@ -6,6 +6,7 @@ import { IconAwarded } from './icons/icon-awarded';
 import { IconCorner } from './icons/icon-corner';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import RichTextRenderer from './rich-text-element/renderer';
+import { useImageComponent } from '../contexts/image-component-context';
 
 const certificateStyles =
     'relative mx-auto overflow-hidden bg-base-neutral-950 ' +
@@ -87,6 +88,7 @@ export const CourseCertificate: FC<CourseCertificateProps> = ({
     paginationLabel,
     showCourseDescription = true,
 }) => {
+    const ImageComponent = useImageComponent();
     const containerClasses = cn(certificateStyles, className);
     const cardClasses = cn(cardStyles);
     const dictionary = getDictionary(locale).components.certificateGenerator;
@@ -117,9 +119,11 @@ export const CourseCertificate: FC<CourseCertificateProps> = ({
                         <div className="mb-4 flex flex-col items-center gap-2">
                             {/* Platform Logo */}
                             {platformLogoUrl && (
-                                <img
+                                <ImageComponent
                                     src={platformLogoUrl}
                                     alt="Platform Logo"
+                                    width={160}
+                                    height={48}
                                     className="h-12 w-auto object-contain mx-auto"
                                 />
                             )}

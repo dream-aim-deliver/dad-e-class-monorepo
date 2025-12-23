@@ -10,6 +10,7 @@ import { FC, useEffect, useState } from "react";
 import { QuizTypeOneElement } from "../../course-builder-lesson-component/types";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
+import { useImageComponent } from "../../../contexts/image-component-context";
 
 export interface QuizOption {
   id: string;
@@ -64,6 +65,7 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewProps> = ({
   locale,
 }) => {
   const dictionary = getDictionary(locale);
+  const ImageComponent = useImageComponent();
 
   // State
   const [options, setOptions] = useState<QuizOption[]>([]);
@@ -155,7 +157,7 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewProps> = ({
               </span>
             </div>
           ) : (
-            <img
+            <ImageComponent
               loading="lazy"
               src={thumbnailUrl}
               alt={elementInstance.title}

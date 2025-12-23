@@ -25,6 +25,15 @@ const nextConfig: NextConfig = {
                 // The path for mock data. Should be configured with environment variables in production.
                 hostname: 'res.cloudinary.com',
             },
+            // Gravatar for user avatars
+            {
+                protocol: 'https',
+                hostname: 's.gravatar.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'cdn.auth0.com',
+            },
             // Custom S3/MinIO (configured via environment variables)
             ...(process.env.S3_HOSTNAME ? [{
                 protocol: (process.env.S3_PROTOCOL || 'http') as 'http' | 'https',

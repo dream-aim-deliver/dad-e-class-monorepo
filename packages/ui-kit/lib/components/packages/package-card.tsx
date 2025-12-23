@@ -6,6 +6,7 @@ import { Button } from '../button';
 import { IconClock } from '../icons/icon-clock';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TEClassPackage } from 'packages/models/src/eclass-package';
+import { useImageComponent } from '../../contexts/image-component-context';
 
 export interface PackageCardProps extends TEClassPackage, isLocalAware {
     courseCount: number;
@@ -64,6 +65,7 @@ export const PackageCard = ({
     onClickPurchase,
     onClickDetails,
 }: PackageCardProps) => {
+    const ImageComponent = useImageComponent();
     const dictionary = getDictionary(locale);
     const titleRef = useRef<HTMLHeadingElement>(null);
     const [isTruncated, setIsTruncated] = useState(false);
@@ -112,10 +114,12 @@ export const PackageCard = ({
                 </div>
             ) : (
                 <div className="relative w-full rounded-t-medium overflow-hidden">
-                    <img
+                    <ImageComponent
                         loading="lazy"
                         src={imageUrl}
                         alt={title}
+                        width={400}
+                        height={192}
                         onError={handleImageError}
                         className="object-cover w-full h-[12rem] rounded-t-medium border-bottom-0"
                     />

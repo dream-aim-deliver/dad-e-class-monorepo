@@ -14,6 +14,7 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { IconCloudUpload } from './icons';
 import { getFaviconUrl } from '../utils/url-utils';
 import { IconExternalLink } from './icons/icon-external-link';
+import { useImageComponent } from '../contexts/image-component-context';
 
 interface LinkEditProps extends isLocalAware {
     initialTitle?: string;
@@ -65,6 +66,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     const [customIcon, setCustomIcon] =
         useState<fileMetadata.TFileMetadata | null>(initialCustomIcon ?? null);
     const dictionary = getDictionary(locale);
+    const ImageComponent = useImageComponent();
     useEffect(() => {
         setCustomIcon(initialCustomIcon || null);
     }, [initialCustomIcon]);
@@ -180,15 +182,12 @@ const LinkEdit: React.FC<LinkEditProps> = ({
             }
 
             return (
-                <img
+                <ImageComponent
                     src={iconUrl}
                     alt={title}
+                    width={48}
+                    height={48}
                     className="w-12 h-12 object-cover rounded"
-                    onError={(e) => {
-                        // Fallback to default icon if image fails to load
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.style.display = 'none';
-                    }}
                 />
             );
         }
@@ -196,15 +195,12 @@ const LinkEdit: React.FC<LinkEditProps> = ({
         // Handle favicon case
         if (favicon) {
             return (
-                <img
+                <ImageComponent
                     src={favicon}
                     alt={title}
+                    width={48}
+                    height={48}
                     className="w-12 h-12 object-cover rounded"
-                    onError={(e) => {
-                        // Fallback to default icon if favicon fails to load
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.style.display = 'none';
-                    }}
                 />
             );
         }
@@ -401,6 +397,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({
     preview = false,
 }) => {
     const [favicon, setFavicon] = useState<string>('');
+    const ImageComponent = useImageComponent();
 
     useEffect(() => {
         if (url) {
@@ -428,14 +425,12 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({
             }
 
             return (
-                <img
+                <ImageComponent
                     src={iconUrl}
                     alt={title}
+                    width={40}
+                    height={40}
                     className="w-10 h-10 object-cover rounded-md"
-                    onError={(e) => {
-                        // Fallback to default icon if image fails to load
-                        e.currentTarget.style.display = 'none';
-                    }}
                 />
             );
         }
@@ -443,14 +438,12 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({
         // Handle favicon case
         if (favicon) {
             return (
-                <img
+                <ImageComponent
                     src={favicon}
                     alt={title}
+                    width={40}
+                    height={40}
                     className="w-10 h-10 object-cover rounded-md"
-                    onError={(e) => {
-                        // Fallback to default icon if favicon fails to load
-                        e.currentTarget.style.display = 'none';
-                    }}
                 />
             );
         }

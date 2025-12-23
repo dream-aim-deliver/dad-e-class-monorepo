@@ -11,6 +11,7 @@ import {
   TLocale,
   getDictionary,
 } from '@maany_shr/e-class-translations';
+import { useImageComponent } from '../../../contexts/image-component-context';
 
 export interface CoachCourseCardProps extends Omit<course.TCourseMetadata, 'description' | 'pricing'> {
   reviewCount: number;
@@ -71,6 +72,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
   onClickUser,
   locale
 }) => {
+  const ImageComponent = useImageComponent();
   const dictionary = getDictionary(locale);
   const [isImageError, setIsImageError] = useState(false);
 
@@ -105,7 +107,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
               </span>
             </div>
           ) : (
-            <img
+            <ImageComponent
               loading="lazy"
               src={imageUrl}
               alt={title}
