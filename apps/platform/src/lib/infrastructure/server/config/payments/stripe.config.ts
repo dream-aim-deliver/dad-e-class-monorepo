@@ -7,26 +7,38 @@ export const stripe = new Stripe(env.STRIPE_SECRET_KEY)
 export const createCheckoutSession = async (
     amount: number,
     origin: string,
-    discountPercentage: number = 0,
+    discountPercentage = 0,
     customerEmail?: string,
     metadata?: Record<string, string>
 ) => {
+    // Generate product name based on purchase type
+    const getProductName = (): string => {
+        const purchaseType = metadata?.purchaseType;
+        switch (purchaseType) {
+            case 'StudentCoursePurchase':
+                return 'Course Purchase';
+            case 'StudentCoursePurchaseWithCoaching':
+                return 'Course Purchase with Coaching';
+            case 'StudentPackagePurchase':
+                return 'Package Purchase';
+            case 'StudentPackagePurchaseWithCoaching':
+                return 'Package Purchase with Coaching';
+            case 'StudentCoachingSessionPurchase':
+                return 'Coaching Session Purchase';
+            case 'StudentCourseCoachingSessionPurchase':
+                return 'Course Coaching Session Purchase';
+            default:
+                return 'Purchase';
+        }
+    };
+
+    // Amount is in cents and already includes VAT (as per use case model: "VAT included in base prices")
     const lineItems = [
         {
             price_data: {
                 currency: 'chf',
                 product_data: {
-                    name: 'Coaching Session',
-                },
-                unit_amount: amount,
-            },
-            quantity: 1,
-        },
-        {
-            price_data: {
-                currency: 'chf',
-                product_data: {
-                    name: 'Coaching Session - VAT 7.7%',
+                    name: getProductName(),
                 },
                 unit_amount: amount,
             },
