@@ -22,6 +22,25 @@ export async function GET(req: Request) {
     const quantity = searchParams.get('quantity');
     const withCoaching = searchParams.get('withCoaching');
 
+    // Get the amount in cents (Stripe expects cents)
+    const amountParam = searchParams.get('amount');
+
+    // Validate amount parameter
+    if (!amountParam) {
+        return Response.json(
+            { error: 'Missing amount parameter' },
+            { status: 400 }
+        );
+    }
+
+    const amountInCents = parseInt(amountParam, 10);
+    if (isNaN(amountInCents) || amountInCents <= 0) {
+        return Response.json(
+            { error: 'Invalid amount parameter' },
+            { status: 400 }
+        );
+    }
+
     // Build metadata object
     const metadata: Record<string, string> = {};
     if (purchaseType) metadata.purchaseType = purchaseType;
@@ -34,15 +53,13 @@ export async function GET(req: Request) {
 
     const origin = env.NEXT_PUBLIC_APP_URL;
     const checkoutSession = await createCheckoutSession(
-        1000,
+        amountInCents,
         origin,
         discountPercentage,
         customerEmail || undefined,
         Object.keys(metadata).length > 0 ? metadata : undefined
     );
 
-    // Save the session ID and other details to your database
-    console.log('Created checkout session:', checkoutSession.id, 'with discount:', discountPercentage + '%', 'for email:', customerEmail || 'none', 'metadata:', metadata);
 
     return Response.json({
         clientSecret: checkoutSession.client_secret,
