@@ -120,18 +120,18 @@ export default function CheckoutPage() {
 
     // Helper to build purchase identifier from request (handles discriminated union)
     const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
-        switch (request.type) {
+        switch (request.purchaseType) {
             case 'StudentCoursePurchase':
             case 'StudentCoursePurchaseWithCoaching':
                 return {
                     courseSlug: request.courseSlug,
-                    withCoaching: request.type === 'StudentCoursePurchaseWithCoaching',
+                    withCoaching: request.purchaseType === 'StudentCoursePurchaseWithCoaching',
                 };
             case 'StudentPackagePurchase':
             case 'StudentPackagePurchaseWithCoaching':
                 return {
                     packageId: request.packageId,
-                    withCoaching: request.type === 'StudentPackagePurchaseWithCoaching',
+                    withCoaching: request.purchaseType === 'StudentPackagePurchaseWithCoaching',
                 };
             case 'StudentCoachingSessionPurchase':
                 return {
@@ -177,7 +177,7 @@ export default function CheckoutPage() {
                         isLoading={prepareCheckoutMutation.isPending}
                         onTest={() =>
                             handleTest({
-                                type: 'StudentCoursePurchase',
+                                purchaseType: 'StudentCoursePurchase',
                                 courseSlug: 'intro-to-programming',
                             })
                         }
@@ -190,7 +190,7 @@ export default function CheckoutPage() {
                         isLoading={prepareCheckoutMutation.isPending}
                         onTest={() =>
                             handleTest({
-                                type: 'StudentCoursePurchaseWithCoaching',
+                                purchaseType: 'StudentCoursePurchaseWithCoaching',
                                 courseSlug: 'advanced-javascript',
                             })
                         }
@@ -203,7 +203,7 @@ export default function CheckoutPage() {
                         isLoading={prepareCheckoutMutation.isPending}
                         onTest={() =>
                             handleTest({
-                                type: 'StudentPackagePurchase',
+                                purchaseType: 'StudentPackagePurchase',
                                 packageId: 1,
                             })
                         }
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
                         isLoading={prepareCheckoutMutation.isPending}
                         onTest={() =>
                             handleTest({
-                                type: 'StudentPackagePurchaseWithCoaching',
+                                purchaseType: 'StudentPackagePurchaseWithCoaching',
                                 packageId: 1,
                             })
                         }
@@ -229,7 +229,7 @@ export default function CheckoutPage() {
                         isLoading={prepareCheckoutMutation.isPending}
                         onTest={() =>
                             handleTest({
-                                type: 'StudentCoachingSessionPurchase',
+                                purchaseType: 'StudentCoachingSessionPurchase',
                                 coachingOfferingId: 1,
                                 quantity: 2,
                             })
@@ -243,7 +243,7 @@ export default function CheckoutPage() {
                         isLoading={prepareCheckoutMutation.isPending}
                         onTest={() =>
                             handleTest({
-                                type: 'StudentCourseCoachingSessionPurchase',
+                                purchaseType: 'StudentCourseCoachingSessionPurchase',
                                 courseSlug: 'intro-to-programming',
                                 lessonComponentIds: ['comp-001', 'comp-002', 'comp-003'],
                             })
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
                             isLoading={prepareCheckoutMutation.isPending}
                             onTest={() =>
                                 handleTest({
-                                    type: 'StudentCoursePurchase',
+                                    purchaseType: 'StudentCoursePurchase',
                                     courseSlug: 'intro-to-programming',
                                     couponCode: 'SAVE10',
                                 })
@@ -282,7 +282,7 @@ export default function CheckoutPage() {
                             isLoading={prepareCheckoutMutation.isPending}
                             onTest={() =>
                                 handleTest({
-                                    type: 'StudentCoursePurchase',
+                                    purchaseType: 'StudentCoursePurchase',
                                     courseSlug: 'intro-to-programming',
                                     couponCode: 'SAVE20',
                                 })
@@ -296,7 +296,7 @@ export default function CheckoutPage() {
                             isLoading={prepareCheckoutMutation.isPending}
                             onTest={() =>
                                 handleTest({
-                                    type: 'StudentCoursePurchase',
+                                    purchaseType: 'StudentCoursePurchase',
                                     courseSlug: 'intro-to-programming',
                                     couponCode: 'INVALID',
                                 })
@@ -310,7 +310,7 @@ export default function CheckoutPage() {
                             isLoading={prepareCheckoutMutation.isPending}
                             onTest={() =>
                                 handleTest({
-                                    type: 'StudentCoursePurchase',
+                                    purchaseType: 'StudentCoursePurchase',
                                     courseSlug: 'intro-to-programming',
                                     couponCode: 'EXPIRED',
                                 })
@@ -331,7 +331,7 @@ export default function CheckoutPage() {
                             env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
                         }
                         customerEmail={sessionDTO.data?.user?.email}
-                        purchaseType={currentRequest.type}
+                        purchaseType={currentRequest.purchaseType}
                         purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
                         locale={locale}
                         onPaymentComplete={handlePaymentComplete}
