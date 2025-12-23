@@ -113,7 +113,7 @@ async function mockProcessPurchase(input: useCaseModels.TProcessPurchaseRequest)
     let sessionIdCounter = 1;
 
     for (const item of purchaseItems) {
-        if (item.type === 'course') {
+        if (item.purchaseType === 'course') {
             // Enroll in course
             const course = mockCourses.find(c => c.slug === item.courseSlug);
             if (!course) {
@@ -152,7 +152,7 @@ async function mockProcessPurchase(input: useCaseModels.TProcessPurchaseRequest)
                     console.log(`[mockProcessPurchase] Added ${defaultQuantity} coaching sessions (offering ${offeringId}) for user ${userId}`);
                 }
             }
-        } else if (item.type === 'package') {
+        } else if (item.purchaseType === 'package') {
             // Enroll in selected courses from package
             const pkg = mockPackages.find(p => p.id === item.packageId);
             if (!pkg) {
@@ -197,7 +197,7 @@ async function mockProcessPurchase(input: useCaseModels.TProcessPurchaseRequest)
                     }
                 }
             }
-        } else if (item.type === 'coaching_sessions') {
+        } else if (item.purchaseType === 'coaching_sessions') {
             // Add standalone coaching sessions
             for (const offering of item.offerings) {
                 const userCredits = mockCoachingCredits.get(userId) || new Map<number, number>();
@@ -216,7 +216,7 @@ async function mockProcessPurchase(input: useCaseModels.TProcessPurchaseRequest)
 
                 console.log(`[mockProcessPurchase] Added ${offering.quantity} coaching sessions (offering ${offering.coachingOfferingId}) for user ${userId}`);
             }
-        } else if (item.type === 'course_coaching_sessions') {
+        } else if (item.purchaseType === 'course_coaching_sessions') {
             // Course-specific coaching sessions for lesson components
             const course = mockCourses.find(c => c.slug === item.courseSlug);
             if (!course) {
