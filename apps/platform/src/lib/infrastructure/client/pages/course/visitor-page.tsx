@@ -14,9 +14,12 @@ import {
     TeachCourseBanner,
     Breadcrumbs,
     DefaultNotFound,
+    CheckoutModal,
+    type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useState, useEffect } from 'react';
+import { useCaseModels } from '@maany_shr/e-class-models';
+import { useState, useEffect, useCallback, } from 'react';
 import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -28,7 +31,11 @@ import { useGetCourseOutlinePresenter } from '../../hooks/use-course-outline-pre
 import { useListCourseReviewsPresenter } from '../../hooks/use-list-course-reviews-presenter';
 import { useGetCoursePackagesPresenter } from '../../hooks/use-course-packages-presenter';
 import { useGetOffersPageOutlinePresenter } from '../../hooks/use-get-offers-page-outline-presenter';
+import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
+import env from '../../config/env';
 
 interface VisitorPageProps {
     courseSlug: string;
@@ -43,6 +50,12 @@ export default function VisitorPage({
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const router = useRouter();
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+    const [coachingIncluded, setCoachingIncluded] = useState(false);
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const sessionDTO = useSession();
+    const isLoggedIn = !!sessionDTO.data;
+
+    const utils = trpc.useUtils();
 
     // Fetch all data using tRPC hooks (from prefetched cache)
     const [courseDetailsResponse] = trpc.getPublicCourseDetails.useSuspenseQuery({ courseSlug });
@@ -61,6 +74,10 @@ export default function VisitorPage({
     const [packagesData, setPackagesData] = useState<viewModels.TCoursePackagesViewModel | undefined>(undefined);
     const [offersCarouselData, setOffersCarouselData] = useState<viewModels.TGetOffersPageOutlineViewModel | undefined>(undefined);
     const [coachingPageViewModel, setCoachingPageViewModel] = useState<viewModels.TGetCoachingPageViewModel | undefined>(undefined);
+    // Checkout state management
+    const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
+    const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+    const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
 
     // Create presenters using hooks
     const { presenter: courseDetailsPresenter } = useGetPublicCourseDetailsPresenter(setCourseData);
@@ -70,6 +87,7 @@ export default function VisitorPage({
     const { presenter: coursePackagesPresenter } = useGetCoursePackagesPresenter(setPackagesData);
     const { presenter: offersCarouselPresenter } = useGetOffersPageOutlinePresenter(setOffersCarouselData);
     const { presenter: coachingPagePresenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);
+    const { presenter: checkoutPresenter } = usePrepareCheckoutPresenter(setCheckoutViewModel);
 
     // Run presenters when data is available
     useEffect(() => {
@@ -121,6 +139,13 @@ export default function VisitorPage({
         }
     }, [coachingPageResponse]);
 
+    useEffect(() => {
+        if (checkoutViewModel) {
+            // @ts-ignore
+            checkoutPresenter.present(checkoutViewModel, checkoutViewModel);
+        }
+    }, [checkoutViewModel]);
+
     // Handle coaching page loading and error states
     if (!coachingPageViewModel) {
         // We'll continue with the page render but without banner data
@@ -128,9 +153,36 @@ export default function VisitorPage({
         // We'll continue with the page render but without banner data
     }
 
+    // Helper to execute checkout
+    const executeCheckout = useCallback(async (
+        request: useCaseModels.TPrepareCheckoutRequest,
+    ) => {
+        try {
+            setCurrentRequest(request);
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(request) as useCaseModels.TPrepareCheckoutUseCaseResponse;
+            console.log('response', response);
+            checkoutPresenter.present(response, checkoutViewModel);
+        } catch (err) {
+            console.error('Failed to prepare checkout:', err);
+        }
+    }, [utils, checkoutPresenter, checkoutViewModel]);
+
+    // Watch for checkoutViewModel changes and open modal when ready
+    useEffect(() => {
+        if (checkoutViewModel && checkoutViewModel.mode === 'default') {
+            setTransactionDraft(checkoutViewModel.data);
+            setIsCheckoutOpen(true);
+        }
+    }, [checkoutViewModel]);
+
+    // Checkout intent hook for login flow preservation
+    const { saveIntent } = useCheckoutIntent({
+        onResumeCheckout: executeCheckout,
+    });
+
     const handleCoachingIncludedChange = (coachingIncluded: boolean) => {
-        // TODO: Implement coaching included logic
-        console.log('Coaching included changed:', coachingIncluded);
+        setCoachingIncluded(coachingIncluded);
     };
 
     const handleClickBook = () => {
@@ -139,8 +191,62 @@ export default function VisitorPage({
     };
 
     const handleClickBuyCourse = (coachingIncluded: boolean) => {
-        // TODO: Implement buy course logic
-        console.log('Buy course clicked with coaching:', coachingIncluded);
+        console.log('handleClickBuyCourse called', { coachingIncluded, courseSlug, isLoggedIn });
+        const request: useCaseModels.TPrepareCheckoutRequest = {
+            purchaseType: coachingIncluded
+                ? 'StudentCoursePurchaseWithCoaching'
+                : 'StudentCoursePurchase',
+            courseSlug,
+        };
+
+        // If user is not logged in, save intent and redirect to login
+        if (!isLoggedIn) {
+            saveIntent(request, window.location.pathname);
+            router.push(
+                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+            );
+            return;
+        }
+
+        // User is logged in, execute checkout
+        executeCheckout(request);
+    };
+
+    const handlePaymentComplete = (sessionId: string) => {
+        setIsCheckoutOpen(false);
+        setTransactionDraft(null);
+        // TODO: Redirect to success page or show success message
+    };
+
+    // Helper to build purchase identifier from request (handles discriminated union)
+    const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+        switch (request.purchaseType) {
+            case 'StudentCoursePurchase':
+                return {
+                    courseSlug: request.courseSlug,
+                };
+            case 'StudentCoursePurchaseWithCoaching':
+                return {
+                    courseSlug: request.courseSlug,
+                    withCoaching: request.purchaseType === 'StudentCoursePurchaseWithCoaching',
+                };
+            case 'StudentPackagePurchase':
+            case 'StudentPackagePurchaseWithCoaching':
+                return {
+                    packageId: request.packageId,
+                    withCoaching: request.purchaseType === 'StudentPackagePurchaseWithCoaching',
+                };
+            case 'StudentCoachingSessionPurchase':
+                return {
+                    coachingOfferingId: request.coachingOfferingId,
+                    quantity: request.quantity,
+                };
+            case 'StudentCourseCoachingSessionPurchase':
+                return {
+                    courseSlug: request.courseSlug,
+                    lessonComponentIds: request.lessonComponentIds,
+                };
+        }
     };
 
     const handleClickRequiredCourse = (slug: string) => {
@@ -199,7 +305,7 @@ export default function VisitorPage({
                             avatarUrl: coach.avatarUrl || '',
                         }))}
                         totalCoachesCount={courseData.data.coaches.length}
-                        coachingIncluded={false}
+                        coachingIncluded={coachingIncluded}
                         onCoachingIncludedChange={handleCoachingIncludedChange}
                         onClickBook={handleClickBook}
                         onClickBuyCourse={handleClickBuyCourse}
@@ -467,6 +573,25 @@ export default function VisitorPage({
                         })()
                     )}
             </div>
+
+            {transactionDraft && currentRequest && (currentRequest.purchaseType === 'StudentCoursePurchase' || currentRequest.purchaseType === 'StudentCoursePurchaseWithCoaching') && (
+                <CheckoutModal
+                    isOpen={isCheckoutOpen}
+                    onClose={() => {
+                        setIsCheckoutOpen(false);
+                        setTransactionDraft(null);
+                    }}
+                    transactionDraft={transactionDraft}
+                    stripePublishableKey={
+                        env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+                    }
+                    customerEmail={sessionDTO.data?.user?.email}
+                    purchaseType={currentRequest.purchaseType}
+                    purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
+                    locale={locale}
+                    onPaymentComplete={handlePaymentComplete}
+                />
+            )}
         </div>
     );
 }

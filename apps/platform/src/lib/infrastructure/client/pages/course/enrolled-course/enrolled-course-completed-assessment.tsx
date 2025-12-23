@@ -24,6 +24,9 @@ export default function EnrolledCourseCompletedAssessment(
 
     const [progressResponse] = trpc.listAssessmentProgresses.useSuspenseQuery({
         courseSlug: props.courseSlug,
+        requestDetails: {
+            requestType: 'self',
+        },
     });
     const [progressViewModel, setProgressViewModel] = useState<
         viewModels.TAssessmentProgressListViewModel | undefined

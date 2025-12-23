@@ -154,7 +154,7 @@ export default function CoachingOfferingsPanel() {
         }
 
         const request: useCaseModels.TPrepareCheckoutRequest = {
-            type: 'StudentCoachingSessionPurchase',
+            purchaseType: 'StudentCoachingSessionPurchase',
             coachingOfferingId: Number(offeringId),
             quantity,
         };
@@ -232,7 +232,7 @@ export default function CoachingOfferingsPanel() {
                 locale={locale}
             />
 
-            {transactionDraft && currentRequest && currentRequest.type === 'StudentCoachingSessionPurchase' && (
+            {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCoachingSessionPurchase' && (
                 <CheckoutModal
                     isOpen={isCheckoutOpen}
                     onClose={() => {
@@ -244,7 +244,7 @@ export default function CoachingOfferingsPanel() {
                         env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
                     }
                     customerEmail={sessionDTO.data?.user?.email}
-                    purchaseType={currentRequest.type}
+                    purchaseType={currentRequest.purchaseType}
                     purchaseIdentifier={{
                         coachingOfferingId: currentRequest.coachingOfferingId,
                         quantity: currentRequest.quantity,

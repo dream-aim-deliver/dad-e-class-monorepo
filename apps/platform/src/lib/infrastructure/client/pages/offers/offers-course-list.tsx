@@ -18,7 +18,6 @@ import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
-import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import env from '../../config/env';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useSession } from 'next-auth/react';
@@ -109,33 +108,12 @@ export function OffersCourseList({
         }
     }, [checkoutViewModel]);
 
-    // Checkout intent hook for login flow preservation
-    const { saveIntent } = useCheckoutIntent({
-        onResumeCheckout: executeCheckout,
-    });
-
     const handleBuyCourse = async (
         courseSlug: string,
         withCoaching: boolean,
     ) => {
-        const request: useCaseModels.TPrepareCheckoutRequest = {
-            type: withCoaching
-                ? 'StudentCoursePurchaseWithCoaching'
-                : 'StudentCoursePurchase',
-            courseSlug,
-        };
-
-        // If user is not logged in, save intent and redirect to login
-        if (!isLoggedIn) {
-            saveIntent(request, window.location.pathname);
-            router.push(
-                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-            );
-            return;
-        }
-
-        // User is logged in, execute checkout
-        executeCheckout(request);
+        // For now, always redirect to the course page (no checkout flow)
+        router.push(`/courses/${courseSlug}`);
     };
 
     const handlePaymentComplete = (sessionId: string) => {
@@ -254,7 +232,7 @@ export function OffersCourseList({
                 />
             )}
 
-            {transactionDraft && currentRequest && (currentRequest.type === 'StudentCoursePurchase' || currentRequest.type === 'StudentCoursePurchaseWithCoaching') && (
+            {transactionDraft && currentRequest && (currentRequest.purchaseType === 'StudentCoursePurchase' || currentRequest.purchaseType === 'StudentCoursePurchaseWithCoaching') && (
                 <CheckoutModal
                     isOpen={isCheckoutOpen}
                     onClose={() => {
@@ -266,10 +244,10 @@ export function OffersCourseList({
                         env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
                     }
                     customerEmail={sessionDTO.data?.user?.email}
-                    purchaseType={currentRequest.type}
+                    purchaseType={currentRequest.purchaseType}
                     purchaseIdentifier={{
                         courseSlug: currentRequest.courseSlug,
-                        withCoaching: currentRequest.type === 'StudentCoursePurchaseWithCoaching',
+                        withCoaching: currentRequest.purchaseType === 'StudentCoursePurchaseWithCoaching',
                     }}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
