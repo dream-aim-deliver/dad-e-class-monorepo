@@ -9,6 +9,10 @@ export interface SessionExpirationModalProps extends isLocalAware {
     isOpen: boolean;
     hasUnsavedChanges: boolean;
     onConfirm: () => void;
+    /** Whether the user can dismiss the modal and continue browsing (for mixed routes) */
+    allowDismiss?: boolean;
+    /** Callback when user dismisses the modal to continue as visitor */
+    onDismiss?: () => void;
 }
 
 /**
@@ -19,6 +23,8 @@ export interface SessionExpirationModalProps extends isLocalAware {
  * @param isOpen - Whether the modal is visible
  * @param hasUnsavedChanges - Whether there are unsaved changes that will be lost
  * @param onConfirm - Callback to handle redirect to login
+ * @param allowDismiss - Whether the user can dismiss and continue browsing (for mixed routes)
+ * @param onDismiss - Callback when user dismisses the modal
  * @param locale - The locale for translation and localization purposes
  *
  * @example
@@ -27,12 +33,16 @@ export interface SessionExpirationModalProps extends isLocalAware {
  *   isOpen={sessionExpired}
  *   hasUnsavedChanges={hasUnsaved}
  *   onConfirm={() => router.push('/auth/login')}
+ *   allowDismiss={isMixedRoute}
+ *   onDismiss={() => signOut({ redirect: false })}
  * />
  */
 export const SessionExpirationModal: React.FC<SessionExpirationModalProps> = ({
     isOpen,
     hasUnsavedChanges,
     onConfirm,
+    allowDismiss = false,
+    onDismiss,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
@@ -73,7 +83,7 @@ export const SessionExpirationModal: React.FC<SessionExpirationModalProps> = ({
                             </p>
                         </div>
                     )}
-                    <div className="flex justify-end items-center w-full pt-2">
+                    <div className={`flex items-center w-full pt-2 ${allowDismiss ? 'flex-col gap-2' : 'justify-end'}`}>
                         <Button
                             className="w-full"
                             variant="primary"
@@ -81,6 +91,15 @@ export const SessionExpirationModal: React.FC<SessionExpirationModalProps> = ({
                             text={dictionary.components.sessionExpirationModal.loginButtonText}
                             onClick={onConfirm}
                         />
+                        {allowDismiss && onDismiss && (
+                            <Button
+                                className="w-full"
+                                variant="secondary"
+                                size="medium"
+                                text={dictionary.components.sessionExpirationModal.continueAsVisitorText}
+                                onClick={onDismiss}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
