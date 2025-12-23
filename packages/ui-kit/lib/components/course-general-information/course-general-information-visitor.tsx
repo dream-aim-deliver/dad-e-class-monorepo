@@ -437,19 +437,26 @@ export const CourseGeneralInformationVisitor: FC<
                             labelClass="text-text-secondary text-md"
                             onChange={handleCheckboxChange}
                         />
+                        {coachingIncluded && (
                         <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
                             {
                                 dictionary.components.courseGeneralInformationView
                                     .saveLabel
                             }{' '}
-                            {(pricing as any).currency as string} {(pricing as any).partialPrice as number}
+                                {(pricing as any).currency as string}{' '}
+                                {Math.round(
+                                    (((pricing as any).fullPrice as number) -
+                                        ((pricing as any).partialPrice as number)) *
+                                        100,
+                                ) / 100}
                         </p>
+                        )}
                     </div>
 
                     {/* Button */}
                     <Button
                         size="huge"
-                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${(pricing as any).currency as string} ${coachingIncluded ? (pricing as any).fullPrice as number : (pricing as any).partialPrice as number})`}
+                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${(pricing as any).currency as string} ${coachingIncluded ? Math.round(((pricing as any).fullPrice as number) * 100) / 100 : Math.round(((pricing as any).partialPrice as number) * 100) / 100})`}
                         onClick={() => onClickBuyCourse(coachingIncluded)}
                         className="w-full text-lg lg:text-2xl"
                     />
