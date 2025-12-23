@@ -3258,6 +3258,18 @@ export const DictionarySchema = z.object({
       superadmin: z.string(),
     }),
   }),
+  metadata: z.object({
+    platform: z.object({
+      title: z.string(),
+      description: z.string(),
+      ogDescription: z.string(),
+    }),
+    cms: z.object({
+      title: z.string(),
+      description: z.string(),
+      ogDescription: z.string(),
+    }),
+  }),
 });
 
 export type TDictionary = z.infer<typeof DictionarySchema>;
