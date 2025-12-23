@@ -61,12 +61,8 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
         >,
     ): viewModels.TPrepareCheckoutViewModel {
         // Map error types to appropriate view modes
-        const errorMessage = response.data.message;
-        const context = response.data.context;
-
-        // Check if this is a coupon-related error by examining the message or context
-        if (errorMessage.toLowerCase().includes('not found') ||
-            errorMessage.toLowerCase().includes('invalid')) {
+        
+        if (response.data.errorType === 'coupon_not_found') {
             return {
                 mode: 'coupon-not-found',
                 data: {
@@ -77,7 +73,7 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
             };
         }
 
-        if (errorMessage.toLowerCase().includes('expired')) {
+        if (response.data.errorType === 'coupon_expired') {
             return {
                 mode: 'coupon-expired',
                 data: {
@@ -88,7 +84,7 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
             };
         }
 
-        if (errorMessage.toLowerCase().includes('limit')) {
+        if (response.data.errorType === 'coupon_limit_reached') {
             return {
                 mode: 'coupon-limit-reached',
                 data: {
@@ -99,8 +95,18 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
             };
         }
 
-        if (errorMessage.toLowerCase().includes('type') ||
-            errorMessage.toLowerCase().includes('format')) {
+        if (response.data.errorType === 'coupon_user_limit_reached') {
+            return {
+                mode: 'coupon-limit-reached',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context,
+                },
+            };
+        }
+
+        if (response.data.errorType === 'invalid_coupon_type') {
             return {
                 mode: 'invalid-coupon-type',
                 data: {
