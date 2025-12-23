@@ -101,7 +101,7 @@ describe('CourseGeneralInformationVisitor', () => {
 
         const buyButton = screen.getByRole('button', {
             name: new RegExp(
-                `buy.*\\(${baseProps.pricing.currency} ${baseProps.pricing.fullPrice}\\)`,
+                `buy.*\\(${baseProps.pricing.currency} ${baseProps.pricing.partialPrice}\\)`,
                 'i',
             ),
         });
