@@ -568,6 +568,7 @@ export const EN: TDictionary = {
       message: 'Your session has expired due to inactivity. Please log in again to continue.',
       unsavedChangesWarning: 'Warning: You have unsaved changes that will be lost.',
       loginButtonText: 'Go to Login',
+      continueAsVisitorText: 'Continue Browsing',
     },
     coachingSessionTracker: {
       minuteText: 'minutes',

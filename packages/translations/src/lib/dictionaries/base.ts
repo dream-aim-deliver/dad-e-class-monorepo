@@ -572,6 +572,7 @@ export const DictionarySchema = z.object({
       message: z.string(),
       unsavedChangesWarning: z.string(),
       loginButtonText: z.string(),
+      continueAsVisitorText: z.string(),
     }),
     coachingSessionTracker: z.object({
       minuteText: z.string(),

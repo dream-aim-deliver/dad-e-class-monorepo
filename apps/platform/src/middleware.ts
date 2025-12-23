@@ -2,6 +2,7 @@ import createMiddleware from 'next-intl/middleware';
 import { i18nConfig } from '@maany_shr/e-class-translations';
 import AuthContext from './lib/infrastructure/server/config/auth/next-auth.config';
 import { NextRequest, NextResponse } from 'next/server';
+import { isPublicAccessibleRoute, normalizePathname } from './lib/infrastructure/common/utils/public-routes';
 
 const auth = AuthContext.auth;
 
@@ -19,35 +20,10 @@ export default async function middleware(req: NextRequest) {
     );
 
     // Normalize pathname by removing locale prefix if it exists
-    // This allows checking both /offers and /en/offers with the same logic
-    const normalizedPath = pathnameLocale
-        ? pathname.replace(new RegExp(`^/${pathnameLocale}`), '') || '/'
-        : pathname;
+    const normalizedPath = normalizePathname(pathname);
 
     // Skip auth check for public routes, auth routes, API routes, and static files
-    const isPublicRoute = pathname.includes('/auth/') ||
-                         pathname.includes('/api/') ||
-                         pathname.includes('/_next/') ||
-                         pathname.includes('/favicon') ||
-                         pathname.endsWith('.png') ||
-                         pathname.endsWith('.jpg') ||
-                         pathname.endsWith('.svg') ||
-                         pathname.endsWith('.ico') ||
-                         normalizedPath === '/' ||
-                         normalizedPath.startsWith('/offers') ||
-                         normalizedPath.startsWith('/courses/') ||
-                         normalizedPath.startsWith('/packages/') ||
-                         normalizedPath.startsWith('/coaches/') ||
-                         normalizedPath.startsWith('/coaching') ||
-                         normalizedPath.startsWith('/about') ||
-                         normalizedPath.startsWith('/privacy-policy') ||
-                         normalizedPath.startsWith('/terms-of-use') ||
-                         normalizedPath.startsWith('/impressum') ||
-                         normalizedPath.startsWith('/rules') ||
-                         normalizedPath.startsWith('/offer-information') ||
-                         normalizedPath.startsWith('/become-a-coach') ||
-                         normalizedPath.startsWith('/students/') ||
-                         normalizedPath.startsWith('/checkout');
+    const isPublicRoute = isPublicAccessibleRoute(pathname, normalizedPath);
 
     if (!isPublicRoute) {
         // Get the session using NextAuth's auth function

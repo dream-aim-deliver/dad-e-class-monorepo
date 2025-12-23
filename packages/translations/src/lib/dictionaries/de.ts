@@ -571,6 +571,7 @@ export const DE: TDictionary = {
       message: 'Ihre Sitzung ist aufgrund von Inaktivität abgelaufen. Bitte melden Sie sich erneut an, um fortzufahren.',
       unsavedChangesWarning: 'Warnung: Sie haben ungespeicherte Änderungen, die verloren gehen.',
       loginButtonText: 'Zur Anmeldung',
+      continueAsVisitorText: 'Weiter stöbern',
     },
     coachingSessionTracker: {
       minuteText: 'Minuten',

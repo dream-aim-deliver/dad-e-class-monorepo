@@ -9,6 +9,7 @@ import {
     SessionExpirationModal,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { isPurelyPublicRoute, isMixedRoute } from '../../common/utils/public-routes';
 
 interface SessionMonitorWrapperProps {
     children: React.ReactNode;
@@ -56,6 +57,20 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
         });
     }, [unsavedChangesState, pathname, loginPath, log]);
 
+    const handleDismiss = useCallback(async () => {
+        log('User dismissed modal, continuing as visitor');
+
+        // Clear the expired session to prevent modal from re-triggering
+        await signOut({ redirect: false });
+
+        setShowExpirationModal(false);
+        // Reset trigger so we don't show modal again on next render
+        setHasTriggeredCheck(false);
+    }, [log]);
+
+    // Check if current route allows dismissing the modal
+    const allowDismiss = isMixedRoute(pathname || '');
+
     // Monitor session for errors
     useEffect(() => {
         if (status === 'loading') {
@@ -75,8 +90,13 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
                 log('Session error detected:', sessionError);
 
                 if (sessionError === 'RefreshAccessTokenError' || sessionError === 'RefreshTokenMissing') {
-                    log('Token refresh failed, showing expiration modal');
-                    setShowExpirationModal(true);
+                    // Skip modal on purely public pages - session expiry is irrelevant there
+                    if (!isPurelyPublicRoute(pathname || '')) {
+                        log('Token refresh failed, showing expiration modal');
+                        setShowExpirationModal(true);
+                    } else {
+                        log('Token refresh failed on purely public page, skipping modal');
+                    }
                     setHasTriggeredCheck(true);
                 }
             } else {
@@ -86,28 +106,57 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
         }
     }, [session, status, hasTriggeredCheck, log]);
 
-    // Periodic session check
+    // Periodic session check - only when page is visible (performance optimization)
     useEffect(() => {
         if (status !== 'authenticated') {
             return;
         }
 
-        log(`Setting up periodic session check every ${checkInterval}ms`);
+        let interval: NodeJS.Timeout | null = null;
 
-        const interval = setInterval(async () => {
-            log('Performing periodic session check');
+        const startPolling = () => {
+            if (interval) return;
+            log(`Starting periodic session check every ${checkInterval}ms`);
+            interval = setInterval(async () => {
+                log('Performing periodic session check');
+                try {
+                    await update();
+                    log('Session check complete');
+                } catch (error) {
+                    log('Error during session check:', error);
+                }
+            }, checkInterval);
+        };
 
-            try {
-                await update();
-                log('Session check complete');
-            } catch (error) {
-                log('Error during session check:', error);
+        const stopPolling = () => {
+            if (interval) {
+                log('Stopping periodic session check (page hidden)');
+                clearInterval(interval);
+                interval = null;
             }
-        }, checkInterval);
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                // Immediate check when tab becomes visible, then resume polling
+                log('Page became visible, checking session');
+                update().catch(err => log('Error on visibility check:', err));
+                startPolling();
+            } else {
+                stopPolling();
+            }
+        };
+
+        // Start polling if page is currently visible
+        if (document.visibilityState === 'visible') {
+            startPolling();
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
-            log('Clearing periodic session check interval');
-            clearInterval(interval);
+            stopPolling();
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, [status, checkInterval, update, log]);
 
@@ -116,6 +165,8 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
             isOpen={showExpirationModal}
             hasUnsavedChanges={hasUnsavedChanges}
             onConfirm={handleConfirmLogout}
+            allowDismiss={allowDismiss}
+            onDismiss={handleDismiss}
             locale={locale}
         />
     );
