@@ -1,12 +1,78 @@
+import 'server-only';
 import { stripe } from '../../../../lib/infrastructure/server/config/payments/stripe.config';
-import { backendTrpc } from '../../../../lib/infrastructure/server/trpc/backend-client';
 import { NextRequest } from 'next/server';
+import nextAuth from '../../../../lib/infrastructure/server/config/auth/next-auth.config';
+import { useCaseModels } from '@maany_shr/e-class-models';
+import { TAppRouter } from '@dream-aim-deliver/e-class-cms-rest';
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
+import superjson from 'superjson';
+import { getLocale } from 'next-intl/server';
+import { getTRPCUrl } from '../../../../lib/infrastructure/common/utils/get-cms-query-client';
+import env from '../../../../lib/infrastructure/server/config/env';
+
+/**
+ * Creates headers for backend tRPC requests with authentication and localization
+ */
+async function createBackendHeaders(): Promise<Record<string, string>> {
+    const headers: Record<string, string> = {};
+
+    // Get session from NextAuth
+    try {
+        const session = await nextAuth.auth();
+        if (session?.user?.idToken) {
+            headers['Authorization'] = `Bearer ${session.user.idToken}`;
+        }
+        // Add session ID header (defaults to "public" if no session)
+        headers['x-eclass-session-id'] = session?.user?.sessionId || 'public';
+    } catch (error) {
+        // Still set session ID to "public" on error
+        headers['x-eclass-session-id'] = 'public';
+    }
+
+    // Add locale header
+    try {
+        const locale = await getLocale();
+        if (locale) {
+            headers['Accept-Language'] = locale;
+        }
+    } catch (error) {
+        // Locale header optional, continue without it
+    }
+
+    // Add platform header
+    try {
+        const platformSlug = env.NEXT_PUBLIC_E_CLASS_RUNTIME;
+        if (platformSlug) {
+            headers['x-eclass-runtime'] = platformSlug;
+        }
+    } catch (error) {
+        // Platform header optional, continue without it
+    }
+
+    return headers;
+}
+
+/**
+ * Real backend tRPC client for processing purchases
+ * Connects directly to CMS REST backend
+ */
+const backendTrpc = createTRPCProxyClient<TAppRouter>({
+    links: [
+        httpBatchLink({
+            transformer: superjson,
+            url: getTRPCUrl(),
+            async headers() {
+                return await createBackendHeaders();
+            },
+        }),
+    ],
+});
 
 /**
  * Verify Stripe payment and unlock purchased content
  *
  * Flow:
- * 1. Authenticate user (TODO: add authentication)
+ * 1. Authenticate user
  * 2. Verify payment with Stripe
  * 3. Extract metadata and build purchase items
  * 4. Call backend to process purchase
@@ -25,10 +91,9 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // TODO: Get authenticated user
-        // For now, using mock user ID
-        // In production, use: const session = await getServerSession(); const userId = session?.user?.id;
-        const userId = 'mock-user-id';
+        // Get authenticated user from NextAuth session
+        const session = await nextAuth.auth();
+        const userId = session?.user?.id;
 
         if (!userId) {
             return Response.json(
@@ -38,13 +103,12 @@ export async function POST(req: NextRequest) {
         }
 
         // Step 1: Verify payment with Stripe
-        console.log('[verify-and-unlock] Retrieving Stripe session:', sessionId);
-
         let stripeSession: any;
         try {
-            stripeSession = await stripe.checkout.sessions.retrieve(sessionId);
+            stripeSession = await stripe.checkout.sessions.retrieve(sessionId, {
+                expand: ['payment_intent'],
+            });
         } catch (error) {
-            console.error('[verify-and-unlock] Failed to retrieve Stripe session:', error);
             return Response.json(
                 { error: 'Failed to retrieve payment session' },
                 { status: 500 }
@@ -52,15 +116,44 @@ export async function POST(req: NextRequest) {
         }
 
         // Step 2: Validate payment status
+        // Check both checkout session status and payment intent status
+        // payment_intent can be a string (ID) or an object (if expanded)
+        let paymentIntentId: string | null = null;
+        let paymentIntentStatus = 'unknown';
+        
+        if (stripeSession.payment_intent) {
+            if (typeof stripeSession.payment_intent === 'string') {
+                // Not expanded - it's just the ID
+                paymentIntentId = stripeSession.payment_intent;
+            } else if (typeof stripeSession.payment_intent === 'object' && stripeSession.payment_intent !== null) {
+                // Expanded - extract the ID and status from the object
+                paymentIntentId = (stripeSession.payment_intent as any).id;
+                paymentIntentStatus = (stripeSession.payment_intent as any).status || 'unknown';
+            }
+            
+            // If we have an ID but no status, retrieve it
+            if (paymentIntentId && paymentIntentStatus === 'unknown') {
+                try {
+                    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+                    paymentIntentStatus = paymentIntent.status;
+                } catch (error) {
+                    // Payment intent retrieval failed, will use checkout session status
+                }
+            }
+        }
+
         if (stripeSession.payment_status !== 'paid') {
             return Response.json(
                 {
                     error: 'Payment not completed',
                     status: stripeSession.payment_status,
+                    paymentIntentStatus,
                 },
                 { status: 400 }
             );
         }
+
+        // Payment intent status verified - backend will do final validation
 
         // Step 3: Extract metadata
         const metadata = stripeSession.metadata || {};
@@ -73,48 +166,105 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        console.log('[verify-and-unlock] Processing purchase:', {
-            userId,
-            purchaseType,
-            metadata,
-        });
-
         // Step 4: Build purchase items based on purchase type
         const purchaseItems = buildPurchaseItems(purchaseType, metadata);
 
         // Step 5: Call backend to process purchase
+        // Backend expects payment intent status "succeeded" rather than checkout session status "paid"
+        // Map checkout session status to payment intent status if needed
+        const finalPaymentStatus = paymentIntentStatus && paymentIntentStatus !== 'unknown' 
+            ? paymentIntentStatus 
+            : stripeSession.payment_status === 'paid' ? 'succeeded' : stripeSession.payment_status;
+
+        // Ensure paymentExternalId is a string (use payment intent ID if available, otherwise session ID)
+        const paymentExternalIdString = paymentIntentId || sessionId;
+        
+        if (!paymentExternalIdString || typeof paymentExternalIdString !== 'string') {
+            return Response.json(
+                {
+                    error: 'Invalid payment external ID',
+                    details: 'Could not determine payment intent ID or session ID',
+                },
+                { status: 400 }
+            );
+        }
+
         const transactionData = {
-            paymentExternalId: (stripeSession.payment_intent as string) || sessionId,
+            paymentExternalId: paymentExternalIdString,
             paymentProvider: 'stripe',
             amount: stripeSession.amount_total || 0,
             currency: stripeSession.currency || 'chf',
             customerEmail: stripeSession.customer_details?.email || '',
-            paymentStatus: stripeSession.payment_status,
+            paymentStatus: finalPaymentStatus,
             metadata,
         };
 
-        const result = await backendTrpc.processPurchase.mutate({
-            userId,
-            transactionData,
-            purchaseType,
-            purchaseItems,
-        });
+        let result;
+        try {
+            result = await backendTrpc.processPurchase.mutate({
+                userId,
+                transactionData,
+                purchaseType,
+                purchaseItems,
+            });
+        } catch (backendError: any) {
+            return Response.json(
+                {
+                    error: 'Backend call failed',
+                    message: backendError?.message || 'Failed to call backend processPurchase',
+                },
+                { status: 500 }
+            );
+        }
 
-        console.log('[verify-and-unlock] Purchase processed successfully:', result);
+        // Step 6: Validate and build response that matches what the UI expects
+        // The backend returns a TProcessPurchaseUseCaseResponse (discriminated union)
+        if (!result || result.success !== true) {
+            let errorMessage = 'Unknown error from backend';
+            if (result && 'data' in result && typeof result.data === 'object' && result.data !== null) {
+                const data = result.data as any;
+                if ('message' in data && typeof data.message === 'string') {
+                    errorMessage = data.message;
+                } else if ('errorType' in data && typeof data.errorType === 'string') {
+                    errorMessage = `Error type: ${data.errorType}`;
+                }
+            }
+            
+            return Response.json(
+                {
+                    error: 'Purchase processing failed',
+                    message: errorMessage,
+                },
+                { status: 400 }
+            );
+        }
 
-        // Step 6: Build response that matches what the UI expects
+        // When result.success === true, result.data contains the success data directly
+        // The tRPC client may wrap responses, so we need to handle the structure carefully
+        const resultData = result.data as unknown;
+        let successData: useCaseModels.TProcessPurchaseSuccessResponse['data'];
+        
+        // Handle both direct data access and wrapped data access
+        if (resultData && typeof resultData === 'object' && 'data' in resultData && typeof (resultData as any).data === 'object') {
+            // Nested structure: result.data.data
+            successData = (resultData as { data: useCaseModels.TProcessPurchaseSuccessResponse['data'] }).data;
+        } else {
+            // Direct structure: result.data
+            successData = resultData as useCaseModels.TProcessPurchaseSuccessResponse['data'];
+        }
+
         const response = {
-            success: result.success,
-            alreadyProcessed: result.data.alreadyProcessed,
+            success: true,
+            alreadyProcessed: successData.alreadyProcessed,
             transaction: {
-                id: result.data.transactionId,
+                id: successData.transactionId,
                 amount: transactionData.amount,
                 currency: transactionData.currency.toUpperCase(),
             },
             purchaseType,
             purchaseIdentifier: extractPurchaseIdentifier(purchaseType, metadata),
             customerEmail: transactionData.customerEmail,
-            purchasedItems: result.data.enrollments.map((e: { courseId: number; coachingIncluded: boolean }) => ({
+            purchasedItems: successData.enrollments.map((e: { courseId: number; coachingIncluded: boolean }) => ({
                 name: `Course ${e.courseId}`,
                 description: e.coachingIncluded ? 'With coaching' : 'Course access',
             })),
@@ -142,7 +292,7 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
     switch (purchaseType) {
         case 'StudentCoursePurchase':
             items.push({
-                type: 'course' as const,
+                purchaseType: 'course' as const,
                 courseSlug: metadata.courseSlug,
                 withCoaching: false,
             });
@@ -150,7 +300,7 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
 
         case 'StudentCoursePurchaseWithCoaching':
             items.push({
-                type: 'course' as const,
+                purchaseType: 'course' as const,
                 courseSlug: metadata.courseSlug,
                 withCoaching: true,
             });
@@ -158,7 +308,7 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
 
         case 'StudentPackagePurchase':
             items.push({
-                type: 'package' as const,
+                purchaseType: 'package' as const,
                 packageId: parseInt(metadata.packageId),
                 selectedCourseIds: metadata.courseIds
                     ? metadata.courseIds.split(',').map((id: string) => parseInt(id))
@@ -169,7 +319,7 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
 
         case 'StudentPackagePurchaseWithCoaching':
             items.push({
-                type: 'package' as const,
+                purchaseType: 'package' as const,
                 packageId: parseInt(metadata.packageId),
                 selectedCourseIds: metadata.courseIds
                     ? metadata.courseIds.split(',').map((id: string) => parseInt(id))
@@ -178,7 +328,7 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
             });
             break;
 
-        case 'StudentCoachingSessionPurchase':
+        case 'StudentCoachingSessionPurchase': {
             // Parse coaching offerings
             const offerings = parseCoachingOfferings(
                 metadata.offerings || metadata.coachingOfferingId,
@@ -186,15 +336,16 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
             );
 
             items.push({
-                type: 'coaching_sessions' as const,
+                purchaseType: 'coaching_sessions' as const,
                 offerings,
             });
             break;
+        }
 
         case 'StudentCourseCoachingSessionPurchase':
             // Course-specific coaching sessions for lesson components
             items.push({
-                type: 'course_coaching_sessions' as const,
+                purchaseType: 'course_coaching_sessions' as const,
                 courseSlug: metadata.courseSlug,
                 lessonComponentIds: metadata.lessonComponentIds
                     ? metadata.lessonComponentIds.split(',')
