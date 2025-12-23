@@ -138,7 +138,7 @@ export const prepareCheckout = t.procedure
     .input(useCaseModels.PrepareCheckoutRequestSchema)
     .mutation(async (opts): Promise<useCaseModels.TPrepareCheckoutUseCaseResponse> => {
         const input = opts.input;
-        const { type, couponCode } = input;
+        const { purchaseType, couponCode } = input;
 
         // Validate coupon if provided
         const couponError = validateCoupon(couponCode);
@@ -150,7 +150,7 @@ export const prepareCheckout = t.procedure
         let subtotal = 0;
 
         // Generate line items based on purchase type
-        switch (type) {
+        switch (purchaseType) {
             case 'StudentCoursePurchase': {
                 const slug = input.courseSlug || 'intro-to-programming';
                 const course =
@@ -292,7 +292,7 @@ export const prepareCheckout = t.procedure
                         errorType: 'ValidationError',
                         message: 'Invalid purchase type',
                         operation: 'prepare_checkout',
-                        context: { type },
+                        context: { purchaseType },
                     },
                 };
         }
