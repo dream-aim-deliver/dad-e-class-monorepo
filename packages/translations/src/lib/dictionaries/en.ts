@@ -3213,4 +3213,16 @@ export const EN: TDictionary = {
       superadmin: "Super Admin",
     },
   },
+  metadata: {
+    platform: {
+      title: "{appName} - Learning Platform",
+      description: "Access courses, coaching sessions, and professional development.",
+      ogDescription: "Discover courses, connect with coaches, and advance your career.",
+    },
+    cms: {
+      title: "E-Class CMS - Content Management",
+      description: "Manage courses, users, and platform content.",
+      ogDescription: "Powerful content management for your learning platform.",
+    },
+  },
 };
