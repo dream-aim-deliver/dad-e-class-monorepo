@@ -39,6 +39,11 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'fra1.digitaloceanspaces.com',
             },
+            // Mux video thumbnails and assets
+            {
+                protocol: 'https',
+                hostname: '**.mux.com',
+            },
             // Custom S3/MinIO (configured via environment variables for local dev)
             ...(process.env.S3_HOSTNAME ? [{
                 protocol: (process.env.S3_PROTOCOL || 'http') as 'http' | 'https',
