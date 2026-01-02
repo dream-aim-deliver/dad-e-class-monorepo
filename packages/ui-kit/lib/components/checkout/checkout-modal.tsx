@@ -195,6 +195,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             if (purchaseIdentifier.quantity) {
                 params.append('quantity', purchaseIdentifier.quantity.toString());
             }
+            // Handle multiple offerings (format: "1:3,2:2")
+            if ((purchaseIdentifier as any).offerings) {
+                params.append('offerings', (purchaseIdentifier as any).offerings);
+            }
             if (purchaseIdentifier.withCoaching !== undefined) {
                 params.append('withCoaching', purchaseIdentifier.withCoaching.toString());
             }
