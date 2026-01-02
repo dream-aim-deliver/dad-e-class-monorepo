@@ -1,7 +1,7 @@
 'use client';
 
 import { trpc } from '../trpc/cms-client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   DefaultLoading,
   DefaultError,
@@ -13,16 +13,21 @@ import {
   PackageCourseCard,
   PackageCardList,
   PackageCard,
-  Breadcrumbs
+  Breadcrumbs,
+  CheckoutModal,
+  type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { viewModels } from '@maany_shr/e-class-models';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import { useGetPackageWithCoursesPresenter } from '../hooks/use-get-package-with-courses-presenter';
 import { useListPackageRelatedPackagesPresenter } from '../hooks/use-list-package-related-packages-presenter';
 import { useRequiredPlatform } from '../context/platform-context';
+import { usePrepareCheckoutPresenter } from '../hooks/use-prepare-checkout-presenter';
+import { useCheckoutIntent } from '../hooks/use-checkout-intent';
+import env from '../config/env';
 
 interface PackageProps {
   locale: TLocale;
@@ -73,6 +78,45 @@ export default function Package({ locale, packageId }: PackageProps) {
   // Track selected courses 
   // Initialize with empty array - will be set in useEffect when data is available
   const [selectedCourseIds, setSelectedCourseIds] = useState<number[]>([]);
+
+  // Checkout state management
+  const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+  const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  // Get tRPC utils for fetching checkout data
+  const utils = trpc.useUtils();
+
+  // Checkout presenter
+  const { presenter: checkoutPresenter } = usePrepareCheckoutPresenter(setCheckoutViewModel);
+
+  // Helper to execute checkout (must be before conditional returns)
+  const executeCheckout = useCallback(async (
+    request: useCaseModels.TPrepareCheckoutRequest,
+  ) => {
+    try {
+      setCurrentRequest(request);
+      // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+      const response = await utils.prepareCheckout.fetch(request) as useCaseModels.TPrepareCheckoutUseCaseResponse;
+      checkoutPresenter.present(response, checkoutViewModel);
+    } catch (err) {
+      console.error('Failed to prepare checkout:', err);
+    }
+  }, [utils, checkoutPresenter, checkoutViewModel]);
+
+  // Checkout intent hook for login flow preservation (must be before conditional returns)
+  const { saveIntent } = useCheckoutIntent({
+    onResumeCheckout: executeCheckout,
+  });
+
+  // Watch for checkoutViewModel changes and open modal when ready (must be before conditional returns)
+  useEffect(() => {
+    if (checkoutViewModel && checkoutViewModel.mode === 'default') {
+      setTransactionDraft(checkoutViewModel.data);
+      setIsCheckoutOpen(true);
+    }
+  }, [checkoutViewModel]);
 
   // Initialize selectedCourseIds with all course IDs when data is available
   // This must be before any conditional returns
@@ -222,6 +266,37 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   const packageDuration = calculatePackageDuration();
 
+  // Helper to build purchase identifier from request (handles discriminated union)
+  const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+    switch (request.purchaseType) {
+      case 'StudentPackagePurchase':
+      case 'StudentPackagePurchaseWithCoaching':
+        return {
+          packageId: request.packageId,
+          withCoaching: request.purchaseType === 'StudentPackagePurchaseWithCoaching',
+        };
+      case 'StudentCoursePurchase':
+        return {
+          courseSlug: request.courseSlug,
+        };
+      case 'StudentCoursePurchaseWithCoaching':
+        return {
+          courseSlug: request.courseSlug,
+          withCoaching: request.purchaseType === 'StudentCoursePurchaseWithCoaching',
+        };
+      case 'StudentCoachingSessionPurchase':
+        return {
+          coachingOfferingId: request.coachingOfferingId,
+          quantity: request.quantity,
+        };
+      case 'StudentCourseCoachingSessionPurchase':
+        return {
+          courseSlug: request.courseSlug,
+          lessonComponentIds: request.lessonComponentIds,
+        };
+    }
+  };
+
   // Handlers
   const handleToggleCoaching = () => setCoachingIncluded(!coachingIncluded);
   const handleIncludeExclude = (courseId: string) => {
@@ -248,13 +323,27 @@ export default function Package({ locale, packageId }: PackageProps) {
   };
 
   const handlePurchase = () => {
+    const request: useCaseModels.TPrepareCheckoutRequest = {
+      purchaseType: coachingIncluded
+        ? 'StudentPackagePurchaseWithCoaching'
+        : 'StudentPackagePurchase',
+      packageId: packageId,
+      selectedCourseIds: selectedCourseIds.length === packageData.courses.length
+        ? undefined
+        : selectedCourseIds, // Only include if partial selection
+    };
+
+    // If user is not logged in, save intent and redirect to login
     if (!isLoggedIn) {
-      // Redirect to login page with return URL
-      router.push(`/${currentLocale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+      saveIntent(request, window.location.pathname);
+      router.push(
+        `/${currentLocale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+      );
       return;
     }
-    // TODO: Redirect to payment/checkout page
-    console.log('Redirect to payment page');
+
+    // User is logged in, execute checkout
+    executeCheckout(request);
   };
 
   const handleRelatedPackageDetails = (packageId: string | number) => {
@@ -262,12 +351,29 @@ export default function Package({ locale, packageId }: PackageProps) {
   };
 
   const handleRelatedPackagePurchase = (packageId: string | number) => {
+    const packageIdNum = typeof packageId === 'string' ? parseInt(packageId, 10) : packageId;
+    const request: useCaseModels.TPrepareCheckoutRequest = {
+      purchaseType: 'StudentPackagePurchase', // Default to without coaching for related packages
+      packageId: packageIdNum,
+    };
+
+    // If user is not logged in, save intent and redirect to login
     if (!isLoggedIn) {
-      router.push(`/${currentLocale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+      saveIntent(request, window.location.pathname);
+      router.push(
+        `/${currentLocale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+      );
       return;
     }
-    // TODO: Redirect to payment/checkout page
-    console.log('Redirect to payment page for package:', packageId);
+
+    // User is logged in, execute checkout
+    executeCheckout(request);
+  };
+
+  const handlePaymentComplete = (sessionId: string) => {
+    setIsCheckoutOpen(false);
+    setTransactionDraft(null);
+    // TODO: Redirect to success page or show success message
   };
 
   // Breadcrumbs configuration
@@ -452,6 +558,28 @@ export default function Package({ locale, packageId }: PackageProps) {
           </div>
         )}
       </div>
+
+      {transactionDraft && currentRequest && (
+        (currentRequest.purchaseType === 'StudentPackagePurchase' ||
+         currentRequest.purchaseType === 'StudentPackagePurchaseWithCoaching') && (
+          <CheckoutModal
+            isOpen={isCheckoutOpen}
+            onClose={() => {
+              setIsCheckoutOpen(false);
+              setTransactionDraft(null);
+            }}
+            transactionDraft={transactionDraft}
+            stripePublishableKey={
+              env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+            }
+            customerEmail={sessionDTO.data?.user?.email}
+            purchaseType={currentRequest.purchaseType}
+            purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
+            locale={currentLocale}
+            onPaymentComplete={handlePaymentComplete}
+          />
+        )
+      )}
     </div>
   );
 }
