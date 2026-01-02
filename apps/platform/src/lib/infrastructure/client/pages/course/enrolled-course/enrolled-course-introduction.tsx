@@ -1,4 +1,4 @@
-import { viewModels } from '@maany_shr/e-class-models';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     CoachingSessionItem,
@@ -6,14 +6,20 @@ import {
     CourseGeneralInformationView,
     DefaultError,
     DefaultLoading,
+    CheckoutModal,
+    type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useTabContext } from 'packages/ui-kit/lib/components/tabs/tab-context';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/cms-client';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect, useCallback } from 'react';
 import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-included-coaching-sessions-presenter';
+import { usePrepareCheckoutPresenter } from '../../../hooks/use-prepare-checkout-presenter';
+import { useCheckoutIntent } from '../../../hooks/use-checkout-intent';
+import { useSession } from 'next-auth/react';
+import env from '../../../config/env';
 import CourseIntroduction from '../../common/course-introduction';
 import CourseOutline from '../../common/course-outline';
 
@@ -89,7 +95,13 @@ function EnrolledCourseIntroductionContent(
     );
 }
 
-function IncludedCoachingSessions({ courseSlug }: { courseSlug: string }) {
+function IncludedCoachingSessions({ 
+    courseSlug,
+    onPurchaseComponentCoaching,
+}: { 
+    courseSlug: string;
+    onPurchaseComponentCoaching?: (lessonComponentIds: string[]) => void;
+}) {
     const [coachingSessionsResponse] =
         trpc.listIncludedCoachingSessions.useSuspenseQuery({
             courseSlug: courseSlug,
@@ -145,15 +157,137 @@ function StudentEnrolledCourseIntroduction(
     props: EnrolledCourseIntroductionProps,
 ) {
     const locale = useLocale() as TLocale;
+    const router = useRouter();
+    const sessionDTO = useSession();
+    const isLoggedIn = !!sessionDTO.data;
+
+    // Checkout state management
+    const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
+    const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+    const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+    // Get tRPC utils for fetching checkout data
+    const utils = trpc.useUtils();
+
+    // Checkout presenter
+    const { presenter: checkoutPresenter } = usePrepareCheckoutPresenter(setCheckoutViewModel);
+
+    // Helper to execute checkout
+    const executeCheckout = useCallback(async (
+        request: useCaseModels.TPrepareCheckoutRequest,
+    ) => {
+        try {
+            setCurrentRequest(request);
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(request) as useCaseModels.TPrepareCheckoutUseCaseResponse;
+            checkoutPresenter.present(response, checkoutViewModel);
+        } catch (err) {
+            console.error('Failed to prepare checkout:', err);
+        }
+    }, [utils, checkoutPresenter, checkoutViewModel]);
+
+    // Watch for checkoutViewModel changes and open modal when ready
+    useEffect(() => {
+        if (checkoutViewModel && checkoutViewModel.mode === 'default') {
+            setTransactionDraft(checkoutViewModel.data);
+            setIsCheckoutOpen(true);
+        }
+    }, [checkoutViewModel]);
+
+    // Checkout intent hook for login flow preservation
+    const { saveIntent } = useCheckoutIntent({
+        onResumeCheckout: executeCheckout,
+    });
+
+    // Helper to build purchase identifier from request (handles discriminated union)
+    const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+        switch (request.purchaseType) {
+            case 'StudentCourseCoachingSessionPurchase':
+                return {
+                    courseSlug: request.courseSlug,
+                    lessonComponentIds: request.lessonComponentIds,
+                };
+            case 'StudentCoachingSessionPurchase':
+                return {
+                    coachingOfferingId: request.coachingOfferingId,
+                    quantity: request.quantity,
+                };
+            case 'StudentCoursePurchase':
+                return {
+                    courseSlug: request.courseSlug,
+                };
+            case 'StudentCoursePurchaseWithCoaching':
+                return {
+                    courseSlug: request.courseSlug,
+                    withCoaching: request.purchaseType === 'StudentCoursePurchaseWithCoaching',
+                };
+            case 'StudentPackagePurchase':
+            case 'StudentPackagePurchaseWithCoaching':
+                return {
+                    packageId: request.packageId,
+                    withCoaching: request.purchaseType === 'StudentPackagePurchaseWithCoaching',
+                };
+        }
+    };
+
+    // Handle purchase of coaching for lesson components
+    const handlePurchaseComponentCoaching = useCallback((lessonComponentIds: string[]) => {
+        const request: useCaseModels.TPrepareCheckoutRequest = {
+            purchaseType: 'StudentCourseCoachingSessionPurchase',
+            courseSlug: props.courseSlug,
+            lessonComponentIds: lessonComponentIds,
+        };
+
+        // If user is not logged in, save intent and redirect to login
+        if (!isLoggedIn) {
+            saveIntent(request, window.location.pathname);
+            router.push(
+                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+            );
+            return;
+        }
+
+        // User is logged in, execute checkout
+        executeCheckout(request);
+    }, [props.courseSlug, isLoggedIn, saveIntent, router, locale, executeCheckout]);
+
+    const handlePaymentComplete = (sessionId: string) => {
+        setIsCheckoutOpen(false);
+        setTransactionDraft(null);
+        // TODO: Redirect to success page or show success message
+    };
 
     return (
         <div className="flex flex-col space-y-10">
             <Suspense
                 fallback={<DefaultLoading locale={locale} variant="minimal" />}
             >
-                <IncludedCoachingSessions courseSlug={props.courseSlug} />
+                <IncludedCoachingSessions 
+                    courseSlug={props.courseSlug}
+                    onPurchaseComponentCoaching={handlePurchaseComponentCoaching}
+                />
             </Suspense>
             <EnrolledCourseIntroductionContent {...props} />
+
+            {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCourseCoachingSessionPurchase' && (
+                <CheckoutModal
+                    isOpen={isCheckoutOpen}
+                    onClose={() => {
+                        setIsCheckoutOpen(false);
+                        setTransactionDraft(null);
+                    }}
+                    transactionDraft={transactionDraft}
+                    stripePublishableKey={
+                        env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+                    }
+                    customerEmail={sessionDTO.data?.user?.email}
+                    purchaseType={currentRequest.purchaseType}
+                    purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
+                    locale={locale}
+                    onPaymentComplete={handlePaymentComplete}
+                />
+            )}
         </div>
     );
 }
