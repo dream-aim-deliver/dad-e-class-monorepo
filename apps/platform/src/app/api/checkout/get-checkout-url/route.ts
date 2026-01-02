@@ -20,6 +20,7 @@ export async function GET(req: Request) {
     const courseIds = searchParams.get('courseIds');
     const coachingOfferingId = searchParams.get('coachingOfferingId');
     const quantity = searchParams.get('quantity');
+    const offerings = searchParams.get('offerings'); // Multiple offerings in format "1:3,2:2"
     const withCoaching = searchParams.get('withCoaching');
 
     // Get the amount in cents (Stripe expects cents)
@@ -49,6 +50,10 @@ export async function GET(req: Request) {
     if (courseIds) metadata.courseIds = courseIds;
     if (coachingOfferingId) metadata.coachingOfferingId = coachingOfferingId;
     if (quantity) metadata.quantity = quantity;
+    // Multiple offerings take precedence over single offering
+    if (offerings) {
+        metadata.offerings = offerings;
+    }
     if (withCoaching) metadata.withCoaching = withCoaching;
 
     const origin = env.NEXT_PUBLIC_APP_URL;
