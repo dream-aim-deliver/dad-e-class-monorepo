@@ -199,19 +199,85 @@ export async function POST(req: NextRequest) {
             metadata,
         };
 
+        // Validate purchaseType is correct
+        const validatedPurchaseType = purchaseType as useCaseModels.TProcessPurchaseRequest['purchaseType'];
+        
+        // Ensure purchaseItems match the schema exactly, especially for coaching_sessions
+        // This is critical because the backend's discriminated union validation might be strict
+        const validatedPurchaseItems = purchaseItems.map((item) => {
+            if (item.purchaseType === 'coaching_sessions') {
+                // Ensure coaching_sessions items have the exact structure expected
+                // Map offerings to ensure they're numbers and match schema
+                return {
+                    purchaseType: 'coaching_sessions' as const,
+                    offerings: (item as any).offerings.map((offering: any) => ({
+                        coachingOfferingId: Number(offering.coachingOfferingId),
+                        quantity: Number(offering.quantity),
+                    })),
+                };
+            }
+            return item;
+        });
+
+        // Build the final payload
+        const finalPayload = {
+            userId: String(userId),
+            transactionData,
+            purchaseType: validatedPurchaseType,
+            purchaseItems: validatedPurchaseItems,
+        };
+
+        // Local validation to catch schema issues before sending to backend
+        try {
+            useCaseModels.ProcessPurchaseRequestSchema.parse(finalPayload);
+        } catch (validationError: any) {
+            console.error('[verify-and-unlock] Local Zod validation failed:', {
+                error: validationError.message,
+                issues: validationError.issues,
+                payload: JSON.stringify(finalPayload, null, 2),
+            });
+            return Response.json(
+                {
+                    error: 'Invalid purchase payload',
+                    message: validationError.message,
+                    details: validationError.issues,
+                },
+                { status: 400 }
+            );
+        }
+
         let result;
         try {
-            result = await backendTrpc.processPurchase.mutate({
-                userId,
-                transactionData,
-                purchaseType,
-                purchaseItems,
-            });
+            result = await backendTrpc.processPurchase.mutate(finalPayload);
         } catch (backendError: any) {
+            // Log the full error to understand what the backend is returning
+            console.error('[verify-and-unlock] Backend error details:', {
+                message: backendError?.message,
+                data: backendError?.data,
+                shape: backendError?.shape,
+                cause: backendError?.cause,
+                stack: backendError?.stack,
+                fullError: JSON.stringify(backendError, null, 2),
+            });
+            
+            // Check if it's a validation error from FastAPI
+            if (backendError?.data?.detail) {
+                return Response.json(
+                    {
+                        error: 'Backend validation failed',
+                        message: 'The backend rejected the request format',
+                        details: backendError.data.detail,
+                        sentPayload: finalPayload,
+                    },
+                    { status: 422 }
+                );
+            }
+            
             return Response.json(
                 {
                     error: 'Backend call failed',
                     message: backendError?.message || 'Failed to call backend processPurchase',
+                    details: backendError?.data || backendError?.shape,
                 },
                 { status: 500 }
             );
@@ -330,10 +396,26 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
 
         case 'StudentCoachingSessionPurchase': {
             // Parse coaching offerings
+            // metadata.offerings takes precedence (format: "1:3,2:2" for multiple offerings)
+            // Fall back to single offering format (coachingOfferingId + quantity)
+            const offeringsString = metadata.offerings 
+                ? String(metadata.offerings)
+                : metadata.coachingOfferingId 
+                    ? String(metadata.coachingOfferingId)
+                    : '';
+            
+            if (!offeringsString) {
+                throw new Error('Missing coaching offering information in metadata');
+            }
+
             const offerings = parseCoachingOfferings(
-                metadata.offerings || metadata.coachingOfferingId,
-                metadata.quantity
+                offeringsString,
+                metadata.quantity ? String(metadata.quantity) : undefined
             );
+
+            if (offerings.length === 0) {
+                throw new Error('No valid coaching offerings found in metadata');
+            }
 
             items.push({
                 purchaseType: 'coaching_sessions' as const,
@@ -362,29 +444,78 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
 
 /**
  * Parse coaching offerings from metadata
+ * 
+ * Supports two formats:
+ * 1. Single offering: "123" (just the ID, quantity comes from quantityString parameter)
+ * 2. Multiple offerings: "1:3,2:2" (offering 1 with quantity 3, offering 2 with quantity 2)
+ * 3. Single offering with quantity: "1:3" (offering 1 with quantity 3)
  */
 function parseCoachingOfferings(
     offeringsString: string,
     quantityString?: string
 ): Array<{ coachingOfferingId: number; quantity: number }> {
-    // Handle legacy single offering format
-    if (!offeringsString.includes(',') && !offeringsString.includes(':')) {
+    if (!offeringsString || typeof offeringsString !== 'string') {
+        throw new Error('Invalid offerings string');
+    }
+
+    // Check if it's the multiple offerings format (contains comma)
+    if (offeringsString.includes(',')) {
+        // Parse multiple offerings: "1:3,2:2" means offering 1 qty 3, offering 2 qty 2
+        return offeringsString.split(',').map((pair, index) => {
+            const trimmedPair = pair.trim();
+            if (!trimmedPair.includes(':')) {
+                throw new Error(`Invalid offering format at position ${index}: expected "id:quantity", got "${trimmedPair}"`);
+            }
+            const [offeringId, quantity] = trimmedPair.split(':');
+            const id = parseInt(offeringId.trim(), 10);
+            const qty = parseInt(quantity.trim(), 10);
+            
+            if (isNaN(id) || isNaN(qty) || id <= 0 || qty <= 0) {
+                throw new Error(`Invalid offering values at position ${index}: id=${offeringId}, quantity=${quantity}`);
+            }
+            
+            return {
+                coachingOfferingId: id,
+                quantity: qty,
+            };
+        });
+    }
+
+    // Check if it's single offering with quantity format (contains colon but no comma)
+    if (offeringsString.includes(':')) {
+        const [offeringId, quantity] = offeringsString.split(':');
+        const id = parseInt(offeringId.trim(), 10);
+        const qty = parseInt(quantity.trim(), 10);
+        
+        if (isNaN(id) || isNaN(qty) || id <= 0 || qty <= 0) {
+            throw new Error(`Invalid offering values: id=${offeringId}, quantity=${quantity}`);
+        }
+        
         return [
             {
-                coachingOfferingId: parseInt(offeringsString),
-                quantity: quantityString ? parseInt(quantityString) : 1,
+                coachingOfferingId: id,
+                quantity: qty,
             },
         ];
     }
 
-    // Parse multiple offerings: "1:3,2:2" means offering 1 qty 3, offering 2 qty 2
-    return offeringsString.split(',').map((pair) => {
-        const [offeringId, quantity] = pair.split(':');
-        return {
-            coachingOfferingId: parseInt(offeringId),
-            quantity: parseInt(quantity),
-        };
-    });
+    // Legacy single offering format: just the ID, quantity comes from parameter
+    const offeringId = parseInt(offeringsString.trim(), 10);
+    if (isNaN(offeringId) || offeringId <= 0) {
+        throw new Error(`Invalid offering ID: ${offeringsString}`);
+    }
+
+    const quantity = quantityString ? parseInt(quantityString.trim(), 10) : 1;
+    if (isNaN(quantity) || quantity <= 0) {
+        throw new Error(`Invalid quantity: ${quantityString || '1'}`);
+    }
+
+    return [
+        {
+            coachingOfferingId: offeringId,
+            quantity: quantity,
+        },
+    ];
 }
 
 /**
