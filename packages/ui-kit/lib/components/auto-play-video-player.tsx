@@ -110,8 +110,9 @@ export const AutoPlayVideoPlayer: React.FC<AutoPlayVideoPlayerProps> = ({
                         playbackId={videoId}
                         accentColor="var(--color-base-brand-500)"
                         className="w-full h-full"
-                        autoPlay
-                        muted
+                        autoPlay={true}
+                        muted={true}
+                        loop={true}
                         poster={thumbnailUrl}
                         onCanPlay={handlePlayerReady}
                         onError={handleVideoError}
