@@ -1,5 +1,5 @@
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { Suspense, useMemo, useState, useEffect, useCallback } from 'react';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
 import {
@@ -30,6 +30,7 @@ function AvailableCoachings() {
     const { presenter } = useListAvailableCoachingsPresenter(
         setAvailableCoachingsViewModel,
     );
+    // @ts-ignore - TBaseResult structure needs unwrapping, presenter handles it
     presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
 
     const locale = useLocale() as TLocale;
@@ -99,9 +100,10 @@ export default function CoachingOfferingsPanel() {
         useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] =
         useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
+    const [multipleOfferings, setMultipleOfferings] = useState<Array<{ offeringId: number; quantity: number }> | null>(null);
     const { presenter: checkoutPresenter } =
         usePrepareCheckoutPresenter(setCheckoutViewModel);
-    const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
+    const utils = trpc.useUtils();
 
     const currency = useMemo(() => {
         if (
@@ -119,13 +121,57 @@ export default function CoachingOfferingsPanel() {
         request: useCaseModels.TPrepareCheckoutRequest,
     ) => {
         try {
-            setCurrentRequest(request); // Save current request for metadata
-            const response = await prepareCheckoutMutation.mutateAsync(request);
+            setCurrentRequest(request);
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(request) as useCaseModels.TPrepareCheckoutUseCaseResponse;
             checkoutPresenter.present(response, checkoutViewModel);
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
-    }, [prepareCheckoutMutation, checkoutPresenter, checkoutViewModel]);
+    }, [utils, checkoutPresenter, checkoutViewModel]);
+
+    // Helper to build purchase identifier from request (handles discriminated union)
+    const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+        switch (request.purchaseType) {
+            case 'StudentCoachingSessionPurchase':
+                // If we have multiple offerings, return them in the format expected by backend
+                if (multipleOfferings && multipleOfferings.length > 1) {
+                    // Format: "1:3,2:2" means offering 1 qty 3, offering 2 qty 2
+                    const offeringsString = multipleOfferings
+                        .map((o) => `${o.offeringId}:${o.quantity}`)
+                        .join(',');
+                    return {
+                        coachingOfferingId: multipleOfferings[0].offeringId, // First one for compatibility
+                        quantity: multipleOfferings[0].quantity, // First one for compatibility
+                        offerings: offeringsString, // Multiple offerings in backend format
+                    };
+                }
+                return {
+                    coachingOfferingId: request.coachingOfferingId,
+                    quantity: request.quantity,
+                };
+            case 'StudentCoursePurchase':
+                return {
+                    courseSlug: request.courseSlug,
+                };
+            case 'StudentCoursePurchaseWithCoaching':
+                return {
+                    courseSlug: request.courseSlug,
+                    withCoaching: request.purchaseType === 'StudentCoursePurchaseWithCoaching',
+                };
+            case 'StudentPackagePurchase':
+            case 'StudentPackagePurchaseWithCoaching':
+                return {
+                    packageId: request.packageId,
+                    withCoaching: request.purchaseType === 'StudentPackagePurchaseWithCoaching',
+                };
+            case 'StudentCourseCoachingSessionPurchase':
+                return {
+                    courseSlug: request.courseSlug,
+                    lessonComponentIds: request.lessonComponentIds,
+                };
+        }
+    };
 
     // Watch for checkoutViewModel changes and open modal when ready
     useEffect(() => {
@@ -135,6 +181,13 @@ export default function CoachingOfferingsPanel() {
         }
     }, [checkoutViewModel]);
 
+    // Reset multiple offerings when modal closes
+    useEffect(() => {
+        if (!isCheckoutOpen) {
+            setMultipleOfferings(null);
+        }
+    }, [isCheckoutOpen]);
+
     // Checkout intent hook for login flow preservation
     const { saveIntent } = useCheckoutIntent({
         onResumeCheckout: executeCheckout,
@@ -143,33 +196,105 @@ export default function CoachingOfferingsPanel() {
     const handleBuyCoachingSessions = async (
         sessionsPerOffering: Record<string | number, number>,
     ) => {
-        // Find the first offering with a quantity > 0
-        const offeringId = Object.keys(sessionsPerOffering).find(
-            (id) => sessionsPerOffering[id] > 0,
-        );
-        const quantity = offeringId ? sessionsPerOffering[offeringId] : 0;
+        // Collect all offerings with quantity > 0
+        const selectedOfferings = Object.entries(sessionsPerOffering)
+            .filter(([_, quantity]) => quantity > 0)
+            .map(([id, quantity]) => ({
+                offeringId: Number(id),
+                quantity: quantity,
+            }));
 
-        if (!offeringId || quantity === 0) {
+        if (selectedOfferings.length === 0) {
             return;
         }
 
-        const request: useCaseModels.TPrepareCheckoutRequest = {
-            purchaseType: 'StudentCoachingSessionPurchase',
-            coachingOfferingId: Number(offeringId),
-            quantity,
-        };
-
-        // If user is not logged in, save intent and redirect to login
-        if (!isLoggedIn) {
-            saveIntent(request, window.location.pathname);
-            router.push(
-                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-            );
-            return;
+        // Store multiple offerings if more than one
+        if (selectedOfferings.length > 1) {
+            setMultipleOfferings(selectedOfferings);
+        } else {
+            setMultipleOfferings(null);
         }
 
-        // User is logged in, execute checkout
-        executeCheckout(request);
+        // If multiple offerings selected, we need to combine them
+        if (selectedOfferings.length === 1) {
+            // Single offering - use existing flow
+            const request: useCaseModels.TPrepareCheckoutRequest = {
+                purchaseType: 'StudentCoachingSessionPurchase',
+                coachingOfferingId: selectedOfferings[0].offeringId,
+                quantity: selectedOfferings[0].quantity,
+            };
+
+            // If user is not logged in, save intent and redirect to login
+            if (!isLoggedIn) {
+                saveIntent(request, window.location.pathname);
+                router.push(
+                    `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+                );
+                return;
+            }
+
+            // User is logged in, execute checkout
+            executeCheckout(request);
+        } else {
+            // Multiple offerings - make separate prepareCheckout calls and combine
+            try {
+                const checkoutPromises = selectedOfferings.map((offering) =>
+                    utils.prepareCheckout.fetch({
+                        purchaseType: 'StudentCoachingSessionPurchase',
+                        coachingOfferingId: offering.offeringId,
+                        quantity: offering.quantity,
+                    } as useCaseModels.TPrepareCheckoutRequest)
+                );
+
+                const responses = await Promise.all(checkoutPromises);
+                
+                // Combine all line items and calculate total
+                const allLineItems: Array<{
+                    name: string;
+                    description: string;
+                    unitPrice: number;
+                    quantity: number;
+                    totalPrice: number;
+                    currency: string;
+                }> = [];
+                let totalPrice = 0;
+                let currency = 'CHF';
+
+                responses.forEach((response) => {
+                    if (response.success && response.data) {
+                        const data = response.data as any;
+                        if (data.lineItems) {
+                            allLineItems.push(...data.lineItems);
+                            totalPrice += data.finalPrice || 0;
+                            currency = data.currency || currency;
+                        }
+                    }
+                });
+
+                // Create a combined checkout view model
+                const combinedViewModel: viewModels.TPrepareCheckoutViewModel = {
+                    mode: 'default',
+                    data: {
+                        lineItems: allLineItems,
+                        currency: currency,
+                        finalPrice: totalPrice,
+                    },
+                };
+
+                // Set the combined view model
+                setCheckoutViewModel(combinedViewModel);
+                
+                // Create a request with the first offering (for type compatibility)
+                // The actual multiple offerings will be passed via getPurchaseIdentifier
+                setCurrentRequest({
+                    purchaseType: 'StudentCoachingSessionPurchase',
+                    coachingOfferingId: selectedOfferings[0].offeringId,
+                    quantity: selectedOfferings[0].quantity,
+                });
+            } catch (err) {
+                console.error('Failed to prepare checkout for multiple offerings:', err);
+            }
+        }
     };
 
     const handlePaymentComplete = (sessionId: string) => {
@@ -245,10 +370,7 @@ export default function CoachingOfferingsPanel() {
                     }
                     customerEmail={sessionDTO.data?.user?.email}
                     purchaseType={currentRequest.purchaseType}
-                    purchaseIdentifier={{
-                        coachingOfferingId: currentRequest.coachingOfferingId,
-                        quantity: currentRequest.quantity,
-                    }}
+                    purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
                 />
