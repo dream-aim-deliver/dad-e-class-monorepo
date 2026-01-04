@@ -253,6 +253,36 @@ export const CouponGrid = (props: CouponGridProps) => {
             minWidth: 100,
             cellRenderer: (params: any) => <StatusCellRenderer {...params} onRevoke={props.onRevokeCoupon} locale={props.locale} />,
             cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' }
+        },
+        {
+            field: 'expiry',
+            headerName: dictionary.expiryColumn,
+            sortable: true,
+            flex: 1,
+            minWidth: 120,
+            valueGetter: (params: any) => {
+                const expirationDate = params.data?.expirationDate;
+                if (!expirationDate) return 'not_expired';
+                const now = new Date();
+                const expDate = new Date(expirationDate);
+                return expDate < now ? 'expired' : 'not_expired';
+            },
+            cellRenderer: (params: any) => {
+                const isExpired = params.value === 'expired';
+                if (isExpired) {
+                    return (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            {dictionary.expiredBadge}
+                        </span>
+                    );
+                }
+                return (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {dictionary.notExpiredBadge}
+                    </span>
+                );
+            },
+            cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' }
         }
     ], [dictionary, props.locale, props.onRevokeCoupon]);
 
@@ -408,11 +438,17 @@ export const CouponGrid = (props: CouponGridProps) => {
                         const date = new Date(data.expirationDate);
                         return formatDate(date);
                     }
+                    if (colId === 'expiry') {
+                        if (!data.expirationDate) return dictionary.notExpiredBadge;
+                        const now = new Date();
+                        const expDate = new Date(data.expirationDate);
+                        return expDate < now ? dictionary.expiredBadge : dictionary.notExpiredBadge;
+                    }
                     return params.value;
                 },
             });
         }
-    }, [props.gridRef, outcomeToString]);
+    }, [props.gridRef, outcomeToString, dictionary]);
 
     // Initialize the grid with external filters enabled
     useEffect(() => {
