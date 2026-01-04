@@ -430,6 +430,12 @@ importers:
       '@storybook/react':
         specifier: ^8.4.7
         version: 8.4.7(@storybook/test@8.4.7(storybook@8.4.7(prettier@3.4.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(storybook@8.4.7(prettier@3.4.2))(typescript@5.7.2)
+      '@stripe/react-stripe-js':
+        specifier: ^5.3.0
+        version: 5.4.1(@stripe/stripe-js@8.5.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@stripe/stripe-js':
+        specifier: ^8.2.0
+        version: 8.5.3
       '@testing-library/jest-dom':
         specifier: ^6.6.3
         version: 6.6.3
@@ -1192,8 +1198,8 @@ packages:
   '@dream-aim-deliver/e-class-cms-rest@3.1.22':
     resolution: {integrity: sha512-BYDF/c8yNFmfSCnckld5rZq+SGu4f2hQvhI3xBbWnMtqzM9pRD80TAxhHjZ48ZQMx1lP6ir9BDMEQfb/RKZpPw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.1.22/08732d32e1942158d1111d5e13cb3ed33f51dd9e}
 
-  '@dream-aim-deliver/e-class-cms-rest@3.1.8':
-    resolution: {integrity: sha512-DHaB95y40/UNbtrTiesk4NhwhSSAfOtqogFgCaLTDYPKJAG+zSDHODMv0nLqS5743cbIneS6MsGOHAoAFGRSeg==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.1.8/30bd8b909b38fc445ae66b01ca5a5ed0b093f50d}
+  '@dream-aim-deliver/e-class-cms-rest@3.1.13':
+    resolution: {integrity: sha512-ZTQS+f6S8C00bQBEngTr55KvKZyGzyKZnOVfQjZLJveJc2hWJQeRhvaUVedysE2BjnDhrqx41AKSZqmHf1P2sQ==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.1.13/f8e323bd7a82f2b3fb67deef4f28761a719f814c}
 
   '@emnapi/core@1.3.1':
     resolution: {integrity: sha512-pVGjBIt1Y6gg3EJN8jTcfpP/+uuRksIo055oE/OBkDNcjZqVbfkWCksG1Jp4yZnj3iKWyWX8fdG/j6UDYPbFog==}
