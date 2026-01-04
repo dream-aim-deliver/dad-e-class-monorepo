@@ -2720,6 +2720,10 @@ export const DictionarySchema = z.object({
           title: z.string(),
           description: z.string(),
         }),
+        revokeError: z.object({
+          title: z.string(),
+          closeButton: z.string(),
+        }),
       }),
     }),
     orderHistory: z.object({

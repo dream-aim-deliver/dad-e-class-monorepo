@@ -8,7 +8,11 @@ import {
   CouponGrid,
   Breadcrumbs,
   RevokeCouponModal,
-  CreateCouponModal
+  CreateCouponModal,
+  Dialog,
+  DialogContent,
+  DialogBody,
+  Button
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -31,13 +35,14 @@ function RevokeCouponModalContent({
   couponName,
   locale,
   onClose,
+  onError,
 }: {
   couponId: string;
   couponName: string;
   locale: TLocale;
   onClose: () => void;
+  onError: (message: string) => void;
 }) {
-  const t = useTranslations('pages.coupons');
   const utils = trpc.useUtils();
 
   const [revokeCouponViewModel, setRevokeCouponViewModel] = useState<
@@ -57,8 +62,17 @@ function RevokeCouponModalContent({
       const result = await revokeCouponMutation.mutateAsync({ couponId });
       // @ts-ignore
       await presenter.present(result, revokeCouponViewModel);
+
+      // Check for error after presenting
+      if (result && !result.success) {
+        const errorMsg = (result.data as { message?: string })?.message || 'Failed to revoke coupon';
+        onClose();
+        onError(errorMsg);
+      }
     } catch (error) {
       console.error('Failed to revoke coupon:', error);
+      onClose();
+      onError(error instanceof Error ? error.message : 'An unexpected error occurred');
     }
   };
 
@@ -67,11 +81,6 @@ function RevokeCouponModalContent({
   };
 
   const isSuccess = revokeCouponViewModel?.mode === 'default';
-  const errorMessage = revokeCouponViewModel?.mode === 'kaboom'
-    ? revokeCouponViewModel.data.message
-    : revokeCouponViewModel?.mode === 'not-found'
-      ? revokeCouponViewModel.data.message
-      : null;
 
   return (
     <RevokeCouponModal
@@ -81,7 +90,6 @@ function RevokeCouponModalContent({
       onCancel={handleClose}
       isRevoking={revokeCouponMutation.isPending}
       isSuccess={isSuccess}
-      errorMessage={errorMessage}
     />
   );
 }
@@ -199,8 +207,8 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   // Create Modal state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
-  // Error state
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  // Error modal state
+  const [errorModalMessage, setErrorModalMessage] = useState<string | null>(null);
 
   // ViewModel state
   const [listCouponsViewModel, setListCouponsViewModel] = useState<
@@ -315,9 +323,6 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
         />
       </div>
 
-      {/* Error display */}
-      {errorMessage && <DefaultError locale={locale} title={errorMessage} />}
-
       {/* Revoke Coupon Modal */}
       {revokingCouponId && (
         <RevokeCouponModalContent
@@ -328,8 +333,38 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
             setRevokingCouponId(null);
             setRevokingCouponName('');
           }}
+          onError={(message) => setErrorModalMessage(message)}
         />
       )}
+
+      {/* Error Modal */}
+      <Dialog open={!!errorModalMessage} onOpenChange={() => setErrorModalMessage(null)} defaultOpen={false}>
+        <DialogContent
+          showCloseButton={true}
+          closeOnOverlayClick={true}
+          closeOnEscape={true}
+          className="max-w-md"
+        >
+          <DialogBody>
+            <div className="flex flex-col gap-4">
+              <h1 className="text-xl font-semibold text-text-primary">
+                {t('error.revokeError.title')}
+              </h1>
+              <p className="text-text-secondary">
+                {errorModalMessage}
+              </p>
+              <div className="flex justify-end mt-4">
+                <Button
+                  variant="primary"
+                  size="medium"
+                  text={t('error.revokeError.closeButton')}
+                  onClick={() => setErrorModalMessage(null)}
+                />
+              </div>
+            </div>
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
 
       {/* Create Coupon Modal */}
       {isCreateModalOpen && (
