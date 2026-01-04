@@ -254,7 +254,7 @@ export const CouponGrid = (props: CouponGridProps) => {
             cellRenderer: (params: any) => <StatusCellRenderer {...params} onRevoke={props.onRevokeCoupon} locale={props.locale} />,
             cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' }
         }
-    ], [dictionary, props.locale]);
+    ], [dictionary, props.locale, props.onRevokeCoupon]);
 
     // For filter modal
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
@@ -480,6 +480,7 @@ export const CouponGrid = (props: CouponGridProps) => {
                     locale={props.locale}
                     columnDefs={columnDefs}
                     rowData={props.coupons}
+                    getRowId={(params) => params.data.id}
                     enableCellTextSelection={true}
                     onSortChanged={props.onSortChanged}
                     pagination={true}
