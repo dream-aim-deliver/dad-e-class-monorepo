@@ -39,7 +39,7 @@ export default function PackageSection({
                 <div className="flex flex-col gap-2 w-full">
                     <label className="text-sm text-text-secondary">{dictionary.components.cmsSections.packageSection.selectPackagesLabel}</label>
                     {packages.length === 0 ? (
-                        <div className="p-4 text-center text-text-secondary border border-border-default rounded-medium">
+                        <div className="p-4 text-start text-text-secondary border border-border-default rounded-medium">
                             {dictionary.components.cmsSections.packageSection.noPackagesFound}
                         </div>
                     ) : (
