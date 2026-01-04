@@ -4,6 +4,7 @@ import MuxPlayer from '@mux/mux-player-react';
 import { useEffect, useState } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconLoaderSpinner } from './icons/icon-loader-spinner';
+import { parseVideoId } from '../utils/mux-utils';
 
 export interface VideoPlayerProps extends isLocalAware {
     videoId?: string;
@@ -57,6 +58,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     className = 'w-full',
 }) => {
     const dictionary = getDictionary(locale);
+    const { playbackId, playbackToken } = parseVideoId(videoId);
     const [showPlayer, setShowPlayer] = useState(!thumbnailUrl);
     const [autoPlay, setAutoPlay] = useState(false);
     const [videoError, setVideoError] = useState(!videoId);
@@ -111,9 +113,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     <img
                         src={thumbnailUrl}
                         alt="Thumbnail"
-                        className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${
-                            thumbnailLoaded ? 'opacity-100' : 'opacity-0'
-                        }`}
+                        className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${thumbnailLoaded ? 'opacity-100' : 'opacity-0'
+                            }`}
                         onClick={handleThumbnailClick}
                         onError={handleThumbnailError}
                         onLoad={handleThumbnailLoad}
@@ -133,13 +134,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             {/* Loading state - only shown when player is loading and no error */}
             {((thumbnailUrl && thumbnailLoaded === false) ||
                 (showPlayer && !isPlayerReady && !videoError)) && (
-                <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
-                    <IconLoaderSpinner
-                        classNames="animate-spin text-text-primary "
-                        size="6"
-                    />
-                </div>
-            )}
+                    <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
+                        <IconLoaderSpinner
+                            classNames="animate-spin text-text-primary "
+                            size="6"
+                        />
+                    </div>
+                )}
 
             {/* Video player - always rendered but hidden when not ready */}
             {showPlayer && !videoError && (
@@ -149,7 +150,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     <MuxPlayer
                         key={videoId}
                         streamType="on-demand"
-                        playbackId={videoId}
+                        playbackId={playbackId}
+                        tokens={playbackToken ? { playback: playbackToken } : undefined}
                         accentColor="var(--color-base-brand-500)"
                         className="w-full h-full"
                         autoPlay={autoPlay}

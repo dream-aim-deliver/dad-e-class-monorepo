@@ -4,6 +4,7 @@ import MuxPlayer from '@mux/mux-player-react';
 import { useEffect, useState } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconLoaderSpinner } from './icons/icon-loader-spinner';
+import { parseVideoId } from '../utils/mux-utils';
 
 export interface AutoPlayVideoPlayerProps extends isLocalAware {
     videoId?: string;
@@ -57,6 +58,7 @@ export const AutoPlayVideoPlayer: React.FC<AutoPlayVideoPlayerProps> = ({
     className = 'w-full',
 }) => {
     const dictionary = getDictionary(locale);
+    const { playbackId, playbackToken } = parseVideoId(videoId);
     const [videoError, setVideoError] = useState(!videoId);
     const [isPlayerReady, setIsPlayerReady] = useState(false);
 
@@ -107,13 +109,14 @@ export const AutoPlayVideoPlayer: React.FC<AutoPlayVideoPlayerProps> = ({
                     <MuxPlayer
                         key={videoId}
                         streamType="on-demand"
-                        playbackId={videoId}
+                        playbackId={playbackId}
+                        tokens={playbackToken ? { playback: playbackToken } : undefined}
                         accentColor="var(--color-base-brand-500)"
                         className="w-full h-full"
                         autoPlay={true}
                         muted={true}
                         loop={true}
-                        poster={thumbnailUrl}
+                        poster={thumbnailUrl ?? ''}
                         onCanPlay={handlePlayerReady}
                         onError={handleVideoError}
                     />
