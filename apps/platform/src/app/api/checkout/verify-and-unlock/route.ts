@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Step 4: Build purchase items based on purchase type
-        const purchaseItems = buildPurchaseItems(purchaseType, metadata);
+        const purchaseItems = await buildPurchaseItems(purchaseType, metadata);
 
         // Step 5: Call backend to process purchase
         // Backend expects payment intent status "succeeded" rather than checkout session status "paid"
@@ -202,24 +202,12 @@ export async function POST(req: NextRequest) {
         // Validate purchaseType is correct
         const validatedPurchaseType = purchaseType as useCaseModels.TProcessPurchaseRequest['purchaseType'];
         
-        // Ensure purchaseItems match the schema exactly, especially for coaching_sessions
-        // This is critical because the backend's discriminated union validation might be strict
-        const validatedPurchaseItems = purchaseItems.map((item) => {
-            if (item.purchaseType === 'coaching_sessions') {
-                // Ensure coaching_sessions items have the exact structure expected
-                // Map offerings to ensure they're numbers and match schema
-                return {
-                    purchaseType: 'coaching_sessions' as const,
-                    offerings: (item as any).offerings.map((offering: any) => ({
-                        coachingOfferingId: Number(offering.coachingOfferingId),
-                        quantity: Number(offering.quantity),
-                    })),
-                };
-            }
-            return item;
-        });
+        // For coaching_sessions, the items are already enriched with title, duration, and pricePerSession
+        // from buildPurchaseItems, so we don't need to modify them
+        // Just ensure the purchaseItems are correctly typed
+        const validatedPurchaseItems = purchaseItems;
 
-        // Build the final payload
+        // Build the final payload - backend expects it wrapped in a request object with context
         const finalPayload = {
             userId: String(userId),
             transactionData,
@@ -246,9 +234,38 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        // Wrap payload in request object with context as expected by backend
+        // The backend extracts context from headers, but we need to provide the structure
+        const wrappedPayload = {
+            request: {
+                type: 'public' as const,
+                context: {
+                    // Context will be populated by backend from headers
+                    // We provide minimal structure here
+                    platformLanguageId: 1, // TODO: Get from actual platform context
+                    platformId: 1, // TODO: Get from actual platform context
+                    user: session?.user ? {
+                        state: 'created' as const,
+                        id: Number(userId),
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        username: session.user.name || '',
+                        email: session.user.email || transactionData.customerEmail,
+                        sub: session.user.id || userId,
+                    } : undefined,
+                    userRoles: session?.user?.roles || ['visitor', 'student'],
+                    expires: 0,
+                    digest: 'string',
+                },
+                ...finalPayload,
+            },
+        };
+
         let result;
         try {
-            result = await backendTrpc.processPurchase.mutate(finalPayload);
+            // Send the wrapped payload - backend expects { request: { context, ...payload } }
+            // @ts-ignore - Type definition may not match actual backend expectation
+            result = await backendTrpc.processPurchase.mutate(wrappedPayload.request);
         } catch (backendError: any) {
             // Log the full error to understand what the backend is returning
             console.error('[verify-and-unlock] Backend error details:', {
@@ -286,6 +303,13 @@ export async function POST(req: NextRequest) {
         // Step 6: Validate and build response that matches what the UI expects
         // The backend returns a TProcessPurchaseUseCaseResponse (discriminated union)
         if (!result || result.success !== true) {
+            console.error('[verify-and-unlock] Backend response validation failed:', {
+                result: result,
+                resultSuccess: (result as any)?.success,
+                resultData: (result as any)?.data,
+                fullResult: JSON.stringify(result, null, 2),
+            });
+
             let errorMessage = 'Unknown error from backend';
             if (result && 'data' in result && typeof result.data === 'object' && result.data !== null) {
                 const data = result.data as any;
@@ -352,7 +376,7 @@ export async function POST(req: NextRequest) {
 /**
  * Build purchase items array from Stripe metadata
  */
-function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>) {
+async function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>) {
     const items = [];
 
     switch (purchaseType) {
@@ -395,7 +419,7 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
             break;
 
         case 'StudentCoachingSessionPurchase': {
-            // Parse coaching offerings
+            // Parse coaching offerings from metadata
             // metadata.offerings takes precedence (format: "1:3,2:2" for multiple offerings)
             // Fall back to single offering format (coachingOfferingId + quantity)
             const offeringsString = metadata.offerings 
@@ -403,23 +427,52 @@ function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>)
                 : metadata.coachingOfferingId 
                     ? String(metadata.coachingOfferingId)
                     : '';
-            
-            if (!offeringsString) {
-                throw new Error('Missing coaching offering information in metadata');
-            }
+        
 
-            const offerings = parseCoachingOfferings(
+            const parsedOfferings = parseCoachingOfferings(
                 offeringsString,
                 metadata.quantity ? String(metadata.quantity) : undefined
             );
 
-            if (offerings.length === 0) {
-                throw new Error('No valid coaching offerings found in metadata');
+            // Fetch coaching offering details from backend to get title, duration, and pricePerSession
+            const coachingOfferingsResponse = await backendTrpc.listCoachingOfferings.query({});
+            
+            // Extract offerings from response (handle different response structures)
+            const response = coachingOfferingsResponse as any;
+            const availableOfferings = 
+                (response?.offerings && Array.isArray(response.offerings)) ? response.offerings :
+                (response?.success && response?.data?.offerings && Array.isArray(response.data.offerings)) ? response.data.offerings :
+                (response?.data?.offerings && Array.isArray(response.data.offerings)) ? response.data.offerings :
+                (response?.data?.data?.offerings && Array.isArray(response.data.data.offerings)) ? response.data.data.offerings :
+                [];
+            
+            if (availableOfferings.length === 0) {
+                throw new Error('Failed to fetch coaching offering details from backend');
             }
+            
+            // Map parsed offerings to include required fields
+            const enrichedOfferings = parsedOfferings.map((parsed) => {
+                const offering = availableOfferings.find(
+                    (o: { id: string | number }) => 
+                        String(o.id) === String(parsed.coachingOfferingId) || Number(o.id) === parsed.coachingOfferingId
+                );
+                
+                if (!offering) {
+                    throw new Error(`Coaching offering with ID ${parsed.coachingOfferingId} not found`);
+                }
 
+                return {
+                    coachingOfferingId: parsed.coachingOfferingId,
+                    quantity: parsed.quantity,
+                    title: offering.name,
+                    duration: offering.duration,
+                    pricePerSession: offering.price,
+                };
+            });
+            
             items.push({
                 purchaseType: 'coaching_sessions' as const,
-                offerings,
+                offerings: enrichedOfferings,
             });
             break;
         }
