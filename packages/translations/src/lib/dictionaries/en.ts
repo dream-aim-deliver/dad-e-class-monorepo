@@ -2675,6 +2675,10 @@ export const EN: TDictionary = {
           title: 'Coupons Not Found',
           description: 'No coupons could be loaded. Please try again later.',
         },
+        revokeError: {
+          title: 'Revoke Failed',
+          closeButton: 'Close',
+        },
       },
     },
     orderHistory: {

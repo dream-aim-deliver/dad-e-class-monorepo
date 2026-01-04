@@ -2678,6 +2678,10 @@ export const DE: TDictionary = {
           title: 'Coupons nicht gefunden',
           description: 'Die Coupons konnten nicht geladen werden. Bitte versuche es später erneut.',
         },
+        revokeError: {
+          title: 'Widerruf fehlgeschlagen',
+          closeButton: 'Schließen',
+        },
       },
     },
     orderHistory: {
