@@ -16,6 +16,7 @@ interface NavbarProps extends isLocalAware {
   isLoggedIn: boolean;
   notificationCount?: number;
   onChangeLanguage?: (locale: string) => void;
+  onLogin?: () => void;
   onLogout?: () => void;
   isLoggingOut?: boolean;
   children: React.ReactNode;
@@ -159,6 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   locale,
   notificationCount = 0,
   onChangeLanguage,
+  onLogin,
   onLogout,
   isLoggingOut = false,
   children,
@@ -259,14 +261,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </>
         ) : (
-          <a href="/auth/login">
+          onLogin ? (
             <Button
               text={dictionary.components.navbar.login}
               variant="primary"
               size="medium"
               className="ml-3"
+              onClick={onLogin}
             />
-          </a>
+          ) : (
+            <a href="/auth/login">
+              <Button
+                text={dictionary.components.navbar.login}
+                variant="primary"
+                size="medium"
+                className="ml-3"
+              />
+            </a>
+          )
         )}
         {availableLocales && availableLocales.length > 1 && 
           <div className="relative">
@@ -381,13 +393,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               defaultValue={locale}
             />
             {!isLoggedIn && (
-              <a href="/auth/login">
+              onLogin ? (
                 <Button
                   text={dictionary.components.navbar.login}
                   variant="primary"
                   size="medium"
+                  onClick={onLogin}
                 />
-              </a>
+              ) : (
+                <a href="/auth/login">
+                  <Button
+                    text={dictionary.components.navbar.login}
+                    variant="primary"
+                    size="medium"
+                  />
+                </a>
+              )
             )}
           </div>
         </div>

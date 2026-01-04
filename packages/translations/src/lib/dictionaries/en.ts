@@ -572,8 +572,9 @@ export const EN: TDictionary = {
       title: 'Session Expired',
       message: 'Your session has expired due to inactivity. Please log in again to continue.',
       unsavedChangesWarning: 'Warning: You have unsaved changes that will be lost.',
-      loginButtonText: 'Go to Login',
-      continueAsVisitorText: 'Continue Browsing',
+      stayLoggedInText: 'Stay logged in',
+      continueAsVisitorText: 'Continue as visitor',
+      logoutText: 'Logout',
     },
     coachingSessionTracker: {
       minuteText: 'minutes',
@@ -1858,6 +1859,7 @@ export const EN: TDictionary = {
         title: 'Oops! There was a problem signing you in.',
         description: 'Please check your username and password and try again.',
         tryAgain: 'Try Again',
+        continueAsVisitor: 'Continue as visitor',
       },
     },
     course: {

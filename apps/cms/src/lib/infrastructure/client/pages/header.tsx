@@ -5,7 +5,8 @@ import { ConfirmationModal, Navbar } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 interface HeaderProps {
@@ -60,6 +61,7 @@ export default function Header({
     // TODO: handle notifications
     const pathname = usePathname();
     const router = useRouter();
+    const { update } = useSession();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const t = useTranslations('components.cmsNavbar');
@@ -74,12 +76,23 @@ export default function Header({
         setShowLogoutModal(true);
     };
 
-    const handleConfirmLogout = () => {
+    const handleConfirmLogout = useCallback(async () => {
         setIsLoggingOut(true);
         setShowLogoutModal(false);
-        // Redirect to server-side logout API that handles OIDC logout with id_token_hint
+
+        try {
+            // Step 1: Refresh token to get valid id_token_hint for federated logout
+            await update();
+        } catch (error) {
+            console.log('[Header] Token refresh failed, proceeding with logout anyway');
+        }
+
+        // Step 2: Logout locally (clear NextAuth session)
+        await signOut({ redirect: false });
+
+        // Step 3: Federated logout - clears Auth0 session completely
         router.push(`/api/auth/logout?returnTo=/${locale}/auth/login`);
-    };
+    }, [update, locale, router]);
 
     // CMS-specific dropdown options
     const dropdownOptions = [

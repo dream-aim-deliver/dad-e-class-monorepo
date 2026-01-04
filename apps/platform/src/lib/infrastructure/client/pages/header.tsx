@@ -85,6 +85,11 @@ export default function Header({
         router.push(newUrl);
     };
 
+    const handleLogin = () => {
+        const callbackUrl = encodeURIComponent(pathname);
+        router.push(`/${locale}/auth/login?callbackUrl=${callbackUrl}`);
+    };
+
     const handleLogout = async () => {
         setIsLoggingOut(true);
         // Redirect to homepage instead of login page to avoid auto-login issue
@@ -129,6 +134,7 @@ export default function Header({
             isLoggedIn={!!session}
             availableLocales={availableLocales}
             locale={locale}
+            onLogin={handleLogin}
             logo={
                 platformViewModel.data.logo?.downloadUrl ? (
                     <Image

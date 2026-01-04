@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import {
@@ -37,8 +37,29 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
         }
     }, [debug]);
 
-    const handleConfirmLogout = useCallback(() => {
-        log('User confirmed logout, clearing unsaved changes and signing out');
+    const handleConfirmLogout = useCallback(async () => {
+        log('User chose to stay logged in, attempting to refresh token');
+
+        try {
+            // Try to refresh the token - if Auth0 session is valid, this will succeed
+            await update();
+            log('Token refresh successful, user stays logged in');
+            setShowExpirationModal(false);
+            setHasTriggeredCheck(false); // Reset so future expiry is detected
+        } catch (error) {
+            log('Token refresh failed:', error);
+            // Refresh failed - redirect to login for re-authentication
+            if (unsavedChangesState?.clearAllUnsavedChanges) {
+                unsavedChangesState.clearAllUnsavedChanges();
+            }
+            setShowExpirationModal(false);
+            await signOut({ redirect: false });
+            router.push(`/${locale}${loginPath}`);
+        }
+    }, [update, unsavedChangesState, loginPath, locale, router, log]);
+
+    const handleDismiss = useCallback(async () => {
+        log('User chose to logout completely (federated logout)');
 
         if (unsavedChangesState?.clearAllUnsavedChanges) {
             unsavedChangesState.clearAllUnsavedChanges();
@@ -46,14 +67,22 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
 
         setShowExpirationModal(false);
 
-        const callbackUrl = encodeURIComponent(pathname || '/');
-        const returnTo = `/${locale}${loginPath}?callbackUrl=${callbackUrl}&reason=session_expired`;
+        try {
+            // Step 1: Refresh token to get valid id_token_hint for federated logout
+            await update();
+            log('Token refreshed');
+        } catch (error) {
+            log('Token refresh failed, proceeding with logout anyway');
+        }
 
-        log('Redirecting to:', returnTo);
+        // Step 2: Logout locally (clear NextAuth session)
+        await signOut({ redirect: false });
+        log('Local session cleared');
 
-        // Redirect to server-side logout API that handles OIDC logout with id_token_hint
+        // Step 3: Federated logout - clears Auth0 session completely
+        const returnTo = `/${locale}${loginPath}`;
         router.push(`/api/auth/logout?returnTo=${encodeURIComponent(returnTo)}`);
-    }, [unsavedChangesState, pathname, loginPath, locale, router, log]);
+    }, [update, unsavedChangesState, loginPath, locale, router, log]);
 
     // Monitor session for errors
     useEffect(() => {
@@ -85,36 +114,98 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
         }
     }, [session, status, hasTriggeredCheck, log]);
 
-    // Periodic session check
+    // Periodic session check - only when page is visible (performance optimization)
     useEffect(() => {
         if (status !== 'authenticated') {
             return;
         }
 
-        log(`Setting up periodic session check every ${checkInterval}ms`);
+        let interval: NodeJS.Timeout | null = null;
 
-        const interval = setInterval(async () => {
-            log('Performing periodic session check');
+        const startPolling = () => {
+            if (interval) return;
+            log(`Starting periodic session check every ${checkInterval}ms`);
+            interval = setInterval(async () => {
+                log('Performing periodic session check');
+                try {
+                    await update();
+                    log('Session check complete');
+                } catch (error) {
+                    log('Error during session check:', error);
+                }
+            }, checkInterval);
+        };
 
-            try {
-                await update();
-                log('Session check complete');
-            } catch (error) {
-                log('Error during session check:', error);
+        const stopPolling = () => {
+            if (interval) {
+                log('Stopping periodic session check (page hidden)');
+                clearInterval(interval);
+                interval = null;
             }
-        }, checkInterval);
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                // Immediate check when tab becomes visible, then resume polling
+                log('Page became visible, checking session');
+                update().catch(err => log('Error on visibility check:', err));
+                startPolling();
+            } else {
+                stopPolling();
+            }
+        };
+
+        // Start polling if page is currently visible
+        if (document.visibilityState === 'visible') {
+            startPolling();
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
-            log('Clearing periodic session check interval');
-            clearInterval(interval);
+            stopPolling();
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, [status, checkInterval, update, log]);
+
+    // Precise expiry detection - set timeout to check exactly when token expires
+    // CMS is fully protected, so always show modal on expiry
+    useEffect(() => {
+        // Skip if already triggered to prevent re-showing modal after user interaction
+        if (status !== 'authenticated' || !session?.expires || hasTriggeredCheck) return;
+
+        const expiresAt = new Date(session.expires).getTime();
+        const now = Date.now();
+        const timeUntilExpiry = expiresAt - now;
+
+        // If already expired or very close, show modal immediately
+        if (timeUntilExpiry <= 0) {
+            log('Session already expired based on session.expires');
+            setShowExpirationModal(true);
+            setHasTriggeredCheck(true);
+            return;
+        }
+
+        // Set timeout to show modal 30 seconds before expiry
+        const checkTime = Math.max(timeUntilExpiry - 30000, 1000);
+        log(`Session expires in ${Math.round(timeUntilExpiry / 1000)}s, setting timeout for ${Math.round(checkTime / 1000)}s`);
+
+        const timeout = setTimeout(() => {
+            log('Token expiry time reached, showing modal');
+            setShowExpirationModal(true);
+            setHasTriggeredCheck(true);
+        }, checkTime);
+
+        return () => clearTimeout(timeout);
+    }, [session?.expires, status, hasTriggeredCheck, log]);
 
     return (
         <SessionExpirationModal
             isOpen={showExpirationModal}
             hasUnsavedChanges={hasUnsavedChanges}
             onConfirm={handleConfirmLogout}
+            allowDismiss={false}
+            onDismiss={handleDismiss}
             locale={locale}
         />
     );

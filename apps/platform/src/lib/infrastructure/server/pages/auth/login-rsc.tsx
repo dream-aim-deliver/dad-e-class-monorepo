@@ -33,7 +33,7 @@ export default async function LoginServerComponent() {
             platform={platform}
             locale={locale as TLocale}
             enableCredentials={enableTestAccounts}
-            isProduction={prod}
+            isProduction={true}
             runtimeConfig={runtimeConfig}
         />
     );

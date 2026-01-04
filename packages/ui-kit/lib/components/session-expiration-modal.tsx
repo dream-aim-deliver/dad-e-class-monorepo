@@ -83,20 +83,30 @@ export const SessionExpirationModal: React.FC<SessionExpirationModalProps> = ({
                             </p>
                         </div>
                     )}
-                    <div className={`flex items-center w-full pt-2 ${allowDismiss ? 'flex-col gap-2' : 'justify-end'}`}>
+                    <div className="flex items-center w-full pt-2 flex-col gap-2">
                         <Button
                             className="w-full"
                             variant="primary"
                             size="medium"
-                            text={dictionary.components.sessionExpirationModal.loginButtonText}
+                            text={dictionary.components.sessionExpirationModal.stayLoggedInText}
                             onClick={onConfirm}
                         />
-                        {allowDismiss && onDismiss && (
+                        {allowDismiss ? (
+                            // Mixed route: Continue as visitor (stays on page)
                             <Button
                                 className="w-full"
                                 variant="secondary"
                                 size="medium"
                                 text={dictionary.components.sessionExpirationModal.continueAsVisitorText}
+                                onClick={onDismiss}
+                            />
+                        ) : (
+                            // Protected route: Logout button (goes to home)
+                            <Button
+                                className="w-full"
+                                variant="secondary"
+                                size="medium"
+                                text={dictionary.components.sessionExpirationModal.logoutText}
                                 onClick={onDismiss}
                             />
                         )}

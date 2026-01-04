@@ -38,11 +38,11 @@ const LoginPage = (props: LoginPageProps) => {
         });
     };
 
-    // TODO: what is the purpose of this?
-    const handleAuth0 = async () => {
+    // Trigger Auth0 login with the provided callback URL
+    const handleAuth0 = async (targetCallbackUrl: string) => {
         await signIn(
             'auth0',
-            { callbackUrl: callbackUrl },
+            { callbackUrl: targetCallbackUrl },
             {
                 ui_locales: props.locale,
                 platform: props.platform,
@@ -65,11 +65,19 @@ const LoginPage = (props: LoginPageProps) => {
     };
 
     // Auto-redirect to Auth0 in production mode (must run client-side only)
+    // Read callbackUrl directly from window.location to avoid hydration timing issues
+    // with useSearchParams that can cause the callbackUrl to be lost
     useEffect(() => {
         if (props.isProduction) {
-            handleAuth0();
+            // Read callbackUrl directly from URL to ensure it's available after hydration
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawUrl = urlParams.get('callbackUrl');
+            const validatedUrl = validateCallbackUrl(rawUrl, {
+                defaultUrl: `/${props.locale}`,
+            });
+            handleAuth0(validatedUrl);
         }
-    }, [props.isProduction]);
+    }, [props.isProduction, props.locale]);
 
     if (props.isProduction) {
         return <DefaultLoading locale={props.locale} variant="minimal" />;
@@ -148,7 +156,7 @@ const LoginPage = (props: LoginPageProps) => {
                         </form>
                     )}
                     <button
-                        onClick={handleAuth0}
+                        onClick={() => handleAuth0(callbackUrl)}
                         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                         {dictionary.pages.login.signIn + ' (E-Class)'}
