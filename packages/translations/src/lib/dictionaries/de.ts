@@ -432,6 +432,11 @@ export const DE: TDictionary = {
     cmsNavbar: {
       manageUsers: 'Benutzer verwalten',
     },
+    logoutConfirmation: {
+      title: 'Abmelden',
+      message: 'Dies meldet Sie vom Identitätsanbieter ab. Möglicherweise müssen Sie sich in anderen verbundenen Anwendungen erneut authentifizieren.',
+      confirmButton: 'Abmelden',
+    },
     footer: {
       impressum: 'Impressum',
       privacyPolicy: 'Datenschutzrichtlinie',

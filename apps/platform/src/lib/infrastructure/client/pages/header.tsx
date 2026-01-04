@@ -86,15 +86,9 @@ export default function Header({
     };
 
     const handleLogout = async () => {
-        try {
-            setIsLoggingOut(true);
-            // Preserve current page by encoding it in the callback URL
-            const encodedPath = encodeURIComponent(pathname);
-            await signOut({ callbackUrl: `/${locale}/auth/login?callbackUrl=${encodedPath}` });
-        } catch (error) {
-            console.error('Logout failed:', error);
-            setIsLoggingOut(false);
-        }
+        setIsLoggingOut(true);
+        // Redirect to homepage instead of login page to avoid auto-login issue
+        await signOut({ callbackUrl: `/${locale}/` });
     };
 
     // Platform-specific dropdown options

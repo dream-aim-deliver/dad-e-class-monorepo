@@ -429,6 +429,11 @@ export const EN: TDictionary = {
     cmsNavbar: {
       manageUsers: 'Manage Users',
     },
+    logoutConfirmation: {
+      title: 'Sign Out',
+      message: 'This will sign you out from the identity provider. You may need to re-authenticate in other connected applications.',
+      confirmButton: 'Sign Out',
+    },
     footer: {
       impressum: 'Impressum',
       privacyPolicy: 'Privacy Policy',
