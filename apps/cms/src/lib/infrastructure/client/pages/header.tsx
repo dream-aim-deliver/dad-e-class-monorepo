@@ -58,7 +58,6 @@ export default function Header({
     locale,
     session,
 }: HeaderProps) {
-    // TODO: handle notifications
     const pathname = usePathname();
     const router = useRouter();
     const { update } = useSession();
@@ -105,10 +104,6 @@ export default function Header({
     // CMS-specific dropdown options
     const dropdownOptions = [
         {
-            label: t('manageUsers'),
-            value: 'manageUsers',
-        },
-        {
             label: tPlatformNavbar('logout'),
             value: 'logout',
         },
@@ -135,6 +130,7 @@ export default function Header({
                 dropdownOptions={dropdownOptions}
                 onDropdownSelection={handleDropdownSelection}
                 dropdownTriggerText={''}
+                showNotifications={false}
             >
                 <NavLinks locale={locale} pathname={pathname} />
             </Navbar>

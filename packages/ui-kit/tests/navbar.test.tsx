@@ -97,6 +97,7 @@ describe('Navbar Component', () => {
         onChangeLanguage={onChangeLanguageMock}
         availableLocales={['en', 'de']}
         logoSrc={'https://example.com/logo.png'}
+        showNotifications
       >
         <a href="/home">Home</a>
         <a href="/about">About</a>
@@ -112,7 +113,7 @@ describe('Navbar Component', () => {
 
   it('renders user profile and workspace when logged in', () => {
     render(
-      <Navbar isLoggedIn={true} locale="en" availableLocales={['en', 'de']} dropdownTriggerText="Workspace">
+      <Navbar isLoggedIn={true} locale="en" availableLocales={['en', 'de']} dropdownTriggerText="Workspace" showNotifications>
         <a href="/home">Home</a>
       </Navbar>
     );
@@ -131,6 +132,7 @@ describe('Navbar Component', () => {
         locale="en"
         notificationCount={2}
         availableLocales={['en', 'de']}
+        showNotifications
       >
         <a href="/home">Home</a>
       </Navbar>
@@ -149,6 +151,7 @@ describe('Navbar Component', () => {
         locale="en"
         onChangeLanguage={onChangeLanguageMock}
         availableLocales={['en', 'de']}
+        showNotifications
       >
         <a href="/home">Home</a>
       </Navbar>
@@ -169,6 +172,7 @@ describe('Navbar Component', () => {
         onChangeLanguage={vi.fn()}
         userProfile={customProfile}
         availableLocales={['en', 'de']}
+        showNotifications
       >
         <a href="/home">Home</a>
       </Navbar>
@@ -188,6 +192,7 @@ describe('Navbar Component', () => {
         onChangeLanguage={vi.fn()}
         availableLocales={['en', 'de']}
         dropdownTriggerText="Arbeitsbereich"
+        showNotifications
       >
         <a href="/home">Home</a>
       </Navbar>
@@ -209,6 +214,7 @@ describe('Navbar Component', () => {
         locale="en"
         onChangeLanguage={vi.fn()}
         availableLocales={['en', 'de']}
+        showNotifications
       >
         <a href="/home">Home</a>
       </Navbar>

@@ -52,17 +52,17 @@ const NavLinks = ({
     // TODO: possibly use Link from Next.js
     return (
         <>
-            <Link href="/offers">
+            <Link href={`/${locale}/offers`}>
                 <span className={getLinkClass(routes.offers)}>
                     {t('offers')}
                 </span>
             </Link>
-            <Link href="/coaching">
+            <Link href={`/${locale}/coaching`}>
                 <span className={getLinkClass(routes.coaching)}>
                     {t('coaching')}
                 </span>
             </Link>
-            <Link href="/about">
+            <Link href={`/${locale}/about`}>
                 <span className={getLinkClass(routes.about)}>{t('about')}</span>
             </Link>
         </>
@@ -162,6 +162,7 @@ export default function Header({
             onDropdownSelection={handleDropdownSelection}
             dropdownTriggerText={t('workspace')}
             onNotificationClick={handleNotificationClick}
+            showNotifications={true}
         >
             <NavLinks locale={locale} pathname={pathname} />
         </Navbar>

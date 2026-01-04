@@ -257,7 +257,7 @@ export default function CarouselSection({
                     </div>
                 ))}
             {(value || []).length === 0 && (
-            <div className="p-4 text-center text-text-secondary border border-border-default rounded-medium">
+            <div className="p-4 text-start text-text-secondary text-md border rounded-medium">
                 {dictionary.components.cmsSections.carouselSection.emptyState}
             </div>
                 )}
