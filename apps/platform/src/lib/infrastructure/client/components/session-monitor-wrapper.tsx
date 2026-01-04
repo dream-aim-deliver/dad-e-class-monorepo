@@ -46,16 +46,11 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
 
         setShowExpirationModal(false);
 
-        const callbackUrl = encodeURIComponent(pathname || '/');
-        const redirectUrl = `${loginPath}?callbackUrl=${callbackUrl}&reason=session_expired`;
+        log('Redirecting to homepage');
 
-        log('Redirecting to:', redirectUrl);
-
-        await signOut({
-            callbackUrl: redirectUrl,
-            redirect: true
-        });
-    }, [unsavedChangesState, pathname, loginPath, log]);
+        // Redirect to homepage instead of login page to avoid auto-login issue
+        await signOut({ callbackUrl: `/${locale}/` });
+    }, [unsavedChangesState, locale, log]);
 
     const handleDismiss = useCallback(async () => {
         log('User dismissed modal, continuing as visitor');

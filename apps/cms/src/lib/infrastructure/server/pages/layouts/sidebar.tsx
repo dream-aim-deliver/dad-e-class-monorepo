@@ -1,5 +1,6 @@
 'use client';
 import {
+    ConfirmationModal,
     IconAccountInformation,
     IconCalendarAlt,
     IconCoachingSession,
@@ -18,17 +19,25 @@ import {
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
-import { signOut } from 'next-auth/react';
 import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 
 const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     const sidebarTranslations = useTranslations('pages.sidebarLayout');
+    const tLogoutConfirmation = useTranslations('components.logoutConfirmation');
     const router = useRouter();
     const pathname = usePathname();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     // Extract locale from props (passed from layout)
     const locale = props.locale || 'en';
+
+    const handleConfirmLogout = () => {
+        setIsLoggingOut(true);
+        setShowLogoutModal(false);
+        // Redirect to server-side logout API that handles OIDC logout with id_token_hint
+        router.push(`/api/auth/logout?returnTo=/${locale}/auth/login`);
+    };
 
     const routeMap = {
         dashboard: '/workspace/dashboard',
@@ -144,14 +153,8 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                 {
                     icon: <IconLogOut />,
                     label: sidebarTranslations('logout'),
-                    onClick: async () => {
-                        try {
-                            setIsLoggingOut(true);
-                            await signOut({ callbackUrl: `/${locale}/` });
-                        } catch (error) {
-                            console.error('Logout failed:', error);
-                            setIsLoggingOut(false);
-                        }
+                    onClick: () => {
+                        setShowLogoutModal(true);
                     },
                 },
             ],
@@ -214,6 +217,18 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             {isLoggingOut && (
                 <DefaultLoading locale={locale} variant="overlay" />
             )}
+
+            <ConfirmationModal
+                type="accept"
+                isOpen={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
+                onConfirm={handleConfirmLogout}
+                isLoading={isLoggingOut}
+                title={tLogoutConfirmation('title')}
+                message={tLogoutConfirmation('message')}
+                confirmText={tLogoutConfirmation('confirmButton')}
+                locale={locale}
+            />
         </>
     );
 };

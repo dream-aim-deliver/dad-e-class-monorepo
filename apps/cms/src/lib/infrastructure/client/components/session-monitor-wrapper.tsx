@@ -1,7 +1,7 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import {
     UnsavedChangesProvider,
@@ -21,6 +21,7 @@ interface SessionMonitorWrapperProps {
 function SessionMonitor({ locale }: { locale: TLocale }) {
     const { data: session, status, update } = useSession();
     const pathname = usePathname();
+    const router = useRouter();
     const [showExpirationModal, setShowExpirationModal] = useState(false);
     const [hasTriggeredCheck, setHasTriggeredCheck] = useState(false);
     const unsavedChangesState = useUnsavedChanges();
@@ -36,7 +37,7 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
         }
     }, [debug]);
 
-    const handleConfirmLogout = useCallback(async () => {
+    const handleConfirmLogout = useCallback(() => {
         log('User confirmed logout, clearing unsaved changes and signing out');
 
         if (unsavedChangesState?.clearAllUnsavedChanges) {
@@ -46,15 +47,13 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
         setShowExpirationModal(false);
 
         const callbackUrl = encodeURIComponent(pathname || '/');
-        const redirectUrl = `${loginPath}?callbackUrl=${callbackUrl}&reason=session_expired`;
+        const returnTo = `/${locale}${loginPath}?callbackUrl=${callbackUrl}&reason=session_expired`;
 
-        log('Redirecting to:', redirectUrl);
+        log('Redirecting to:', returnTo);
 
-        await signOut({
-            callbackUrl: redirectUrl,
-            redirect: true
-        });
-    }, [unsavedChangesState, pathname, loginPath, log]);
+        // Redirect to server-side logout API that handles OIDC logout with id_token_hint
+        router.push(`/api/auth/logout?returnTo=${encodeURIComponent(returnTo)}`);
+    }, [unsavedChangesState, pathname, loginPath, locale, router, log]);
 
     // Monitor session for errors
     useEffect(() => {

@@ -1,5 +1,5 @@
 'use client';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
@@ -64,8 +64,14 @@ const LoginPage = (props: LoginPageProps) => {
         );
     };
 
+    // Auto-redirect to Auth0 in production mode (must run client-side only)
+    useEffect(() => {
+        if (props.isProduction) {
+            handleAuth0();
+        }
+    }, [props.isProduction]);
+
     if (props.isProduction) {
-        handleAuth0();
         return <DefaultLoading locale={props.locale} variant="minimal" />;
     }
 

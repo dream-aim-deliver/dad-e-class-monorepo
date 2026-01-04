@@ -435,6 +435,11 @@ export const DictionarySchema = z.object({
     cmsNavbar: z.object({
       manageUsers: z.string(),
     }),
+    logoutConfirmation: z.object({
+      title: z.string(),
+      message: z.string(),
+      confirmButton: z.string(),
+    }),
     footer: z.object({
       impressum: z.string(),
       privacyPolicy: z.string(),

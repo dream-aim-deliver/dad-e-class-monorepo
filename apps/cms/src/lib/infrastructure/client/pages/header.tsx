@@ -1,11 +1,10 @@
 'use client';
 
 import { auth, viewModels } from '@maany_shr/e-class-models';
-import { Navbar } from '@maany_shr/e-class-ui-kit';
+import { ConfirmationModal, Navbar } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 import Link from 'next/link';
 
@@ -62,23 +61,24 @@ export default function Header({
     const pathname = usePathname();
     const router = useRouter();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const t = useTranslations('components.cmsNavbar');
     const tPlatformNavbar = useTranslations('components.navbar');
+    const tLogoutConfirmation = useTranslations('components.logoutConfirmation');
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
         router.push(newUrl);
     };
 
-    const handleLogout = async () => {
-        try {
-            setIsLoggingOut(true);
-            // Preserve current page by encoding it in the callback URL
-            const encodedPath = encodeURIComponent(pathname);
-            await signOut({ callbackUrl: `/${locale}/auth/login?callbackUrl=${encodedPath}` });
-        } catch (error) {
-            console.error('Logout failed:', error);
-            setIsLoggingOut(false);
-        }
+    const handleLogout = () => {
+        setShowLogoutModal(true);
+    };
+
+    const handleConfirmLogout = () => {
+        setIsLoggingOut(true);
+        setShowLogoutModal(false);
+        // Redirect to server-side logout API that handles OIDC logout with id_token_hint
+        router.push(`/api/auth/logout?returnTo=/${locale}/auth/login`);
     };
 
     // CMS-specific dropdown options
@@ -100,21 +100,35 @@ export default function Header({
     };
 
     return (
-        <Navbar
-            isLoggedIn={!!session}
-            availableLocales={availableLocales}
-            locale={locale}
-            logo={<span className="text-xl font-semibold">E-Class CMS</span>}
-            onChangeLanguage={changeLanguage}
-            onLogout={handleLogout}
-            isLoggingOut={isLoggingOut}
-            userName={session?.user.name}
-            userProfileImageSrc={session?.user.image}
-            dropdownOptions={dropdownOptions}
-            onDropdownSelection={handleDropdownSelection}
-            dropdownTriggerText={''}
-        >
-            <NavLinks locale={locale} pathname={pathname} />
-        </Navbar>
+        <>
+            <Navbar
+                isLoggedIn={!!session}
+                availableLocales={availableLocales}
+                locale={locale}
+                logo={<span className="text-xl font-semibold">E-Class CMS</span>}
+                onChangeLanguage={changeLanguage}
+                onLogout={handleLogout}
+                isLoggingOut={isLoggingOut}
+                userName={session?.user.name}
+                userProfileImageSrc={session?.user.image}
+                dropdownOptions={dropdownOptions}
+                onDropdownSelection={handleDropdownSelection}
+                dropdownTriggerText={''}
+            >
+                <NavLinks locale={locale} pathname={pathname} />
+            </Navbar>
+
+            <ConfirmationModal
+                type="accept"
+                isOpen={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
+                onConfirm={handleConfirmLogout}
+                isLoading={isLoggingOut}
+                title={tLogoutConfirmation('title')}
+                message={tLogoutConfirmation('message')}
+                confirmText={tLogoutConfirmation('confirmButton')}
+                locale={locale}
+            />
+        </>
     );
 }
