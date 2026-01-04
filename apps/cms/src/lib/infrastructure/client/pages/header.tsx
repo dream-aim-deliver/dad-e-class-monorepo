@@ -80,17 +80,25 @@ export default function Header({
         setIsLoggingOut(true);
         setShowLogoutModal(false);
 
+        // Step 1: Attempt to refresh token to get valid id_token_hint for federated logout
+        // This makes federated logout smoother (no Auth0 confirmation page)
+        // If refresh fails, we still proceed - the API route handles it gracefully
+        let tokenRefreshed = false;
         try {
-            // Step 1: Refresh token to get valid id_token_hint for federated logout
             await update();
+            tokenRefreshed = true;
         } catch (error) {
-            console.log('[Header] Token refresh failed, proceeding with logout anyway');
+            // This is expected if session is already expired
+            // We still proceed with federated logout to ensure clean state
+            console.log('[Header] Token refresh failed (session may be expired), proceeding with federated logout');
         }
 
         // Step 2: Logout locally (clear NextAuth session)
         await signOut({ redirect: false });
 
         // Step 3: Federated logout - clears Auth0 session completely
+        // Even without valid id_token_hint, Auth0 will still process the logout
+        console.log(`[Header] Redirecting to federated logout (token refreshed: ${tokenRefreshed})`);
         router.push(`/api/auth/logout?returnTo=/${locale}/auth/login`);
     }, [update, locale, router]);
 
