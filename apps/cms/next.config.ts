@@ -17,8 +17,8 @@ const nextConfig: NextConfig = {
     },
     images: {
         formats: ['image/avif', 'image/webp'],
-        // Cache optimized images for 1 hour minimum, matching signed URL TTL from MinIO
-        minimumCacheTTL: 3600,
+        // Cache optimized images for 10 hours minimum, matching signed URL TTL from MinIO
+        minimumCacheTTL: 36000,
         remotePatterns: [
             {
                 protocol: 'https',
