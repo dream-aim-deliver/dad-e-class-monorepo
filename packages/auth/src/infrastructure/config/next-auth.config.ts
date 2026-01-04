@@ -11,6 +11,28 @@ import superjson from 'superjson';
 import { TEClassRole } from "@dream-aim-deliver/e-class-cms-rest/lib/core";
 
 /**
+ * Decodes a JWT and extracts the exp claim.
+ * JWTs are base64url encoded, so we can decode without a library.
+ * @param jwt The JWT string to decode
+ * @returns The exp claim value (seconds since epoch) or null if decoding fails
+ */
+function getJwtExpiration(jwt: string): number | null {
+    try {
+        const parts = jwt.split('.');
+        if (parts.length !== 3) return null;
+
+        // Decode the payload (second part) - base64url to string
+        const payload = JSON.parse(
+            Buffer.from(parts[1], 'base64url').toString('utf-8')
+        );
+
+        return typeof payload.exp === 'number' ? payload.exp : null;
+    } catch {
+        return null;
+    }
+}
+
+/**
  * Cached user data structure stored in JWT token
  */
 interface CachedUserData {
@@ -229,34 +251,35 @@ export const generateNextAuthConfig = (config: {
                     }
                 }
 
-                // Use token.user.expires as the source of truth for token expiration
-                // This comes from the Auth0 profile.exp field and is in seconds since epoch
+                // Use token.user.expires as the source of truth for ID token expiration
+                // This comes from the Auth0 profile.exp field (ID token) and is in seconds since epoch
+                // The tRPC backend validates the ID token, so we use its expiration
                 const userExpires = (token.user as TAuthProviderProfileDTO)?.expires;
 
                 if (userExpires && typeof userExpires === 'number') {
-                    token.accessTokenExpires = userExpires * 1000; // Convert to milliseconds
+                    token.idTokenExpires = userExpires * 1000; // Convert to milliseconds
                 }
 
-                // Return previous token if the access token has not expired yet
+                // Return previous token if the ID token has not expired yet
                 const currentTime = Date.now();
 
-                // If accessTokenExpires is missing, we should attempt to refresh rather than assume validity
+                // If idTokenExpires is missing, we should attempt to refresh rather than assume validity
                 // This ensures expired sessions are properly detected
-                const tokenExpires = token.accessTokenExpires as number;
+                const tokenExpires = token.idTokenExpires as number;
                 const timeUntilExpiry = tokenExpires ? tokenExpires - currentTime : -1;
                 const minutesUntilExpiry = Math.floor(timeUntilExpiry / 1000 / 60);
 
                 // Refresh token 5 minutes before expiration to avoid edge cases
-                // Also refresh if accessTokenExpires is missing (timeUntilExpiry < 0)
+                // Also refresh if idTokenExpires is missing (timeUntilExpiry < 0)
                 const shouldRefresh = !tokenExpires || timeUntilExpiry < 5 * 60 * 1000;
 
                 if (!shouldRefresh) {
-                    console.log(`[Auth JWT] ✅ Token still valid, no refresh needed (expires in ${minutesUntilExpiry} minutes)`);
+                    console.log(`[Auth JWT] ✅ ID token still valid, no refresh needed (expires in ${minutesUntilExpiry} minutes)`);
                     return token;
                 }
 
-                // Access token has expired or will expire soon, try to refresh it
-                console.log(`[Auth JWT] 🔄 Access token expired or expiring soon (${minutesUntilExpiry} minutes left), attempting refresh...`);
+                // ID token has expired or will expire soon, try to refresh it
+                console.log(`[Auth JWT] 🔄 ID token expired or expiring soon (${minutesUntilExpiry} minutes left), attempting refresh...`);
                 const refreshToken = (token.account as Account)?.refresh_token;
 
                 if (!refreshToken) {
@@ -304,8 +327,16 @@ export const generateNextAuthConfig = (config: {
 
                         console.log('[Auth JWT] ✅ Token refreshed successfully');
 
-                        // Calculate new expiration time (in seconds since epoch)
-                        const newExpiresAt = Math.floor(Date.now() / 1000) + (refreshedTokens.expires_in || 3600);
+                        // Extract expiration from the new ID token (what tRPC backend validates)
+                        // This is more accurate than using expires_in which is access token lifetime
+                        const idTokenExp = getJwtExpiration(refreshedTokens.id_token);
+                        const newExpiresAt = idTokenExp || Math.floor(Date.now() / 1000) + 3600; // fallback to 1 hour
+
+                        if (idTokenExp) {
+                            console.log(`[Auth JWT] ID token expires at: ${new Date(idTokenExp * 1000).toISOString()}`);
+                        } else {
+                            console.warn('[Auth JWT] Could not decode ID token exp, using fallback expiration');
+                        }
 
                         // Update the token with refreshed credentials
                         const updatedAccount = {
@@ -335,7 +366,7 @@ export const generateNextAuthConfig = (config: {
                             ...token,
                             user: updatedUser,
                             account: updatedAccount,
-                            accessTokenExpires: newExpiresAt * 1000,
+                            idTokenExpires: newExpiresAt * 1000,
                             error: undefined,
                             cachedRoles: cachedData.roles,
                             cachedUserDetails: cachedData.userDetails,
@@ -377,7 +408,17 @@ export const generateNextAuthConfig = (config: {
                     account: Account,
                     error?: string,
                     cachedRoles?: TEClassRole[],
-                    cachedUserDetails?: CachedUserData['userDetails']
+                    cachedUserDetails?: CachedUserData['userDetails'],
+                    idTokenExpires?: number
+                }
+
+                // Align session.expires with actual token expiry (not the 24h maxAge)
+                // This ensures useSession() on the client knows the real expiry time
+                // and can set precise timeouts for session validation
+                if (nextAuthToken.idTokenExpires) {
+                    // Type assertion needed because NextAuth's Session type expects Date & string
+                    // but we're setting it to an ISO string which is the actual runtime format
+                    (session as any).expires = new Date(nextAuthToken.idTokenExpires).toISOString();
                 }
 
                 // Propagate error to session for client-side handling

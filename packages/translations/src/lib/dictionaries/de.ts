@@ -575,8 +575,9 @@ export const DE: TDictionary = {
       title: 'Sitzung abgelaufen',
       message: 'Ihre Sitzung ist aufgrund von Inaktivität abgelaufen. Bitte melden Sie sich erneut an, um fortzufahren.',
       unsavedChangesWarning: 'Warnung: Sie haben ungespeicherte Änderungen, die verloren gehen.',
-      loginButtonText: 'Zur Anmeldung',
-      continueAsVisitorText: 'Weiter stöbern',
+      stayLoggedInText: 'Angemeldet bleiben',
+      continueAsVisitorText: 'Als Besucher fortfahren',
+      logoutText: 'Abmelden',
     },
     coachingSessionTracker: {
       minuteText: 'Minuten',
@@ -1861,6 +1862,7 @@ export const DE: TDictionary = {
         title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
         description: 'Bitte überprüfe deinen Benutzernamen und dein Passwort und versuchs nochmals.',
         tryAgain: 'Nochmal versuchen',
+        continueAsVisitor: 'Als Besucher fortfahren',
       },
     },
     course: {

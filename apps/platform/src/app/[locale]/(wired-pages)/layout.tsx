@@ -26,6 +26,7 @@ import NextTopLoaderWrapper from '../../../lib/infrastructure/client/components/
 import DefaultLoadingWrapper from '../../../lib/infrastructure/client/wrappers/default-loading';
 import { getPlatformCached } from '../../../lib/infrastructure/server/utils/get-platform-cached';
 import { OTelBrowserProvider } from '../../../lib/infrastructure/client/telemetry';
+import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import env from '../../../lib/infrastructure/server/config/env';
 
 type MetadataProps = {
@@ -229,21 +230,23 @@ export default async function RootLayout({
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <RuntimeConfigProvider config={runtimeConfig}>
-                            <OTelBrowserProvider config={otelConfig}>
-                                <CMSTRPCClientProviders>
-                                    <HydrateClient>
-                                        <Suspense fallback={<DefaultLoadingWrapper />}>
-                                            <SessionMonitorWrapper locale={locale}>
-                                                <PlatformProviderWithSuspense platform={platformData}>
-                                                    <Layout availableLocales={availableLocales}>
-                                                        {children}
-                                                    </Layout>
-                                                </PlatformProviderWithSuspense>
-                                            </SessionMonitorWrapper>
-                                        </Suspense>
-                                    </HydrateClient>
-                                </CMSTRPCClientProviders>
-                            </OTelBrowserProvider>
+                            <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
+                                <OTelBrowserProvider config={otelConfig}>
+                                    <SessionMonitorWrapper locale={locale}>
+                                        <CMSTRPCClientProviders>
+                                            <HydrateClient>
+                                                <Suspense fallback={<DefaultLoadingWrapper />}>
+                                                    <PlatformProviderWithSuspense platform={platformData}>
+                                                        <Layout availableLocales={availableLocales}>
+                                                            {children}
+                                                        </Layout>
+                                                    </PlatformProviderWithSuspense>
+                                                </Suspense>
+                                            </HydrateClient>
+                                        </CMSTRPCClientProviders>
+                                    </SessionMonitorWrapper>
+                                </OTelBrowserProvider>
+                            </ThemeProvider>
                         </RuntimeConfigProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>
