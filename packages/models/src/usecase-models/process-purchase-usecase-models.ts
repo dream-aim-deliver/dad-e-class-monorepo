@@ -45,6 +45,9 @@ const PurchaseItemPackageSchema = z.object({
 const CoachingOfferingSchema = z.object({
     coachingOfferingId: z.number().int(),
     quantity: z.number().int().min(1),
+    title: z.string(),
+    duration: z.number().int().min(15),
+    pricePerSession: z.number().min(0),
 });
 
 const PurchaseItemCoachingSessionsSchema = z.object({
