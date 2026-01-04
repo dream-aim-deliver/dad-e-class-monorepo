@@ -15,6 +15,7 @@ import { useImageComponent } from '../contexts/image-component-context';
 interface NavbarProps extends isLocalAware {
   isLoggedIn: boolean;
   notificationCount?: number;
+  showNotifications: boolean;
   onChangeLanguage?: (locale: string) => void;
   onLogin?: () => void;
   onLogout?: () => void;
@@ -96,8 +97,8 @@ const NavBarDropdown: React.FC<NavBarDropdownProps> = ({
         <div className="absolute top-full right-0 mt-3 py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium shadow-lg z-50 min-w-[150px]">
           {options.map((option) => (
             <div key={option.value}>
-              {/* Add divider before logout */}
-              {option.value === 'logout' && (
+              {/* Add divider before logout only if there are other options */}
+              {option.value === 'logout' && options.length > 1 && (
                 <div className="h-[1px] bg-base-neutral-600 mx-2 my-1" />
               )}
               <div
@@ -159,6 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isLoggedIn,
   locale,
   notificationCount = 0,
+  showNotifications,
   onChangeLanguage,
   onLogin,
   onLogout,
@@ -245,20 +247,22 @@ export const Navbar: React.FC<NavbarProps> = ({
         {isLoggedIn ? (
           <>
             {userProfile || defaultUserProfile}
-            <div
-              className="relative flex items-center"
-              onClick={onNotificationClick}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && onNotificationClick?.()}
-            >
-              <IconChat size="6" classNames="cursor-pointer" />
-              {notificationCount > 0 && (
-                <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
-                  {formatNotificationCount(notificationCount)}
-                </span>
-              )}
-            </div>
+            {showNotifications && (
+              <div
+                className="relative flex items-center"
+                onClick={onNotificationClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && onNotificationClick?.()}
+              >
+                <IconChat size="6" classNames="cursor-pointer" />
+                {notificationCount > 0 && (
+                  <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
+                    {formatNotificationCount(notificationCount)}
+                  </span>
+                )}
+              </div>
+            )}
           </>
         ) : (
           onLogin ? (
@@ -323,20 +327,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                   isMobile={true}
                 />
               </div>
-              <div
-                className="relative flex items-center"
-                onClick={onNotificationClick}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && onNotificationClick?.()}
-              >
-                <IconChat size="6" classNames="cursor-pointer" />
-                {notificationCount > 0 && (
-                  <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
-                    {formatNotificationCount(notificationCount)}
-                  </span>
-                )}
-              </div>
+              {showNotifications && (
+                <div
+                  className="relative flex items-center"
+                  onClick={onNotificationClick}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && onNotificationClick?.()}
+                >
+                  <IconChat size="6" classNames="cursor-pointer" />
+                  {notificationCount > 0 && (
+                    <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
+                      {formatNotificationCount(notificationCount)}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
