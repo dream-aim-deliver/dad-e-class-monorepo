@@ -45,22 +45,25 @@ function RevokeCouponModalContent({
   >(undefined);
   const { presenter } = useRevokeCouponPresenter(setRevokeCouponViewModel);
 
-  const revokeCouponMutation = trpc.revokeCoupon.useMutation();
-
-  useEffect(() => {
-    if (revokeCouponMutation.isSuccess && revokeCouponMutation.data) {
-      // @ts-ignore
-      presenter.present(revokeCouponMutation.data, revokeCouponViewModel);
+  const revokeCouponMutation = trpc.revokeCoupon.useMutation({
+    onSuccess: () => {
       void utils.listCoupons.invalidate();
+    },
+  });
+
+  const handleConfirm = async () => {
+    try {
+      setRevokeCouponViewModel(undefined);
+      const result = await revokeCouponMutation.mutateAsync({ couponId });
+      // @ts-ignore
+      await presenter.present(result, revokeCouponViewModel);
+    } catch (error) {
+      console.error('Failed to revoke coupon:', error);
     }
-  }, [revokeCouponMutation.isSuccess, revokeCouponMutation.data, presenter, revokeCouponViewModel, utils]);
+  };
 
   const handleClose = () => {
     onClose();
-  };
-
-  const handleConfirm = () => {
-    revokeCouponMutation.mutate({ couponId });
   };
 
   const isSuccess = revokeCouponViewModel?.mode === 'default';
