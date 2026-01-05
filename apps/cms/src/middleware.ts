@@ -16,6 +16,7 @@ export default async function middleware(req: NextRequest) {
     // Skip auth check for auth routes, API routes, and static files
     const isPublicRoute = pathname.includes('/auth/') ||
                          pathname.includes('/api/') ||
+                         pathname.includes('/terms-of-use') ||
                          pathname.includes('/_next/') ||
                          pathname.includes('/favicon') ||
                          pathname.endsWith('.png') ||
