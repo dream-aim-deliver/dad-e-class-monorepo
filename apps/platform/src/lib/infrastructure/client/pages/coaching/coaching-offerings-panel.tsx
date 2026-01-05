@@ -1,6 +1,5 @@
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/cms-client';
-import { trpc } from '../../trpc/cms-client';
 import { Suspense, useMemo, useState, useEffect, useCallback } from 'react';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
 import {
