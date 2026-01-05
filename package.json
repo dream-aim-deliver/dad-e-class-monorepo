@@ -9,7 +9,7 @@
   "private": true,
   "dependencies": {
     "@dream-aim-deliver/dad-cats": "^0.13.0",
-    "@dream-aim-deliver/e-class-cms-rest": "3.1.13",
+    "@dream-aim-deliver/e-class-cms-rest": "3.1.14",
     "@mux/mux-player-react": "^3.3.0",
     "@stripe/react-stripe-js": "^5.3.0",
     "@stripe/stripe-js": "^8.2.0",
