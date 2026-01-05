@@ -380,6 +380,17 @@ export const EN: TDictionary = {
       total: 'Total',
       minutes: 'minutes'
     },
+    buyCourseCoachingSessions: {
+      title: 'Buy Course Coaching Sessions',
+      description: 'Purchase additional coaching sessions for this course. Select the number of sessions you want to buy for each offering.',
+      buttonText: 'Buy coaching sessions',
+      total: 'Total',
+      minutes: 'minutes',
+      noSessionsAvailable: 'No coaching sessions available for purchase.',
+      sessionAvailableSingular: 'session available',
+      sessionAvailablePlural: 'sessions available',
+      cancelText: 'Cancel',
+    },
     videoPlayer: {
       videoErrorText: 'Video does not exist'
     },
