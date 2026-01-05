@@ -53,16 +53,16 @@ describe('EmptyState', () => {
     const wrapper = container.firstChild;
     expect(wrapper).toHaveClass(
       'flex',
-      'justify-center',
-      'items-center',
-      'w-full',
-      'p-10',
-      'rounded-2xl',
+      'flex-col',
+      'md:p-5',
+      'p-3',
+      'gap-2',
+      'rounded-medium',
       'border',
-      'border-solid',
-      'bg-card-fill',
       'border-card-stroke',
-      'max-md:px-5'
+      'bg-card-fill',
+      'w-full',
+      'lg:min-w-[22rem]'
     );
   });
 
