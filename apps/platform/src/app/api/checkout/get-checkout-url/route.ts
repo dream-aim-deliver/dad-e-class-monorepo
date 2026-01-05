@@ -22,6 +22,7 @@ export async function GET(req: Request) {
     const quantity = searchParams.get('quantity');
     const offerings = searchParams.get('offerings'); // Multiple offerings in format "1:3,2:2"
     const withCoaching = searchParams.get('withCoaching');
+    const lessonComponentIds = searchParams.get('lessonComponentIds'); // Comma-separated list of lesson component IDs
 
     // Get the amount in cents (Stripe expects cents)
     const amountParam = searchParams.get('amount');
@@ -55,6 +56,8 @@ export async function GET(req: Request) {
         metadata.offerings = offerings;
     }
     if (withCoaching) metadata.withCoaching = withCoaching;
+    if (lessonComponentIds) metadata.lessonComponentIds = lessonComponentIds;
+
 
     const origin = env.NEXT_PUBLIC_APP_URL;
     const checkoutSession = await createCheckoutSession(

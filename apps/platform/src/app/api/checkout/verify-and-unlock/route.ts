@@ -219,11 +219,6 @@ export async function POST(req: NextRequest) {
         try {
             useCaseModels.ProcessPurchaseRequestSchema.parse(finalPayload);
         } catch (validationError: any) {
-            console.error('[verify-and-unlock] Local Zod validation failed:', {
-                error: validationError.message,
-                issues: validationError.issues,
-                payload: JSON.stringify(finalPayload, null, 2),
-            });
             return Response.json(
                 {
                     error: 'Invalid purchase payload',
@@ -234,49 +229,25 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Wrap payload in request object with context as expected by backend
-        // The backend extracts context from headers, but we need to provide the structure
+        // Wrap payload in request object as expected by backend
+        // Based on backend testing, it expects: { request: { userId, transactionData, purchaseType, purchaseItems } }
+        // Context is extracted from Authorization header automatically, so we don't include it
         const wrappedPayload = {
             request: {
-                type: 'public' as const,
-                context: {
-                    // Context will be populated by backend from headers
-                    // We provide minimal structure here
-                    platformLanguageId: 1, // TODO: Get from actual platform context
-                    platformId: 1, // TODO: Get from actual platform context
-                    user: session?.user ? {
-                        state: 'created' as const,
-                        id: Number(userId),
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString(),
-                        username: session.user.name || '',
-                        email: session.user.email || transactionData.customerEmail,
-                        sub: session.user.id || userId,
-                    } : undefined,
-                    userRoles: session?.user?.roles || ['visitor', 'student'],
-                    expires: 0,
-                    digest: 'string',
-                },
-                ...finalPayload,
+                userId: finalPayload.userId,
+                transactionData: finalPayload.transactionData,
+                purchaseType: finalPayload.purchaseType,
+                purchaseItems: finalPayload.purchaseItems,
             },
         };
 
         let result;
         try {
-            // Send the wrapped payload - backend expects { request: { context, ...payload } }
-            // @ts-ignore - Type definition may not match actual backend expectation
+            // Send the wrapped payload - backend expects { request: { userId, transactionData, purchaseType, purchaseItems } }
+            // Context is extracted from Authorization header automatically
+            // @ts-ignore - Type definition may not match actual backend expectation (backend expects request wrapper)
             result = await backendTrpc.processPurchase.mutate(wrappedPayload.request);
         } catch (backendError: any) {
-            // Log the full error to understand what the backend is returning
-            console.error('[verify-and-unlock] Backend error details:', {
-                message: backendError?.message,
-                data: backendError?.data,
-                shape: backendError?.shape,
-                cause: backendError?.cause,
-                stack: backendError?.stack,
-                fullError: JSON.stringify(backendError, null, 2),
-            });
-            
             // Check if it's a validation error from FastAPI
             if (backendError?.data?.detail) {
                 return Response.json(
@@ -303,13 +274,6 @@ export async function POST(req: NextRequest) {
         // Step 6: Validate and build response that matches what the UI expects
         // The backend returns a TProcessPurchaseUseCaseResponse (discriminated union)
         if (!result || result.success !== true) {
-            console.error('[verify-and-unlock] Backend response validation failed:', {
-                result: result,
-                resultSuccess: (result as any)?.success,
-                resultData: (result as any)?.data,
-                fullResult: JSON.stringify(result, null, 2),
-            });
-
             let errorMessage = 'Unknown error from backend';
             if (result && 'data' in result && typeof result.data === 'object' && result.data !== null) {
                 const data = result.data as any;
@@ -343,6 +307,34 @@ export async function POST(req: NextRequest) {
             successData = resultData as useCaseModels.TProcessPurchaseSuccessResponse['data'];
         }
 
+        // Build purchasedItems based on purchase type
+        // For course purchases, use enrollments; for coaching sessions, use coachingSessions
+        let purchasedItems: Array<{ name: string; description: string }> = [];
+        
+        if (purchaseType === 'StudentCourseCoachingSessionPurchase' || purchaseType === 'StudentCoachingSessionPurchase') {
+            // For coaching session purchases, map coachingSessions
+            if (successData.coachingSessions && successData.coachingSessions.length > 0) {
+                purchasedItems = successData.coachingSessions.map((cs: { sessionId: number; offeringId: number | null; courseId: number | null }) => ({
+                    name: `Coaching Session ${cs.sessionId}`,
+                    description: cs.courseId ? `Course coaching session` : `Coaching session`,
+                }));
+            } else {
+                // Fallback if coachingSessions is empty but purchase succeeded
+                purchasedItems = [{
+                    name: 'Coaching Sessions',
+                    description: 'Course coaching sessions purchased',
+                }];
+            }
+        } else {
+            // For course/package purchases, use enrollments
+            if (successData.enrollments && successData.enrollments.length > 0) {
+                purchasedItems = successData.enrollments.map((e: { courseId: number; coachingIncluded: boolean }) => ({
+                    name: `Course ${e.courseId}`,
+                    description: e.coachingIncluded ? 'With coaching' : 'Course access',
+                }));
+            }
+        }
+
         const response = {
             success: true,
             alreadyProcessed: successData.alreadyProcessed,
@@ -354,10 +346,7 @@ export async function POST(req: NextRequest) {
             purchaseType,
             purchaseIdentifier: extractPurchaseIdentifier(purchaseType, metadata),
             customerEmail: transactionData.customerEmail,
-            purchasedItems: successData.enrollments.map((e: { courseId: number; coachingIncluded: boolean }) => ({
-                name: `Course ${e.courseId}`,
-                description: e.coachingIncluded ? 'With coaching' : 'Course access',
-            })),
+            purchasedItems,
         };
 
         return Response.json(response);
