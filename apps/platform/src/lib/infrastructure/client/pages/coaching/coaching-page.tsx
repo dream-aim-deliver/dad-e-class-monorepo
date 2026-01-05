@@ -89,17 +89,21 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
                     />
                 </div>
             )}
-            <CoachBanner
-                locale={locale}
-                title={coachingPage.banner.title}
-                description={coachingPage.banner.description}
-                imageUrl={coachingPage.banner.image?.downloadUrl ?? ''}
-                buttonText={coachingPage.banner.buttonText}
-                subtitle=""
-                onClick={() => {
-                    router.push(coachingPage.banner.buttonLink);
-                }}
-            />
+            {coachingPage.banner.title &&
+             coachingPage.banner.description &&
+             coachingPage.banner.image?.downloadUrl && (
+                <CoachBanner
+                    locale={locale}
+                    title={coachingPage.banner.title}
+                    description={coachingPage.banner.description}
+                    imageUrl={coachingPage.banner.image.downloadUrl}
+                    buttonText={coachingPage.banner.buttonText}
+                    subtitle=""
+                    onClick={() => {
+                        router.push(coachingPage.banner.buttonLink);
+                    }}
+                />
+            )}
         </div>
     );
 }

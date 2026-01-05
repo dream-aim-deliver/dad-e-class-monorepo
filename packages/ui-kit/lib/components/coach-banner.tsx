@@ -61,13 +61,15 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
           <p className="text-gray-300 text-md md:text-base leading-[150%] mb-6">
             {description}
           </p>
-          <Button
-            variant="primary"
-            size="big"
-            text={buttonText ?? dictionary.components.coachBanner.buttonText}
-            className="self-start"
-            onClick={onClick}
-          />
+          {buttonText && (
+            <Button
+              variant="primary"
+              size="big"
+              text={buttonText}
+              className="self-start"
+              onClick={onClick}
+            />
+          )}
         </div>
 
         <div className="order-1 md:order-2 h-full p-0 md:ml-10">

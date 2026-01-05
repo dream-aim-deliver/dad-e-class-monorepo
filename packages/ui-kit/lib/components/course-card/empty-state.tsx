@@ -33,9 +33,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   locale,
 }) => {
   return (
-    <div className="flex justify-center items-center w-full p-10 rounded-2xl border border-solid bg-card-fill border-card-stroke max-md:px-5">
-      <div className="flex flex-col justify-center items-center self-stretch my-auto text-center">
-        {message && <p className="text-base text-white">{message}</p>}
+      <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+        {message && <p className="text-text-secondary text-md">{message}</p>}
         {buttonText?.trim() && buttonText && <Button
           variant="primary"
           size="medium"
@@ -43,7 +42,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           onClick={onButtonClick}
           text={buttonText}
         />}
-      </div>
     </div>
   );
 };
