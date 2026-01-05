@@ -45,7 +45,9 @@ export default function AllUsers({ locale }: AllUsersProps) {
   const { presenter } = useListUsersPresenter(setListUsersViewModel);
 
   // TRPC query for page data
-  const [usersResponse] = trpc.listUsers.useSuspenseQuery({});
+  const [usersResponse] = trpc.listUsers.useSuspenseQuery({
+    showFilter: "all"
+  });
 
   // Call presenter in useEffect to avoid "Update hook called on initial render" error
   useEffect(() => {

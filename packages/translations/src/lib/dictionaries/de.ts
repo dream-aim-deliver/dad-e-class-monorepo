@@ -430,7 +430,7 @@ export const DE: TDictionary = {
       yourCourses: 'Deine Angebote',
     },
     cmsNavbar: {
-      manageUsers: 'Benutzer verwalten',
+      manageUsers: 'Alle Benutzer anzeigen',
     },
     logoutConfirmation: {
       title: 'Abmelden',

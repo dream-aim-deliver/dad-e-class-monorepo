@@ -427,7 +427,7 @@ export const EN: TDictionary = {
       yourCourses: 'Your Offers',
     },
     cmsNavbar: {
-      manageUsers: 'Manage Users',
+      manageUsers: 'View All Users',
     },
     logoutConfirmation: {
       title: 'Sign Out',
