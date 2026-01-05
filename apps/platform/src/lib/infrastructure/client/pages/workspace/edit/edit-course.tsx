@@ -175,6 +175,63 @@ function EditCourseContent({
     }
     const courseStatus = courseViewModel?.data.status
 
+    // Wrap handlePreview with validation for each tab
+    const handlePreviewWithValidation = () => {
+        // General tab validation
+        if (activeTab === TabTypes.General) {
+            if (!courseDetails.courseTitle) {
+                setErrorMessage(editCourseTranslations('titleRequiredForPreview'));
+                return;
+            }
+            if (!courseDetails.serializeDescription()) {
+                setErrorMessage(editCourseTranslations('descriptionRequiredForPreview'));
+                return;
+            }
+            if (!courseDetails.duration || Number.isNaN(courseDetails.duration) || courseDetails.duration <= 0) {
+                setErrorMessage(editCourseTranslations('durationRequiredForPreview'));
+                return;
+            }
+            if (!courseImageUpload.courseImage) {
+                setErrorMessage(editCourseTranslations('imageRequiredForPreview'));
+                return;
+            }
+        }
+
+        // IntroOutline tab validation
+        if (activeTab === TabTypes.IntroOutline) {
+            if (!courseIntroduction.introductionText) {
+                setErrorMessage(editCourseTranslations('introductionRequiredForPreview'));
+                return;
+            }
+            if (outlineItems.length < 1) {
+                setErrorMessage(editCourseTranslations('outlineRequiredForPreview'));
+                return;
+            }
+            for (const item of outlineItems) {
+                if (!item.title || !item.content) {
+                    setErrorMessage(editCourseTranslations('outlineItemsIncomplete'));
+                    return;
+                }
+            }
+        }
+
+        // CourseContent tab validation
+        if (activeTab === TabTypes.CourseContent) {
+            if (modules.length < 1) {
+                setErrorMessage(editCourseTranslations('modulesRequiredForPreview'));
+                return;
+            }
+            // Check that at least one module has content (lessons or milestones)
+            const hasContent = modules.some(module => module.content && module.content.length > 0);
+            if (!hasContent) {
+                setErrorMessage(editCourseTranslations('lessonsRequiredForPreview'));
+                return;
+            }
+        }
+
+        handlePreview();
+    };
+
     const handleSave = async () => {
         setErrorMessage(null);
         setSuccessMessage(null);
@@ -210,7 +267,7 @@ function EditCourseContent({
 
     return (
         <EditCourseLayout
-            onPreview={handlePreview}
+            onPreview={handlePreviewWithValidation}
             onSave={handleSave}
             onTabChange={handleTabChange}
             isEdited={isEdited}

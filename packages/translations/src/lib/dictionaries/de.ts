@@ -2149,6 +2149,15 @@ export const DE: TDictionary = {
         priceIncludingCoachingsPlaceholder: 'Preis mit Coachings eingeben',
         priceIncludingCoachingsHelper: 'Preis inklusive Coaching-Sitzungen',
       },
+      introductionRequiredForPreview: 'Bitte füllen Sie den Einführungstext aus, bevor Sie die Vorschau anzeigen.',
+      outlineRequiredForPreview: 'Bitte fügen Sie mindestens einen Gliederungspunkt hinzu, bevor Sie die Vorschau anzeigen.',
+      outlineItemsIncomplete: 'Bitte füllen Sie Titel und Inhalt für alle Gliederungspunkte aus, bevor Sie die Vorschau anzeigen.',
+      titleRequiredForPreview: 'Bitte füllen Sie den Angebotstitel aus, bevor Sie die Vorschau anzeigen.',
+      descriptionRequiredForPreview: 'Bitte füllen Sie die Angebotsbeschreibung aus, bevor Sie die Vorschau anzeigen.',
+      durationRequiredForPreview: 'Bitte geben Sie eine gültige Dauer ein, bevor Sie die Vorschau anzeigen.',
+      imageRequiredForPreview: 'Bitte laden Sie ein Angebotsbild hoch, bevor Sie die Vorschau anzeigen.',
+      modulesRequiredForPreview: 'Bitte fügen Sie mindestens ein Modul hinzu, bevor Sie die Vorschau anzeigen.',
+      lessonsRequiredForPreview: 'Bitte fügen Sie mindestens eine Lektion oder einen Meilenstein zu einem Modul hinzu, bevor Sie die Vorschau anzeigen.',
     },
     edit: {
       lesson: {
