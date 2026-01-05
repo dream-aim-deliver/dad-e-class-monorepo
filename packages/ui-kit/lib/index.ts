@@ -34,6 +34,7 @@ export { CourseCard } from './components/course-card/course-card';
 export { CourseCardList } from './components/course-card/course-card-list';
 export { EmptyState } from './components/course-card/empty-state';
 export { default as BuyCoachingSession, type BuyCoachingSessionProps } from './components/buy-coaching-session';
+export { BuyCourseCoachingSessions, type BuyCourseCoachingSessionsProps } from './components/buy-course-coaching-sessions';
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/accordion';
 export * as contexts from './contexts';
 export { Navbar } from './components/navbar';
