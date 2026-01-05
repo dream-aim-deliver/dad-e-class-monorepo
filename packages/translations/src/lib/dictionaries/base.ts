@@ -387,6 +387,17 @@ export const DictionarySchema = z.object({
       total: z.string(),
       minutes: z.string(),
     }),
+    buyCourseCoachingSessions: z.object({
+      title: z.string(),
+      description: z.string(),
+      buttonText: z.string(),
+      total: z.string(),
+      minutes: z.string(),
+      noSessionsAvailable: z.string(),
+      sessionAvailableSingular: z.string(),
+      sessionAvailablePlural: z.string(),
+      cancelText: z.string(),
+    }),
     videoPlayer: z.object({
       videoErrorText: z.string()
     }),
