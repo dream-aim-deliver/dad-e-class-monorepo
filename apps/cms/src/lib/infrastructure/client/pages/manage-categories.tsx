@@ -62,7 +62,7 @@ function CreateCategoryDialogContent({ onSuccess }: { onSuccess: () => void }) {
     useEffect(() => {
         if (createCategoryMutation.isSuccess && createCategoryMutation.data) {
             // @ts-ignore            
-            presenter.present(createCategoryMutation, createCategoryViewModel);
+            presenter.present(createCategoryMutation.data, createCategoryViewModel);
         }
     }, [createCategoryMutation.isSuccess, createCategoryMutation.data, presenter, createCategoryViewModel]);
 
@@ -133,7 +133,7 @@ function EditCategoryDialogContent({
     useEffect(() => {
         if (updateCategoryMutation.isSuccess && updateCategoryMutation.data) {
             // @ts-ignore  
-            updatePresenter.present(updateCategoryMutation, updateCategoryViewModel);
+            updatePresenter.present(updateCategoryMutation.data, updateCategoryViewModel);
         }
     }, [
         updateCategoryMutation.isSuccess,
@@ -145,7 +145,7 @@ function EditCategoryDialogContent({
     useEffect(() => {
         if (deleteCategoryMutation.isSuccess && deleteCategoryMutation.data) {
             // @ts-ignore
-            deletePresenter.present(deleteCategoryMutation, deleteCategoryViewModel);
+            deletePresenter.present(deleteCategoryMutation.data, deleteCategoryViewModel);
         }
     }, [
         deleteCategoryMutation.isSuccess,
