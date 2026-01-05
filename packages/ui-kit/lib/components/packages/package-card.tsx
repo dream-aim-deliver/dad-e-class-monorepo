@@ -187,15 +187,17 @@ export const PackageCard = ({
                         />
 
                         {/* Prices */}
-                        <div className="flex gap-2 items-center">
-                            <h6 className="text-text-primary lg:text-lg">
-                                {(pricing as any).currency} {(pricing as any).fullPrice}
-                            </h6>
-                            <p className="text-feedback-success-primary lg:text-md text-sm font-important">
-                                {dictionary.components.packages.saveText}{' '}
-                                {(pricing as any).currency} {(pricing as any).partialPrice}
-                            </p>
-                        </div>
+                        {pricing && (
+                            <div className="flex gap-2 items-center">
+                                <h6 className="text-text-primary lg:text-lg">
+                                    {pricing.currency} {pricing.fullPrice}
+                                </h6>
+                                <p className="text-feedback-success-primary lg:text-md text-sm font-important">
+                                    {dictionary.components.packages.saveText}{' '}
+                                    {pricing.currency} {pricing.partialPrice}
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
