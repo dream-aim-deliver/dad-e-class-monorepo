@@ -202,6 +202,7 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
           emailTooltip={t('copyEmailTooltip')}
           enableSelection={true}
           onSendNotifications={handleSendNotifications}
+          showDetailsColumn={true}
         />
       </div>
 

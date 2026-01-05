@@ -12,31 +12,156 @@
 // - NO send notifications functionality (users span multiple platforms, notifications need single platform context)
 // - To send bulk notifications, admins must go to platform-specific user view
 
+import { trpc } from '../trpc/cms-client';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { DefaultLoading, DefaultError, UserGrid, Breadcrumbs, type UserRow } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListUsersPresenter } from '../hooks/use-list-users-presenter';
+import { useRouter } from 'next/navigation';
+import { TUserListItem } from '@dream-aim-deliver/e-class-cms-rest';
+
 
 interface AllUsersProps {
   locale: TLocale;
 }
 
 export default function AllUsers({ locale }: AllUsersProps) {
-  const t = useTranslations('pages.cmsAllUsers');
   const currentLocale = useLocale() as TLocale;
+  const t = useTranslations('pages.cmsAllUsers');
+  const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+  const router = useRouter();
+
+  // Grid ref for AG Grid instance
+  const gridRef = useRef<any>(null);
+
+  // ViewModel state
+  const [listUsersViewModel, setListUsersViewModel] = useState<
+    viewModels.TListUsersViewModel | undefined
+  >(undefined);
+
+  // Presenter hook
+  const { presenter } = useListUsersPresenter(setListUsersViewModel);
+
+  // TRPC query for page data
+  const [usersResponse] = trpc.listUsers.useSuspenseQuery({});
+
+  // Call presenter in useEffect to avoid "Update hook called on initial render" error
+  useEffect(() => {
+    // @ts-ignore
+    presenter.present(usersResponse, listUsersViewModel);
+  }, [usersResponse, listUsersViewModel, presenter]);
+
+  // Compute transformed users (only used if viewModel is default mode, but compute it here to avoid hook ordering issues)
+  // Memoize to prevent AG Grid from resetting selection on re-renders
+  const transformedUsers: UserRow[] = useMemo(() => {
+    if (!listUsersViewModel || listUsersViewModel.mode !== 'default') {
+      return [];
+    }
+    const users = listUsersViewModel.data?.users ?? [];
+    return users.map((user: TUserListItem) => ({
+      userId: user.id,
+      id: user.id,
+      name: user.name ?? '',
+      surname: user.surname ?? '',
+      email: user.email,
+      phone: user.phone ?? '',
+      phoneNumber: user.phone ?? undefined,
+      rating: 'rating' in user ? (user.rating ?? undefined) : undefined,
+      roles: user.roles,
+      coachingSessionsCount: user.coachingSessionsCount ?? undefined,
+      coursesBought: user.coursesBought ?? undefined,
+      coursesCreated: user.coursesCreated ?? undefined,
+      lastAccess: user.lastAccess,
+      username: user.username,
+      interfaceLanguage: { code: 'en', name: 'English' }, // Default values since not provided by backend
+      receiveNewsletter: false,
+    }));
+  }, [listUsersViewModel]);
+
+  // Handler for email click - copy to clipboard
+  const handleEmailClick = async (email: string) => {
+    try {
+      await navigator.clipboard.writeText(email);
+      // Optional: You could add a toast notification here to confirm the copy
+    } catch (error) {
+      console.error('Failed to copy email to clipboard:', error);
+    }
+  };
+
+  // Loading state
+  if (!listUsersViewModel) {
+    return <DefaultLoading locale={currentLocale} variant="minimal" />;
+  }
+
+  // Error handling
+  if (listUsersViewModel.mode === 'kaboom') {
+    const errorData = listUsersViewModel.data;
+    console.error(errorData);
+    return (
+      <DefaultError
+        locale={currentLocale}
+        title={t('error.title')}
+        description={t('error.description')}
+      />
+    );
+  }
+
+  if (listUsersViewModel.mode === 'not-found') {
+    const errorData = listUsersViewModel.data;
+    console.error(errorData);
+    return (
+      <DefaultError
+        locale={currentLocale}
+        title={t('error.notFound.title')}
+        description={t('error.notFound.description')}
+      />
+    );
+  }
+
+  // Breadcrumbs - simpler than platform-users since this is a top-level page
+  const breadcrumbItems = [
+    {
+      label: breadcrumbsTranslations('home'),
+      onClick: () => router.push('/'),
+    },
+    {
+      label: t('title'),
+      onClick: () => {
+        // Nothing should happen on clicking the current page
+      },
+    },
+  ];
 
   return (
-    <div className="flex flex-col space-y-5 px-30">
-      <div>
-        <h1>{t('title')}</h1>
-        <p>{t('description')}</p>
+    <div className="flex flex-col h-[calc(100vh-200px)] space-y-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+      <div className="flex-shrink-0">
+        <Breadcrumbs items={breadcrumbItems} />
       </div>
 
-      {/* Features from Notion:
-          - FEAT-195 (listUsers - In Progress)
-      */}
-      {/* UI Components from Notion:
-          - AG Grid for user management (no details column, no send notifications)
-          - 1 component referenced
-      */}
+      <div className="flex-shrink-0 flex flex-col space-y-2">
+        <h1>{t('title')}</h1>
+        <p className="text-text-secondary text-sm">
+          {t('description')}
+        </p>
+      </div>
+
+      {/* Users Grid - No details column, no selection, no notifications */}
+      <div className="flex-1 min-h-0 bg-transparent">
+        <UserGrid
+          gridRef={gridRef}
+          users={transformedUsers}
+          locale={currentLocale}
+          onUserDetailsClick={() => {
+            // No-op: Can't access user details from this page
+          }}
+          onEmailClick={handleEmailClick}
+          emailTooltip={t('copyEmailTooltip')}
+          enableSelection={false}
+          showDetailsColumn={false}
+        />
+      </div>
     </div>
   );
 }

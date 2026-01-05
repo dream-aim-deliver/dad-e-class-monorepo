@@ -49,6 +49,7 @@ export interface UserGridProps extends isLocalAware {
     doesExternalFilterPass?: (node: IRowNode<UserRow>) => boolean;
     enableSelection?: boolean;
     onSendNotifications?: (userIds: number[]) => void;
+    showDetailsColumn: boolean;
 }
 
 // Role icon component
@@ -181,7 +182,7 @@ export const UserGrid = (props: UserGridProps) => {
             headerName: dictionary.surnameColumn,
             filter: 'agTextColumnFilter'
         },
-        {
+        ...(props.showDetailsColumn ? [{
             cellRenderer: DetailsCellRenderer,
             onCellClicked: (params: any) => {
                 const user = params.data;
@@ -192,7 +193,7 @@ export const UserGrid = (props: UserGridProps) => {
             resizable: false,
             sortable: false,
             filter: false
-        },
+        }] : []),
         {
             field: 'email',
             headerName: dictionary.emailColumn,
@@ -262,7 +263,7 @@ export const UserGrid = (props: UserGridProps) => {
             },
             filter: 'agDateColumnFilter'
         }
-    ], [dictionary, props.emailTooltip]);
+    ], [dictionary, props.emailTooltip, props.showDetailsColumn, props.onUserDetailsClick]);
 
     // For filter modal
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);

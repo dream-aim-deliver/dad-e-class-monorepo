@@ -258,6 +258,7 @@ export const Default: Story = {
     args: {
         users: multipleMockUsers,
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -271,6 +272,7 @@ export const GermanLocale: Story = {
     args: {
         users: multipleMockUsers,
         locale: 'de',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -284,6 +286,7 @@ export const StudentsOnly: Story = {
     args: {
         users: multipleMockUsers.filter(user => user.roles.some(role => role.role === 'student')),
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -297,6 +300,7 @@ export const CoachesOnly: Story = {
     args: {
         users: multipleMockUsers.filter(user => user.roles.some(role => role.role === 'coach')),
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -310,6 +314,7 @@ export const CourseCreatorsOnly: Story = {
     args: {
         users: multipleMockUsers.filter(user => user.roles.some(role => role.role === 'course creator')),
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -323,6 +328,7 @@ export const AdminsOnly: Story = {
     args: {
         users: multipleMockUsers.filter(user => user.roles.some(role => role.role === 'admin')),
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -337,6 +343,7 @@ export const Selectable: Story = {
         users: Array.from({ length: 5 }, () => [...multipleMockUsers]).flat(),
         enableSelection: true,
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -353,6 +360,7 @@ export const Empty: Story = {
     args: {
         users: [],
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -368,6 +376,7 @@ export const WithNotifications: Story = {
         users: Array.from({ length: 2 }, () => [...multipleMockUsers]).flat(),
         enableSelection: true,
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -440,6 +449,7 @@ export const Filter: Story = {
     args: {
         users: Array.from({ length: 5 }, () => [...multipleMockUsers]).flat(),
         locale: 'en',
+        showDetailsColumn: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
