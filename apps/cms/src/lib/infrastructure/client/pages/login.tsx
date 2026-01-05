@@ -58,7 +58,7 @@ const LoginPage = (props: LoginPageProps) => {
                 privacy_policy_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/privacy-policy`,
                 terms_of_use_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
                 rules_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/rules`,
-                courses_information_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/courses-information`,
+                courses_information_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/offer-information`,
             },
         );
     };

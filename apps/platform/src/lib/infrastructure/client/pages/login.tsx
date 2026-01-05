@@ -59,7 +59,7 @@ const LoginPage = (props: LoginPageProps) => {
                 privacy_policy_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/privacy-policy`,
                 terms_of_use_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
                 rules_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/rules`,
-                courses_information_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/courses-information`,
+                courses_information_url: `${props.runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/offer-information`,
             },
         );
     };
