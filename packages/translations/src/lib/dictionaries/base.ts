@@ -2212,6 +2212,15 @@ export const DictionarySchema = z.object({
         priceIncludingCoachingsPlaceholder: z.string(),
         priceIncludingCoachingsHelper: z.string(),
       }),
+      introductionRequiredForPreview: z.string(),
+      outlineRequiredForPreview: z.string(),
+      outlineItemsIncomplete: z.string(),
+      titleRequiredForPreview: z.string(),
+      descriptionRequiredForPreview: z.string(),
+      durationRequiredForPreview: z.string(),
+      imageRequiredForPreview: z.string(),
+      modulesRequiredForPreview: z.string(),
+      lessonsRequiredForPreview: z.string(),
     }),
     edit: z.object({
       lesson: z.object({

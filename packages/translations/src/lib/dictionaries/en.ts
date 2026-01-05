@@ -2146,6 +2146,15 @@ export const EN: TDictionary = {
         priceIncludingCoachingsPlaceholder: 'Enter price with coachings',
         priceIncludingCoachingsHelper: 'Price including coaching sessions',
       },
+      introductionRequiredForPreview: 'Please fill in the introduction text before previewing.',
+      outlineRequiredForPreview: 'Please add at least one outline item before previewing.',
+      outlineItemsIncomplete: 'Please fill in title and content for all outline items before previewing.',
+      titleRequiredForPreview: 'Please fill in the offer title before previewing.',
+      descriptionRequiredForPreview: 'Please fill in the offer description before previewing.',
+      durationRequiredForPreview: 'Please enter a valid duration before previewing.',
+      imageRequiredForPreview: 'Please upload an offer image before previewing.',
+      modulesRequiredForPreview: 'Please add at least one module before previewing.',
+      lessonsRequiredForPreview: 'Please add at least one lesson or milestone to a module before previewing.',
     },
     edit: {
       lesson: {
