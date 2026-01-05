@@ -226,7 +226,7 @@ Alle Datenübertragungen erfolgen verschlüsselt (SSL/TLS).
 
 Die Just do Ad GmbH behält sich vor, diese Datenschutzerklärung jederzeit zu aktualisieren oder anzupassen. Änderungen gelten für alle Plattformen, die über eclasslogin.ch erreichbar sind.
 
-Es gilt stets die aktuelle Version, veröffentlicht auf [**www.justdoad.ch/datenschutz**](http://www.justdoad.ch/datenschutz).
+Es gilt stets die aktuelle Version, veröffentlicht auf [**www.eclasslogin.ch/de/terms-of-use**](http://www.eclasslogin.ch/de/terms-of-use).
 
 ### **10. Kontakt**
 
