@@ -22,6 +22,7 @@ import { useSession } from 'next-auth/react';
 import env from '../../../config/env';
 import CourseIntroduction from '../../common/course-introduction';
 import CourseOutline from '../../common/course-outline';
+import BuyCourseCoachingSessionsModal from './buy-course-coaching-sessions-modal';
 
 interface EnrolledCourseIntroductionProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -98,14 +99,17 @@ function EnrolledCourseIntroductionContent(
 function IncludedCoachingSessions({ 
     courseSlug,
     onPurchaseComponentCoaching,
+    onBuySessions,
 }: { 
     courseSlug: string;
     onPurchaseComponentCoaching?: (lessonComponentIds: string[]) => void;
+    onBuySessions?: () => void;
 }) {
     const [coachingSessionsResponse] =
         trpc.listIncludedCoachingSessions.useSuspenseQuery({
             courseSlug: courseSlug,
         });
+        
     const [coachingSessionsViewModel, setCoachingSessionsViewModel] = useState<
         viewModels.TIncludedCoachingSessionListViewModel | undefined
     >(undefined);
@@ -132,7 +136,7 @@ function IncludedCoachingSessions({
         <CoachingSessionTracker
             locale={locale}
             onClickBuySessions={() => {
-                // TODO: Implement navigation to a page where sessions can be bought
+                onBuySessions?.();
             }}
         >
             {offers.map((offer) => (
@@ -166,6 +170,7 @@ function StudentEnrolledCourseIntroduction(
     const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [isBuySessionsModalOpen, setIsBuySessionsModalOpen] = useState(false);
 
     // Get tRPC utils for fetching checkout data
     const utils = trpc.useUtils();
@@ -248,6 +253,9 @@ function StudentEnrolledCourseIntroduction(
             return;
         }
 
+        // Close the buy sessions modal
+        setIsBuySessionsModalOpen(false);
+
         // User is logged in, execute checkout
         executeCheckout(request);
     }, [props.courseSlug, isLoggedIn, saveIntent, router, locale, executeCheckout]);
@@ -255,6 +263,11 @@ function StudentEnrolledCourseIntroduction(
     const handlePaymentComplete = (sessionId: string) => {
         setIsCheckoutOpen(false);
         setTransactionDraft(null);
+        
+        // Invalidate queries to refresh coaching sessions data after purchase
+        utils.listIncludedCoachingSessions.invalidate({ courseSlug: props.courseSlug });
+        utils.listCourseCoachingSessionPurchaseStatus.invalidate({ courseSlug: props.courseSlug });
+        
         // TODO: Redirect to success page or show success message
     };
 
@@ -266,9 +279,19 @@ function StudentEnrolledCourseIntroduction(
                 <IncludedCoachingSessions 
                     courseSlug={props.courseSlug}
                     onPurchaseComponentCoaching={handlePurchaseComponentCoaching}
+                    onBuySessions={() => setIsBuySessionsModalOpen(true)}
                 />
             </Suspense>
             <EnrolledCourseIntroductionContent {...props} />
+
+            {/* Buy Course Coaching Sessions Modal */}
+            <BuyCourseCoachingSessionsModal
+                isOpen={isBuySessionsModalOpen}
+                onClose={() => setIsBuySessionsModalOpen(false)}
+                courseSlug={props.courseSlug}
+                locale={locale}
+                onPurchase={handlePurchaseComponentCoaching}
+            />
 
             {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCourseCoachingSessionPurchase' && (
                 <CheckoutModal
