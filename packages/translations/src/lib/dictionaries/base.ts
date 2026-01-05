@@ -3316,28 +3316,6 @@ export const DictionarySchema = z.object({
       emptyStateCourses: z.string(),
       exploreCourses: z.string(),
     }),
-  }),
-  common: z.object({
-    roles: z.object({
-      visitor: z.string(),
-      student: z.string(),
-      coach: z.string(),
-      course_creator: z.string(),
-      admin: z.string(),
-      superadmin: z.string(),
-    }),
-  }),
-  metadata: z.object({
-    platform: z.object({
-      title: z.string(),
-      description: z.string(),
-      ogDescription: z.string(),
-    }),
-    cms: z.object({
-      title: z.string(),
-      description: z.string(),
-      ogDescription: z.string(),
-    }),
     checkoutReturn: z.object({
       loading: z.object({
         processing: z.string(),
@@ -3366,6 +3344,28 @@ export const DictionarySchema = z.object({
         browseOfferings: z.string(),
         continue: z.string(),
       }),
+    }),
+  }),
+  common: z.object({
+    roles: z.object({
+      visitor: z.string(),
+      student: z.string(),
+      coach: z.string(),
+      course_creator: z.string(),
+      admin: z.string(),
+      superadmin: z.string(),
+    }),
+  }),
+  metadata: z.object({
+    platform: z.object({
+      title: z.string(),
+      description: z.string(),
+      ogDescription: z.string(),
+    }),
+    cms: z.object({
+      title: z.string(),
+      description: z.string(),
+      ogDescription: z.string(),
     }),
   }),
 });

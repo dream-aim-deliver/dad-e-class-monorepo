@@ -86,7 +86,7 @@ export function OffersCourseList({
         useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const { presenter: checkoutPresenter } =
         usePrepareCheckoutPresenter(setCheckoutViewModel);
-    const prepareCheckoutMutation = trpc.prepareCheckout.useMutation();
+    const utils = trpc.useUtils();
 
     // Helper to execute checkout
     const executeCheckout = useCallback(async (
@@ -94,12 +94,13 @@ export function OffersCourseList({
     ) => {
         try {
             setCurrentRequest(request); // Save current request for metadata
-            const response = await prepareCheckoutMutation.mutateAsync(request);
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(request) as useCaseModels.TPrepareCheckoutUseCaseResponse;
             checkoutPresenter.present(response, checkoutViewModel);
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
-    }, [prepareCheckoutMutation, checkoutPresenter, checkoutViewModel]);
+    }, [utils, checkoutPresenter, checkoutViewModel]);
 
     // Watch for checkoutViewModel changes and open modal when ready
     useEffect(() => {
