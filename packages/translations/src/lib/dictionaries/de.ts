@@ -389,6 +389,17 @@ export const DE: TDictionary = {
       total: "Gesamt",
       minutes: "Minuten"
     },
+    buyCourseCoachingSessions: {
+      title: "Kurs-Coaching-Sitzungen kaufen",
+      description: "Kaufe zusätzliche Coaching-Sitzungen für diesen Kurs. Wähle die Anzahl der Sitzungen, die du für jedes Angebot kaufen möchtest.",
+      buttonText: "Coaching-Sitzungen kaufen",
+      total: "Gesamt",
+      minutes: "Minuten",
+      noSessionsAvailable: "Keine Coaching-Sitzungen zum Kauf verfügbar.",
+      sessionAvailableSingular: "Sitzung verfügbar",
+      sessionAvailablePlural: "Sitzungen verfügbar",
+      cancelText: "Abbrechen",
+    },
     videoPlayer: {
       videoErrorText: 'Video existiert nicht'
     },
