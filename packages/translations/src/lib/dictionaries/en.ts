@@ -3272,6 +3272,7 @@ export const EN: TDictionary = {
       emptyStateCourses: "No courses available from this coach",
       exploreCourses: "Explore courses",
     },
+    checkoutReturn: CheckoutReturn_EN,
   },
   common: {
     roles: {
@@ -3294,6 +3295,5 @@ export const EN: TDictionary = {
       description: "Manage courses, users, and platform content.",
       ogDescription: "Powerful content management for your learning platform.",
     },
-    checkoutReturn: CheckoutReturn_EN,
   },
 };
