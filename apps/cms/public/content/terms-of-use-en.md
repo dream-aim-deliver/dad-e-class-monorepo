@@ -210,7 +210,7 @@ All data transmissions are encrypted (SSL/TLS).
 
 Just do Ad GmbH reserves the right to update or amend this Privacy Policy at any time.
 Changes apply to all platforms accessible via **eclasslogin.ch**.
-The current version is always published at [**www.justdoad.ch/datenschutz**](http://www.justdoad.ch/datenschutz).
+The current version is always published at [**www.eclasslogin.ch/en/terms-of-use**](http://www.eclasslogin.ch/en/terms-of-use).
 
 ### **10. Contact**
 
