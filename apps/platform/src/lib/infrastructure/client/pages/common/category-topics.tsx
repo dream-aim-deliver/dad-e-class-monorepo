@@ -198,12 +198,20 @@ export default function CategoryTopics({
                 key={category}
                 className={CONTENT_CLASS_NAME}
             >
-                <FilterSwitch
-                    selectedTopics={selectedTopics}
-                    setSelectedTopics={setSelectedTopics}
-                    title={filterText}
-                    list={topics}
-                />
+                {topics.length === 0 ? (
+                    <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                        <p className="text-text-secondary text-md">
+                            {categoryTopicsTranslations('noTopicsFound')}
+                        </p>
+                    </div>
+                ) : (
+                    <FilterSwitch
+                        selectedTopics={selectedTopics}
+                        setSelectedTopics={setSelectedTopics}
+                        title={filterText}
+                        list={topics}
+                    />
+                )}
             </Tabs.Content>
         );
     };
@@ -212,9 +220,11 @@ export default function CategoryTopics({
         return (
             <div className="flex flex-col gap-4">
                 <h2>{chooseCategoryText}</h2>
-                <p className="text-center text-gray-500 py-8">
-                    {categoryTopicsTranslations('noTopicsFound')}
-                </p>
+                <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                    <p className="text-text-secondary text-md">
+                        {categoryTopicsTranslations('noTopicsFound')}
+                    </p>
+                </div>
             </div>
         );
     }
@@ -233,12 +243,20 @@ export default function CategoryTopics({
                 </Tabs.List>
 
                 <Tabs.Content value="all" className={CONTENT_CLASS_NAME}>
-                    <FilterSwitch
-                        selectedTopics={selectedTopics}
-                        setSelectedTopics={setSelectedTopics}
-                        title={filterText}
-                        list={allTopics}
-                    />
+                    {allTopics.length === 0 ? (
+                        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                            <p className="text-text-secondary text-md">
+                                {categoryTopicsTranslations('noTopicsFound')}
+                            </p>
+                        </div>
+                    ) : (
+                        <FilterSwitch
+                            selectedTopics={selectedTopics}
+                            setSelectedTopics={setSelectedTopics}
+                            title={filterText}
+                            list={allTopics}
+                        />
+                    )}
                 </Tabs.Content>
 
                 {categories.map(renderCategoryContent)}
