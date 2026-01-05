@@ -2940,6 +2940,7 @@ export const DE: TDictionary = {
     cmsAllUsers: {
       title: 'Alle Benutzer',
       description: 'Zeige und verwalte Benutzer über alle Plattformen hinweg',
+      copyEmailTooltip: 'E-Mail in Zwischenablage kopieren',
       error: {
         title: 'Fehler',
         description: 'Beim Laden der Benutzer ist ein Fehler aufgetreten.',

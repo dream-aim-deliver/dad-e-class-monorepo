@@ -2937,6 +2937,7 @@ export const EN: TDictionary = {
     cmsAllUsers: {
       title: 'All Users',
       description: 'View and manage users across all platforms',
+      copyEmailTooltip: 'Copy email to clipboard',
       error: {
         title: 'Error',
         description: 'An error occurred while loading users.',
