@@ -12,6 +12,7 @@ import {
     IconLoaderSpinner,
 } from '@maany_shr/e-class-ui-kit';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { trpc } from '../../../../../lib/infrastructure/client/trpc/cms-client';
 
 type PageState = 'loading' | 'success' | 'error';
 
@@ -21,6 +22,7 @@ export default function CheckoutReturnPage() {
     const dictionary = getDictionary(locale as TLocale);
     const searchParams = useSearchParams();
     const sessionId = searchParams?.get('session_id');
+    const utils = trpc.useUtils();
 
     const [state, setState] = useState<PageState>('loading');
     const [transaction, setTransaction] = useState<any>(null);
@@ -72,6 +74,17 @@ export default function CheckoutReturnPage() {
                 setTransaction(result);
                 setState('success');
 
+                // Invalidate relevant queries to refresh data after purchase
+                if (result.purchaseType === 'StudentCourseCoachingSessionPurchase' && result.purchaseIdentifier?.courseSlug) {
+                    utils.listIncludedCoachingSessions.invalidate({ courseSlug: result.purchaseIdentifier.courseSlug });
+                    utils.listCourseCoachingSessionPurchaseStatus.invalidate({ courseSlug: result.purchaseIdentifier.courseSlug });
+                } else if (result.purchaseType === 'StudentCoursePurchase' || result.purchaseType === 'StudentCoursePurchaseWithCoaching') {
+                    if (result.purchaseIdentifier?.courseSlug) {
+                        utils.listIncludedCoachingSessions.invalidate({ courseSlug: result.purchaseIdentifier.courseSlug });
+                        utils.getEnrolledCourseDetails.invalidate({ courseSlug: result.purchaseIdentifier.courseSlug });
+                    }
+                }
+
                 // Start countdown for auto-redirect
                 if (!result.alreadyProcessed) {
                     startCountdown(result);
@@ -118,6 +131,11 @@ export default function CheckoutReturnPage() {
             case 'StudentCoursePurchase':
             case 'StudentCoursePurchaseWithCoaching':
                 return `/${locale}/courses/${identifier.courseSlug}`;
+            case 'StudentCourseCoachingSessionPurchase':
+                // Redirect back to the enrolled course page
+                return identifier.courseSlug 
+                    ? `/${locale}/courses/${identifier.courseSlug}`
+                    : `/${locale}/workspace/courses`;
             case 'StudentPackagePurchase':
             case 'StudentPackagePurchaseWithCoaching':
                 return `/${locale}/workspace/courses`;
