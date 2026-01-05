@@ -35,6 +35,7 @@ describe('CoachBanner', () => {
     subtitle: 'Learning Coach',
     description: 'Join our community of expert coaches and help students achieve their goals.',
     imageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    buttonText: 'Join Now',
     onClick: vi.fn(() => alert('Button clicked!')),
   };
 
