@@ -132,7 +132,7 @@ async function isValidImage(url: string): Promise<boolean> {
     }
 }
 
-async function extractFaviconFromHtml(domain: string, largeOnly: boolean = false): Promise<string | null> {
+async function extractFaviconFromHtml(domain: string, largeOnly = false): Promise<string | null> {
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
