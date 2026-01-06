@@ -1,6 +1,11 @@
 /**
  * Generates a favicon URL based on the provided website URL.
- * Tries to fetch the favicon from common locations and falls back to a default favicon if it fails.
+ * Uses a local API route that fetches favicons with multiple fallbacks:
+ * 1. Direct favicon.ico from the domain
+ * 2. Parse HTML for link rel="icon" tags
+ * 3. DuckDuckGo favicon service
+ * 4. Google favicon service
+ *
  * @param url The URL of the website to fetch the favicon from.
  * @returns The favicon URL or an empty string if not available.
  * @example
@@ -18,8 +23,8 @@ export const getFaviconUrl = (url: string): string => {
         const urlObject = new URL(processedUrl);
         const hostname = urlObject.hostname;
         if (!hostname) return "";
-        // Use Google's favicon service with cache buster to prevent stale icons
-        return `https://www.google.com/s2/favicons?domain=${hostname}&sz=64&v=${Date.now()}`;
+        // Use local API route with fallback chain for resilient favicon fetching
+        return `/api/favicon?domain=${encodeURIComponent(hostname)}`;
     } catch (error) {
         console.warn(`Failed to generate favicon URL for: ${url}`, error);
         return "";
