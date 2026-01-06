@@ -213,14 +213,15 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     const defaultTab: string = useMemo(() => {
         if (props.tab) {
             const studentTabs: string[] = Object.values(StudentCourseTab);
-            if (
-                props.currentRole === 'student' &&
-                studentTabs.includes(props.tab)
-            ) {
+            const coachTabs: string[] = Object.values(CoachCourseTab);
+            if (props.currentRole === 'student' && studentTabs.includes(props.tab)) {
+                return props.tab;
+            }
+            if (props.currentRole !== 'student' && coachTabs.includes(props.tab)) {
                 return props.tab;
             }
         }
-        return StudentCourseTab.INTRODUCTION;
+        return props.currentRole === 'student' ? StudentCourseTab.INTRODUCTION : CoachCourseTab.INTRODUCTION;
     }, [props.tab, props.currentRole]);
 
     // Update URL when tab changes
@@ -291,7 +292,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     value={CoachCourseTab.PREVIEW}
                     className={tabContentClass}
                 >
-                    <EnrolledCoursePreview courseSlug={props.courseSlug} />
+                    <EnrolledCoursePreview courseSlug={props.courseSlug} initialLessonId={props.lesson} />
                 </Tabs.Content>
                 <Tabs.Content value={CoachCourseTab.STUDENTS} className={tabContentClass}>
                     <EnrolledCourseStudents

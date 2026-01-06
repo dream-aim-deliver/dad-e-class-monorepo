@@ -100,9 +100,8 @@ export default function StudentInteractionsTab({
                 <CoachStudentInteractionCard
                     modules={modulesWithInteractions}
                     locale={locale}
-                    onViewLessonsClick={(moduleId: string, lessonId: string) => {
-                        // TODO: handle view lessons click
-                        console.log('View lessons for module:', moduleId, 'lesson:', lessonId);
+                    onViewLessonsClick={(_moduleId: string, lessonId: string) => {
+                        window.open(`/${locale}/courses/${courseSlug}?role=coach&tab=preview&lesson=${lessonId}`, '_blank');
                     }}
                     onDeserializationError={(message: string, error: Error) => {
                         console.error(message, error);
