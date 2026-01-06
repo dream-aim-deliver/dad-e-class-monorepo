@@ -66,6 +66,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const [thumbnailLoaded, setThumbnailLoaded] = useState<boolean | undefined>(
         thumbnailUrl !== undefined ? false : undefined,
     );
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         setVideoError(!videoId);
@@ -142,8 +147,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     </div>
                 )}
 
-            {/* Video player - always rendered but hidden when not ready */}
-            {showPlayer && !videoError && (
+            {/* Video player - only rendered on client after mount to avoid hydration mismatch */}
+            {mounted && showPlayer && !videoError && (
                 <div
                     className={`absolute inset-0 w-full h-full ${!isPlayerReady ? 'opacity-0' : 'opacity-100'}`}
                 >
