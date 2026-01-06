@@ -473,6 +473,14 @@ export default function PreCourseAssessment() {
     const [toggleError, setToggleError] = useState<string | undefined>(
         undefined,
     );
+    const contentLocale = useContentLocale();
+    const utils = trpc.useUtils();
+
+    // Invalidate queries when content locale changes to ensure fresh data
+    useEffect(() => {
+        utils.getPlatformLanguage.invalidate();
+        utils.listPreCourseAssessmentComponents.invalidate();
+    }, [contentLocale, utils]);
 
     // Data fetching - query for platform language data
     const [platformLanguageResponse, { refetch: refetchPlatformLanguage, isRefetching: isRefetchingPlatformLanguage }] = trpc.getPlatformLanguage.useSuspenseQuery({});
