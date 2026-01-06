@@ -145,7 +145,7 @@ export function FormElementRenderer({
     return (
         <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 text-text-primary"
+            className="flex flex-col gap-10 text-text-primary"
         >
             {elements.map((elementInstance) => {
                 // Check if this is a FormElementType (pre-assessment form element)
