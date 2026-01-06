@@ -326,7 +326,7 @@ export const CourseGeneralInformationView: FC<
                                         type="progress"
                                     />
                                     <p className="text-md text-text-secondary font-bold leading-[150%]">
-                                        {props.progress}%
+                                        {Number(props.progress.toFixed(2))}%
                                     </p>
                                 </div>
                                 <Button

@@ -228,7 +228,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
           {studyProgress === 'in-progress' && (
             <div className='flex gap-4'>
               <ProgressBar progress={progress} />
-              <p className='text-sm leading-[100%] text-text-secondary'>{progress}%</p>
+              <p className='text-sm leading-[100%] text-text-secondary'>{Number(progress.toFixed(2))}%</p>
             </div>
           )}
 

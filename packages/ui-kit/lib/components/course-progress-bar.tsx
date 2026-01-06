@@ -48,7 +48,7 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
                     <ProgressBar progress={percentage} type="progress" />
                 </div>
                 <p className="text-sm font-bold text-text-primary">
-                    {percentage}%
+                    {Number(percentage.toFixed(2))}%
                 </p>
             </div>
             <Button
