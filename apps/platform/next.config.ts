@@ -48,6 +48,11 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: '**.mux.com',
             },
+            // DuckDuckGo favicon service for link previews
+            {
+                protocol: 'https',
+                hostname: 'icons.duckduckgo.com',
+            },
             // Custom S3/MinIO (configured via environment variables for local dev)
             ...(process.env.S3_HOSTNAME ? [{
                 protocol: (process.env.S3_PROTOCOL || 'http') as 'http' | 'https',
