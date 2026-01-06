@@ -61,6 +61,11 @@ export const AutoPlayVideoPlayer: React.FC<AutoPlayVideoPlayerProps> = ({
     const { playbackId, playbackToken } = parseVideoId(videoId);
     const [videoError, setVideoError] = useState(!videoId);
     const [isPlayerReady, setIsPlayerReady] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         setVideoError(!videoId);
@@ -101,8 +106,8 @@ export const AutoPlayVideoPlayer: React.FC<AutoPlayVideoPlayerProps> = ({
                 </div>
             )}
 
-            {/* Video player - always rendered but hidden when not ready */}
-            {!videoError && (
+            {/* Video player - only rendered on client after mount to avoid hydration mismatch */}
+            {mounted && !videoError && (
                 <div
                     className={`absolute inset-0 w-full h-full ${!isPlayerReady ? 'opacity-0' : 'opacity-100'}`}
                 >
