@@ -201,6 +201,7 @@ function AssignmentInteraction({
                     await Promise.all([
                         utils.getAssignment.invalidate({ assignmentId, studentUsername }),
                         utils.listStudentAssignments.invalidate(),
+                        utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
                     ]);
                 },
                 onError: (error) => {
@@ -227,6 +228,7 @@ function AssignmentInteraction({
                     await Promise.all([
                         utils.getAssignment.invalidate({ assignmentId, studentUsername }),
                         utils.listStudentAssignments.invalidate(),
+                        utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
                     ]);
                 },
                 onError: (error) => {
