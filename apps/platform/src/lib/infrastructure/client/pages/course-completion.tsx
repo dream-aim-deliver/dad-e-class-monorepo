@@ -104,9 +104,10 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     // @ts-ignore
     existingReviewPresenter.present(existingReviewResponse, existingReviewViewModel);
 
-    // Check if user already has a review
+    // Check if user already has a review (review can be null or undefined when none exists)
     const hasExistingReview = existingReviewViewModel?.mode === 'default' &&
-        existingReviewViewModel.data?.review !== undefined;
+        existingReviewViewModel.data?.review !== undefined &&
+        existingReviewViewModel.data?.review !== null;
 
     // Course completion modal state
     type ModalState = 'completion' | 'review-form' | 'review-thank-you' | 'none';

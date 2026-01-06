@@ -8,32 +8,26 @@ export default async function Page({
     params: paramsPromise,
         searchParams: searchParamsPromise,
     }: {
-        params: Promise<{ locale: TLocale; slug: string }>;
+        params: Promise<{ locale: TLocale; studentUsername: string }>;
         searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
     }) {
         const params = await paramsPromise;
         const searchParams = await searchParamsPromise;
 
-        const { locale, slug } = params;
+        const { locale, studentUsername } = params;
         let tab = searchParams.tab;
-        let studentId = searchParams.studentId;
         let courseSlug = searchParams.courseSlug;
 
         if (tab && Array.isArray(tab)) {
             tab = undefined;
         }
 
-        if (studentId && Array.isArray(studentId)) {
-            studentId = undefined;
-        }
-
         if (courseSlug && Array.isArray(courseSlug)) {
             courseSlug = undefined;
         }
 
-        const studentIdNum = studentId ? parseInt(studentId, 10) : 0;
         const courseSlugStr = courseSlug || '';
 
-        return <SingleStudentServerComponent slug={slug} locale={locale} tab={tab} studentId={studentIdNum} courseSlug={courseSlugStr} />;
+        return <SingleStudentServerComponent studentUsername={studentUsername} locale={locale} tab={tab} courseSlug={courseSlugStr} />;
     }
     

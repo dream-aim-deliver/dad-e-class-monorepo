@@ -26,10 +26,9 @@ import { CourseAssignmentsList } from '../course/components/course-assignments-l
 import EnrolledCourseCompletedAssessment from '../course/enrolled-course/enrolled-course-completed-assessment';
 
 interface SingleStudentProps {
-    slug: string;
+    studentUsername: string;
     initialTab?: string;
     roles: string[];
-    studentId: number;
     courseSlug: string;
 }
 
@@ -73,10 +72,9 @@ function StudentTabList() {
 }
 
 export default function SingleStudent({
-    slug,
+    studentUsername,
     initialTab,
     roles,
-    studentId,
     courseSlug,
 }: SingleStudentProps) {
     const router = useRouter();
@@ -134,11 +132,11 @@ export default function SingleStudent({
 
     const [listCoachStudentCoursesResponse] =
         trpc.listCoachStudentCourses.useSuspenseQuery({
-            studentUsername: slug,
+            studentUsername,
         });
 
     const [studentDetailsResponse] = trpc.getStudentDetails.useSuspenseQuery({
-        username: slug,
+        username: studentUsername,
     });
 
     const { presenter } = useListCoachStudentCoursesPresenter(setViewModel);
@@ -200,7 +198,7 @@ export default function SingleStudent({
                             },
                         },
                         {
-                            label: slug,
+                            label: studentUsername,
                             onClick: () => {
                                 // Current page - no action needed
                             },
@@ -215,7 +213,7 @@ export default function SingleStudent({
                             size="xLarge"
                         />
                         <h1 className='text-text-primary md:text-4xl text-2xl font-bold'>
-                            {slug}
+                            {studentUsername}
                         </h1>
                     </div>
                     <div className='flex items-center gap-4'>
@@ -287,7 +285,7 @@ export default function SingleStudent({
                         >
                             <CourseAssignmentsList
                                 courseSlug={selectedCourse}
-                                studentUsername={slug}
+                                studentUsername={studentUsername}
                                 role="coach"
                             />
                         </Suspense>
@@ -307,7 +305,7 @@ export default function SingleStudent({
                             }
                         >
                             <StudentInteractionsTab
-                                studentId={studentId}
+                                studentUsername={studentUsername}
                                 courseSlug={selectedCourse}
                                 courseImageUrl={currentSelectedCourseData?.image?.downloadUrl || ""}
                                 courseTitle={currentSelectedCourseData?.title || ""}
@@ -330,7 +328,7 @@ export default function SingleStudent({
                         >
                             <EnrolledCourseCompletedAssessment
                                 courseSlug={selectedCourse}
-                                studentUsername={slug}
+                                studentUsername={studentUsername}
                             />
                         </Suspense>
                     ) : (

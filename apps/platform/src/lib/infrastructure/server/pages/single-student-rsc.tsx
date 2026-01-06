@@ -10,18 +10,16 @@ import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 interface SingleStudentServerComponentProps {
-    slug: string;
+    studentUsername: string;
     tab?: string;
     locale: TLocale;
-    studentId: number;
     courseSlug: string;
 }
 
 export default async function SingleStudentServerComponent({
-    slug,
+    studentUsername,
     tab,
     locale,
-    studentId,
     courseSlug,
 }: SingleStudentServerComponentProps) {
     const session = await getSession();
@@ -42,14 +40,14 @@ export default async function SingleStudentServerComponent({
     // React will stream HTML while queries are pending
     // Note: We don't prefetch course-dependent queries (listStudentInteractions, etc.)
     // since there's no default course selection - they'll be fetched client-side after user selects a course
-    prefetch(trpc.listCoachStudentCourses.queryOptions({ studentUsername: slug }));
-    prefetch(trpc.getStudentDetails.queryOptions({ username: slug }));
+    prefetch(trpc.listCoachStudentCourses.queryOptions({ studentUsername }));
+    prefetch(trpc.getStudentDetails.queryOptions({ username: studentUsername }));
 
     return (
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <SingleStudent slug={slug} initialTab={tab} roles={roles} studentId={studentId} courseSlug={courseSlug} />
+                    <SingleStudent studentUsername={studentUsername} initialTab={tab} roles={roles} courseSlug={courseSlug} />
                 </Suspense>
             </HydrateClient>
         </>
