@@ -41,6 +41,10 @@ export interface CourseCourseReviewProps extends isLocalAware {
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   showSkipButton?: boolean;
+  /** Existing review text to display when submitted is true from database */
+  existingReview?: string;
+  /** Existing rating to display when submitted is true from database */
+  existingRating?: number;
 }
 
 // The ReviewProps type is a union of CoachingReviewProps and CourseCourseReviewProps
@@ -92,30 +96,46 @@ const CARD_FORM_WRAPPER_CLASSES =
 const CARD_SUBMITTED_WRAPPER_CLASSES =
   'relative w-[390px] flex flex-col items-end gap-6 p-6 rounded-lg border border-card-stroke bg-card-fill shadow-[0_4px_12px_rgba(12,10,9,1)]';
 
-const ReviewModalBase: React.FC<ReviewProps> = ({
-  onClose,
-  modalType,
-  onSubmit,
-  onSkip,
-  locale,
-  isLoading = false,
-  isError = false,
-  errorMessage,
-  submitted: initialSubmitted = false,
-  variant = 'card',
-  isOpen,
-  onOpenChange,
-  showSkipButton = true,
-}) => {
+const ReviewModalBase: React.FC<ReviewProps> = (props) => {
+  const {
+    onClose,
+    modalType,
+    onSubmit,
+    onSkip,
+    locale,
+    isLoading = false,
+    isError = false,
+    errorMessage,
+    submitted: initialSubmitted = false,
+    variant = 'card',
+    isOpen,
+    onOpenChange,
+    showSkipButton = true,
+  } = props;
+
+  // Extract existing review data for course reviews
+  const existingReview = modalType === 'course' ? (props as CourseCourseReviewProps).existingReview : undefined;
+  const existingRating = modalType === 'course' ? (props as CourseCourseReviewProps).existingRating : undefined;
+
   const [review, setReview] = React.useState('');
   const [rating, setRating] = React.useState(0);
   const [neededMoreTime, setNeededMoreTime] = React.useState(false);
   const [submitted, setLocalSubmitted] = React.useState(initialSubmitted);
-  const [submittedData, setSubmittedData] = React.useState({ review: '', rating: 0 });
+  const [submittedData, setSubmittedData] = React.useState({
+    review: existingReview || '',
+    rating: existingRating || 0
+  });
 
   React.useEffect(() => {
     setLocalSubmitted(initialSubmitted);
-  }, [initialSubmitted]);
+    // Update submittedData when existing review data changes (e.g., loaded from database)
+    if (initialSubmitted && (existingReview || existingRating)) {
+      setSubmittedData({
+        review: existingReview || '',
+        rating: existingRating || 0
+      });
+    }
+  }, [initialSubmitted, existingReview, existingRating]);
 
   const dictionary = getDictionary(locale);
   const isFormValid = rating > 0;

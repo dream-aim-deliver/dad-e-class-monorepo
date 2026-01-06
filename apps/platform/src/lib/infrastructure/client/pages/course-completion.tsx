@@ -10,6 +10,7 @@ import { trpc } from '../trpc/cms-client';
 import { useGetCourseStatusPresenter } from '../hooks/use-get-course-status-presenter';
 import { useGetCourseCertificateDataPresenter } from '../hooks/use-get-course-certificate-data-presenter';
 import { useCreateCourseReviewPresenter } from '../hooks/use-create-course-review-presenter';
+import { useGetStudentCourseReviewPresenter } from '../hooks/use-get-student-course-review-presenter';
 import { useState, useEffect, useRef } from 'react';
 import {
     DefaultLoading,
@@ -80,13 +81,32 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
         useGetCourseCertificateDataPresenter(setCertificateDataViewModel);
 
     // @ts-ignore
-    certificateDataPresenter.present(certificateDataResponse, certificateDataViewModel);    // State for course review
+    certificateDataPresenter.present(certificateDataResponse, certificateDataViewModel);
+
+    // State for course review
     const [courseReviewViewModel, setCourseReviewViewModel] = useState<
         viewModels.TCreateCourseReviewViewModel | undefined
     >(undefined);
     const { presenter: courseReviewPresenter } = useCreateCourseReviewPresenter(
         setCourseReviewViewModel,
     );
+
+    // Query for existing review to show submitted state on page reload
+    const [existingReviewResponse] = trpc.getStudentCourseReview.useSuspenseQuery({
+        courseSlug: slug,
+    });
+    const [existingReviewViewModel, setExistingReviewViewModel] = useState<
+        viewModels.TGetStudentCourseReviewViewModel | undefined
+    >(undefined);
+    const { presenter: existingReviewPresenter } = useGetStudentCourseReviewPresenter(
+        setExistingReviewViewModel,
+    );
+    // @ts-ignore
+    existingReviewPresenter.present(existingReviewResponse, existingReviewViewModel);
+
+    // Check if user already has a review
+    const hasExistingReview = existingReviewViewModel?.mode === 'default' &&
+        existingReviewViewModel.data?.review !== undefined;
 
     // Course completion modal state
     type ModalState = 'completion' | 'review-form' | 'review-thank-you' | 'none';
@@ -108,22 +128,24 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
             // Invalidate course details to refresh review stats
             utils.getCourseStatus.invalidate({ courseSlug: slug });
             utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
+            // Invalidate existing review query to update the submitted state
+            utils.getStudentCourseReview.invalidate({ courseSlug: slug });
         },
         onError: (error) => {
             setErrorMessage(error.message);
         }
     });
 
-    // Check if course is completed and show modal
+    // Check if course is completed and show modal (only if user hasn't reviewed yet)
     useEffect(() => {
-        if (courseStatusViewModel?.mode === 'default') {
+        if (courseStatusViewModel?.mode === 'default' && !hasExistingReview) {
             const isCompleted =
                 courseStatusViewModel.data?.courseStatus.status === 'completed';
             if (isCompleted) {
                 setModalState('completion');
             }
         }
-    }, [courseStatusViewModel]);
+    }, [courseStatusViewModel, hasExistingReview]);
 
     // Authentication check based on discovered patterns
     useEffect(() => {
@@ -293,7 +315,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                     isLoading={createReviewMutation.isPending}
                     isError={createReviewMutation.isError}
                     errorMessage={errorMessage}
-                    submitted={modalState === 'review-thank-you'}
+                    submitted={modalState === 'review-thank-you' || hasExistingReview}
                     isOpen={modalState === 'review-form' || modalState === 'review-thank-you'}
                     onOpenChange={(open) => {
                         if (!open) {

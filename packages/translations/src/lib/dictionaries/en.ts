@@ -1872,6 +1872,7 @@ export const EN: TDictionary = {
         downloadCertificate: 'Download Certificate',
         downloadingCertificate: 'Generating...',
         accessDeniedError: 'Access denied for current role',
+        yourReview: 'Your Review',
       },
       missingStudentData: {
         title: 'Complete Your Profile',

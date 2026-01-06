@@ -1938,6 +1938,7 @@ export const DictionarySchema = z.object({
         downloadCertificate: z.string(),
         downloadingCertificate: z.string(),
         accessDeniedError: z.string(),
+        yourReview: z.string(),
       }),
       missingStudentData: z.object({
         title: z.string(),
