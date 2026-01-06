@@ -183,7 +183,7 @@ export default function EnrolledCourseHeading({
                                 </p>
                                 <div className="bg-base-neutral-800 p-3 rounded-lg border border-card-stroke">
                                     <p className="text-sm text-text-secondary text-left line-clamp-3">
-                                        "{existingReviewViewModel?.mode === 'default' && existingReviewViewModel.data?.review?.review}"
+                                        &quot;{existingReviewViewModel?.mode === 'default' && existingReviewViewModel.data?.review?.review}&quot;
                                     </p>
                                     <div className="flex justify-end items-center gap-1 mt-2">
                                         <StarRating
