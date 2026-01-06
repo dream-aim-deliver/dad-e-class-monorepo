@@ -139,11 +139,7 @@ export const  CoachStudentInteractionCard = ({
                                   variant="text"
                                   className="p-0 text-base-white hover:text-base-white"
                                 />
-                                <RichTextRenderer
-                                  content={input?.helperText}
-                                  className="text-text-secondary"
-                                  onDeserializationError={onDeserializationError}
-                                />
+                                <p className="text-text-secondary">{input?.helperText}</p>
                               </div>
 
                               <hr className="my-4 border-t border-divider" />
