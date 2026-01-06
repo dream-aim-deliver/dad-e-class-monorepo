@@ -9,14 +9,14 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useListStudentInteractionsPresenter } from '../../hooks/use-list-student-interactions-presenter';
 
 interface StudentInteractionsTabProps {
-    studentId: number;
+    studentUsername: string;
     courseSlug: string;
     courseImageUrl: string;
     courseTitle: string;
 }
 
 export default function StudentInteractionsTab({
-    studentId,
+    studentUsername,
     courseSlug,
     courseImageUrl,
     courseTitle,
@@ -30,7 +30,7 @@ export default function StudentInteractionsTab({
     >(undefined);
 
     const [studentInteractionsResponse] =
-        trpc.listStudentInteractions.useSuspenseQuery({ studentId, courseSlug });
+        trpc.listStudentInteractions.useSuspenseQuery({ studentUsername, courseSlug });
 
     const { presenter } = useListStudentInteractionsPresenter(setViewModel);
 
