@@ -8,11 +8,15 @@ import {
     IconCertification,
     IconEdit,
     IconTrashAlt,
+    IconLoaderSpinner,
     StarRating,
     ReviewCard,
     PaginatedCertificate,
     PaginatedCertificateHandle,
     DefaultError,
+    Dialog,
+    DialogContent,
+    DialogBody,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -41,14 +45,14 @@ export default function EnrolledCourseHeading({
     const isCompleted =
         courseStatusViewModel?.mode === 'default' &&
         courseStatusViewModel.data?.courseStatus.status === 'completed';
-    
+
     const progressPercent =
         courseStatusViewModel?.mode === 'default' &&
-        courseStatusViewModel.data?.courseStatus.status === 'inProgress' &&
-        'progress' in courseStatusViewModel.data.courseStatus
+            courseStatusViewModel.data?.courseStatus.status === 'inProgress' &&
+            'progress' in courseStatusViewModel.data.courseStatus
             ? courseStatusViewModel.data.courseStatus.progress
             : undefined;
-    
+
     const hasProgress = progressPercent !== undefined;
 
     const locale = useLocale() as TLocale;
@@ -61,8 +65,12 @@ export default function EnrolledCourseHeading({
         },
     });
 
-    // State for certificate error
+    // State for certificate error and loading
     const [certificateError, setCertificateError] = useState<string | null>(null);
+    const [isDownloading, setIsDownloading] = useState(false);
+
+    // State for missing student data modal
+    const [showMissingDataModal, setShowMissingDataModal] = useState(false);
 
     // Ref for the PaginatedCertificate component
     const certificateRef = useRef<PaginatedCertificateHandle>(null);
@@ -70,7 +78,19 @@ export default function EnrolledCourseHeading({
     // Handle download certificate using PaginatedCertificate component
     const handleDownloadCertificate = async () => {
         if (certificateDataViewModel?.mode === 'default' && certificateDataViewModel.data?.certificateData) {
+            const { studentName, studentSurname } = certificateDataViewModel.data.certificateData;
+
+            // Validate student data before allowing download
+            const hasValidName = studentName && typeof studentName === 'string' && studentName.trim().length > 0;
+            const hasValidSurname = studentSurname && typeof studentSurname === 'string' && studentSurname.trim().length > 0;
+
+            if (!hasValidName || !hasValidSurname) {
+                setShowMissingDataModal(true);
+                return;
+            }
+
             try {
+                setIsDownloading(true);
                 setCertificateError(null); // Clear any previous errors
 
                 // Get the certificate DOM element
@@ -112,6 +132,8 @@ export default function EnrolledCourseHeading({
                 await html2pdf().set(options).from(element).save();
             } catch (error) {
                 setCertificateError(typeof error === 'string' ? error : 'Failed to generate certificate');
+            } finally {
+                setIsDownloading(false);
             }
         }
     };
@@ -147,13 +169,15 @@ export default function EnrolledCourseHeading({
                     <div className="flex flex-col space-y-4 items-start md:items-end">
                         <Button
                             hasIconLeft
-                            iconLeft={<IconCertification />}
+                            iconLeft={isDownloading ? <IconLoaderSpinner classNames="animate-spin" /> : <IconCertification />}
                             className="px-0 mb-0"
                             variant="text"
-                            text={courseTranslations(
-                                'completedPanel.downloadCertificate',
-                            )}
+                            text={isDownloading
+                                ? courseTranslations('completedPanel.downloadingCertificate')
+                                : courseTranslations('completedPanel.downloadCertificate')
+                            }
                             onClick={handleDownloadCertificate}
+                            disabled={isDownloading}
                         />
                         {certificateError && (
                             <DefaultError title={certificateError} locale={locale} />
@@ -250,95 +274,123 @@ export default function EnrolledCourseHeading({
                 </div>
             )}
 
-        <div className="flex flex-col space-y-4">
-            {/* Title and Buttons Row */}
-            <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                <div className="flex-1 flex items-end gap-4 justify-between">
-                    <div className="flex flex-col gap-4">
-                        <h1 className="text-left"> {courseViewModel.data.title} </h1>
-                        <div className="flex space-x-2 items-center">
-                            <StarRating
-                                totalStars={5}
-                                rating={courseViewModel.data.averageRating}
-                            />
-                            <span className="text-text-primary">
-                                {courseViewModel.data.averageRating}
-                            </span>
-                            <span className="text-sm text-text-secondary">
-                                ({courseViewModel.data.reviewCount})
-                            </span>
+            <div className="flex flex-col space-y-4">
+                {/* Title and Buttons Row */}
+                <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                    <div className="flex-1 flex items-end gap-4 justify-between">
+                        <div className="flex flex-col gap-4">
+                            <h1 className="text-left"> {courseViewModel.data.title} </h1>
+                            <div className="flex space-x-2 items-center">
+                                <StarRating
+                                    totalStars={5}
+                                    rating={courseViewModel.data.averageRating}
+                                />
+                                <span className="text-text-primary">
+                                    {courseViewModel.data.averageRating}
+                                </span>
+                                <span className="text-sm text-text-secondary">
+                                    ({courseViewModel.data.reviewCount})
+                                </span>
+                            </div>
                         </div>
+                        {isCompleted ? (
+                            <Badge
+                                className="w-fit"
+                                size="medium"
+                                text={courseTranslations('completedPanel.badgeText')}
+                                variant="successprimary"
+                            />
+                        ) : (
+                            hasProgress && (
+                                <CourseProgressBar
+                                    percentage={progressPercent ?? 0}
+                                    locale={locale}
+                                    onClickResume={() => {
+                                        // ✅ Use Next.js router for instant SPA navigation
+                                        router.push(`/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`);
+                                    }}
+                                />
+                            )
+                        )}
                     </div>
-                    {isCompleted ? (
-                        <Badge
-                            className="w-fit"
-                            size="medium"
-                            text={courseTranslations('completedPanel.badgeText')}
-                            variant="successprimary"
-                        />
-                    ) : (
-                        hasProgress && (
-                            <CourseProgressBar
-                                percentage={progressPercent ?? 0}
-                                locale={locale}
-                                onClickResume={() => {
-                                    // ✅ Use Next.js router for instant SPA navigation
-                                    router.push(`/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`);
-                                }}
-                            />
-                        )
-                    )}
+                    <div className="flex flex-wrap gap-2 items-center justify-end">
+                        {currentRole === "admin" && (
+                            <Button
+                                variant="text"
+                                hasIconLeft
+                                iconLeft={<IconTrashAlt />}
+                                text={courseTranslations('archiveCourseButton')}
+                                size="medium"
+                                onClick={() => {
+                                    //TODO: Implement course deletion
+                                }} />
+                        )}
+                        {(currentRole === "admin" || currentRole === "course_creator") && (
+                            <Button
+                                variant="secondary"
+                                hasIconLeft
+                                iconLeft={<IconEdit />}
+                                size="medium"
+                                text={courseTranslations('editCourseButton')}
+                                onClick={() => {
+                                    //TODO: Implement course editing
+                                }} />
+                        )}
+                    </div>
                 </div>
-                <div className="flex flex-wrap gap-2 items-center justify-end">
-                    {currentRole === "admin" && (
-                        <Button
-                            variant="text"
-                            hasIconLeft
-                            iconLeft={<IconTrashAlt />}
-                            text={courseTranslations('archiveCourseButton')}
-                            size="medium"
-                            onClick={() => {
-                                //TODO: Implement course deletion
-                            }} />
-                    )}
-                    {(currentRole === "admin" || currentRole === "course_creator") && (
-                        <Button
-                            variant="secondary"
-                            hasIconLeft
-                            iconLeft={<IconEdit />}
-                            size="medium"
-                            text={courseTranslations('editCourseButton')}
-                            onClick={() => {
-                                //TODO: Implement course editing
-                            }} />
-                    )}
+
+
+                <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+
+                    <div className="w-full">
+                        {renderProgress()}
+                        {roleOptions.length > 1 && (
+                            <div className="flex space-x-3 items-center justify-end mt-4">
+                                <span className="text-text-secondary">
+                                    {courseTranslations('roleDropdown.viewAs')}
+                                </span>
+                                <Dropdown
+                                    type="simple"
+                                    className="min-w-[150px]"
+                                    options={roleOptions}
+                                    defaultValue={currentRole === 'superadmin' ? 'admin' : currentRole}
+                                    text={{ simpleText: '' }}
+                                    onSelectionChange={onRoleChange}
+                                />
+                            </div>
+                        )}
+                    </div>
+
                 </div>
             </div>
 
-
-            <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-
-                <div className="w-full">
-                    {renderProgress()}
-                    {roleOptions.length > 1 && (
-                        <div className="flex space-x-3 items-center justify-end mt-4">
-                            <span className="text-text-secondary">
-                                {courseTranslations('roleDropdown.viewAs')}
-                            </span>
-                            <Dropdown
-                                type="simple"
-                                className="min-w-[150px]"
-                                options={roleOptions}
-                                defaultValue={currentRole === 'superadmin' ? 'admin' : currentRole}
-                                text={{ simpleText: '' }}
-                                onSelectionChange={onRoleChange}
-                            />
+            {/* Missing student data modal */}
+            <Dialog open={showMissingDataModal} onOpenChange={setShowMissingDataModal} defaultOpen={false}>
+                <DialogContent showCloseButton closeOnOverlayClick closeOnEscape className="max-w-md">
+                    <DialogBody>
+                        <div className="flex flex-col gap-4">
+                            <h2 className="text-xl font-semibold text-text-primary">
+                                {courseTranslations('missingStudentData.title')}
+                            </h2>
+                            <p className="text-text-secondary">
+                                {courseTranslations('missingStudentData.message')}
+                            </p>
+                            <div className="flex gap-3 mt-4 justify-end">
+                                <Button
+                                    variant="secondary"
+                                    text={courseTranslations('missingStudentData.cancel')}
+                                    onClick={() => setShowMissingDataModal(false)}
+                                />
+                                <Button
+                                    variant="primary"
+                                    text={courseTranslations('missingStudentData.goToProfile')}
+                                    onClick={() => router.push(`/${locale}/workspace/profile`)}
+                                />
+                            </div>
                         </div>
-                    )}
-                </div>
-
-            </div>
-        </div>
+                    </DialogBody>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

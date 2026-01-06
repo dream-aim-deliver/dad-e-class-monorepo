@@ -31,6 +31,7 @@ import { trpc } from '../../../trpc/cms-client';
 import EnrolledCourseStudents from './enrolled-course-students';
 import EnrolledCourseNotes from './enrolled-course-notes';
 import { useGetCourseStatusPresenter } from '../../../hooks/use-get-course-status-presenter';
+import { useGetCourseCertificateDataPresenter } from '../../../hooks/use-get-course-certificate-data-presenter';
 import CourseCompletion from '../../course-completion';
 import { CourseAssignmentsList } from '../components/course-assignments-list';
 
@@ -177,6 +178,18 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     // @ts-ignore
     courseStatusPresenter.present(courseStatusResponse, courseStatusViewModel);
 
+    // Certificate data fetching for download certificate button
+    const [certificateDataResponse] = trpc.getCourseCertificateData.useSuspenseQuery({
+        courseSlug: props.courseSlug,
+    });
+    const [certificateDataViewModel, setCertificateDataViewModel] = useState<
+        viewModels.TGetCourseCertificateDataViewModel | undefined
+    >(undefined);
+    const { presenter: certificateDataPresenter } =
+        useGetCourseCertificateDataPresenter(setCertificateDataViewModel);
+    // @ts-ignore
+    certificateDataPresenter.present(certificateDataResponse, certificateDataViewModel);
+
     const [showCompletionModal, setShowCompletionModal] = useState(false);
 
     useEffect(() => {
@@ -262,6 +275,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 roles={props.roles}
                 currentRole={props.currentRole}
                 courseSlug={props.courseSlug}
+                certificateDataViewModel={certificateDataViewModel}
             />
             <Tabs.Root defaultTab={defaultTab} onValueChange={handleTabChange}>
                 <CourseTabList role={props.currentRole} />
