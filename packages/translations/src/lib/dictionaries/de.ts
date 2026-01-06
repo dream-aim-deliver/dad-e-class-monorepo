@@ -1875,6 +1875,7 @@ export const DE: TDictionary = {
         downloadCertificate: 'Zertifikat herunterladen',
         downloadingCertificate: 'Wird erstellt...',
         accessDeniedError: 'Zugriff für aktuelle Rolle verweigert',
+        yourReview: 'Deine Bewertung',
       },
       missingStudentData: {
         title: 'Profil vervollständigen',

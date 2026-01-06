@@ -1,4 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
+import { useGetStudentCourseReviewPresenter } from '../../../hooks/use-get-student-course-review-presenter';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     Badge,
@@ -62,8 +63,28 @@ export default function EnrolledCourseHeading({
         onSuccess: () => {
             // Invalidate course details to refresh review stats
             utils.getEnrolledCourseDetails.invalidate({ courseSlug });
+            // Invalidate existing review query to update the submitted state
+            utils.getStudentCourseReview.invalidate({ courseSlug });
         },
     });
+
+    // Query for existing review to show submitted state on page reload
+    const [existingReviewResponse] = trpc.getStudentCourseReview.useSuspenseQuery({
+        courseSlug,
+    });
+    const [existingReviewViewModel, setExistingReviewViewModel] = useState<
+        viewModels.TGetStudentCourseReviewViewModel | undefined
+    >(undefined);
+    const { presenter: existingReviewPresenter } = useGetStudentCourseReviewPresenter(
+        setExistingReviewViewModel,
+    );
+    // @ts-ignore
+    existingReviewPresenter.present(existingReviewResponse, existingReviewViewModel);
+
+    // Check if user already has a review (review can be null or undefined when none exists)
+    const hasExistingReview = existingReviewViewModel?.mode === 'default' &&
+        existingReviewViewModel.data?.review !== undefined &&
+        existingReviewViewModel.data?.review !== null;
 
     // State for certificate error and loading
     const [certificateError, setCertificateError] = useState<string | null>(null);
@@ -154,15 +175,36 @@ export default function EnrolledCourseHeading({
                 <div className="w-full flex flex-col md:flex-row justify-between items-start space-y-6 gap-6">
                     {/* Left side: Review component */}
                     <div className="flex flex-col space-y-4">
-                        <ReviewCard
-                            modalType="course"
-                            locale={locale}
-                            onSubmit={handleReviewSubmit}
-                            isLoading={createReviewMutation.isPending}
-                            isError={createReviewMutation.isError}
-                            submitted={createReviewMutation.isSuccess}
-                            showSkipButton={false}
-                        />
+                        {hasExistingReview ? (
+                            // Display existing review (no form, no buttons)
+                            <div className="w-[390px] flex flex-col gap-4 p-6 rounded-lg border border-card-stroke bg-card-fill">
+                                <p className="text-lg font-bold text-text-primary">
+                                    {courseTranslations('completedPanel.yourReview')}
+                                </p>
+                                <div className="bg-base-neutral-800 p-3 rounded-lg border border-card-stroke">
+                                    <p className="text-sm text-text-secondary text-left line-clamp-3">
+                                        "{existingReviewViewModel?.mode === 'default' && existingReviewViewModel.data?.review?.review}"
+                                    </p>
+                                    <div className="flex justify-end items-center gap-1 mt-2">
+                                        <StarRating
+                                            rating={existingReviewViewModel?.mode === 'default' ? existingReviewViewModel.data?.review?.rating || 0 : 0}
+                                            totalStars={5}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            // Show review form if no existing review
+                            <ReviewCard
+                                modalType="course"
+                                locale={locale}
+                                onSubmit={handleReviewSubmit}
+                                isLoading={createReviewMutation.isPending}
+                                isError={createReviewMutation.isError}
+                                submitted={createReviewMutation.isSuccess}
+                                showSkipButton={false}
+                            />
+                        )}
                     </div>
 
                     {/* Right side: Download certificate button */}
