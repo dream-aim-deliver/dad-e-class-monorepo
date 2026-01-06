@@ -788,6 +788,7 @@ export const DictionarySchema = z.object({
       completedOnText: z.string(),
       atText: z.string(),
       downloadCertificateText: z.string(),
+      downloadingCertificateText: z.string(),
       rateTheCourseText: z.string(),
     }),
     certificateGenerator: z.object({
@@ -1935,7 +1936,14 @@ export const DictionarySchema = z.object({
       completedPanel: z.object({
         badgeText: z.string(),
         downloadCertificate: z.string(),
+        downloadingCertificate: z.string(),
         accessDeniedError: z.string(),
+      }),
+      missingStudentData: z.object({
+        title: z.string(),
+        message: z.string(),
+        cancel: z.string(),
+        goToProfile: z.string(),
       }),
       roleDropdown: z.object({
         viewAs: z.string(),

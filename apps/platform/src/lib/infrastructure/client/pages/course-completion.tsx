@@ -19,8 +19,12 @@ import {
     ReviewDialog,
     PaginatedCertificate,
     PaginatedCertificateHandle,
+    Dialog,
+    DialogContent,
+    DialogBody,
+    Button,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -41,6 +45,11 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     // Add state for error message
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
     const [certificateError, setCertificateError] = useState<string | null>(null);
+    const [showMissingDataModal, setShowMissingDataModal] = useState(false);
+    const [isDownloadingCertificate, setIsDownloadingCertificate] = useState(false);
+
+    // Translations for course page
+    const courseTranslations = useTranslations('pages.course');
 
     // Ref for the PaginatedCertificate component
     const certificateRef = useRef<PaginatedCertificateHandle>(null);
@@ -126,7 +135,19 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     // Handle download certificate using PaginatedCertificate component
     const handleDownloadCertificate = async () => {
         if (certificateDataViewModel?.mode === 'default' && certificateDataViewModel.data?.certificateData) {
+            const { studentName, studentSurname } = certificateDataViewModel.data.certificateData;
+
+            // Validate student data before allowing download
+            const hasValidName = studentName && typeof studentName === 'string' && studentName.trim().length > 0;
+            const hasValidSurname = studentSurname && typeof studentSurname === 'string' && studentSurname.trim().length > 0;
+
+            if (!hasValidName || !hasValidSurname) {
+                setShowMissingDataModal(true);
+                return;
+            }
+
             try {
+                setIsDownloadingCertificate(true);
                 setCertificateError(null); // Clear any previous errors
 
                 // Get the certificate DOM element
@@ -168,6 +189,8 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                 await html2pdf().set(options).from(element).save();
             } catch (error) {
                 setCertificateError(typeof error === 'string' ? error : 'Failed to generate certificate');
+            } finally {
+                setIsDownloadingCertificate(false);
             }
         }
     };
@@ -255,6 +278,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                         onClickRateCourse={handleRateCourse}
                         onClose={handleCloseCompletionModal}
                         locale={locale}
+                        isDownloadingCertificate={isDownloadingCertificate}
                     />
                     {certificateError && <DefaultError locale={locale} title={certificateError} />}
                 </div>
@@ -278,6 +302,34 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                     }}
                 />
             )}
+
+            {/* Missing student data modal */}
+            <Dialog open={showMissingDataModal} onOpenChange={setShowMissingDataModal} defaultOpen={false}>
+                <DialogContent showCloseButton closeOnOverlayClick closeOnEscape className="max-w-md">
+                    <DialogBody>
+                        <div className="flex flex-col gap-4">
+                            <h2 className="text-xl font-semibold text-text-primary">
+                                {courseTranslations('missingStudentData.title')}
+                            </h2>
+                            <p className="text-text-secondary">
+                                {courseTranslations('missingStudentData.message')}
+                            </p>
+                            <div className="flex gap-3 mt-4 justify-end">
+                                <Button
+                                    variant="secondary"
+                                    text={courseTranslations('missingStudentData.cancel')}
+                                    onClick={() => setShowMissingDataModal(false)}
+                                />
+                                <Button
+                                    variant="primary"
+                                    text={courseTranslations('missingStudentData.goToProfile')}
+                                    onClick={() => router.push(`/${locale}/workspace/profile`)}
+                                />
+                            </div>
+                        </div>
+                    </DialogBody>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

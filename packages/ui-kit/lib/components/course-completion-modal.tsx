@@ -8,6 +8,7 @@ import { IconCertification } from "./icons/icon-certification";
 import { IconStar } from "./icons/icon-star";
 import { Badge } from "./badge";
 import { IconSuccess } from "./icons/icon-success";
+import { IconLoaderSpinner } from "./icons/icon-loader-spinner";
 import { useState } from "react";
 import { cn } from "../utils/style-utils";
 import { useImageComponent } from "../contexts/image-component-context";
@@ -20,6 +21,7 @@ export interface CourseCompletionModalProps extends isLocalAware {
     onClickRateCourse: () => void;
     onClose: () => void;
     className?: string;
+    isDownloadingCertificate?: boolean;
 };
 
 /**
@@ -58,6 +60,7 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
     onClose,
     className,
     locale,
+    isDownloadingCertificate = false,
 }) => {
     const dictionary = getDictionary(locale);
     const ImageComponent = useImageComponent();
@@ -133,12 +136,15 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
                 <div className="flex flex-col gap-2 w-full">
                     <Button
                         hasIconLeft
-                        iconLeft={<IconCertification />}
+                        iconLeft={isDownloadingCertificate ? <IconLoaderSpinner classNames="animate-spin" /> : <IconCertification />}
                         variant="secondary"
                         size="medium"
                         onClick={onClickDownloadCertificate}
-                        text={dictionary.components.courseCompletionModal.downloadCertificateText}
+                        text={isDownloadingCertificate
+                            ? dictionary.components.courseCompletionModal.downloadingCertificateText
+                            : dictionary.components.courseCompletionModal.downloadCertificateText}
                         className="w-full"
+                        disabled={isDownloadingCertificate}
                     />
                     <Button
                         hasIconLeft

@@ -787,6 +787,7 @@ export const DE: TDictionary = {
       completedOnText: 'Abgeschlossen am',
       atText: 'bei',
       downloadCertificateText: 'Zertifikat herunterladen',
+      downloadingCertificateText: 'Wird erstellt...',
       rateTheCourseText: 'Bewerte den Kurs',
     },
     certificateGenerator: {
@@ -1872,7 +1873,14 @@ export const DE: TDictionary = {
       completedPanel: {
         badgeText: 'Abgeschlossen',
         downloadCertificate: 'Zertifikat herunterladen',
+        downloadingCertificate: 'Wird erstellt...',
         accessDeniedError: 'Zugriff für aktuelle Rolle verweigert',
+      },
+      missingStudentData: {
+        title: 'Profil vervollständigen',
+        message: 'Dein Name und Nachname werden benötigt, um dein Zertifikat zu erstellen. Bitte aktualisiere deine Profilinformationen.',
+        cancel: 'Abbrechen',
+        goToProfile: 'Zum Profil',
       },
       roleDropdown: {
         viewAs: "Ansehen als",

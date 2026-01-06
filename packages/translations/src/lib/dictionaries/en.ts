@@ -797,6 +797,7 @@ export const EN: TDictionary = {
       completedOnText: 'Completed on',
       atText: 'at',
       downloadCertificateText: 'Download certificate',
+      downloadingCertificateText: 'Generating...',
       rateTheCourseText: 'Give feedback please',
     },
     certificateGenerator: {
@@ -1869,7 +1870,14 @@ export const EN: TDictionary = {
       completedPanel: {
         badgeText: 'Completed',
         downloadCertificate: 'Download Certificate',
+        downloadingCertificate: 'Generating...',
         accessDeniedError: 'Access denied for current role',
+      },
+      missingStudentData: {
+        title: 'Complete Your Profile',
+        message: 'Your name and surname are required to generate your certificate. Please update your profile information.',
+        cancel: 'Cancel',
+        goToProfile: 'Go to Profile',
       },
       roleDropdown: {
         viewAs: "View as",
