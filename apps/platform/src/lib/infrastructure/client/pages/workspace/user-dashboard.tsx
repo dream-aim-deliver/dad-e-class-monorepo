@@ -398,7 +398,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                             />
 
                             {/* Your courses */}
-                            <div className="flex items-center">
+                            <div className="flex items-center justify-between">
                                 <h3> {t('yourCourses')} </h3>
                                 <Button
                                     variant="text"
@@ -420,7 +420,15 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                     // Student Dashboard Layout
                     <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
                         <div className="xl:col-span-3 lg:col-span-2 space-y-6">
-                            <h3> {t('yourCourses')} </h3>
+                            <div className="flex items-center justify-between">
+                                <h3> {t('yourCourses')} </h3>
+                                <Button
+                                    variant="text"
+                                    size="small"
+                                    onClick={handleViewAllCourses}
+                                    text={t('viewAllCourses')}
+                                />
+                            </div>
                             <UserCoursesList maxItems={3} />
                             <UserCoachingSessions
                                 studentUsername={session?.user?.name}
