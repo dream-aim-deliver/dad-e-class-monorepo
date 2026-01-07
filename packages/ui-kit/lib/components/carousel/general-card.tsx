@@ -99,13 +99,15 @@ export const GeneralCard: React.FC<GeneralCardProps> = React.memo(
               <p className="text-sm sm:text-base leading-snug sm:leading-6 text-stone-300 line-clamp-6">{description}</p>
             </header>
 
-            <Button
-              className="w-full py-2 sm:py-3"
-              size="medium"
-              onClick={onButtonClick}
-              text={buttonText}
-              variant="primary"
-            />
+            {buttonText && (
+              <Button
+                className="w-full py-2 sm:py-3"
+                size="medium"
+                onClick={onButtonClick}
+                text={buttonText}
+                variant="primary"
+              />
+            )}
           </div>
         </div>
       </article>

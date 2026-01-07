@@ -40,7 +40,7 @@ export const SimplePaginationPanel = (props: {
         'flex items-center justify-center',
         enabledTextClasses,
         'py-4 !m-0',
-        'bg-base-neutral-900',
+        'bg-base-neutral-100',
         'rounded-b-md'
       )}
     >

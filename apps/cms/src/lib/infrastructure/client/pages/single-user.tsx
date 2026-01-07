@@ -28,6 +28,7 @@ import { useListUserRolesPresenter } from '../hooks/use-list-user-roles-presente
 // import { useListCoachCoursesPresenter } from '../hooks/use-list-coach-courses-presenter';
 import { getHighestRole } from '../../common/utils/role-utils';
 import { TEClassRole } from '@dream-aim-deliver/e-class-cms-rest';
+import Tooltip from 'packages/ui-kit/lib/components/tooltip';
 
 interface SingleUserProps {
   locale: TLocale;
@@ -277,7 +278,8 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                   </p>
                 </div>
               ) : (
-                <div className="min-w-[200px]">
+                <div className="flex flex-row min-w-[200px] gap-1 items-center">
+                  <Tooltip text='' description='After changing roles, it may take up to 15 minutes for the system to fully update.' tipPosition='bottom'/>
                   <Dropdown
                     type="simple"
                     options={roleOptions}
