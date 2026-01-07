@@ -374,7 +374,7 @@ export default function Transactions(_props: TransactionsProps) {
   ];
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] space-y-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
+    <div className="flex flex-col space-y-2 gap-4">
       <div className="flex-shrink-0">
         <Breadcrumbs items={breadcrumbItems} />
       </div>
