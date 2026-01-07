@@ -57,6 +57,30 @@ const PrepareCheckoutInvalidCouponTypeViewModelSchema =
         BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema),
     );
 
+const PrepareCheckoutAlreadyOwnedViewModelSchema =
+    BaseDiscriminatedViewModeSchemaFactory(
+        'already-owned',
+        BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema),
+    );
+
+const PrepareCheckoutNotFoundViewModelSchema =
+    BaseDiscriminatedViewModeSchemaFactory(
+        'not-found',
+        BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema),
+    );
+
+const PrepareCheckoutNotEnrolledViewModelSchema =
+    BaseDiscriminatedViewModeSchemaFactory(
+        'not-enrolled',
+        BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema),
+    );
+
+const PrepareCheckoutAlreadyPurchasedViewModelSchema =
+    BaseDiscriminatedViewModeSchemaFactory(
+        'already-purchased',
+        BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema),
+    );
+
 /**
  * Create schema map for all view modes
  */
@@ -67,6 +91,10 @@ export const PrepareCheckoutViewModelSchemaMap = {
     couponExpired: PrepareCheckoutCouponExpiredViewModelSchema,
     couponLimitReached: PrepareCheckoutCouponLimitReachedViewModelSchema,
     invalidCouponType: PrepareCheckoutInvalidCouponTypeViewModelSchema,
+    alreadyOwned: PrepareCheckoutAlreadyOwnedViewModelSchema,
+    notFound: PrepareCheckoutNotFoundViewModelSchema,
+    notEnrolled: PrepareCheckoutNotEnrolledViewModelSchema,
+    alreadyPurchased: PrepareCheckoutAlreadyPurchasedViewModelSchema,
 };
 
 export type TPrepareCheckoutViewModelSchemaMap =

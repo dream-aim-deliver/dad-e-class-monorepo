@@ -292,10 +292,9 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
             );
     }, [roles]);
 
-    if (!session) {
-        // redirect to login
-        router.push('/auth/login');
-    }
+    // NOTE: Authentication is handled by middleware for protected routes.
+    // Session expiration is handled by SessionMonitorWrapper.
+    // No client-side auth redirect needed here.
 
     // Handle loading state
     if (!personalProfileViewModel) {

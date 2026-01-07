@@ -93,14 +93,8 @@ const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Desce
         return parsed;
 
       } catch (error) {
-        // Handle parsing error
-        onError(
-          `SlateJS deserializer: error parsing '${safeStringify(serializedData)}' -- '${serializedData}''`,
-          error as Error
-        )
-
-        // TBD: should we return an empty slate object?
-        return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
+        // Not valid JSON - treat as plain text and wrap in a paragraph
+        return [{ type: "paragraph", children: [{ text: serializedData }] } as Descendant];
       }
 
     default:

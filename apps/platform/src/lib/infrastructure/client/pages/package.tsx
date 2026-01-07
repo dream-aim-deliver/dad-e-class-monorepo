@@ -15,6 +15,7 @@ import {
   PackageCard,
   Breadcrumbs,
   CheckoutModal,
+  Banner,
   type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -27,6 +28,7 @@ import { useListPackageRelatedPackagesPresenter } from '../hooks/use-list-packag
 import { useRequiredPlatform } from '../context/platform-context';
 import { usePrepareCheckoutPresenter } from '../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../hooks/use-checkout-intent';
+import { useCheckoutErrors, createCheckoutErrorViewModel } from '../hooks/use-checkout-errors';
 import env from '../config/env';
 
 interface PackageProps {
@@ -39,6 +41,7 @@ export default function Package({ locale, packageId }: PackageProps) {
   const router = useRouter();
   const t = useTranslations('pages.packagePage');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+  const { getCheckoutErrorTitle, getCheckoutErrorDescription } = useCheckoutErrors();
   const sessionDTO = useSession();
 
   const { platform } = useRequiredPlatform();
@@ -84,8 +87,9 @@ export default function Package({ locale, packageId }: PackageProps) {
   const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
   const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
 
-  // Get tRPC utils for fetching checkout data
+  // Get tRPC utils for fetching checkout data (prepareCheckout is a query in cms-rest)
   const utils = trpc.useUtils();
 
   // Checkout presenter
@@ -95,13 +99,34 @@ export default function Package({ locale, packageId }: PackageProps) {
   const executeCheckout = useCallback(async (
     request: useCaseModels.TPrepareCheckoutRequest,
   ) => {
+    console.log('[Package] executeCheckout started with request:', request);
     try {
       setCurrentRequest(request);
+      setCheckoutError(null); // Clear any previous error
+      console.log('[Package] Calling utils.prepareCheckout.fetch...');
       // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
-      const response = await utils.prepareCheckout.fetch(request) as useCaseModels.TPrepareCheckoutUseCaseResponse;
-      checkoutPresenter.present(response, checkoutViewModel);
+      const response = await utils.prepareCheckout.fetch(request);
+      console.log('[Package] prepareCheckout response:', response);
+      // Unwrap TBaseResult if needed
+      if (response && typeof response === 'object' && 'success' in response) {
+        if (response.success === true && response.data) {
+          console.log('[Package] Presenting checkout data:', response.data);
+          checkoutPresenter.present({ success: true, data: response.data } as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+        } else if (response.success === false && response.data) {
+          // Directly set error state for better reliability on repeated attempts
+          const errorViewModel = createCheckoutErrorViewModel(response.data);
+          console.log('[Package] Setting checkoutError directly:', errorViewModel);
+          setCheckoutError(errorViewModel);
+          // Scroll to top so user can see the error banner
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } else {
+        // Direct response (not wrapped)
+        checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+      }
     } catch (err) {
-      console.error('Failed to prepare checkout:', err);
+      console.error('[Package] Failed to prepare checkout:', err);
+      console.error('[Package] Error details:', JSON.stringify(err, null, 2));
     }
   }, [utils, checkoutPresenter, checkoutViewModel]);
 
@@ -112,9 +137,19 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   // Watch for checkoutViewModel changes and open modal when ready (must be before conditional returns)
   useEffect(() => {
-    if (checkoutViewModel && checkoutViewModel.mode === 'default') {
-      setTransactionDraft(checkoutViewModel.data);
-      setIsCheckoutOpen(true);
+    console.log('[Package] checkoutViewModel changed:', checkoutViewModel);
+    if (checkoutViewModel) {
+      if (checkoutViewModel.mode === 'default') {
+        console.log('[Package] Opening modal with data:', checkoutViewModel.data);
+        setTransactionDraft(checkoutViewModel.data);
+        setIsCheckoutOpen(true);
+        setCheckoutError(null);
+      } else {
+        // Show error banner for any non-default mode
+        console.log('[Package] Checkout error mode:', checkoutViewModel.mode, 'Setting checkoutError state');
+        console.log('[Package] checkoutViewModel data:', checkoutViewModel.data);
+        setCheckoutError(checkoutViewModel);
+      }
     }
   }, [checkoutViewModel]);
 
@@ -274,6 +309,7 @@ export default function Package({ locale, packageId }: PackageProps) {
         return {
           packageId: request.packageId,
           withCoaching: request.purchaseType === 'StudentPackagePurchaseWithCoaching',
+          selectedCourseIds: request.selectedCourseIds, // Include selected courses for partial package purchases
         };
       case 'StudentCoursePurchase':
         return {
@@ -323,6 +359,7 @@ export default function Package({ locale, packageId }: PackageProps) {
   };
 
   const handlePurchase = () => {
+    console.log('[Package] handlePurchase called');
     const request: useCaseModels.TPrepareCheckoutRequest = {
       purchaseType: coachingIncluded
         ? 'StudentPackagePurchaseWithCoaching'
@@ -332,9 +369,11 @@ export default function Package({ locale, packageId }: PackageProps) {
         ? undefined
         : selectedCourseIds, // Only include if partial selection
     };
+    console.log('[Package] Request:', request);
 
     // If user is not logged in, save intent and redirect to login
     if (!isLoggedIn) {
+      console.log('[Package] User not logged in, redirecting to login');
       saveIntent(request, window.location.pathname);
       router.push(
         `/${currentLocale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
@@ -343,6 +382,7 @@ export default function Package({ locale, packageId }: PackageProps) {
     }
 
     // User is logged in, execute checkout
+    console.log('[Package] Calling executeCheckout');
     executeCheckout(request);
   };
 
@@ -373,6 +413,8 @@ export default function Package({ locale, packageId }: PackageProps) {
   const handlePaymentComplete = (sessionId: string) => {
     setIsCheckoutOpen(false);
     setTransactionDraft(null);
+    setCheckoutViewModel(undefined);
+    setCurrentRequest(null);
     // TODO: Redirect to success page or show success message
   };
 
@@ -392,6 +434,21 @@ export default function Package({ locale, packageId }: PackageProps) {
     <div className="flex flex-col space-y-5 px-30">
       {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} />
+
+      {/* Checkout Error Banner */}
+      {checkoutError && checkoutError.mode !== 'default' && (
+        <Banner
+          style="error"
+          icon
+          closeable
+          title={getCheckoutErrorTitle(checkoutError.mode)}
+          description={getCheckoutErrorDescription(checkoutError.mode)}
+          onClose={() => {
+            setCheckoutError(null);
+            setCheckoutViewModel(undefined);
+          }}
+        />
+      )}
 
       <div className="flex flex-col gap-8 bg-card-fill p-5 border border-card-stroke rounded-medium">
         {/* Top hero section - PackageGeneralInformation */}
@@ -510,7 +567,6 @@ export default function Package({ locale, packageId }: PackageProps) {
           onToggleCoaching={handleToggleCoaching}
         />
 
-
         {/* Related Packages Section */}
         <div className="border-t border-card-stroke" />
         {relatedPackagesData.length > 0 && (
@@ -563,6 +619,8 @@ export default function Package({ locale, packageId }: PackageProps) {
             onClose={() => {
               setIsCheckoutOpen(false);
               setTransactionDraft(null);
+              setCheckoutViewModel(undefined);
+              setCurrentRequest(null);
             }}
             transactionDraft={transactionDraft}
             stripePublishableKey={

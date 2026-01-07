@@ -32,9 +32,7 @@ interface UserCoursesListProps {
 export default function UserCoursesList({ maxItems }: UserCoursesListProps = {}) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
-    const sessionDTO = useSession();
-    const session = sessionDTO.data;
-    const sessionStatus = sessionDTO.status;
+    const { data: session } = useSession();
     const emptyStateTranslations = useTranslations('pages.userCoursesList');
     const paginationTranslations = useTranslations(
         'components.paginationButton',
@@ -67,12 +65,10 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
         }
     });
 
-    // Handle authentication redirect in useEffect to prevent infinite re-renders
-    useEffect(() => {
-        if (sessionStatus !== 'authenticated' || session == null) {
-            router.push('/auth/login');
-        }
-    }, [sessionStatus, session, router]);
+    // NOTE: Authentication is handled by middleware for protected routes.
+    // Session expiration is handled by SessionMonitorWrapper.
+    // No client-side auth redirect needed here.
+
     const userRoles = session?.user.roles;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const isAdmin = userRoles?.includes('admin');

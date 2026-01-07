@@ -7,6 +7,7 @@ import {
     DefaultError,
     DefaultLoading,
     CheckoutModal,
+    Banner,
     type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
@@ -18,6 +19,7 @@ import { Suspense, useState, useEffect, useCallback } from 'react';
 import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-included-coaching-sessions-presenter';
 import { usePrepareCheckoutPresenter } from '../../../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../../../hooks/use-checkout-intent';
+import { useCheckoutErrors, createCheckoutErrorViewModel } from '../../../hooks/use-checkout-errors';
 import { useSession } from 'next-auth/react';
 import env from '../../../config/env';
 import CourseIntroduction from '../../common/course-introduction';
@@ -162,6 +164,7 @@ function StudentEnrolledCourseIntroduction(
 ) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
+    const { getCheckoutErrorTitle, getCheckoutErrorDescription } = useCheckoutErrors();
     const sessionDTO = useSession();
     const isLoggedIn = !!sessionDTO.data;
 
@@ -169,6 +172,7 @@ function StudentEnrolledCourseIntroduction(
     const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
     const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
+    const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [isBuySessionsModalOpen, setIsBuySessionsModalOpen] = useState(false);
 
@@ -184,9 +188,23 @@ function StudentEnrolledCourseIntroduction(
     ) => {
         try {
             setCurrentRequest(request);
+            setCheckoutError(null); // Clear any previous error
             // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
-            const response = await utils.prepareCheckout.fetch(request) as useCaseModels.TPrepareCheckoutUseCaseResponse;
-            checkoutPresenter.present(response, checkoutViewModel);
+            const response = await utils.prepareCheckout.fetch(request);
+            // Unwrap TBaseResult if needed
+            if (response && typeof response === 'object' && 'success' in response) {
+                if (response.success === true && response.data) {
+                    checkoutPresenter.present({ success: true, data: response.data } as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                } else if (response.success === false && response.data) {
+                    // Directly set error state for better reliability on repeated attempts
+                    const errorViewModel = createCheckoutErrorViewModel(response.data);
+                    setCheckoutError(errorViewModel);
+                    // Scroll to top so user can see the error banner
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } else {
+                checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+            }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
@@ -194,9 +212,14 @@ function StudentEnrolledCourseIntroduction(
 
     // Watch for checkoutViewModel changes and open modal when ready
     useEffect(() => {
-        if (checkoutViewModel && checkoutViewModel.mode === 'default') {
-            setTransactionDraft(checkoutViewModel.data);
-            setIsCheckoutOpen(true);
+        if (checkoutViewModel) {
+            if (checkoutViewModel.mode === 'default') {
+                setTransactionDraft(checkoutViewModel.data);
+                setIsCheckoutOpen(true);
+                setCheckoutError(null);
+            } else {
+                setCheckoutError(checkoutViewModel);
+            }
         }
     }, [checkoutViewModel]);
 
@@ -263,20 +286,36 @@ function StudentEnrolledCourseIntroduction(
     const handlePaymentComplete = (sessionId: string) => {
         setIsCheckoutOpen(false);
         setTransactionDraft(null);
-        
+        setCheckoutViewModel(undefined);
+        setCurrentRequest(null);
+
         // Invalidate queries to refresh coaching sessions data after purchase
         utils.listIncludedCoachingSessions.invalidate({ courseSlug: props.courseSlug });
         utils.listCourseCoachingSessionPurchaseStatus.invalidate({ courseSlug: props.courseSlug });
-        
+
         // TODO: Redirect to success page or show success message
     };
 
     return (
         <div className="flex flex-col space-y-10">
+            {/* Checkout Error Banner */}
+            {checkoutError && checkoutError.mode !== 'default' && (
+                <Banner
+                    style="error"
+                    icon
+                    closeable
+                    title={getCheckoutErrorTitle(checkoutError.mode)}
+                    description={getCheckoutErrorDescription(checkoutError.mode)}
+                    onClose={() => {
+                        setCheckoutError(null);
+                        setCheckoutViewModel(undefined);
+                    }}
+                />
+            )}
             <Suspense
                 fallback={<DefaultLoading locale={locale} variant="minimal" />}
             >
-                <IncludedCoachingSessions 
+                <IncludedCoachingSessions
                     courseSlug={props.courseSlug}
                     onPurchaseComponentCoaching={handlePurchaseComponentCoaching}
                     onBuySessions={() => setIsBuySessionsModalOpen(true)}
@@ -299,6 +338,8 @@ function StudentEnrolledCourseIntroduction(
                     onClose={() => {
                         setIsCheckoutOpen(false);
                         setTransactionDraft(null);
+                        setCheckoutViewModel(undefined);
+                        setCurrentRequest(null);
                     }}
                     transactionDraft={transactionDraft}
                     stripePublishableKey={
