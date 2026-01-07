@@ -16,6 +16,7 @@ import {
     DefaultNotFound,
     RichTextRenderer,
     CheckoutModal,
+    Banner,
     type TransactionDraft,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -34,6 +35,7 @@ import { useListCourseReviewsPresenter } from '../../hooks/use-list-course-revie
 import { useGetCoursePackagesPresenter } from '../../hooks/use-course-packages-presenter';
 import { useGetOffersPageOutlinePresenter } from '../../hooks/use-get-offers-page-outline-presenter';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
+import { useCheckoutErrors, createCheckoutErrorViewModel } from '../../hooks/use-checkout-errors';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
@@ -50,6 +52,7 @@ export default function VisitorPage({
 }: VisitorPageProps) {
     const t = useTranslations('pages.course.visitor');
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const { getCheckoutErrorTitle, getCheckoutErrorDescription } = useCheckoutErrors();
     const router = useRouter();
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
     const [coachingIncluded, setCoachingIncluded] = useState(false);
@@ -80,6 +83,7 @@ export default function VisitorPage({
     const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
     const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
+    const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
 
     // Create presenters using hooks
     const { presenter: courseDetailsPresenter } = useGetPublicCourseDetailsPresenter(setCourseData);
@@ -162,10 +166,24 @@ export default function VisitorPage({
     ) => {
         try {
             setCurrentRequest(request);
+            setCheckoutError(null); // Clear any previous error
             // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
-            const response = await utils.prepareCheckout.fetch(request) as useCaseModels.TPrepareCheckoutUseCaseResponse;
+            const response = await utils.prepareCheckout.fetch(request);
             console.log('response', response);
-            checkoutPresenter.present(response, checkoutViewModel);
+            // Unwrap TBaseResult if needed
+            if (response && typeof response === 'object' && 'success' in response) {
+                if (response.success === true && response.data) {
+                    checkoutPresenter.present({ success: true, data: response.data } as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                } else if (response.success === false && response.data) {
+                    // Directly set error state for better reliability on repeated attempts
+                    const errorViewModel = createCheckoutErrorViewModel(response.data);
+                    setCheckoutError(errorViewModel);
+                    // Scroll to top so user can see the error banner
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } else {
+                checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+            }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
         }
@@ -173,9 +191,16 @@ export default function VisitorPage({
 
     // Watch for checkoutViewModel changes and open modal when ready
     useEffect(() => {
-        if (checkoutViewModel && checkoutViewModel.mode === 'default') {
-            setTransactionDraft(checkoutViewModel.data);
-            setIsCheckoutOpen(true);
+        if (checkoutViewModel) {
+            if (checkoutViewModel.mode === 'default') {
+                setTransactionDraft(checkoutViewModel.data);
+                setIsCheckoutOpen(true);
+                setCheckoutError(null);
+            } else {
+                setCheckoutError(checkoutViewModel);
+                // Scroll to top so user can see the error banner
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
     }, [checkoutViewModel]);
 
@@ -218,6 +243,8 @@ export default function VisitorPage({
     const handlePaymentComplete = (sessionId: string) => {
         setIsCheckoutOpen(false);
         setTransactionDraft(null);
+        setCheckoutViewModel(undefined);
+        setCurrentRequest(null);
         // TODO: Redirect to success page or show success message
     };
 
@@ -508,6 +535,22 @@ export default function VisitorPage({
                     ]}
                 />
             </div>
+
+            {/* Checkout Error Banner */}
+            {checkoutError && checkoutError.mode !== 'default' && (
+                <Banner
+                    style="error"
+                    icon
+                    closeable
+                    title={getCheckoutErrorTitle(checkoutError.mode)}
+                    description={getCheckoutErrorDescription(checkoutError.mode)}
+                    onClose={() => {
+                        setCheckoutError(null);
+                        setCheckoutViewModel(undefined);
+                    }}
+                />
+            )}
+
             <div className="flex flex-col gap-30 ">
                 {/* Course General Information */}
                 {renderCourseData()}
@@ -606,6 +649,8 @@ export default function VisitorPage({
                     onClose={() => {
                         setIsCheckoutOpen(false);
                         setTransactionDraft(null);
+                        setCheckoutViewModel(undefined);
+                        setCurrentRequest(null);
                     }}
                     transactionDraft={transactionDraft}
                     stripePublishableKey={

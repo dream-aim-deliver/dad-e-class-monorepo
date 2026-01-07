@@ -1828,6 +1828,44 @@ export const DictionarySchema = z.object({
       invalidCoupon: z.string(),
       couponError: z.string(),
     }),
+    checkoutErrors: z.object({
+      alreadyOwned: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      notFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      notEnrolled: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      alreadyPurchased: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      couponNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      couponExpired: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      couponLimitReached: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      invalidCouponType: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      genericError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    }),
     sendNotificationModal: z.object({
       step1Title: z.string(),
       step2Title: z.string(),

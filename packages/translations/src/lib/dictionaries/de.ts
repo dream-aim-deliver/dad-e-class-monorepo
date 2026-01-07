@@ -1840,6 +1840,44 @@ export const DE: TDictionary = {
       invalidCoupon: 'Ungültiger Gutscheincode. Muss Zahlen enthalten.',
       couponError: 'Gutschein konnte nicht angewendet werden. Bitte versuchen Sie es erneut.',
     },
+    checkoutErrors: {
+      alreadyOwned: {
+        title: 'Bereits gekauft',
+        description: 'Sie haben bereits Zugang zu diesem Inhalt.',
+      },
+      notFound: {
+        title: 'Nicht gefunden',
+        description: 'Der Artikel, den Sie kaufen möchten, wurde nicht gefunden.',
+      },
+      notEnrolled: {
+        title: 'Nicht eingeschrieben',
+        description: 'Sie müssen im Kurs eingeschrieben sein, um Coaching-Sitzungen zu kaufen.',
+      },
+      alreadyPurchased: {
+        title: 'Bereits gekauft',
+        description: 'Sie haben bereits Coaching für diese Komponente gekauft.',
+      },
+      couponNotFound: {
+        title: 'Ungültiger Gutschein',
+        description: 'Der eingegebene Gutscheincode ist ungültig.',
+      },
+      couponExpired: {
+        title: 'Gutschein abgelaufen',
+        description: 'Dieser Gutschein ist abgelaufen und kann nicht mehr verwendet werden.',
+      },
+      couponLimitReached: {
+        title: 'Gutscheinlimit erreicht',
+        description: 'Dieser Gutschein hat sein Nutzungslimit erreicht.',
+      },
+      invalidCouponType: {
+        title: 'Ungültiger Gutschein',
+        description: 'Dieser Gutschein kann für diese Art von Kauf nicht verwendet werden.',
+      },
+      genericError: {
+        title: 'Fehler',
+        description: 'Beim Checkout ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      },
+    },
     sendNotificationModal: {
       step1Title: 'Benachrichtigung senden',
       step2Title: 'Bitte Details überprüfen',

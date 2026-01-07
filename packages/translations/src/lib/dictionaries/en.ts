@@ -1837,6 +1837,44 @@ export const EN: TDictionary = {
       invalidCoupon: 'Invalid coupon code. Must contain numbers.',
       couponError: 'Unable to apply coupon. Please try again.',
     },
+    checkoutErrors: {
+      alreadyOwned: {
+        title: 'Already Purchased',
+        description: 'You already have access to this content.',
+      },
+      notFound: {
+        title: 'Not Found',
+        description: 'The item you are trying to purchase could not be found.',
+      },
+      notEnrolled: {
+        title: 'Not Enrolled',
+        description: 'You need to be enrolled in the course to purchase coaching sessions.',
+      },
+      alreadyPurchased: {
+        title: 'Already Purchased',
+        description: 'You have already purchased coaching for this component.',
+      },
+      couponNotFound: {
+        title: 'Invalid Coupon',
+        description: 'The coupon code you entered is invalid.',
+      },
+      couponExpired: {
+        title: 'Coupon Expired',
+        description: 'This coupon has expired and can no longer be used.',
+      },
+      couponLimitReached: {
+        title: 'Coupon Limit Reached',
+        description: 'This coupon has reached its usage limit.',
+      },
+      invalidCouponType: {
+        title: 'Invalid Coupon',
+        description: 'This coupon cannot be used for this type of purchase.',
+      },
+      genericError: {
+        title: 'Error',
+        description: 'An error occurred during checkout. Please try again.',
+      },
+    },
     sendNotificationModal: {
       step1Title: 'Send notification',
       step2Title: 'Please review the details',

@@ -10,6 +10,7 @@ import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { PackageCourseActions } from './package-course-actions';
 import { cn } from "../../../utils/style-utils";
 import { useImageComponent } from '../../../contexts/image-component-context';
+import RichTextRenderer from '../../rich-text-element/renderer';
 
 
 export interface PackageCourseCardProps extends course.TCourseMetadata {
@@ -164,9 +165,13 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
                         sales={sales}
                     />
 
-                    <p className="text-sm leading-[150%] text-text-secondary text-start">
-                        {description}
-                    </p>
+                    {description && (
+                        <RichTextRenderer
+                            content={description}
+                            onDeserializationError={console.error}
+                            className="text-sm leading-[150%] text-text-secondary text-start line-clamp-3"
+                        />
+                    )}
                 </div>
 
                 <div className="flex flex-col gap-2">

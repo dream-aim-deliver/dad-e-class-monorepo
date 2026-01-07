@@ -7,6 +7,7 @@ import { IconClock } from '../icons/icon-clock';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TEClassPackage } from 'packages/models/src/eclass-package';
 import { useImageComponent } from '../../contexts/image-component-context';
+import RichTextRenderer from '../rich-text-element/renderer';
 
 export interface PackageCardProps extends TEClassPackage, isLocalAware {
     courseCount: number;
@@ -170,7 +171,13 @@ export const PackageCard = ({
                 </div>
 
                 {/* Description */}
-                <p className="text-text-secondary lg:text-lg">{description}</p>
+                {description && (
+                    <RichTextRenderer
+                        content={description}
+                        onDeserializationError={console.error}
+                        className="text-text-secondary lg:text-lg line-clamp-3"
+                    />
+                )}
 
                 <div className="flex flex-col md:pt-4 gap-4">
                     <div className="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4 items-stretch">
