@@ -372,6 +372,7 @@ export const DictionarySchema = z.object({
       includeCoursesTitle: z.string(),
       includedCoursesCount: z.string(),
       allCoursesTitle: z.string(),
+      savingsWithCoachingTooltip: z.string(),
     }),
     availableCoachingSessions: z.object({
       title: z.string(),
@@ -484,6 +485,7 @@ export const DictionarySchema = z.object({
       allPackagesText: z.string(),
       showArchivedText: z.string(),
       createPackageButton: z.string(),
+      savingsTooltip: z.string(),
     }),
     sideMenu: z.object({
       studentText: z.string(),

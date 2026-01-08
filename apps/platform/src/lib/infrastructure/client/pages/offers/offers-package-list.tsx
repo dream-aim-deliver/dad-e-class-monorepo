@@ -36,6 +36,11 @@ export default function PackageList() {
         useListOffersPagePackagesPresenter(setPackagesViewModel);
     // @ts-ignore
     presenter.present(packagesResponse, packagesViewModel);
+
+    // DEBUG: Log packages data to inspect savings values from backend
+    console.log('[tRPC: listOffersPagePackages] API response:', packagesResponse);
+    console.log('[tRPC: listOffersPagePackages] ViewModel:', packagesViewModel);
+
     const router = useRouter();
 
     // Session and checkout state
@@ -101,7 +106,7 @@ export default function PackageList() {
 
     const handlePurchase = (packageId: number) => {
         const request: TPrepareCheckoutRequest = {
-            purchaseType: 'StudentPackagePurchase',
+            purchaseType: 'StudentPackagePurchaseWithCoaching',
             packageId,
         };
 
@@ -177,9 +182,15 @@ export default function PackageList() {
                             description={pkg.description}
                             imageUrl={pkg.imageUrl ?? ''}
                             pricing={{
-                                fullPrice: pkg.pricing.allCourses,
+                                // fullPrice = sum of all courses + all coaching sessions (what you'd pay if bought separately)
+                                fullPrice: (pkg.pricing.allCourses ?? 0) + (pkg.pricing.coachingSessionsTotal ?? 0),
+                                // partialPrice = actual package price (NOTE: 'actual' is the price WITH coaching in this API)
                                 partialPrice: pkg.pricing.actual,
                                 currency: platform.currency,
+                                // Display savingsWithCoachings as the savings amount shown to user
+                                savingsWithoutCoachings: pkg.pricing.savingsWithCoachings,
+                                savingsWithCoachings: pkg.pricing.savingsWithCoachings,
+                                coachingSessionsTotal: pkg.pricing.coachingSessionsTotal,
                             }}
                             duration={pkg.duration}
                             locale={locale}
@@ -195,7 +206,7 @@ export default function PackageList() {
             </CardListLayout>
 
             {/* Checkout Modal */}
-            {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentPackagePurchase' && (
+            {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentPackagePurchaseWithCoaching' && (
                 <CheckoutModal
                     isOpen={isCheckoutOpen}
                     onClose={() => {

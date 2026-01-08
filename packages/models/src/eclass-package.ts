@@ -4,6 +4,9 @@ export const EClassPackagePricingSchema = z.object({
     fullPrice: z.number(),
     partialPrice: z.number(),
     currency: z.string(),
+    savingsWithoutCoachings: z.number().optional().nullable(),
+    savingsWithCoachings: z.number().optional().nullable(),
+    coachingSessionsTotal: z.number().optional().nullable(),
 })
 export type TEClassPackagePricing = z.infer<typeof EClassPackagePricingSchema>
 

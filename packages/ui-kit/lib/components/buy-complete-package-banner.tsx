@@ -8,6 +8,7 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TEClassPackage } from 'packages/models/src/eclass-package';
 import { UserAvatar } from './avatar/user-avatar';
 import { CheckBox } from './checkbox';
+import Tooltip from './tooltip';
 
 export interface BuyCompletePackageBannerProps
     extends TEClassPackage,
@@ -142,14 +143,33 @@ export const BuyCompletePackageBanner = ({
                             />
                         </div>
                         <div className="flex flex-col items-end text-right shrink-0">
+                            {/* Strikethrough original price when there's a discount */}
+                            {(pricing as any).fullPrice > (pricing as any).partialPrice && (
+                                <span className="text-text-secondary line-through text-sm">
+                                    {(pricing as any).currency} {Math.round((pricing as any).fullPrice * 100) / 100}
+                                </span>
+                            )}
                             <h6 className="text-text-primary lg:text-lg text-md">
                                 {dictionary.fromText} {(pricing as any).currency}{' '}
                                 {Math.round((pricing as any).partialPrice * 100) / 100}
                             </h6>
-                            <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
-                                {dictionary.saveText} {(pricing as any).currency}{' '}
-                                {Math.round(((pricing as any).fullPrice - (pricing as any).partialPrice) * 100) / 100}
-                            </p>
+                            {/* Use backend savings based on coaching toggle */}
+                            {(() => {
+                                const savings = coachingIncluded
+                                    ? (pricing as any).savingsWithCoachings
+                                    : (pricing as any).savingsWithoutCoachings;
+                                return savings != null && savings > 0 ? (
+                                    <div className="flex items-center gap-1">
+                                        <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
+                                            {dictionary.saveText} {(pricing as any).currency} {Math.round(savings * 100) / 100}
+                                        </p>
+                                        <Tooltip
+                                            text=""
+                                            description={getDictionary(locale).components.packages.savingsTooltip}
+                                        />
+                                    </div>
+                                ) : null;
+                            })()}
                         </div>
                     </div>
                 </div>

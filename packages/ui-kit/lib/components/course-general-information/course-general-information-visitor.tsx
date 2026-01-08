@@ -11,6 +11,7 @@ import { StarRating } from '../star-rating';
 import { IconVideoCamera } from '../icons/icon-video-camera';
 import { IconCoachingSession, IconCourse } from '../icons';
 import { useImageComponent } from '../../contexts/image-component-context';
+import Tooltip from '../tooltip';
 
 interface Coach {
     name: string;
@@ -437,19 +438,19 @@ export const CourseGeneralInformationVisitor: FC<
                             labelClass="text-text-secondary text-md"
                             onChange={handleCheckboxChange}
                         />
-                        {coachingIncluded && (
-                        <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
-                            {
-                                dictionary.components.courseGeneralInformationView
-                                    .saveLabel
-                            }{' '}
-                                {(pricing as any).currency as string}{' '}
-                                {Math.round(
-                                    (((pricing as any).fullPrice as number) -
-                                        ((pricing as any).partialPrice as number)) *
-                                        100,
-                                ) / 100}
-                        </p>
+                        {/* Show savings when coaching is included and savings data is available */}
+                        {coachingIncluded && (pricing as any).savingsWithCoachings != null && (pricing as any).savingsWithCoachings > 0 && (
+                            <div className="flex items-center gap-1">
+                                <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
+                                    {dictionary.components.courseGeneralInformationView.saveLabel}{' '}
+                                    {(pricing as any).currency as string}{' '}
+                                    {Math.round((pricing as any).savingsWithCoachings * 100) / 100}
+                                </p>
+                                <Tooltip
+                                    text=""
+                                    description={dictionary.components.courseCard.savingsWithCoachingTooltip}
+                                />
+                            </div>
                         )}
                     </div>
 

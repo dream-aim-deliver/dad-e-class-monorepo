@@ -263,6 +263,7 @@ export const DE: TDictionary = {
       includeCoursesTitle: 'Kurse hinzufügen',
       includedCoursesCount: 'Hinzugefügte Kurse',
       allCoursesTitle: 'Alle Kurse',
+      savingsWithCoachingTooltip: 'Ihre Ersparnis beim Kauf mit inklusivem Coaching',
     },
     reviewModal: {
       coachingTitle: 'Wie würdest du deinen Coach bewerten?',
@@ -482,6 +483,7 @@ export const DE: TDictionary = {
       allPackagesText: 'All packages',
       showArchivedText: 'Show archived',
       createPackageButton: 'Create Package',
+      savingsTooltip: 'Sie sparen diesen Betrag im Vergleich zum separaten Kauf von Kursen und Coaching-Sitzungen',
     },
     sideMenu: {
       studentText: 'Studierende',

@@ -73,6 +73,10 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   // @ts-ignore
   presenter.present(listPackagesResponse, listPackagesViewModel);
 
+  // DEBUG: Log packages data to inspect pricing values from backend
+  console.log('[tRPC: listPackages] API response:', listPackagesResponse);
+  console.log('[tRPC: listPackages] ViewModel:', listPackagesViewModel);
+
   // Client state for show archived filter - default to true to show all packages
   const [showArchived, setShowArchived] = useState(true);
 
@@ -273,8 +277,10 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
             courseCount: pkg.courseCount || 0,
             pricing: {
               currency: platform.currency,
-              fullPrice: pkg.coursesPriceWithCoachings,
-              partialPrice: pkg.coursesPriceWithoutCoachings,
+              // Scratched price = sum of base prices + sum of coaching prices
+              // Formula: savingsWithCoachings + priceWithCoachings = scratched price (from PRICING_SAVINGS.md)
+              fullPrice: (pkg.savingsWithCoachings ?? 0) + pkg.priceWithCoachings,
+              partialPrice: pkg.priceWithCoachings,      // Actual package price
             },
             locale: currentLocale,
             onClickEdit: () => handleEditPackage(`${pkg.id}`),
