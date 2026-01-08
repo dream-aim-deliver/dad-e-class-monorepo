@@ -19,7 +19,7 @@ importers:
         specifier: 3.1.22
         version: 3.1.22(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)
       '@mux/mux-player-react':
-        specifier: ^3.3.0
+        specifier: 3.3.0
         version: 3.3.0(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -1203,9 +1203,6 @@ packages:
 
   '@dream-aim-deliver/e-class-cms-rest@3.1.22':
     resolution: {integrity: sha512-BYDF/c8yNFmfSCnckld5rZq+SGu4f2hQvhI3xBbWnMtqzM9pRD80TAxhHjZ48ZQMx1lP6ir9BDMEQfb/RKZpPw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.1.22/08732d32e1942158d1111d5e13cb3ed33f51dd9e}
-
-  '@dream-aim-deliver/e-class-cms-rest@3.1.17':
-    resolution: {integrity: sha512-G98PuKVXBMxyzbixXbIFOPdUPnHtbfBHnMN7YfmGwKzaF6YYjejViG4IBbv0N2xWhUtKTRmHW5gmOVVIGqp3rw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.1.17/faffa1fa04d32f0d6958c12a9a04190ef11b4228}
 
   '@emnapi/core@1.3.1':
     resolution: {integrity: sha512-pVGjBIt1Y6gg3EJN8jTcfpP/+uuRksIo055oE/OBkDNcjZqVbfkWCksG1Jp4yZnj3iKWyWX8fdG/j6UDYPbFog==}
@@ -14536,6 +14533,14 @@ snapshots:
       vite: 5.4.11(@types/node@22.17.0)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
 
   '@vitest/mocker@3.0.9(vite@5.4.11(@types/node@18.16.9)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))':
+    dependencies:
+      '@vitest/spy': 3.0.9
+      estree-walker: 3.0.3
+      magic-string: 0.30.17
+    optionalDependencies:
+      vite: 5.4.11(@types/node@18.16.9)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+
+  '@vitest/mocker@3.0.9(vite@5.4.11(@types/node@22.17.0)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))':
     dependencies:
       '@vitest/spy': 3.0.9
       estree-walker: 3.0.3
