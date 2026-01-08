@@ -191,9 +191,11 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
             const response = await utils.prepareCheckout.fetch(request);
             if (response && typeof response === 'object' && 'success' in response) {
                 if (response.success === true && response.data) {
-                    checkoutPresenter.present({ success: true, data: response.data } as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                    checkoutPresenter.present({ success: true, data: response.data } as unknown as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
                 } else if (response.success === false && response.data) {
-                    const errorViewModel = createCheckoutErrorViewModel(response.data);
+                    // Access the nested data structure from tRPC response
+                    const errorData = 'data' in response.data ? response.data.data : response.data;
+                    const errorViewModel = createCheckoutErrorViewModel(errorData as { message?: string; errorType?: string; operation?: string; context?: unknown });
                     setCheckoutError(errorViewModel);
                 }
             } else {
