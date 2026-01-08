@@ -394,7 +394,8 @@ function transformCoachingSession(
         type: LessonElementType.CoachingSession,
         id: component.id,
         coachingSession: {
-            id: component.id,
+            // Don't set id here - backend doesn't return coachingOfferingId
+            // The component will match by name+duration at render time
             name: component.name,
             duration: component.duration,
         },

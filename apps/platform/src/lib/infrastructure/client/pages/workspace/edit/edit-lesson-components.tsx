@@ -1615,10 +1615,26 @@ function CoachingSessionComponent({
         return <DefaultError locale={locale} />;
     }
 
+    // Find matching offering by name+duration (backend doesn't return coachingOfferingId)
+    const coachingSession = (elementInstance as CoachingSessionElement).coachingSession;
+    const matchingOffering = coachingSession
+        ? coachingOfferingsViewModel.data.offerings.find(
+              (o) => o.name === coachingSession.name && o.duration === coachingSession.duration
+          )
+        : undefined;
+
+    // Create element with resolved ID (or undefined coachingSession if no match - allows editing)
+    const resolvedElement: CoachingSessionElement = {
+        ...(elementInstance as CoachingSessionElement),
+        coachingSession: matchingOffering
+            ? { id: matchingOffering.id as number, name: matchingOffering.name, duration: matchingOffering.duration }
+            : undefined,
+    };
+
     return (
         <CoachingSessionDesignerComponent
             key={elementInstance.id}
-            elementInstance={elementInstance as CoachingSessionElement}
+            elementInstance={resolvedElement}
             locale={locale}
             onUpClick={onUpClick}
             onDownClick={onDownClick}
