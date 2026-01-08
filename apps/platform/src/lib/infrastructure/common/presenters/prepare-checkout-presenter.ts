@@ -1,10 +1,11 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { TPrepareCheckoutUseCaseResponse, TPrepareCheckoutErrorResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
+import { PrepareCheckoutUseCaseResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TPrepareCheckoutPresenterUtilities = {};
@@ -32,7 +33,7 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.PrepareCheckoutUseCaseResponseSchema,
+                    PrepareCheckoutUseCaseResponseSchema,
                 viewModel: viewModels.PrepareCheckoutViewModelSchema,
             },
             middleware: PrepareCheckoutResponseMiddleware,

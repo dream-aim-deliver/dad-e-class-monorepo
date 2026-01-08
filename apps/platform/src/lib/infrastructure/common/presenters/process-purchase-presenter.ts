@@ -5,6 +5,7 @@ import {
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
+import { ProcessPurchaseUseCaseResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TProcessPurchasePresenterUtilities = {};
@@ -32,7 +33,7 @@ export default class ProcessPurchasePresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.ProcessPurchaseUseCaseResponseSchema,
+                    ProcessPurchaseUseCaseResponseSchema,
                 viewModel: viewModels.ProcessPurchaseViewModelSchema,
             },
             middleware: ProcessPurchaseResponseMiddleware,

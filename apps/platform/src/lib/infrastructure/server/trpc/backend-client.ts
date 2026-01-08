@@ -10,8 +10,8 @@
  * 3. Forward authentication headers
  */
 
-import { useCaseModels } from '@maany_shr/e-class-models';
 import { TProcessPurchaseRequest, TProcessPurchaseSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
+import { ProcessPurchaseRequestSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
 // ============================================================================
 // Mock Storage (temporary - will be replaced by cms-fastapi database)
@@ -283,7 +283,7 @@ export const backendTrpc = {
     processPurchase: {
         mutate: async (input: TProcessPurchaseRequest): Promise<TProcessPurchaseSuccessResponse> => {
             // Validate input
-            const validatedInput = useCaseModels.ProcessPurchaseRequestSchema.parse(input);
+            const validatedInput = ProcessPurchaseRequestSchema.parse(input);
 
             // Call mock implementation
             return mockProcessPurchase(validatedInput);
