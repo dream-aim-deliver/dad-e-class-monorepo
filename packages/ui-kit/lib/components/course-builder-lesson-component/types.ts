@@ -44,6 +44,7 @@ export interface LinksElement extends BaseCourseFormElement {
     type: CourseElementType.Links;
     links: shared.TLink[];
     includeInMaterials?: boolean;
+    asPartOfMaterialsOnly?: boolean;
 }
 
 export interface QuizTypeOneElement extends BaseCourseFormElement {

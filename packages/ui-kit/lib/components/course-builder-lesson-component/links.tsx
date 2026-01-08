@@ -67,6 +67,7 @@ interface LinkDesignerComponentProps extends DesignerComponentProps {
     onDeleteIcon: (index: number) => void;
     onClickAddLink: () => void;
     onIncludeInMaterialsChange: (value: boolean) => void;
+    onAsPartOfMaterialsOnlyChange?: (value: boolean) => void;
 }
 
 export function DesignerComponent({
@@ -83,10 +84,15 @@ export function DesignerComponent({
     onClickAddLink,
     validationError,
     onIncludeInMaterialsChange,
+    onAsPartOfMaterialsOnlyChange,
 }: LinkDesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
 
     const [linkEditIndex, setLinkEditIndex] = useState<number | null>(null);
+
+    // When asPartOfMaterialsOnly is true, includeInMaterials must also be true
+    const isAsPartOfMaterialsOnly = elementInstance.asPartOfMaterialsOnly ?? false;
+    const includeInMaterialsChecked = isAsPartOfMaterialsOnly || (elementInstance.includeInMaterials ?? false);
 
     // TODO: merge with assignment
     return (
@@ -104,7 +110,7 @@ export function DesignerComponent({
             <CheckBox
                 name={`include-in-materials-${elementInstance.id}`}
                 value={elementInstance.id}
-                checked={elementInstance.includeInMaterials}
+                checked={includeInMaterialsChecked}
                 withText
                 label="Include links in course material tab"
                 onChange={() =>
@@ -112,6 +118,23 @@ export function DesignerComponent({
                         !elementInstance.includeInMaterials,
                     )
                 }
+                className="mb-2"
+                disabled={isAsPartOfMaterialsOnly}
+            />
+            <CheckBox
+                name={`as-part-of-materials-only-${elementInstance.id}`}
+                value={elementInstance.id}
+                checked={isAsPartOfMaterialsOnly}
+                withText
+                label="Show only in materials tab (hide from lesson)"
+                onChange={() => {
+                    const newValue = !isAsPartOfMaterialsOnly;
+                    onAsPartOfMaterialsOnlyChange?.(newValue);
+                    // When enabling asPartOfMaterialsOnly, also enable includeInMaterials
+                    if (newValue && !elementInstance.includeInMaterials) {
+                        onIncludeInMaterialsChange(true);
+                    }
+                }}
                 className="mb-2"
             />
             <div className="flex flex-col items-center justify-center gap-[10px] w-full">
@@ -177,6 +200,9 @@ export function DesignerComponent({
 
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
+
+    // If asPartOfMaterialsOnly is true, don't render in the lesson view (only show in materials tab)
+    if (elementInstance.asPartOfMaterialsOnly) return null;
 
     const dictionary = getDictionary(locale);
 

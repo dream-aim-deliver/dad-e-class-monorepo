@@ -380,6 +380,7 @@ function transformLinks(
                 : undefined,
         })),
         includeInMaterials: component.includeInMaterials,
+        asPartOfMaterialsOnly: component.asPartOfMaterialsOnly,
     };
 }
 

@@ -258,6 +258,7 @@ export const LinksSchema = BaseComponent.extend({
     type: z.literal('links'),
     links: z.array(LinkItemSchema),
     includeInMaterials: z.boolean(),
+    asPartOfMaterialsOnly: z.boolean(),
 });
 
 const DownloadFileSchema = FileSchema.extend({
@@ -477,6 +478,7 @@ const LinksComponentRequestSchema = BaseComponentRequestSchema.extend({
     type: z.literal('links'),
     links: z.array(LinkItemRequestSchema),
     includeInMaterials: z.boolean(),
+    asPartOfMaterialsOnly: z.boolean(),
 });
 
 // Interactive
