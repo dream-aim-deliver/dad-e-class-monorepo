@@ -224,8 +224,16 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
         return props.currentRole === 'student' ? StudentCourseTab.INTRODUCTION : CoachCourseTab.INTRODUCTION;
     }, [props.tab, props.currentRole]);
 
+    // Tab state management - sync with URL
+    const [activeTab, setActiveTab] = useState<string>(defaultTab);
+
+    useEffect(() => {
+        setActiveTab(defaultTab);
+    }, [defaultTab]);
+
     // Update URL when tab changes
     const handleTabChange = (newTab: string) => {
+        setActiveTab(newTab);
         const params = new URLSearchParams(searchParams.toString());
         const currentRole = params.get('role') || props.currentRole;
         
@@ -278,7 +286,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 courseSlug={props.courseSlug}
                 certificateDataViewModel={certificateDataViewModel}
             />
-            <Tabs.Root defaultTab={defaultTab} onValueChange={handleTabChange}>
+            <Tabs.Root defaultTab={activeTab} onValueChange={handleTabChange}>
                 <CourseTabList role={props.currentRole} />
                 <Tabs.Content value="introduction" className={tabContentClass}>
                     <EnrolledCourseIntroduction
