@@ -24,11 +24,11 @@ const NavLinks = ({
     pathname: string;
     isSuperAdmin: boolean;
 }) => {
+    const t = useTranslations('components.cmsNavbar');
+
     if (!isSuperAdmin) {
         return null;
     }
-
-    const t = useTranslations('components.cmsNavbar');
 
     // Route mapping for header navigation
     const routes = {
