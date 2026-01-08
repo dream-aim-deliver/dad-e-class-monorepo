@@ -3,6 +3,7 @@ import BookCoachPage from '../../client/pages/booking/book-coach';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import getSession from '../config/auth/get-session';
 import { redirect } from 'next/navigation';
+import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 
 interface BookingServerComponentProps {
     coachUsername: string;
@@ -34,9 +35,28 @@ export default async function BookingServerComponent(
         }
     }
 
+    // Prefetch coach introduction for header display
+    prefetch(trpc.getCoachIntroduction.queryOptions({ coachUsername: props.coachUsername }));
+
+    // Prefetch coach availability
+    prefetch(trpc.getCoachAvailability.queryOptions({ coachUsername: props.coachUsername }));
+
+    // Prefetch available coachings for the AvailableCoachings section
+    prefetch(trpc.listAvailableCoachings.queryOptions({}));
+
+    // Prefetch coaching offerings for the BuyCoachingSession section
+    prefetch(trpc.listCoachingOfferings.queryOptions({}));
+
+    // Prefetch student coaching session if sessionId is provided
+    if (sessionIdNumber) {
+        prefetch(trpc.getStudentCoachingSession.queryOptions({ id: sessionIdNumber }));
+    }
+
     return (
-        <Suspense fallback={<DefaultLoadingWrapper />}>
-            <BookCoachPage coachUsername={props.coachUsername} sessionId={sessionIdNumber} returnTo={props.returnTo} lessonComponentId={props.lessonComponentId} courseSlug={props.courseSlug} />
-        </Suspense>
+        <HydrateClient>
+            <Suspense fallback={<DefaultLoadingWrapper />}>
+                <BookCoachPage coachUsername={props.coachUsername} sessionId={sessionIdNumber} returnTo={props.returnTo} lessonComponentId={props.lessonComponentId} courseSlug={props.courseSlug} />
+            </Suspense>
+        </HydrateClient>
     );
 }

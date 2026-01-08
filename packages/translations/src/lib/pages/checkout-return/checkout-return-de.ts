@@ -28,6 +28,7 @@ export const CheckoutReturn_DE: TDictionary['pages']['checkoutReturn'] = {
         goToCourse: 'Zum Kurs',
         viewMyCourses: 'Meine Kurse ansehen',
         browseOfferings: 'Angebote durchsuchen',
+        bookSession: 'Sitzung buchen',
         continue: 'Weiter',
     },
 };

@@ -3380,6 +3380,7 @@ export const DictionarySchema = z.object({
         goToCourse: z.string(),
         viewMyCourses: z.string(),
         browseOfferings: z.string(),
+        bookSession: z.string(),
         continue: z.string(),
       }),
     }),
