@@ -5,6 +5,19 @@ const faviconUrlCache = new Map<string, { url: string; timestamp: number }>();
 const faviconDataCache = new Map<string, { data: ArrayBuffer; contentType: string; timestamp: number }>();
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
+// 1x1 transparent PNG as fallback when favicon cannot be fetched
+const TRANSPARENT_PIXEL_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+const TRANSPARENT_PIXEL = Uint8Array.from(atob(TRANSPARENT_PIXEL_BASE64), c => c.charCodeAt(0));
+
+function returnFallbackImage() {
+    return new NextResponse(TRANSPARENT_PIXEL, {
+        headers: {
+            'Content-Type': 'image/png',
+            'Cache-Control': 'public, max-age=3600',
+        },
+    });
+}
+
 /**
  * Favicon API Route
  * Fetches and proxies favicons with fallback chain: direct → HTML parsing → DuckDuckGo → Google
@@ -17,7 +30,7 @@ export async function GET(request: NextRequest) {
     const domain = searchParams.get('domain');
 
     if (!domain) {
-        return NextResponse.json({ error: 'Domain parameter required' }, { status: 400 });
+        return returnFallbackImage();
     }
 
     // Clean the domain
@@ -54,7 +67,7 @@ export async function GET(request: NextRequest) {
         });
 
         if (!response.ok) {
-            return NextResponse.json({ error: 'Failed to fetch favicon' }, { status: 502 });
+            return returnFallbackImage();
         }
 
         const data = await response.arrayBuffer();
@@ -69,9 +82,8 @@ export async function GET(request: NextRequest) {
                 'Cache-Control': 'public, max-age=86400', // 24 hours
             },
         });
-    } catch (error) {
-        console.error(`Failed to proxy favicon for ${cleanDomain}:`, error);
-        return NextResponse.json({ error: 'Failed to fetch favicon' }, { status: 502 });
+    } catch {
+        return returnFallbackImage();
     }
 }
 
