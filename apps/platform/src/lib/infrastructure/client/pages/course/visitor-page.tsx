@@ -173,10 +173,11 @@ export default function VisitorPage({
             // Unwrap TBaseResult if needed
             if (response && typeof response === 'object' && 'success' in response) {
                 if (response.success === true && response.data) {
-                    checkoutPresenter.present({ success: true, data: response.data } as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                    checkoutPresenter.present({ success: true, data: response.data } as unknown as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
                 } else if (response.success === false && response.data) {
-                    // Directly set error state for better reliability on repeated attempts
-                    const errorViewModel = createCheckoutErrorViewModel(response.data);
+                    // Access the nested data structure from tRPC response
+                    const errorData = 'data' in response.data ? response.data.data : response.data;
+                    const errorViewModel = createCheckoutErrorViewModel(errorData as { message?: string; errorType?: string; operation?: string; context?: unknown });
                     setCheckoutError(errorViewModel);
                     // Scroll to top so user can see the error banner
                     window.scrollTo({ top: 0, behavior: 'smooth' });

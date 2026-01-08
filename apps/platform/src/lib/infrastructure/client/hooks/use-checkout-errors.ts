@@ -71,13 +71,13 @@ export function createCheckoutErrorViewModel(
 ): viewModels.TPrepareCheckoutViewModel {
   const mode = getCheckoutErrorMode(errorData);
   return {
-    mode: mode as viewModels.TPrepareCheckoutViewModel['mode'],
+    mode,
     data: {
       message: errorData.message || '',
       operation: errorData.operation || '',
-      context: errorData.context,
+      context: (errorData.context || {}) as { digest?: string } & { [k: string]: unknown },
     },
-  };
+  } as viewModels.TPrepareCheckoutViewModel;
 }
 
 /**
@@ -93,6 +93,7 @@ export function useCheckoutErrors() {
   const getCheckoutErrorTitle = useCallback(
     (errorMode: string): string => {
       const key = ERROR_MODE_TO_KEY[errorMode] || 'genericError';
+      // @ts-expect-error - Dynamic key access for translations
       return t(`${key}.title`);
     },
     [t]
@@ -101,6 +102,7 @@ export function useCheckoutErrors() {
   const getCheckoutErrorDescription = useCallback(
     (errorMode: string): string => {
       const key = ERROR_MODE_TO_KEY[errorMode] || 'genericError';
+      // @ts-expect-error - Dynamic key access for translations
       return t(`${key}.description`);
     },
     [t]
