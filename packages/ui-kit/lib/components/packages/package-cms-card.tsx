@@ -223,17 +223,27 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                 <p className="text-text-secondary lg:text-lg">{description}</p>
 
                 {/* Prices */}
-                {pricing && (
+                {pricing && pricing.fullPrice != null && pricing.partialPrice != null && (
                     <div className="flex flex-col gap-1">
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center flex-wrap">
+                            {/* Scratched price (what you'd pay buying separately) */}
+                            {pricing.fullPrice > pricing.partialPrice && (
+                                <span className="text-text-secondary line-through lg:text-md">
+                                    {pricing.currency} {pricing.fullPrice}
+                                </span>
+                            )}
+                            {/* Actual package price */}
                             <h6 className="text-text-primary lg:text-lg">
-                                {pricing.currency} {pricing.fullPrice}
+                                {pricing.currency} {pricing.partialPrice}
                             </h6>
+                        </div>
+                        {/* Savings amount */}
+                        {pricing.fullPrice > pricing.partialPrice && (
                             <p className="text-feedback-success-primary lg:text-md text-sm font-important">
                                 {dictionary.saveText} {pricing.currency}{' '}
-                                {pricing.partialPrice}
+                                {Math.round((pricing.fullPrice - pricing.partialPrice) * 100) / 100}
                             </p>
-                        </div>
+                        )}
                         <p className="italic text-text-secondary text-sm">incl. coachings</p>
                     </div>
                 )}

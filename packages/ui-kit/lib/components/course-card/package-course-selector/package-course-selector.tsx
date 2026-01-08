@@ -3,6 +3,7 @@ import { FC } from "react";
 import { CheckBox } from "../../checkbox";
 import { Button } from "../../button";
 import { TCoursePricing } from "packages/models/src/course";
+import Tooltip from "../../tooltip";
 
 export interface PackageCourseSelectorProps extends isLocalAware {
     title: string;
@@ -91,6 +92,20 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
                     {children}
                 </div>
 
+                {/*
+                  * Pricing Display Section
+                  *
+                  * Shows pricing for selected courses with the following format:
+                  * [Strikethrough fullPrice] → [Actual partialPrice] → [Save X] (info icon)
+                  *
+                  * Expected pricing props:
+                  * - fullPrice: What you'd pay buying courses separately (scratched/strikethrough)
+                  * - partialPrice: Discounted price after package discount (what user pays)
+                  * - savings: Amount saved (fullPrice - partialPrice)
+                  * - currency: Currency code (e.g., "EUR", "USD")
+                  *
+                  * See calculatePackageWithCoursesPricing() in package.tsx for calculation logic.
+                  */}
                 <div className="flex md:gap-10 gap-4 md:p-4 md:bg-card-fill md:border md:border-card-stroke border-none rounded-huge w-full md:flex-row flex-col items-center">
                     <Button
                         variant="primary"
@@ -99,13 +114,29 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
                         onClick={onClickPurchase}
                         className="w-full"
                     />
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {/* Strikethrough original price (what you'd pay buying separately) */}
+                        {(pricing as any).fullPrice > (pricing as any).partialPrice && (
+                            <span className="text-text-secondary line-through text-md whitespace-nowrap">
+                                {(pricing as any).currency} {Math.round((pricing as any).fullPrice * 100) / 100}
+                            </span>
+                        )}
+                        {/* Actual price user pays (discounted) */}
                         <h6 className="text-md font-bold text-text-primary leading-[120%] whitespace-nowrap">
-                            {(pricing as any).currency}  {Math.round((pricing as any).partialPrice * 100) / 100}
+                            {(pricing as any).currency} {Math.round((pricing as any).partialPrice * 100) / 100}
                         </h6>
-                        <p className="text-sm font-bold text-feedback-success-primary leading-[100%] whitespace-nowrap">
-                            {dictionary.components.courseCard.saveText}  {(pricing as any).currency}  {Math.round(((pricing as any).fullPrice - (pricing as any).partialPrice) * 100) / 100}
-                        </p>
+                        {/* Savings amount with info tooltip */}
+                        {(pricing as any).fullPrice > (pricing as any).partialPrice && (
+                            <div className="flex items-center gap-1">
+                                <p className="text-sm font-bold text-feedback-success-primary leading-[100%] whitespace-nowrap">
+                                    {dictionary.components.courseCard.saveText} {(pricing as any).currency} {Math.round((pricing as any).savings * 100) / 100}
+                                </p>
+                                <Tooltip
+                                    text=""
+                                    description={getDictionary(locale).components.packages.savingsTooltip}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

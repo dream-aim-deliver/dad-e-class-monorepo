@@ -13,6 +13,9 @@ export const CoursePricingSchema = z.object({
     fullPrice: z.number(),
     partialPrice: z.number(),
     currency: z.string(),
+    coachingSessionsTotal: z.number().optional().nullable(),
+    savingsWithCoachings: z.number().optional().nullable(),
+    savings: z.number().optional().nullable(),
 })
 export type TCoursePricing = z.infer<typeof CoursePricingSchema>
 

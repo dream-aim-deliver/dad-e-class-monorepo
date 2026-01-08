@@ -63,13 +63,18 @@ export function OffersCourseList({
     selectedTopics,
     coachingIncluded,
 }: CourseListProps) {
-    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({});
+    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({ includeCoachingPrices: true });
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TCourseListViewModel | undefined
     >(undefined);
     const { presenter } = useListCoursesPresenter(setCoursesViewModel);
     // @ts-ignore
     presenter.present(coursesResponse, coursesViewModel);
+
+    // DEBUG: Log courses data to inspect pricing values from backend
+    console.log('[tRPC: listCourses] API response:', coursesResponse);
+    console.log('[tRPC: listCourses] ViewModel:', coursesViewModel);
+
     const locale = useLocale() as TLocale;
     const paginationTranslations = useTranslations(
         'components.paginationButton',

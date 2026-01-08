@@ -8,6 +8,7 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TEClassPackage } from 'packages/models/src/eclass-package';
 import { useImageComponent } from '../../contexts/image-component-context';
 import RichTextRenderer from '../rich-text-element/renderer';
+import Tooltip from '../tooltip';
 
 export interface PackageCardProps extends TEClassPackage, isLocalAware {
     courseCount: number;
@@ -200,15 +201,34 @@ export const PackageCard = ({
                         />
 
                         {/* Prices */}
-                        {pricing && (
-                            <div className="flex gap-2 items-center">
-                                <h6 className="text-text-primary lg:text-lg">
-                                    {pricing.currency} {pricing.fullPrice}
-                                </h6>
-                                <p className="text-feedback-success-primary lg:text-md text-sm font-important">
-                                    {dictionary.components.packages.saveText}{' '}
-                                    {pricing.currency} {pricing.partialPrice}
-                                </p>
+                        {pricing && pricing.fullPrice != null && pricing.partialPrice != null && (
+                            <div className="flex flex-col gap-1">
+                                {/* Row 1: Strikethrough price + Actual price on same line */}
+                                <div className="flex gap-2 items-center flex-wrap">
+                                    {/* Strikethrough original price (sum of courses + coaching) when there's a discount */}
+                                    {pricing.fullPrice > pricing.partialPrice && (
+                                        <span className="text-text-secondary line-through lg:text-md">
+                                            {pricing.currency} {pricing.fullPrice}
+                                        </span>
+                                    )}
+                                    {/* Actual price user pays */}
+                                    <h6 className="text-text-primary lg:text-lg">
+                                        {pricing.currency} {pricing.partialPrice}
+                                    </h6>
+                                </div>
+                                {/* Row 2: Savings amount with info icon - shown below prices when discount exists */}
+                                {pricing.fullPrice > pricing.partialPrice && pricing.savingsWithoutCoachings != null && pricing.savingsWithoutCoachings > 0 && (
+                                    <div className="flex items-center gap-1">
+                                        <p className="text-feedback-success-primary lg:text-md text-sm font-important">
+                                            {dictionary.components.packages.saveText}{' '}
+                                            {pricing.currency} {pricing.savingsWithoutCoachings}
+                                        </p>
+                                        <Tooltip
+                                            text=""
+                                            description={dictionary.components.packages.savingsTooltip}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
