@@ -576,6 +576,7 @@ function extractPurchaseIdentifier(purchaseType: string, metadata: Record<string
         case 'StudentCoachingSessionPurchase':
             return {
                 offeringId: parseInt(metadata.coachingOfferingId || metadata.offerings?.split(':')[0] || '0'),
+                coachUsername: metadata.coachUsername || null,
             };
 
         case 'StudentCourseCoachingSessionPurchase':

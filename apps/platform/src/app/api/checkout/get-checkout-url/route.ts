@@ -23,6 +23,7 @@ export async function GET(req: Request) {
     const offerings = searchParams.get('offerings'); // Multiple offerings in format "1:3,2:2"
     const withCoaching = searchParams.get('withCoaching');
     const lessonComponentIds = searchParams.get('lessonComponentIds'); // Comma-separated list of lesson component IDs
+    const coachUsername = searchParams.get('coachUsername'); // For coaching session purchase - redirect back to coach's calendar
 
     // Get the amount in cents (Stripe expects cents)
     const amountParam = searchParams.get('amount');
@@ -57,6 +58,7 @@ export async function GET(req: Request) {
     }
     if (withCoaching) metadata.withCoaching = withCoaching;
     if (lessonComponentIds) metadata.lessonComponentIds = lessonComponentIds;
+    if (coachUsername) metadata.coachUsername = coachUsername;
 
 
     const origin = env.NEXT_PUBLIC_APP_URL;

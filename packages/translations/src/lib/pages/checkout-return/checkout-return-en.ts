@@ -27,6 +27,7 @@ export const CheckoutReturn_EN: TDictionary['pages']['checkoutReturn'] = {
         goToCourse: 'Go to Course',
         viewMyCourses: 'View My Courses',
         browseOfferings: 'Browse Offerings',
+        bookSession: 'Book a Session',
         continue: 'Continue',
     },
 };

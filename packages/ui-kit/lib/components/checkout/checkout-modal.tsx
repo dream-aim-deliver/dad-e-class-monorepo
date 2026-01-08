@@ -41,6 +41,7 @@ export interface CheckoutModalProps extends isLocalAware {
         quantity?: number;
         withCoaching?: boolean; // For courses and packages - was coaching included
         lessonComponentIds?: string[]; // For StudentCourseCoachingSessionPurchase
+        coachUsername?: string; // For coaching session purchase - redirect back to coach's calendar
     };
 }
 
@@ -204,6 +205,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             }
             if (purchaseIdentifier.lessonComponentIds && purchaseIdentifier.lessonComponentIds.length > 0) {
                 params.append('lessonComponentIds', purchaseIdentifier.lessonComponentIds.join(','));
+            }
+            if (purchaseIdentifier.coachUsername) {
+                params.append('coachUsername', purchaseIdentifier.coachUsername);
             }
 
             const url = params.toString()
