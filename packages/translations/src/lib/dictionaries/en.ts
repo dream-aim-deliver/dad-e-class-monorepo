@@ -236,7 +236,7 @@ export const EN: TDictionary = {
       beginCourseButton: 'Begin offer',
       resumeCourseButton: 'Resume',
       reviewCourseButton: 'Review',
-      detailsCourseButton: 'Details',
+      detailsCourseButton: 'Go to offer',
       publishedBadge: 'Published',
       underReviewBadge: 'Under Review',
       buyButton: 'Buy',

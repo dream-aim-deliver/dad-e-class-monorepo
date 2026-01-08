@@ -23,7 +23,6 @@ import {
     saveCourseOutline,
 } from './procedures/course-outline';
 import { listAssessmentProgresses } from './procedures/assessment-progresses';
-import { listUserCourses } from './procedures/user-courses';
 import { searchCourses } from './procedures/courses';
 import { createCourse } from './procedures/create-course';
 import { getCourseShort } from './procedures/course-short';
@@ -76,7 +75,6 @@ export const mockRouter = t.router({
     getOffersPageOutline,
     listTopicsByCategory,
     listCourses,
-    listUserCourses,
     listOffersPagePackages,
     listCoaches,
     getCoachingPage,
