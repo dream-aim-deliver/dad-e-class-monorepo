@@ -22,7 +22,7 @@ export const CarouselContent: React.FC<{
     itemsPerView: number;
 }> = React.memo(({ items, itemsPerView }) => {
     return (
-        <div className="flex w-full justify-center flex-shrink-0 transition-opacity duration-300 opacity-100 z-10">
+        <div className="flex w-full justify-center flex-shrink-0 transition-opacity duration-300 opacity-100">
             {items.map((item, index) => (
                 <div
                     key={index}

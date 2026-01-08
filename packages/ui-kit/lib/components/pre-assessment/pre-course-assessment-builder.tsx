@@ -391,7 +391,7 @@ export function PreCourseAssessmentBuilder({
 
     return (
         <div className="flex flex-col lg:flex-row gap-4">
-            <div className="text-text-primary flex flex-col gap-2 lg:w-[260px] w-full">
+            <div className="text-text-primary flex flex-col overflow-auto bg-card-fill border border-card-stroke rounded-medium gap-2 mb-4 p-6 h-fit">
                 <SubsectionHeading text={translations.components} />
                 {componentButtons.map((button, index) => (
                     <ComponentCard

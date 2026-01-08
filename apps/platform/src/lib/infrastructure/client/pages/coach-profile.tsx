@@ -432,10 +432,6 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 								onClick: () => route.push(`/${locale}`),
 							},
 							{
-								label: breadcrumbsTranslations('coaches'),
-								onClick: () => route.push(`/${locale}/coaches`),
-							},
-							{
 								label: coachIntroduction ? `${coachIntroduction.name} ${coachIntroduction.surname}` : username,
 								onClick: () => route.push(`/${locale}/coaches/${username}`),
 							},

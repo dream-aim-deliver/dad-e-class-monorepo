@@ -62,7 +62,7 @@ export const CoachReviewFilterModal: React.FC<CoachReviewFilterModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50 mt-12" onClick={onClose}>
-            <div className="relative flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-full max-w-[430px] max-h-[85vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
+            <div className="relative flex flex-col gap-4 p-6 bg-card-fill border border-card-stroke text-text-primary w-full max-w-[430px] max-h-[85vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-bold">{dictionary.filterReviews}</h2>
                     <div className="flex top-0 right-0 p-0">

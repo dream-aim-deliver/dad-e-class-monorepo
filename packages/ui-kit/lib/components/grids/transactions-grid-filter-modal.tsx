@@ -126,7 +126,7 @@ export const TransactionsGridFilterModal: React.FC<TransactionsGridFilterModalPr
 
     return (
         <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50 p-4" onClick={onClose}>
-            <div className="flex flex-col bg-card-fill text-text-primary w-full max-w-[400px] max-h-[90vh] rounded-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-col bg-card-fill border border-card-stroke text-text-primary w-full max-w-[400px] max-h-[80vh] rounded-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
                 {/* Fixed Header */}
                 <div className="flex-shrink-0 flex flex-col gap-2 p-6 pb-4">
                     <div className="flex justify-between items-center">

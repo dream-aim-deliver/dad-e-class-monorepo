@@ -163,42 +163,27 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                             })}
                         </div>
                     ) : (
-                        <div className="text-center py-8">
-                            <h3 className="text-lg font-medium text-white mb-2">
-                                {t('noSessionsFound')}
-                            </h3>
-                            <p className="text-gray-400 mb-4">
+                        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                            <p className="text-text-primary text-md">
                                 {t('noSessionsFound')}
                             </p>
-                            <Button
-                                variant="primary"
-                                onClick={handleViewAllCoachingSessions}
-                            >
-                                {paginationT('viewAll')}
-                            </Button>
                         </div>
                     )}
                 </Tabs.Content>
 
                 <Tabs.Content value="ended" className="mt-6">
-                    <div className="text-center py-8">
-                        <Button
-                            variant="primary"
-                            onClick={handleEndedClick}
-                        >
-                            {paginationT('viewAll')}
-                        </Button>
+                    <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                        <p className="text-text-primary text-md">
+                            {t('noSessionsFound')}
+                        </p>
                     </div>
                 </Tabs.Content>
 
                 <Tabs.Content value="available" className="mt-6">
-                    <div className="text-center py-8">
-                        <Button
-                            variant="primary"
-                            onClick={handleAvailableClick}
-                        >
-                            {paginationT('viewAll')}
-                        </Button>
+                    <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                        <p className="text-text-primary text-md">
+                            {t('noSessionsFound')}
+                        </p>
                     </div>
                 </Tabs.Content>
             </Tabs.Root>

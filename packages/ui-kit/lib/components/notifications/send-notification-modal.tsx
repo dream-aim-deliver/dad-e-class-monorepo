@@ -219,7 +219,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
   // Step 1: Send notification form
   const renderStep1 = () => (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-3 p-4 border border-card-stroke rounded-medium">
+      <div className="flex flex-col gap-3 p-4 rounded-medium">
         <h3 className="text-lg font-semibold">{dictionary.notificationContent}</h3>
         
         <TextAreaInput
@@ -285,7 +285,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 mt-9">
+      <div className="flex flex-col gap-2 mt-9 p-4">
         <Button
           variant="primary"
           size="medium"
@@ -412,7 +412,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-full max-w-[800px] max-h-[85vh] overflow-y-auto rounded-md mx-4 my-8"
+        className="flex flex-col gap-4 p-6 bg-card-fill border border-card-stroke text-text-primary w-full max-w-[800px] max-h-[80vh] overflow-y-auto rounded-md mx-4 my-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

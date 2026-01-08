@@ -79,7 +79,7 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
 
     const handleAddChoice = () => {
         const newOption = {
-            name: `Option ${options.length + 1}`,
+            name: '',
             isSelected: false
         };
         setOptions([...options, newOption]);
@@ -121,7 +121,7 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
                     <div className="w-full">
                         <InputField
                             className="border-0 w-full"
-                            inputText="choice-name"
+                            inputText={dictionary.components.lessons.choiceInput}
                             value={choice.name}
                             setValue={(value) => handleInputChange(index, value)}
                         />

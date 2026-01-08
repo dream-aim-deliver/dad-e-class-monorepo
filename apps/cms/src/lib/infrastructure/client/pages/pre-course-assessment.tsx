@@ -154,23 +154,23 @@ function PreCourseAssessmentFormBuilder({
     const { generateTempId } = useGenerateTempId();
 
     return (
-        <PreCourseAssessmentBuilder
-            components={components}
-            setComponents={setComponents}
-            validationErrors={validationErrors}
-            locale={locale}
-            generateTempId={generateTempId}
-            translations={{
-                richText: editLessonsTranslations('richText'),
-                heading: editLessonsTranslations('heading'),
-                textInput: editLessonsTranslations('textInput'),
-                singleChoice: editLessonsTranslations('singleChoice'),
-                checklist: editLessonsTranslations('checklist'),
-                oneOutOfThree: editLessonsTranslations('oneOutOfThree'),
-                uploadFiles: editLessonsTranslations('uploadFiles'),
-                components: 'Components',
-            }}
-        />
+            <PreCourseAssessmentBuilder
+                components={components}
+                setComponents={setComponents}
+                validationErrors={validationErrors}
+                locale={locale}
+                generateTempId={generateTempId}
+                translations={{
+                    richText: editLessonsTranslations('richText'),
+                    heading: editLessonsTranslations('heading'),
+                    textInput: editLessonsTranslations('textInput'),
+                    singleChoice: editLessonsTranslations('singleChoice'),
+                    checklist: editLessonsTranslations('checklist'),
+                    oneOutOfThree: editLessonsTranslations('oneOutOfThree'),
+                    uploadFiles: editLessonsTranslations('uploadFiles'),
+                    components: 'Components',
+                }}
+            />
     );
 }
 
@@ -404,7 +404,7 @@ function PreCourseAssessmentContent({
                     },
                 ]}
             />
-            <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
+            <div className="flex flex-col space-y-2 gap-4">
                 <div className="w-full flex sm:flex-row gap-2 flex-col sm:gap-0 justify-between items-start sm:items-center">
                     <div className="flex flex-col space-y-2">
                         <h1> {t('title')} </h1>
@@ -421,7 +421,7 @@ function PreCourseAssessmentContent({
                     />
                 )}
             </div>
-            <span className="text-sm text-text-secondary">
+            <span className="text-md text-text-primary">
                 {t('description')}
             </span>
 

@@ -317,10 +317,8 @@ export default function YourReviews({ roles }: YourReviewsProps) {
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
                     <p className="text-text-primary text-md">
                         {hasActiveFilters
-                            ? t('noReviewsFiltered') ||
-                              'No reviews match your filters.'
-                            : t('noReviews') ||
-                              'No reviews yet. Reviews from your coaching sessions will appear here.'}
+                            ? t('noReviewsFiltered')
+                            : t('noReviews')}
                     </p>
                 </div>
             ) : (
