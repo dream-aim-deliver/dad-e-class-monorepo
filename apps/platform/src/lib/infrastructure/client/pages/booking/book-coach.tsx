@@ -5,7 +5,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { trpc } from '../../trpc/cms-client';
 import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
 import { groupOfferings } from '../../utils/group-offerings';
 import { useGetCoachAvailabilityPresenter } from '../../hooks/use-coach-availability-presenter';
@@ -168,7 +169,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
     // Checkout modal state
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
-    const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+    const [currentRequest, setCurrentRequest] = useState<TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
     const [multipleOfferings, setMultipleOfferings] = useState<Array<{ offeringId: number; quantity: number }> | null>(null);
@@ -183,7 +184,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
     }, [coachingOfferingsViewModel]);
 
     // Helper to execute checkout
-    const executeCheckout = useCallback(async (request: useCaseModels.TPrepareCheckoutRequest) => {
+    const executeCheckout = useCallback(async (request: TPrepareCheckoutRequest) => {
         try {
             setCurrentRequest(request);
             setCheckoutError(null);
@@ -191,7 +192,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
             const response = await utils.prepareCheckout.fetch(request);
             if (response && typeof response === 'object' && 'success' in response) {
                 if (response.success === true && response.data) {
-                    checkoutPresenter.present({ success: true, data: response.data } as unknown as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                    checkoutPresenter.present({ success: true, data: response.data } as unknown as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
                 } else if (response.success === false && response.data) {
                     // Access the nested data structure from tRPC response
                     const errorData = 'data' in response.data ? response.data.data : response.data;
@@ -199,7 +200,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
                     setCheckoutError(errorViewModel);
                 }
             } else {
-                checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                checkoutPresenter.present(response as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
             }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
@@ -207,7 +208,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
     }, [utils, checkoutPresenter, checkoutViewModel]);
 
     // Helper to build purchase identifier
-    const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+    const getPurchaseIdentifier = (request: TPrepareCheckoutRequest) => {
         if (request.purchaseType !== 'StudentCoachingSessionPurchase') return {};
         if (multipleOfferings && multipleOfferings.length > 1) {
             const offeringsString = multipleOfferings.map((o) => `${o.offeringId}:${o.quantity}`).join(',');
@@ -267,7 +268,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
         }
 
         if (selectedOfferings.length === 1) {
-            const request: useCaseModels.TPrepareCheckoutRequest = {
+            const request: TPrepareCheckoutRequest = {
                 purchaseType: 'StudentCoachingSessionPurchase',
                 coachingOfferingId: selectedOfferings[0].offeringId,
                 quantity: selectedOfferings[0].quantity,
@@ -287,7 +288,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
                         purchaseType: 'StudentCoachingSessionPurchase',
                         coachingOfferingId: offering.offeringId,
                         quantity: offering.quantity,
-                    } as useCaseModels.TPrepareCheckoutRequest)
+                    } as TPrepareCheckoutRequest)
                 );
 
                 const responses = await Promise.all(checkoutPromises);

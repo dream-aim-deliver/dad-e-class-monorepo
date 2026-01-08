@@ -11,6 +11,7 @@
  */
 
 import { useCaseModels } from '@maany_shr/e-class-models';
+import { TProcessPurchaseRequest, TProcessPurchaseSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 // ============================================================================
 // Mock Storage (temporary - will be replaced by cms-fastapi database)
@@ -58,7 +59,7 @@ const mockCourseCoachingOfferings = new Map<number, Array<{ offeringId: number; 
  * Mock implementation of processPurchase
  * This mimics what cms-fastapi will do
  */
-async function mockProcessPurchase(input: useCaseModels.TProcessPurchaseRequest): Promise<useCaseModels.TProcessPurchaseSuccessResponse> {
+async function mockProcessPurchase(input: TProcessPurchaseRequest): Promise<TProcessPurchaseSuccessResponse> {
     const { userId, transactionData, purchaseType, purchaseItems } = input;
 
     // Phase 1: Check idempotency
@@ -280,7 +281,7 @@ async function mockProcessPurchase(input: useCaseModels.TProcessPurchaseRequest)
  */
 export const backendTrpc = {
     processPurchase: {
-        mutate: async (input: useCaseModels.TProcessPurchaseRequest): Promise<useCaseModels.TProcessPurchaseSuccessResponse> => {
+        mutate: async (input: TProcessPurchaseRequest): Promise<TProcessPurchaseSuccessResponse> => {
             // Validate input
             const validatedInput = useCaseModels.ProcessPurchaseRequestSchema.parse(input);
 

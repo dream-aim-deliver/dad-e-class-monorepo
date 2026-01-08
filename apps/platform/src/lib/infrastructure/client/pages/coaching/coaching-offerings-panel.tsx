@@ -1,4 +1,5 @@
-import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { trpc } from '../../trpc/cms-client';
 import { Suspense, useMemo, useState, useEffect, useCallback } from 'react';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
@@ -69,7 +70,7 @@ function AvailableCoachings() {
             locale={locale}
             availableCoachingSessionsData={groupedOfferings}
             onClickBuyMoreSessions={() => {
-                router.push('/checkout');
+                document.getElementById('buy-coaching-sessions')?.scrollIntoView({ behavior: 'smooth' });
             }}
         />
     );
@@ -100,7 +101,7 @@ export default function CoachingOfferingsPanel() {
     const [transactionDraft, setTransactionDraft] =
         useState<TransactionDraft | null>(null);
     const [currentRequest, setCurrentRequest] =
-        useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+        useState<TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] =
         useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const [checkoutError, setCheckoutError] =
@@ -123,7 +124,7 @@ export default function CoachingOfferingsPanel() {
 
     // Helper to execute checkout
     const executeCheckout = useCallback(async (
-        request: useCaseModels.TPrepareCheckoutRequest,
+        request: TPrepareCheckoutRequest,
     ) => {
         try {
             setCurrentRequest(request);
@@ -133,7 +134,7 @@ export default function CoachingOfferingsPanel() {
             // Unwrap TBaseResult if needed
             if (response && typeof response === 'object' && 'success' in response) {
                 if (response.success === true && response.data) {
-                    checkoutPresenter.present({ success: true, data: response.data } as unknown as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                    checkoutPresenter.present({ success: true, data: response.data } as unknown as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
                 } else if (response.success === false && response.data) {
                     // Access the nested data structure from tRPC response
                     const errorData = 'data' in response.data ? response.data.data : response.data;
@@ -143,7 +144,7 @@ export default function CoachingOfferingsPanel() {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             } else {
-                checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                checkoutPresenter.present(response as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
             }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
@@ -151,7 +152,7 @@ export default function CoachingOfferingsPanel() {
     }, [utils, checkoutPresenter, checkoutViewModel]);
 
     // Helper to build purchase identifier from request (handles discriminated union)
-    const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+    const getPurchaseIdentifier = (request: TPrepareCheckoutRequest) => {
         switch (request.purchaseType) {
             case 'StudentCoachingSessionPurchase':
                 // If we have multiple offerings, return them in the format expected by backend
@@ -243,7 +244,7 @@ export default function CoachingOfferingsPanel() {
         // If multiple offerings selected, we need to combine them
         if (selectedOfferings.length === 1) {
             // Single offering - use existing flow
-            const request: useCaseModels.TPrepareCheckoutRequest = {
+            const request: TPrepareCheckoutRequest = {
                 purchaseType: 'StudentCoachingSessionPurchase',
                 coachingOfferingId: selectedOfferings[0].offeringId,
                 quantity: selectedOfferings[0].quantity,
@@ -268,7 +269,7 @@ export default function CoachingOfferingsPanel() {
                         purchaseType: 'StudentCoachingSessionPurchase',
                         coachingOfferingId: offering.offeringId,
                         quantity: offering.quantity,
-                    } as useCaseModels.TPrepareCheckoutRequest)
+                    } as TPrepareCheckoutRequest)
                 );
 
                 const responses = await Promise.all(checkoutPromises);
@@ -384,19 +385,21 @@ export default function CoachingOfferingsPanel() {
                     <AvailableCoachings />
                 </Suspense>
             )}
-            <BuyCoachingSession
-                offerings={coachingOfferings.map((offering) => ({
-                    id: offering.id,
-                    title: offering.name,
-                    content: offering.description,
-                    price: offering.price,
-                    currency: offering.currency,
-                    duration: offering.duration,
-                }))}
-                onBuy={handleBuyCoachingSessions}
-                currencyType={currency ?? ''}
-                locale={locale}
-            />
+            <div id="buy-coaching-sessions">
+                <BuyCoachingSession
+                    offerings={coachingOfferings.map((offering) => ({
+                        id: offering.id,
+                        title: offering.name,
+                        content: offering.description,
+                        price: offering.price,
+                        currency: offering.currency,
+                        duration: offering.duration,
+                    }))}
+                    onBuy={handleBuyCoachingSessions}
+                    currencyType={currency ?? ''}
+                    locale={locale}
+                />
+            </div>
 
             {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCoachingSessionPurchase' && (
                 <CheckoutModal

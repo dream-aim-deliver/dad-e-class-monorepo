@@ -1,4 +1,5 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     CoachingSessionItem,
@@ -170,7 +171,7 @@ function StudentEnrolledCourseIntroduction(
 
     // Checkout state management
     const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
-    const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+    const [currentRequest, setCurrentRequest] = useState<TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -184,7 +185,7 @@ function StudentEnrolledCourseIntroduction(
 
     // Helper to execute checkout
     const executeCheckout = useCallback(async (
-        request: useCaseModels.TPrepareCheckoutRequest,
+        request: TPrepareCheckoutRequest,
     ) => {
         try {
             setCurrentRequest(request);
@@ -194,7 +195,7 @@ function StudentEnrolledCourseIntroduction(
             // Unwrap TBaseResult if needed
             if (response && typeof response === 'object' && 'success' in response) {
                 if (response.success === true && response.data) {
-                    checkoutPresenter.present({ success: true, data: response.data } as unknown as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                    checkoutPresenter.present({ success: true, data: response.data } as unknown as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
                 } else if (response.success === false && response.data) {
                     // Access the nested data structure from tRPC response
                     const errorData = 'data' in response.data ? response.data.data : response.data;
@@ -204,7 +205,7 @@ function StudentEnrolledCourseIntroduction(
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             } else {
-                checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                checkoutPresenter.present(response as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
             }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
@@ -230,7 +231,7 @@ function StudentEnrolledCourseIntroduction(
     });
 
     // Helper to build purchase identifier from request (handles discriminated union)
-    const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+    const getPurchaseIdentifier = (request: TPrepareCheckoutRequest) => {
         switch (request.purchaseType) {
             case 'StudentCourseCoachingSessionPurchase':
                 return {
@@ -262,7 +263,7 @@ function StudentEnrolledCourseIntroduction(
 
     // Handle purchase of coaching for lesson components
     const handlePurchaseComponentCoaching = useCallback((lessonComponentIds: string[]) => {
-        const request: useCaseModels.TPrepareCheckoutRequest = {
+        const request: TPrepareCheckoutRequest = {
             purchaseType: 'StudentCourseCoachingSessionPurchase',
             courseSlug: props.courseSlug,
             lessonComponentIds: lessonComponentIds,

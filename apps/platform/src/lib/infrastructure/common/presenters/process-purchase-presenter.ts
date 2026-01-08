@@ -1,4 +1,5 @@
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { TProcessPurchaseUseCaseResponse, TProcessPurchaseErrorResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +11,7 @@ export type TProcessPurchasePresenterUtilities = {};
 
 export const ProcessPurchaseResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TProcessPurchaseUseCaseResponse,
+        TProcessPurchaseUseCaseResponse,
         viewModels.TProcessPurchaseViewModel,
         TProcessPurchasePresenterUtilities
     >;
@@ -19,7 +20,7 @@ type TProcessPurchaseResponseMiddleware =
     typeof ProcessPurchaseResponseMiddleware;
 
 export default class ProcessPurchasePresenter extends BasePresenter<
-    useCaseModels.TProcessPurchaseUseCaseResponse,
+    TProcessPurchaseUseCaseResponse,
     viewModels.TProcessPurchaseViewModel,
     TProcessPurchasePresenterUtilities,
     TProcessPurchaseResponseMiddleware
@@ -42,7 +43,7 @@ export default class ProcessPurchasePresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TProcessPurchaseUseCaseResponse,
+            TProcessPurchaseUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TProcessPurchaseViewModel {
@@ -56,7 +57,7 @@ export default class ProcessPurchasePresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TProcessPurchaseErrorResponse,
+            TProcessPurchaseErrorResponse,
             TProcessPurchaseResponseMiddleware
         >,
     ): viewModels.TProcessPurchaseViewModel {

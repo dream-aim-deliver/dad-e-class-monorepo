@@ -10,7 +10,8 @@ import {
 import { TLocale } from '@maany_shr/e-class-translations';
 import env from '../../config/env';
 import { trpc } from '../../trpc/client';
-import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutRequest } from '@dream-aim-deliver/e-class-cms-rest';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import { useSession } from 'next-auth/react';
@@ -65,7 +66,7 @@ export default function CheckoutPage() {
     const [transactionDraft, setTransactionDraft] =
         useState<TransactionDraft | null>(null);
     const [currentRequest, setCurrentRequest] =
-        useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+        useState<TPrepareCheckoutRequest | null>(null);
     const [viewModel, setViewModel] =
         useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const { presenter } = usePrepareCheckoutPresenter(setViewModel);
@@ -74,7 +75,7 @@ export default function CheckoutPage() {
 
     // Helper to execute checkout
     const executeCheckout = useCallback(async (
-        request: useCaseModels.TPrepareCheckoutRequest,
+        request: TPrepareCheckoutRequest,
     ) => {
         try {
             setCurrentRequest(request); // Save current request for metadata
@@ -98,7 +99,7 @@ export default function CheckoutPage() {
         onResumeCheckout: executeCheckout,
     });
 
-    const handleTest = async (request: useCaseModels.TPrepareCheckoutRequest) => {
+    const handleTest = async (request: TPrepareCheckoutRequest) => {
         // If user is not logged in, save intent and redirect to login
         if (!isLoggedIn) {
             saveIntent(request, window.location.pathname);
@@ -119,7 +120,7 @@ export default function CheckoutPage() {
     };
 
     // Helper to build purchase identifier from request (handles discriminated union)
-    const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+    const getPurchaseIdentifier = (request: TPrepareCheckoutRequest) => {
         switch (request.purchaseType) {
             case 'StudentCoursePurchase':
             case 'StudentCoursePurchaseWithCoaching':

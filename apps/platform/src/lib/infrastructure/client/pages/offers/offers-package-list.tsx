@@ -10,7 +10,8 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListOffersPagePackagesPresenter } from '../../hooks/use-list-offers-page-packages-presenter';
@@ -45,7 +46,7 @@ export default function PackageList() {
     // Checkout modal state
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
-    const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+    const [currentRequest, setCurrentRequest] = useState<TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
     const { presenter: checkoutPresenter } = usePrepareCheckoutPresenter(setCheckoutViewModel);
@@ -54,7 +55,7 @@ export default function PackageList() {
 
     // Helper to execute checkout
     const executeCheckout = useCallback(async (
-        request: useCaseModels.TPrepareCheckoutRequest,
+        request: TPrepareCheckoutRequest,
     ) => {
         try {
             setCurrentRequest(request);
@@ -63,7 +64,7 @@ export default function PackageList() {
             const response = await utils.prepareCheckout.fetch(request);
             if (response && typeof response === 'object' && 'success' in response) {
                 if (response.success === true && response.data) {
-                    checkoutPresenter.present({ success: true, data: response.data } as unknown as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                    checkoutPresenter.present({ success: true, data: response.data } as unknown as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
                 } else if (response.success === false && response.data) {
                     // Access the nested data structure from tRPC response
                     const errorData = 'data' in response.data ? response.data.data : response.data;
@@ -73,7 +74,7 @@ export default function PackageList() {
                     containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             } else {
-                checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                checkoutPresenter.present(response as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
             }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
@@ -99,7 +100,7 @@ export default function PackageList() {
     }, [checkoutViewModel]);
 
     const handlePurchase = (packageId: number) => {
-        const request: useCaseModels.TPrepareCheckoutRequest = {
+        const request: TPrepareCheckoutRequest = {
             purchaseType: 'StudentPackagePurchase',
             packageId,
         };
