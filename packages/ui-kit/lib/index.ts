@@ -176,6 +176,7 @@ export { CourseOutlineAccordion } from './components/course-outline-accordion';
 
 export { ComponentCard } from './components/course-builder/component-card';
 export { ContentControlButtons } from './components/course-builder/control-buttons';
+export { DuplicateLessonDialog, type DuplicateLessonDialogProps, type DuplicateLessonDialogModule } from './components/course-builder/duplicate-lesson-dialog';
 
 export { DesignerComponent as RichTextDesignerComponent } from './components/lesson-components/rich-text';
 export { DesignerComponent as HeadingDesignerComponent } from './components/lesson-components/heading-lesson';

@@ -1061,6 +1061,16 @@ export const EN: TDictionary = {
       successMessage: "Notes saved successfully!",
       closeButton: "Close",
     },
+    duplicateLessonDialog: {
+      title: 'Duplicate Lesson',
+      description: 'Select the module where you want to duplicate this lesson.',
+      selectModule: 'Target Module',
+      selectModulePlaceholder: 'Select a module',
+      confirm: 'Duplicate',
+      cancel: 'Cancel',
+      successMessage: 'Lesson duplicated successfully!',
+      errorMessage: 'Failed to duplicate lesson. Please try again.',
+    },
     bookSessionWithBanner: {
       bookSessionButton: 'Book a session with',
       coachBadge: 'Coach',

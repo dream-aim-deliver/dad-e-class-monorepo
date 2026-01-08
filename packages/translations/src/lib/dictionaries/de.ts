@@ -1070,6 +1070,16 @@ export const DE: TDictionary = {
       successMessage: "Notizen erfolgreich gespeichert!",
       closeButton: "Schließen",
     },
+    duplicateLessonDialog: {
+      title: 'Lektion duplizieren',
+      description: 'Wähle das Modul, in das du diese Lektion duplizieren möchtest.',
+      selectModule: 'Zielmodul',
+      selectModulePlaceholder: 'Modul auswählen',
+      confirm: 'Duplizieren',
+      cancel: 'Abbrechen',
+      successMessage: 'Lektion erfolgreich dupliziert!',
+      errorMessage: 'Fehler beim Duplizieren der Lektion. Bitte versuche es erneut.',
+    },
     buyCoachingSessionBanner: {
       coachBadge: 'Coach',
       courseCreatorBadge: 'Kurs-Creator',

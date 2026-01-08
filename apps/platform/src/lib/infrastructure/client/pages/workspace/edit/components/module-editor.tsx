@@ -23,6 +23,7 @@ export function ModuleEditor({
     isLast,
     onLessonTitleChange,
     onLessonExtraTrainingChange,
+    onDuplicateLesson,
     locale,
 }: ModuleEditorProps) {
     const handleTitleChange = (value: string) => {
@@ -81,6 +82,7 @@ export function ModuleEditor({
                             isExtraTraining,
                         )
                     }
+                    onDuplicateLesson={onDuplicateLesson}
                     locale={locale}
                 />
             )}

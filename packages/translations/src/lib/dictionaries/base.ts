@@ -1052,6 +1052,16 @@ export const DictionarySchema = z.object({
       successMessage: z.string(),
       closeButton: z.string(),
     }),
+    duplicateLessonDialog: z.object({
+      title: z.string(),
+      description: z.string(),
+      selectModule: z.string(),
+      selectModulePlaceholder: z.string(),
+      confirm: z.string(),
+      cancel: z.string(),
+      successMessage: z.string(),
+      errorMessage: z.string(),
+    }),
     userAvatarReel: z.object({
       andLabel: z.string(),
       othersLabel: z.string(),

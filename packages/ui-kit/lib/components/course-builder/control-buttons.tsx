@@ -4,11 +4,13 @@ import { IconChevronUp } from "../icons/icon-chevron-up";
 import { IconMinus } from "../icons/icon-minus";
 import { IconPlus } from "../icons/icon-plus";
 import { IconTrashAlt } from "../icons/icon-trash-alt";
+import { IconPaste } from "../icons/icon-paste";
 
 interface ContentControlButtonsProps {
     onMoveUp?: () => void;
     onMoveDown?: () => void;
     onDelete: () => void;
+    onDuplicate?: () => void;
     isExpanded?: boolean;
     onExpand?: () => void;
     isFirst: boolean;
@@ -19,6 +21,7 @@ export function ContentControlButtons({
     onMoveUp,
     onMoveDown,
     onDelete,
+    onDuplicate,
     isExpanded = false,
     onExpand,
     isFirst,
@@ -34,6 +37,15 @@ export function ContentControlButtons({
                     onClick={() => onDelete()}
                     className="px-0"
                 />
+                {onDuplicate && (
+                    <Button
+                        variant="text"
+                        iconLeft={<IconPaste />}
+                        hasIconLeft
+                        onClick={() => onDuplicate()}
+                        className="px-0"
+                    />
+                )}
                 {onMoveUp && <Button
                     variant="text"
                     iconLeft={<IconChevronUp />}

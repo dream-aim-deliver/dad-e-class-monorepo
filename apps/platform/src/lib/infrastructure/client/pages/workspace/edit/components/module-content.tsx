@@ -10,6 +10,7 @@ export function ModuleContent({
     onDeleteContent,
     onLessonTitleChange,
     onLessonExtraTrainingChange,
+    onDuplicateLesson,
     locale,
     moduleIndex,
 }: ModuleContentProps) {
@@ -48,6 +49,11 @@ export function ModuleContent({
                             onMoveUp={() => onMoveContentUp(index)}
                             onMoveDown={() => onMoveContentDown(index)}
                             onDelete={() => onDeleteContent(index)}
+                            onDuplicate={
+                                item.id !== undefined && onDuplicateLesson
+                                    ? () => onDuplicateLesson(item.id!)
+                                    : undefined
+                            }
                             isFirst={index === 0}
                             isLast={index === content.length - 1}
                             onTitleChange={(newTitle) =>
