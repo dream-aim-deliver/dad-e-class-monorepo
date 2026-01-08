@@ -4,9 +4,12 @@ import {
     AccordionBuilder,
     AccordionBuilderItem,
     CourseIntroductionForm,
+    CourseIntroBanner,
+    DefaultAccordion,
     DefaultError,
     DefaultLoading,
     IntroductionForm,
+    SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 import { useCourseIntroduction } from './hooks/edit-introduction-hooks';
 import { useEffect } from 'react';
@@ -14,8 +17,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
 import { AccordionIconUploadState } from './hooks/use-accordion-icon-upload';
-import CourseIntroduction from '../../common/course-introduction';
-import CourseOutline from '../../common/course-outline';
 import { useCourseOutline } from './hooks/edit-outline-hooks';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
@@ -36,10 +37,53 @@ interface EditCourseIntroOutlineProps {
 }
 
 export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
+    const locale = useLocale() as TLocale;
+    const introductionViewModel = useCourseIntroduction(slug);
+    const outlineViewModel = useCourseOutline(slug);
+
+    if (!introductionViewModel || !outlineViewModel) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    if (introductionViewModel.mode !== 'default' || outlineViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
+
+    const introduction = introductionViewModel.data;
+    const outline = outlineViewModel.data;
+
     return (
         <div className="flex flex-col gap-8">
-            <CourseIntroduction courseSlug={slug} />
-            <CourseOutline courseSlug={slug} />
+            {/* Introduction Section */}
+            <div className="flex flex-col space-y-6">
+                <SectionHeading text="Introduction" />
+                <CourseIntroBanner
+                    description={introduction.text}
+                    videoId={introduction.video?.playbackId ?? ''}
+                    locale={locale}
+                    onErrorCallback={() => {}}
+                    thumbnailUrl={introduction.video?.thumbnailUrl || undefined}
+                />
+            </div>
+
+            {/* Outline Section */}
+            <div className="flex flex-col space-y-6">
+                <h2>Course Content</h2>
+                {outline.items.length > 0 ? (
+                    <DefaultAccordion
+                        className="px-6 py-4 bg-card-fill border border-card-stroke rounded-md"
+                        showNumbers={true}
+                        items={outline.items.map((item) => ({
+                            title: item.title,
+                            content: item.description,
+                            position: item.position,
+                            iconImageUrl: item.icon?.downloadUrl,
+                        }))}
+                    />
+                ) : (
+                    <DefaultError locale={locale} description="The course doesn't have an outline." />
+                )}
+            </div>
         </div>
     );
 }
