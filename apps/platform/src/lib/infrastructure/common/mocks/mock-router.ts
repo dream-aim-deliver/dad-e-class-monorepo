@@ -134,7 +134,6 @@ export const mockRouter = t.router({
     listGroupCoachingSessions,
     listCoachCoachingSessions,
     createGroupCoachingSession,
-    prepareCheckout,
 });
 
 export type MockRouter = typeof mockRouter;
