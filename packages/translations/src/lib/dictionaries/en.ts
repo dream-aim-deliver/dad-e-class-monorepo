@@ -1984,6 +1984,7 @@ export const EN: TDictionary = {
         becomeCoachDescription: 'Have the skills? Become a coach and inspire others! Share your knowledge, teach this course, and earn while making a difference. Join our community of experts.',
         becomeCoachButton: 'Become a Coach',
         reviewsCount: 'reviews',
+        noReviewsYet: 'This course has no reviews yet',
       },
     },
     userCourses: {
