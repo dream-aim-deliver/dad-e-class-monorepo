@@ -43,6 +43,7 @@ export interface ModuleContentProps {
         lessonIndex: number,
         extraTraining: boolean,
     ) => void;
+    onDuplicateLesson?: (lessonId: number) => void;
     locale: TLocale;
 }
 
@@ -65,6 +66,7 @@ export interface ModuleEditorProps {
         index: number,
         isExtraTraining: boolean,
     ) => void;
+    onDuplicateLesson?: (lessonId: number) => void;
     locale: TLocale;
 }
 

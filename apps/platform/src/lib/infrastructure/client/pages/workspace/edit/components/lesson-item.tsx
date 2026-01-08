@@ -14,6 +14,7 @@ interface LessonItemProps {
     onMoveUp: () => void;
     onMoveDown: () => void;
     onDelete: () => void;
+    onDuplicate?: () => void;
     isFirst: boolean;
     isLast: boolean;
     onTitleChange: (newTitle: string) => void;
@@ -26,6 +27,7 @@ export function LessonItem({
     onMoveUp,
     onMoveDown,
     onDelete,
+    onDuplicate,
     isFirst,
     isLast,
     onTitleChange,
@@ -49,6 +51,7 @@ export function LessonItem({
                     onMoveUp={onMoveUp}
                     onMoveDown={onMoveDown}
                     onDelete={onDelete}
+                    onDuplicate={lesson.id !== undefined ? onDuplicate : undefined}
                     isFirst={isFirst}
                     isLast={isLast}
                 />
