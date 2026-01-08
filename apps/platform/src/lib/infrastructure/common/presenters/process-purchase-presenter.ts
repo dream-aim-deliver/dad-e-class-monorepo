@@ -1,4 +1,4 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { TProcessPurchaseUseCaseResponse, TProcessPurchaseErrorResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,

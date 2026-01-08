@@ -358,7 +358,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
                     isLoading
                     hideButton
                     availableCoachingSessionsData={[]}
-                    onClickBuyMoreSessions={() => {}}
+                    onClickBuyMoreSessions={() => { /* noop - loading state */ }}
                 />
             }>
                 <AvailableCoachings onClickBuyMoreSessions={() => router.push('/coaching')} />
@@ -392,7 +392,7 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
                     isLoading
                     hideButton
                     availableCoachingSessionsData={[]}
-                    onClickBuyMoreSessions={() => {}}
+                    onClickBuyMoreSessions={() => { /* noop - loading state */ }}
                 />
             }>
                 <AvailableCoachings onClickBuyMoreSessions={() => setIsBuySectionVisible((prev) => !prev)} />
