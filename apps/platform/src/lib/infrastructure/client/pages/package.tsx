@@ -22,7 +22,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse} from "@dream-aim-deliver/e-class-cms-rest"
 import { useGetPackageWithCoursesPresenter } from '../hooks/use-get-package-with-courses-presenter';
 import { useListPackageRelatedPackagesPresenter } from '../hooks/use-list-package-related-packages-presenter';
 import { useRequiredPlatform } from '../context/platform-context';
@@ -84,7 +85,7 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   // Checkout state management
   const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
-  const [currentRequest, setCurrentRequest] = useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<TPrepareCheckoutRequest | null>(null);
   const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
@@ -97,7 +98,7 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   // Helper to execute checkout (must be before conditional returns)
   const executeCheckout = useCallback(async (
-    request: useCaseModels.TPrepareCheckoutRequest,
+    request: TPrepareCheckoutRequest,
   ) => {
     console.log('[Package] executeCheckout started with request:', request);
     try {
@@ -111,7 +112,7 @@ export default function Package({ locale, packageId }: PackageProps) {
       if (response && typeof response === 'object' && 'success' in response) {
         if (response.success === true && response.data) {
           console.log('[Package] Presenting checkout data:', response.data);
-          checkoutPresenter.present({ success: true, data: response.data } as unknown as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+          checkoutPresenter.present({ success: true, data: response.data } as unknown as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
         } else if (response.success === false && response.data) {
           // Access the nested data structure from tRPC response
           const errorData = 'data' in response.data ? response.data.data : response.data;
@@ -123,7 +124,7 @@ export default function Package({ locale, packageId }: PackageProps) {
         }
       } else {
         // Direct response (not wrapped)
-        checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+        checkoutPresenter.present(response as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
       }
     } catch (err) {
       console.error('[Package] Failed to prepare checkout:', err);
@@ -303,7 +304,7 @@ export default function Package({ locale, packageId }: PackageProps) {
   const packageDuration = calculatePackageDuration();
 
   // Helper to build purchase identifier from request (handles discriminated union)
-  const getPurchaseIdentifier = (request: useCaseModels.TPrepareCheckoutRequest) => {
+  const getPurchaseIdentifier = (request: TPrepareCheckoutRequest) => {
     switch (request.purchaseType) {
       case 'StudentPackagePurchase':
       case 'StudentPackagePurchaseWithCoaching':
@@ -361,7 +362,7 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   const handlePurchase = () => {
     console.log('[Package] handlePurchase called');
-    const request: useCaseModels.TPrepareCheckoutRequest = {
+    const request: TPrepareCheckoutRequest = {
       purchaseType: coachingIncluded
         ? 'StudentPackagePurchaseWithCoaching'
         : 'StudentPackagePurchase',
@@ -393,7 +394,7 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   const handleRelatedPackagePurchase = (packageId: string | number) => {
     const packageIdNum = typeof packageId === 'string' ? parseInt(packageId, 10) : packageId;
-    const request: useCaseModels.TPrepareCheckoutRequest = {
+    const request: TPrepareCheckoutRequest = {
       purchaseType: 'StudentPackagePurchase', // Default to without coaching for related packages
       packageId: packageIdNum,
     };

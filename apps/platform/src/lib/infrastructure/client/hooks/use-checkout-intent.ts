@@ -1,14 +1,14 @@
 import { useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { checkoutIntentManager } from '../utils/checkout-intent';
-import { useCaseModels } from '@maany_shr/e-class-models';
+import { type TPrepareCheckoutRequest } from "@dream-aim-deliver/e-class-cms-rest"
 
 interface UseCheckoutIntentProps {
     /**
      * Callback to execute when resuming a checkout after login
      */
     onResumeCheckout: (
-        request: useCaseModels.TPrepareCheckoutRequest,
+        request: TPrepareCheckoutRequest,
     ) => void | Promise<void>;
 }
 
@@ -49,7 +49,7 @@ export function useCheckoutIntent({
      */
     const saveIntent = useCallback(
         (
-            request: useCaseModels.TPrepareCheckoutRequest,
+            request: TPrepareCheckoutRequest,
             returnPath: string,
         ) => {
             checkoutIntentManager.save(request, returnPath);

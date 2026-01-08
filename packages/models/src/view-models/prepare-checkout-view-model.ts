@@ -6,7 +6,7 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
-import { PrepareCheckoutSuccessResponseSchema } from '../usecase-models/prepare-checkout-usecase-models';
+import { PrepareCheckoutSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
 /**
  * Extract success data from usecase response

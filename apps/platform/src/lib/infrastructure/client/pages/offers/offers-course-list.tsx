@@ -22,7 +22,8 @@ import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-pr
 import { useCheckoutErrors, createCheckoutErrorViewModel } from '../../hooks/use-checkout-errors';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import env from '../../config/env';
-import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useSession } from 'next-auth/react';
 
 interface OffersCourseHeadingProps {
@@ -85,7 +86,7 @@ export function OffersCourseList({
     const [transactionDraft, setTransactionDraft] =
         useState<TransactionDraft | null>(null);
     const [currentRequest, setCurrentRequest] =
-        useState<useCaseModels.TPrepareCheckoutRequest | null>(null);
+        useState<TPrepareCheckoutRequest | null>(null);
     const [checkoutViewModel, setCheckoutViewModel] =
         useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const [checkoutError, setCheckoutError] =
@@ -96,7 +97,7 @@ export function OffersCourseList({
 
     // Helper to execute checkout
     const executeCheckout = useCallback(async (
-        request: useCaseModels.TPrepareCheckoutRequest,
+        request: TPrepareCheckoutRequest,
     ) => {
         try {
             setCurrentRequest(request); // Save current request for metadata
@@ -106,7 +107,7 @@ export function OffersCourseList({
             // Unwrap TBaseResult if needed
             if (response && typeof response === 'object' && 'success' in response) {
                 if (response.success === true && response.data) {
-                    checkoutPresenter.present({ success: true, data: response.data } as unknown as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                    checkoutPresenter.present({ success: true, data: response.data } as unknown as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
                 } else if (response.success === false && response.data) {
                     // Access the nested data structure from tRPC response
                     const errorData = 'data' in response.data ? response.data.data : response.data;
@@ -116,7 +117,7 @@ export function OffersCourseList({
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             } else {
-                checkoutPresenter.present(response as useCaseModels.TPrepareCheckoutUseCaseResponse, checkoutViewModel);
+                checkoutPresenter.present(response as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
             }
         } catch (err) {
             console.error('Failed to prepare checkout:', err);
@@ -145,7 +146,7 @@ export function OffersCourseList({
         courseSlug: string,
         withCoaching: boolean,
     ) => {
-        const request: useCaseModels.TPrepareCheckoutRequest = {
+        const request: TPrepareCheckoutRequest = {
             purchaseType: withCoaching
                 ? 'StudentCoursePurchaseWithCoaching'
                 : 'StudentCoursePurchase',

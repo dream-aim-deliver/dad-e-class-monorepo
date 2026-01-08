@@ -66,7 +66,6 @@ import { passAssignment } from './procedures/assignment';
 import { getStudentDetails } from './procedures/student-details';
 import { getStudentCoachingSession } from './procedures/student-coaching-session';
 import { listGroupCoachingSessions, listCoachCoachingSessions, createGroupCoachingSession } from './procedures/group-coaching-sessions';
-import { prepareCheckout } from './procedures/prepare-checkout';
 
 export const mockRouter = t.router({
     getPlatform,

@@ -1,10 +1,10 @@
-import { useCaseModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutRequest } from '@dream-aim-deliver/e-class-cms-rest';
 
 const CHECKOUT_INTENT_KEY = 'pendingCheckoutIntent';
 const INTENT_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes
 
 export interface CheckoutIntent {
-    request: useCaseModels.TPrepareCheckoutRequest;
+    request: TPrepareCheckoutRequest;
     timestamp: number;
     returnPath: string;
 }
@@ -14,7 +14,7 @@ export const checkoutIntentManager = {
      * Save a checkout intent to localStorage
      */
     save(
-        request: useCaseModels.TPrepareCheckoutRequest,
+        request: TPrepareCheckoutRequest,
         returnPath: string,
     ): void {
         if (typeof window === 'undefined') return;

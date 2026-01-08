@@ -2,8 +2,7 @@ import 'server-only';
 import { stripe } from '../../../../lib/infrastructure/server/config/payments/stripe.config';
 import { NextRequest } from 'next/server';
 import nextAuth from '../../../../lib/infrastructure/server/config/auth/next-auth.config';
-import { useCaseModels } from '@maany_shr/e-class-models';
-import { TAppRouter } from '@dream-aim-deliver/e-class-cms-rest';
+import { TAppRouter, TProcessPurchaseRequest, ProcessPurchaseRequestSchema, TProcessPurchaseSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 import { getLocale } from 'next-intl/server';
@@ -200,7 +199,7 @@ export async function POST(req: NextRequest) {
         };
 
         // Validate purchaseType is correct
-        const validatedPurchaseType = purchaseType as useCaseModels.TProcessPurchaseRequest['purchaseType'];
+        const validatedPurchaseType = purchaseType as TProcessPurchaseRequest['purchaseType'];
         
         // For coaching_sessions, the items are already enriched with title, duration, and pricePerSession
         // from buildPurchaseItems, so we don't need to modify them
@@ -217,7 +216,7 @@ export async function POST(req: NextRequest) {
 
         // Local validation to catch schema issues before sending to backend
         try {
-            useCaseModels.ProcessPurchaseRequestSchema.parse(finalPayload);
+            ProcessPurchaseRequestSchema.parse(finalPayload);
         } catch (validationError: any) {
             return Response.json(
                 {
@@ -296,15 +295,15 @@ export async function POST(req: NextRequest) {
         // When result.success === true, result.data contains the success data directly
         // The tRPC client may wrap responses, so we need to handle the structure carefully
         const resultData = result.data as unknown;
-        let successData: useCaseModels.TProcessPurchaseSuccessResponse['data'];
+        let successData: TProcessPurchaseSuccessResponse['data'];
         
         // Handle both direct data access and wrapped data access
         if (resultData && typeof resultData === 'object' && 'data' in resultData && typeof (resultData as any).data === 'object') {
             // Nested structure: result.data.data
-            successData = (resultData as { data: useCaseModels.TProcessPurchaseSuccessResponse['data'] }).data;
+            successData = (resultData as { data: TProcessPurchaseSuccessResponse['data'] }).data;
         } else {
             // Direct structure: result.data
-            successData = resultData as useCaseModels.TProcessPurchaseSuccessResponse['data'];
+            successData = resultData as TProcessPurchaseSuccessResponse['data'];
         }
 
         // Build purchasedItems based on purchase type

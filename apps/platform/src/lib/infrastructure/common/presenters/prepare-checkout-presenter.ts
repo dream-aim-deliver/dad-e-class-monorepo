@@ -1,4 +1,5 @@
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { TPrepareCheckoutUseCaseResponse, TPrepareCheckoutErrorResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +11,7 @@ export type TPrepareCheckoutPresenterUtilities = {};
 
 export const PrepareCheckoutResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TPrepareCheckoutUseCaseResponse,
+        TPrepareCheckoutUseCaseResponse,
         viewModels.TPrepareCheckoutViewModel,
         TPrepareCheckoutPresenterUtilities
     >;
@@ -19,7 +20,7 @@ type TPrepareCheckoutResponseMiddleware =
     typeof PrepareCheckoutResponseMiddleware;
 
 export default class PrepareCheckoutPresenter extends BasePresenter<
-    useCaseModels.TPrepareCheckoutUseCaseResponse,
+    TPrepareCheckoutUseCaseResponse,
     viewModels.TPrepareCheckoutViewModel,
     TPrepareCheckoutPresenterUtilities,
     TPrepareCheckoutResponseMiddleware
@@ -42,7 +43,7 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TPrepareCheckoutUseCaseResponse,
+            TPrepareCheckoutUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TPrepareCheckoutViewModel {
@@ -56,7 +57,7 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TPrepareCheckoutErrorResponse,
+            TPrepareCheckoutErrorResponse,
             TPrepareCheckoutResponseMiddleware
         >,
     ): viewModels.TPrepareCheckoutViewModel {
