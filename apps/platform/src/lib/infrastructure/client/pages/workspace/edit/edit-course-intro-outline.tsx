@@ -61,7 +61,9 @@ export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
                     description={introduction.text}
                     videoId={introduction.video?.playbackId ?? ''}
                     locale={locale}
-                    onErrorCallback={() => {}}
+                    onErrorCallback={() => {
+                        // TODO: Handle error callback for CourseIntroBanner
+                    }}
                     thumbnailUrl={introduction.video?.thumbnailUrl || undefined}
                 />
             </div>
