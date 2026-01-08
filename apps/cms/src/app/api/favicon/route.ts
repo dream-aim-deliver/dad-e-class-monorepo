@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const faviconUrlCache = new Map<string, { url: string; timestamp: number }>();
 const faviconDataCache = new Map<string, { data: ArrayBuffer; contentType: string; timestamp: number }>();
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+const MAX_CACHE_SIZE = 200; // Maximum entries per cache
 
 // 1x1 transparent PNG as fallback when favicon cannot be fetched
 const TRANSPARENT_PIXEL_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
@@ -16,6 +17,28 @@ function returnFallbackImage() {
             'Cache-Control': 'public, max-age=3600',
         },
     });
+}
+
+function cleanupCache<T extends { timestamp: number }>(cache: Map<string, T>, maxSize: number) {
+    const now = Date.now();
+
+    // First pass: remove expired entries
+    for (const [key, value] of Array.from(cache.entries())) {
+        if (now - value.timestamp >= CACHE_TTL) {
+            cache.delete(key);
+        }
+    }
+
+    // Second pass: if still over limit, remove oldest entries
+    if (cache.size > maxSize) {
+        const entries = Array.from(cache.entries())
+            .sort((a, b) => a[1].timestamp - b[1].timestamp);
+
+        const toRemove = cache.size - maxSize;
+        for (let i = 0; i < toRemove; i++) {
+            cache.delete(entries[i][0]);
+        }
+    }
 }
 
 /**
@@ -55,6 +78,7 @@ export async function GET(request: NextRequest) {
     } else {
         // Find the best favicon URL
         faviconUrl = await getFaviconWithFallback(cleanDomain);
+        cleanupCache(faviconUrlCache, MAX_CACHE_SIZE);
         faviconUrlCache.set(cleanDomain, { url: faviconUrl, timestamp: Date.now() });
     }
 
@@ -74,6 +98,7 @@ export async function GET(request: NextRequest) {
         const contentType = response.headers.get('content-type') || 'image/x-icon';
 
         // Cache the fetched data
+        cleanupCache(faviconDataCache, MAX_CACHE_SIZE);
         faviconDataCache.set(cleanDomain, { data, contentType, timestamp: Date.now() });
 
         return new NextResponse(data, {
