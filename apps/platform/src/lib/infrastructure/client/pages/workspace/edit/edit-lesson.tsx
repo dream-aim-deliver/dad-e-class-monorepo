@@ -62,7 +62,6 @@ import { useSession } from 'next-auth/react';
 
 interface EditLessonProps {
     lessonId: number;
-    courseSlug?: string;
 }
 
 /*
@@ -123,14 +122,10 @@ function PreviewRenderer({
     );
 }
 
-export default function EditLesson({ lessonId, courseSlug: courseSlugProp }: EditLessonProps) {
+export default function EditLesson({ lessonId }: EditLessonProps) {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
     const router = useRouter();
-
-    // Get courseSlug from URL search params if not provided as prop
-    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-    const courseSlug = courseSlugProp || searchParams?.get('courseSlug') || undefined;
 
     const lessonComponentsViewModel = useLessonComponents(lessonId);
 
@@ -145,11 +140,15 @@ export default function EditLesson({ lessonId, courseSlug: courseSlugProp }: Edi
         );
         setCourseVersion(lessonComponentsViewModel.data.courseVersion);
         setLessonTitle(lessonComponentsViewModel.data.lessonTitle);
+        setCourseTitle(lessonComponentsViewModel.data.courseTitle);
+        setCourseSlug(lessonComponentsViewModel.data.courseSlug);
     }, [lessonComponentsViewModel]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
     const [lessonTitle, setLessonTitle] = useState<string>('');
+    const [courseTitle, setCourseTitle] = useState<string>('');
+    const [courseSlug, setCourseSlug] = useState<string>('');
     const { components, setComponents, saveLesson, isSaving } = useSaveLesson({
         lessonId,
         courseVersion,
@@ -165,25 +164,23 @@ export default function EditLesson({ lessonId, courseSlug: courseSlugProp }: Edi
     const breadcrumbItems = [
         {
             label: breadcrumbTranslations('home'),
-            onClick: () => router.push('/'),
+            onClick: () => router.push(`/${locale}`),
         },
         {
             label: breadcrumbTranslations('workspace'),
-            onClick: () => router.push('/workspace'),
+            onClick: () => router.push(`/${locale}/workspace`)
         },
         {
             label: breadcrumbTranslations('courses'),
-            onClick: () => router.push('/workspace/courses'),
+            onClick: () => router.push(`/${locale}/workspace/courses`),
+        },
+        {
+            label: courseTitle,
+            onClick: () => router.push(`/${locale}/courses/${courseSlug}`),
         },
         {
             label: breadcrumbTranslations('editCourse'),
-            onClick: () => {
-                if (courseSlug) {
-                    router.push(`/workspace/courses/${courseSlug}/edit?tab=course-content`);
-                } else {
-                    router.back();
-                }
-            },
+            onClick: () => router.push(`/${locale}/edit/course/${courseSlug}`),
         },
         {
             label: breadcrumbTranslations('editLesson'),
@@ -435,7 +432,7 @@ export default function EditLesson({ lessonId, courseSlug: courseSlugProp }: Edi
             <Breadcrumbs items={breadcrumbItems} />
             <EditHeader
                 title={`${editLessonsTranslations('editLessonTitle')}: ${lessonTitle}`}
-                courseTitle=""
+                courseTitle={courseTitle}
                 onPreview={() => {
                     setIsPreviewing((prev) => !prev);
                 }}

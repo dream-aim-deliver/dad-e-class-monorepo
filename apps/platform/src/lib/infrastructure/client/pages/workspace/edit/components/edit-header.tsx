@@ -227,6 +227,9 @@ export default function EditHeader({
             <div className="flex md:flex-row flex-col md:items-center justify-between gap-5 bg-neutral-950/50 sticky top-18 z-50 p-2">
                 <div className="flex flex-col gap-2">
                     <h1>{title}</h1>
+                    {courseTitle && (
+                        <p className="text-sm text-text-secondary">Course: {courseTitle}</p>
+                    )}
                     {courseStatus && (
                         <Badge
                             text={getStatusText(courseStatus)}

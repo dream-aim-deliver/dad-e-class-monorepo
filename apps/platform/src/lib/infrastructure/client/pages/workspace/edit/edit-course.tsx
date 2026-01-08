@@ -430,19 +430,19 @@ function EditCourseLayout({
     const breadcrumbItems = [
         {
             label: breadcrumbTranslations('home'),
-            onClick: () => router.push('/'),
+            onClick: () => router.push(`/${locale}`),
         },
         {
             label: breadcrumbTranslations('workspace'),
-            onClick: () => router.push('/workspace'),
+            onClick: () => router.push(`/${locale}/workspace`),
         },
         {
             label: breadcrumbTranslations('courses'),
-            onClick: () => router.push('/workspace/courses'),
+            onClick: () => router.push(`/${locale}/workspace/courses`),
         },
         {
             label: courseDetails.courseTitle,
-            onClick: () => router.push(`/courses/${slug}`),
+            onClick: () => router.push(`/${locale}/courses/${slug}`),
         },
         {
             label: breadcrumbTranslations('editCourse'),
