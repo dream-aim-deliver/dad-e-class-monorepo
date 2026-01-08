@@ -464,6 +464,15 @@ export default function VisitorPage({
             case 'kaboom':
                 return <DefaultError locale={locale} />;
             case 'default':
+                if (reviewsData.data.reviews.length === 0) {
+                    return (
+                        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:max-w-[22rem]">
+                            <p className="text-text-primary text-md">
+                                {t('noReviewsYet')}
+                            </p>
+                        </div>
+                    );
+                }
                 return (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {reviewsData.data.reviews
@@ -568,9 +577,9 @@ export default function VisitorPage({
                 <Breadcrumbs
                     items={[
                         {
-                            label: breadcrumbsTranslations('courses'),
+                            label: breadcrumbsTranslations('offersPage'),
                             onClick: () => {
-                                // TODO: Implement navigation to courses visitor
+                                router.push(`/${locale}/offers`);
                             },
                         },
                         {
@@ -610,7 +619,7 @@ export default function VisitorPage({
 
                 {/* Course Outline Section */}
                 <div className="w-full flex flex-col gap-6">
-                    <h2 className="md:text-4xl text-2xl  text-text-primary">
+                    <h2>
                         {t('courseOutlineTitle')}
                     </h2>
                     {renderOutlineData()}
@@ -620,7 +629,7 @@ export default function VisitorPage({
                 <div className="w-full flex flex-col gap-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div className="flex flex-col sm:flex-row  sm:items-center gap-2">
-                            <h3 className="md:text-3xl text-2xl text-text-primary">
+                            <h3>
                                 {t('courseReviewsTitle')}
                             </h3>
                             {courseData?.mode === 'default' && (
@@ -667,12 +676,14 @@ export default function VisitorPage({
                 {renderPackagesData()}
 
                 {/* Offers Carousel Section */}
-                <div className="flex flex-col justify-center gap-10">
-                    <h2 className="md:text-4xl text-2xl  text-text-primary text-center">
-                        {t('notFoundTitle')}
-                    </h2>
-                    {renderOffersData()}
-                </div>
+                {offersCarouselData?.mode === 'default' && offersCarouselData.data.items.length > 0 && (
+                    <div className="flex flex-col justify-center gap-10">
+                        <h2>
+                            {t('notFoundTitle')}
+                        </h2>
+                        {renderOffersData()}
+                    </div>
+                )}
 
                 {coachingPageViewModel &&
                     coachingPageViewModel.mode !== 'kaboom' && coachingPageViewModel.mode !== 'not-found' && (
