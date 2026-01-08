@@ -12,6 +12,8 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import AllUsers from '../../client/pages/all-users';
 import { TLocale } from '@maany_shr/e-class-translations';
+import getSession from '../config/auth/get-session';
+import { DefaultNotFound } from '@maany_shr/e-class-ui-kit';
 
 interface AllUsersServerComponentProps {
   locale: TLocale;
@@ -20,6 +22,14 @@ interface AllUsersServerComponentProps {
 export default async function AllUsersServerComponent(
   props: AllUsersServerComponentProps
 ) {
+  // Superadmin-only access check
+  const session = await getSession();
+  const isSuperAdmin = session?.user?.roles?.includes('superadmin') ?? false;
+
+  if (!isSuperAdmin) {
+    return <DefaultNotFound locale={props.locale} />
+  }
+
   const trpc = getServerTRPC({
     platform_locale: props.locale,
   });

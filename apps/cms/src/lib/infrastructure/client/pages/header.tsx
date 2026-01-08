@@ -18,10 +18,16 @@ interface HeaderProps {
 const NavLinks = ({
     locale,
     pathname,
+    isSuperAdmin,
 }: {
     locale: TLocale;
     pathname: string;
+    isSuperAdmin: boolean;
 }) => {
+    if (!isSuperAdmin) {
+        return null;
+    }
+
     const t = useTranslations('components.cmsNavbar');
 
     // Route mapping for header navigation
@@ -66,6 +72,7 @@ export default function Header({
     const t = useTranslations('components.cmsNavbar');
     const tPlatformNavbar = useTranslations('components.navbar');
     const tLogoutConfirmation = useTranslations('components.logoutConfirmation');
+    const isSuperAdmin = session?.user?.roles?.includes('superadmin') ?? false;
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
         router.push(newUrl);
@@ -110,7 +117,7 @@ export default function Header({
     ];
 
     const handleDropdownSelection = (selected: string) => {
-        if (selected === 'manageUsers') {
+        if (selected === 'manageUsers' && isSuperAdmin) {
             router.push(`/${locale}/users`);
         }
     };
@@ -132,7 +139,7 @@ export default function Header({
                 dropdownTriggerText={''}
                 showNotifications={false}
             >
-                <NavLinks locale={locale} pathname={pathname} />
+                <NavLinks locale={locale} pathname={pathname} isSuperAdmin={isSuperAdmin} />
             </Navbar>
 
             <ConfirmationModal
