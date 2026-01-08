@@ -11,6 +11,7 @@ interface CourseActionsProps extends isLocalAware{
   onDetails?: () => void;
   progress?: number;
   studyProgress?: 'yet-to-start' | 'in-progress' | 'completed';
+  hasReviewed?: boolean;
 }
 
 /**
@@ -44,6 +45,7 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
   onDetails,
   progress,
   studyProgress,
+  hasReviewed,
   locale
 }) => {
   const dictionary = getDictionary(locale);
@@ -60,16 +62,18 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
           hasIconLeft
         />
         <div className="flex flex-col gap-2">
+          {!hasReviewed && (
+            <Button
+              className=""
+              variant={'primary'}
+              size={'medium'}
+              onClick={onReview}
+              text={dictionary.components.courseCard.reviewCourseButton}
+            />
+          )}
           <Button
             className=""
-            variant={'primary'}
-            size={'medium'}
-            onClick={onReview}
-            text={dictionary.components.courseCard.reviewCourseButton}
-          />
-          <Button
-            className=""
-            variant={'secondary'}
+            variant={hasReviewed ? 'primary' : 'secondary'}
             size={'medium'}
             onClick={onDetails}
             text={dictionary.components.courseCard.detailsCourseButton}

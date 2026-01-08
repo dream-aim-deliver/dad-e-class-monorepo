@@ -5,8 +5,9 @@ import {
     uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
+import { TUploadCourseImageSuccessResponse, TGetDownloadUrlSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useState } from 'react';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import { useTranslations } from 'next-intl';
 
 export interface CourseImageUploadState {
@@ -71,9 +72,13 @@ export const useCourseImageUpload = (
             mimeType: uploadRequest.file.type,
             size: uploadRequest.file.size,
         });
+
         if (!uploadResult.success) {
             throw new Error(uploadCredentialsError);
         }
+
+        // Type assertion after success check
+        const uploadData = uploadResult.data as TUploadCourseImageSuccessResponse['data'];
 
         if (abortSignal?.aborted) {
             throw new AbortError();
@@ -84,9 +89,9 @@ export const useCourseImageUpload = (
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
+            storageUrl: uploadData.storageUrl,
+            objectName: uploadData.file.objectName,
+            formFields: uploadData.formFields,
             abortSignal,
             onProgress: (uploadProgress) => {
                 onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
@@ -94,19 +99,21 @@ export const useCourseImageUpload = (
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
-            fileId: uploadResult.data.file.id,
+            fileId: uploadData.file.id,
         });
         if (!verifyResult.success) {
             throw new Error(verifyImageError);
         }
 
+        const verifyData = verifyResult.data as TGetDownloadUrlSuccessResponse['data'];
+
         return {
-            id: uploadResult.data.file.id,
-            name: uploadResult.data.file.name,
-            url: verifyResult.data.downloadUrl,
-            thumbnailUrl: verifyResult.data.downloadUrl,
-            size: uploadResult.data.file.size,
-            category: uploadResult.data.file.category,
+            id: uploadData.file.id,
+            name: uploadData.file.name,
+            url: verifyData.downloadUrl,
+            thumbnailUrl: verifyData.downloadUrl,
+            size: uploadData.file.size,
+            category: uploadData.file.category,
         } as fileMetadata.TFileMetadata;
     };
 

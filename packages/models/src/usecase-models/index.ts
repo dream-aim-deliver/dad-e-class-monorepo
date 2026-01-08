@@ -74,5 +74,4 @@ export * from './pass-assignment-usecase-models';
 export * from './delete-availability-usecase-models';
 
 export * from './get-student-coaching-session-usecase-models';
-export * from './list-user-courses-usecase-models';
 export * from './list-upcoming-student-coaching-sessions-usecase-models';

@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TListUserCoursesUseCaseResponse,
+    TListUserCoursesUseCaseErrorResponse,
+    ListUserCoursesUseCaseResponseSchema
+} from '@dream-aim-deliver/e-class-cms-rest'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TUserCoursesPresenterUtilities = {};
 
 export const ListUserCoursesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListUserCoursesUseCaseResponse,
+        TListUserCoursesUseCaseResponse,
         viewModels.TListUserCoursesViewModel,
         TUserCoursesPresenterUtilities
     >;
@@ -19,7 +24,7 @@ type TListUserCoursesResponseMiddleware =
     typeof ListUserCoursesResponseMiddleware;
 
 export default class UserCoursesPresenter extends BasePresenter<
-    useCaseModels.TListUserCoursesUseCaseResponse,
+    TListUserCoursesUseCaseResponse,
     viewModels.TListUserCoursesViewModel,
     TUserCoursesPresenterUtilities,
     TListUserCoursesResponseMiddleware
@@ -31,7 +36,7 @@ export default class UserCoursesPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.ListUserCoursesUseCaseResponseSchema,
+                    ListUserCoursesUseCaseResponseSchema,
                 viewModel: viewModels.ListUserCoursesViewModelSchema
             },
             middleware: ListUserCoursesResponseMiddleware,
@@ -42,7 +47,7 @@ export default class UserCoursesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListUserCoursesUseCaseResponse,
+            TListUserCoursesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TListUserCoursesViewModel {
@@ -56,7 +61,7 @@ export default class UserCoursesPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListUserCoursesUseCaseErrorResponse,
+            TListUserCoursesUseCaseErrorResponse,
             TListUserCoursesResponseMiddleware
         >,
     ): viewModels.TListUserCoursesViewModel {

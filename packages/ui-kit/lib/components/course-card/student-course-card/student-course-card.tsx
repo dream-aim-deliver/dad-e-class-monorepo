@@ -19,6 +19,7 @@ interface StudentCourseCardProps extends TCourseMetadata {
   reviewCount: number;
   sales: number;
   progress?: number;
+  hasReviewed?: boolean;
   onBegin?: () => void;
   onResume?: () => void;
   onReview?: () => void;
@@ -77,6 +78,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   author,
   language,
   progress = 0,
+  hasReviewed,
   locale,
   onBegin,
   onResume,
@@ -237,6 +239,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               locale={locale as TLocale}
               studyProgress={studyProgress}
               progress={progress}
+              hasReviewed={hasReviewed}
               onBegin={onBegin}
               onResume={onResume}
               onReview={onReview}

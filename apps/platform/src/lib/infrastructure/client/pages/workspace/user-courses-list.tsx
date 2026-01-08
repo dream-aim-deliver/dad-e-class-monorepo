@@ -255,6 +255,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 duration={duration}
                                 rating={course.averageRating ?? 0}
                                 progress={course.progress ?? 0}
+                                hasReviewed={course.hasReviewed}
                                 onBegin={() => onCourseVisit(course.slug || '')}
                                 onResume={() => onCourseVisit(course.slug || '')}
                                 onReview={() => onReviewCourse(course.slug || '', course.title || '')}
