@@ -1541,6 +1541,24 @@ function LinksComponent({
         );
     };
 
+    const onAsPartOfMaterialsOnlyChange = (value: boolean) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.Links) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                // When enabling asPartOfMaterialsOnly, also enable includeInMaterials
+                if (value) {
+                    return { ...component, asPartOfMaterialsOnly: value, includeInMaterials: true };
+                }
+                return { ...component, asPartOfMaterialsOnly: value };
+            }),
+        );
+    };
+
     const { uploadError, handleFileChange } = useFileUpload({
         lessonId,
         componentType: 'links',
@@ -1562,6 +1580,7 @@ function LinksComponent({
             onClickAddLink={onAddLink}
             validationError={validationError}
             onIncludeInMaterialsChange={onIncludeInMaterialsChange}
+            onAsPartOfMaterialsOnlyChange={onAsPartOfMaterialsOnlyChange}
         />
     );
 }

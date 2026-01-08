@@ -196,6 +196,10 @@ export function useLessonToRequest() {
             throw new Error('Invalid component type');
         }
 
+        // When asPartOfMaterialsOnly is true, includeInMaterials must be true
+        const asPartOfMaterialsOnly = component.asPartOfMaterialsOnly ?? false;
+        const includeInMaterials = asPartOfMaterialsOnly || (component.includeInMaterials ?? false);
+
         return {
             id: extractId(component.id),
             type: 'links',
@@ -205,7 +209,8 @@ export function useLessonToRequest() {
                 url: link.url,
                 iconFileId: idToNumber(link.customIcon?.id),
             })),
-            includeInMaterials: component.includeInMaterials ?? false,
+            includeInMaterials: includeInMaterials,
+            asPartOfMaterialsOnly: asPartOfMaterialsOnly,
         };
     }
 
@@ -258,7 +263,7 @@ export function useLessonToRequest() {
             title: component.title,
             description: component.description,
             imageFileId: idToNumber(component.imageFile!.id)!,
-            options: component.options.map((option,index) => ({
+            options: component.options.map((option, index) => ({
                 id: String(index + 1),
                 name: option.name,
             })),
@@ -350,8 +355,8 @@ export function useLessonToRequest() {
         }
 
         const coachingOfferingId = component.coachingSession!.id;
-        const idAsNumber = typeof coachingOfferingId === 'number' 
-            ? coachingOfferingId 
+        const idAsNumber = typeof coachingOfferingId === 'number'
+            ? coachingOfferingId
             : idToNumber(coachingOfferingId);
 
         return {

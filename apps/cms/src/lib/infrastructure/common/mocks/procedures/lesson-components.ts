@@ -234,6 +234,7 @@ const listLessonComponentsMock: useCaseModels.TListLessonComponentsSuccessRespon
                 },
             ],
             includeInMaterials: true,
+            asPartOfMaterialsOnly: false,
         },
         // DownloadFiles Component
         {
