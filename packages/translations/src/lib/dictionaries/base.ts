@@ -702,6 +702,7 @@ export const DictionarySchema = z.object({
       richText: z.string(),
       typeValidationText: z.string(),
       elementValidationText: z.string(),
+      choiceInput: z.string(),
     }),
     dateInput: z.object({
       placeholder: z.string(),

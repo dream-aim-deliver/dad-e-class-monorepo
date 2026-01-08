@@ -107,8 +107,9 @@ export const AddCoachModal = ({
     }, [searchContent, content]);
 
     return (
-        <div className="flex flex-col w-[560px] items-end gap-6 p-6 rounded-lg border border-card-stroke bg-card-fill shadow-[0_4px_12px_rgba(12,10,9,1)] relative">
-            <div className="absolute right-0 top-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+            <div className="flex flex-col w-[560px] items-end gap-6 p-6 rounded-lg border border-card-stroke bg-card-fill shadow-[0_4px_12px_rgba(12,10,9,1)] relative">
+                <div className="absolute right-0 top-0">
                 <IconButton
                     data-testid="close-modal-button"
                     styles="text"
@@ -230,6 +231,7 @@ export const AddCoachModal = ({
                 text={dictionary.closeButton || ''}
                 onClick={onClose}
             />
+            </div>
         </div>
     );
 };

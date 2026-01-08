@@ -149,8 +149,8 @@ function CourseAssignmentsListContent({
     // Empty state (includes not-found from backend)
     if (assignmentsViewModel?.mode === 'not-found' || assignments.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-12 px-4">
-                <p className="text-text-secondary text-lg text-center">
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                <p className="text-text-primary text-md">
                     {t('assignments.noAssignmentsFound')}
                 </p>
             </div>

@@ -58,9 +58,9 @@ export const ArchivePackageModal: React.FC<ArchivePackageModalProps> = ({
             >
                 <DialogBody>
                     <div className="flex flex-col gap-4">
-                        <h1 className="text-3xl font-semibold text-text-primary text-center">
+                        <h5>
                             {dictionary.components.archivePackageModal.confirmationTitle}
-                        </h1>
+                        </h5>
                         
                         <div className="flex flex-col gap-2">
                             <label className="text-text-secondary text-sm">
@@ -85,12 +85,14 @@ export const ArchivePackageModal: React.FC<ArchivePackageModalProps> = ({
                                 className="w-full"
                             />
                             
-                            <button
+                            <Button
+                                variant="text"
+                                size="medium"
+                                text={dictionary.components.archivePackageModal.backButton}
                                 onClick={onClose}
-                                className="text-text-secondary text-sm hover:text-text-primary transition-colors self-center"
-                            >
-                                {dictionary.components.archivePackageModal.backButton}
-                            </button>
+                                className="w-full"                           
+                                
+                            />
                         </div>
                     </div>
                 </DialogBody>
@@ -123,9 +125,9 @@ export const ArchiveSuccessModal: React.FC<ArchiveSuccessModalProps> = ({
             >
                 <DialogBody>
                     <div className="flex flex-col gap-4">
-                        <h1 className="text-3xl font-semibold text-text-primary text-center">
+                        <h3 className="text-center">
                             {dictionary.components.archiveSuccessModal.successTitle}
-                        </h1>
+                        </h3>
                         
                         <div className="flex justify-center mt-6">
                             <Button

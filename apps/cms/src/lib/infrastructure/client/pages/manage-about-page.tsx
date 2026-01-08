@@ -193,7 +193,7 @@ export default function ManageAboutPage() {
 		{
 			label: platform.name,
 			onClick: () => {
-				// TODO: Implement navigation to platform
+				router.push(`/platform/${platformContext.platformSlug}/${platformContext.platformLocale}`);
 			},
 		},
 		{

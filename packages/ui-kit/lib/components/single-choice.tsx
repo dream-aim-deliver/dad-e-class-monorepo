@@ -80,7 +80,7 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
 
     const handleAddChoice = () => {
         const newOption = {
-            name: `Option ${options.length + 1}`,
+            name: '',
             isSelected: false
         };
         setOptions([...options, newOption]);
@@ -123,7 +123,7 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
                     <div className="w-full">
                         <InputField
                             className="border-0"
-                            inputText="choice-name"
+                            inputText={dictionary.components.lessons.choiceInput}
                             value={choice.name}
                             setValue={(value) => handleInputChange(index, value)}
                         />

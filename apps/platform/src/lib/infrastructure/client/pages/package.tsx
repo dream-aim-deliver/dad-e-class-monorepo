@@ -277,10 +277,6 @@ export default function Package({ locale, packageId }: PackageProps) {
       onClick: () => router.push(`/${currentLocale}`),
     },
     {
-      label: breadcrumbsTranslations('platforms'),
-      onClick: () => router.push(`/${currentLocale}/packages`),
-    },
-    {
       label: packageData.title,
       onClick: () => { return; }, // Current page, no action
     },

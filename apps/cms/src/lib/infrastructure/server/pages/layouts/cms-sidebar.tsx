@@ -232,6 +232,9 @@ const CMSSidebar = ({
         const currentLabel = routeToLabelMap[pathname];
         if (currentLabel) {
             setActiveItem(currentLabel);
+        } else {
+            // Clear active item if no match found
+            setActiveItem('');
         }
     }, [pathname]);
 

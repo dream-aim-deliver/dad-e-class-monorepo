@@ -87,7 +87,7 @@ export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
 
 
     return (
-        <div className="flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-auto min-w-[350px] max-w-full h-auto rounded-md relative">
+        <div className="flex flex-col gap-4 bg-card-fill text-text-primary w-full max-h-[70vh] p-2 rounded-md relative">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">{dictionary.title}</h2>
                 {/* Empty div to keep title centered */}
@@ -185,7 +185,7 @@ export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
             <div className="h-px w-full bg-divider"></div>
 
             {/* Buttons */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 p-4">
                 <Button
                     variant="secondary"
                     size="medium"

@@ -55,18 +55,19 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     const createRouteToLabelMap = (currentLocale: string) => {
         const isStudent = props.userRole === 'student';
         const baseRoutes = {
-            '/': sidebarTranslations('dashboard'),
+            '/workspace/dashboard': sidebarTranslations('dashboard'),
+            '/workspace': sidebarTranslations('dashboard'),
             '/workspace/courses': isStudent
                 ? sidebarTranslations('courses')
                 : sidebarTranslations('yourCourses'),
-            '/coaching': isStudent
+            '/workspace/coaching': isStudent
                 ? sidebarTranslations('coachingSessions')
                 : sidebarTranslations('yourCoachingSessions'),
-            '/calendar': sidebarTranslations('calendar'),
+            '/workspace/calendar': sidebarTranslations('calendar'),
             '/workspace/students': sidebarTranslations('yourStudents'),
             '/workspace/your-reviews': sidebarTranslations('yourReviews'),
             '/workspace/profile': sidebarTranslations('yourProfile'),
-            '/orders': sidebarTranslations('orderPayments'),
+            '/workspace/orders': sidebarTranslations('orderPayments'),
             '/workspace/pre-course-assessment': 'Pre-Course Assessment',
         };
 
@@ -75,7 +76,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
 
         Object.entries(baseRoutes).forEach(([path, label]) => {
             routeMap[path] = label; // Without locale prefix
-            routeMap[`/${currentLocale}${path === '/' ? '' : path}`] = label; // With locale prefix
+            routeMap[`/${currentLocale}${path}`] = label; // With locale prefix
         });
 
         return routeMap;
@@ -166,16 +167,20 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
 
     // Sync activeItem with current pathname
     useEffect(() => {
+        // Try exact match with full pathname first
         let currentLabel = routeToLabelMap[pathname];
 
-        // If no direct match, try to extract locale from pathname and match without it
+        // If no match, try without locale prefix
         if (!currentLabel) {
             const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '');
-            currentLabel = routeToLabelMap[pathWithoutLocale || '/'];
+            currentLabel = routeToLabelMap[pathWithoutLocale];
         }
 
         if (currentLabel) {
             setActiveItem(currentLabel);
+        } else {
+            // Clear active item if no match found
+            setActiveItem('');
         }
     }, [pathname, routeToLabelMap]);
 
