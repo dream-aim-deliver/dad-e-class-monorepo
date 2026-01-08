@@ -2064,6 +2064,7 @@ export const DE: TDictionary = {
         becomeCoachDescription: 'Hast du die Fähigkeiten? Werde Coach und inspiriere andere! Teile dein Wissen, unterrichte diesen Kurs und verdiene dabei, während du einen Unterschied machst. Tritt unserer Gemeinschaft von Experten bei.',
         becomeCoachButton: 'Coach werden',
         reviewsCount: 'Bewertungen',
+        noReviewsYet: 'Dieser Kurs hat noch keine Bewertungen',
       },
     },
     userCourses: {
