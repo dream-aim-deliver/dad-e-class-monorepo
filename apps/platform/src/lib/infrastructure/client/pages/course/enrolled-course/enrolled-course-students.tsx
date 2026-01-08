@@ -175,7 +175,7 @@ export function CourseStudents(
                 isYou: student.isStudentOfCoach,
                 onStudentDetails: () => {
                     // Navigate to student profile in a new tab
-                    window.open(`/${locale}/students/${student.studentUsername}`, '_blank');
+                    window.open(`/${locale}/students/${student.studentUsername}?courseSlug=${courseSlug}`, '_blank');
                 },
                 onClickCourse: () => {
                     // Navigate to course page in a new tab
@@ -200,7 +200,7 @@ export function CourseStudents(
                         assignmentTitle={assignmentTitle!}
                         onViewAssignment={() => {
                             // Navigate to student profile where assignment can be reviewed
-                            window.open(`/${locale}/students/${student.studentUsername}`, '_blank');
+                            window.open(`/${locale}/students/${student.studentUsername}?courseSlug=${courseSlug}`, '_blank');
                         }}
                     />
                 );
