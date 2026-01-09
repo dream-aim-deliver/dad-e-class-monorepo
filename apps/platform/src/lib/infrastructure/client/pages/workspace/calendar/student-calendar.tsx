@@ -18,7 +18,11 @@ import {
 } from '../../common/student-calendar-wrappers';
 import { useRouter } from 'next/navigation';
 
-export default function StudentCalendar() {
+interface StudentCalendarProps {
+    hideBreadcrumbs?: boolean;
+}
+
+export default function StudentCalendar({ hideBreadcrumbs = false }: StudentCalendarProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.calendarPage');
     const [listStudentCoachingSessionsResponse] =
@@ -56,24 +60,26 @@ export default function StudentCalendar() {
             }
         >
             <div className="flex flex-col h-full">
-                <Breadcrumbs
-                    items={[
-                        {
-                            label: breadcrumbsTranslations('home'),
-                            onClick: () => router.push('/'),
-                        },
-                        {
-                            label: breadcrumbsTranslations('workspace'),
-                            onClick: () => router.push('/workspace/'),
-                        },
-                        {
-                            label: breadcrumbsTranslations('yourCalendar'),
-                            onClick: () => {
-                                // Nothing should happen on clicking the current page
+                {!hideBreadcrumbs && (
+                    <Breadcrumbs
+                        items={[
+                            {
+                                label: breadcrumbsTranslations('home'),
+                                onClick: () => router.push('/'),
                             },
-                        },
-                    ]}
-                />
+                            {
+                                label: breadcrumbsTranslations('workspace'),
+                                onClick: () => router.push('/workspace/'),
+                            },
+                            {
+                                label: breadcrumbsTranslations('yourCalendar'),
+                                onClick: () => {
+                                    // Nothing should happen on clicking the current page
+                                },
+                            },
+                        ]}
+                    />
+                )}
                 <h1>{t('yourCalendarTitle')}</h1>
                 <Divider className="my-4" />
                 {/* Desktop view with header and calendar */}

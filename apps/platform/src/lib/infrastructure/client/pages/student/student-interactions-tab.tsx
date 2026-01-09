@@ -84,7 +84,8 @@ export default function StudentInteractionsTab({
             <h2 className="md:text-3xl text-xl text-text-primary font-bold">
                 {t('studentInteractions')}
             </h2>
-            <div className="flex flex-col gap-4 bg-card-fill border border-card-stroke px-4 py-6 rounded-medium">
+            <hr className="flex-grow border-t border-divider" />
+            <div className="flex flex-col gap-4 px-4 py-6 rounded-medium">
                 <div className='flex items-center gap-2'>
                     <UserAvatar
                         fullName={courseTitle}
@@ -96,7 +97,6 @@ export default function StudentInteractionsTab({
                         {courseTitle}
                     </h3>
                 </div>
-                <hr className="flex-grow border-t border-divider" />
                 <CoachStudentInteractionCard
                     modules={modulesWithInteractions}
                     locale={locale}

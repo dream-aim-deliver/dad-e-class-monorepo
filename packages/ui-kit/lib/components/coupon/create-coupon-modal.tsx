@@ -865,8 +865,8 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50" onClick={onClose}>
-      <div className="flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-full max-w-[600px] max-h-[85vh] overflow-y-auto rounded-md mx-4 my-8" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50 pt-16" onClick={onClose}>
+      <div className="flex flex-col gap-4 p-6 bg-card-fill border border-card-stroke text-text-primary w-full max-w-[600px] max-h-[85vh] rounded-md mx-4 my-8" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">{isSuccess ? dictionary.successTitle : dictionary.title}</h2>

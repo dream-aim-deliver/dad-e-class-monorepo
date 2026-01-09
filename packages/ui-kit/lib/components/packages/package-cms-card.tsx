@@ -220,7 +220,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                 </div>
 
                 {/* Description */}
-                <p className="text-text-secondary lg:text-lg">{description}</p>
+                <p className="text-text-secondary text-sm md:text-md">{description}</p>
 
                 {/* Prices */}
                 {pricing && pricing.fullPrice != null && pricing.partialPrice != null && (

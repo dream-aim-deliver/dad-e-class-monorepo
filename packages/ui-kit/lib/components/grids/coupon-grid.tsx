@@ -121,13 +121,12 @@ const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRo
     }
     
     return (
-        <button
+        <Button
+            variant="text"
+            size="small"
             onClick={() => params.onRevoke(data.id)}
-            className="text-sm font-medium hover:opacity-80"
-            style={{ color: '#A78BFA' }}
-        >
-            {dictionary.revokeButton}
-        </button>
+            text={dictionary.revokeButton}
+        />
     );
 };
 
