@@ -13,6 +13,9 @@ vi.mock('@maany_shr/e-class-translations', () => ({
                 saveText: 'save',
                 errorImageText: 'Image not available',
             },
+            packages: {
+                savingsTooltip: 'Savings information',
+            },
         },
     }),
     isLocalAware: vi.fn(),
@@ -46,6 +49,14 @@ vi.mock('../lib/components/checkbox', () => ({
     },
 }));
 
+vi.mock('../lib/components/tooltip', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        Tooltip: () => null,
+    };
+});
+
 describe('PackageGeneralInformation', () => {
     const mockProps = {
         title: 'Visualisierung',
@@ -57,6 +68,8 @@ describe('PackageGeneralInformation', () => {
             fullPrice: 299,
             partialPrice: 249,
             currency: 'CHF',
+            savingsWithoutCoachings: 50,
+            savingsWithCoachings: 50,
         },
         locale: 'en' as 'en' | 'de',
         onClickPurchase: vi.fn(),

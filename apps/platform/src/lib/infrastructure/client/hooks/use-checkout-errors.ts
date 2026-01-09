@@ -3,11 +3,12 @@
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
+import { PrepareCheckoutErrorType } from '@dream-aim-deliver/e-class-cms-rest';
 
 /**
  * Mapping from error modes to translation keys
  */
-const ERROR_MODE_TO_KEY: Record<string, string> = {
+export const ERROR_MODE_TO_KEY: Record<string, string> = {
   'already-owned': 'alreadyOwned',
   'not-found': 'notFound',
   'not-enrolled': 'notEnrolled',
@@ -20,9 +21,44 @@ const ERROR_MODE_TO_KEY: Record<string, string> = {
 };
 
 /**
+ * Mapping from PrepareCheckoutErrorType enum values to view modes.
+ * Uses typed error types from cms-rest for type safety.
+ */
+const ERROR_TYPE_TO_MODE: Record<PrepareCheckoutErrorType | string, string> = {
+  // Already owned/enrolled errors (eligibility)
+  [PrepareCheckoutErrorType.USER_ALREADY_ENROLLED]: 'already-owned',
+  'ALREADY_ENROLLED_IN_COURSE': 'already-owned',
+  'ALREADY_HAS_COACHING_FOR_COURSE': 'already-owned',
+  'PACKAGE_ALREADY_PURCHASED': 'already-owned',
+  'SELECTED_COURSES_ALREADY_OWNER': 'already-owned',
+
+  // Already purchased coaching
+  [PrepareCheckoutErrorType.COMPONENT_COACHING_ALREADY_PURCHASED]: 'already-purchased',
+  'PACKAGE_COACHING_ALREADY_PURCHASED': 'already-purchased',
+  'ALREADY_HAS_COACHING_FOR_COMPONENT': 'already-purchased',
+
+  // Not found errors
+  [PrepareCheckoutErrorType.COURSE_NOT_FOUND]: 'not-found',
+  [PrepareCheckoutErrorType.PACKAGE_NOT_FOUND]: 'not-found',
+  [PrepareCheckoutErrorType.COACHING_OFFERING_NOT_FOUND]: 'not-found',
+  [PrepareCheckoutErrorType.LESSON_COMPONENT_NOT_FOUND]: 'not-found',
+
+  // Not enrolled error
+  [PrepareCheckoutErrorType.NOT_ENROLLED_IN_COURSE]: 'not-enrolled',
+
+  // Coupon errors
+  [PrepareCheckoutErrorType.COUPON_NOT_FOUND]: 'coupon-not-found',
+  [PrepareCheckoutErrorType.COUPON_EXPIRED]: 'coupon-expired',
+  [PrepareCheckoutErrorType.COUPON_LIMIT_REACHED]: 'coupon-limit-reached',
+  [PrepareCheckoutErrorType.COUPON_USER_LIMIT_REACHED]: 'coupon-limit-reached',
+  [PrepareCheckoutErrorType.INVALID_COUPON_TYPE]: 'invalid-coupon-type',
+};
+
+/**
  * Mapping from API error messages to view modes.
  * The API returns error messages in the `message` field of the error response.
  * This maps those messages to the appropriate view mode for displaying user-friendly errors.
+ * @deprecated Use ERROR_TYPE_TO_MODE with errorType field instead. Kept for backwards compatibility.
  */
 const ERROR_MESSAGE_TO_MODE: Record<string, string> = {
   // Already owned/enrolled errors
@@ -48,14 +84,27 @@ const ERROR_MESSAGE_TO_MODE: Record<string, string> = {
 
 /**
  * Maps an API error response to the appropriate view mode.
- * Uses the `message` field from the error response to determine the mode.
+ * CRITICAL: Checks errorType field FIRST (from PrepareCheckoutErrorType enum),
+ * then falls back to message field for backwards compatibility.
  *
  * @param errorData - The error data from the API response (response.data when success is false)
  * @returns The view mode string (e.g., 'already-owned', 'not-found', 'kaboom')
  */
-export function getCheckoutErrorMode(errorData: { message?: string; errorType?: string }): string {
-  const message = errorData.message || '';
-  return ERROR_MESSAGE_TO_MODE[message] || 'kaboom';
+export function getCheckoutErrorMode(errorData: {
+  message?: string;
+  errorType?: PrepareCheckoutErrorType | string;
+}): string {
+  // Check errorType first (from backend's PrepareCheckoutErrorType)
+  if (errorData.errorType && ERROR_TYPE_TO_MODE[errorData.errorType]) {
+    return ERROR_TYPE_TO_MODE[errorData.errorType];
+  }
+
+  // Fallback to message-based lookup for backwards compatibility
+  if (errorData.message && ERROR_MESSAGE_TO_MODE[errorData.message]) {
+    return ERROR_MESSAGE_TO_MODE[errorData.message];
+  }
+
+  return 'kaboom';
 }
 
 /**

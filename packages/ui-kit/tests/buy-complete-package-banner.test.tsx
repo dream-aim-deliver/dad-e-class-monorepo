@@ -12,6 +12,9 @@ vi.mock('@maany_shr/e-class-translations', () => ({
                 fromText: 'from',
                 saveText: 'save',
             },
+            packages: {
+                savingsTooltip: 'Savings information',
+            },
         },
     }),
     isLocalAware: vi.fn(),
@@ -55,6 +58,8 @@ describe('BuyCompletePackageBanner', () => {
             fullPrice: 1000,
             partialPrice: 200,
             currency: 'CHF',
+            savingsWithoutCoachings: 800,
+            savingsWithCoachings: 800,
         },
         locale: 'en' as 'en' | 'de',
         onClickPurchase: vi.fn(),

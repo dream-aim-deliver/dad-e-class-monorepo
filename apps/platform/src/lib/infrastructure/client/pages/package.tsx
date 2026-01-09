@@ -17,6 +17,7 @@ import {
   CheckoutModal,
   Banner,
   type TransactionDraft,
+  type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -29,7 +30,7 @@ import { useListPackageRelatedPackagesPresenter } from '../hooks/use-list-packag
 import { useRequiredPlatform } from '../context/platform-context';
 import { usePrepareCheckoutPresenter } from '../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../hooks/use-checkout-intent';
-import { useCheckoutErrors, createCheckoutErrorViewModel } from '../hooks/use-checkout-errors';
+import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../hooks/use-checkout-errors';
 import env from '../config/env';
 
 interface PackageProps {
@@ -80,12 +81,6 @@ export default function Package({ locale, packageId }: PackageProps) {
   // @ts-ignore
   relatedPackagesPresenter.present(relatedPackagesResponse, relatedPackagesViewModel);
 
-  // DEBUG: Log usecase outputs to inspect pricing values from backend
-  console.log('[tRPC: getPackageWithCourses] API response:', packageResponse);
-  console.log('[tRPC: getPackageWithCourses] ViewModel:', packageViewModel);
-  console.log('[tRPC: listPackageRelatedPackages] API response:', relatedPackagesResponse);
-  console.log('[tRPC: listPackageRelatedPackages] ViewModel:', relatedPackagesViewModel);
-
   // Track selected courses 
   // Initialize with empty array - will be set in useEffect when data is available
   const [selectedCourseIds, setSelectedCourseIds] = useState<number[]>([]);
@@ -107,24 +102,19 @@ export default function Package({ locale, packageId }: PackageProps) {
   const executeCheckout = useCallback(async (
     request: TPrepareCheckoutRequest,
   ) => {
-    console.log('[Package] executeCheckout started with request:', request);
     try {
       setCurrentRequest(request);
       setCheckoutError(null); // Clear any previous error
-      console.log('[Package] Calling utils.prepareCheckout.fetch...');
       // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
       const response = await utils.prepareCheckout.fetch(request);
-      console.log('[Package] prepareCheckout response:', response);
       // Unwrap TBaseResult if needed
       if (response && typeof response === 'object' && 'success' in response) {
         if (response.success === true && response.data) {
-          console.log('[Package] Presenting checkout data:', response.data);
           checkoutPresenter.present({ success: true, data: response.data } as unknown as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
         } else if (response.success === false && response.data) {
           // Access the nested data structure from tRPC response
           const errorData = 'data' in response.data ? response.data.data : response.data;
           const errorViewModel = createCheckoutErrorViewModel(errorData as { message?: string; errorType?: string; operation?: string; context?: unknown });
-          console.log('[Package] Setting checkoutError directly:', errorViewModel);
           setCheckoutError(errorViewModel);
           // Scroll to top so user can see the error banner
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -134,8 +124,7 @@ export default function Package({ locale, packageId }: PackageProps) {
         checkoutPresenter.present(response as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
       }
     } catch (err) {
-      console.error('[Package] Failed to prepare checkout:', err);
-      console.error('[Package] Error details:', JSON.stringify(err, null, 2));
+      console.error('Failed to prepare checkout:', err);
     }
   }, [utils, checkoutPresenter, checkoutViewModel]);
 
@@ -146,17 +135,13 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   // Watch for checkoutViewModel changes and open modal when ready (must be before conditional returns)
   useEffect(() => {
-    console.log('[Package] checkoutViewModel changed:', checkoutViewModel);
     if (checkoutViewModel) {
       if (checkoutViewModel.mode === 'default') {
-        console.log('[Package] Opening modal with data:', checkoutViewModel.data);
         setTransactionDraft(checkoutViewModel.data);
         setIsCheckoutOpen(true);
         setCheckoutError(null);
       } else {
         // Show error banner for any non-default mode
-        console.log('[Package] Checkout error mode:', checkoutViewModel.mode, 'Setting checkoutError state');
-        console.log('[Package] checkoutViewModel data:', checkoutViewModel.data);
         setCheckoutError(checkoutViewModel);
       }
     }
@@ -172,6 +157,55 @@ export default function Package({ locale, packageId }: PackageProps) {
       }
     }
   }, [packageViewModel, relatedPackagesViewModel, selectedCourseIds.length]);
+
+  // Handle coupon validation via prepareCheckout (must be before conditional returns)
+  const handleApplyCoupon = useCallback(async (couponCode: string): Promise<CouponValidationResult> => {
+    if (!currentRequest) {
+      return {
+        success: false,
+        errorMessage: getCheckoutErrorDescription('kaboom')
+      };
+    }
+
+    try {
+      const requestWithCoupon = { ...currentRequest, couponCode };
+      // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+      const response = await utils.prepareCheckout.fetch(requestWithCoupon);
+
+      if (response && typeof response === 'object' && 'success' in response) {
+        if (response.success === true && response.data) {
+          return {
+            success: true,
+            data: response.data as unknown as TransactionDraft,
+          };
+        } else if (response.success === false && response.data) {
+          // Extract error data from response
+          const errorData = 'data' in response.data ? response.data.data : response.data;
+
+          // Get error mode using centralized logic
+          const errorMode = getCheckoutErrorMode(errorData as { errorType?: string; message?: string });
+
+          // Get translated error message
+          const errorMessage = getCheckoutErrorDescription(errorMode);
+
+          return {
+            success: false,
+            errorMessage
+          };
+        }
+      }
+
+      return {
+        success: false,
+        errorMessage: getCheckoutErrorDescription('kaboom')
+      };
+    } catch (error) {
+      return {
+        success: false,
+        errorMessage: getCheckoutErrorDescription('kaboom')
+      };
+    }
+  }, [currentRequest, utils, getCheckoutErrorDescription]);
 
   // Loading state
   if (!packageViewModel || !relatedPackagesViewModel) {
@@ -484,7 +518,6 @@ export default function Package({ locale, packageId }: PackageProps) {
   };
 
   const handlePurchase = () => {
-    console.log('[Package] handlePurchase called');
     const request: TPrepareCheckoutRequest = {
       purchaseType: coachingIncluded
         ? 'StudentPackagePurchaseWithCoaching'
@@ -494,11 +527,9 @@ export default function Package({ locale, packageId }: PackageProps) {
         ? undefined
         : selectedCourseIds, // Only include if partial selection
     };
-    console.log('[Package] Request:', request);
 
     // If user is not logged in, save intent and redirect to login
     if (!isLoggedIn) {
-      console.log('[Package] User not logged in, redirecting to login');
       saveIntent(request, window.location.pathname);
       router.push(
         `/${currentLocale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
@@ -507,7 +538,6 @@ export default function Package({ locale, packageId }: PackageProps) {
     }
 
     // User is logged in, execute checkout
-    console.log('[Package] Calling executeCheckout');
     executeCheckout(request);
   };
 
@@ -766,6 +796,7 @@ export default function Package({ locale, packageId }: PackageProps) {
             purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
             locale={currentLocale}
             onPaymentComplete={handlePaymentComplete}
+            onApplyCoupon={handleApplyCoupon}
           />
         )
       )}

@@ -9,6 +9,7 @@ import {
     VisitorCourseCard,
     Banner,
     type TransactionDraft,
+    type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
@@ -19,7 +20,7 @@ import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
-import { useCheckoutErrors, createCheckoutErrorViewModel } from '../../hooks/use-checkout-errors';
+import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../hooks/use-checkout-errors';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import env from '../../config/env';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -70,10 +71,6 @@ export function OffersCourseList({
     const { presenter } = useListCoursesPresenter(setCoursesViewModel);
     // @ts-ignore
     presenter.present(coursesResponse, coursesViewModel);
-
-    // DEBUG: Log courses data to inspect pricing values from backend
-    console.log('[tRPC: listCourses] API response:', coursesResponse);
-    console.log('[tRPC: listCourses] ViewModel:', coursesViewModel);
 
     const locale = useLocale() as TLocale;
     const paginationTranslations = useTranslations(
@@ -172,13 +169,61 @@ export function OffersCourseList({
     };
 
     const handlePaymentComplete = (sessionId: string) => {
-        console.log('Payment completed with session ID:', sessionId);
         setIsCheckoutOpen(false);
         setTransactionDraft(null);
         setCheckoutViewModel(undefined);
         setCurrentRequest(null);
         // TODO: Redirect to success page or show success message
     };
+
+    // Handle coupon validation via prepareCheckout
+    const handleApplyCoupon = useCallback(async (couponCode: string): Promise<CouponValidationResult> => {
+        if (!currentRequest) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+
+        try {
+            const requestWithCoupon = { ...currentRequest, couponCode };
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(requestWithCoupon);
+
+            if (response && typeof response === 'object' && 'success' in response) {
+                if (response.success === true && response.data) {
+                    return {
+                        success: true,
+                        data: response.data as unknown as TransactionDraft,
+                    };
+                } else if (response.success === false && response.data) {
+                    // Extract error data from response
+                    const errorData = 'data' in response.data ? response.data.data : response.data;
+
+                    // Get error mode using centralized logic
+                    const errorMode = getCheckoutErrorMode(errorData as { errorType?: string; message?: string });
+
+                    // Get translated error message
+                    const errorMessage = getCheckoutErrorDescription(errorMode);
+
+                    return {
+                        success: false,
+                        errorMessage
+                    };
+                }
+            }
+
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        } catch (error) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+    }, [currentRequest, utils, getCheckoutErrorDescription]);
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default') {
@@ -323,6 +368,7 @@ export function OffersCourseList({
                     }}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
+                    onApplyCoupon={handleApplyCoupon}
                 />
             )}
         </div>

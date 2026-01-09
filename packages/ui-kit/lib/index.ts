@@ -136,7 +136,7 @@ export { BuyCoachingSessionBanner } from './components/buy-coaching-session-bann
 
 export { Breadcrumbs } from './components/breadcrumbs';
 export * from './components/dialog';
-export { CheckoutModal, type CheckoutModalProps, type TransactionDraft } from './components/checkout/checkout-modal';
+export { CheckoutModal, type CheckoutModalProps, type TransactionDraft, type CouponValidationResult } from './components/checkout/checkout-modal';
 export { CourseForm, useCourseForm, type CourseDetailsState } from './components/course-form';
 export * from './utils/file-utils';
 export { generateCertificatePDF, type CertificateData } from './utils/course-certificate-generator';
