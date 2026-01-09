@@ -225,7 +225,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
 
     return (
         <CourseSlugProvider courseSlug={courseSlug}>
-            <div className="flex flex-col w-full gap-6">
+            <div className="flex flex-col w-full gap-6 overflow-hidden">
                 {/* Show/Hide Notes button - only for students with enableSubmit */}
                 {props.enableSubmit && currentLesson && (
                     <div className="flex justify-end">
@@ -240,7 +240,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                     </div>
                 )}
 
-                <div className={`flex flex-col w-full gap-6 ${showNotes ? 'lg:flex-row' : 'md:flex-row'}`}>
+                <div className={`flex flex-col w-full gap-6 overflow-hidden ${showNotes ? 'lg:flex-row' : 'md:flex-row'}`}>
                     <CourseOutlineAccordion
                         locale={locale}
                         modules={transformedModules}

@@ -1,13 +1,12 @@
 'use client'
-import { forwardRef, ReactNode, useContext, useEffect, useRef, useState } from "react"
+import { forwardRef, ReactNode, useContext } from "react"
 import { AccordionContext } from "./accordion"
 import { cn } from "../../utils/style-utils"
 /**
  * AccordionContent component
- * 
+ *
  * This component represents the content of an accordion item. It utilizes the AccordionContext
- * to determine if the item should be expanded or collapsed. The height of the content
- * is dynamically adjusted based on its visibility.
+ * to determine if the item should be expanded or collapsed. Uses CSS grid for smooth animation.
  *
  * Props:
  * - children: ReactNode - Content to be displayed inside the accordion.
@@ -25,36 +24,14 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(({ ch
         if (!context) throw new Error("AccordionContent must be used within Accordion")
 
         const isOpen = context.value.includes(value)
-        const [maxHeight, setMaxHeight] = useState<string>('0px')
-        const contentRef = useRef<HTMLDivElement>(null)
-
-        useEffect(() => {
-            const updateMaxHeight = () => {
-                if (contentRef.current) {
-                    const newMaxHeight = isOpen ? `${contentRef.current.scrollHeight}px` : '0px'
-                    setMaxHeight(newMaxHeight)
-                }
-            }
-
-            updateMaxHeight()
-
-            const resizeObserver = new ResizeObserver(updateMaxHeight)
-            if (contentRef.current) {
-                resizeObserver.observe(contentRef.current)
-            }
-
-            return () => {
-                resizeObserver.disconnect()
-            }
-        }, [isOpen])
 
         return (
             <div
                 ref={ref}
-                className="overflow-hidden w-full transition-all duration-100 ease-in-out"
-                style={{ maxHeight }}
+                className="grid w-full transition-all duration-100 ease-in-out"
+                style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
             >
-                <div ref={contentRef} className={cn("", className)}>
+                <div className={cn("overflow-hidden", className)}>
                     {children}
                 </div>
             </div>
