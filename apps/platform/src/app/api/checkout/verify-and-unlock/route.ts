@@ -157,6 +157,7 @@ export async function POST(req: NextRequest) {
         // Step 3: Extract metadata
         const metadata = stripeSession.metadata || {};
         const purchaseType = metadata.purchaseType;
+        const couponCode = metadata.couponCode; // Extract coupon code if present
 
         if (!purchaseType) {
             return Response.json(
@@ -212,6 +213,7 @@ export async function POST(req: NextRequest) {
             transactionData,
             purchaseType: validatedPurchaseType,
             purchaseItems: validatedPurchaseItems,
+            ...(couponCode && { couponCode }), // Add coupon code if present
         };
 
         // Local validation to catch schema issues before sending to backend
@@ -229,7 +231,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Wrap payload in request object as expected by backend
-        // Based on backend testing, it expects: { request: { userId, transactionData, purchaseType, purchaseItems } }
+        // Based on backend testing, it expects: { request: { userId, transactionData, purchaseType, purchaseItems, couponCode? } }
         // Context is extracted from Authorization header automatically, so we don't include it
         const wrappedPayload = {
             request: {
@@ -237,12 +239,13 @@ export async function POST(req: NextRequest) {
                 transactionData: finalPayload.transactionData,
                 purchaseType: finalPayload.purchaseType,
                 purchaseItems: finalPayload.purchaseItems,
+                ...(couponCode && { couponCode }), // Add coupon code if present
             },
         };
 
         let result;
         try {
-            // Send the wrapped payload - backend expects { request: { userId, transactionData, purchaseType, purchaseItems } }
+            // Send the wrapped payload - backend expects { request: { userId, transactionData, purchaseType, purchaseItems, couponCode? } }
             // Context is extracted from Authorization header automatically
             // @ts-ignore - Type definition may not match actual backend expectation (backend expects request wrapper)
             result = await backendTrpc.processPurchase.mutate(wrappedPayload.request);

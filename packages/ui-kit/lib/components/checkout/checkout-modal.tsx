@@ -23,7 +23,20 @@ export interface TransactionDraft {
     currency: string;
     couponCode?: string | null;
     finalPrice: number;
+    originalPrice?: number; // Price before coupon discount (for Stripe)
 }
+
+/**
+ * Result type for coupon validation callback.
+ * Parent components translate error types to user-friendly messages using useCheckoutErrors.
+ */
+export type CouponValidationResult = {
+    success: true;
+    data: TransactionDraft;
+} | {
+    success: false;
+    errorMessage: string;  // Already translated by parent component
+};
 
 export interface CheckoutModalProps extends isLocalAware {
     isOpen: boolean;
@@ -43,6 +56,12 @@ export interface CheckoutModalProps extends isLocalAware {
         lessonComponentIds?: string[]; // For StudentCourseCoachingSessionPurchase
         coachUsername?: string; // For coaching session purchase - redirect back to coach's calendar
     };
+    /**
+     * Optional callback to validate coupon with backend.
+     * Returns updated transaction draft with discounted line items on success.
+     * Returns error object with errorType on failure.
+     */
+    onApplyCoupon?: (couponCode: string) => Promise<CouponValidationResult>;
 }
 
 type ModalState = 'summary' | 'payment';
@@ -57,6 +76,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     purchaseType,
     purchaseIdentifier,
     locale,
+    onApplyCoupon,
 }) => {
     const dictionary = getDictionary(locale);
     const [modalState, setModalState] = useState<ModalState>('summary');
@@ -71,6 +91,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const [isLoadingPayment, setIsLoadingPayment] = useState(false);
     const [discountPercentage, setDiscountPercentage] = useState(0);
     const [hasBlurred, setHasBlurred] = useState(false);
+    // Track current transaction draft (updated when coupon is applied)
+    const [currentTransactionDraft, setCurrentTransactionDraft] = useState<TransactionDraft>(transactionDraft);
 
     const stripePromise = useMemo(
         () => loadStripe(stripePublishableKey),
@@ -78,32 +100,41 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     );
 
     // Extract discount percentage from coupon code (e.g., "XXX10" -> 10)
+    // Used as fallback when onApplyCoupon callback is not provided
     const extractDiscountFromCoupon = (coupon: string): number => {
         const match = coupon.match(/\d+/);
         return match ? parseInt(match[0], 10) : 0;
     };
 
-    // Calculate discount amount
+
+    // Calculate discount amount (only used for fallback mock implementation)
     const discountAmount = useMemo(() => {
         if (!appliedCoupon || discountPercentage === 0) return 0;
-        const subtotal = transactionDraft.lineItems.reduce(
+        const subtotalValue = currentTransactionDraft.lineItems.reduce(
             (sum, item) => sum + item.totalPrice,
             0,
         );
-        return Math.round((subtotal * discountPercentage) / 100);
-    }, [appliedCoupon, discountPercentage, transactionDraft.lineItems]);
+        return Math.round((subtotalValue * discountPercentage) / 100);
+    }, [appliedCoupon, discountPercentage, currentTransactionDraft.lineItems]);
 
     // Calculate totals
     const subtotal = useMemo(() => {
-        return transactionDraft.lineItems.reduce(
+        return currentTransactionDraft.lineItems.reduce(
             (sum, item) => sum + item.totalPrice,
             0,
         );
-    }, [transactionDraft.lineItems]);
+    }, [currentTransactionDraft.lineItems]);
 
+    // When using onApplyCoupon, the finalPrice from backend already includes discount
+    // When using fallback mock, calculate manually
     const total = useMemo(() => {
+        if (onApplyCoupon && appliedCoupon) {
+            // Backend returned discounted finalPrice
+            return currentTransactionDraft.finalPrice;
+        }
+        // Fallback: manual calculation
         return subtotal - discountAmount;
-    }, [subtotal, discountAmount]);
+    }, [subtotal, discountAmount, onApplyCoupon, appliedCoupon, currentTransactionDraft.finalPrice]);
 
     // Validate coupon format on blur
     const validateCouponFormat = (coupon: string): boolean => {
@@ -124,7 +155,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const handleApplyCoupon = async () => {
         if (!couponInput.trim()) return;
 
-        if (!validateCouponFormat(couponInput)) {
+        // Only validate format when using fallback (no onApplyCoupon callback)
+        if (!onApplyCoupon && !validateCouponFormat(couponInput)) {
             setCouponError(dictionary.components.checkoutModal.invalidCoupon);
             return;
         }
@@ -133,22 +165,46 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         setCouponError(null);
 
         try {
-            // For now, extract discount percentage from coupon code
-            // In production, this should validate with backend
-            const percentage = extractDiscountFromCoupon(couponInput);
+            // If callback provided, use real backend validation
+            if (onApplyCoupon) {
+                const result = await onApplyCoupon(couponInput);
 
-            if (percentage === 0) {
-                throw new Error('Invalid coupon');
+                if (result.success) {
+                    // Update transaction draft with new discounted line items
+                    // Preserve the original price (before discount) for Stripe
+                    const updatedDraft = {
+                        ...result.data,
+                        originalPrice: transactionDraft.finalPrice, // Original price before coupon
+                    };
+                    setCurrentTransactionDraft(updatedDraft);
+                    setAppliedCoupon(couponInput);
+                    setShowCouponSuccess(true);
+                    setCouponInput('');
+                    setHasBlurred(false);
+
+                    // Hide success message after 3 seconds
+                    setTimeout(() => setShowCouponSuccess(false), 3000);
+                } else {
+                    // Parent already translated the error using centralized error handling
+                    setCouponError(result.errorMessage);
+                }
+            } else {
+                // Fallback: extract discount percentage from coupon code
+                const percentage = extractDiscountFromCoupon(couponInput);
+
+                if (percentage === 0) {
+                    throw new Error('Invalid coupon');
+                }
+
+                setAppliedCoupon(couponInput);
+                setDiscountPercentage(percentage);
+                setShowCouponSuccess(true);
+                setCouponInput('');
+                setHasBlurred(false);
+
+                // Hide success message after 3 seconds
+                setTimeout(() => setShowCouponSuccess(false), 3000);
             }
-
-            setAppliedCoupon(couponInput);
-            setDiscountPercentage(percentage);
-            setShowCouponSuccess(true);
-            setCouponInput('');
-            setHasBlurred(false);
-
-            // Hide success message after 3 seconds
-            setTimeout(() => setShowCouponSuccess(false), 3000);
         } catch (error) {
             setCouponError(dictionary.components.checkoutModal.couponError);
         } finally {
@@ -157,6 +213,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     };
 
     const handleRemoveCoupon = () => {
+        setCurrentTransactionDraft(transactionDraft); // Reset to original
         setAppliedCoupon(null);
         setDiscountPercentage(0);
         setShowCouponSuccess(false);
@@ -169,9 +226,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         try {
             // Build query parameters
             const params = new URLSearchParams();
-            // Pass the final price in cents (Stripe expects cents)
-            // finalPrice is in CHF, so multiply by 100 to convert to cents
-            params.append('amount', (transactionDraft.finalPrice * 100).toString());
+            // Pass the ORIGINAL price (before discount) to Stripe
+            // Stripe will apply the coupon discount, so we must NOT send the already-discounted price
+            const priceToSend = currentTransactionDraft.originalPrice ?? currentTransactionDraft.finalPrice;
+            params.append('amount', (priceToSend * 100).toString());
             if (appliedCoupon) {
                 params.append('coupon', appliedCoupon);
             }
@@ -250,7 +308,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     };
 
     const formatPrice = (amount: number) => {
-        return `${amount.toFixed(2)} ${transactionDraft.currency}`;
+        return `${amount.toFixed(2)} ${currentTransactionDraft.currency}`;
     };
 
     return (
@@ -293,7 +351,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                             .lineItems
                                     }
                                 </h3>
-                                {transactionDraft.lineItems.map(
+                                {currentTransactionDraft.lineItems.map(
                                     (item, index) => (
                                         <div
                                             key={index}
@@ -431,18 +489,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             </div>
 
                             {/* Discount Display */}
-                            {appliedCoupon && discountAmount > 0 && (
+                            {appliedCoupon && (onApplyCoupon ? (subtotal - currentTransactionDraft.finalPrice) > 0 : discountAmount > 0) && (
                                 <>
                                     <div className="flex justify-between items-center p-2">
                                         <span className="text-green-600 font-medium">
                                             {
                                                 dictionary.components
                                                     .checkoutModal.discount
-                                            }{' '}
-                                            ({discountPercentage}%)
+                                            }
+                                            {!onApplyCoupon && ` (${discountPercentage}%)`}
                                         </span>
                                         <span className="text-green-600 font-semibold">
-                                            -{formatPrice(discountAmount)}
+                                            -{formatPrice(onApplyCoupon ? (subtotal - currentTransactionDraft.finalPrice) : discountAmount)}
                                         </span>
                                     </div>
                                     <div className="w-full h-[1px] bg-divider" />

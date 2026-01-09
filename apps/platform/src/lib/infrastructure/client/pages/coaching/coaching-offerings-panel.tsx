@@ -11,6 +11,7 @@ import {
     DefaultLoading,
     Banner,
     type TransactionDraft,
+    type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -20,7 +21,7 @@ import { useSession } from 'next-auth/react';
 import { groupOfferings } from '../../utils/group-offerings';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
-import { useCheckoutErrors, createCheckoutErrorViewModel } from '../../hooks/use-checkout-errors';
+import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../hooks/use-checkout-errors';
 import env from '../../config/env';
 
 function AvailableCoachings() {
@@ -332,6 +333,55 @@ export default function CoachingOfferingsPanel() {
         // TODO: Redirect to success page or show success message
     };
 
+    // Handle coupon validation via prepareCheckout
+    const handleApplyCoupon = useCallback(async (couponCode: string): Promise<CouponValidationResult> => {
+        if (!currentRequest) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+
+        try {
+            const requestWithCoupon = { ...currentRequest, couponCode };
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(requestWithCoupon);
+
+            if (response && typeof response === 'object' && 'success' in response) {
+                if (response.success === true && response.data) {
+                    return {
+                        success: true,
+                        data: response.data as unknown as TransactionDraft,
+                    };
+                } else if (response.success === false && response.data) {
+                    // Extract error data from response
+                    const errorData = 'data' in response.data ? response.data.data : response.data;
+
+                    // Get error mode using centralized logic
+                    const errorMode = getCheckoutErrorMode(errorData as { errorType?: string; message?: string });
+
+                    // Get translated error message
+                    const errorMessage = getCheckoutErrorDescription(errorMode);
+
+                    return {
+                        success: false,
+                        errorMessage
+                    };
+                }
+            }
+
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        } catch (error) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+    }, [currentRequest, utils, getCheckoutErrorDescription]);
+
     if (!coachingOfferingsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
@@ -419,6 +469,7 @@ export default function CoachingOfferingsPanel() {
                     purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
+                    onApplyCoupon={handleApplyCoupon}
                 />
             )}
         </div>

@@ -10,6 +10,7 @@ import {
     CheckoutModal,
     Banner,
     type TransactionDraft,
+    type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -20,7 +21,7 @@ import { Suspense, useState, useEffect, useCallback } from 'react';
 import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-included-coaching-sessions-presenter';
 import { usePrepareCheckoutPresenter } from '../../../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../../../hooks/use-checkout-intent';
-import { useCheckoutErrors, createCheckoutErrorViewModel } from '../../../hooks/use-checkout-errors';
+import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../../hooks/use-checkout-errors';
 import { useSession } from 'next-auth/react';
 import env from '../../../config/env';
 import CourseIntroduction from '../../common/course-introduction';
@@ -298,6 +299,55 @@ function StudentEnrolledCourseIntroduction(
         // TODO: Redirect to success page or show success message
     };
 
+    // Handle coupon validation via prepareCheckout
+    const handleApplyCoupon = useCallback(async (couponCode: string): Promise<CouponValidationResult> => {
+        if (!currentRequest) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+
+        try {
+            const requestWithCoupon = { ...currentRequest, couponCode };
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(requestWithCoupon);
+
+            if (response && typeof response === 'object' && 'success' in response) {
+                if (response.success === true && response.data) {
+                    return {
+                        success: true,
+                        data: response.data as unknown as TransactionDraft,
+                    };
+                } else if (response.success === false && response.data) {
+                    // Extract error data from response
+                    const errorData = 'data' in response.data ? response.data.data : response.data;
+
+                    // Get error mode using centralized logic
+                    const errorMode = getCheckoutErrorMode(errorData as { errorType?: string; message?: string });
+
+                    // Get translated error message
+                    const errorMessage = getCheckoutErrorDescription(errorMode);
+
+                    return {
+                        success: false,
+                        errorMessage
+                    };
+                }
+            }
+
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        } catch (error) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+    }, [currentRequest, utils, getCheckoutErrorDescription]);
+
     return (
         <div className="flex flex-col space-y-10">
             {/* Checkout Error Banner */}
@@ -352,6 +402,7 @@ function StudentEnrolledCourseIntroduction(
                     purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
+                    onApplyCoupon={handleApplyCoupon}
                 />
             )}
         </div>

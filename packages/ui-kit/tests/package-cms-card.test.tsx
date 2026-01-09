@@ -55,7 +55,7 @@ describe('PackageCmsCard', () => {
         expect(screen.getByText('1h 30m')).toBeInTheDocument();
         expect(screen.getByText('3 courses')).toBeInTheDocument();
         expect(screen.getByText('$ 200')).toBeInTheDocument();
-        expect(screen.getByText(/Save \$ 150/)).toBeInTheDocument();
+        expect(screen.getByText(/Save \$ 50/)).toBeInTheDocument();
 
         const archiveButton = screen.getByRole('button', { name: /archive/i });
         expect(archiveButton).toBeInTheDocument();
@@ -84,7 +84,7 @@ describe('PackageCmsCard', () => {
         expect(screen.getByText('1h 30m')).toBeInTheDocument();
         expect(screen.getByText('3 courses')).toBeInTheDocument();
         expect(screen.getByText('$ 200')).toBeInTheDocument();
-        expect(screen.getByText(/Save \$ 150/)).toBeInTheDocument();
+        expect(screen.getByText(/Save \$ 50/)).toBeInTheDocument();
 
         expect(screen.getByText(/Archived/)).toBeInTheDocument();
 

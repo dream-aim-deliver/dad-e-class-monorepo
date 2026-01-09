@@ -7,6 +7,7 @@ import {
     CheckoutModal,
     Banner,
     type TransactionDraft,
+    type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -20,7 +21,7 @@ import { useRequiredPlatform } from '../../context/platform-context';
 import { useSession } from 'next-auth/react';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
-import { useCheckoutErrors, createCheckoutErrorViewModel } from '../../hooks/use-checkout-errors';
+import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../hooks/use-checkout-errors';
 import env from '../../config/env';
 
 export default function PackageList() {
@@ -36,10 +37,6 @@ export default function PackageList() {
         useListOffersPagePackagesPresenter(setPackagesViewModel);
     // @ts-ignore
     presenter.present(packagesResponse, packagesViewModel);
-
-    // DEBUG: Log packages data to inspect savings values from backend
-    console.log('[tRPC: listOffersPagePackages] API response:', packagesResponse);
-    console.log('[tRPC: listOffersPagePackages] ViewModel:', packagesViewModel);
 
     const router = useRouter();
 
@@ -127,6 +124,55 @@ export default function PackageList() {
         setCheckoutViewModel(undefined);
         setCurrentRequest(null);
     };
+
+    // Handle coupon validation via prepareCheckout
+    const handleApplyCoupon = useCallback(async (couponCode: string): Promise<CouponValidationResult> => {
+        if (!currentRequest) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+
+        try {
+            const requestWithCoupon = { ...currentRequest, couponCode };
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(requestWithCoupon);
+
+            if (response && typeof response === 'object' && 'success' in response) {
+                if (response.success === true && response.data) {
+                    return {
+                        success: true,
+                        data: response.data as unknown as TransactionDraft,
+                    };
+                } else if (response.success === false && response.data) {
+                    // Extract error data from response
+                    const errorData = 'data' in response.data ? response.data.data : response.data;
+
+                    // Get error mode using centralized logic
+                    const errorMode = getCheckoutErrorMode(errorData as { errorType?: string; message?: string });
+
+                    // Get translated error message
+                    const errorMessage = getCheckoutErrorDescription(errorMode);
+
+                    return {
+                        success: false,
+                        errorMessage
+                    };
+                }
+            }
+
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        } catch (error) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+    }, [currentRequest, utils, getCheckoutErrorDescription]);
 
     if (!packagesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -222,6 +268,7 @@ export default function PackageList() {
                     purchaseIdentifier={{ packageId: currentRequest.packageId }}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
+                    onApplyCoupon={handleApplyCoupon}
                 />
             )}
         </div>

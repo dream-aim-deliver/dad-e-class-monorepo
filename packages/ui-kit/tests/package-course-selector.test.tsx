@@ -22,6 +22,9 @@ vi.mock('@maany_shr/e-class-translations', () => ({
             },
             coachBanner: {
                 placeHolderText: 'Image not available'
+            },
+            packages: {
+                savingsTooltip: 'Amount saved compared to buying courses separately'
             }
         }
     }),
@@ -100,7 +103,7 @@ describe('PackageCourseSelector', () => {
         title: 'Premium Package',
         description: 'Customize your learning experience',
         coachingIncluded: false,
-        pricing: { fullPrice: 1000, partialPrice: 799, currency: 'CHF' },
+        pricing: { fullPrice: 1000, partialPrice: 799, currency: 'CHF', savings: 201 },
         onClickCheckbox: vi.fn(),
         onClickPurchase: vi.fn(),
         locale: 'en' as TLocale,

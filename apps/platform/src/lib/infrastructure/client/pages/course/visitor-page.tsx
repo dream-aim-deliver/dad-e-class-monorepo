@@ -18,6 +18,7 @@ import {
     CheckoutModal,
     Banner,
     type TransactionDraft,
+    type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TGetCourseIntroductionUseCaseResponse, TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
@@ -34,7 +35,7 @@ import { useListCourseReviewsPresenter } from '../../hooks/use-list-course-revie
 import { useGetCoursePackagesPresenter } from '../../hooks/use-course-packages-presenter';
 import { useGetOffersPageOutlinePresenter } from '../../hooks/use-get-offers-page-outline-presenter';
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
-import { useCheckoutErrors, createCheckoutErrorViewModel } from '../../hooks/use-checkout-errors';
+import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../hooks/use-checkout-errors';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
@@ -247,6 +248,55 @@ export default function VisitorPage({
         setCurrentRequest(null);
         // TODO: Redirect to success page or show success message
     };
+
+    // Handle coupon validation via prepareCheckout
+    const handleApplyCoupon = useCallback(async (couponCode: string): Promise<CouponValidationResult> => {
+        if (!currentRequest) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+
+        try {
+            const requestWithCoupon = { ...currentRequest, couponCode };
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(requestWithCoupon);
+
+            if (response && typeof response === 'object' && 'success' in response) {
+                if (response.success === true && response.data) {
+                    return {
+                        success: true,
+                        data: response.data as unknown as TransactionDraft,
+                    };
+                } else if (response.success === false && response.data) {
+                    // Extract error data from response
+                    const errorData = 'data' in response.data ? response.data.data : response.data;
+
+                    // Get error mode using centralized logic
+                    const errorMode = getCheckoutErrorMode(errorData as { errorType?: string; message?: string });
+
+                    // Get translated error message
+                    const errorMessage = getCheckoutErrorDescription(errorMode);
+
+                    return {
+                        success: false,
+                        errorMessage
+                    };
+                }
+            }
+
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        } catch (error) {
+            return {
+                success: false,
+                errorMessage: getCheckoutErrorDescription('kaboom')
+            };
+        }
+    }, [currentRequest, utils, getCheckoutErrorDescription]);
 
     // Helper to build purchase identifier from request (handles discriminated union)
     const getPurchaseIdentifier = (request: TPrepareCheckoutRequest) => {
@@ -661,6 +711,7 @@ export default function VisitorPage({
                     purchaseIdentifier={getPurchaseIdentifier(currentRequest)}
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
+                    onApplyCoupon={handleApplyCoupon}
                 />
             )}
         </div>

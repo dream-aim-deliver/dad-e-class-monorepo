@@ -59,6 +59,8 @@ export async function GET(req: Request) {
     if (withCoaching) metadata.withCoaching = withCoaching;
     if (lessonComponentIds) metadata.lessonComponentIds = lessonComponentIds;
     if (coachUsername) metadata.coachUsername = coachUsername;
+    // Add coupon code to metadata so backend can track it
+    if (couponCode) metadata.couponCode = couponCode;
 
 
     const origin = env.NEXT_PUBLIC_APP_URL;

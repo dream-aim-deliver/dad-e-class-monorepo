@@ -14,6 +14,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
                 purchasePackageText: 'Buy Now',
                 detailsText: 'View Details',
                 saveText: 'Save',
+                savingsTooltip: 'Savings information',
             },
         },
     }),
@@ -34,6 +35,14 @@ vi.mock('../icons/icon-clock', () => ({
     ),
 }));
 
+vi.mock('../tooltip', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        default: () => null,
+    };
+});
+
 describe('PackageCard', () => {
     const defaultProps = {
         imageUrl: 'https://example.com/image.jpg',
@@ -45,6 +54,7 @@ describe('PackageCard', () => {
             fullPrice: 100,
             partialPrice: 50,
             currency: 'CHF',
+            savingsWithoutCoachings: 50,
         },
         locale: 'en' as 'en' | 'de',
         onClickPurchase: vi.fn(),
