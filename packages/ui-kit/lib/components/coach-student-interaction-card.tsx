@@ -36,7 +36,7 @@ export const  CoachStudentInteractionCard = ({
         <AccordionItem
           key={`module-${module.id}`}
           value={`module-${module.id}`}
-          className="bg-card-fill border border-divider px-4 py-6 rounded-medium"
+          className="border border-divider px-4 py-6 rounded-medium bg-card-fill border-card-stroke"
         >
           <AccordionTrigger
             value={`module-${module.id}`}

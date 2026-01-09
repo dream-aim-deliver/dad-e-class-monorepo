@@ -195,7 +195,7 @@ export default function CoachingSessions({
 
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] space-y-5 bg-card-fill p-6 rounded-md">
+    <div className="flex flex-col h-[calc(100vh-200px)] space-y-5 p-6 rounded-md">
       {/* Page header with Outline and export control - won't shrink */}
       <div className="flex-shrink-0 flex items-start justify-between w-full gap-4">
         <Outline title={t('title')} description={t('description')} className="flex-1" />
