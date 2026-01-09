@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 interface TimeThreshold {
   hours?: number;
   minutes?: number;
@@ -24,14 +26,28 @@ export function useCheckTimeLeft(
   targetDateTime: Date,
   timeThreshold: TimeThreshold = { minutes: 10 }
 ): boolean {
-  const now = new Date();
-  const timeDiff = targetDateTime.getTime() - now.getTime();
+  // Start with false to avoid hydration mismatch (server and client render same initial value)
+  const [isWithinThreshold, setIsWithinThreshold] = useState(false);
 
-  // Convert time config to milliseconds
-  const thresholdInMs =
-    ((timeThreshold.hours || 0) * 60 * 60 * 1000) +
-    ((timeThreshold.minutes || 0) * 60 * 1000) +
-    ((timeThreshold.seconds || 0) * 1000);
+  useEffect(() => {
+    const checkTime = () => {
+      const now = new Date();
+      const timeDiff = targetDateTime.getTime() - now.getTime();
 
-  return timeDiff <= thresholdInMs && timeDiff > 0;
+      // Convert time config to milliseconds
+      const thresholdInMs =
+        ((timeThreshold.hours || 0) * 60 * 60 * 1000) +
+        ((timeThreshold.minutes || 0) * 60 * 1000) +
+        ((timeThreshold.seconds || 0) * 1000);
+
+      setIsWithinThreshold(timeDiff <= thresholdInMs && timeDiff > 0);
+    };
+
+    checkTime();
+    // Re-check every minute for dynamic updates
+    const interval = setInterval(checkTime, 60000);
+    return () => clearInterval(interval);
+  }, [targetDateTime, timeThreshold.hours, timeThreshold.minutes, timeThreshold.seconds]);
+
+  return isWithinThreshold;
 }
