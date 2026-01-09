@@ -19,18 +19,17 @@ import { groupOfferings } from '../../../utils/group-offerings';
 interface ChooseCoachingSessionContentProps {
     setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
     courseSlug?: string;
+    onBuyMoreSessions?: () => void;
 }
 
-function CoachingSessionsNotFound() {
+function CoachingSessionsNotFound({ onBuyMoreSessions }: { onBuyMoreSessions?: () => void }) {
     const locale = useLocale() as TLocale;
     return (
         <div className="flex flex-col gap-3">
             <div className="p-4 bg-card-stroke rounded-md border border-neutral-700 text-text-secondary">
                 No available coaching sessions found.
             </div>
-            <Button variant="primary" text="Buy more sessions" onClick={() => {
-                // TODO: Implement navigation to buy more sessions
-            }} />
+            <Button variant="primary" text="Buy more sessions" onClick={onBuyMoreSessions} />
         </div>
     );
 }
@@ -38,6 +37,7 @@ function CoachingSessionsNotFound() {
 export default function ChooseCoachingSessionContent({
     setSession,
     courseSlug,
+    onBuyMoreSessions,
 }: ChooseCoachingSessionContentProps) {
     // courseSlug filters available coaching sessions by course context
     // NOTE: courseSlug support requires backend update in @dream-aim-deliver/e-class-cms-rest
@@ -75,13 +75,13 @@ export default function ChooseCoachingSessionContent({
         availableCoachingsViewModel.mode === 'not-found' ||
         availableCoachingsViewModel.mode === 'unauthenticated'
     ) {
-        return <CoachingSessionsNotFound />;
+        return <CoachingSessionsNotFound onBuyMoreSessions={onBuyMoreSessions} />;
     }
 
     const availableOfferings = availableCoachingsViewModel.data.offerings;
 
     if (availableOfferings.length === 0) {
-        return <CoachingSessionsNotFound />;
+        return <CoachingSessionsNotFound onBuyMoreSessions={onBuyMoreSessions} />;
     }
 
     const calculateEndTime = (startTime: Date, durationMinutes: number) => {

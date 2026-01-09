@@ -169,8 +169,10 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse }: CoachingOfferin
     // @ts-ignore
     presenter.present(coachingOfferingsResponse, coachingOfferingsViewModel);
 
-    // Toggle state for buy section visibility
-    const [isBuySectionVisible, setIsBuySectionVisible] = useState(false);
+    // Toggle state for buy section visibility - use external state if provided, otherwise use internal
+    const [internalVisible, setInternalVisible] = useState(false);
+    const isBuySectionVisible = externalVisible ?? internalVisible;
+    const setIsBuySectionVisible = externalSetter ?? setInternalVisible;
 
     // Checkout modal state
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -553,6 +555,7 @@ function BookCoachPageContent({
     const [bookingSuccess, setBookingSuccess] = useState(false);
     const [briefing, setBriefing] = useState('');
     const [viewType, setViewType] = useState<'weekly' | 'monthly'>('weekly');
+    const [isBuySectionVisible, setIsBuySectionVisible] = useState(false);
     const [dialogKey, setDialogKey] = useState(0);
     const calendarT = useTranslations('pages.calendarPage');
 
@@ -597,6 +600,14 @@ function BookCoachPageContent({
     const [submitError, setSubmitError] = useState<{ title: string; description: string } | undefined>(
         undefined,
     );
+
+    const handleBuyMoreSessionsFromDialog = () => {
+        setIsDialogOpen(false);
+        setIsBuySectionVisible(true);
+        setNewSession(defaultSession);
+        setSubmitError(undefined);
+        setBriefing('');
+    };
     const { getSchedulingErrorMessage } = useSchedulingErrors();
 
     const onSubmit = () => {
@@ -711,6 +722,7 @@ function BookCoachPageContent({
                             setBookingSuccess(false);
                             setBriefing('');
                         }}
+                        onBuyMoreSessions={handleBuyMoreSessionsFromDialog}
                     />
                 </DialogContent>
             </Dialog>
