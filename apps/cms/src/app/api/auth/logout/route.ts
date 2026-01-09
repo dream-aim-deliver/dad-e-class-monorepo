@@ -20,7 +20,10 @@ export async function GET(request: NextRequest) {
 
     // Build OIDC-compliant logout URL using /oidc/logout endpoint
     // This is the proper way to log out from Auth0 per OIDC spec
-    const logoutUrl = new URL(`${auth0Issuer}/oidc/logout`);
+    const sanitizedIssuer = auth0Issuer.endsWith('/')
+        ? auth0Issuer.slice(0, -1)
+        : auth0Issuer;
+    const logoutUrl = new URL(`${sanitizedIssuer}/oidc/logout`);
 
     // id_token_hint is recommended by Auth0 for proper session identification
     if (idToken) {
