@@ -29,6 +29,7 @@ import EditCourseIntroOutline, {
     CourseIntroOutlinePreview,
 } from './edit-course-intro-outline';
 import { CourseModule } from './types';
+import { TCourseStatus } from '@dream-aim-deliver/e-class-cms-rest';
 import { useCourseDetails, useSaveDetails } from './hooks/edit-details-hooks';
 import { useSaveIntroduction } from './hooks/edit-introduction-hooks';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
@@ -394,7 +395,7 @@ interface EditCourseLayoutProps {
     successMessage: string | null;
     locale: TLocale;
     courseDetails: CourseDetailsState;
-    courseStatus?: 'draft' | 'live' | 'archived';
+    courseStatus?: TCourseStatus;
     roles: string[];
     slug: string;
     children: React.ReactNode;
@@ -562,7 +563,7 @@ interface EditCourseTabContentProps {
     priceIncludingCoachings: number | null;
     setPriceIncludingCoachings: (value: number | null) => void;
     roles: string[];
-    courseStatus?: 'draft' | 'live' | 'archived';
+    courseStatus?: TCourseStatus;
 }
 
 function EditCourseTabContent({
@@ -694,6 +695,7 @@ function EditCourseTabContent({
                             modules={modules}
                             setModules={setModules}
                             setCourseVersion={setCourseVersion}
+                            courseStatus={courseStatus}
                         />
                     </Suspense>
                 )}
