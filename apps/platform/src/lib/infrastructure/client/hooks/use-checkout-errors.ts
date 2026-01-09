@@ -26,16 +26,14 @@ export const ERROR_MODE_TO_KEY: Record<string, string> = {
  */
 const ERROR_TYPE_TO_MODE: Record<PrepareCheckoutErrorType | string, string> = {
   // Already owned/enrolled errors (eligibility)
-  [PrepareCheckoutErrorType.USER_ALREADY_ENROLLED]: 'already-owned',
-  'ALREADY_ENROLLED_IN_COURSE': 'already-owned',
-  'ALREADY_HAS_COACHING_FOR_COURSE': 'already-owned',
-  'PACKAGE_ALREADY_PURCHASED': 'already-owned',
-  'SELECTED_COURSES_ALREADY_OWNER': 'already-owned',
+  [PrepareCheckoutErrorType.ALREADY_ENROLLED_IN_COURSE]: 'already-owned',
+  [PrepareCheckoutErrorType.ALREADY_HAS_COACHING_FOR_COURSE]: 'already-owned',
+  [PrepareCheckoutErrorType.PACKAGE_ALREADY_PURCHASED]: 'already-owned',
+  [PrepareCheckoutErrorType.SELECTED_COURSES_ALREADY_OWNER]: 'already-owned',
 
   // Already purchased coaching
-  [PrepareCheckoutErrorType.COMPONENT_COACHING_ALREADY_PURCHASED]: 'already-purchased',
-  'PACKAGE_COACHING_ALREADY_PURCHASED': 'already-purchased',
-  'ALREADY_HAS_COACHING_FOR_COMPONENT': 'already-purchased',
+  [PrepareCheckoutErrorType.PACKAGE_COACHING_ALREADY_PURCHASED]: 'already-purchased',
+  [PrepareCheckoutErrorType.ALREADY_HAS_COACHING_FOR_COMPONENT]: 'already-purchased',
 
   // Not found errors
   [PrepareCheckoutErrorType.COURSE_NOT_FOUND]: 'not-found',
