@@ -2,7 +2,7 @@
 
 import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListStudentCoachingSessionsPresenter } from "../../hooks/use-list-student-coaching-sessions-presenter";
 import { useListCoachesPresenter } from "../../hooks/use-coaches-presenter";
@@ -11,8 +11,126 @@ import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedul
 import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewDialog, CancelCoachingSessionModal } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useRouter } from "next/navigation";
-import { useCheckTimeLeft } from "../../../hooks/use-check-time-left";
 import { trpc } from "../../trpc/cms-client";
+
+// Type for scheduled sessions (excluding unscheduled)
+type ScheduledStudentSession = Exclude<NonNullable<viewModels.TStudentCoachingSessionsListSuccess['sessions']>[number], { status: 'unscheduled' }>;
+
+// Wrapper component for scheduled sessions that handles time-based status client-side only
+interface ScheduledStudentSessionCardProps {
+    session: ScheduledStudentSession;
+    locale: TLocale;
+    formatTime: (isoString: string) => string;
+    onCreatorClick: () => void;
+    onJoinMeeting: () => void;
+    onCancel: () => void;
+    onViewCourse?: () => void;
+    courseName?: string;
+}
+
+function ScheduledStudentSessionCard({
+    session,
+    locale,
+    formatTime,
+    onCreatorClick,
+    onJoinMeeting,
+    onCancel,
+    onViewCourse,
+    courseName,
+}: ScheduledStudentSessionCardProps) {
+    const startDateTime = new Date(session.startTime);
+    const coach = session.coach;
+    const coachName = `${coach.name || ''} ${coach.surname || ''}`.trim() || coach.username || 'Unknown Coach';
+
+    // Client-side only status calculation to avoid hydration mismatch
+    const [status, setStatus] = useState<{
+        cardStatus: 'upcoming-editable' | 'upcoming-locked' | 'ongoing';
+        hoursLeftToEdit: number;
+        minutesLeftToEdit: number | undefined;
+    } | null>(null);
+
+    useEffect(() => {
+        const calculateStatus = () => {
+            const now = new Date();
+            const msUntilSession = startDateTime.getTime() - now.getTime();
+
+            if (msUntilSession <= 10 * 60 * 1000 && msUntilSession > 0) {
+                setStatus({ cardStatus: 'ongoing', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+            } else if (msUntilSession <= 24 * 60 * 60 * 1000 && msUntilSession > 0) {
+                setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+            } else if (msUntilSession > 24 * 60 * 60 * 1000) {
+                const msUntilLock = msUntilSession - (24 * 60 * 60 * 1000);
+                const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+                const hoursLeft = Math.floor(totalMinutesLeft / 60);
+                setStatus({
+                    cardStatus: 'upcoming-editable',
+                    hoursLeftToEdit: hoursLeft,
+                    minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined
+                });
+            } else {
+                setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+            }
+        };
+
+        calculateStatus();
+        const interval = setInterval(calculateStatus, 60000);
+        return () => clearInterval(interval);
+    }, [startDateTime]);
+
+    // Don't render until status is calculated
+    if (!status) return null;
+
+    const { cardStatus, hoursLeftToEdit, minutesLeftToEdit } = status;
+
+    const meetingUrl = 'meetingUrl' in session ? (session.meetingUrl || null) : null;
+
+    const commonProps = {
+        locale,
+        userType: 'student' as const,
+        title: session.coachingOfferingTitle || '',
+        duration: session.coachingOfferingDuration || 0,
+        date: startDateTime,
+        startTime: formatTime(session.startTime),
+        endTime: formatTime(session.endTime),
+        creatorName: coachName,
+        creatorImageUrl: coach.avatarUrl || '',
+        onClickCreator: onCreatorClick,
+        courseName,
+        onClickCourse: onViewCourse,
+    };
+
+    if (cardStatus === 'ongoing') {
+        return (
+            <CoachingSessionCard
+                {...commonProps}
+                status="ongoing"
+                meetingLink={meetingUrl || ''}
+                onClickJoinMeeting={onJoinMeeting}
+            />
+        );
+    }
+
+    if (cardStatus === 'upcoming-locked') {
+        return (
+            <CoachingSessionCard
+                {...commonProps}
+                status="upcoming-locked"
+                onClickJoinMeeting={onJoinMeeting}
+            />
+        );
+    }
+
+    // upcoming-editable
+    return (
+        <CoachingSessionCard
+            {...commonProps}
+            status="upcoming-editable"
+            hoursLeftToEdit={hoursLeftToEdit}
+            minutesLeftToEdit={minutesLeftToEdit}
+            onClickCancel={onCancel}
+        />
+    );
+}
 
 export default function StudentCoachingSessions() {
     const locale = useLocale() as TLocale;
@@ -54,10 +172,6 @@ export default function StudentCoachingSessions() {
         viewModels.TUnscheduleCoachingSessionViewModel | undefined
     >(undefined);
 
-    // Time-based hooks for session management
-    const isJoiningEnabled = useCheckTimeLeft(new Date(), { hours: 24 });
-    const isMeetingLink = useCheckTimeLeft(new Date(), { minutes: 10 });
-
     // For the available tab - coaches data
     const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
         pastCoaches: true,
@@ -81,11 +195,21 @@ export default function StudentCoachingSessions() {
         setUnscheduleViewModel,
     );
 
-    // @ts-ignore
-    presenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
+    // Present data when available (in useEffect to avoid setState during render)
+    useEffect(() => {
+        if (studentCoachingSessionsResponse && presenter) {
+            // @ts-ignore
+            presenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
+        }
+    }, [studentCoachingSessionsResponse, presenter]);
 
-    // @ts-ignore
-    coachesPresenter.present(coachesResponse, coachesViewModel);
+    // Present coaches data when available
+    useEffect(() => {
+        if (coachesResponse && coachesPresenter) {
+            // @ts-ignore
+            coachesPresenter.present(coachesResponse, coachesViewModel);
+        }
+    }, [coachesResponse, coachesPresenter]);
 
     // Get all sessions from the view model
     const allSessions = useMemo(() => {
@@ -95,12 +219,9 @@ export default function StudentCoachingSessions() {
         return studentCoachingSessionsViewModel.data.sessions || [];
     }, [studentCoachingSessionsViewModel]);
 
-    // Type for scheduled sessions (excluding unscheduled)
-    type ScheduledSession = Exclude<NonNullable<viewModels.TStudentCoachingSessionsListSuccess['sessions']>[number], { status: 'unscheduled' }>;
-
     // Filter out unscheduled sessions for card rendering (they're handled separately in Available tab)
     const scheduledSessions = useMemo(() => {
-        return allSessions.filter((session): session is ScheduledSession => session?.status !== 'unscheduled');
+        return allSessions.filter((session): session is ScheduledStudentSession => session?.status !== 'unscheduled');
     }, [allSessions]);
 
     // Filter sessions by status for each tab
@@ -447,8 +568,8 @@ export default function StudentCoachingSessions() {
 
     // Helper to render content based on sessions and pagination state
     const renderSessionContent = (
-        sessions: ScheduledSession[],
-        displayedSessions: ScheduledSession[],
+        sessions: ScheduledStudentSession[],
+        displayedSessions: ScheduledStudentSession[],
         hasMore: boolean,
         handleLoadMore: () => void
     ) => {
@@ -483,7 +604,7 @@ export default function StudentCoachingSessions() {
     };
 
     // Helper to render session cards (extracted to avoid duplication)
-    const renderSessionCards = (sessions: ScheduledSession[]) => {
+    const renderSessionCards = (sessions: ScheduledStudentSession[]) => {
         return sessions.map((session) => {
             // Type guard to ensure we have a scheduled/requested/completed session with required fields
             if (!session) return null;
@@ -493,13 +614,15 @@ export default function StudentCoachingSessions() {
             }
 
             // Helper function to format time from ISO string
+            // Uses manual formatting for guaranteed server/client consistency
             const formatTime = (isoString: string) => {
                 const date = new Date(isoString);
-                return date.toLocaleTimeString(locale, {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                });
+                const hours = date.getUTCHours();
+                const minutes = date.getUTCMinutes();
+                const period = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 || 12;
+                const paddedMinutes = minutes.toString().padStart(2, '0');
+                return `${displayHours}:${paddedMinutes} ${period}`;
             };
 
             // Create start DateTime for time calculations
@@ -539,59 +662,19 @@ export default function StudentCoachingSessions() {
             if (session.status === 'scheduled') {
                 const meetingUrl = 'meetingUrl' in session ? (session.meetingUrl || null) : null;
 
-                if (isJoiningEnabled) {
-                    return (
-                        <CoachingSessionCard
-                            key={session.id}
-                            {...commonProps}
-                            status="upcoming-locked"
-                            onClickJoinMeeting={() => handleJoinMeeting(meetingUrl || '')}
-                        />
-                    );
-                } else if (isMeetingLink) {
-                    return (
-                        <CoachingSessionCard
-                            key={session.id}
-                            {...commonProps}
-                            status="ongoing"
-                            meetingLink={meetingUrl || ''}
-                            onClickJoinMeeting={() => handleJoinMeeting(meetingUrl || '')}
-                        />
-                    );
-                } else {
-                    // Calculate time remaining before 24-hour lock
-                    const msUntilLock = startDateTime.getTime() - Date.now() - (24 * 60 * 60 * 1000);
-                    const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
-
-                    // If no time left to edit, show as locked
-                    if (totalMinutesLeft === 0) {
-                        return (
-                            <CoachingSessionCard
-                                key={session.id}
-                                {...commonProps}
-                                status="upcoming-locked"
-                                onClickJoinMeeting={() => handleJoinMeeting(meetingUrl || '')}
-                            />
-                        );
-                    }
-
-                    const hoursLeftToEdit = Math.floor(totalMinutesLeft / 60);
-                    // Calculate remaining minutes when hours is 0
-                    const minutesLeftToEdit = hoursLeftToEdit === 0 ? totalMinutesLeft : undefined;
-
-                    return (
-                        <CoachingSessionCard
-                            key={session.id}
-                            {...commonProps}
-                            status="upcoming-editable"
-                            hoursLeftToEdit={hoursLeftToEdit}
-                            minutesLeftToEdit={minutesLeftToEdit}
-                            // Reschedule is commented out - it's functionally the same as cancel for students
-                            // onClickReschedule={() => handleOpenRescheduleModal(session.id!)}
-                            onClickCancel={() => handleOpenCancelModal(session.id!)}
-                        />
-                    );
-                }
+                return (
+                    <ScheduledStudentSessionCard
+                        key={session.id}
+                        session={session}
+                        locale={locale}
+                        formatTime={formatTime}
+                        onCreatorClick={() => handleCreatorClick(coach.username || '')}
+                        onJoinMeeting={() => handleJoinMeeting(meetingUrl || '')}
+                        onCancel={() => handleOpenCancelModal(session.id!)}
+                        onViewCourse={course?.slug ? () => handleViewCourse(course.slug || '') : undefined}
+                        courseName={course?.title}
+                    />
+                );
             }
 
             if (session.status === 'completed') {
