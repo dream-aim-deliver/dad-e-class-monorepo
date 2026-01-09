@@ -40,8 +40,10 @@ export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
     // Mutation for saving the lesson note
     const saveMutation = trpc.saveLessonNote.useMutation({
         onSuccess: () => {
-            // Invalidate query to trigger refetch with updated timestamp
+            // Invalidate queries to trigger refetch with updated data
             utils.getLessonNote.invalidate({ lessonId });
+            // Also invalidate the Notes tab query so it shows updated notes
+            utils.listStudentNotes.invalidate();
         }
     });
 
@@ -82,7 +84,7 @@ export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
 
     if (isLoadingNote) {
         return (
-            <div className="w-[400px] sticky top-4 h-fit">
+            <div className="w-full lg:w-[350px] xl:w-[400px] shrink min-w-0 sticky top-4 h-fit">
                 <DefaultLoading locale={locale} variant="minimal" />
             </div>
         );
@@ -93,12 +95,12 @@ export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
         ? (noteData.data as any).content || ''  // TODO: investigate why typing tells me `.data` contains a nested `data` property instead of the actual content
         : '';
 
-    // Create a key that changes when content changes to force component re-render
-    const componentKey = `lesson-note-${lessonId}-${initialContent.slice(0, 50)}`;
+    // Key by lessonId only - content changes shouldn't remount (would reset success banner state)
+    const componentKey = `lesson-note-${lessonId}`;
 
     return (
         <>
-            <div className="w-[400px] sticky top-4 h-fit">
+            <div className="w-full lg:w-[350px] xl:w-[400px] shrink min-w-0 sticky top-4 h-fit">
                 <LessonNoteBuilderView
                     key={componentKey}
                     id={lessonId}

@@ -703,6 +703,7 @@ export const EN: TDictionary = {
       viewLessonText: 'View lesson',
       saveNotesText: 'Save notes',
       notesNotSavedText: 'Notes not saved',
+      notesSavedText: 'Notes saved',
       showNotesText: 'Show Notes',
       hideNotesText: 'Hide Notes',
     },

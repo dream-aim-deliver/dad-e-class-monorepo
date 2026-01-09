@@ -277,7 +277,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     const tabContentClass = 'mt-10';
 
     return (
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 overflow-x-hidden">
             <EnrolledCourseHeading
                 courseViewModel={courseViewModel}
                 courseStatusViewModel={courseStatusViewModel}

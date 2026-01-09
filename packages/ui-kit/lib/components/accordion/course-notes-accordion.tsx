@@ -84,12 +84,12 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                         </div>
                     </AccordionTrigger>
 
-                    <AccordionContent value={module.id!} className=" pt-4">
+                    <AccordionContent value={module.id!} className="pt-4 w-full">
                         {/* Lessons Accordion within Module */}
-                        <div className="flex">
+                        <div className="flex w-full">
                             <Accordion
                                 type="multiple"
-                                className="flex flex-col gap-4"
+                                className="flex flex-col gap-4 w-full"
                                 defaultValue={
                                     moduleIndex === 0 && module.lessons?.[0]?.id
                                         ? [module.lessons[0].id]
@@ -100,10 +100,11 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                                     <AccordionItem
                                         key={lesson.id}
                                         value={lesson.id!}
-                                        className="bg-base-neutral-800 p-4 rounded-medium border border-base-neutral-700"
+                                        className="bg-base-neutral-800 p-4 rounded-medium border border-base-neutral-700 w-full"
                                     >
                                         <AccordionTrigger
                                             value={lesson.id!}
+                                            className="w-full"
                                             expandIcon={
                                                 <span
                                                     title={
@@ -163,9 +164,9 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                                                 />
                                             </div>
                                         </AccordionTrigger>
-                                        <AccordionContent value={lesson.id!}>
+                                        <AccordionContent value={lesson.id!} className="w-full">
                                             <hr className="border-divider my-4" />
-                                            <div className="text-text-secondary leading-[150%]">
+                                            <div className="text-text-secondary leading-[150%] w-full overflow-hidden">
                                                 {lesson.notes && (
                                                     <RichTextRenderer
                                                         content={lesson.notes}

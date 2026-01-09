@@ -679,6 +679,7 @@ export const DictionarySchema = z.object({
       viewLessonText: z.string(),
       saveNotesText: z.string(),
       notesNotSavedText: z.string(),
+      notesSavedText: z.string(),
       showNotesText: z.string(),
       hideNotesText: z.string(),
     }),
