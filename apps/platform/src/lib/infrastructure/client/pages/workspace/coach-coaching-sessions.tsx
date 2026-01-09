@@ -2,7 +2,7 @@
 
 import { TLocale } from "@maany_shr/e-class-translations";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../trpc/cms-client";
 import { viewModels } from "@maany_shr/e-class-models";
@@ -11,9 +11,115 @@ import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading,
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-coaching-session-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
-import { useCheckTimeLeft } from "../../../hooks/use-check-time-left";
 import { TListCoachCoachingSessionsSuccessResponse } from "@dream-aim-deliver/e-class-cms-rest";
 
+
+// Wrapper component for scheduled sessions that handles time-based status client-side only
+interface ScheduledCoachSessionCardProps {
+    session: TListCoachCoachingSessionsSuccessResponse['data']['sessions'][number];
+    locale: TLocale;
+    onStudentClick: () => void;
+    onJoinMeeting: () => void;
+    onCancel: () => void;
+    formatTime: (isoString: string) => string;
+}
+
+function ScheduledCoachSessionCard({
+    session,
+    locale,
+    onStudentClick,
+    onJoinMeeting,
+    onCancel,
+    formatTime,
+}: ScheduledCoachSessionCardProps) {
+    const startDateTime = new Date(session.startTime);
+    const studentName = `${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username;
+
+    // Client-side only status calculation to avoid hydration mismatch
+    const [status, setStatus] = useState<{
+        cardStatus: 'upcoming-editable' | 'upcoming-locked' | 'ongoing';
+        hoursLeftToEdit: number;
+        minutesLeftToEdit: number | undefined;
+    } | null>(null);
+
+    useEffect(() => {
+        const calculateStatus = () => {
+            const now = new Date();
+            const msUntilSession = startDateTime.getTime() - now.getTime();
+
+            if (msUntilSession <= 10 * 60 * 1000 && msUntilSession > 0) {
+                setStatus({ cardStatus: 'ongoing', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+            } else if (msUntilSession <= 24 * 60 * 60 * 1000 && msUntilSession > 0) {
+                setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+            } else if (msUntilSession > 24 * 60 * 60 * 1000) {
+                const msUntilLock = msUntilSession - (24 * 60 * 60 * 1000);
+                const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+                const hoursLeft = Math.floor(totalMinutesLeft / 60);
+                setStatus({
+                    cardStatus: 'upcoming-editable',
+                    hoursLeftToEdit: hoursLeft,
+                    minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined
+                });
+            } else {
+                setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+            }
+        };
+
+        calculateStatus();
+        const interval = setInterval(calculateStatus, 60000);
+        return () => clearInterval(interval);
+    }, [startDateTime]);
+
+    // Don't render until status is calculated
+    if (!status) return null;
+
+    const { cardStatus, hoursLeftToEdit, minutesLeftToEdit } = status;
+
+    const commonProps = {
+        locale,
+        userType: "coach" as const,
+        title: session.coachingOfferingTitle,
+        duration: session.coachingOfferingDuration,
+        date: startDateTime,
+        startTime: formatTime(session.startTime),
+        endTime: formatTime(session.endTime),
+        studentName,
+        studentImageUrl: session.student.avatarUrl || "",
+        onClickStudent: onStudentClick,
+    };
+
+    if (cardStatus === 'ongoing') {
+        return (
+            <CoachingSessionCard
+                {...commonProps}
+                status="ongoing"
+                meetingLink={session?.meetingUrl || ""}
+                onClickJoinMeeting={onJoinMeeting}
+            />
+        );
+    }
+
+    if (cardStatus === 'upcoming-locked') {
+        return (
+            <CoachingSessionCard
+                {...commonProps}
+                status="upcoming-locked"
+                onClickJoinMeeting={onJoinMeeting}
+            />
+        );
+    }
+
+    // upcoming-editable
+    return (
+        <CoachingSessionCard
+            {...commonProps}
+            status="upcoming-editable"
+            onClickCancel={onCancel}
+            hoursLeftToEdit={hoursLeftToEdit}
+            minutesLeftToEdit={minutesLeftToEdit}
+        />
+    );
+}
 
 interface CoachCoachingSessionsProps {
     role?: string;
@@ -77,8 +183,13 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         setUnscheduleViewModel,
     );
 
-    // @ts-ignore
-    presenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
+    // Present data when available (in useEffect to avoid setState during render)
+    useEffect(() => {
+        if (coachCoachingSessionsResponse && presenter) {
+            // @ts-ignore
+            presenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
+        }
+    }, [coachCoachingSessionsResponse, presenter]);
 
     // Helper functions for navigation and actions
     const handleStudentClick = (studentId: number) => {
@@ -96,10 +207,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         // TODO: Implement recording download
         console.log('Download recording for session:', sessionId);
     };
-
-    // Time-based hooks for session management
-    const isJoiningEnabled = useCheckTimeLeft(new Date(), { hours: 24 });
-    const isMeetingLink = useCheckTimeLeft(new Date(), { minutes: 10 });
 
     // Get all sessions from the view model
     const allSessions = useMemo(() => {
@@ -261,13 +368,15 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
         return sessions.map((session) => {
             // Helper function to format time from ISO string
+            // Uses manual formatting for guaranteed server/client consistency
             const formatTime = (isoString: string) => {
                 const date = new Date(isoString);
-                return date.toLocaleTimeString(locale, {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                });
+                const hours = date.getUTCHours();
+                const minutes = date.getUTCMinutes();
+                const period = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 || 12;
+                const paddedMinutes = minutes.toString().padStart(2, '0');
+                return `${displayHours}:${paddedMinutes} ${period}`;
             };
 
             // Create start DateTime for time calculations
@@ -296,93 +405,17 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             }
 
             if (session.status === 'scheduled') {
-                if (isJoiningEnabled) {
-                    return (
-                        <CoachingSessionCard
-                            key={session.id}
-                            locale={locale}
-                            userType="coach"
-                            status="upcoming-locked"
-                            title={session.coachingOfferingTitle}
-                            duration={session.coachingOfferingDuration}
-                            date={startDateTime}
-                            startTime={formatTime(session.startTime)}
-                            endTime={formatTime(session.endTime)}
-                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
-                            studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => handleStudentClick(parseInt(`${session.id}`))}
-                            onClickJoinMeeting={() => handleJoinMeeting(session?.meetingUrl || "")}
-                        />
-                    );
-                } else if (isMeetingLink) {
-                    return (
-                        <CoachingSessionCard
-                            key={session.id}
-                            locale={locale}
-                            userType="coach"
-                            status="ongoing"
-                            title={session.coachingOfferingTitle}
-                            duration={session.coachingOfferingDuration}
-                            date={startDateTime}
-                            startTime={formatTime(session.startTime)}
-                            endTime={formatTime(session.endTime)}
-                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
-                            studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => handleStudentClick(parseInt(`${session.id}`))}
-                            meetingLink={session?.meetingUrl || ""}
-                            onClickJoinMeeting={() => handleJoinMeeting(session?.meetingUrl || "")}
-                        />
-                    );
-                } else {
-                    // Calculate time remaining before 24-hour lock
-                    const msUntilLock = startDateTime.getTime() - Date.now() - (24 * 60 * 60 * 1000);
-                    const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
-
-                    // If no time left to edit, show as locked
-                    if (totalMinutesLeft === 0) {
-                        return (
-                            <CoachingSessionCard
-                                key={session.id}
-                                locale={locale}
-                                userType="coach"
-                                status="upcoming-locked"
-                                title={session.coachingOfferingTitle}
-                                duration={session.coachingOfferingDuration}
-                                date={startDateTime}
-                                startTime={formatTime(session.startTime)}
-                                endTime={formatTime(session.endTime)}
-                                studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
-                                studentImageUrl={session.student.avatarUrl || ""}
-                                onClickStudent={() => handleStudentClick(parseInt(`${session.id}`))}
-                                onClickJoinMeeting={() => handleJoinMeeting(session?.meetingUrl || "")}
-                            />
-                        );
-                    }
-
-                    const hoursLeftToEdit = Math.floor(totalMinutesLeft / 60);
-                    // Calculate remaining minutes when hours is 0
-                    const minutesLeftToEdit = hoursLeftToEdit === 0 ? totalMinutesLeft : undefined;
-
-                    return (
-                        <CoachingSessionCard
-                            key={session.id}
-                            locale={locale}
-                            userType="coach"
-                            status="upcoming-editable"
-                            title={session.coachingOfferingTitle}
-                            duration={session.coachingOfferingDuration}
-                            date={startDateTime}
-                            startTime={formatTime(session.startTime)}
-                            endTime={formatTime(session.endTime)}
-                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
-                            studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => handleStudentClick(parseInt(`${session.id}`))}
-                            onClickCancel={() => handleDeclineClick(parseInt(`${session.id}`))}
-                            hoursLeftToEdit={hoursLeftToEdit}
-                            minutesLeftToEdit={minutesLeftToEdit}
-                        />
-                    );
-                }
+                return (
+                    <ScheduledCoachSessionCard
+                        key={session.id}
+                        session={session}
+                        locale={locale}
+                        formatTime={formatTime}
+                        onStudentClick={() => handleStudentClick(parseInt(`${session.id}`))}
+                        onJoinMeeting={() => handleJoinMeeting(session?.meetingUrl || "")}
+                        onCancel={() => handleDeclineClick(parseInt(`${session.id}`))}
+                    />
+                );
             }
 
             if (session.status === 'completed') {
