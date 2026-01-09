@@ -21,6 +21,7 @@ interface ScheduledOfferingContentProps {
     onReturnToCourse?: () => void;
     onViewSessions?: () => void;
     closeDialog?: () => void;
+    onBuyMoreSessions?: () => void;
 }
 
 export default function ScheduledOfferingContent({
@@ -37,6 +38,7 @@ export default function ScheduledOfferingContent({
     onReturnToCourse,
     onViewSessions,
     closeDialog,
+    onBuyMoreSessions,
 }: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.coaching');
@@ -83,7 +85,7 @@ export default function ScheduledOfferingContent({
             )}
             {!session.session && (
                 <Suspense fallback={<DefaultLoading locale={locale} />}>
-                    <ChooseCoachingSessionContent setSession={setSession} courseSlug={courseSlug} />
+                    <ChooseCoachingSessionContent setSession={setSession} courseSlug={courseSlug} onBuyMoreSessions={onBuyMoreSessions} />
                 </Suspense>
             )}
             {session.session && (
