@@ -1,4 +1,5 @@
 import { TLocale } from "@maany_shr/e-class-translations";
+import { TCourseStatus } from "@dream-aim-deliver/e-class-cms-rest";
 
 export enum ContentType {
     Lesson = 'lesson',
@@ -30,6 +31,7 @@ export interface EditCourseContentProps {
     modules: CourseModule[];
     setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
     setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
+    courseStatus?: TCourseStatus;
 }
 
 export interface ModuleContentProps {

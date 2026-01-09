@@ -30,6 +30,7 @@ export default function EditCourseStructure({
     modules,
     setModules,
     setCourseVersion,
+    courseStatus,
 }: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
@@ -211,7 +212,7 @@ export default function EditCourseStructure({
                                     isExtraTraining,
                                 );
                             }}
-                            onDuplicateLesson={handleDuplicateLessonClick}
+                            onDuplicateLesson={courseStatus === 'draft' ? handleDuplicateLessonClick : undefined}
                             locale={locale}
                         />
                     ))}
