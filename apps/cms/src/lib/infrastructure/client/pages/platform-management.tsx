@@ -202,7 +202,7 @@ export default function PlatformManagement() {
                     {categories.map((category) => (
                         <div
                             key={category.id}
-                            className="p-4 hover:shadow-lg transition-shadow bg-card-fill border border-card-stroke cursor-pointer rounded-lg"
+                            className="p-4 hover:shadow-lg transition-shadow bg-card-fill border border-card-stroke rounded-lg"
                         >
                             <div className="flex justify-between items-start">
                                 <div>
@@ -242,7 +242,7 @@ export default function PlatformManagement() {
                         >
                             <Badge
                                 variant="primary"
-                                className="px-4 py-2 text-sm text-button-secondary-text font-medium bg-button-secondary-fill border border-secondary-stroke hover:bg-primary-100 transition-colors cursor-pointer"
+                                className="px-4 py-2 text-sm text-button-secondary-text font-medium bg-button-secondary-fill border border-secondary-stroke hover:bg-primary-100 transition-colors"
                                 text={topic.name}
                             />
                             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">

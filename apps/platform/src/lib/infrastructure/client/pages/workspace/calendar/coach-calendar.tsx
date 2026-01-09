@@ -224,7 +224,7 @@ export default function CoachCalendar() {
                         <CalendarContent />
                     </Tabs.Content>
                     <Tabs.Content value="student" className={tabContentClass}>
-                        <StudentCalendar />
+                        <StudentCalendar hideBreadcrumbs={true} />
                     </Tabs.Content>
                 </Tabs.Root>
             </div>

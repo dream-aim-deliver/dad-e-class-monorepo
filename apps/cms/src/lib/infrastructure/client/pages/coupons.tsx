@@ -289,7 +289,7 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
     {
       label: platform.name,
       onClick: () => {
-        // TODO: Implement navigation to platform
+        router.push(`/platform/${platformContext.platformSlug}/${platformContext.platformLocale}`);
       },
     },
     {
@@ -306,6 +306,7 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
       <div className="flex-shrink-0">
         <Breadcrumbs items={breadcrumbItems} />
         <div className="flex flex-col space-y-2">
+          <h1>Coupons</h1>
           <p className="text-text-secondary text-sm">
             Platform: {platformContext.platformSlug} | Content Language: {platformLocale.toUpperCase()}
           </p>

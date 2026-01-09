@@ -2060,6 +2060,7 @@ export const DictionarySchema = z.object({
         becomeCoachDescription: z.string(),
         becomeCoachButton: z.string(),
         reviewsCount: z.string(),
+        noReviewsYet: z.string(),
       }),
     }),
     userCourses: z.object({

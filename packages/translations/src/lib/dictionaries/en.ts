@@ -1994,6 +1994,7 @@ export const EN: TDictionary = {
         becomeCoachDescription: 'Have the skills? Become a coach and inspire others! Share your knowledge, teach this course, and earn while making a difference. Join our community of experts.',
         becomeCoachButton: 'Become a Coach',
         reviewsCount: 'reviews',
+        noReviewsYet: 'This course has no reviews yet',
       },
     },
     userCourses: {
@@ -2888,7 +2889,7 @@ export const EN: TDictionary = {
       title: 'Manage Footer',
       description: 'Update footer content for your platform',
       footerContentTitle: 'Footer content',
-      languageIndependentNote: 'Note: The footer content is shared across all languages of the platform',
+      languageIndependentNote: 'Note: The footer content is shared across all languages of the platform. Please note that it may take up to 15 minutes for the changes to be reflected in the system.',
       saveButton: 'Save Changes',
       saving: 'Saving changes...',
       saveSuccess: 'Footer content saved successfully!',
