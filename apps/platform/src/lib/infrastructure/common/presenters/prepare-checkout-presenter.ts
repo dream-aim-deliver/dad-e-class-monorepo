@@ -92,7 +92,7 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
         }
 
         // Ownership/enrollment errors (check both errorType and message)
-        if (errorType === 'user_already_enrolled' || message === 'user_already_enrolled' ||
+        if ( message === 'user_already_enrolled' ||
             message === 'selected_courses_already_owned') {
             const viewModel = { mode: 'already-owned' as const, data: errorData };
             console.log('[PrepareCheckoutPresenter] Returning already-owned viewModel:', viewModel);
@@ -110,11 +110,6 @@ export default class PrepareCheckoutPresenter extends BasePresenter<
         // Not enrolled error (for coaching session purchase)
         if (errorType === 'not_enrolled_in_course' || message === 'not_enrolled_in_course') {
             return { mode: 'not-enrolled', data: errorData };
-        }
-
-        // Already purchased coaching
-        if (errorType === 'component_coaching_already_purchased' || message === 'component_coaching_already_purchased') {
-            return { mode: 'already-purchased', data: errorData };
         }
 
         // Default to kaboom for unknown errors
