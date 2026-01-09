@@ -3,13 +3,13 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TUpcomingStudentCoachingSession } from '@dream-aim-deliver/e-class-cms-rest';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { Button, CoachingSessionCard, Tabs } from '@maany_shr/e-class-ui-kit';
+import { Button, CoachingSessionCard } from '@maany_shr/e-class-ui-kit';
 import { useListUpcomingStudentCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-student-coaching-sessions-presenter';
 import { trpc } from '../../trpc/cms-client';
+
 interface UserCoachingSessionsProps {
     studentUsername: string | undefined | null;
 }
@@ -29,32 +29,19 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
     const [viewModel, setViewModel] = useState<viewModels.TListUpcomingStudentCoachingSessionsViewModel | null>(null);
     const { presenter } = useListUpcomingStudentCoachingSessionsPresenter(setViewModel);
-    const [activeTab, setActiveTab] = useState<string>('upcoming');
 
     const [upcomingSessionsResponse] = trpc.listUpcomingStudentCoachingSessions.useSuspenseQuery({
         studentUsername: studentUsername || ''
     });
 
     useEffect(() => {
-
         // @ts-ignore
         presenter.present(upcomingSessionsResponse, viewModel);
-
     }, [upcomingSessionsResponse, presenter]);
 
     const handleViewAllCoachingSessions = useCallback(() => {
         router.push(`/${locale}/workspace/coaching-sessions`);
     }, [router, locale]);
-
-    const handleEndedClick = useCallback(() => {
-        // TODO: Navigate to coaching sessions page with ended filter
-        handleViewAllCoachingSessions();
-    }, [handleViewAllCoachingSessions]);
-
-    const handleAvailableClick = useCallback(() => {
-        // TODO: Navigate to coaching sessions page with available filter
-        handleViewAllCoachingSessions();
-    }, [handleViewAllCoachingSessions]);
 
     if (!viewModel) {
         return (
@@ -86,107 +73,74 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
     return (
         <div className="rounded-lg pb-15">
-            <Tabs.Root defaultTab="upcoming" onValueChange={setActiveTab}>
-                <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4">
-                    <div className="w-full flex gap-4 items-center justify-between">
-                        <p className="text-2xl font-semibold text-white">
-                            {t('yourCoachingSessions')}
-                        </p>
-                        <div className="flex items-center gap-4">
-                            <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
-                                <Tabs.Trigger value="upcoming" isLast={false}>
-                                    {t('upcoming')}
-                                </Tabs.Trigger>
-                                <Tabs.Trigger value="ended" isLast={false}>
-                                    {t('ended')}
-                                </Tabs.Trigger>
-                                <Tabs.Trigger value="available" isLast={true}>
-                                    {t('available')}
-                                </Tabs.Trigger>
-                            </Tabs.List>
-                            <Button
-                                variant="text"
-                                size="small"
-                                onClick={handleViewAllCoachingSessions}
-                            >
-                                {paginationT('viewAll')}
-                            </Button>
-                        </div>
+            <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4">
+                <p className="text-2xl font-semibold text-white">
+                    {t('yourCoachingSessions')}
+                </p>
+                <Button
+                    variant="text"
+                    size="small"
+                    onClick={handleViewAllCoachingSessions}
+                >
+                    {paginationT('viewAll')}
+                </Button>
+            </div>
+
+            <div className="mt-6">
+                {hasUpcomingSessions ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {upcomingSessions.slice(0, 3).map((session) => {
+                            const safeDate = (iso?: string | null) => {
+                                if (!iso) return null;
+                                const d = new Date(iso);
+                                return Number.isNaN(d.getTime()) ? null : d;
+                            };
+
+                            const start = safeDate(session.startTime);
+                            const end = safeDate(session.endTime);
+                            if (!start || !end) return null;
+
+                            const formatTime = (date: Date) => date.toLocaleTimeString(locale, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            });
+
+                            return (
+                                <CoachingSessionCard
+                                    key={session.id}
+                                    locale={locale}
+                                    userType="student"
+                                    status="upcoming-locked"
+                                    title={session.coachingOfferingTitle}
+                                    duration={session.coachingOfferingDuration}
+                                    date={start}
+                                    startTime={formatTime(start)}
+                                    endTime={formatTime(end)}
+                                    creatorName={`${session.coach.name || ''} ${session.coach.surname || ''}`.trim() || session.coach.username}
+                                    creatorImageUrl={session.coach.avatarUrl || ''}
+                                    courseName={session.course?.title}
+                                    onClickCreator={() => {
+                                        console.log('View coach profile', session.coach.username);
+                                    }}
+                                    onClickJoinMeeting={() => {
+                                        console.log('Join meeting for session', session.id);
+                                        // TODO: Implement meeting join functionality
+                                    }}
+                                    onClickCourse={session.course ? () => {
+                                        router.push(`/${locale}/workspace/course/${session.course?.slug || ''}`);
+                                    } : undefined}
+                                />
+                            );
+                        })}
                     </div>
-                </div>
-
-                <Tabs.Content value="upcoming" className="mt-6">
-                    {hasUpcomingSessions ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {upcomingSessions.slice(0, 3).map((session) => {
-                                const safeDate = (iso?: string | null) => {
-                                    if (!iso) return null;
-                                    const d = new Date(iso);
-                                    return Number.isNaN(d.getTime()) ? null : d;
-                                };
-
-                                const start = safeDate(session.startTime);
-                                const end = safeDate(session.endTime);
-                                if (!start || !end) return null;
-
-                                const formatTime = (date: Date) => date.toLocaleTimeString(locale, {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                });
-
-                                return (
-                                    <CoachingSessionCard
-                                        key={session.id}
-                                        locale={locale}
-                                        userType="student"
-                                        status="upcoming-locked"
-                                        title={session.coachingOfferingTitle}
-                                        duration={session.coachingOfferingDuration}
-                                        date={start}
-                                        startTime={formatTime(start)}
-                                        endTime={formatTime(end)}
-                                        creatorName={`${session.coach.name || ''} ${session.coach.surname || ''}`.trim() || session.coach.username}
-                                        creatorImageUrl={session.coach.avatarUrl || ''}
-                                        courseName={session.course?.title}
-                                        onClickCreator={() => {
-                                            console.log('View coach profile', session.coach.username);
-                                        }}
-                                        onClickJoinMeeting={() => {
-                                            console.log('Join meeting for session', session.id);
-                                            // TODO: Implement meeting join functionality
-                                        }}
-                                        onClickCourse={session.course ? () => {
-                                            router.push(`/${locale}/workspace/course/${session.course?.slug || ''}`);
-                                        } : undefined}
-                                    />
-                                );
-                            })}
-                        </div>
-                    ) : (
-                        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
-                            <p className="text-text-primary text-md">
-                                {t('noSessionsFound')}
-                            </p>
-                        </div>
-                    )}
-                </Tabs.Content>
-
-                <Tabs.Content value="ended" className="mt-6">
+                ) : (
                     <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                         <p className="text-text-primary text-md">
                             {t('noSessionsFound')}
                         </p>
                     </div>
-                </Tabs.Content>
-
-                <Tabs.Content value="available" className="mt-6">
-                    <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
-                        <p className="text-text-primary text-md">
-                            {t('noSessionsFound')}
-                        </p>
-                    </div>
-                </Tabs.Content>
-            </Tabs.Root>
+                )}
+            </div>
         </div>
     );
 }
