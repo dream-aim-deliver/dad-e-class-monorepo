@@ -2959,7 +2959,7 @@ export const DE: TDictionary = {
       title: 'Fußzeile verwalten',
       description: 'Aktualisiere den Fußzeileninhalt für deine Plattform',
       footerContentTitle: 'Fußzeileninhalt',
-      languageIndependentNote: 'Hinweis: Der Fußzeileninhalt wird für alle Sprachen der Plattform geteilt',
+      languageIndependentNote: 'Hinweis: Der Fußzeileninhalt wird für alle Sprachen der Plattform geteilt. Bitte beachten Sie, dass es bis zu 15 Minuten dauern kann, bis die Änderungen im System angezeigt werden.',
       saveButton: 'Änderungen speichern',
       saving: 'Änderungen werden gespeichert...',
       saveSuccess: 'Fußzeileninhalt erfolgreich gespeichert!',

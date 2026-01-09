@@ -166,7 +166,7 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                                         </AccordionTrigger>
                                         <AccordionContent value={lesson.id!} className="w-full">
                                             <hr className="border-divider my-4" />
-                                            <div className="text-text-secondary leading-[150%] w-full overflow-hidden">
+                                            <div className="text-text-secondary leading-[150%] w-full overflow-hidden pb-6">
                                                 {lesson.notes && (
                                                     <RichTextRenderer
                                                         content={lesson.notes}

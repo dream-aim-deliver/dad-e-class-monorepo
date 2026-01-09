@@ -200,7 +200,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
             {/* Content with scale + fade animation */}
             <div
                 ref={contentRef}
-                className={`fixed top-1/2 left-1/2 w-full max-w-lg max-h-[90vh] overflow-y-auto
+                className={`fixed top-1/2 left-1/2 w-full max-w-lg max-h-[80vh] overflow-y-auto
                     bg-card-fill border border-card-stroke rounded-lg shadow-[0_4px_12px_0var(base-neutral-950)]
                     p-4 transition-all duration-300 ease-out transform -translate-x-1/2 -translate-y-1/2 ${
                         isAnimating || isClosing

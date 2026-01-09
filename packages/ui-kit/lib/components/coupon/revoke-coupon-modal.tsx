@@ -49,7 +49,7 @@ export const RevokeCouponModal: React.FC<RevokeCouponModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50" onClick={onCancel}>
-      <div className="flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-full max-w-[400px] rounded-md" onClick={(e) => e.stopPropagation()}>
+      <div className="flex flex-col gap-4 p-6 bg-card-fill border border-card-stroke text-text-primary w-full max-w-[400px] rounded-md" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">{dictionary.title}</h2>

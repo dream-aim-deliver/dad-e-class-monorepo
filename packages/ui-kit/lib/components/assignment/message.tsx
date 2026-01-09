@@ -151,13 +151,13 @@ export const Message: FC<MessageProps> = ({
     const messageBubble = (
         <div
             className={cn(
-                'flex flex-col gap-2 p-2 border-1 rounded-tl-medium rounded-tr-medium min-w-0 flex-1',
+                'flex flex-col gap-2 p-2 border-1 rounded-tl-medium rounded-tr-medium w-full',
                 reply.sender.isCurrentUser
                     ? ' rounded-br-none rounded-bl-medium bg-base-neutral-700 border-base-neutral-600'
                     : 'rounded-br-medium rounded-bl-none bg-base-neutral-800 border-base-neutral-700',
             )}
         >
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2 items-center">
                 <p className="text-xs text-text-primary font-bold leading-[100%]">
                     {reply.sender.isCurrentUser
                         ? dictionary.components.assignment.message.youText
@@ -196,8 +196,10 @@ export const Message: FC<MessageProps> = ({
     return (
         <div className="w-full">
             {reply.sender.isCurrentUser ? (
-                <div className="flex gap-2 items-end">
-                    {messageBubble}
+                <div className="flex gap-2 items-end w-full">
+                    <div className="flex-1 min-w-0">
+                        {messageBubble}
+                    </div>
                     <div className="flex-shrink-0">
                         <UserAvatar
                             imageUrl={reply.sender.avatarUrl ?? undefined}
@@ -207,7 +209,7 @@ export const Message: FC<MessageProps> = ({
                     </div>
                 </div>
             ) : (
-                <div className="flex gap-2 items-end">
+                <div className="flex gap-2 items-end w-full">
                     <div className="flex-shrink-0">
                         <UserAvatar
                             imageUrl={reply.sender.avatarUrl ?? undefined}
@@ -215,7 +217,9 @@ export const Message: FC<MessageProps> = ({
                             fullName={reply.sender.username}
                         />
                     </div>
-                    {messageBubble}
+                    <div className="flex-1 min-w-0">
+                        {messageBubble}
+                    </div>
                 </div>
             )}
         </div>
