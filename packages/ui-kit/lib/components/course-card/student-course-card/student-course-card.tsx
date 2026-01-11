@@ -11,6 +11,7 @@ import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../../rich-text-element/renderer';
 import { useImageComponent } from '../../../contexts/image-component-context';
+import { Badge } from '../../badge';
 
 export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
 
@@ -20,6 +21,7 @@ interface StudentCourseCardProps extends TCourseMetadata {
   sales: number;
   progress?: number;
   hasReviewed?: boolean;
+  status?: 'archived';
   onBegin?: () => void;
   onResume?: () => void;
   onReview?: () => void;
@@ -79,6 +81,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   language,
   progress = 0,
   hasReviewed,
+  status,
   locale,
   onBegin,
   onResume,
@@ -232,6 +235,15 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               <ProgressBar progress={progress} />
               <p className='text-sm leading-[100%] text-text-secondary'>{Number(progress.toFixed(2))}%</p>
             </div>
+          )}
+
+          {status === 'archived' && (
+            <Badge
+              className="px-3 py-1 gap-2 self-start"
+              variant="errorprimary"
+              size="big"
+              text="Archived"
+            />
           )}
 
           <div className="flex flex-col gap-2">
