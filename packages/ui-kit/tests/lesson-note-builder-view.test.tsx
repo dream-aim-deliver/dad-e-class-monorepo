@@ -33,9 +33,11 @@ vi.mock('../lib/components/icons/icon-save', () => ({
   IconSave: (props: any) => <span data-testid="icon-save" {...props} />,
 }));
 
-// Mock Banner
+// Mock Banner - differentiate by style
 vi.mock('../lib/components/banner', () => ({
-  default: ({ title }: { title: string }) => <div data-testid="banner">{title}</div>,
+  default: ({ title, style }: { title: string; style?: string }) => (
+    <div data-testid={style === 'success' ? 'banner-success' : 'banner'}>{title}</div>
+  ),
 }));
 
 // Mock RichTextEditor
