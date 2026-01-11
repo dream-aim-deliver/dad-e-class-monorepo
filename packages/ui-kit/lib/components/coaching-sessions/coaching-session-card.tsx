@@ -230,6 +230,21 @@ type CoachEndedCallQualityCard = BaseCardSharedProps & {
 };
 
 /**
+ * Coach coaching session card for completed sessions without a student review.
+ * Shows download recording option for sessions that haven't been reviewed yet.
+ */
+type CoachEndedWithoutReviewCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'ended';
+    reviewType: 'no-review';
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+    onClickDownloadRecording: () => void;
+    isRecordingDownloading: boolean;
+};
+
+/**
  * Coach coaching session card for sessions with pending approval from coach.
  * Shows student request awaiting coach's decision with accept/decline/reschedule options.
  */
@@ -292,6 +307,7 @@ export type CoachingSessionCardProps =
     | CoachUpcomingLockedCard
     | CoachEndedSessionReviewCard
     | CoachEndedCallQualityCard
+    | CoachEndedWithoutReviewCard
     | CoachRequestedCard
     | CoachRescheduledCard
     | CoachCanceledCard;

@@ -12,6 +12,7 @@ import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-coaching-session-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
 import { TListCoachCoachingSessionsSuccessResponse } from "@dream-aim-deliver/e-class-cms-rest";
+import StudentCoachingSessions from "./student-coaching-sessions";
 
 
 // Wrapper component for scheduled sessions that handles time-based status client-side only
@@ -143,6 +144,9 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         initialRole || searchParams.get('role') || 'coach'
     );
 
+    // Current tab state from URL, defaults to 'upcoming'
+    const currentTab = searchParams.get('tab') || 'upcoming';
+
     // Handle role change and update search params
     const onRoleChange = (selected: string | string[] | null) => {
         const roleValue = selected as string;
@@ -150,6 +154,13 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         setCurrentRole(roleValue);
         const newSearchParams = new URLSearchParams(searchParams.toString());
         newSearchParams.set('role', roleValue);
+        router.push(`?${newSearchParams.toString()}`);
+    };
+
+    // Handle tab change and update search params
+    const onTabChange = (tab: string) => {
+        const newSearchParams = new URLSearchParams(searchParams.toString());
+        newSearchParams.set('tab', tab);
         router.push(`?${newSearchParams.toString()}`);
     };
 
@@ -192,9 +203,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     }, [coachCoachingSessionsResponse, presenter]);
 
     // Helper functions for navigation and actions
-    const handleStudentClick = (studentId: number) => {
-        // TODO: Implement navigation to student profile
-        console.log('Navigate to student profile:', studentId);
+    const handleStudentClick = (studentUsername: string) => {
+        window.open(`/${locale}/students/${studentUsername}`, '_blank');
     };
 
     const handleJoinMeeting = (meetingUrl: string) => {
@@ -397,7 +407,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         endTime={formatTime(session.endTime)}
                         studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                         studentImageUrl={session.student.avatarUrl || ""}
-                        onClickStudent={() => handleStudentClick(parseInt(`${session.id}`))}
+                        onClickStudent={() => handleStudentClick(session.student.username || '')}
                         onClickAccept={() => handleAcceptClick(parseInt(`${session.id}`))}
                         onClickDecline={() => handleDeclineClick(parseInt(`${session.id}`))}
                     />
@@ -411,7 +421,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         session={session}
                         locale={locale}
                         formatTime={formatTime}
-                        onStudentClick={() => handleStudentClick(parseInt(`${session.id}`))}
+                        onStudentClick={() => handleStudentClick(session.student.username || '')}
                         onJoinMeeting={() => handleJoinMeeting(session?.meetingUrl || "")}
                         onCancel={() => handleDeclineClick(parseInt(`${session.id}`))}
                     />
@@ -434,9 +444,30 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => handleStudentClick(parseInt(`${session.id}`))}
+                            onClickStudent={() => handleStudentClick(session.student.username || '')}
                             reviewType="call-quality"
                             callQualityRating={session.review?.rating || 0}
+                            onClickDownloadRecording={() => handleDownloadRecording(session.id)}
+                            isRecordingDownloading={false}
+                        />
+                    );
+                } else {
+                    // Completed session without review
+                    return (
+                        <CoachingSessionCard
+                            key={session.id}
+                            locale={locale}
+                            userType="coach"
+                            status="ended"
+                            reviewType="no-review"
+                            title={session.coachingOfferingTitle}
+                            duration={session.coachingOfferingDuration}
+                            date={startDateTime}
+                            startTime={formatTime(session.startTime)}
+                            endTime={formatTime(session.endTime)}
+                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
+                            studentImageUrl={session.student.avatarUrl || ""}
+                            onClickStudent={() => handleStudentClick(session.student.username || '')}
                             onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}
                         />
@@ -479,68 +510,77 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                     onSelectionChange={onRoleChange}
                 />
             </div>
-            <Tabs.Root defaultTab="upcoming">
-                <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
-                    <div className="w-full flex gap-4 items-center justify-between" >
-                        <h1>
-                            {t('yourCoachingSessions')}
-                        </h1>
-                        <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
-                            <Tabs.Trigger value="upcoming" isLast={false}>
-                                {t('upcoming')}
-                            </Tabs.Trigger>
-                            <Tabs.Trigger value="ended" isLast={true}>
-                                {t('ended')}
-                            </Tabs.Trigger>
-                        </Tabs.List>
+
+            {/* Render student or coach content based on selected role */}
+            {currentRole === 'student' ? (
+                <StudentCoachingSessions hideBreadcrumbs={true} />
+            ) : (
+                <Tabs.Root defaultTab={currentTab} onValueChange={onTabChange}>
+                    <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
+                        <div className="w-full flex gap-4 items-center justify-between" >
+                            <h1>
+                                {t('yourCoachingSessions')}
+                            </h1>
+                            <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
+                                <Tabs.Trigger value="upcoming" isLast={false}>
+                                    {t('upcoming')}
+                                </Tabs.Trigger>
+                                <Tabs.Trigger value="ended" isLast={true}>
+                                    {t('ended')}
+                                </Tabs.Trigger>
+                            </Tabs.List>
+                        </div>
                     </div>
-                </div>
-                <Tabs.Content value="upcoming" className="mt-10">
-                    {renderSessionContent(upcomingSessions, displayedUpcomingSessions, hasMoreUpcomingSessions, handleLoadMoreUpcomingSessions)}
-                </Tabs.Content>
+                    <Tabs.Content value="upcoming" className="mt-10">
+                        {renderSessionContent(upcomingSessions, displayedUpcomingSessions, hasMoreUpcomingSessions, handleLoadMoreUpcomingSessions)}
+                    </Tabs.Content>
 
-                <Tabs.Content value="ended" className="mt-10">
-                    {renderSessionContent(endedSessions, displayedEndedSessions, hasMoreEndedSessions, handleLoadMoreEndedSessions)}
-                </Tabs.Content>
-
-
-            </Tabs.Root>
-
-            {/* Accept Modal */}
-            {isAcceptModalOpen && (
-                <ConfirmationModal
-                    type="accept"
-                    isOpen={true}
-                    onClose={() => {
-                        setIsAcceptModalOpen(false);
-                        setAcceptSessionId(null);
-                    }}
-                    onConfirm={handleConfirmAccept}
-                    title={t('confirmAcceptance')}
-                    message={t('confirmAcceptanceMessage')}
-                    confirmText={t('accept')}
-                    isLoading={scheduleMutation.isPending}
-                    viewModel={scheduleViewModel}
-                    locale={locale}
-                />
+                    <Tabs.Content value="ended" className="mt-10">
+                        {renderSessionContent(endedSessions, displayedEndedSessions, hasMoreEndedSessions, handleLoadMoreEndedSessions)}
+                    </Tabs.Content>
+                </Tabs.Root>
             )}
 
-            {/* Decline/Cancel Modal - using same component as student page */}
-            {isDeclineModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
-                    <CancelCoachingSessionModal
-                        locale={locale}
-                        onClose={() => {
-                            setIsDeclineModalOpen(false);
-                            setDeclineSessionId(null);
-                        }}
-                        onCancel={(reason: string) => {
-                            if (declineSessionId) handleDecline(declineSessionId, reason);
-                        }}
-                        isLoading={unscheduleMutation.isPending}
-                        isError={unscheduleViewModel?.mode === 'kaboom'}
-                    />
-                </div>
+            {/* Coach-specific modals - only render when in coach mode */}
+            {currentRole !== 'student' && (
+                <>
+                    {/* Accept Modal */}
+                    {isAcceptModalOpen && (
+                        <ConfirmationModal
+                            type="accept"
+                            isOpen={true}
+                            onClose={() => {
+                                setIsAcceptModalOpen(false);
+                                setAcceptSessionId(null);
+                            }}
+                            onConfirm={handleConfirmAccept}
+                            title={t('confirmAcceptance')}
+                            message={t('confirmAcceptanceMessage')}
+                            confirmText={t('accept')}
+                            isLoading={scheduleMutation.isPending}
+                            viewModel={scheduleViewModel}
+                            locale={locale}
+                        />
+                    )}
+
+                    {/* Decline/Cancel Modal - using same component as student page */}
+                    {isDeclineModalOpen && (
+                        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
+                            <CancelCoachingSessionModal
+                                locale={locale}
+                                onClose={() => {
+                                    setIsDeclineModalOpen(false);
+                                    setDeclineSessionId(null);
+                                }}
+                                onCancel={(reason: string) => {
+                                    if (declineSessionId) handleDecline(declineSessionId, reason);
+                                }}
+                                isLoading={unscheduleMutation.isPending}
+                                isError={unscheduleViewModel?.mode === 'kaboom'}
+                            />
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

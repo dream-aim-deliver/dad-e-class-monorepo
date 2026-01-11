@@ -167,6 +167,10 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
       );
 
     case 'ended':
+      // No action interface needed for sessions without review
+      if (props.reviewType === 'no-review') {
+        return null;
+      }
       return (
         <div className="flex flex-col gap-2 w-full">
           {props.reviewType === 'session-review' && (
@@ -178,6 +182,7 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
               onClick={props.onClickRateCallQuality}
             />
           )}
+          {/* TODO: Download recording functionality not implemented yet
           <Button
             variant="secondary"
             className=""
@@ -193,6 +198,7 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
               {dictionary.components.coachingSessionCard.recordingAvailabilityInfo}
             </p>
           )}
+          */}
         </div>
       );
 
