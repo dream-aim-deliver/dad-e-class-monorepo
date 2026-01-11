@@ -10,7 +10,7 @@ import {
 } from '@maany_shr/e-class-translations';
 
 
-export interface ReviewCardProps extends isLocalAware {
+interface BaseReviewCardProps extends isLocalAware {
   className?: string;
   rating: number;
   reviewerName: string;
@@ -19,13 +19,32 @@ export interface ReviewCardProps extends isLocalAware {
   workshopTitle: string;
   date: Date;
   time: string;
+}
+
+// Standalone coaching session (no course, no group)
+interface ReviewCardStandalone extends BaseReviewCardProps {
+  type: 'standalone';
+}
+
+// With course info (course-linked coaching session)
+interface ReviewCardWithCourse extends BaseReviewCardProps {
+  type: 'with-course';
   courseTitle: string;
   courseImage: string;
-  groupName?: string;
 }
+
+// With group info
+interface ReviewCardWithGroup extends BaseReviewCardProps {
+  type: 'with-group';
+  groupName: string;
+}
+
+export type ReviewCardProps = ReviewCardStandalone | ReviewCardWithCourse | ReviewCardWithGroup;
 /**
-* A reusable ReviewCard component that displays user reviews, ratings, and course details.
+* A reusable ReviewCard component that displays user reviews, ratings, and session details.
+* Supports three variants: standalone (no course/group), with-course, and with-group.
 *
+* @param type The type of review card: 'standalone' | 'with-course' | 'with-group'
 * @param className Optional additional CSS class names to customize the appearance.
 * @param rating The rating given by the reviewer (out of 5).
 * @param reviewerName The name of the reviewer.
@@ -34,40 +53,65 @@ export interface ReviewCardProps extends isLocalAware {
 * @param workshopTitle The title of the workshop associated with the review.
 * @param date The date of the review or event.
 * @param time The time of the review or event.
-* @param courseTitle The title of the course related to the review.
-* @param courseImage URL of the course's image.
-* @param groupName Optional name of the group associated with the review.
+* @param courseTitle The title of the course (only for type='with-course').
+* @param courseImage URL of the course's image (only for type='with-course').
+* @param groupName The name of the group (only for type='with-group').
 * @param locale The locale used for translations.
 *
 * @example
+* // Standalone coaching session review
 * <ReviewCard
+*   type="standalone"
 *   rating={4.5}
 *   reviewerName="John Doe"
-*   reviewerAvatar="https://example.com/avatar.jpg"
-*   reviewText="This workshop was amazing! Learned a lot."
+*   reviewText="Great session!"
+*   workshopTitle="Career Coaching"
+*   date={new Date()}
+*   time="10:00 AM"
+*   locale="en"
+* />
+*
+* @example
+* // Course-linked coaching session review
+* <ReviewCard
+*   type="with-course"
+*   rating={4.5}
+*   reviewerName="John Doe"
+*   reviewText="This workshop was amazing!"
 *   workshopTitle="React Mastery"
-*   date="2024-09-10"
+*   date={new Date()}
 *   time="10:00 AM"
 *   courseTitle="Advanced React"
 *   courseImage="https://example.com/course.jpg"
+*   locale="en"
+* />
+*
+* @example
+* // Group coaching session review
+* <ReviewCard
+*   type="with-group"
+*   rating={4.5}
+*   reviewerName="John Doe"
+*   reviewText="Learned a lot with the group!"
+*   workshopTitle="Team Building"
+*   date={new Date()}
+*   time="2:00 PM"
 *   groupName="React Enthusiasts"
 *   locale="en"
 * />
 */
-export const ReviewCard: React.FC<ReviewCardProps> = ({
-  className,
-  rating,
-  reviewerName,
-  reviewerAvatar,
-  reviewText,
-  workshopTitle,
-  date,
-  time,
-  courseTitle,
-  courseImage,
-  groupName,
-  locale
-}) => {
+export const ReviewCard: React.FC<ReviewCardProps> = (props) => {
+  const {
+    className,
+    rating,
+    reviewerName,
+    reviewerAvatar,
+    reviewText,
+    workshopTitle,
+    date,
+    time,
+    locale
+  } = props;
   const dictionary = getDictionary(locale);
 
   return (
@@ -108,27 +152,29 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
             <p className="text-sm lg:text-md">{time}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <Button
-            className='p-0 gap-1 text-sm  max-w-full'
-            variant='text'
-            size="small"
-            hasIconLeft
-            iconLeft={<UserAvatar fullName={courseTitle} imageUrl={courseImage} className='rounded-small' size="small" />}
-            text={courseTitle}
-          />
-          {groupName && (
-            <div className="flex gap-1 flex-wrap items-center">
-              <div className="flex items-center gap-1">
-                <IconGroup classNames="text-text-primary" size="5" />
-                <p className="text-text-secondary text-sm">{dictionary.components.coachReview.group}</p>
-              </div>
-              <p className="text-sm text-text-primary font-bold">
-                {groupName}
-              </p>
+        {props.type === 'with-course' && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              className='p-0 gap-1 text-sm max-w-full'
+              variant='text'
+              size="small"
+              hasIconLeft
+              iconLeft={<UserAvatar fullName={props.courseTitle} imageUrl={props.courseImage} className='rounded-small' size="small" />}
+              text={props.courseTitle}
+            />
+          </div>
+        )}
+        {props.type === 'with-group' && (
+          <div className="flex gap-1 flex-wrap items-center">
+            <div className="flex items-center gap-1">
+              <IconGroup classNames="text-text-primary" size="5" />
+              <p className="text-text-secondary text-sm">{dictionary.components.coachReview.group}</p>
             </div>
-          )}
-        </div>
+            <p className="text-sm text-text-primary font-bold">
+              {props.groupName}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

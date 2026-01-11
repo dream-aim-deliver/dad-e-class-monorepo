@@ -191,6 +191,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                             text={dictionary.components.coachingSessionCard.reviewCoachingSessionText}
                             onClick={endedProps.onClickReviewCoachingSession}
                         />
+                        {/* TODO: Download recording functionality not implemented yet
                         <Button
                             variant="secondary"
                             className=""
@@ -201,13 +202,15 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                             onClick={endedProps.onClickDownloadRecording}
                             disabled={true}
                         />
+                        */}
                     </div>
                 );
             } else {
                 // Type narrowing: props is now StudentEndedWithReviewCard
-                const endedProps = props as Extract<StudentActionProps, { status: 'ended'; hasReview: true }>;
+                // const endedProps = props as Extract<StudentActionProps, { status: 'ended'; hasReview: true }>;
                 return (
                     <div className="flex flex-col gap-2 w-full">
+                        {/* TODO: Download recording functionality not implemented yet
                         <Button
                             variant="secondary"
                             className=""
@@ -223,6 +226,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                                 {dictionary.components.coachingSessionCard.recordingAvailabilityInfo}
                             </p>
                         )}
+                        */}
                     </div>
                 );
             }

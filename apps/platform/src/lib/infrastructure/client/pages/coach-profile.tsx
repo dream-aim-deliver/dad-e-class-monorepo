@@ -549,22 +549,38 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 					<>
 						<CoachReviewCardList locale={locale}>
 							{displayedReviews
-								.filter(review => review && review.student && review.coachingSession && review.course)
-								.map((review) => (
-									<CoachReviewCard
-										key={review.id}
-										locale={locale}
-										rating={review.rating}
-										reviewerName={`${review.student.name} ${review.student.surname}`}
-										reviewerAvatar={review.student.avatarImage?.downloadUrl || ''}
-										reviewText={review.notes || ''}
-										workshopTitle={review.coachingSession.coachingOfferingTitle}
-										date={review.createdAt}
-										time={new Date(review.createdAt).toLocaleTimeString(locale)}
-										courseTitle={review.course?.title || ''}
-										courseImage={review.course?.image?.downloadUrl || ''}
-									/>
-								))}
+								.filter(review => review && review.student && review.coachingSession)
+								.map((review) => {
+									const baseProps = {
+										key: review.id,
+										locale,
+										rating: review.rating,
+										reviewerName: review.student.username,
+										reviewerAvatar: review.student.avatarImage?.downloadUrl || '',
+										reviewText: review.notes || '',
+										workshopTitle: review.coachingSession.coachingOfferingTitle,
+										date: review.createdAt,
+										time: new Date(review.createdAt).toLocaleTimeString(locale),
+									};
+
+									if (review.course) {
+										return (
+											<CoachReviewCard
+												{...baseProps}
+												type={'with-course' as const}
+												courseTitle={review.course.title || ''}
+												courseImage={review.course.image?.downloadUrl || ''}
+											/>
+										);
+									}
+
+									return (
+										<CoachReviewCard
+											{...baseProps}
+											type={'standalone' as const}
+										/>
+									);
+								})}
 						</CoachReviewCardList>
 						{hasMoreReviews && (
 							<Button

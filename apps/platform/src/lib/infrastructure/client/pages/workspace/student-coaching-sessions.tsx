@@ -10,7 +10,7 @@ import { useCreateCoachingSessionReviewPresenter } from "../../hooks/use-create-
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
 import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewDialog, CancelCoachingSessionModal } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../trpc/cms-client";
 
 // Type for scheduled sessions (excluding unscheduled)
@@ -26,6 +26,10 @@ interface ScheduledStudentSessionCardProps {
     onCancel: () => void;
     onViewCourse?: () => void;
     courseName?: string;
+}
+
+interface StudentCoachingSessionsProps {
+    hideBreadcrumbs?: boolean;
 }
 
 function ScheduledStudentSessionCard({
@@ -132,7 +136,7 @@ function ScheduledStudentSessionCard({
     );
 }
 
-export default function StudentCoachingSessions() {
+export default function StudentCoachingSessions({ hideBreadcrumbs = false }: StudentCoachingSessionsProps = {}) {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
 
@@ -144,8 +148,18 @@ export default function StudentCoachingSessions() {
         'components.paginationButton',
     );
 
-    const [activeTab, setActiveTab] = useState<string>('upcoming');
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // Current tab state from URL, defaults to 'upcoming'
+    const currentTab = searchParams.get('tab') || 'upcoming';
+
+    // Handle tab change and update search params
+    const onTabChange = (tab: string) => {
+        const newSearchParams = new URLSearchParams(searchParams.toString());
+        newSearchParams.set('tab', tab);
+        router.push(`?${newSearchParams.toString()}`);
+    };
 
     const [studentCoachingSessionsResponse, { refetch: refetchStudentCoachingSessions }] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
     const utils = trpc.useUtils();
@@ -456,7 +470,7 @@ export default function StudentCoachingSessions() {
 
     // Session action handlers
     const handleCreatorClick = (coachUsername: string) => {
-        router.push(`/coaches/${coachUsername}`);
+        window.open(`/${locale}/coaches/${coachUsername}`, '_blank');
     };
 
     const handleJoinMeeting = (meetingUrl: string) => {
@@ -714,23 +728,25 @@ export default function StudentCoachingSessions() {
 
     return (
         <div className="flex flex-col space-y-2">
-            <Breadcrumbs
-                items={[
-                    {
-                        label: coachingSessionTranslations('home'),
-                        onClick: handleNavigateHome,
-                    },
-                    {
-                        label: coachingSessionTranslations('workspace'),
-                        onClick: handleNavigateWorkspace,
-                    },
-                    {
-                        label: coachingSessionTranslations('coachingSessions'),
-                        onClick: handleNavigateCoachingSessions,
-                    },
-                ]}
-            />
-            <Tabs.Root defaultTab="upcoming" onValueChange={setActiveTab}>
+            {!hideBreadcrumbs && (
+                <Breadcrumbs
+                    items={[
+                        {
+                            label: coachingSessionTranslations('home'),
+                            onClick: handleNavigateHome,
+                        },
+                        {
+                            label: coachingSessionTranslations('workspace'),
+                            onClick: handleNavigateWorkspace,
+                        },
+                        {
+                            label: coachingSessionTranslations('coachingSessions'),
+                            onClick: handleNavigateCoachingSessions,
+                        },
+                    ]}
+                />
+            )}
+            <Tabs.Root defaultTab={currentTab} onValueChange={onTabChange}>
                 <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
                     <div className="w-full flex gap-4 items-center justify-between" >
                         <h1>
