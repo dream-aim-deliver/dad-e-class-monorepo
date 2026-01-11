@@ -196,7 +196,6 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 reviewCount={course.reviewCount ?? 0}
                                 sessions={course.coachingSessionCount ?? 0}
                                 sales={course.salesCount ?? 0}
-                                // TODO: get rid of this mapping once ui-kit is updated
                                 status={stateToStatus[course.status || 'draft'] || 'draft'}
                                 locale={locale}
                                 title={course.title || ''}
@@ -252,6 +251,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 rating={course.averageRating ?? 0}
                                 progress={course.progress ?? 0}
                                 hasReviewed={course.hasReviewed}
+                                status={course.status === 'archived' ? 'archived' : undefined}
                                 onBegin={() => onCourseVisit(course.slug || '')}
                                 onResume={() => onCourseVisit(course.slug || '')}
                                 onReview={() => onReviewCourse(course.slug || '', course.title || '')}
