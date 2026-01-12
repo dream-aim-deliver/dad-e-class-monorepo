@@ -19,6 +19,7 @@ interface BaseReviewCardProps extends isLocalAware {
   workshopTitle: string;
   date: Date;
   time: string;
+  onClickReviewer?: () => void;
 }
 
 // Standalone coaching session (no course, no group)
@@ -110,7 +111,8 @@ export const ReviewCard: React.FC<ReviewCardProps> = (props) => {
     workshopTitle,
     date,
     time,
-    locale
+    locale,
+    onClickReviewer
   } = props;
   const dictionary = getDictionary(locale);
 
@@ -130,7 +132,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = (props) => {
                 hasIconLeft
                 iconLeft={<UserAvatar className="rounded-full" fullName={reviewerName} size="small" imageUrl={reviewerAvatar} />}
                 text={reviewerName}
-
+                onClick={onClickReviewer}
               />
             </div>
           </div>

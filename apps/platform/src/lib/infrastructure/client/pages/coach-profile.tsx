@@ -552,7 +552,6 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 								.filter(review => review && review.student && review.coachingSession)
 								.map((review) => {
 									const baseProps = {
-										key: review.id,
 										locale,
 										rating: review.rating,
 										reviewerName: review.student.username,
@@ -561,11 +560,13 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 										workshopTitle: review.coachingSession.coachingOfferingTitle,
 										date: review.createdAt,
 										time: new Date(review.createdAt).toLocaleTimeString(locale),
+										onClickReviewer: () => window.open(`/${locale}/students/${review.student.username}`, '_blank'),
 									};
 
 									if (review.course) {
 										return (
 											<CoachReviewCard
+												key={review.id}
 												{...baseProps}
 												type={'with-course' as const}
 												courseTitle={review.course.title || ''}
@@ -576,6 +577,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 
 									return (
 										<CoachReviewCard
+											key={review.id}
 											{...baseProps}
 											type={'standalone' as const}
 										/>
