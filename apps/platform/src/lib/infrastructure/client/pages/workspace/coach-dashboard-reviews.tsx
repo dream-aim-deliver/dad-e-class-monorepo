@@ -78,25 +78,43 @@ export default function CoachDashboardReviews() {
 
             {hasReviews ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {reviews.slice(0, 3).map((review: any) => (
-                        <CoachReviewCard
-                            key={review.id}
-                            locale={locale}
-                            reviewerName={`${review.student?.name} ${review.student?.surname}`.trim()}
-                            reviewerAvatar={review.student?.avatarImage?.url}
-                            rating={review.rating}
-                            reviewText={review.notes}
-                            date={new Date(review.createdAt)}
-                            time={new Date(review.createdAt).toLocaleTimeString(locale, {
+                    {reviews.slice(0, 3).map((review: any) => {
+                        const baseProps = {
+                            locale,
+                            reviewerName: review.student?.username || '',
+                            reviewerAvatar: review.student?.avatarImage?.url,
+                            rating: review.rating,
+                            reviewText: review.notes,
+                            date: new Date(review.createdAt),
+                            time: new Date(review.createdAt).toLocaleTimeString(locale, {
                                 hour: '2-digit',
                                 minute: '2-digit',
                                 hour12: false
-                            })}
-                            workshopTitle={review.coachingOfferingTitle}
-                            courseTitle={review.courseName}
-                            courseImage={review.courseImageUrl}
-                        />
-                    ))}
+                            }),
+                            workshopTitle: review.coachingOfferingTitle,
+                            onClickReviewer: () => window.open(`/${locale}/students/${review.student?.username}`, '_blank'),
+                        };
+
+                        if (review.courseName) {
+                            return (
+                                <CoachReviewCard
+                                    key={review.id}
+                                    {...baseProps}
+                                    type="with-course"
+                                    courseTitle={review.courseName}
+                                    courseImage={review.courseImageUrl || ''}
+                                />
+                            );
+                        }
+
+                        return (
+                            <CoachReviewCard
+                                key={review.id}
+                                {...baseProps}
+                                type="standalone"
+                            />
+                        );
+                    })}
                 </div>
             ) : (
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
