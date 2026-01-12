@@ -69,7 +69,9 @@ export default class GetCoachProfileAccessPresenter extends BasePresenter<
             TGetCoachProfileAccessResponseMiddleware
         >,
     ): viewModels.TGetCoachProfileAccessViewModel {
-        if (response.data.errorType === 'NotFoundError') {
+        // NotFoundError and ForbiddenError both show 404 to avoid revealing profile existence
+        if (response.data.errorType === 'NotFoundError' ||
+            response.data.errorType === 'ForbiddenError') {
             return {
                 mode: 'not-found',
                 data: {
