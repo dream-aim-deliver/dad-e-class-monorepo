@@ -5,6 +5,7 @@ describe('ReviewCard Component', () => {
   test('renders review card with correct props', () => {
     render(
       <ReviewCard
+        type="with-course"
         rating={4}
         reviewerName="John Doe"
         reviewerAvatar="/avatar.jpg"

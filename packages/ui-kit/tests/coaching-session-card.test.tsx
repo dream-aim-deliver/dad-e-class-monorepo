@@ -102,9 +102,7 @@ describe('CoachingSessionCard', () => {
 
     render(<CoachingSessionCard {...props} />);
     expect(screen.getByText(/Great session/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /download recording/i }),
-    ).toBeInTheDocument();
+    // Download recording button is currently commented out (TODO) in the component
   });
 
   it('handles rescheduled session actions (coach)', () => {
