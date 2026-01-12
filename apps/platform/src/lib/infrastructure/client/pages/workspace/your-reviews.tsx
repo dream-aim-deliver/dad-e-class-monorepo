@@ -324,34 +324,42 @@ export default function YourReviews({ roles }: YourReviewsProps) {
             ) : (
                 <>
                     <CardListLayout className="xl:grid-cols-4">
-                        {displayedReviews.map((review, index: number) => (
-                            <CoachReviewCard
-                                key={review.id || index}
-                                locale={locale}
-                                rating={review.rating}
-                                reviewerName={`${review.student.name} ${review.student.surname}`}
-                                reviewerAvatar={
-                                    review.student.avatarImage?.downloadUrl
-                                }
-                                reviewText={review.notes || ''}
-                                workshopTitle={
-                                    review.coachingSession.coachingOfferingTitle
-                                }
-                                date={
-                                    new Date(review.coachingSession.startTime)
-                                }
-                                time={new Date(
-                                    review.coachingSession.startTime,
-                                ).toLocaleTimeString(locale, {
+                        {displayedReviews.map((review, index: number) => {
+                            const baseProps = {
+                                locale,
+                                rating: review.rating,
+                                reviewerName: review.student.username,
+                                reviewerAvatar: review.student.avatarImage?.downloadUrl,
+                                reviewText: review.notes || '',
+                                workshopTitle: review.coachingSession.coachingOfferingTitle,
+                                date: new Date(review.coachingSession.startTime),
+                                time: new Date(review.coachingSession.startTime).toLocaleTimeString(locale, {
                                     hour: '2-digit',
                                     minute: '2-digit',
-                                })}
-                                courseTitle={review.course?.title || ''}
-                                courseImage={
-                                    review.course?.image?.downloadUrl || ''
-                                }
-                            />
-                        ))}
+                                }),
+                                onClickReviewer: () => window.open(`/${locale}/students/${review.student.username}`, '_blank'),
+                            };
+
+                            if (review.course) {
+                                return (
+                                    <CoachReviewCard
+                                        key={review.id || index}
+                                        {...baseProps}
+                                        type="with-course"
+                                        courseTitle={review.course.title || ''}
+                                        courseImage={review.course.image?.downloadUrl || ''}
+                                    />
+                                );
+                            }
+
+                            return (
+                                <CoachReviewCard
+                                    key={review.id || index}
+                                    {...baseProps}
+                                    type="standalone"
+                                />
+                            );
+                        })}
                     </CardListLayout>
                     {hasMoreItems && (
                         <div className="flex justify-center items-center w-full mt-6">

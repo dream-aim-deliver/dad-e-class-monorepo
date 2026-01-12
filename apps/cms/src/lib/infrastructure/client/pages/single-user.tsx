@@ -536,19 +536,35 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                   const endTime = new Date(review.coachingSession.endTime);
                   const timeRange = `${startTime.toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit' })} - ${endTime.toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit' })}`;
 
+                  const baseProps = {
+                    locale: currentLocale,
+                    rating: review.rating || 0,
+                    reviewText: review.notes || '',
+                    reviewerAvatar: review.student.avatarImage?.downloadUrl,
+                    reviewerName: review.student.username,
+                    workshopTitle: review.coachingSession.coachingOfferingTitle,
+                    date: startTime,
+                    time: timeRange,
+                    onClickReviewer: () => window.open(`/${currentLocale}/students/${review.student.username}`, '_blank'),
+                  };
+
+                  if (review.course) {
+                    return (
+                      <CoachReviewCard
+                        key={index}
+                        {...baseProps}
+                        type="with-course"
+                        courseTitle={review.course.title || ''}
+                        courseImage={review.course.image?.downloadUrl || ''}
+                      />
+                    );
+                  }
+
                   return (
                     <CoachReviewCard
                       key={index}
-                      locale={currentLocale}
-                      rating={review.rating || 0}
-                      reviewText={review.notes || ''}
-                      reviewerAvatar={review.student.avatarImage?.downloadUrl}
-                      reviewerName={`${review.student.name} ${review.student.surname}`}
-                      workshopTitle={review.coachingSession.coachingOfferingTitle}
-                      date={startTime}
-                      time={timeRange}
-                      courseTitle={review.course?.title || 'No Course'}
-                      courseImage={review.course?.image?.downloadUrl || ''}
+                      {...baseProps}
+                      type="standalone"
                     />
                   );
                 })}
