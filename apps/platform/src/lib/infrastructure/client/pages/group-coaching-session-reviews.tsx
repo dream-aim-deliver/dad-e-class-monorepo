@@ -247,17 +247,17 @@ export default function GroupCoachingSessionReviews({
                             {displayedReviews.map((review) => (
                                 <CoachReviewCard
                                     key={review.id}
+                                    type="with-group"
                                     locale={localeProp}
                                     rating={review.rating}
-                                    reviewerName={`${review.student.name} ${review.student.surname}`}
+                                    reviewerName={review.student.username}
                                     reviewerAvatar={review.student.avatarUrl || undefined}
                                     reviewText={review.notes || ""}
                                     workshopTitle={review.coachingOfferingTitle}
                                     date={review.createdAt}
                                     time={new Date(review.createdAt).toLocaleTimeString(localeProp)}
-                                    courseTitle={review.course.title}
-                                    courseImage={review.course.imageUrl || ""}
                                     groupName={review.group.name}
+                                    onClickReviewer={() => window.open(`/${localeProp}/students/${review.student.username}`, '_blank')}
                                 />
                             ))}
                         </div>
