@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Badge } from '../badge';
 import { Button } from '../button';
 import { IconClock } from '../icons/icon-clock';
@@ -91,19 +91,19 @@ export const PackageCard = ({
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    // Check for truncation of title on resize
-    useEffect(() => {
-        const checkTruncation = () => {
-            if (titleRef.current) {
-                const { scrollHeight, clientHeight } = titleRef.current;
-                setIsTruncated(scrollHeight > clientHeight);
-            }
-        };
-
-        checkTruncation();
-        window.addEventListener('resize', checkTruncation);
-        return () => window.removeEventListener('resize', checkTruncation);
+    // Ensure checkTruncation has a stable reference to avoid re-adding listeners
+    const stableCheckTruncation = useCallback(() => {
+        if (titleRef.current) {
+            const { scrollHeight, clientHeight } = titleRef.current;
+            setIsTruncated(scrollHeight > clientHeight);
+        }
     }, [title]);
+
+    useEffect(() => {
+        stableCheckTruncation();
+        window.addEventListener('resize', stableCheckTruncation);
+        return () => window.removeEventListener('resize', stableCheckTruncation);
+    }, [stableCheckTruncation]);
 
     return (
         <div className="flex flex-col rounded-medium border border-card-stroke bg-card-fill w-full max-w-[24rem]">

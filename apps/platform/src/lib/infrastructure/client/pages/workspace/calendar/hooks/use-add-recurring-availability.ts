@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { trpc } from '../../../../trpc/cms-client';
 
+
+const MAX_AVAILABILITY_MONTHS = 6
+
 export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 
 interface RecurringAvailability {
@@ -42,10 +45,11 @@ function isEndTimeAfterStartTime(startTime: string, endTime: string): boolean {
     return false;
 }
 
+
 // Get max date (6 months from today)
 export function getMaxAvailabilityDate(): Date {
     const maxDate = new Date();
-    maxDate.setMonth(maxDate.getMonth() + 6);
+    maxDate.setMonth(maxDate.getMonth() + MAX_AVAILABILITY_MONTHS);
     return maxDate;
 }
 
