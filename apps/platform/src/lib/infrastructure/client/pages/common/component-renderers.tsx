@@ -34,6 +34,9 @@ import {
     Button,
     DefaultLoading,
     DefaultError,
+    Dialog,
+    DialogContent,
+    DialogBody,
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
 import { JSX, useEffect, useState, useMemo } from 'react';
@@ -388,8 +391,12 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
     const session = useSession();
     const locale = useLocale() as TLocale;
     const router = useRouter();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({});
+    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
+        courseSlug: courseSlug,
+        sortPreferredFirst: true,
+    });
     const [coachesViewModel, setCoachesViewModel] = useState<
         viewModels.TCoachListViewModel | undefined
     >(undefined);
@@ -416,6 +423,9 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
         });
     }, [coachesViewModel, session]);
 
+    const displayedCoaches = coaches.slice(0, 3);
+    const hasMoreCoaches = coaches.length > 3;
+
     if (!coachesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
@@ -424,29 +434,54 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
         return <DefaultError locale={locale} />;
     }
 
-    // TODO: Implement "show more" functionality
+    const renderCoachCard = (coach: typeof coaches[0]) => (
+        <LessonCoachComponent
+            key={coach.username}
+            name={coach.name}
+            rating={coach.averageRating ?? 0}
+            imageUrl={coach.avatarUrl ?? ''}
+            numberOfRatings={coach.reviewCount}
+            description={coach.bio}
+            defaultCoach={true}
+            onClickProfile={() => {
+                // Add here profile logic if needed
+            }}
+            onClickBook={() => {
+                const url = `/${locale}/coaches/${coach.username}/book?sessionId=${sessionId}&lessonComponentId=${lessonComponentId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}${courseSlug ? `&courseSlug=${encodeURIComponent(courseSlug)}` : ''}`;
+                window.open(url, '_blank');
+            }}
+            locale={locale}
+        />
+    );
+
     return (
-        <div className="flex flex-col gap-4 w-full">
-            {coaches.map((coach) => (
-                <LessonCoachComponent
-                    key={coach.username}
-                    name={coach.name}
-                    rating={coach.averageRating ?? 0}
-                    imageUrl={coach.avatarUrl ?? ''}
-                    numberOfRatings={coach.reviewCount}
-                    description={coach.bio}
-                    defaultCoach={true}
-                    onClickProfile={() => {
-                        // TODO: Implement profile click logic
-                    }}
-                    onClickBook={() => {
-                        const url = `/${locale}/coaches/${coach.username}/book?sessionId=${sessionId}&lessonComponentId=${lessonComponentId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}${courseSlug ? `&courseSlug=${encodeURIComponent(courseSlug)}` : ''}`;
-                        window.open(url, '_blank');
-                    }}
-                    locale={locale}
-                />
-            ))}
-        </div>
+        <>
+            <div className="flex flex-col gap-4 w-full">
+                {displayedCoaches.map(renderCoachCard)}
+                {hasMoreCoaches && (
+                    <Button
+                        variant="text"
+                        text="View all coaches"
+                        onClick={() => setIsModalOpen(true)}
+                    />
+                )}
+            </div>
+
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen} defaultOpen={false}>
+                <DialogContent
+                    className="max-w-xl max-h-[90vh]"
+                    showCloseButton={true}
+                    closeOnOverlayClick={true}
+                    closeOnEscape={true}
+                >
+                    <DialogBody className="overflow-y-auto max-h-[70vh]">
+                        <div className="flex flex-col gap-4">
+                            {coaches.map(renderCoachCard)}
+                        </div>
+                    </DialogBody>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 }
 
