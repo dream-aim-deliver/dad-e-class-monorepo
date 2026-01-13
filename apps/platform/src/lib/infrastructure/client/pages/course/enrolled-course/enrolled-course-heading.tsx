@@ -33,6 +33,7 @@ interface EnrolledCourseHeadingProps {
     currentRole: string;
     certificateDataViewModel?: viewModels.TGetCourseCertificateDataViewModel;
     isArchived?: boolean;
+    showArchivedBadge?: boolean;
 }
 
 export default function EnrolledCourseHeading({
@@ -43,6 +44,7 @@ export default function EnrolledCourseHeading({
     courseSlug,
     certificateDataViewModel,
     isArchived,
+    showArchivedBadge,
 }: EnrolledCourseHeadingProps) {
     // Use courseStatusViewModel for both completion status and progress
     const isCompleted =
@@ -325,7 +327,7 @@ export default function EnrolledCourseHeading({
                         <div className="flex flex-col gap-4">
                             <div className="flex items-center gap-4">
                                 <h1 className="text-left"> {courseViewModel.data.title} </h1>
-                                {isArchived && (
+                                {showArchivedBadge && (
                                     <Badge
                                         className="px-3 py-1"
                                         variant="errorprimary"

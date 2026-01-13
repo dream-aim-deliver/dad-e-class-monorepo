@@ -224,6 +224,7 @@ export default function LessonForm({
             elementProgress,
             locale,
             keyString: `component-${component.id}`,
+            isArchived,
         };
 
         const ComponentRenderer = typeToRendererMap[formElement.type];

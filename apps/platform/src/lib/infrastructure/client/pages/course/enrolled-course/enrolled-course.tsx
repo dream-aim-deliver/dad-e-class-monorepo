@@ -44,6 +44,7 @@ interface EnrolledCourseProps {
     studentUsername?: string;
     lesson?: string;
     isArchived?: boolean;
+    showArchivedBadge?: boolean;
 }
 
 function CourseTabList({ role }: { role: string }) {
@@ -287,6 +288,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 courseSlug={props.courseSlug}
                 certificateDataViewModel={certificateDataViewModel}
                 isArchived={props.isArchived}
+                showArchivedBadge={props.showArchivedBadge}
             />
             <Tabs.Root defaultTab={activeTab} onValueChange={handleTabChange}>
                 <CourseTabList role={props.currentRole} />

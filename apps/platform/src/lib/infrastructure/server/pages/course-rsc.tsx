@@ -110,7 +110,10 @@ export default async function CourseServerComponent({
     // TODO: might differ base on the tab
     await prefetchIntroductionData(slug, currentRole);
 
-    const isArchived = course.status === 'archived';
+    // Block interactions for archived and draft courses
+    const isArchived = course.status === 'archived' || course.status === 'draft';
+    // Only show badge for archived courses (not draft)
+    const showArchivedBadge = course.status === 'archived';
 
     return renderEnrolledCourse({
         slug,
@@ -120,6 +123,7 @@ export default async function CourseServerComponent({
         username,
         lesson,
         isArchived,
+        showArchivedBadge,
     });
 }
 
@@ -245,6 +249,7 @@ function renderEnrolledCourse({
     username,
     lesson,
     isArchived,
+    showArchivedBadge,
 }: {
     slug: string;
     roles: string[];
@@ -253,6 +258,7 @@ function renderEnrolledCourse({
     username?: string;
     lesson?: string;
     isArchived?: boolean;
+    showArchivedBadge?: boolean;
 }) {
     return (
         <HydrateClient>
@@ -265,6 +271,7 @@ function renderEnrolledCourse({
                     studentUsername={username}
                     lesson={lesson}
                     isArchived={isArchived}
+                    showArchivedBadge={showArchivedBadge}
                 />
             </Suspense>
         </HydrateClient>
