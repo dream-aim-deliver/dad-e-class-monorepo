@@ -148,7 +148,7 @@ export const PackageCard = ({
 
                     {/* Duration & Courses Badges */}
                     <div className="flex gap-2">
-                        {typeof duration === 'number' && (
+                        {typeof duration === 'number' && duration > 0 && (
                             <Badge
                                 hasIconLeft
                                 iconLeft={<IconClock size="5" />}
