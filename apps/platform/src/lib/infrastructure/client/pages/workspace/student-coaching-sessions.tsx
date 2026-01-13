@@ -10,6 +10,7 @@ import { useCreateCoachingSessionReviewPresenter } from "../../hooks/use-create-
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
 import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewDialog, CancelCoachingSessionModal } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
+import { formatTime } from "../../utils/format-time";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../trpc/cms-client";
 
@@ -626,18 +627,6 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
             if (!session.startTime || !session.endTime || !session.coach?.username || session.id === undefined) {
                 return null;
             }
-
-            // Helper function to format time from ISO string
-            // Uses local time methods to convert UTC to user's timezone
-            const formatTime = (isoString: string) => {
-                const date = new Date(isoString);
-                const hours = date.getHours();
-                const minutes = date.getMinutes();
-                const period = hours >= 12 ? 'PM' : 'AM';
-                const displayHours = hours % 12 || 12;
-                const paddedMinutes = minutes.toString().padStart(2, '0');
-                return `${displayHours}:${paddedMinutes} ${period}`;
-            };
 
             // Create start DateTime for time calculations
             const startDateTime = new Date(session.startTime);

@@ -9,6 +9,7 @@ import { viewModels } from "@maany_shr/e-class-models";
 import { useListCoachCoachingSessionsPresenter } from "../../hooks/use-list-coach-coaching-sessions-presenter";
 import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, ConfirmationModal, CancelCoachingSessionModal, Breadcrumbs, Dropdown } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
+import { formatTime } from "../../utils/format-time";
 import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-coaching-session-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
 import { TListCoachCoachingSessionsSuccessResponse } from "@dream-aim-deliver/e-class-cms-rest";
@@ -377,18 +378,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     const renderSessionCards = (sessions: TListCoachCoachingSessionsSuccessResponse['data']['sessions']) => {
 
         return sessions.map((session) => {
-            // Helper function to format time from ISO string
-            // Uses local time methods to convert UTC to user's timezone
-            const formatTime = (isoString: string) => {
-                const date = new Date(isoString);
-                const hours = date.getHours();
-                const minutes = date.getMinutes();
-                const period = hours >= 12 ? 'PM' : 'AM';
-                const displayHours = hours % 12 || 12;
-                const paddedMinutes = minutes.toString().padStart(2, '0');
-                return `${displayHours}:${paddedMinutes} ${period}`;
-            };
-
             // Create start DateTime for time calculations
             const startDateTime = new Date(session.startTime);
 
