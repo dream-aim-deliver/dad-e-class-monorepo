@@ -709,7 +709,7 @@ function BookCoachPageContent({
                     <CoachHeader coachUsername={coachUsername} />
                 </Suspense>
                 {/* Desktop Layout: Calendar on left, AvailableCoachings on right */}
-                <div className="max-h-full flex-row hidden md:flex gap-6">
+                <div className="h-[calc(100vh-300px)] flex-row hidden md:flex gap-6">
                     <div className="rounded-lg bg-card-fill p-4 flex-1">
                         <Tabs.Root
                             defaultTab="weekly"
@@ -753,11 +753,13 @@ function BookCoachPageContent({
                             />
                         )}
                     </div>
-                    <div className="w-[400px] shrink-0">
-                        <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-                            <CoachingOfferingsPanel coachUsername={coachUsername} isFromCourse={isFromCourse} />
-                        </Suspense>
-                    </div>
+                    {!isFromCourse && (
+                        <div className="w-[400px] shrink-0">
+                            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+                                <CoachingOfferingsPanel coachUsername={coachUsername} />
+                            </Suspense>
+                        </div>
+                    )}
                 </div>
                 {/* Mobile Layout: Calendar above, AvailableCoachings below */}
                 <div className="flex flex-col md:hidden gap-4">
@@ -768,9 +770,11 @@ function BookCoachPageContent({
                         setNewSessionStart={setNewSessionStart}
                         openDialog={() => setIsDialogOpen(true)}
                     />
-                    <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-                        <CoachingOfferingsPanel coachUsername={coachUsername} isFromCourse={isFromCourse} />
-                    </Suspense>
+                    {!isFromCourse && (
+                        <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+                            <CoachingOfferingsPanel coachUsername={coachUsername} />
+                        </Suspense>
+                    )}
                 </div>
             </div>
         </>

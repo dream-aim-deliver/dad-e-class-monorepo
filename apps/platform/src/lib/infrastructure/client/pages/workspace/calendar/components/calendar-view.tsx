@@ -25,7 +25,7 @@ export function CalendarView({
 }: CalendarViewProps) {
     return (
         <div className="flex flex-col h-full">
-            <div className="h-[800px] flex-row hidden md:flex">
+            <div className="h-[calc(100vh-250px)] flex-row hidden md:flex">
                 <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col">
                     <CalendarNavigationHeader
                         currentDate={currentDate}
