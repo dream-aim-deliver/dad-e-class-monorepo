@@ -2942,6 +2942,23 @@ export const EN: TDictionary = {
       maxDateNote: 'Maximum: 6 months from today',
       addingRecurringAvailability: 'Adding...',
       cancelButton: 'Cancel',
+      // Day names
+      dayMonday: 'Monday',
+      dayTuesday: 'Tuesday',
+      dayWednesday: 'Wednesday',
+      dayThursday: 'Thursday',
+      dayFriday: 'Friday',
+      daySaturday: 'Saturday',
+      daySunday: 'Sunday',
+      // Delete recurring availability
+      deleteRecurringAvailabilityButton: 'Delete Recurring Availability',
+      deleteRecurringAvailabilityTitle: 'Delete Recurring Availability',
+      timeRangeToMatchLabel: 'Time Range to Match',
+      deleteRecurringHelperText: 'This will delete any availability slot that completely contains the selected time range on the chosen day of week.',
+      slotsWillBeDeleted: '{count} slot(s) will be deleted',
+      noMatchingSlotsFound: 'No matching slots found',
+      deletingSlots: 'Deleting...',
+      deleteNSlots: 'Delete {count} Slot(s)',
     },
     manageLegalTexts: {
       title: 'Manage Legal Texts',

@@ -529,7 +529,7 @@ function BookCoachPageContent({
     // @ts-ignore
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
     const [newSession, setNewSession] = useState<ScheduledOffering | null>(
         defaultSession,
     );
@@ -537,6 +537,11 @@ function BookCoachPageContent({
     const [briefing, setBriefing] = useState('');
     const [viewType, setViewType] = useState<'weekly' | 'monthly'>('weekly');
     const calendarT = useTranslations('pages.calendarPage');
+
+    // Initialize date on client side only to avoid hydration mismatch
+    useEffect(() => {
+        setCurrentDate(new Date());
+    }, []);
 
     const setNewSessionStart = (startTime: Date) => {
         setNewSession((prev) => {
@@ -621,7 +626,7 @@ function BookCoachPageContent({
         }
     }, [coachAvailabilityViewModel, router]);
 
-    if (!coachAvailabilityViewModel) {
+    if (!coachAvailabilityViewModel || !currentDate) {
         return <DefaultLoading locale={locale} />;
     }
 

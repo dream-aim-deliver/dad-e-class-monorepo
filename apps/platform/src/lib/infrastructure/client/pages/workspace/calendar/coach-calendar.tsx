@@ -3,7 +3,7 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../../hooks/use-coach-availability-presenter';
 import {
@@ -16,6 +16,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { AddAvailabilityDialog } from './components/add-availability-dialog';
 import { AddRecurringAvailabilityDialog } from './components/add-recurring-availability-dialog';
+import { DeleteRecurringAvailabilityDialog } from './components/delete-recurring-availability-dialog';
 import { AvailabilityDetailsDialog } from './components/availability-details-dialog';
 import { useSession } from 'next-auth/react';
 import StudentCalendar from './student-calendar';
@@ -28,7 +29,7 @@ import { useRouter } from 'next/navigation';
 function CalendarContent() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.calendarPage');
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
     const [currentView, setCurrentView] = useState<'weekly' | 'monthly'>(
         'weekly',
     );
@@ -36,8 +37,14 @@ function CalendarContent() {
         undefined,
     );
 
+    // Initialize date on client side only to avoid hydration mismatch
+    useEffect(() => {
+        setCurrentDate(new Date());
+    }, []);
+
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [isRecurringDialogOpen, setIsRecurringDialogOpen] = useState(false);
+    const [isDeleteRecurringDialogOpen, setIsDeleteRecurringDialogOpen] = useState(false);
     const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
 
     const [chosenAvailability, setChosenAvailability] = useState<
@@ -63,12 +70,17 @@ function CalendarContent() {
         setIsRecurringDialogOpen(false);
     };
 
+    const handleRecurringAvailabilityDeleted = () => {
+        refetchCoachAvailability();
+        setIsDeleteRecurringDialogOpen(false);
+    };
+
     const handleAvailabilityDeleted = () => {
         refetchCoachAvailability();
         setIsDetailsDialogOpen(false);
     };
 
-    if (!coachAvailabilityViewModel) {
+    if (!coachAvailabilityViewModel || !currentDate) {
         return <DefaultLoading locale={locale} />;
     }
 
@@ -81,7 +93,7 @@ function CalendarContent() {
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mt-4">
                 <h1>{t('yourCalendarTitle')}</h1>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                     <AddAvailabilityDialog
                         isOpen={isAddDialogOpen}
                         onOpenChange={setIsAddDialogOpen}
@@ -91,6 +103,12 @@ function CalendarContent() {
                         isOpen={isRecurringDialogOpen}
                         onOpenChange={setIsRecurringDialogOpen}
                         onSuccess={handleRecurringAvailabilityAdded}
+                    />
+                    <DeleteRecurringAvailabilityDialog
+                        isOpen={isDeleteRecurringDialogOpen}
+                        onOpenChange={setIsDeleteRecurringDialogOpen}
+                        onSuccess={handleRecurringAvailabilityDeleted}
+                        availabilities={coachAvailabilityViewModel.data.availability}
                     />
                 </div>
             </div>

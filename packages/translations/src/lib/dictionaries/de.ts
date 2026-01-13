@@ -2945,6 +2945,23 @@ export const DE: TDictionary = {
       maxDateNote: 'Maximum: 6 Monate ab heute',
       addingRecurringAvailability: 'Wird hinzugefügt...',
       cancelButton: 'Abbrechen',
+      // Day names
+      dayMonday: 'Montag',
+      dayTuesday: 'Dienstag',
+      dayWednesday: 'Mittwoch',
+      dayThursday: 'Donnerstag',
+      dayFriday: 'Freitag',
+      daySaturday: 'Samstag',
+      daySunday: 'Sonntag',
+      // Delete recurring availability
+      deleteRecurringAvailabilityButton: 'Wiederkehrende Verfügbarkeit löschen',
+      deleteRecurringAvailabilityTitle: 'Wiederkehrende Verfügbarkeit löschen',
+      timeRangeToMatchLabel: 'Zeitbereich zum Abgleichen',
+      deleteRecurringHelperText: 'Dies löscht alle Verfügbarkeitszeitfenster, die den ausgewählten Zeitbereich am gewählten Wochentag vollständig enthalten.',
+      slotsWillBeDeleted: '{count} Zeitfenster werden gelöscht',
+      noMatchingSlotsFound: 'Keine passenden Zeitfenster gefunden',
+      deletingSlots: 'Wird gelöscht...',
+      deleteNSlots: '{count} Zeitfenster löschen',
     },
     manageLegalTexts: {
       title: 'Rechtliche Texte verwalten',

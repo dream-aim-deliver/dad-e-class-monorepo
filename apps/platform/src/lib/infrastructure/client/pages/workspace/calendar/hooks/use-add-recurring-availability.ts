@@ -67,7 +67,7 @@ function generateSlots(
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let currentDate = new Date(today);
+    const currentDate = new Date(today);
     const todayDay = currentDate.getDay();
 
     // Calculate days until next occurrence of target day
