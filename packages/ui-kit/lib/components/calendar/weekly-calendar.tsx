@@ -211,11 +211,9 @@ export function WeeklyCalendar({
     useEffect(() => {
      if (scrollContainerRef.current) {
        const container = scrollContainerRef.current;
-       const scrollHeight = container.scrollHeight;
-       const clientHeight = container.clientHeight;
-       const middlePosition = (scrollHeight - clientHeight) / 2;
-       
-       container.scrollTop = middlePosition;
+       // Scroll to 6am (6 hours * 96px per hour slot = 576px)
+       const sixAmPosition = 6 * 96;
+       container.scrollTop = sixAmPosition;
      }
    }, [scrollContainerRef]);
 
