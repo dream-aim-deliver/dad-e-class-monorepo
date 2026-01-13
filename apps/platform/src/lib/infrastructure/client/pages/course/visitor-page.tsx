@@ -9,7 +9,6 @@ import {
     PackageCard,
     StarRating,
     Dropdown,
-    Button,
     DefaultError,
     TeachCourseBanner,
     Breadcrumbs,
@@ -21,7 +20,7 @@ import {
     type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
-import { TGetCourseIntroductionUseCaseResponse, TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useState, useEffect, useCallback, } from 'react';
 import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
@@ -40,6 +39,8 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import env from '../../config/env';
+import { useRequiredPlatform } from '../../context/platform-context';
+
 
 interface VisitorPageProps {
     courseSlug: string;
@@ -59,6 +60,7 @@ export default function VisitorPage({
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const sessionDTO = useSession();
     const isLoggedIn = !!sessionDTO.data;
+    const { platform } = useRequiredPlatform();
 
     const utils = trpc.useUtils();
 
@@ -105,9 +107,8 @@ export default function VisitorPage({
 
     useEffect(() => {
         if (courseIntroductionResponse) {
-            // Extract the actual response data from the TRPC wrapper and type it correctly
-            const actualResponse = courseIntroductionResponse?.data as TGetCourseIntroductionUseCaseResponse;
-            courseIntroductionPresenter.present(actualResponse, introductionData);
+            // @ts-ignore
+            courseIntroductionPresenter.present(courseIntroductionResponse, introductionData);
         }
     }, [courseIntroductionResponse]);
 
@@ -212,11 +213,6 @@ export default function VisitorPage({
 
     const handleCoachingIncludedChange = (coachingIncluded: boolean) => {
         setCoachingIncluded(coachingIncluded);
-    };
-
-    const handleClickBook = () => {
-        // TODO: Implement book logic
-        console.log('Book button clicked');
     };
 
     const handleClickBuyCourse = (coachingIncluded: boolean) => {
@@ -394,7 +390,6 @@ export default function VisitorPage({
                         totalCoachesCount={courseData.data.coaches.length}
                         coachingIncluded={coachingIncluded}
                         onCoachingIncludedChange={handleCoachingIncludedChange}
-                        onClickBook={handleClickBook}
                         onClickBuyCourse={handleClickBuyCourse}
                         requiredCourses={courseData.data.requirements.map(
                             (req) => ({
@@ -520,19 +515,19 @@ export default function VisitorPage({
                             </p>
                         </div>
                         <PackageCardList locale={locale}>
-                            {packagesData.data.packages.map((pkg: any) => {
+                            {packagesData.data.packages.map((pkg) => {
                                 // Map the package data to the expected UI structure
                                 const mappedPackage = {
                                     id: String(pkg.id),
                                     title: pkg.title,
                                     description: pkg.description,
                                     duration: pkg.duration,
-                                    imageUrl: pkg.image?.downloadUrl || pkg.imageUrl || '',
-                                    courseCount: pkg.courseCount || 0,
+                                    imageUrl: pkg.image?.downloadUrl || '',
+                                    courseCount: 0,
                                     pricing: {
-                                        fullPrice: pkg.priceWithCoachings || pkg.fullPrice || 0,
-                                        partialPrice: pkg.price || pkg.partialPrice || 0,
-                                        currency: pkg.currency || 'USD',
+                                        fullPrice: pkg.priceWithCoachings || 0,
+                                        partialPrice: pkg.price || 0,
+                                        currency: platform.currency,
                                     },
                                 };
 

@@ -28,7 +28,7 @@ export interface CourseGeneralInformationVisitorProps
     extends TCourseMetadata,
     isLocalAware {
     longDescription: string | React.ReactNode;
-    onClickBook: () => void;
+    onClickBook?: () => void;
     onClickBuyCourse: (coachingIncluded: boolean) => void;
     coaches: Coach[];
     totalCoachesCount: number;
@@ -355,16 +355,18 @@ export const CourseGeneralInformationVisitor: FC<
                                         </p>
                                     </div>
                                 </div>
-                                <Button
-                                    size="medium"
-                                    variant="text"
-                                    text={
-                                        dictionary.components
-                                            .courseGeneralInformationView.bookLabel
-                                    }
-                                    onClick={onClickBook}
-                                    className="px-0 ml-auto hidden md:block"
-                                />
+                                {onClickBook && (
+                                    <Button
+                                        size="medium"
+                                        variant="text"
+                                        text={
+                                            dictionary.components
+                                                .courseGeneralInformationView.bookLabel
+                                        }
+                                        onClick={onClickBook}
+                                        className="px-0 ml-auto hidden md:block"
+                                    />
+                                )}
                             </div>
                         </div>
 
