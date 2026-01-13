@@ -146,9 +146,10 @@ function CoachHeader({ coachUsername }: CoachHeaderProps) {
 
 interface CoachingOfferingsPanelProps {
     coachUsername: string;
+    isFromCourse?: boolean;
 }
 
-function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) {
+function CoachingOfferingsPanel({ coachUsername, isFromCourse }: CoachingOfferingsPanelProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const sessionDTO = useSession();
@@ -401,6 +402,10 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
     }
 
     if (coachingOfferingsViewModel.mode === 'not-found') {
+        // When coming from a course, don't show available sessions panel
+        if (isFromCourse) {
+            return null;
+        }
         return (
             <Suspense fallback={
                 <AvailableCoachingSessions
@@ -435,18 +440,20 @@ function CoachingOfferingsPanel({ coachUsername }: CoachingOfferingsPanelProps) 
                 />
             )}
 
-            {/* Available Coaching Sessions */}
-            <Suspense fallback={
-                <AvailableCoachingSessions
-                    locale={locale}
-                    isLoading
-                    hideButton
-                    availableCoachingSessionsData={[]}
-                    onClickBuyMoreSessions={() => { /* noop - loading state */ }}
-                />
-            }>
-                <AvailableCoachings onClickBuyMoreSessions={() => setIsBuySectionVisible((prev) => !prev)} />
-            </Suspense>
+            {/* Available Coaching Sessions - only show when not booking from a course */}
+            {!isFromCourse && (
+                <Suspense fallback={
+                    <AvailableCoachingSessions
+                        locale={locale}
+                        isLoading
+                        hideButton
+                        availableCoachingSessionsData={[]}
+                        onClickBuyMoreSessions={() => { /* noop - loading state */ }}
+                    />
+                }>
+                    <AvailableCoachings onClickBuyMoreSessions={() => setIsBuySectionVisible((prev) => !prev)} />
+                </Suspense>
+            )}
 
             {/* Buy Coaching Sessions - toggleable */}
             {isBuySectionVisible && coachingOfferings.length > 0 && (
@@ -516,6 +523,9 @@ function BookCoachPageContent({
 }: BookCoachPageContentProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
+
+    // Determine if we're booking from a course context
+    const isFromCourse = Boolean(lessonComponentId || courseSlug);
 
     const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
         trpc.getCoachAvailability.useSuspenseQuery({ coachUsername });
@@ -745,7 +755,7 @@ function BookCoachPageContent({
                     </div>
                     <div className="w-[400px] shrink-0">
                         <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-                            <CoachingOfferingsPanel coachUsername={coachUsername} />
+                            <CoachingOfferingsPanel coachUsername={coachUsername} isFromCourse={isFromCourse} />
                         </Suspense>
                     </div>
                 </div>
@@ -759,7 +769,7 @@ function BookCoachPageContent({
                         openDialog={() => setIsDialogOpen(true)}
                     />
                     <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-                        <CoachingOfferingsPanel coachUsername={coachUsername} />
+                        <CoachingOfferingsPanel coachUsername={coachUsername} isFromCourse={isFromCourse} />
                     </Suspense>
                 </div>
             </div>
