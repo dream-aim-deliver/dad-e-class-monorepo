@@ -54,10 +54,15 @@ interface AddGroupSessionProps {
 function CalendarContent({ courseSlug, groupId }: { courseSlug: string; groupId: string }) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.calendarPage');
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
     const [currentView, setCurrentView] = useState<'weekly' | 'monthly'>(
         'weekly',
     );
+
+    // Initialize date on client side only to avoid hydration mismatch
+    useEffect(() => {
+        setCurrentDate(new Date());
+    }, []);
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(
         undefined,
     );
@@ -112,7 +117,7 @@ function CalendarContent({ courseSlug, groupId }: { courseSlug: string; groupId:
         setIsAddDialogOpen(true);
     };
 
-    if (!groupCoachingSessionsViewModel || !coachCoachingSessionsViewModel) {
+    if (!groupCoachingSessionsViewModel || !coachCoachingSessionsViewModel || !currentDate) {
         return <DefaultLoading locale={locale} />;
     }
 

@@ -3,12 +3,13 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/cms-client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListStudentCoachingSessionsPresenter } from '../../../hooks/use-list-student-coaching-sessions-presenter';
 import {
     Breadcrumbs,
     CalendarNavigationHeader,
+    DefaultLoading,
     Divider,
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
@@ -42,15 +43,26 @@ export default function StudentCalendar({ hideBreadcrumbs = false }: StudentCale
         studentCoachingSessionsViewModel,
     );
 
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
     const [currentView, setCurrentView] = useState<'weekly' | 'monthly'>(
         'weekly',
     );
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(
         undefined,
     );
+
+    // Initialize date on client side only to avoid hydration mismatch
+    useEffect(() => {
+        setCurrentDate(new Date());
+    }, []);
+
     const router = useRouter();
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+
+    // Wait for client-side date initialization to avoid hydration mismatch
+    if (!currentDate) {
+        return <DefaultLoading locale={locale} />;
+    }
 
     return (
         <Tabs.Root

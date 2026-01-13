@@ -1,7 +1,7 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { MonthlyCalendar } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface MonthlyCalendarPickerProps {
     onDateClick: (date: Date) => void;
@@ -12,9 +12,19 @@ export default function MonthlyCalendarPicker({
     onDateClick,
     selectedDate,
 }: MonthlyCalendarPickerProps) {
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
     const locale = useLocale() as TLocale;
-    // Placeholder for a calendar picker component
+
+    // Initialize date on client side only to avoid hydration mismatch
+    useEffect(() => {
+        setCurrentDate(new Date());
+    }, []);
+
+    // Wait for client-side initialization
+    if (!currentDate) {
+        return null;
+    }
+
     return (
         <MonthlyCalendar
             locale={locale}

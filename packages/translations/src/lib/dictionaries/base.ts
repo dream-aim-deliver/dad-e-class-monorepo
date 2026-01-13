@@ -2986,6 +2986,23 @@ export const DictionarySchema = z.object({
       maxDateNote: z.string(),
       addingRecurringAvailability: z.string(),
       cancelButton: z.string(),
+      // Day names
+      dayMonday: z.string(),
+      dayTuesday: z.string(),
+      dayWednesday: z.string(),
+      dayThursday: z.string(),
+      dayFriday: z.string(),
+      daySaturday: z.string(),
+      daySunday: z.string(),
+      // Delete recurring availability
+      deleteRecurringAvailabilityButton: z.string(),
+      deleteRecurringAvailabilityTitle: z.string(),
+      timeRangeToMatchLabel: z.string(),
+      deleteRecurringHelperText: z.string(),
+      slotsWillBeDeleted: z.string(),
+      noMatchingSlotsFound: z.string(),
+      deletingSlots: z.string(),
+      deleteNSlots: z.string(),
     }),
     manageLegalTexts: z.object({
       title: z.string(),

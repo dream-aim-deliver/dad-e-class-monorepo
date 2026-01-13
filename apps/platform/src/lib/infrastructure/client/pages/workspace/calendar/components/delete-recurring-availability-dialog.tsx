@@ -8,14 +8,15 @@ import {
     RadioButton,
     InputField,
 } from '@maany_shr/e-class-ui-kit';
-import { useAddRecurringAvailability, DayOfWeek, getMaxAvailabilityDate } from '../hooks/use-add-recurring-availability';
+import { useDeleteRecurringAvailability, DayOfWeek } from '../hooks/use-delete-recurring-availability';
 import { useTranslations } from 'next-intl';
-import DatePicker from '../../../common/date-picker';
+import { useCaseModels } from '@maany_shr/e-class-models';
 
-interface AddRecurringAvailabilityDialogProps {
+interface DeleteRecurringAvailabilityDialogProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     onSuccess: () => void;
+    availabilities: useCaseModels.TAvailability[];
 }
 
 const daysOfWeek: DayOfWeek[] = [
@@ -39,26 +40,26 @@ const dayTranslationKeys: Record<DayOfWeek, string> = {
     'Sunday': 'daySunday',
 };
 
-export function AddRecurringAvailabilityDialog({
+export function DeleteRecurringAvailabilityDialog({
     isOpen,
     onOpenChange,
     onSuccess,
-}: AddRecurringAvailabilityDialogProps) {
+    availabilities,
+}: DeleteRecurringAvailabilityDialogProps) {
     const t = useTranslations('pages.calendarPage');
     const {
         dayOfWeek,
         startTime,
         endTime,
-        availabilityUntil,
+        matchingCount,
         setDayOfWeek,
         setStartTime,
         setEndTime,
-        setAvailabilityUntil,
         error,
         isSubmitting,
         validateAndSubmit,
         reset,
-    } = useAddRecurringAvailability({ onSuccess });
+    } = useDeleteRecurringAvailability({ availabilities, onSuccess });
 
     const handleOpenChange = (open: boolean) => {
         if (!open) {
@@ -67,13 +68,10 @@ export function AddRecurringAvailabilityDialog({
         onOpenChange(open);
     };
 
-    const maxDate = getMaxAvailabilityDate();
-    const maxDateFormatted = maxDate.toLocaleDateString();
-
     return (
         <Dialog defaultOpen={false} open={isOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button variant="secondary" text={t('addRecurringAvailabilityButton') || 'Add Recurring'} />
+                <Button variant="secondary" text={t('deleteRecurringAvailabilityButton')} />
             </DialogTrigger>
             <DialogContent
                 showCloseButton
@@ -82,19 +80,19 @@ export function AddRecurringAvailabilityDialog({
             >
                 <div className="flex flex-col gap-6 p-2">
                     <h2 className="text-xl font-bold text-text-primary">
-                        {t('addRecurringAvailabilityTitle') || 'Add Recurring Availability'}
+                        {t('deleteRecurringAvailabilityTitle')}
                     </h2>
 
                     {/* Day of Week Selection */}
                     <div className="flex flex-col gap-3">
                         <p className="text-sm font-semibold text-text-primary">
-                            {t('selectDayOfWeek') || 'Select Day of Week'}
+                            {t('selectDayOfWeek')}
                         </p>
                         <div className="grid grid-cols-2 gap-2">
                             {daysOfWeek.map((day) => (
                                 <RadioButton
                                     key={day}
-                                    name="dayOfWeek"
+                                    name="dayOfWeekDelete"
                                     value={day}
                                     label={t(dayTranslationKeys[day])}
                                     checked={dayOfWeek === day}
@@ -110,38 +108,41 @@ export function AddRecurringAvailabilityDialog({
                     {/* Time Selection */}
                     <div className="flex flex-col gap-3">
                         <p className="text-sm font-semibold text-text-primary">
-                            {t('timeLabel') || 'Time'}
+                            {t('timeRangeToMatchLabel')}
                         </p>
                         <div className="flex gap-4">
                             <div className="flex-1">
                                 <InputField
-                                    inputText={t('startTimeLabel') || 'Start (HH:MM)'}
+                                    inputText={t('startTimeLabel')}
                                     value={startTime}
                                     setValue={setStartTime}
                                 />
                             </div>
                             <div className="flex-1">
                                 <InputField
-                                    inputText={t('endTimeLabel') || 'End (HH:MM)'}
+                                    inputText={t('endTimeLabel')}
                                     value={endTime}
                                     setValue={setEndTime}
                                 />
                             </div>
                         </div>
+                        {/* Helper text explaining the matching behavior */}
+                        <p className="text-xs text-text-secondary">
+                            {t('deleteRecurringHelperText')}
+                        </p>
                     </div>
 
-                    {/* Available Until Date Picker */}
-                    <div className="flex flex-col gap-3">
-                        <p className="text-sm font-semibold text-text-primary">
-                            {t('availableUntilLabel') || 'Available Until'}
-                        </p>
-                        <p className="text-xs text-text-secondary">
-                            {t('maxDateNote') || `Maximum: ${maxDateFormatted} (6 months)`}
-                        </p>
-                        <DatePicker
-                            selectedDate={availabilityUntil}
-                            onDateSelect={setAvailabilityUntil}
-                        />
+                    {/* Preview of how many slots will be deleted */}
+                    <div className="p-3 rounded-md bg-card-stroke border border-divider">
+                        {matchingCount > 0 ? (
+                            <p className="text-sm text-feedback-warning-primary font-medium">
+                                ⚠️ {t('slotsWillBeDeleted', { count: matchingCount })}
+                            </p>
+                        ) : (
+                            <p className="text-sm text-text-secondary">
+                                {t('noMatchingSlotsFound')}
+                            </p>
+                        )}
                     </div>
 
                     {/* Error Display */}
@@ -153,18 +154,18 @@ export function AddRecurringAvailabilityDialog({
                     <div className="flex gap-3 justify-end">
                         <Button
                             variant="secondary"
-                            text={t('cancelButton') || 'Cancel'}
+                            text={t('cancelButton')}
                             onClick={() => handleOpenChange(false)}
                             disabled={isSubmitting}
                         />
                         <Button
                             variant="primary"
                             text={isSubmitting
-                                ? (t('addingRecurringAvailability') || 'Adding...')
-                                : (t('addRecurringAvailabilityButton') || 'Add Recurring')
+                                ? t('deletingSlots')
+                                : t('deleteNSlots', { count: matchingCount })
                             }
                             onClick={validateAndSubmit}
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || matchingCount === 0}
                         />
                     </div>
                 </div>

@@ -25,7 +25,7 @@ import { useListCoachCoachingSessionsPresenter } from '../../../hooks/use-list-c
 function CalendarContent() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.calendarPage');
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
     const [currentView, setCurrentView] = useState<'weekly' | 'monthly'>(
         'weekly',
     );
@@ -35,6 +35,11 @@ function CalendarContent() {
     const [newSessionStart, setNewSessionStart] = useState<Date | undefined>(
         undefined,
     );
+
+    // Initialize date on client side only to avoid hydration mismatch
+    useEffect(() => {
+        setCurrentDate(new Date());
+    }, []);
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -75,7 +80,7 @@ function CalendarContent() {
         setIsAddDialogOpen(true);
     };
 
-    if (!coachCoachingSessionsViewModel) {
+    if (!coachCoachingSessionsViewModel || !currentDate) {
         return <DefaultLoading locale={locale} />;
     }
 
