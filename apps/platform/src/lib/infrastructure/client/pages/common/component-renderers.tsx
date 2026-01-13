@@ -52,6 +52,7 @@ export interface ComponentRendererProps {
     formElement: LessonElement;
     elementProgress: React.RefObject<Map<string, LessonElement>>;
     locale: TLocale;
+    isArchived?: boolean;
 }
 
 function RichTextComponent({
@@ -453,6 +454,7 @@ function CoachingSessionComponent({
     formElement,
     keyString: key,
     locale,
+    isArchived,
 }: ComponentRendererProps) {
     const element = formElement as CoachingSessionElement;
     const router = useRouter();
@@ -466,6 +468,15 @@ function CoachingSessionComponent({
     );
 
     const getProgressContent = () => {
+        // For archived/draft courses, show disabled message
+        if (isArchived) {
+            return (
+                <span className="text-text-secondary">
+                    Coaching sessions are not available for this course.
+                </span>
+            );
+        }
+
         if (!element.progress) {
             return (
                 <span className="text-text-secondary">
