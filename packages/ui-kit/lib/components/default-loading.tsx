@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 interface DefaultLoadingProps {
     locale: TLocale;
     variant?: 'minimal' | 'card' | 'overlay';
+    /** Optional logo element to display above the loading spinner (minimal variant only) */
+    logo?: React.ReactNode;
 }
 
 /**
@@ -56,7 +58,8 @@ interface DefaultLoadingProps {
  */
 export default function DefaultLoading({
     locale,
-    variant = 'minimal'
+    variant = 'minimal',
+    logo
 }: DefaultLoadingProps) {
     const dictionary = getDictionary(locale).components.defaultLoading;
     const [mounted, setMounted] = useState(false);
@@ -102,9 +105,10 @@ export default function DefaultLoading({
     }
 
     return (
-        <div className="fixed top-0 left-0 w-full h-full backdrop-blur-sm bg-black/10 flex items-center justify-center z-50">
+        <div className="fixed top-0 left-0 w-full h-full backdrop-blur-sm bg-black/10 flex flex-col items-center justify-center z-50 gap-4">
+            {logo && <div className="mb-2">{logo}</div>}
             <div className="flex items-center space-x-3">
-                <IconLoaderSpinner 
+                <IconLoaderSpinner
                     size="8"
                     classNames="text-text-secondary animate-spin"
                 />

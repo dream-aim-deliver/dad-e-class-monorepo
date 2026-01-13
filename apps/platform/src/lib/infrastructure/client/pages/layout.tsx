@@ -45,6 +45,18 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
     // Get platform data from context (already fetched server-side with 15-minute cache)
     const { platform } = useRequiredPlatform();
 
+    // Cache platform info for loading pages (they render before context is available)
+    useEffect(() => {
+        try {
+            localStorage.setItem('platform-loading-info', JSON.stringify({
+                name: platform.name,
+                logoUrl: platform.logo?.downloadUrl || null
+            }));
+        } catch {
+            // Ignore localStorage errors (SSR, private browsing, etc.)
+        }
+    }, [platform.name, platform.logo?.downloadUrl]);
+
     // Transform platform data to view model format
     // Since platform comes from required context (throws if missing) and is already
     // validated server-side, we can safely construct the 'default' mode view model
