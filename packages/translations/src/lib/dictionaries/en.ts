@@ -1912,7 +1912,7 @@ export const EN: TDictionary = {
       at: 'at',
       invoice: 'Invoice (PDF)',
       total: 'Tot:',
-      coachingSession: 'Coachin session(s)',
+      coachingSession: 'Coaching session(s)',
       minutes: 'min',
       package: 'Package:',
       coursesIncluded: 'Courses included',
