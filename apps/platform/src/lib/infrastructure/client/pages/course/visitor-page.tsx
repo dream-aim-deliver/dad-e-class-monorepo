@@ -10,6 +10,7 @@ import {
     StarRating,
     Dropdown,
     DefaultError,
+    DefaultLoading,
     TeachCourseBanner,
     Breadcrumbs,
     DefaultNotFound,
@@ -47,7 +48,26 @@ interface VisitorPageProps {
     locale: TLocale;
 }
 
+/**
+ * Wrapper component that ensures session is ready before rendering content.
+ * This prevents auth race condition where tRPC queries run before the token is available.
+ */
 export default function VisitorPage({
+    courseSlug,
+    locale,
+}: VisitorPageProps) {
+    const { status } = useSession();
+
+    // Wait for session to be determined before making authenticated queries
+    // This ensures the tRPC provider has updated the auth token ref
+    if (status === 'loading') {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    return <VisitorPageContent courseSlug={courseSlug} locale={locale} />;
+}
+
+function VisitorPageContent({
     courseSlug,
     locale,
 }: VisitorPageProps) {
@@ -348,6 +368,8 @@ export default function VisitorPage({
         switch (courseData?.mode) {
             case 'kaboom':
                 return <DefaultError locale={locale} />;
+            case 'not-found':
+                return <DefaultNotFound locale={locale} />;
             case 'default':
                 return (
                     <CourseGeneralInformationVisitor
@@ -411,6 +433,9 @@ export default function VisitorPage({
         switch (introductionData?.mode) {
             case 'kaboom':
                 return <DefaultError locale={locale} />;
+            //@ts-ignore
+            case 'not-found':
+                return <DefaultNotFound locale={locale} />;
             case 'default':
                 return (
                     <CourseIntroBanner
@@ -433,6 +458,9 @@ export default function VisitorPage({
         switch (outlineData?.mode) {
             case 'kaboom':
                 return <DefaultError locale={locale} />;
+            //@ts-ignore
+            case 'not-found':
+                return <DefaultNotFound locale={locale} />;
             case 'default':
                 return (
                     <div className="p-6 bg-card-fill border border-card-stroke rounded-medium">
@@ -458,6 +486,9 @@ export default function VisitorPage({
         switch (reviewsData?.mode) {
             case 'kaboom':
                 return <DefaultError locale={locale} />;
+            //@ts-ignore
+            case 'not-found':
+                return <DefaultNotFound locale={locale} />;
             case 'default':
                 if (reviewsData.data.reviews.length === 0) {
                     return (
@@ -502,6 +533,8 @@ export default function VisitorPage({
         switch (packagesData?.mode) {
             case 'kaboom':
                 return <DefaultError locale={locale} />;
+            case 'not-found':
+                return <DefaultNotFound locale={locale} />;
             case 'default':
                 if (packagesData.data.packages.length === 0) return null;
                 return (

@@ -32,8 +32,15 @@ export default function CMSTRPCClientProviders({
     const platformSlug = runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME;
 
     // Store token in ref to avoid client recreation on token refresh
-    const tokenRef = useRef<string | undefined>(undefined);
-    const sessionIdRef = useRef<string | undefined>(undefined);
+    // Initialize with current session value to prevent race condition on first render
+    const tokenRef = useRef<string | undefined>(session?.user?.idToken);
+    const sessionIdRef = useRef<string | undefined>(session?.user?.sessionId);
+
+    // Update refs synchronously during render to ensure token is available
+    // before any child components make tRPC requests
+    // This is safe because we're only updating refs, not causing state changes
+    tokenRef.current = session?.user?.idToken;
+    sessionIdRef.current = session?.user?.sessionId;
 
     // Store triggerExpiration in ref to avoid stale closure issues
     const triggerExpirationRef = useRef(triggerExpiration);

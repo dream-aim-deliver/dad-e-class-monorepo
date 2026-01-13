@@ -58,34 +58,23 @@ export default class PublicCourseDetailsPresenter extends BasePresenter<
             TGetPublicCourseDetailsResponseMiddleware
         >,
     ): viewModels.TPublicCourseDetailsViewModel {
-        // TEMPORARY: Always return kaboom mode for testing error handling
+        if (response.data?.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {
-                message: 'Simulated error for testing',
-                operation: 'getPublicCourseDetails',
-                context: {}
+                message: response.data?.message || 'Unknown error',
+                operation: response.data?.operation || 'unknown',
+                context: response.data?.context || {}
             }
         };
-
-        // ORIGINAL CODE (uncomment when done testing):
-        // if (response.data?.errorType === 'NotFoundError') {
-        //     return {
-        //         mode: 'not-found',
-        //         data: {
-        //             message: response.data.message,
-        //             operation: response.data.operation,
-        //             context: response.data.context
-        //         }
-        //     };
-        // }
-        // return {
-        //     mode: 'kaboom',
-        //     data: {
-        //         message: response.data?.message || 'Unknown error',
-        //         operation: response.data?.operation || 'unknown',
-        //         context: response.data?.context || {}
-        //     }
-        // };
     }
 }

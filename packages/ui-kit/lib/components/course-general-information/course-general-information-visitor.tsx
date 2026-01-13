@@ -250,7 +250,7 @@ export const CourseGeneralInformationVisitor: FC<
                     </div>
 
                     {/* Description */}
-                    <p className="text-md text-text-secondary">{longDescription}</p>
+                    <div className="text-md text-text-secondary">{longDescription}</div>
 
                     {/* Duration */}
                     <div className="flex gap-2 flex-col">
@@ -341,19 +341,6 @@ export const CourseGeneralInformationVisitor: FC<
                                     <p className="text-md text-text-primary font-important truncate">
                                         {(author as any).name as string}
                                     </p>
-                                    <div className="flex items-center gap-1">
-                                        <StarRating
-                                            totalStars={5}
-                                            size={'4'}
-                                            rating={ownerRating}
-                                        />
-                                        <p className="text-text-primary text-xs font-important">
-                                            {rating}
-                                        </p>
-                                        <p className="text-text-secondary text-2xs">
-                                            ({ownerTotalRating})
-                                        </p>
-                                    </div>
                                 </div>
                                 {onClickBook && (
                                     <Button
