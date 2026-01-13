@@ -2977,6 +2977,15 @@ export const DictionarySchema = z.object({
       groupSessionDetailsTitle: z.string(),
       createGroupSession: z.string(),
       cancel: z.string(),
+      // Recurring availability
+      addRecurringAvailabilityButton: z.string(),
+      addRecurringAvailabilityTitle: z.string(),
+      selectDayOfWeek: z.string(),
+      timeLabel: z.string(),
+      availableUntilLabel: z.string(),
+      maxDateNote: z.string(),
+      addingRecurringAvailability: z.string(),
+      cancelButton: z.string(),
     }),
     manageLegalTexts: z.object({
       title: z.string(),

@@ -2933,6 +2933,15 @@ export const EN: TDictionary = {
       groupSessionDetailsTitle: 'Group Session Details',
       createGroupSession: 'Create Group Session',
       cancel: 'Cancel',
+      // Recurring availability
+      addRecurringAvailabilityButton: 'Add Recurring Availability',
+      addRecurringAvailabilityTitle: 'Add Recurring Availability',
+      selectDayOfWeek: 'Select Day of Week',
+      timeLabel: 'Time',
+      availableUntilLabel: 'Available Until',
+      maxDateNote: 'Maximum: 6 months from today',
+      addingRecurringAvailability: 'Adding...',
+      cancelButton: 'Cancel',
     },
     manageLegalTexts: {
       title: 'Manage Legal Texts',

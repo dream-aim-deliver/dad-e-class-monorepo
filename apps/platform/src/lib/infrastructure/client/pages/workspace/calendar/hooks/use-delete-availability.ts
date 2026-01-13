@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { trpc } from '../../../../trpc/client';
+import { trpc } from '../../../../trpc/cms-client';
 
 interface UseDeleteAvailabilityProps {
     onSuccess?: () => void;
@@ -22,7 +22,7 @@ export function useDeleteAvailability({ onSuccess }: UseDeleteAvailabilityProps 
 
         deleteAvailabilityMutation.mutate(
             {
-                availabilityId: availabilityId
+                availabilityIds: [availabilityId]
             },
             {
                 onSuccess: (result) => {
