@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { trpc } from '../../../../trpc/client';
+import { trpc } from '../../../../trpc/cms-client';
 
 interface NewAvailability {
     startTime?: Date;
@@ -57,8 +57,10 @@ export function useAddAvailability({ onSuccess }: UseAddAvailabilityProps = {}) 
 
         addAvailabilityMutation.mutate(
             {
-                startTime: newAvailability.startTime.toISOString(),
-                endTime: newAvailability.endTime.toISOString(),
+                slots: [{
+                    startTime: newAvailability.startTime.toISOString(),
+                    endTime: newAvailability.endTime.toISOString(),
+                }],
             },
             {
                 onSuccess: (result) => {

@@ -2936,6 +2936,15 @@ export const DE: TDictionary = {
       groupSessionDetailsTitle: 'Gruppen-Session Details',
       createGroupSession: 'Gruppen-Session erstellen',
       cancel: 'Abbrechen',
+      // Recurring availability
+      addRecurringAvailabilityButton: 'Wiederkehrende Verfügbarkeit hinzufügen',
+      addRecurringAvailabilityTitle: 'Wiederkehrende Verfügbarkeit hinzufügen',
+      selectDayOfWeek: 'Wochentag auswählen',
+      timeLabel: 'Zeit',
+      availableUntilLabel: 'Verfügbar bis',
+      maxDateNote: 'Maximum: 6 Monate ab heute',
+      addingRecurringAvailability: 'Wird hinzugefügt...',
+      cancelButton: 'Abbrechen',
     },
     manageLegalTexts: {
       title: 'Rechtliche Texte verwalten',

@@ -15,6 +15,7 @@ import {
     Divider,
 } from '@maany_shr/e-class-ui-kit';
 import { AddAvailabilityDialog } from './components/add-availability-dialog';
+import { AddRecurringAvailabilityDialog } from './components/add-recurring-availability-dialog';
 import { AvailabilityDetailsDialog } from './components/availability-details-dialog';
 import { useSession } from 'next-auth/react';
 import StudentCalendar from './student-calendar';
@@ -36,6 +37,7 @@ function CalendarContent() {
     );
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+    const [isRecurringDialogOpen, setIsRecurringDialogOpen] = useState(false);
     const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
 
     const [chosenAvailability, setChosenAvailability] = useState<
@@ -56,6 +58,11 @@ function CalendarContent() {
         setIsAddDialogOpen(false);
     };
 
+    const handleRecurringAvailabilityAdded = () => {
+        refetchCoachAvailability();
+        setIsRecurringDialogOpen(false);
+    };
+
     const handleAvailabilityDeleted = () => {
         refetchCoachAvailability();
         setIsDetailsDialogOpen(false);
@@ -74,11 +81,18 @@ function CalendarContent() {
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mt-4">
                 <h1>{t('yourCalendarTitle')}</h1>
 
-                <AddAvailabilityDialog
-                    isOpen={isAddDialogOpen}
-                    onOpenChange={setIsAddDialogOpen}
-                    onSuccess={handleAvailabilityAdded}
-                />
+                <div className="flex gap-2">
+                    <AddAvailabilityDialog
+                        isOpen={isAddDialogOpen}
+                        onOpenChange={setIsAddDialogOpen}
+                        onSuccess={handleAvailabilityAdded}
+                    />
+                    <AddRecurringAvailabilityDialog
+                        isOpen={isRecurringDialogOpen}
+                        onOpenChange={setIsRecurringDialogOpen}
+                        onSuccess={handleRecurringAvailabilityAdded}
+                    />
+                </div>
             </div>
             <Divider className="my-4" />
 
@@ -184,11 +198,17 @@ function CalendarContent() {
 
 export default function CoachCalendar() {
     const session = useSession();
+    const locale = useLocale() as TLocale;
     const t = useTranslations('pages.calendarPage');
     const router = useRouter();
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const isStudent = session.data?.user?.roles?.includes('student');
     const tabContentClass = 'mt-4';
+
+    // Wait for session to be authenticated before making authenticated queries
+    if (session.status === 'loading') {
+        return <DefaultLoading locale={locale} />;
+    }
 
     if (isStudent) {
         return (
