@@ -31,6 +31,7 @@ import VisitorPage from '../../client/pages/course/visitor-page';
 import { createGetCourseAccessPresenter } from '../presenter/get-course-access-presenter';
 import CMSTRPCClientProviders from '../../client/trpc/cms-client-provider';
 import { TLocale } from '@maany_shr/e-class-translations';
+import nextAuth from '../config/auth/next-auth.config';
 
 
 interface CourseServerComponentProps {
@@ -57,28 +58,36 @@ export default async function CourseServerComponent({
         notFound();
     }
 
-    // For unauthenticated users, check if course is public and live
+    // Handle unauthenticated mode from presenter (when backend returns AuthenticationError)
     if (courseAccessViewModel.mode === 'unauthenticated') {
-        // Try to get course data to check visibility
-        // If the course is public and live, show visitor view
-        // Otherwise, show 404
-        const courseData = courseAccessViewModel.data as any;
+        notFound();
+    }
 
-        console.log('[DEBUG] Unauthenticated access attempt:', {
-            slug,
-            courseData,
-            public: courseData?.course?.public,
-            status: courseData?.course?.status,
-        });
+    const isVisitor = courseAccessViewModel.mode === 'default' && courseAccessViewModel.data.highestRole === 'visitor';
 
-        const isPublic = courseData?.course?.public !== false;
+    // For visitors (both authenticated and unauthenticated), check course visibility
+    if (isVisitor) {
+        const courseData = courseAccessViewModel.data;
+        const isPublic = courseData?.course?.public === true;
         const isLive = courseData?.course?.status === 'live';
 
-        if (isPublic && isLive) {
-            // Course is public and live - allow unauthenticated visitor view
+        // Course must be live to be viewable
+        if (!isLive) {
+            notFound();
+        }
+
+        // Public courses can be viewed by anyone
+        if (isPublic) {
+            return renderVisitorView(slug, locale);
+        }
+
+        // Non-public courses require authentication - check session
+        const session = await nextAuth.auth();
+        if (session?.user) {
+            // User is authenticated - allow visitor view of non-public course
             return renderVisitorView(slug, locale);
         } else {
-            // Course is not public or not live - show 404
+            // User is NOT authenticated - show 404 for non-public course
             notFound();
         }
     }
@@ -145,9 +154,9 @@ async function fetchCourseAccess(
     await presenter.present(courseAccessResponse, courseAccessViewModel);
 
     if (!courseAccessViewModel) {
-        // TODO: would we need to localize these error messages?
-        throw new Error('Failed to load course access data');
+        throw new Error('Failed to load course access data.');
     }
+
     return courseAccessViewModel;
 }
 
@@ -280,17 +289,19 @@ function renderEnrolledCourse({
 
 async function renderVisitorView(slug: string, locale: TLocale) {
     // ✅ Only prefetch data - no presenters on server
-    await prefetchVisitorCourseData(slug);
+    prefetchVisitorCourseData(slug);
 
     return (
-        <CMSTRPCClientProviders>
-            <Suspense fallback={<DefaultLoadingWrapper />}>
-                <VisitorPage
-                    courseSlug={slug}
-                    locale={locale}
-                />
-            </Suspense>
-        </CMSTRPCClientProviders>
+        <HydrateClient>
+            <CMSTRPCClientProviders>
+                <Suspense fallback={<DefaultLoadingWrapper />}>
+                    <VisitorPage
+                        courseSlug={slug}
+                        locale={locale}
+                    />
+                </Suspense>
+            </CMSTRPCClientProviders>
+        </HydrateClient>
     );
 }
 // ✅ NEW: Only prefetch data - no presenters on server
