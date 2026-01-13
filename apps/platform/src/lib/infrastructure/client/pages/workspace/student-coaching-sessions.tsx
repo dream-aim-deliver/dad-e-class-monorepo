@@ -628,11 +628,11 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
             }
 
             // Helper function to format time from ISO string
-            // Uses manual formatting for guaranteed server/client consistency
+            // Uses local time methods to convert UTC to user's timezone
             const formatTime = (isoString: string) => {
                 const date = new Date(isoString);
-                const hours = date.getUTCHours();
-                const minutes = date.getUTCMinutes();
+                const hours = date.getHours();
+                const minutes = date.getMinutes();
                 const period = hours >= 12 ? 'PM' : 'AM';
                 const displayHours = hours % 12 || 12;
                 const paddedMinutes = minutes.toString().padStart(2, '0');
