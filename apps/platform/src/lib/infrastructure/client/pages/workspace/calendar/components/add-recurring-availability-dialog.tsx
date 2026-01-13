@@ -29,7 +29,7 @@ const daysOfWeek: DayOfWeek[] = [
 ];
 
 // Maps DayOfWeek to translation keys
-const dayTranslationKeys: Record<DayOfWeek, string> = {
+const dayTranslationKeys = {
     'Monday': 'dayMonday',
     'Tuesday': 'dayTuesday',
     'Wednesday': 'dayWednesday',
@@ -37,7 +37,7 @@ const dayTranslationKeys: Record<DayOfWeek, string> = {
     'Friday': 'dayFriday',
     'Saturday': 'daySaturday',
     'Sunday': 'daySunday',
-};
+} as const;
 
 export function AddRecurringAvailabilityDialog({
     isOpen,
