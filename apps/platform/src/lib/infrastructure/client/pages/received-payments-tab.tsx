@@ -89,12 +89,15 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
   }
 
-  // Get all transactions from view model
+  // Get all transactions from view model, sorted by date (newest first)
   const getAllTransactions = () => {
     if (transactionsViewModel.mode !== 'default') {
       return [];
     }
-    return transactionsViewModel.data.transactions || [];
+    const transactions = transactionsViewModel.data.transactions || [];
+    return [...transactions].sort((a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   };
 
   // Handler for invoice download/generation
