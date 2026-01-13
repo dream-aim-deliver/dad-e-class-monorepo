@@ -8,9 +8,10 @@ import { trpc } from '../../../trpc/cms-client';
 
 interface LessonNotesPanelProps {
     lessonId: number;
+    isArchived?: boolean;
 }
 
-export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
+export default function LessonNotesPanel({ lessonId, isArchived }: LessonNotesPanelProps) {
     // TRPC utils for query invalidation
     const utils = trpc.useUtils();
 
@@ -48,6 +49,11 @@ export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
     });
 
     const handleSaveNote = useCallback((content: string): boolean => {
+        // Don't save notes for archived courses
+        if (isArchived) {
+            return false;
+        }
+
         try {
             saveMutation.mutate(
                 { lessonId, content },
@@ -72,7 +78,7 @@ export default function LessonNotesPanel({ lessonId }: LessonNotesPanelProps) {
             });
             return false;
         }
-    }, [lessonId, saveMutation, t]);
+    }, [lessonId, saveMutation, t, isArchived]);
 
     const handleDeserializationError = useCallback((message: string, error: Error) => {
         setErrorModal({

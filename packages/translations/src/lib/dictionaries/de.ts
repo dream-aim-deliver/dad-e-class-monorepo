@@ -2050,6 +2050,7 @@ export const DE: TDictionary = {
         },
       },
       archiveCourseButton: 'Kurs archivieren',
+      archivedBadge: 'Archiviert',
       editCourseButton: 'Kurs bearbeiten',
       visitor: {
         courseOutlineTitle: 'Kursübersicht',

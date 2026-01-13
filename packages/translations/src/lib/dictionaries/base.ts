@@ -2112,6 +2112,7 @@ export const DictionarySchema = z.object({
         }),
       }),
       archiveCourseButton: z.string(),
+      archivedBadge: z.string(),
       editCourseButton: z.string(),
       visitor: z.object({
         courseOutlineTitle: z.string(),

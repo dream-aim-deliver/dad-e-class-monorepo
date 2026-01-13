@@ -2047,6 +2047,7 @@ export const EN: TDictionary = {
         },
       },
       archiveCourseButton: 'Archive Course',
+      archivedBadge: 'Archived',
       editCourseButton: 'Edit Course',
       visitor: {
         courseOutlineTitle: 'Course Outline',

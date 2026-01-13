@@ -24,11 +24,13 @@ import { useRealProgressUpload } from '../utils/file-upload';
 interface AssignmentContentProps {
     assignmentId: string;
     studentUsername?: string;
+    isArchived?: boolean;
 }
 
 export default function AssignmentContent({
     assignmentId,
     studentUsername,
+    isArchived,
 }: AssignmentContentProps) {
     const locale = useLocale() as TLocale;
     const session = useSession();
@@ -72,6 +74,7 @@ export default function AssignmentContent({
                 assignmentId={assignmentId}
                 assignment={assignment}
                 refetchAssignment={refetchAssignment}
+                isArchived={isArchived}
             />
         </div>
     );
@@ -82,6 +85,7 @@ interface AssignmentInteractionProps {
     assignmentId: string;
     assignment: viewModels.TAssignmentSuccess;
     refetchAssignment: () => void;
+    isArchived?: boolean;
 }
 
 function AssignmentInteraction({
@@ -89,6 +93,7 @@ function AssignmentInteraction({
     assignmentId,
     assignment,
     refetchAssignment,
+    isArchived,
 }: AssignmentInteractionProps) {
     const locale = useLocale() as TLocale;
     const session = useSession();
@@ -182,7 +187,7 @@ function AssignmentInteraction({
                 links: links.map((l) => ({
                     title: l.title,
                     url: l.url,
-                    iconFileId: Number(l.customIcon?.id),
+                    iconFileId: l.customIcon?.id ? Number(l.customIcon.id) : undefined,
                 })),
             },
             {
@@ -243,8 +248,8 @@ function AssignmentInteraction({
 
     const isStudent = session.data?.user?.name === studentUsername;
 
-    // Don't show reply panel if assignment is already passed
-    if (assignment.progress?.passedDetails) {
+    // Don't show reply panel if assignment is already passed or course is archived
+    if (assignment.progress?.passedDetails || isArchived) {
         return null;
     }
 

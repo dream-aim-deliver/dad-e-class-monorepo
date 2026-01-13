@@ -4,7 +4,8 @@ import { Button } from "../button";
 
 export interface CoachingSessionTrackerProps extends isLocalAware {
     children: React.ReactNode;
-    onClickBuySessions: () => void;
+    /** When provided, shows the "Buy Sessions" button. When undefined, button is hidden. */
+    onClickBuySessions?: () => void;
 };
 
 /**
@@ -69,16 +70,18 @@ export const CoachingSessionTracker: FC<CoachingSessionTrackerProps> = ({
                     `}</style>
                 </div>
             </div>
-            <Button
-                onClick={onClickBuySessions}
-                variant="secondary"
-                size="medium"
-                text={hasChildren ?
-                    dictionary.components.coachingSessionTracker.buyMoreSessionsText :
-                    dictionary.components.coachingSessionTracker.buyCoachingSessionsText
-                }
-                className='md:w-auto w-full'
-            />
+            {onClickBuySessions && (
+                <Button
+                    onClick={onClickBuySessions}
+                    variant="secondary"
+                    size="medium"
+                    text={hasChildren ?
+                        dictionary.components.coachingSessionTracker.buyMoreSessionsText :
+                        dictionary.components.coachingSessionTracker.buyCoachingSessionsText
+                    }
+                    className='md:w-auto w-full'
+                />
+            )}
         </div>
     )
 };

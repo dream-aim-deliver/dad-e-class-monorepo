@@ -28,6 +28,7 @@ import { useRouter } from 'next/navigation';
 interface EnrolledCoachesProps {
     courseSlug: string;
     currentRole: string;
+    isArchived?: boolean;
 }
 type Coach = TListCoachesSuccessResponse['data']['coaches'][0];
 
@@ -424,7 +425,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             return (
                                 <CoachCard
                                     key={coach.username}
-                                    {...(isAdmin
+                                    {...(canManageCoaches
                                         ? {
                                             ...baseProps,
                                             variant: 'courseCreator' as const,
@@ -457,12 +458,13 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     };
 
     const isAdmin = props.currentRole === 'admin' || props.currentRole === 'superadmin';
+    const canManageCoaches = isAdmin && !props.isArchived;
 
     return (
         <div className="space-y-6">
             <header className="flex justify-between items-center">
                 <h2>{t('title')}</h2>
-                {isAdmin && (
+                {canManageCoaches && (
                     <Button
                         hasIconLeft
                         iconLeft={<IconPlus />}

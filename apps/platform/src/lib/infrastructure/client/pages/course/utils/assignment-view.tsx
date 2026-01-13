@@ -12,6 +12,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 
 export interface AssignmentViewServiceConfig {
     studentUsername?: string;
+    isArchived?: boolean;
 }
 
 export interface AssignmentViewService {
@@ -66,6 +67,7 @@ export const useStudyAssignmentView = (
                         <AssignmentContent
                             assignmentId={assignmentId}
                             studentUsername={config.studentUsername}
+                            isArchived={config.isArchived}
                         />
                     </Suspense>
                 </DialogContent>
