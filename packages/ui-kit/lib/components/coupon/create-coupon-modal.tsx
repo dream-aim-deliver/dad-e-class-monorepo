@@ -866,7 +866,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50 pt-16" onClick={onClose}>
-      <div className="flex flex-col gap-4 p-6 bg-card-fill border border-card-stroke text-text-primary w-full max-w-[600px] max-h-[85vh] rounded-md mx-4 my-8" onClick={(e) => e.stopPropagation()}>
+      <div className="flex flex-col gap-4 p-6 bg-card-fill border border-card-stroke text-text-primary w-full max-w-[600px] max-h-[85vh] overflow-hidden rounded-md mx-4 my-8" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">{isSuccess ? dictionary.successTitle : dictionary.title}</h2>
@@ -884,7 +884,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
         <div className="h-px w-full bg-divider"></div>
 
         {/* Content */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 overflow-y-auto flex-1 min-h-0">
           {isSuccess ? (
             renderSuccessContent()
           ) : errorMessage?.includes('name_already_exists') ? (

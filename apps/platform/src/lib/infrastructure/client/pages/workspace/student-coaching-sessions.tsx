@@ -79,7 +79,7 @@ function ScheduledStudentSessionCard({
         calculateStatus();
         const interval = setInterval(calculateStatus, 60000);
         return () => clearInterval(interval);
-    }, [startDateTime]);
+    }, [session.startTime]);
 
     // Don't render until status is calculated
     if (!status) return null;

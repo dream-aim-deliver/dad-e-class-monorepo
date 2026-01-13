@@ -43,6 +43,7 @@ interface EnrolledCourseProps {
     tab?: string;
     studentUsername?: string;
     lesson?: string;
+    isArchived?: boolean;
 }
 
 function CourseTabList({ role }: { role: string }) {
@@ -285,6 +286,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 currentRole={props.currentRole}
                 courseSlug={props.courseSlug}
                 certificateDataViewModel={certificateDataViewModel}
+                isArchived={props.isArchived}
             />
             <Tabs.Root defaultTab={activeTab} onValueChange={handleTabChange}>
                 <CourseTabList role={props.currentRole} />
@@ -294,13 +296,14 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                         courseViewModel={courseViewModel}
                         progressViewModel={props.studentProgressViewModel}
                         courseSlug={props.courseSlug}
+                        isArchived={props.isArchived}
                     />
                 </Tabs.Content>
                 <Tabs.Content
                     value={CoachCourseTab.PREVIEW}
                     className={tabContentClass}
                 >
-                    <EnrolledCoursePreview courseSlug={props.courseSlug} initialLessonId={props.lesson} />
+                    <EnrolledCoursePreview courseSlug={props.courseSlug} initialLessonId={props.lesson} isArchived={props.isArchived} />
                 </Tabs.Content>
                 <Tabs.Content value={CoachCourseTab.STUDENTS} className={tabContentClass}>
                     <EnrolledCourseStudents
@@ -311,9 +314,10 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 <Tabs.Content value="study" className={tabContentClass}>
                     <EnrolledCoursePreview
                         courseSlug={props.courseSlug}
-                        enableSubmit
+                        enableSubmit={!props.isArchived}
                         studentUsername={props.studentUsername}
                         initialLessonId={props.lesson}
+                        isArchived={props.isArchived}
                     />
                 </Tabs.Content>
                 <Tabs.Content value="assignments" className={tabContentClass}>
@@ -326,6 +330,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                             courseSlug={props.courseSlug}
                             role={props.currentRole === 'student' ? 'student' : 'coach'}
                             studentUsername={props.studentUsername}
+                            isArchived={props.isArchived}
                         />
                     </Suspense>
                 </Tabs.Content>
@@ -347,6 +352,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                         <EnrolledCoaches
                             courseSlug={props.courseSlug}
                             currentRole={props.currentRole}
+                            isArchived={props.isArchived}
                         />
                     </Suspense>
                 </Tabs.Content>

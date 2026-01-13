@@ -39,6 +39,7 @@ interface CourseAssignmentsListProps {
     courseSlug: string;
     studentUsername?: string; // If provided, filter to this student (for coach view)
     role: 'student' | 'coach';
+    isArchived?: boolean;
 }
 
 /**
@@ -49,6 +50,7 @@ export function CourseAssignmentsList({
     courseSlug,
     studentUsername,
     role,
+    isArchived,
 }: CourseAssignmentsListProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.groupWorkspaceCoach');
@@ -70,6 +72,7 @@ export function CourseAssignmentsList({
             courseSlug={courseSlug}
             studentUsername={studentUsername}
             role={role}
+            isArchived={isArchived}
         />
     );
 }
@@ -82,6 +85,7 @@ function CourseAssignmentsListContent({
     courseSlug,
     studentUsername,
     role,
+    isArchived,
 }: CourseAssignmentsListProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -300,6 +304,7 @@ function CourseAssignmentsListContent({
                             <AssignmentContent
                                 assignmentId={selectedAssignment.id}
                                 studentUsername={selectedAssignment.studentUsername}
+                                isArchived={isArchived}
                             />
                         </Suspense>
                     </DialogContent>

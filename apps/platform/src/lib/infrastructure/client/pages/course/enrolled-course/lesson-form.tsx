@@ -29,6 +29,7 @@ interface LessonFormProps {
     data: viewModels.TListLessonComponentsSuccess;
     enableSubmit?: boolean;
     studentUsername?: string;
+    isArchived?: boolean;
 }
 
 const transformTextInput = (
@@ -173,6 +174,7 @@ export default function LessonForm({
     data,
     enableSubmit = false,
     studentUsername,
+    isArchived = false,
 }: LessonFormProps) {
     const components = data.components;
     const locale = useLocale() as TLocale;
@@ -259,7 +261,7 @@ export default function LessonForm({
     const isSubmitting = submitProgressMutation.isPending;
 
     return (
-        <AssignmentViewProvider mode={enableSubmit ? 'study' : 'preview'} config={{ studentUsername }}>
+        <AssignmentViewProvider mode="study" config={{ studentUsername, isArchived }}>
             <FileUploadProvider
                 mode={enableSubmit ? 'real' : 'mock'}
                 config={{ lessonId: lessonId }}

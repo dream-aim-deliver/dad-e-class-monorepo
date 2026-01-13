@@ -33,6 +33,7 @@ interface EnrolledCourseIntroductionProps {
     progressViewModel?: viewModels.TStudentProgressViewModel;
     currentRole: string;
     courseSlug: string;
+    isArchived?: boolean;
 }
 
 function EnrolledCourseIntroductionContent(
@@ -100,14 +101,16 @@ function EnrolledCourseIntroductionContent(
     );
 }
 
-function IncludedCoachingSessions({ 
+function IncludedCoachingSessions({
     courseSlug,
     onPurchaseComponentCoaching,
     onBuySessions,
-}: { 
+    isArchived,
+}: {
     courseSlug: string;
     onPurchaseComponentCoaching?: (lessonComponentIds: string[]) => void;
     onBuySessions?: () => void;
+    isArchived?: boolean;
 }) {
     const [coachingSessionsResponse] =
         trpc.listIncludedCoachingSessions.useSuspenseQuery({
@@ -139,9 +142,8 @@ function IncludedCoachingSessions({
     return (
         <CoachingSessionTracker
             locale={locale}
-            onClickBuySessions={() => {
-                onBuySessions?.();
-            }}
+            // Don't show buy sessions button for archived courses
+            onClickBuySessions={isArchived ? undefined : () => onBuySessions?.()}
         >
             {offers.map((offer) => (
                 <CoachingSessionItem
@@ -371,18 +373,21 @@ function StudentEnrolledCourseIntroduction(
                     courseSlug={props.courseSlug}
                     onPurchaseComponentCoaching={handlePurchaseComponentCoaching}
                     onBuySessions={() => setIsBuySessionsModalOpen(true)}
+                    isArchived={props.isArchived}
                 />
             </Suspense>
             <EnrolledCourseIntroductionContent {...props} />
 
-            {/* Buy Course Coaching Sessions Modal */}
-            <BuyCourseCoachingSessionsModal
-                isOpen={isBuySessionsModalOpen}
-                onClose={() => setIsBuySessionsModalOpen(false)}
-                courseSlug={props.courseSlug}
-                locale={locale}
-                onPurchase={handlePurchaseComponentCoaching}
-            />
+            {/* Buy Course Coaching Sessions Modal - not shown for archived courses */}
+            {!props.isArchived && (
+                <BuyCourseCoachingSessionsModal
+                    isOpen={isBuySessionsModalOpen}
+                    onClose={() => setIsBuySessionsModalOpen(false)}
+                    courseSlug={props.courseSlug}
+                    locale={locale}
+                    onPurchase={handlePurchaseComponentCoaching}
+                />
+            )}
 
             {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCourseCoachingSessionPurchase' && (
                 <CheckoutModal

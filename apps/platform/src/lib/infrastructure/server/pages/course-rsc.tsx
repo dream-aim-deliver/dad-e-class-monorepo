@@ -110,6 +110,8 @@ export default async function CourseServerComponent({
     // TODO: might differ base on the tab
     await prefetchIntroductionData(slug, currentRole);
 
+    const isArchived = course.status === 'archived';
+
     return renderEnrolledCourse({
         slug,
         roles,
@@ -117,6 +119,7 @@ export default async function CourseServerComponent({
         tab,
         username,
         lesson,
+        isArchived,
     });
 }
 
@@ -213,6 +216,13 @@ async function prefetchIntroductionData(
         }),
     );
 
+    // Certificate data is used by EnrolledCourseContent for download certificate button
+    prefetch(
+        trpc.getCourseCertificateData.queryOptions({
+            courseSlug: slug,
+        }),
+    );
+
     if (currentRole === 'student') {
         prefetch(
             trpc.getStudentProgress.queryOptions({
@@ -224,8 +234,6 @@ async function prefetchIntroductionData(
                 courseSlug: slug,
             }),
         );
-        // TSK-PERF-014: Removed unused getCourseCertificateData prefetch
-        // No client component uses this query currently
     }
 }
 
@@ -236,6 +244,7 @@ function renderEnrolledCourse({
     tab,
     username,
     lesson,
+    isArchived,
 }: {
     slug: string;
     roles: string[];
@@ -243,6 +252,7 @@ function renderEnrolledCourse({
     tab?: string;
     username?: string;
     lesson?: string;
+    isArchived?: boolean;
 }) {
     return (
         <HydrateClient>
@@ -254,6 +264,7 @@ function renderEnrolledCourse({
                     tab={tab}
                     studentUsername={username}
                     lesson={lesson}
+                    isArchived={isArchived}
                 />
             </Suspense>
         </HydrateClient>

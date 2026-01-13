@@ -124,7 +124,7 @@ function CoachHeader({ coachUsername }: CoachHeaderProps) {
     return (
         <div className="flex flex-col gap-4 mb-6">
             <Button
-                onClick={() => router.back()}
+                onClick={() => router.push(`/${locale}/coaches/${coachUsername}`)}
                 variant="text"
                 text={`< ${t('back')}`}
                 className="w-fit p-0"

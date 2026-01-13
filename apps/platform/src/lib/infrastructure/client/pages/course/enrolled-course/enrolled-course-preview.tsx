@@ -26,12 +26,14 @@ interface EnrolledCoursePreviewProps {
     enableSubmit?: boolean;
     studentUsername?: string;
     initialLessonId?: string;
+    isArchived?: boolean;
 }
 
 function CoursePreviewLesson(props: {
     lessonId: number;
     enableSubmit?: boolean;
     studentUsername?: string;
+    isArchived?: boolean;
 }) {
     const locale = useLocale() as TLocale;
 
@@ -71,6 +73,7 @@ function CoursePreviewLesson(props: {
             data={componentsViewModel.data}
             enableSubmit={props.enableSubmit}
             studentUsername={props.studentUsername}
+            isArchived={props.isArchived}
         />
     );
 }
@@ -279,6 +282,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                                         lessonId={currentLesson.id}
                                         enableSubmit={props.enableSubmit}
                                         studentUsername={studentUsername}
+                                        isArchived={props.isArchived}
                                     />
                                 </Suspense>
                             </>
@@ -287,7 +291,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
 
                     {/* Lesson Notes Panel - only shown when notes are visible and for students */}
                     {showNotes && props.enableSubmit && currentLesson && (
-                        <LessonNotesPanel lessonId={currentLesson.id} />
+                        <LessonNotesPanel lessonId={currentLesson.id} isArchived={props.isArchived} />
                     )}
                 </div>
             </div>
@@ -300,6 +304,7 @@ export default function EnrolledCoursePreview({
     enableSubmit,
     studentUsername,
     initialLessonId,
+    isArchived,
 }: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     return (
@@ -311,6 +316,7 @@ export default function EnrolledCoursePreview({
                 enableSubmit={enableSubmit}
                 studentUsername={studentUsername}
                 initialLessonId={initialLessonId}
+                isArchived={isArchived}
             />
         </Suspense>
     );

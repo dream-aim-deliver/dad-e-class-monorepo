@@ -32,6 +32,7 @@ interface EnrolledCourseHeadingProps {
     roles: string[];
     currentRole: string;
     certificateDataViewModel?: viewModels.TGetCourseCertificateDataViewModel;
+    isArchived?: boolean;
 }
 
 export default function EnrolledCourseHeading({
@@ -41,6 +42,7 @@ export default function EnrolledCourseHeading({
     currentRole,
     courseSlug,
     certificateDataViewModel,
+    isArchived,
 }: EnrolledCourseHeadingProps) {
     // Use courseStatusViewModel for both completion status and progress
     const isCompleted =
@@ -193,8 +195,8 @@ export default function EnrolledCourseHeading({
                                     </div>
                                 </div>
                             </div>
-                        ) : (
-                            // Show review form if no existing review
+                        ) : !isArchived ? (
+                            // Show review form if no existing review and course is not archived
                             <ReviewCard
                                 modalType="course"
                                 locale={locale}
@@ -204,7 +206,7 @@ export default function EnrolledCourseHeading({
                                 submitted={createReviewMutation.isSuccess}
                                 showSkipButton={false}
                             />
-                        )}
+                        ) : null}
                     </div>
 
                     {/* Right side: Download certificate button */}
@@ -321,7 +323,17 @@ export default function EnrolledCourseHeading({
                 <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                     <div className="flex-1 flex items-end gap-4 justify-between">
                         <div className="flex flex-col gap-4">
-                            <h1 className="text-left"> {courseViewModel.data.title} </h1>
+                            <div className="flex items-center gap-4">
+                                <h1 className="text-left"> {courseViewModel.data.title} </h1>
+                                {isArchived && (
+                                    <Badge
+                                        className="px-3 py-1"
+                                        variant="errorprimary"
+                                        size="big"
+                                        text={courseTranslations('archivedBadge')}
+                                    />
+                                )}
+                            </div>
                             <div className="flex space-x-2 items-center">
                                 <StarRating
                                     totalStars={5}

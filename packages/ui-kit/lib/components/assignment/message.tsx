@@ -136,7 +136,7 @@ export const Message: FC<MessageProps> = ({
                     return (
                         <div className="flex flex-col w-full" key={`link-${index}`}>
                             <LinkPreview
-                                preview={reply.sender.isCurrentUser}
+                                preview={false}
                                 title={link.title}
                                 url={link.url}
                                 customIcon={customIcon}
