@@ -14,7 +14,7 @@ interface ConfirmTimeContentProps {
     duration?: number;
     onSubmit: () => void;
     isSubmitting?: boolean;
-    submitError?: string;
+    submitError?: { title: string; description: string };
     buttonText: string;
 }
 
@@ -235,8 +235,8 @@ export default function ConfirmTimeContent({
             {submitError && (
                 <DefaultError
                     locale={locale}
-                    title=""
-                    description={submitError}
+                    title={submitError.title}
+                    description={submitError.description}
                 />
             )}
             <Button

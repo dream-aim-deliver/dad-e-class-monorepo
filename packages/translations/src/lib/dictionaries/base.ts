@@ -1869,6 +1869,80 @@ export const DictionarySchema = z.object({
         description: z.string(),
       }),
     }),
+    schedulingErrors: z.object({
+      notAuthenticated: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      notStudent: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      sessionNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      sessionNotUnscheduled: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      sessionInPast: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      insufficientAdvanceNotice: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      coachNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      coachNotAssignedToCourse: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      coachUnavailable: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      sessionOverlap: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      cannotLinkStandaloneSession: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      lessonComponentNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      lessonComponentTypeMismatch: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      lessonComponentDurationMismatch: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      studentMismatch: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      sessionAlreadyLinked: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      briefingRequired: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      genericError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    }),
     sendNotificationModal: z.object({
       step1Title: z.string(),
       step2Title: z.string(),

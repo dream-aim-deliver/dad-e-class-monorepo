@@ -14,7 +14,7 @@ interface ScheduledOfferingContentProps {
     setBriefing: React.Dispatch<React.SetStateAction<string>>;
     onSubmit: () => void;
     isSubmitting?: boolean;
-    submitError?: string;
+    submitError?: { title: string; description: string };
     bookingSuccess?: boolean;
     returnTo?: string;
     courseSlug?: string;

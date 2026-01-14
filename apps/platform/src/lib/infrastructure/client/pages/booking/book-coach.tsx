@@ -37,6 +37,7 @@ import { useGetCoachIntroductionPresenter } from '../../hooks/use-get-coach-intr
 import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../hooks/use-checkout-errors';
+import { useSchedulingErrors } from '../../hooks/use-scheduling-errors';
 import { useSession } from 'next-auth/react';
 import env from '../../config/env';
 
@@ -574,11 +575,13 @@ function BookCoachPageContent({
             // Invalidate related queries to refetch fresh data
             utils.listStudentCoachingSessions.invalidate();
             utils.getCoachAvailability.invalidate({ coachUsername });
+            utils.listAvailableCoachings.invalidate();
         },
     });
-    const [submitError, setSubmitError] = useState<string | undefined>(
+    const [submitError, setSubmitError] = useState<{ title: string; description: string } | undefined>(
         undefined,
     );
+    const { getSchedulingErrorMessage } = useSchedulingErrors();
 
     const onSubmit = () => {
         if (!newSession) return;
@@ -587,13 +590,13 @@ function BookCoachPageContent({
 
         // Check if briefing is provided
         if (!briefing.trim()) {
-            setSubmitError('Please provide a briefing for your coach.');
+            setSubmitError(getSchedulingErrorMessage('briefing_required'));
             return;
         }
 
         // Check if session is scheduled for the past
         if (newSession.startTime < new Date()) {
-            setSubmitError('Cannot schedule a session in the past.');
+            setSubmitError(getSchedulingErrorMessage('session_in_past'));
             return;
         }
 
@@ -611,20 +614,18 @@ function BookCoachPageContent({
             {
                 onSuccess: (data) => {
                     if (!data.success) {
-                        // TODO: check error type and show specific message
-                        setSubmitError(
-                            'Failed to schedule session. Please try again.',
-                        );
+                        // Get user-friendly error message based on error type
+                        const errorType = data.data?.errorType;
+                        setSubmitError(getSchedulingErrorMessage(errorType));
                         return;
                     }
                     setBookingSuccess(true);
                     onBookingInitiated?.();
                     // Query invalidation handled by mutation's onSuccess callback
                 },
-                onError: (error) => {
-                    setSubmitError(
-                        'Failed to schedule session. Please try again.',
-                    );
+                onError: () => {
+                    // Network/tRPC errors - use generic message
+                    setSubmitError(getSchedulingErrorMessage('unknown_error'));
                 },
             },
         );
