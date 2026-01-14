@@ -1881,6 +1881,80 @@ export const DE: TDictionary = {
         description: 'Beim Checkout ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
       },
     },
+    schedulingErrors: {
+      notAuthenticated: {
+        title: 'Anmeldung erforderlich',
+        description: 'Bitte melden Sie sich an, um eine Coaching-Sitzung zu planen.',
+      },
+      notStudent: {
+        title: 'Nicht berechtigt',
+        description: 'Nur Studierende können Coaching-Sitzungen planen.',
+      },
+      sessionNotFound: {
+        title: 'Sitzung nicht gefunden',
+        description: 'Die Coaching-Sitzung konnte nicht gefunden werden. Sie wurde möglicherweise entfernt.',
+      },
+      sessionNotUnscheduled: {
+        title: 'Sitzung nicht verfügbar',
+        description: 'Diese Coaching-Sitzung ist nicht mehr zur Buchung verfügbar. Bitte wählen Sie eine andere Sitzung.',
+      },
+      sessionInPast: {
+        title: 'Ungültige Zeit',
+        description: 'Eine Sitzung in der Vergangenheit kann nicht geplant werden. Bitte wählen Sie einen zukünftigen Zeitpunkt.',
+      },
+      insufficientAdvanceNotice: {
+        title: 'Zu kurzfristig',
+        description: 'Sitzungen müssen mindestens 3 Stunden im Voraus geplant werden.',
+      },
+      coachNotFound: {
+        title: 'Coach nicht gefunden',
+        description: 'Der ausgewählte Coach konnte nicht gefunden werden.',
+      },
+      coachNotAssignedToCourse: {
+        title: 'Coach nicht verfügbar',
+        description: 'Dieser Coach ist für Coaching in diesem Kurs nicht verfügbar.',
+      },
+      coachUnavailable: {
+        title: 'Coach nicht verfügbar',
+        description: 'Der Coach ist zum ausgewählten Zeitpunkt nicht verfügbar. Bitte wählen Sie einen anderen Zeitslot.',
+      },
+      sessionOverlap: {
+        title: 'Zeitkonflikt',
+        description: 'Der Coach hat bereits eine Sitzung zu diesem Zeitpunkt. Bitte wählen Sie einen anderen Zeitpunkt.',
+      },
+      cannotLinkStandaloneSession: {
+        title: 'Verknüpfung nicht möglich',
+        description: 'Eigenständige Coaching-Sitzungen können nicht mit Lektionskomponenten verknüpft werden.',
+      },
+      lessonComponentNotFound: {
+        title: 'Lektion nicht gefunden',
+        description: 'Die Lektionskomponente konnte nicht gefunden werden.',
+      },
+      lessonComponentTypeMismatch: {
+        title: 'Ungültiger Lektionstyp',
+        description: 'Diese Lektionskomponente ist nicht für Coaching-Sitzungen konfiguriert.',
+      },
+      lessonComponentDurationMismatch: {
+        title: 'Dauer stimmt nicht überein',
+        description: 'Die Dauer der Coaching-Sitzung entspricht nicht den Anforderungen der Lektionskomponente.',
+      },
+      studentMismatch: {
+        title: 'Falscher Student',
+        description: 'Diese Coaching-Sitzung gehört zu einem anderen Studierenden.',
+      },
+      sessionAlreadyLinked: {
+        title: 'Bereits verknüpft',
+        description: 'Diese Coaching-Sitzung wurde bereits mit einer Lektion verknüpft.',
+      },
+      briefingRequired: {
+        title: 'Briefing erforderlich',
+        description: 'Bitte geben Sie ein Briefing für Ihren Coach ein.',
+      },
+      genericError: {
+        title: 'Planung fehlgeschlagen',
+        description: 'Bei der Planung Ihrer Sitzung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      },
+    },
     sendNotificationModal: {
       step1Title: 'Benachrichtigung senden',
       step2Title: 'Bitte Details überprüfen',

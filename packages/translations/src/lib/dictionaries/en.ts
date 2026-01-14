@@ -1878,6 +1878,80 @@ export const EN: TDictionary = {
         description: 'An error occurred during checkout. Please try again.',
       },
     },
+    schedulingErrors: {
+      notAuthenticated: {
+        title: 'Login Required',
+        description: 'Please log in to schedule a coaching session.',
+      },
+      notStudent: {
+        title: 'Not Authorized',
+        description: 'Only students can schedule coaching sessions.',
+      },
+      sessionNotFound: {
+        title: 'Session Not Found',
+        description: 'The coaching session could not be found. It may have been removed.',
+      },
+      sessionNotUnscheduled: {
+        title: 'Session Not Available',
+        description: 'This coaching session is no longer available for booking. Please select a different session.',
+      },
+      sessionInPast: {
+        title: 'Invalid Time',
+        description: 'Cannot schedule a session in the past. Please select a future time.',
+      },
+      insufficientAdvanceNotice: {
+        title: 'Too Short Notice',
+        description: 'Sessions must be scheduled at least 3 hours in advance.',
+      },
+      coachNotFound: {
+        title: 'Coach Not Found',
+        description: 'The selected coach could not be found.',
+      },
+      coachNotAssignedToCourse: {
+        title: 'Coach Not Available',
+        description: 'This coach is not available for coaching on this course.',
+      },
+      coachUnavailable: {
+        title: 'Coach Unavailable',
+        description: 'The coach is not available at the selected time. Please choose a different time slot.',
+      },
+      sessionOverlap: {
+        title: 'Time Conflict',
+        description: 'The coach already has a session scheduled at this time. Please select a different time.',
+      },
+      cannotLinkStandaloneSession: {
+        title: 'Cannot Link Session',
+        description: 'Standalone coaching sessions cannot be linked to lesson components.',
+      },
+      lessonComponentNotFound: {
+        title: 'Lesson Not Found',
+        description: 'The lesson component could not be found.',
+      },
+      lessonComponentTypeMismatch: {
+        title: 'Invalid Lesson Type',
+        description: 'This lesson component is not configured for coaching sessions.',
+      },
+      lessonComponentDurationMismatch: {
+        title: 'Duration Mismatch',
+        description: 'The coaching session duration does not match the lesson component requirements.',
+      },
+      studentMismatch: {
+        title: 'Student Mismatch',
+        description: 'This coaching session belongs to a different student.',
+      },
+      sessionAlreadyLinked: {
+        title: 'Already Linked',
+        description: 'This coaching session has already been linked to a lesson.',
+      },
+      briefingRequired: {
+        title: 'Briefing Required',
+        description: 'Please provide a briefing for your coach.',
+      },
+      genericError: {
+        title: 'Scheduling Failed',
+        description: 'An error occurred while scheduling your session. Please try again.',
+      },
+    },
     sendNotificationModal: {
       step1Title: 'Send notification',
       step2Title: 'Please review the details',
