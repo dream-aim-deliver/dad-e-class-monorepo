@@ -1955,6 +1955,24 @@ export const DE: TDictionary = {
         description: 'Bei der Planung Ihrer Sitzung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
       },
     },
+    availabilityErrors: {
+      missingTimes: {
+        title: 'Fehlende Zeitauswahl',
+        description: 'Bitte wählen Sie sowohl Start- als auch Endzeit aus.',
+      },
+      invalidTimeRange: {
+        title: 'Ungültiger Zeitraum',
+        description: 'Die Endzeit muss nach der Startzeit liegen.',
+      },
+      pastTime: {
+        title: 'Ungültige Zeit',
+        description: 'Verfügbarkeit kann nicht in der Vergangenheit hinzugefügt werden.',
+      },
+      genericError: {
+        title: 'Verfügbarkeit konnte nicht hinzugefügt werden',
+        description: 'Beim Hinzufügen der Verfügbarkeit ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      },
+    },
     sendNotificationModal: {
       step1Title: 'Benachrichtigung senden',
       step2Title: 'Bitte Details überprüfen',
