@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { trpc } from '../../../../trpc/cms-client';
+import { useAvailabilityErrors, AvailabilityErrorType } from '../../../../hooks/use-availability-errors';
 
 interface NewAvailability {
     startTime?: Date;
@@ -15,7 +16,8 @@ export function useAddAvailability({ onSuccess }: UseAddAvailabilityProps = {}) 
         startTime: undefined,
         endTime: undefined,
     });
-    const [error, setError] = useState<string | undefined>(undefined);
+    const [error, setError] = useState<{ title: string; description: string } | undefined>(undefined);
+    const { getAvailabilityErrorMessage } = useAvailabilityErrors();
 
     const utils = trpc.useUtils();
 
@@ -41,15 +43,15 @@ export function useAddAvailability({ onSuccess }: UseAddAvailabilityProps = {}) 
 
     const validateAndSubmit = () => {
         if (!newAvailability.startTime || !newAvailability.endTime) {
-            setError('Please select both start and end times.');
+            setError(getAvailabilityErrorMessage(AvailabilityErrorType.MISSING_TIMES));
             return;
         }
         if (newAvailability.startTime >= newAvailability.endTime) {
-            setError('End time must be after start time.');
+            setError(getAvailabilityErrorMessage(AvailabilityErrorType.INVALID_TIME_RANGE));
             return;
         }
         if (newAvailability.startTime < new Date()) {
-            setError('Cannot add availability in the past.');
+            setError(getAvailabilityErrorMessage(AvailabilityErrorType.PAST_TIME));
             return;
         }
 
@@ -68,12 +70,11 @@ export function useAddAvailability({ onSuccess }: UseAddAvailabilityProps = {}) 
                         reset();
                         onSuccess?.();
                     } else {
-                        // TODO: Extract from result
-                        setError('Failed to add availability');
+                        setError(getAvailabilityErrorMessage(AvailabilityErrorType.GENERIC_ERROR));
                     }
                 },
                 onError: () => {
-                    setError('Failed to add availability');
+                    setError(getAvailabilityErrorMessage(AvailabilityErrorType.GENERIC_ERROR));
                 },
             },
         );

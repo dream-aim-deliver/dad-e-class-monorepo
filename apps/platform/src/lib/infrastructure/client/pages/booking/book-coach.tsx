@@ -613,9 +613,9 @@ function BookCoachPageContent({
             } as Parameters<typeof requestSessionMutation.mutate>[0],
             {
                 onSuccess: (data) => {
-                    if (!data.success) {
+                    if (data.success === false) {
                         // Get user-friendly error message based on error type
-                        const errorType = data.data?.errorType;
+                        const errorType = data.data.data.errorType;
                         setSubmitError(getSchedulingErrorMessage(errorType));
                         return;
                     }

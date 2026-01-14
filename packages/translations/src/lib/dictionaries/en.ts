@@ -1952,6 +1952,24 @@ export const EN: TDictionary = {
         description: 'An error occurred while scheduling your session. Please try again.',
       },
     },
+    availabilityErrors: {
+      missingTimes: {
+        title: 'Missing Time Selection',
+        description: 'Please select both start and end times.',
+      },
+      invalidTimeRange: {
+        title: 'Invalid Time Range',
+        description: 'End time must be after start time.',
+      },
+      pastTime: {
+        title: 'Invalid Time',
+        description: 'Cannot add availability in the past.',
+      },
+      genericError: {
+        title: 'Failed to Add Availability',
+        description: 'An error occurred while adding availability. Please try again.',
+      },
+    },
     sendNotificationModal: {
       step1Title: 'Send notification',
       step2Title: 'Please review the details',

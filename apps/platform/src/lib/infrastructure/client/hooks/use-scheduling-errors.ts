@@ -72,7 +72,7 @@ export function useSchedulingErrors() {
   const getSchedulingErrorMessage = useCallback(
     (errorType?: string): { title: string; description: string } => {
       const key = getSchedulingErrorKey(errorType);
-      // @ts-expect-error - Dynamic key access for translations
+      
       return {
         // @ts-expect-error - Dynamic key access for translations
         title: t(`${key}.title`),

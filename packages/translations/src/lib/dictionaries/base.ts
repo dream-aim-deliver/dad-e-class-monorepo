@@ -1943,6 +1943,24 @@ export const DictionarySchema = z.object({
         description: z.string(),
       }),
     }),
+    availabilityErrors: z.object({
+      missingTimes: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      invalidTimeRange: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      pastTime: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      genericError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    }),
     sendNotificationModal: z.object({
       step1Title: z.string(),
       step2Title: z.string(),
