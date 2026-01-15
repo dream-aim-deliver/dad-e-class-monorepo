@@ -230,25 +230,12 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Wrap payload in request object as expected by backend
-        // Based on backend testing, it expects: { request: { userId, transactionData, purchaseType, purchaseItems, couponCode? } }
-        // Context is extracted from Authorization header automatically, so we don't include it
-        const wrappedPayload = {
-            request: {
-                userId: finalPayload.userId,
-                transactionData: finalPayload.transactionData,
-                purchaseType: finalPayload.purchaseType,
-                purchaseItems: finalPayload.purchaseItems,
-                ...(couponCode && { couponCode }), // Add coupon code if present
-            },
-        };
 
-        let result;
+        let result: TProcessPurchaseSuccessResponse;
         try {
-            // Send the wrapped payload - backend expects { request: { userId, transactionData, purchaseType, purchaseItems, couponCode? } }
-            // Context is extracted from Authorization header automatically
+            console.log('[DEBUG] Final payload sent to backend processPurchase:', JSON.stringify(finalPayload));
             // @ts-ignore - Type definition may not match actual backend expectation (backend expects request wrapper)
-            result = await backendTrpc.processPurchase.mutate(wrappedPayload.request);
+            result = await backendTrpc.processPurchase.mutate(finalPayload);
         } catch (backendError: any) {
             // Check if it's a validation error from FastAPI
             if (backendError?.data?.detail) {
@@ -369,7 +356,7 @@ export async function POST(req: NextRequest) {
  */
 async function buildPurchaseItems(purchaseType: string, metadata: Record<string, any>) {
     const items = [];
-
+    console.log('[Debug] Building purchase items for type:', purchaseType, 'with metadata:', JSON.stringify(metadata));
     switch (purchaseType) {
         case 'StudentCoursePurchase':
             items.push({
@@ -391,9 +378,9 @@ async function buildPurchaseItems(purchaseType: string, metadata: Record<string,
             items.push({
                 purchaseType: 'package' as const,
                 packageId: parseInt(metadata.packageId),
-                selectedCourseIds: metadata.courseIds
-                    ? metadata.courseIds.split(',').map((id: string) => parseInt(id))
-                    : [],
+                selectedCourseIds: metadata.selectedCourseIds
+                    ? metadata.selectedCourseIds.split(',').map((id: string) => parseInt(id))
+                    : undefined,
                 withCoaching: false,
             });
             break;
@@ -402,9 +389,9 @@ async function buildPurchaseItems(purchaseType: string, metadata: Record<string,
             items.push({
                 purchaseType: 'package' as const,
                 packageId: parseInt(metadata.packageId),
-                selectedCourseIds: metadata.courseIds
-                    ? metadata.courseIds.split(',').map((id: string) => parseInt(id))
-                    : [],
+                selectedCourseIds: metadata.selectedCourseIds
+                    ? metadata.selectedCourseIds.split(',').map((id: string) => parseInt(id))
+                    : undefined,
                 withCoaching: true,
             });
             break;
