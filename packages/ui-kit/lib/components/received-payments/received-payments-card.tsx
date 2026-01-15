@@ -99,6 +99,7 @@ export const ReceivedPaymentsCard = (props: ReceivedPaymentsCardProps) => {
                     ))}
                 </ul>
             </div>
+
             <Divider className="my-1" />
             {/* Tags */}
             {props.tags && props.tags.length > 0 && (

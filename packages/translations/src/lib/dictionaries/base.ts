@@ -2003,6 +2003,7 @@ export const DictionarySchema = z.object({
       coursesIncluded: z.string(),
       scheduleButton: z.string(),
       emptyState: z.string(),
+      coupon: z.string(),
     }),
     coachingSessionSnippet: z.object({
       minutes: z.string(),
@@ -2949,6 +2950,7 @@ export const DictionarySchema = z.object({
       invoiceGenerationFailed: z.string(),
       invoiceGenerationError: z.string(),
       unknownError: z.string(),
+      couponApplied: z.string(),
       invoice: z.object({
         invoiceNo: z.string(),
         invoiceDate: z.string(),
@@ -2971,6 +2973,8 @@ export const DictionarySchema = z.object({
         paymentMethod: z.string(),
         type: z.string(),
         description: z.string(),
+        coupon: z.string(),
+        discount: z.string(),
       }),
       error: z.object({
         title: z.string(),
@@ -3017,6 +3021,7 @@ export const DictionarySchema = z.object({
       customerDataFetchFailed: z.string(),
       invoiceGenerationError: z.string(),
       unknownError: z.string(),
+      couponApplied: z.string(),
       invoice: z.object({
         invoiceNo: z.string(),
         invoiceDate: z.string(),
@@ -3039,6 +3044,8 @@ export const DictionarySchema = z.object({
         paymentMethod: z.string(),
         type: z.string(),
         description: z.string(),
+        coupon: z.string(),
+        discount: z.string(),
       }),
       error: z.object({
         title: z.string(),

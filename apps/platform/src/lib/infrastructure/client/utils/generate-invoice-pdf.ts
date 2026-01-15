@@ -51,6 +51,11 @@ export interface InvoiceTransactionData {
       id: string | number;
     };
   };
+  coupon?: {
+    name: string;
+    type: string;
+    discountPercentage?: number | null;
+  } | null;
 }
 
 export interface GenerateInvoicePdfOptions {
@@ -80,6 +85,8 @@ export interface GenerateInvoicePdfOptions {
     paymentMethod: string;
     type: string;
     description: string;
+    coupon: string;
+    discount: string;
   };
 }
 
@@ -401,6 +408,36 @@ export async function generateInvoicePdf(options: GenerateInvoicePdfOptions): Pr
 
   orderSection.appendChild(tableWrapper);
   wrapper.appendChild(orderSection);
+
+  // Coupon Section (if coupon was applied)
+  if (transaction.coupon) {
+    const couponSection = document.createElement('div');
+    couponSection.style.marginTop = '5mm';
+    couponSection.style.padding = '3mm';
+    couponSection.style.backgroundColor = '#f5f5f5';
+    couponSection.style.borderRadius = '4px';
+    couponSection.style.display = 'flex';
+    couponSection.style.justifyContent = 'space-between';
+    couponSection.style.alignItems = 'center';
+
+    const couponLabel = document.createElement('span');
+    couponLabel.textContent = t.coupon;
+    couponLabel.style.fontSize = '10px';
+    couponLabel.style.color = '#666666';
+    couponSection.appendChild(couponLabel);
+
+    const couponValue = document.createElement('span');
+    const discountText = transaction.coupon.discountPercentage
+      ? `${transaction.coupon.name} (-${transaction.coupon.discountPercentage}%)`
+      : transaction.coupon.name;
+    couponValue.textContent = discountText;
+    couponValue.style.fontSize = '10px';
+    couponValue.style.fontWeight = '600';
+    couponValue.style.color = '#2e7d32';
+    couponSection.appendChild(couponValue);
+
+    wrapper.appendChild(couponSection);
+  }
 
   // Total Section
   const totalSection = document.createElement('div');

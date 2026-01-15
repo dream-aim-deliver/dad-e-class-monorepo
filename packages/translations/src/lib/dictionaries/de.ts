@@ -2015,6 +2015,7 @@ export const DE: TDictionary = {
       coursesIncluded: 'Enthaltene Kurse',
       scheduleButton: 'Planen',
       emptyState: 'Noch keine Bestellungen',
+      coupon: 'Gutschein:',
     },
     coachingSessionSnippet: {
       minutes: 'min',
@@ -2908,6 +2909,7 @@ export const DE: TDictionary = {
       invoiceGenerationFailed: 'Rechnung konnte nicht erstellt werden',
       invoiceGenerationError: 'Beim Erstellen der Rechnung ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
       unknownError: 'Unbekannter Fehler',
+      couponApplied: 'Gutschein angewendet',
       invoice: {
         invoiceNo: 'Rechnungsnr.',
         invoiceDate: 'Rechnungsdatum',
@@ -2930,6 +2932,8 @@ export const DE: TDictionary = {
         paymentMethod: 'Zahlungsmethode',
         type: 'Typ',
         description: 'Beschreibung',
+        coupon: 'Gutschein',
+        discount: 'Rabatt',
       },
       error: {
         title: 'Fehler',
@@ -2976,6 +2980,7 @@ export const DE: TDictionary = {
       invoiceGenerationFailed: 'Rechnung konnte nicht erstellt werden',
       invoiceGenerationError: 'Beim Erstellen der Rechnung ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
       unknownError: 'Unbekannter Fehler',
+      couponApplied: 'Gutschein angewendet',
       invoice: {
         invoiceNo: 'Rechnungsnr.',
         invoiceDate: 'Rechnungsdatum',
@@ -2998,6 +3003,8 @@ export const DE: TDictionary = {
         paymentMethod: 'Zahlungsmethode',
         type: 'Typ',
         description: 'Beschreibung',
+        coupon: 'Gutschein',
+        discount: 'Rabatt',
       },
       error: {
         title: 'Fehler',

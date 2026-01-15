@@ -9,6 +9,7 @@ import {
     IconPackageCourseBundle,
 } from '../icons';
 import { CoachingSessionSnippet } from './coaching-session-snippet';
+import { Badge } from '../badge';
 
 export type OrderHistoryType = 'course' | 'coaching' | 'package';
 
@@ -17,6 +18,11 @@ interface BaseOrderHistoryCardProps extends isLocalAware {
     orderDate: string;
     total: string;
     onInvoiceClick: () => void;
+    coupon?: {
+        name: string;
+        type: string;
+        discountPercentage?: number | null;
+    } | null;
 }
 
 /* Course Variant */
@@ -290,19 +296,29 @@ export const OrderHistoryCard = (props: OrderHistoryCardProps) => {
 
             {/* Footer */}
             <Divider className="my-1" />
-            <div className="flex flex-row w-full justify-between items-center gap-2">
-                <Button
-                    variant="text"
-                    className="p-0 gap-1 text-xs md:text-sm flex-shrink-0"
-                    size="small"
-                    text={dictionary.invoice}
-                    onClick={props.onInvoiceClick}
-                    hasIconLeft
-                    iconLeft={<IconFile size="6" />}
-                />
-                <p className="text-text-primary font-important text-sm md:text-md ml-auto truncate" title={`${dictionary.total} ${props.total}`}>
-                    {dictionary.total} {props.total}
-                </p>
+            <div className="flex flex-col gap-2">
+                {props.coupon && (
+                    <Badge
+                        variant="successprimary"
+                        size="small"
+                        className="max-w-fit"
+                        text={`${dictionary.coupon} ${props.coupon.name}${props.coupon.discountPercentage ? ` (-${props.coupon.discountPercentage}%)` : ''}`}
+                    />
+                )}
+                <div className="flex flex-row w-full justify-between items-center gap-2">
+                    <Button
+                        variant="text"
+                        className="p-0 gap-1 text-xs md:text-sm flex-shrink-0"
+                        size="small"
+                        text={dictionary.invoice}
+                        onClick={props.onInvoiceClick}
+                        hasIconLeft
+                        iconLeft={<IconFile size="6" />}
+                    />
+                    <p className="text-text-primary font-important text-sm md:text-md ml-auto truncate" title={`${dictionary.total} ${props.total}`}>
+                        {dictionary.total} {props.total}
+                    </p>
+                </div>
             </div>
         </div>
     );

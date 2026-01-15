@@ -189,6 +189,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             },
           }),
         },
+        coupon: transaction.coupon,
       };
 
       // Use the reusable invoice PDF generator utility
@@ -232,6 +233,8 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
           paymentMethod: t('invoice.paymentMethod'),
           type: t('invoice.type'),
           description: t('invoice.description'),
+          coupon: t('invoice.coupon'),
+          discount: t('invoice.discount'),
         },
       });
     } catch (error: any) {
@@ -283,6 +286,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
               router.push(`/courses/${course.slug}`);
             }}
             onInvoiceClick={() => handleInvoiceClick(transaction.id)}
+            coupon={transaction.coupon}
           />
         );
       }
@@ -316,6 +320,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             total={`${totalPrice} ${transaction.currency}`}
             sessions={sessions}
             onInvoiceClick={() => handleInvoiceClick(transaction.id)}
+            coupon={transaction.coupon}
           />
         );
       }
@@ -349,6 +354,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             packageImageUrl={pkg.imageUrl || ''}
             coursesIncluded={coursesIncluded}
             onInvoiceClick={() => handleInvoiceClick(transaction.id)}
+            coupon={transaction.coupon}
           />
         );
       }
