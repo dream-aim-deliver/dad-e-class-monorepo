@@ -10,12 +10,17 @@ export function useCourseOutline(slug: string) {
     const [outlineResponse] = trpc.getCourseOutline.useSuspenseQuery({
         courseSlug: slug,
     });
+
+    console.log('[CourseOutline] Outline response from backend:', outlineResponse);
+
     const [outlineViewModel, setOutlineViewModel] = useState<
         viewModels.TCourseOutlineViewModel | undefined
     >(undefined);
     const { presenter } = useGetCourseOutlinePresenter(setOutlineViewModel);
     // @ts-ignore
     presenter.present(outlineResponse, outlineViewModel);
+
+    console.log('[CourseOutline] Outline view model after presenter:', outlineViewModel);
 
     return outlineViewModel;
 }
@@ -54,6 +59,9 @@ export function useSaveOutline({
             setErrorMessage(editOutlineTranslations('outlineCountValidationText'));
             return;
         }
+
+        console.log('[SaveOutline] Accordion builder items before save:', accordionBuilderItems);
+
         const requestItems: useCaseModels.TSaveCourseOutlineRequest['items'] =
             [];
         for (let i = 0; i < accordionBuilderItems.length; i++) {
@@ -67,6 +75,9 @@ export function useSaveOutline({
             let iconId = null;
             if (item.icon) {
                 iconId = String(item.icon.id);
+                console.log(`[SaveOutline] Item ${i} icon:`, item.icon, 'iconId:', iconId);
+            } else {
+                console.log(`[SaveOutline] Item ${i} has no icon`);
             }
             requestItems.push({
                 title: item.title,
@@ -75,12 +86,17 @@ export function useSaveOutline({
                 iconId: iconId,
             });
         }
+
+        console.log('[SaveOutline] Request items to be sent:', requestItems);
+
         setErrorMessage(null);
         const result = await saveOutlineMutation.mutateAsync({
             courseSlug: slug,
             courseVersion: courseVersion,
             items: requestItems,
         });
+
+        console.log('[SaveOutline] Save result:', result);
         if (!result.success) {
             // TODO: Fix typing
             if ('message' in result.data) {

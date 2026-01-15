@@ -6,8 +6,9 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
-import { trpc } from '../../../../trpc/client';
+import { trpc } from '../../../../trpc/cms-client';
 import { useTranslations } from 'next-intl';
+import type { TUploadAccordionIconSuccessResponse, TGetDownloadUrlSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 export interface AccordionIconUploadState {
     uploadError: string | undefined;
@@ -29,14 +30,7 @@ export const useAccordionIconUpload = (
     const uploadAbortError = useAccordionIconUploadTranslations('uploadAbortError');
     const uploadFailedError = useAccordionIconUploadTranslations('uploadFailedError');
 
-    const utils = trpc.useUtils();
-
-    const uploadMutation = trpc.uploadAccordionIcon.useMutation({
-        onSuccess: () => {
-            // Invalidate course outline to show updated icon
-            utils.getCourseOutline.invalidate({ courseSlug: slug });
-        },
-    });
+    const uploadMutation = trpc.uploadAccordionIcon.useMutation();
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>(
@@ -65,9 +59,16 @@ export const useAccordionIconUpload = (
             mimeType: uploadRequest.file.type,
             size: uploadRequest.file.size,
         });
+
+        console.log('[AccordionIconUpload] Upload result:', uploadResult);
+
         if (!uploadResult.success) {
             throw new Error(uploadCredentialsError);
         }
+
+        // Type assertion after success check
+        const uploadData = uploadResult.data as TUploadAccordionIconSuccessResponse['data'];
+        console.log('[AccordionIconUpload] Upload data:', uploadData);
 
         if (abortSignal?.aborted) {
             throw new AbortError();
@@ -78,9 +79,9 @@ export const useAccordionIconUpload = (
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
+            storageUrl: uploadData.storageUrl,
+            objectName: uploadData.file.objectName,
+            formFields: uploadData.formFields,
             abortSignal,
             onProgress: (uploadProgress) => {
                 onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
@@ -88,20 +89,30 @@ export const useAccordionIconUpload = (
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
-            fileId: uploadResult.data.file.id,
+            fileId: uploadData.file.id,
         });
+
+        console.log('[AccordionIconUpload] Verify result:', verifyResult);
+
         if (!verifyResult.success) {
             throw new Error(verifyImageError);
         }
 
-        return {
-            id: uploadResult.data.file.id,
-            name: uploadResult.data.file.name,
-            url: verifyResult.data.downloadUrl,
-            thumbnailUrl: verifyResult.data.downloadUrl,
-            size: uploadResult.data.file.size,
-            category: uploadResult.data.file.category,
+        const verifyData = verifyResult.data as TGetDownloadUrlSuccessResponse['data'];
+        console.log('[AccordionIconUpload] Verify data:', verifyData);
+
+        const finalMetadata = {
+            id: uploadData.file.id,
+            name: uploadData.file.name,
+            url: verifyData.downloadUrl,
+            thumbnailUrl: verifyData.downloadUrl,
+            size: uploadData.file.size,
+            category: uploadData.file.category,
         } as fileMetadata.TFileMetadata;
+
+        console.log('[AccordionIconUpload] Final metadata returned:', finalMetadata);
+
+        return finalMetadata;
     };
 
     const handleFileChange = async (
