@@ -7,8 +7,9 @@ import {
 } from '../../common/utils/get-cms-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { trpc } from '../trpc/cms-client';
-import { httpBatchLink } from '@trpc/client';
+import { httpBatchLink, TRPCClientError } from '@trpc/client';
 import superjson from 'superjson';
+import { useSessionExpiration } from '../context/session-expiration-context';
 import { useSession } from 'next-auth/react';
 import { useLocale } from 'next-intl';
 import { useRuntimeConfig } from '../context/runtime-config-context';
@@ -32,6 +33,7 @@ export default function CMSTRPCClientProviders({
     const { data: session, status } = useSession();
     const locale = useLocale();
     const runtimeConfig = useRuntimeConfig();
+    const { triggerExpiration } = useSessionExpiration();
 
     // Extract stable config and context values to prevent unnecessary client recreation
     const cmsRestUrl = runtimeConfig.NEXT_PUBLIC_E_CLASS_CMS_REST_URL;
@@ -63,6 +65,81 @@ export default function CMSTRPCClientProviders({
 
         prevUserIdRef.current = currentUserId;
     }, [session?.user?.id, queryClient]);
+
+    // Store triggerExpiration in ref to avoid stale closure issues
+    const triggerExpirationRef = useRef(triggerExpiration);
+    useEffect(() => {
+        triggerExpirationRef.current = triggerExpiration;
+    }, [triggerExpiration]);
+
+    // Track if we've already triggered expiration to prevent duplicate triggers
+    const hasTriggeredExpirationRef = useRef(false);
+
+    // Subscribe to query and mutation cache to detect auth-related errors
+    useEffect(() => {
+        // Helper to check if error is auth-related (token expired, invalid, etc.)
+        const isAuthError = (error: unknown): boolean => {
+            if (error instanceof TRPCClientError) {
+                // Check for UNAUTHORIZED code in error data
+                const code = error.data?.code;
+                if (code === 'UNAUTHORIZED' || code === 'FORBIDDEN') {
+                    return true;
+                }
+                // Check HTTP status for 401 (Unauthorized) or 403 (Forbidden)
+                const httpStatus = error.data?.httpStatus;
+                if (httpStatus === 401 || httpStatus === 403) {
+                    return true;
+                }
+                // Check for specific auth-related error messages
+                const message = error.message?.toLowerCase() || '';
+                if (
+                    message.includes('invalid context type') ||
+                    message.includes('token expired') ||
+                    message.includes('unauthorized') ||
+                    message.includes('invalid token') ||
+                    message.includes('jwt expired')
+                ) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        // Handle error and trigger expiration if auth-related
+        const handleError = (error: unknown) => {
+            if (isAuthError(error) && !hasTriggeredExpirationRef.current) {
+                console.log('[TRPC] Auth error detected, triggering session expiration');
+                hasTriggeredExpirationRef.current = true;
+                triggerExpirationRef.current();
+            }
+        };
+
+        // Subscribe to query cache events
+        const queryUnsubscribe = queryClient.getQueryCache().subscribe((event) => {
+            if (event.type === 'updated' && event.query.state.status === 'error') {
+                handleError(event.query.state.error);
+            }
+        });
+
+        // Subscribe to mutation cache events
+        const mutationUnsubscribe = queryClient.getMutationCache().subscribe((event) => {
+            if (event.type === 'updated' && event.mutation?.state.status === 'error') {
+                handleError(event.mutation.state.error);
+            }
+        });
+
+        return () => {
+            queryUnsubscribe();
+            mutationUnsubscribe();
+        };
+    }, [queryClient]);
+
+    // Reset expiration trigger flag when user logs in again
+    useEffect(() => {
+        if (status === 'authenticated' && session?.user?.idToken) {
+            hasTriggeredExpirationRef.current = false;
+        }
+    }, [status, session?.user?.idToken]);
 
     const trpcClient = useMemo(
         () => {

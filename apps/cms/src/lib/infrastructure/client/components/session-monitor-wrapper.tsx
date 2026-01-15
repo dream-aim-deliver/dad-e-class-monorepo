@@ -9,16 +9,23 @@ import {
     SessionExpirationModal,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { SessionExpirationProvider } from '../context/session-expiration-context';
 
 interface SessionMonitorWrapperProps {
     children: React.ReactNode;
     locale: TLocale;
 }
 
+interface SessionMonitorProps {
+    locale: TLocale;
+    externalTrigger: boolean;
+    onExternalTriggerHandled: () => void;
+}
+
 /**
  * Internal session monitor component for CMS app
  */
-function SessionMonitor({ locale }: { locale: TLocale }) {
+function SessionMonitor({ locale, externalTrigger, onExternalTriggerHandled }: SessionMonitorProps) {
     const { data: session, status, update } = useSession();
     const pathname = usePathname();
     const router = useRouter();
@@ -37,26 +44,33 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
         }
     }, [debug]);
 
-    const handleConfirmLogout = useCallback(async () => {
-        log('User chose to stay logged in, attempting to refresh token');
-
-        try {
-            // Try to refresh the token - if Auth0 session is valid, this will succeed
-            await update();
-            log('Token refresh successful, user stays logged in');
-            setShowExpirationModal(false);
-            setHasTriggeredCheck(false); // Reset so future expiry is detected
-        } catch (error) {
-            log('Token refresh failed:', error);
-            // Refresh failed - redirect to login for re-authentication
-            if (unsavedChangesState?.clearAllUnsavedChanges) {
-                unsavedChangesState.clearAllUnsavedChanges();
-            }
-            setShowExpirationModal(false);
-            await signOut({ redirect: false });
-            router.push(`/${locale}${loginPath}`);
+    // Handle external trigger from tRPC UNAUTHORIZED errors
+    useEffect(() => {
+        if (externalTrigger && !showExpirationModal) {
+            log('External expiration trigger received (tRPC UNAUTHORIZED)');
+            setShowExpirationModal(true);
+            onExternalTriggerHandled();
         }
-    }, [update, unsavedChangesState, loginPath, locale, router, log]);
+    }, [externalTrigger, showExpirationModal, log, onExternalTriggerHandled]);
+
+    const handleConfirmLogout = useCallback(async () => {
+        log('User confirmed login, clearing session and redirecting to login');
+
+        if (unsavedChangesState?.clearAllUnsavedChanges) {
+            unsavedChangesState.clearAllUnsavedChanges();
+        }
+
+        setShowExpirationModal(false);
+
+        // Clear the expired session without redirect
+        await signOut({ redirect: false });
+
+        // Redirect to login page with current path as callbackUrl
+        // so user returns to the same page after re-authentication
+        const callbackUrl = encodeURIComponent(pathname || `/${locale}/`);
+        log('Redirecting to login with callbackUrl:', pathname);
+        router.push(`/${locale}${loginPath}?callbackUrl=${callbackUrl}`);
+    }, [unsavedChangesState, loginPath, locale, pathname, router, log]);
 
     const handleDismiss = useCallback(async () => {
         log('User chose to logout completely (federated logout)');
@@ -227,14 +241,37 @@ function SessionMonitor({ locale }: { locale: TLocale }) {
  *
  * This component:
  * - Wraps children with UnsavedChangesProvider
+ * - Provides SessionExpirationContext for tRPC error handling
  * - Includes session monitoring for auto-logout functionality
  * - Checks for unsaved changes before logout
  */
 export function SessionMonitorWrapper({ children, locale }: SessionMonitorWrapperProps) {
+    // Track external triggers from tRPC UNAUTHORIZED errors
+    const [externalTrigger, setExternalTrigger] = useState(false);
+
+    // Callback for tRPC client to trigger session expiration
+    const handleExpiration = useCallback(() => {
+        if (process.env.NODE_ENV === 'development') {
+            console.log('[SessionMonitorWrapper] Expiration triggered from tRPC UNAUTHORIZED');
+        }
+        setExternalTrigger(true);
+    }, []);
+
+    // Reset the trigger after it's been handled
+    const handleExternalTriggerHandled = useCallback(() => {
+        setExternalTrigger(false);
+    }, []);
+
     return (
-        <UnsavedChangesProvider>
-            <SessionMonitor locale={locale} />
-            {children}
-        </UnsavedChangesProvider>
+        <SessionExpirationProvider onExpiration={handleExpiration}>
+            <UnsavedChangesProvider>
+                <SessionMonitor
+                    locale={locale}
+                    externalTrigger={externalTrigger}
+                    onExternalTriggerHandled={handleExternalTriggerHandled}
+                />
+                {children}
+            </UnsavedChangesProvider>
+        </SessionExpirationProvider>
     );
 }
