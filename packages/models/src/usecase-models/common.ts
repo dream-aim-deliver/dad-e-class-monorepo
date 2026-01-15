@@ -30,7 +30,6 @@ export const RequestedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
         title: z.string(),
         slug: z.string(),
     }).optional().nullable(),
-    meetingUrl: z.string().nullable(),
 });
 export type TRequestedCoachingSession = z.infer<typeof RequestedCoachingSessionSchema>;
 
@@ -49,7 +48,7 @@ export const ScheduledCoachingSessionSchema = BaseCoachingSessionSchema.extend({
         title: z.string(),
         slug: z.string(),
     }).optional().nullable(),
-    meetingUrl: z.string().nullable(),
+    meetingUrl: z.string().nullable().optional(),
 });
 export type TScheduledCoachingSession = z.infer<typeof ScheduledCoachingSessionSchema>;
 

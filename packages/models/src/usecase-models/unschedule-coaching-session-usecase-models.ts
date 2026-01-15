@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import {
-    BaseErrorDiscriminatedUnionSchemaFactory,
-    BaseStatusDiscriminatedUnionSchemaFactory,
-    BaseSuccessSchemaFactory
+  BaseErrorDiscriminatedUnionSchemaFactory,
+  BaseStatusDiscriminatedUnionSchemaFactory,
+  BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 
 export const UnscheduleCoachingSessionRequestSchema = z.object({
@@ -23,7 +23,7 @@ export const UnscheduleCoachingSessionSuccessResponseSchema = BaseSuccessSchemaF
     createdAt: z.date(),
     updatedAt: z.date(),
     publicationDate: z.string(),
-    meetingUrl: z.string().nullable(),
+    meetingUrl: z.string().nullable().optional(),
     couponName: z.string().nullable(),
   })
 }));
