@@ -37,10 +37,11 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import { fileMetadata, shared, viewModels } from '@maany_shr/e-class-models';
 import { generateTempId } from './utils/generate-temp-id';
 import { useListCoachingOfferingsPresenter } from '../../../hooks/use-coaching-offerings-presenter';
+import type { TUploadLessonComponentFileSuccessResponse, TGetDownloadUrlSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 interface FileUploadProps {
     lessonId: number;
@@ -59,14 +60,7 @@ const useFileUpload = ({
         'components.useCourseImageUpload',
     );
 
-    const utils = trpc.useUtils();
-
-    const uploadMutation = trpc.uploadLessonComponentFile.useMutation({
-        onSuccess: () => {
-            // Invalidate lesson components to show updated file
-            utils.listLessonComponents.invalidate({ lessonId });
-        },
-    });
+    const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>(
@@ -100,6 +94,9 @@ const useFileUpload = ({
             throw new Error(editLessonTranslations('uploadCredentialsError'));
         }
 
+        // Type assertion after success check
+        const uploadData = uploadResult.data as TUploadLessonComponentFileSuccessResponse['data'];
+
         if (abortSignal?.aborted) {
             throw new AbortError();
         }
@@ -109,9 +106,9 @@ const useFileUpload = ({
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
+            storageUrl: uploadData.storageUrl,
+            objectName: uploadData.file.objectName,
+            formFields: uploadData.formFields,
             abortSignal,
             onProgress: (uploadProgress) => {
                 onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
@@ -119,20 +116,22 @@ const useFileUpload = ({
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
-            fileId: uploadResult.data.file.id,
+            fileId: uploadData.file.id,
         });
         if (!verifyResult.success) {
             throw new Error(editLessonTranslations('verifyImageError'));
         }
 
+        const verifyData = verifyResult.data as TGetDownloadUrlSuccessResponse['data'];
+
         return {
-            id: uploadResult.data.file.id,
-            name: uploadResult.data.file.name,
-            url: verifyResult.data.downloadUrl,
-            thumbnailUrl: verifyResult.data.downloadUrl,
-            size: uploadResult.data.file.size,
-            category: uploadResult.data.file.category,
-            status: 'available',
+            id: uploadData.file.id,
+            name: uploadData.file.name,
+            url: verifyData.downloadUrl,
+            thumbnailUrl: verifyData.downloadUrl,
+            size: uploadData.file.size,
+            category: uploadData.file.category,
+            status: 'available' as const,
         } as fileMetadata.TFileMetadata;
     };
 
@@ -1929,7 +1928,7 @@ export default function EditLessonComponents({
 
     return (
         <div className="flex flex-col gap-2">
-            {components.map((component) => {
+            {components.map((component, index) => {
                 const Component = typeToRendererMap[component.type];
                 if (!Component) return null;
                 // TODO: pass isFirst and isLast

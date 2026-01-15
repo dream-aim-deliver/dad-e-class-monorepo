@@ -1,4 +1,5 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import { TListLessonComponentsUseCaseResponse, ListLessonComponentsUseCaseResponseSchema, TListLessonComponentsUseCaseErrorResponse } from "@dream-aim-deliver/e-class-cms-rest"
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -10,7 +11,7 @@ export type TLessonComponentsPresenterUtilities = {};
 
 export const ListLessonComponentsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListLessonComponentsUseCaseResponse,
+        TListLessonComponentsUseCaseResponse,
         viewModels.TLessonComponentListViewModel,
         TLessonComponentsPresenterUtilities
     >;
@@ -19,7 +20,7 @@ type TListLessonComponentsResponseMiddleware =
     typeof ListLessonComponentsResponseMiddleware;
 
 export default class LessonComponentsPresenter extends BasePresenter<
-    useCaseModels.TListLessonComponentsUseCaseResponse,
+    TListLessonComponentsUseCaseResponse,
     viewModels.TLessonComponentListViewModel,
     TLessonComponentsPresenterUtilities,
     TListLessonComponentsResponseMiddleware
@@ -33,7 +34,7 @@ export default class LessonComponentsPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.ListLessonComponentsUseCaseResponseSchema,
+                    ListLessonComponentsUseCaseResponseSchema,
                 viewModel: viewModels.LessonComponentListViewModelSchema
             },
             middleware: ListLessonComponentsResponseMiddleware,
@@ -44,7 +45,7 @@ export default class LessonComponentsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListLessonComponentsUseCaseResponse,
+            TListLessonComponentsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TLessonComponentListViewModel {
@@ -58,7 +59,7 @@ export default class LessonComponentsPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListLessonComponentsUseCaseErrorResponse,
+            TListLessonComponentsUseCaseErrorResponse,
             TListLessonComponentsResponseMiddleware
         >,
     ): viewModels.TLessonComponentListViewModel {

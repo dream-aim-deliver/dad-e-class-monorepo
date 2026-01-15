@@ -2,12 +2,13 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { createContext, ReactNode, useContext, useState } from 'react';
 import { simulateUploadFile } from '../../../../common/mocks/simple/upload-file';
 import { useTranslations } from 'next-intl';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import {
     AbortError,
     calculateMd5,
     uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
+import type { TUploadLessonProgressFileSuccessResponse, TGetDownloadUrlSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 export interface FileUploadConfig {
     lessonId: number;
@@ -100,6 +101,9 @@ export const useRealProgressUpload = (
                 );
             }
 
+            // Type assertion after success check
+            const uploadData = uploadResult.data as TUploadLessonProgressFileSuccessResponse['data'];
+
             if (abortSignal?.aborted) {
                 throw new AbortError();
             }
@@ -107,28 +111,30 @@ export const useRealProgressUpload = (
             await uploadToS3({
                 file: uploadRequest.file,
                 checksum,
-                storageUrl: uploadResult.data.storageUrl,
-                objectName: uploadResult.data.file.objectName,
-                formFields: uploadResult.data.formFields,
+                storageUrl: uploadData.storageUrl,
+                objectName: uploadData.file.objectName,
+                formFields: uploadData.formFields,
                 abortSignal,
             });
 
             const verifyResult = await verifyMutation.mutateAsync({
-                fileId: uploadResult.data.file.id,
+                fileId: uploadData.file.id,
             });
 
             if (!verifyResult.success) {
                 throw new Error(editLessonTranslations('verifyImageError'));
             }
 
+            const verifyData = verifyResult.data as TGetDownloadUrlSuccessResponse['data'];
+
             return {
-                id: uploadResult.data.file.id,
-                name: uploadResult.data.file.name,
-                url: verifyResult.data.downloadUrl,
-                thumbnailUrl: verifyResult.data.downloadUrl,
-                size: uploadResult.data.file.size,
-                category: uploadResult.data.file.category,
-                status: 'available',
+                id: uploadData.file.id,
+                name: uploadData.file.name,
+                url: verifyData.downloadUrl,
+                thumbnailUrl: verifyData.downloadUrl,
+                size: uploadData.file.size,
+                category: uploadData.file.category,
+                status: 'available' as const,
             } as fileMetadata.TFileMetadata;
         } catch (error) {
             if (error instanceof AbortError) {

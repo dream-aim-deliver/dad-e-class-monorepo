@@ -1,4 +1,4 @@
-import { useCaseModels } from '@maany_shr/e-class-models';
+import { TSaveLessonComponentsRequest } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     CourseElementType,
     FormElementType,
@@ -7,7 +7,7 @@ import {
 import { useGenerateTempId } from './use-generate-temp-id';
 
 type RequestComponent =
-    useCaseModels.TSaveLessonComponentsRequest['components'][number];
+    TSaveLessonComponentsRequest['components'][number];
 
 function idToNumber(id: string | undefined): number | undefined {
     if (id === undefined) return undefined;
@@ -403,7 +403,7 @@ export function useLessonToRequest() {
         (
             component: LessonElement,
             order: number,
-        ) => useCaseModels.TSaveLessonComponentsRequest['components'][number]
+        ) => TSaveLessonComponentsRequest['components'][number]
     > = {
         [CourseElementType.CoachingSession]: transformCoachingSession,
         [CourseElementType.ImageFile]: transformImage,

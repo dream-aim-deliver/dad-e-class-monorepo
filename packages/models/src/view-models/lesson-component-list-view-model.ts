@@ -6,7 +6,7 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { ListLessonComponentsSuccessResponseSchema } from '../usecase-models/list-lesson-components-usecase-models';
+import { ListLessonComponentsSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
 export const LessonComponentListSuccessSchema = ListLessonComponentsSuccessResponseSchema.shape.data;
 
