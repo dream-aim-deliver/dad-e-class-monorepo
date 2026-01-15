@@ -23,10 +23,8 @@ import { createCourse } from './procedures/create-course';
 import { getCourseShort } from './procedures/course-short';
 import { uploadCourseImage, getDownloadUrl } from './procedures/course-image';
 import { getCourseStructure } from './procedures/course-structure';
-import { listLessonComponents } from './procedures/lesson-components';
 import { saveCourseStructure } from './procedures/course-structure';
 import { uploadLessonComponentFile } from './procedures/lesson-component-file';
-import { saveLessonComponents } from './procedures/lesson-components';
 import { saveCourseDetails } from './procedures/course-details';
 import { uploadIntroductionVideo } from './procedures/introduction-video';
 import { uploadAccordionIcon } from './procedures/accordion-icon';
@@ -65,10 +63,8 @@ export const mockRouter = t.router({
     createCourse,
     getCourseShort,
     getCourseStructure,
-    listLessonComponents,
     saveCourseStructure,
     uploadLessonComponentFile,
-    saveLessonComponents,
     saveCourseDetails,
     uploadIntroductionVideo,
     saveCourseIntroduction,

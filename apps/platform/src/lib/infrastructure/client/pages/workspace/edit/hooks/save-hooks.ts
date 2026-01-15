@@ -218,12 +218,12 @@ export function useSaveLesson({
 
         try {
             const requestComponents = transformLessonToRequest(components);
-
-            const result = await saveLessonMutation.mutateAsync({
+            const request = {
                 lessonId: lessonId,
                 courseVersion: courseVersion,
                 components: requestComponents,
-            });
+            }
+            const result = await saveLessonMutation.mutateAsync(request);
 
             return result.success;
         } catch (error) {
