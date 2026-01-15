@@ -4,7 +4,7 @@
 
 ### **1. Geltungsbereich**
 
-Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für Nutzung sämtlicher Online-Plattformen, Websites und digitale Angebote, die über eclasslogin.ch zugänglich sind und von der **Just do Ad GmbH** (nachfolgend „wir" oder „uns") betrieben werden, insbesondere für den Zugang über eclasslogin.ch für eine damit verbunde Plattform und damit verbunden der Teilnahme an Kursen, Coachings, Beratungen und Workshops.
+Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für Nutzung sämtlicher Online-Plattformen, Websites und digitale Angebote, die über sso.eclasslogin.ch zugänglich sind und von der **Just do Ad GmbH** (nachfolgend „wir" oder „uns") betrieben werden, insbesondere für den Zugang über sso.eclasslogin.ch für eine damit verbunde Plattform und damit verbunden der Teilnahme an Kursen, Coachings, Beratungen und Workshops.
 Mit der Nutzung der Plattformen oder der Buchung einer Dienstleistung erklären sich Nutzer:innen mit diesen AGB einverstanden.
 
 ### **2. Nutzerrollen und Zugang**
@@ -95,7 +95,7 @@ Alle auf der Plattform bereitgestellten Inhalte (Texte, Videos, Designs, Templat
 
 Die Nutzung ist ausschliesslich für persönliche, nicht-kommerzielle Zwecke erlaubt.
 
-Jede Weitergabe, Veröffentlichung oder kommerzielle Nutzung ist untersagt, sofern keine ausdrückliche Genehmigung von eclasslogin.ch und der Just do Ad GmbH vorliegt.
+Jede Weitergabe, Veröffentlichung oder kommerzielle Nutzung ist untersagt, sofern keine ausdrückliche Genehmigung von sso.eclasslogin.ch und der Just do Ad GmbH vorliegt.
 
 ### **7. Haftung**
 
@@ -105,7 +105,7 @@ Für Inhalte externer Links übernehmen wir keine Verantwortung.
 
 ### **8. Datenschutz**
 
-Die Verarbeitung personenbezogener Daten erfolgt gemäss der Datenschutzerklärung von eclasslogin.ch abrufbar unter:
+Die Verarbeitung personenbezogener Daten erfolgt gemäss der Datenschutzerklärung von sso.eclasslogin.ch abrufbar unter:
 [**www.justdoad.ch/datenschutz**](http://www.justdoad.ch/datenschutz)
 
 ### **9. Anwendbares Recht und Gerichtsstand**
@@ -117,7 +117,7 @@ Gerichtsstand ist **Zürich, Schweiz**, soweit keine zwingenden gesetzlichen Bes
 
 ### **1. Geltungsbereich**
 
-Diese Datenschutzerklärung gilt für alle Plattformen, Websites und digitalen Angebote, die über eclasslogin.ch zugänglich sind und von der **Just do Ad GmbH** (nachfolgend „wir" oder „uns") betrieben werden.
+Diese Datenschutzerklärung gilt für alle Plattformen, Websites und digitalen Angebote, die über **sso.eclasslogin.ch** zugänglich sind und von der **Just do Ad GmbH** (nachfolgend „wir" oder „uns") betrieben werden.
 
 ### **2. Grundsätze der Datenbearbeitung**
 
@@ -224,7 +224,7 @@ Alle Datenübertragungen erfolgen verschlüsselt (SSL/TLS).
 
 ### **9. Änderung dieser Datenschutzerklärung**
 
-Die Just do Ad GmbH behält sich vor, diese Datenschutzerklärung jederzeit zu aktualisieren oder anzupassen. Änderungen gelten für alle Plattformen, die über eclasslogin.ch erreichbar sind.
+Die Just do Ad GmbH behält sich vor, diese Datenschutzerklärung jederzeit zu aktualisieren oder anzupassen. Änderungen gelten für alle Plattformen, die über sso.eclasslogin.ch erreichbar sind.
 
 Es gilt stets die aktuelle Version, veröffentlicht auf [**www.eclasslogin.ch/de/terms-of-use**](http://www.eclasslogin.ch/de/terms-of-use).
 
