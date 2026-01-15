@@ -128,22 +128,31 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
     const personalProfile = (personalProfileResponse as any).data?.profile;
 
     // Validate that customer has filled in required profile fields
-    if (!personalProfile?.name || !personalProfile?.surname) {
+    const missingProfileFields: string[] = [];
+    if (!personalProfile?.name?.trim()) missingProfileFields.push(t('fieldFirstName'));
+    if (!personalProfile?.surname?.trim()) missingProfileFields.push(t('fieldSurname'));
+
+    if (missingProfileFields.length > 0) {
       setErrorModal({
         isOpen: true,
         title: t('error.title'),
-        message: t('customerDataMissing'),
+        message: `${t('customerDataMissing')} ${t('missingFieldsLabel')} ${missingProfileFields.join(', ')}`,
       });
       return;
     }
 
     // Validate that platform has required company information for invoice
-    // Check for null, undefined, or empty string
-    if (!platform.companyName?.trim() || !platform.companyAddress?.trim() || !platform.companyUuid?.trim()) {
+    // Check for null, undefined, or empty string and show which fields are missing
+    const missingFields: string[] = [];
+    if (!platform.companyName?.trim()) missingFields.push(t('fieldCompanyName'));
+    if (!platform.companyAddress?.trim()) missingFields.push(t('fieldCompanyAddress'));
+    if (!platform.companyUuid?.trim()) missingFields.push(t('fieldCompanyUuid'));
+
+    if (missingFields.length > 0) {
       setErrorModal({
         isOpen: true,
         title: t('error.title'),
-        message: t('platformDataMissing'),
+        message: `${t('platformDataMissing')} ${t('missingFieldsLabel')} ${missingFields.join(', ')}`,
       });
       return;
     }
@@ -178,13 +187,13 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
           name: platform.name,
           logoUrl: platform.logo?.downloadUrl || '',
           domainName: platform.domainName,
-          companyName: platform.companyName,
-          companyAddress: platform.companyAddress,
-          companyUid: platform.companyUuid,
+          companyName: platform.companyName!,
+          companyAddress: platform.companyAddress!,
+          companyUid: platform.companyUuid!,
         },
         customerData: {
-          name: personalProfile.name,
-          surname: personalProfile.surname,
+          name: personalProfile.name!,
+          surname: personalProfile.surname!,
           email: personalProfile?.email,
           phone: personalProfile?.phone,
           companyDetails: personalProfile?.companyDetails,
