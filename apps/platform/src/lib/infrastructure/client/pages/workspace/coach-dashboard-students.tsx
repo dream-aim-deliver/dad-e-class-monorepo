@@ -206,7 +206,7 @@ export default function CoachDashboardStudents() {
                             <YourStudentCard
                                 key={student.id}
                                 locale={locale}
-                                studentName={`${student.name} ${student.surname}`}
+                                studentName={student.username}
                                 studentImageUrl={student.avatarUrl || ''}
                                 coachingSessionsLeft={
                                     student.coachingSessionCount > 0
