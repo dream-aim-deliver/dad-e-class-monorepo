@@ -54,7 +54,7 @@ const ERROR_MESSAGE_PATTERNS: Array<{ pattern: RegExp; key: string }> = [
   { pattern: /at least \d+ hours? in advance/i, key: 'insufficientAdvanceNotice' },
   { pattern: /scheduled at least/i, key: 'insufficientAdvanceNotice' },
   { pattern: /not available at the selected time/i, key: 'coachUnavailable' },
-  { pattern: /coach is not available/i, key: 'coachUnavailable' },
+  { pattern: /coach.*is not available/i, key: 'coachUnavailable' },
   { pattern: /already has a session/i, key: 'sessionOverlap' },
   { pattern: /session overlap/i, key: 'sessionOverlap' },
   { pattern: /in the past/i, key: 'sessionInPast' },
