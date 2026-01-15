@@ -46,15 +46,57 @@ export const ERROR_TYPE_TO_TRANSLATION_KEY: Record<string, string> = {
 };
 
 /**
- * Gets the translation key for a given error type.
- * Returns 'genericError' if the error type is not recognized.
+ * Mapping from error message patterns to translation keys.
+ * Used as fallback when errorType is lost in the http-response-interceptor.
+ * @deprecated This is a workaround until cms-rest preserves context.operationDetails
+ */
+const ERROR_MESSAGE_PATTERNS: Array<{ pattern: RegExp; key: string }> = [
+  { pattern: /at least \d+ hours? in advance/i, key: 'insufficientAdvanceNotice' },
+  { pattern: /scheduled at least/i, key: 'insufficientAdvanceNotice' },
+  { pattern: /not available at the selected time/i, key: 'coachUnavailable' },
+  { pattern: /coach is not available/i, key: 'coachUnavailable' },
+  { pattern: /already has a session/i, key: 'sessionOverlap' },
+  { pattern: /session overlap/i, key: 'sessionOverlap' },
+  { pattern: /in the past/i, key: 'sessionInPast' },
+  { pattern: /not authenticated/i, key: 'notAuthenticated' },
+  { pattern: /not a student/i, key: 'notStudent' },
+  { pattern: /session not found/i, key: 'sessionNotFound' },
+  { pattern: /coach not found/i, key: 'coachNotFound' },
+  { pattern: /not assigned to.*course/i, key: 'coachNotAssignedToCourse' },
+];
+
+/**
+ * Gets the translation key from an error message by matching patterns.
+ * @param message - The error message from the API response
+ * @returns The translation key if a pattern matches, undefined otherwise
+ */
+function getKeyFromMessage(message?: string): string | undefined {
+  if (!message) return undefined;
+  for (const { pattern, key } of ERROR_MESSAGE_PATTERNS) {
+    if (pattern.test(message)) {
+      return key;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Gets the translation key for a given error type or message.
+ * Returns 'genericError' if neither errorType nor message match.
  *
  * @param errorType - The error type from the API response
+ * @param message - The error message (fallback when errorType is unavailable)
  * @returns The translation key to use
  */
-export function getSchedulingErrorKey(errorType?: string): string {
+export function getSchedulingErrorKey(errorType?: string, message?: string): string {
+  // First try errorType
   if (errorType && ERROR_TYPE_TO_TRANSLATION_KEY[errorType]) {
     return ERROR_TYPE_TO_TRANSLATION_KEY[errorType];
+  }
+  // Fallback to message pattern matching
+  const keyFromMessage = getKeyFromMessage(message);
+  if (keyFromMessage) {
+    return keyFromMessage;
   }
   return 'genericError';
 }
@@ -70,9 +112,9 @@ export function useSchedulingErrors() {
   const t = useTranslations('components.schedulingErrors');
 
   const getSchedulingErrorMessage = useCallback(
-    (errorType?: string): { title: string; description: string } => {
-      const key = getSchedulingErrorKey(errorType);
-      
+    (errorType?: string, message?: string): { title: string; description: string } => {
+      const key = getSchedulingErrorKey(errorType, message);
+
       return {
         // @ts-expect-error - Dynamic key access for translations
         title: t(`${key}.title`),
