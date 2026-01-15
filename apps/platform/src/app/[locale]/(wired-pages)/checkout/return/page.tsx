@@ -27,6 +27,17 @@ export default function CheckoutReturnPage() {
     const [state, setState] = useState<PageState>('loading');
     const [transaction, setTransaction] = useState<any>(null);
     const [error, setError] = useState<string>('');
+    const [errorTimestamp, setErrorTimestamp] = useState<string>('');
+    const [stripeDetails, setStripeDetails] = useState<{
+        sessionId?: string;
+        paymentIntentId?: string;
+        customerEmail?: string;
+        amount?: number;
+        currency?: string;
+        paymentStatus?: string;
+        lineItems?: Array<{ description: string; quantity: number; amount: number }>;
+        metadata?: Record<string, string>;
+    } | null>(null);
     const [countdown, setCountdown] = useState(5);
 
     useEffect(() => {
@@ -64,6 +75,10 @@ export default function CheckoutReturnPage() {
 
             if (!response.ok) {
                 const errorData = await response.json();
+                // Capture stripe details from error response if available
+                if (errorData.stripeDetails) {
+                    setStripeDetails(errorData.stripeDetails);
+                }
                 throw new Error(errorData.error || errorData.message || 'Payment verification failed');
             }
 
@@ -97,6 +112,7 @@ export default function CheckoutReturnPage() {
             console.error('[CheckoutReturnPage] Error:', err);
             setState('error');
             setError(err.message || 'An error occurred processing your payment');
+            setErrorTimestamp(new Date().toLocaleString());
         }
     };
 
@@ -201,12 +217,86 @@ export default function CheckoutReturnPage() {
                             <p className="text-text-secondary">{error}</p>
                         </div>
 
+                        {/* Credit card warning banner */}
+                        <div className="bg-feedback-warning-secondary border border-feedback-warning-primary p-4 rounded-medium mb-4">
+                            <p className="text-sm text-feedback-warning-primary font-medium">
+                                {dictionary.pages.checkoutReturn.error.checkCardWarning}
+                            </p>
+                        </div>
+
+                        {/* Transaction details for support */}
+                        <div className="bg-base-neutral-800 border border-card-stroke p-4 rounded-medium mb-4">
+                            <p className="text-sm font-semibold text-text-primary mb-2">
+                                {dictionary.pages.checkoutReturn.error.transactionDetails}
+                            </p>
+                            {(stripeDetails?.paymentIntentId || sessionId) && (
+                                <p className="text-sm text-text-secondary mb-1 font-mono break-all">
+                                    {stripeDetails?.paymentIntentId
+                                        ? `${dictionary.pages.checkoutReturn.error.paymentIntentId} ${stripeDetails.paymentIntentId}`
+                                        : `${dictionary.pages.checkoutReturn.error.sessionId} ${sessionId}`}
+                                </p>
+                            )}
+                            {stripeDetails?.customerEmail && (
+                                <p className="text-sm text-text-secondary mb-1">
+                                    {dictionary.pages.checkoutReturn.error.customerEmail}{' '}
+                                    {stripeDetails.customerEmail}
+                                </p>
+                            )}
+                            {stripeDetails?.amount && stripeDetails?.currency && (
+                                <p className="text-sm text-text-secondary mb-1">
+                                    {dictionary.pages.checkoutReturn.error.amount}{' '}
+                                    {(stripeDetails.amount / 100).toFixed(2)} {stripeDetails.currency}
+                                </p>
+                            )}
+                            {stripeDetails?.lineItems && stripeDetails.lineItems.length > 0 && (
+                                <div className="text-sm text-text-secondary mb-1">
+                                    <span>{dictionary.pages.checkoutReturn.error.items}</span>
+                                    <ul className="list-disc list-inside ml-2 mt-1">
+                                        {stripeDetails.lineItems.map((item, index) => (
+                                            <li key={index}>
+                                                {item.description} (x{item.quantity})
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                            {stripeDetails?.metadata && Object.keys(stripeDetails.metadata).length > 0 && (
+                                <div className="text-sm text-text-secondary mb-1">
+                                    <span>{dictionary.pages.checkoutReturn.error.purchaseInfo}</span>
+                                    <ul className="list-none ml-2 mt-1 space-y-0.5">
+                                        {stripeDetails.metadata.purchaseType && (
+                                            <li>Type: {stripeDetails.metadata.purchaseType}</li>
+                                        )}
+                                        {stripeDetails.metadata.courseSlug && (
+                                            <li>Course: {stripeDetails.metadata.courseSlug}</li>
+                                        )}
+                                        {stripeDetails.metadata.packageId && (
+                                            <li>Package ID: {stripeDetails.metadata.packageId}</li>
+                                        )}
+                                        {stripeDetails.metadata.coachingOfferingId && (
+                                            <li>Coaching Offering: {stripeDetails.metadata.coachingOfferingId}</li>
+                                        )}
+                                        {stripeDetails.metadata.couponCode && (
+                                            <li>Coupon: {stripeDetails.metadata.couponCode}</li>
+                                        )}
+                                    </ul>
+                                </div>
+                            )}
+                            {errorTimestamp && (
+                                <p className="text-sm text-text-secondary">
+                                    {dictionary.pages.checkoutReturn.error.timestamp}{' '}
+                                    {errorTimestamp}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Contact information with instructions */}
                         <div className="bg-base-neutral-800 border border-card-stroke p-4 rounded-medium mb-6">
                             <p className="text-sm font-semibold text-text-primary mb-2">
                                 {dictionary.pages.checkoutReturn.error.needHelp}
                             </p>
                             {env.NEXT_PUBLIC_CONTACT_EMAIL && (
-                                <p className="text-sm text-text-secondary mb-1">
+                                <p className="text-sm text-text-secondary mb-3">
                                     {dictionary.pages.checkoutReturn.error.email}{' '}
                                     <a
                                         href={`mailto:${env.NEXT_PUBLIC_CONTACT_EMAIL}`}
@@ -216,8 +306,15 @@ export default function CheckoutReturnPage() {
                                     </a>
                                 </p>
                             )}
+                            <p className="text-sm text-text-secondary mb-2">
+                                {dictionary.pages.checkoutReturn.error.contactInstructions}
+                            </p>
+                            <ul className="text-sm text-text-secondary list-disc list-inside space-y-1">
+                                <li>{dictionary.pages.checkoutReturn.error.includeEmail}</li>
+                                <li>{dictionary.pages.checkoutReturn.error.includeDescription}</li>
+                            </ul>
                             {env.NEXT_PUBLIC_CONTACT_PHONE && (
-                                <p className="text-sm text-text-secondary">
+                                <p className="text-sm text-text-secondary mt-3">
                                     {dictionary.pages.checkoutReturn.error.phone}{' '}
                                     <a
                                         href={`tel:${env.NEXT_PUBLIC_CONTACT_PHONE}`}
@@ -240,8 +337,8 @@ export default function CheckoutReturnPage() {
                             <Button
                                 variant="secondary"
                                 size="big"
-                                text={dictionary.pages.checkoutReturn.error.backToCheckout}
-                                onClick={() => router.push(`/${locale}/checkout`)}
+                                text={dictionary.pages.checkoutReturn.error.backToDashboard}
+                                onClick={() => router.push(`/${locale}`)}
                                 className="w-full"
                             />
                         </div>

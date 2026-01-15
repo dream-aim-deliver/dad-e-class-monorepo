@@ -78,14 +78,27 @@ const backendTrpc = createTRPCProxyClient<TAppRouter>({
  * 5. Return result
  */
 export async function POST(req: NextRequest) {
+    // Track Stripe details for error responses
+    let stripeDetails: {
+        sessionId?: string;
+        paymentIntentId?: string;
+        customerEmail?: string;
+        amount?: number;
+        currency?: string;
+        paymentStatus?: string;
+        lineItems?: Array<{ description: string; quantity: number; amount: number }>;
+        metadata?: Record<string, string>;
+    } = {};
+
     try {
         // Parse request
         const body = await req.json();
         const { sessionId } = body;
+        stripeDetails.sessionId = sessionId;
 
         if (!sessionId) {
             return Response.json(
-                { error: 'Missing sessionId parameter' },
+                { error: 'Missing sessionId parameter', stripeDetails },
                 { status: 400 }
             );
         }
@@ -105,11 +118,11 @@ export async function POST(req: NextRequest) {
         let stripeSession: any;
         try {
             stripeSession = await stripe.checkout.sessions.retrieve(sessionId, {
-                expand: ['payment_intent'],
+                expand: ['payment_intent', 'line_items'],
             });
         } catch (error) {
             return Response.json(
-                { error: 'Failed to retrieve payment session' },
+                { error: 'Failed to retrieve payment session', stripeDetails },
                 { status: 500 }
             );
         }
@@ -119,7 +132,7 @@ export async function POST(req: NextRequest) {
         // payment_intent can be a string (ID) or an object (if expanded)
         let paymentIntentId: string | null = null;
         let paymentIntentStatus = 'unknown';
-        
+
         if (stripeSession.payment_intent) {
             if (typeof stripeSession.payment_intent === 'string') {
                 // Not expanded - it's just the ID
@@ -129,7 +142,7 @@ export async function POST(req: NextRequest) {
                 paymentIntentId = (stripeSession.payment_intent as any).id;
                 paymentIntentStatus = (stripeSession.payment_intent as any).status || 'unknown';
             }
-            
+
             // If we have an ID but no status, retrieve it
             if (paymentIntentId && paymentIntentStatus === 'unknown') {
                 try {
@@ -141,12 +154,29 @@ export async function POST(req: NextRequest) {
             }
         }
 
+        // Populate stripe details for error responses
+        stripeDetails = {
+            sessionId,
+            paymentIntentId: paymentIntentId || undefined,
+            customerEmail: stripeSession.customer_details?.email || undefined,
+            amount: stripeSession.amount_total || undefined,
+            currency: stripeSession.currency?.toUpperCase() || undefined,
+            paymentStatus: stripeSession.payment_status || undefined,
+            lineItems: stripeSession.line_items?.data?.map((item: any) => ({
+                description: item.description || 'Item',
+                quantity: item.quantity || 1,
+                amount: item.amount_total || 0,
+            })) || undefined,
+            metadata: stripeSession.metadata || undefined,
+        };
+
         if (stripeSession.payment_status !== 'paid') {
             return Response.json(
                 {
                     error: 'Payment not completed',
                     status: stripeSession.payment_status,
                     paymentIntentStatus,
+                    stripeDetails,
                 },
                 { status: 400 }
             );
@@ -161,7 +191,7 @@ export async function POST(req: NextRequest) {
 
         if (!purchaseType) {
             return Response.json(
-                { error: 'Invalid session metadata: missing purchase type' },
+                { error: 'Invalid session metadata: missing purchase type', stripeDetails },
                 { status: 400 }
             );
         }
@@ -184,6 +214,7 @@ export async function POST(req: NextRequest) {
                 {
                     error: 'Invalid payment external ID',
                     details: 'Could not determine payment intent ID or session ID',
+                    stripeDetails,
                 },
                 { status: 400 }
             );
@@ -225,6 +256,7 @@ export async function POST(req: NextRequest) {
                     error: 'Invalid purchase payload',
                     message: validationError.message,
                     details: validationError.issues,
+                    stripeDetails,
                 },
                 { status: 400 }
             );
@@ -244,17 +276,18 @@ export async function POST(req: NextRequest) {
                         error: 'Backend validation failed',
                         message: 'The backend rejected the request format',
                         details: backendError.data.detail,
-                        sentPayload: finalPayload,
+                        stripeDetails,
                     },
                     { status: 422 }
                 );
             }
-            
+
             return Response.json(
                 {
                     error: 'Backend call failed',
                     message: backendError?.message || 'Failed to call backend processPurchase',
                     details: backendError?.data || backendError?.shape,
+                    stripeDetails,
                 },
                 { status: 500 }
             );
@@ -277,6 +310,7 @@ export async function POST(req: NextRequest) {
                 {
                     error: 'Purchase processing failed',
                     message: errorMessage,
+                    stripeDetails,
                 },
                 { status: 400 }
             );
@@ -345,6 +379,7 @@ export async function POST(req: NextRequest) {
             {
                 error: 'Failed to process purchase',
                 message: error.message || 'Unknown error',
+                stripeDetails,
             },
             { status: 500 }
         );
