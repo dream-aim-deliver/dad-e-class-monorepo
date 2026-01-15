@@ -50,7 +50,6 @@ const listStudentCoachingSessionsMock: useCaseModels.TListStudentCoachingSession
                 title: 'Python Programming Masterclass',
                 slug: 'python-programming-masterclass'
             },
-            meetingUrl: 'https://meet.example.com/session-3'
         },
         {
             id: 7,
@@ -70,7 +69,6 @@ const listStudentCoachingSessionsMock: useCaseModels.TListStudentCoachingSession
                 title: 'Backend Development with Node.js',
                 slug: 'backend-development-nodejs'
             },
-            meetingUrl: 'https://meet.example.com/session-7'
         },
 
         // 2. ONGOING status - Sessions happening right now (simulate with recent past start, future end)

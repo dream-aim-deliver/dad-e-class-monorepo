@@ -21,7 +21,6 @@ const getStudentCoachingSessionMock: useCaseModels.TGetStudentCoachingSessionSuc
             title: 'Backend Development with Node.js',
             slug: 'backend-development-nodejs'
         },
-        meetingUrl: 'https://meet.example.com/session-7'
     },
 };
 
