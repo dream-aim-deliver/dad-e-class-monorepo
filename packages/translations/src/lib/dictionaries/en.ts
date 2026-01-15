@@ -2012,6 +2012,7 @@ export const EN: TDictionary = {
       coursesIncluded: 'Courses included',
       scheduleButton: 'Schedule',
       emptyState: "You don't have any orders yet",
+      coupon: 'Coupon:',
     },
     coachingSessionSnippet: {
       minutes: 'min',
@@ -2905,6 +2906,7 @@ export const EN: TDictionary = {
       invoiceGenerationFailed: 'Failed to generate invoice',
       invoiceGenerationError: 'An error occurred while generating the invoice. Please try again later.',
       unknownError: 'Unknown error',
+      couponApplied: 'Coupon Applied',
       invoice: {
         invoiceNo: 'Invoice no.',
         invoiceDate: 'Invoice date',
@@ -2927,6 +2929,8 @@ export const EN: TDictionary = {
         paymentMethod: 'Payment method',
         type: 'Type',
         description: 'Description',
+        coupon: 'Coupon',
+        discount: 'Discount',
       },
       error: {
         title: 'Error',
@@ -2973,6 +2977,7 @@ export const EN: TDictionary = {
       invoiceGenerationFailed: 'Failed to generate invoice',
       invoiceGenerationError: 'An error occurred while generating the invoice. Please try again later.',
       unknownError: 'Unknown error',
+      couponApplied: 'Coupon Applied',
       invoice: {
         invoiceNo: 'Invoice no.',
         invoiceDate: 'Invoice date',
@@ -2995,6 +3000,8 @@ export const EN: TDictionary = {
         paymentMethod: 'Payment method',
         type: 'Type',
         description: 'Description',
+        coupon: 'Coupon',
+        discount: 'Discount',
       },
       error: {
         title: 'Error',

@@ -221,6 +221,8 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
           paymentMethod: t('invoice.paymentMethod'),
           type: t('invoice.type'),
           description: t('invoice.description'),
+          coupon: '',
+          discount: '',
         },
       });
     } catch (error: any) {
