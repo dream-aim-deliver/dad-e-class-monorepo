@@ -12,7 +12,7 @@ import {
     SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 import { useCourseIntroduction } from './hooks/edit-introduction-hooks';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
@@ -132,21 +132,24 @@ export default function EditCourseIntroOutline({
     }, [introductionViewModel]);
 
     useEffect(() => {
+        console.log('[EditCourseIntroOutline] useEffect triggered, outlineViewModel:', outlineViewModel);
         if (!outlineViewModel || outlineViewModel.mode !== 'default') return;
-        setOutlineItems(
-            outlineViewModel.data.items.map((item) => ({
-                title: item.title,
-                content: item.description,
-                icon: item.icon
-                    ? {
-                          ...item.icon,
-                          status: 'available',
-                          url: item.icon.downloadUrl,
-                          thumbnailUrl: item.icon.downloadUrl,
-                      }
-                    : null,
-            })),
-        );
+
+        const mappedItems = outlineViewModel.data.items.map((item) => ({
+            title: item.title,
+            content: item.description,
+            icon: item.icon
+                ? {
+                      ...item.icon,
+                      status: 'available' as const,
+                      url: item.icon.downloadUrl,
+                      thumbnailUrl: item.icon.downloadUrl,
+                  }
+                : null,
+        }));
+
+        console.log('[EditCourseIntroOutline] Setting outline items to:', mappedItems);
+        setOutlineItems(mappedItems);
         setIsEdited(false);
     }, [outlineViewModel]);
 
