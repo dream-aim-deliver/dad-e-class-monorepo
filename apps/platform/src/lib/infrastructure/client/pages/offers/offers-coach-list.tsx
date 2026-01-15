@@ -13,6 +13,7 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface CoachListProps {
     selectedTopics: string[];
@@ -42,6 +43,8 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
 
     const locale = useLocale() as TLocale;
     const router = useRouter();
+    const { data: session } = useSession();
+    const isLoggedIn = !!session;
 
     if (!coachesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -109,11 +112,13 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
                     />
                 ))}
             </CardListLayout>
-            <Button
-                variant="text"
-                text={paginationTranslations('viewAll')}
-                onClick={handleViewAll}
-            />
+            {isLoggedIn && (
+                <Button
+                    variant="text"
+                    text={paginationTranslations('viewAll')}
+                    onClick={handleViewAll}
+                />
+            )}
         </div>
     );
 }
