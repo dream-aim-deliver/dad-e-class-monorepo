@@ -96,7 +96,7 @@ function ScheduledCoachSessionCard({
             <CoachingSessionCard
                 {...commonProps}
                 status="ongoing"
-                meetingLink={session.status == "scheduled" ? session?.meetingUrl || undefined : undefined}
+                meetingLink={session.status === "scheduled" ? session?.meetingUrl || undefined : undefined}
                 onClickJoinMeeting={onJoinMeeting}
             />
         );
@@ -107,7 +107,7 @@ function ScheduledCoachSessionCard({
             <CoachingSessionCard
                 {...commonProps}
                 status="upcoming-locked"
-                meetingLink={session.status == "scheduled" ? session?.meetingUrl || undefined : undefined}
+                meetingLink={session.status === "scheduled" ? session?.meetingUrl || undefined : undefined}
                 onClickJoinMeeting={onJoinMeeting}
             />
         );
