@@ -4,7 +4,7 @@
 
 ### 1. Scope
 
-These Terms and Conditions apply to the use of all online platforms, websites, and digital services accessible via **eclasslogin.ch** and operated by **Just do Ad GmbH** (hereinafter "we" or "us"), in particular access via eclasslogin.ch to connected platforms and participation in courses, coaching sessions, consulting, and workshops.
+These Terms and Conditions apply to the use of all online platforms, websites, and digital services accessible via **sso.eclasslogin.ch** and operated by **Just do Ad GmbH** (hereinafter "we" or "us"), in particular access via sso.eclasslogin.ch to connected platforms and participation in courses, coaching sessions, consulting, and workshops.
 By using the platforms or booking a service, users agree to these Terms and Conditions.
 
 ### **2. User Roles and Access**
@@ -86,7 +86,7 @@ Services already rendered (e.g., started courses or completed coaching sessions)
 
 All content provided on the platform (texts, videos, designs, templates, etc.) is protected by copyright.
 Use is permitted solely for personal, non-commercial purposes.
-Any redistribution, publication, or commercial use is prohibited unless expressly authorized by **eclasslogin.ch** and **Just do Ad GmbH**.
+Any redistribution, publication, or commercial use is prohibited unless expressly authorized by **sso.eclasslogin.ch** and **Just do Ad GmbH**.
 
 ### **7. Liability**
 
@@ -107,7 +107,7 @@ The place of jurisdiction is **Zurich, Switzerland**, unless mandatory legal pro
 
 ### **1. Scope**
 
-This Privacy Policy applies to all platforms, websites, and digital services accessible via **eclasslogin.ch** and operated by **Just do Ad GmbH** (hereinafter "we" or "us").
+This Privacy Policy applies to all platforms, websites, and digital services accessible via **sso.eclasslogin.ch** and operated by **Just do Ad GmbH** (hereinafter "we" or "us").
 
 ### **2. Principles of Data Processing**
 
@@ -209,7 +209,7 @@ All data transmissions are encrypted (SSL/TLS).
 ### **9. Changes to this Privacy Policy**
 
 Just do Ad GmbH reserves the right to update or amend this Privacy Policy at any time.
-Changes apply to all platforms accessible via **eclasslogin.ch**.
+Changes apply to all platforms accessible via **sso.eclasslogin.ch**.
 The current version is always published at [**www.eclasslogin.ch/en/terms-of-use**](http://www.eclasslogin.ch/en/terms-of-use).
 
 ### **10. Contact**
