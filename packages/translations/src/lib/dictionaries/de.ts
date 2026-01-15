@@ -560,6 +560,8 @@ export const DE: TDictionary = {
       averageRatingText: 'Durchschnittsbewertung:',
       readReviewsText: 'Bewertungen lesen',
       scheduleSessionText: 'Sitzung planen',
+      copyLinkText: 'Link kopieren',
+      coachText: 'Coach',
     },
     coachingSessionCancelModal: {
       noText: 'NEIN',

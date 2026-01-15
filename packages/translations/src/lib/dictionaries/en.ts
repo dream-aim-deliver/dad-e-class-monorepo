@@ -557,6 +557,8 @@ export const EN: TDictionary = {
       averageRatingText: 'Average rating:',
       readReviewsText: 'Read reviews',
       scheduleSessionText: 'Schedule Session',
+      copyLinkText: 'Copy link',
+      coachText: 'Coach',
     },
     coachingSessionCancelModal: {
       noText: 'No',

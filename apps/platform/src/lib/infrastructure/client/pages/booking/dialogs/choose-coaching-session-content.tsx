@@ -42,7 +42,10 @@ export default function ChooseCoachingSessionContent({
     // courseSlug filters available coaching sessions by course context
     // NOTE: courseSlug support requires backend update in @dream-aim-deliver/e-class-cms-rest
     const [availableCoachingsResponse] =
-        trpc.listAvailableCoachings.useSuspenseQuery({ courseSlug } as Parameters<typeof trpc.listAvailableCoachings.useSuspenseQuery>[0]);
+        trpc.listAvailableCoachings.useSuspenseQuery({ courseSlug } as Parameters<typeof trpc.listAvailableCoachings.useSuspenseQuery>[0], {
+            staleTime: 0,
+            refetchOnMount: 'always',
+        });
     const [availableCoachingsViewModel, setAvailableCoachingsViewModel] =
         useState<viewModels.TAvailableCoachingListViewModel | undefined>(
             undefined,
