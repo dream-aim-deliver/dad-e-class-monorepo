@@ -234,7 +234,7 @@ export default function GroupWorkspaceStudent({
       // Base props common to all student card variants
       const baseProps = {
         locale: locale,
-        studentName: `${member.name} ${member.surname}`,
+        studentName: member.username,
         studentImageUrl: member.avatarUrl || '',
         coachName: `${member.coach.name} ${member.coach.surname}`,
         coachImageUrl: member.coach.avatarUrl || '',

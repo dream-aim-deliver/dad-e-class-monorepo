@@ -165,7 +165,7 @@ export function CourseStudents(
                 : "";
 
             const commonProps = {
-                studentName: student.fullName,
+                studentName: student.studentUsername,
                 studentImageUrl: student.avatarUrl ?? "",
                 coachName: coachName,
                 coachImageUrl: hasCoach ? (student.lastAssignmentCoach?.avatarUrl ?? "") : "",
