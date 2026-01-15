@@ -49,7 +49,7 @@ export interface CheckoutModalProps extends isLocalAware {
     purchaseIdentifier: {
         courseSlug?: string;
         packageId?: number;
-        courseIds?: number[]; // For packages - which courses were selected
+        selectedCourseIds?: number[]; // For packages - which courses were selected
         coachingOfferingId?: number;
         quantity?: number;
         withCoaching?: boolean; // For courses and packages - was coaching included
@@ -245,8 +245,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             if (purchaseIdentifier.packageId) {
                 params.append('packageId', purchaseIdentifier.packageId.toString());
             }
-            if (purchaseIdentifier.courseIds && purchaseIdentifier.courseIds.length > 0) {
-                params.append('courseIds', purchaseIdentifier.courseIds.join(','));
+            if (purchaseIdentifier.selectedCourseIds && purchaseIdentifier.selectedCourseIds.length > 0) {
+                params.append('selectedCourseIds', purchaseIdentifier.selectedCourseIds.join(','));
             }
             if (purchaseIdentifier.coachingOfferingId) {
                 params.append('coachingOfferingId', purchaseIdentifier.coachingOfferingId.toString());

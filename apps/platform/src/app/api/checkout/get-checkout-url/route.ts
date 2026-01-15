@@ -17,7 +17,7 @@ export async function GET(req: Request) {
     const purchaseType = searchParams.get('purchaseType');
     const courseSlug = searchParams.get('courseSlug');
     const packageId = searchParams.get('packageId');
-    const courseIds = searchParams.get('courseIds');
+    const selectedCourseIds = searchParams.get('selectedCourseIds');
     const coachingOfferingId = searchParams.get('coachingOfferingId');
     const quantity = searchParams.get('quantity');
     const offerings = searchParams.get('offerings'); // Multiple offerings in format "1:3,2:2"
@@ -49,7 +49,7 @@ export async function GET(req: Request) {
     if (purchaseType) metadata.purchaseType = purchaseType;
     if (courseSlug) metadata.courseSlug = courseSlug;
     if (packageId) metadata.packageId = packageId;
-    if (courseIds) metadata.courseIds = courseIds;
+    if (selectedCourseIds) metadata.selectedCourseIds = selectedCourseIds;
     if (coachingOfferingId) metadata.coachingOfferingId = coachingOfferingId;
     if (quantity) metadata.quantity = quantity;
     // Multiple offerings take precedence over single offering

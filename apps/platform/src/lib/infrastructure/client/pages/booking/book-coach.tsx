@@ -151,9 +151,11 @@ function CoachHeader({ coachUsername }: CoachHeaderProps) {
 interface CoachingOfferingsPanelProps {
     coachUsername: string;
     isFromCourse?: boolean;
+    externalVisible?: boolean;
+    externalSetter?: (value: boolean | ((prev: boolean) => boolean)) => void;
 }
 
-function CoachingOfferingsPanel({ coachUsername, isFromCourse }: CoachingOfferingsPanelProps) {
+function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, externalSetter }: CoachingOfferingsPanelProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const sessionDTO = useSession();
@@ -788,7 +790,11 @@ function BookCoachPageContent({
                     {!isFromCourse && (
                         <div className="w-[400px] shrink-0">
                             <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-                                <CoachingOfferingsPanel coachUsername={coachUsername} />
+                                <CoachingOfferingsPanel
+                                    coachUsername={coachUsername}
+                                    externalVisible={isBuySectionVisible}
+                                    externalSetter={setIsBuySectionVisible}
+                                />
                             </Suspense>
                         </div>
                     )}
@@ -804,7 +810,11 @@ function BookCoachPageContent({
                     />
                     {!isFromCourse && (
                         <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-                            <CoachingOfferingsPanel coachUsername={coachUsername} />
+                            <CoachingOfferingsPanel
+                                coachUsername={coachUsername}
+                                externalVisible={isBuySectionVisible}
+                                externalSetter={setIsBuySectionVisible}
+                            />
                         </Suspense>
                     )}
                 </div>
