@@ -72,8 +72,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
     locale,
 }) => {
     const dictionary = getDictionary(locale);
-    const createdByText =
-        dictionary.components.coachingSessionCard.createdByText;
+    const coachText = dictionary.components.coachingSessionCard.coachText;
     const studentText = dictionary.components.coachingSessionCard.studentText;
     const courseText = dictionary.components.coachingSessionCard.courseText;
     const groupText = dictionary.components.coachingSessionCard.groupText;
@@ -84,7 +83,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
                     {userRole === 'student' ? (
                         <>
                             <IconCoachingOffer size="4" />
-                            <p className="text-sm text-text-secondary">{createdByText}</p>
+                            <p className="text-sm text-text-secondary">{coachText}</p>
                         </>
                     ) : (
                         <>

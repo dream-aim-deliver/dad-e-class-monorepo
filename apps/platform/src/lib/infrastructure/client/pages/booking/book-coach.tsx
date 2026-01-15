@@ -48,7 +48,10 @@ interface AvailableCoachingsProps {
 function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps) {
     const locale = useLocale() as TLocale;
     const [availableCoachingsResponse] =
-        trpc.listAvailableCoachings.useSuspenseQuery({});
+        trpc.listAvailableCoachings.useSuspenseQuery({}, {
+            staleTime: 0,
+            refetchOnMount: 'always',
+        });
     const [availableCoachingsViewModel, setAvailableCoachingsViewModel] =
         useState<viewModels.TAvailableCoachingListViewModel | undefined>(
             undefined,
@@ -529,7 +532,10 @@ function BookCoachPageContent({
     const isFromCourse = Boolean(lessonComponentId || courseSlug);
 
     const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
-        trpc.getCoachAvailability.useSuspenseQuery({ coachUsername });
+        trpc.getCoachAvailability.useSuspenseQuery({ coachUsername }, {
+            staleTime: 0,
+            refetchOnMount: 'always',
+        });
 
     const [coachAvailabilityViewModel, setCoachAvailabilityViewModel] =
         useState<viewModels.TCoachAvailabilityViewModel | undefined>(undefined);
@@ -547,6 +553,7 @@ function BookCoachPageContent({
     const [bookingSuccess, setBookingSuccess] = useState(false);
     const [briefing, setBriefing] = useState('');
     const [viewType, setViewType] = useState<'weekly' | 'monthly'>('weekly');
+    const [dialogKey, setDialogKey] = useState(0);
     const calendarT = useTranslations('pages.calendarPage');
 
     // Initialize date on client side only to avoid hydration mismatch
@@ -568,14 +575,23 @@ function BookCoachPageContent({
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    // Helper to open dialog with a fresh key (forces remount of content)
+    const openDialog = () => {
+        setDialogKey((prev) => prev + 1);
+        setIsDialogOpen(true);
+    };
+
     const utils = trpc.useUtils();
 
     const requestSessionMutation = trpc.requestCoachingSession.useMutation({
-        onSuccess: () => {
+        onSuccess: async () => {
             // Invalidate related queries to refetch fresh data
             utils.listStudentCoachingSessions.invalidate();
+            utils.listCoachCoachingSessions.invalidate();
             utils.getCoachAvailability.invalidate({ coachUsername });
             utils.listAvailableCoachings.invalidate();
+            // Force refetch to update the UI immediately
+            await utils.listAvailableCoachings.refetch();
         },
     });
     const [submitError, setSubmitError] = useState<{ title: string; description: string } | undefined>(
@@ -656,6 +672,7 @@ function BookCoachPageContent({
                     if (!isDialogOpen) {
                         setNewSession(defaultSession);
                         setSubmitError(undefined);
+                        setBookingSuccess(false);
                         setBriefing('');
                     }
                     setIsDialogOpen(isDialogOpen);
@@ -668,6 +685,7 @@ function BookCoachPageContent({
                     closeOnEscape
                 >
                     <ScheduledOfferingContent
+                        key={dialogKey}
                         offering={newSession}
                         setOffering={setNewSession}
                         briefing={briefing}
@@ -740,7 +758,7 @@ function BookCoachPageContent({
                                     coachAvailabilityViewModel
                                 }
                                 setNewSessionStart={setNewSessionStart}
-                                openDialog={() => setIsDialogOpen(true)}
+                                openDialog={openDialog}
                                 currentDate={currentDate}
                                 setCurrentDate={setCurrentDate}
                             />
@@ -750,7 +768,7 @@ function BookCoachPageContent({
                                 currentDate={currentDate}
                                 setCurrentDate={setCurrentDate}
                                 setNewSessionStart={setNewSessionStart}
-                                openDialog={() => setIsDialogOpen(true)}
+                                openDialog={openDialog}
                                 variant="full"
                             />
                         )}
@@ -770,7 +788,7 @@ function BookCoachPageContent({
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
                         setNewSessionStart={setNewSessionStart}
-                        openDialog={() => setIsDialogOpen(true)}
+                        openDialog={openDialog}
                     />
                     {!isFromCourse && (
                         <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>

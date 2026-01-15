@@ -29,7 +29,7 @@ type StudentOngoingCard = BaseCardSharedProps & {
     status: 'ongoing';
     creatorName: string;
     creatorImageUrl: string;
-    meetingLink: string;
+    meetingLink?: string;
     onClickCreator: () => void;
     onClickJoinMeeting: () => void;
 };
@@ -61,6 +61,7 @@ type StudentUpcomingLockedCard = BaseCardSharedProps & {
     status: 'upcoming-locked';
     creatorName: string;
     creatorImageUrl: string;
+    meetingLink?: string;
     onClickCreator: () => void;
     onClickJoinMeeting: () => void;
 };
@@ -162,7 +163,7 @@ type CoachOngoingCard = BaseCardSharedProps & {
     status: 'ongoing';
     studentName: string;
     studentImageUrl: string;
-    meetingLink: string;
+    meetingLink?: string;
     onClickStudent: () => void;
     onClickJoinMeeting: () => void;
 };
@@ -192,6 +193,7 @@ type CoachUpcomingLockedCard = BaseCardSharedProps & {
     status: 'upcoming-locked';
     studentName: string;
     studentImageUrl: string;
+    meetingLink?: string;
     onClickStudent: () => void;
     onClickJoinMeeting: () => void;
 };

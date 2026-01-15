@@ -59,11 +59,14 @@ function ScheduledStudentSessionCard({
             const now = new Date();
             const msUntilSession = startDateTime.getTime() - now.getTime();
 
-            if (msUntilSession <= 10 * 60 * 1000 && msUntilSession > 0) {
+            // Session has started or is within 10 minutes of starting
+            if (msUntilSession <= 10 * 60 * 1000) {
                 setStatus({ cardStatus: 'ongoing', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
-            } else if (msUntilSession <= 24 * 60 * 60 * 1000 && msUntilSession > 0) {
+            } else if (msUntilSession <= 24 * 60 * 60 * 1000) {
+                // Between 10 minutes and 24 hours before session
                 setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
-            } else if (msUntilSession > 24 * 60 * 60 * 1000) {
+            } else {
+                // More than 24 hours before session
                 const msUntilLock = msUntilSession - (24 * 60 * 60 * 1000);
                 const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
                 const hoursLeft = Math.floor(totalMinutesLeft / 60);
@@ -72,8 +75,6 @@ function ScheduledStudentSessionCard({
                     hoursLeftToEdit: hoursLeft,
                     minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined
                 });
-            } else {
-                setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
             }
         };
 
@@ -109,7 +110,7 @@ function ScheduledStudentSessionCard({
             <CoachingSessionCard
                 {...commonProps}
                 status="ongoing"
-                meetingLink={meetingUrl || ''}
+                meetingLink={meetingUrl || undefined}
                 onClickJoinMeeting={onJoinMeeting}
             />
         );
@@ -120,6 +121,7 @@ function ScheduledStudentSessionCard({
             <CoachingSessionCard
                 {...commonProps}
                 status="upcoming-locked"
+                meetingLink={meetingUrl || undefined}
                 onClickJoinMeeting={onJoinMeeting}
             />
         );
@@ -162,7 +164,26 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         router.push(`?${newSearchParams.toString()}`);
     };
 
-    const [studentCoachingSessionsResponse, { refetch: refetchStudentCoachingSessions }] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
+    // Helper to check if any session starts within the next 15 minutes
+    const hasUpcomingSessionSoon = (sessions: { startTime?: string }[]) => {
+        const now = new Date();
+        const fifteenMinutesFromNow = now.getTime() + 15 * 60 * 1000;
+        return sessions.some(session => {
+            if (!session?.startTime) return false;
+            const startTime = new Date(session.startTime).getTime();
+            return startTime > now.getTime() && startTime <= fifteenMinutesFromNow;
+        });
+    };
+
+    const [studentCoachingSessionsResponse, { refetch: refetchStudentCoachingSessions }] = trpc.listStudentCoachingSessions.useSuspenseQuery({}, {
+        staleTime: 0,
+        refetchOnMount: 'always',
+        refetchInterval: (query) => {
+            const data = query.state.data as { data?: { sessions?: { startTime?: string }[] } } | undefined;
+            const sessions = data?.data?.sessions || [];
+            return hasUpcomingSessionSoon(sessions) ? 30000 : false;
+        },
+    });
     const utils = trpc.useUtils();
 
     const createReviewMutation = trpc.createCoachingSessionReview.useMutation({
@@ -396,6 +417,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         utils.getCoachAvailability.invalidate();
         utils.listCoachCoachingSessions.invalidate();
         utils.listStudentCoachingSessions.invalidate();
+        utils.listAvailableCoachings.invalidate();
         await refetchStudentCoachingSessions();
 
         // Success - close modal and reset state
@@ -437,6 +459,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         utils.getCoachAvailability.invalidate();
         utils.listCoachCoachingSessions.invalidate();
         utils.listStudentCoachingSessions.invalidate();
+        utils.listAvailableCoachings.invalidate();
         await refetchStudentCoachingSessions();
 
         // Close the modal
@@ -474,8 +497,10 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         window.open(`/${locale}/coaches/${coachUsername}`, '_blank');
     };
 
-    const handleJoinMeeting = (meetingUrl: string) => {
-        window.open(meetingUrl, '_blank');
+    const handleJoinMeeting = (meetingUrl: string | null | undefined) => {
+        if (meetingUrl) {
+            window.open(meetingUrl, '_blank');
+        }
     };
 
     const handleDownloadRecording = (sessionId: number | string) => {
@@ -672,7 +697,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         locale={locale}
                         formatTime={formatTime}
                         onCreatorClick={() => handleCreatorClick(coach.username || '')}
-                        onJoinMeeting={() => handleJoinMeeting(meetingUrl || '')}
+                        onJoinMeeting={() => handleJoinMeeting(meetingUrl)}
                         onCancel={() => handleOpenCancelModal(session.id!)}
                         onViewCourse={course?.slug ? () => handleViewCourse(course.slug || '') : undefined}
                         courseName={course?.title}

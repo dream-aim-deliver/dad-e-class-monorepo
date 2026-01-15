@@ -109,11 +109,15 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
             size="medium"
             className="w-full"
             text={dictionary.components.coachingSessionCard.joinMeetingText}
+            disabled={!props.meetingLink}
           />
           {props.meetingLink && (
-            <p className="text-xs text-text-secondary leading-tight break-all overflow-hidden">
-              {props.meetingLink}
-            </p>
+            <Button
+              variant="text"
+              size="small"
+              text={dictionary.components.coachingSessionCard.copyLinkText}
+              onClick={() => navigator.clipboard.writeText(props.meetingLink!)}
+            />
           )}
         </div>
       );
@@ -151,15 +155,23 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
 
     case 'upcoming-locked':
       return (
-        <div className="flex flex-col gap-1 items-start">
+        <div className="flex flex-col gap-1 items-start w-full">
           <Button
             onClick={props.onClickJoinMeeting}
             variant="primary"
             size="medium"
             className="w-full"
             text={dictionary.components.coachingSessionCard.joinMeetingText}
-            disabled
+            disabled={!props.meetingLink}
           />
+          {props.meetingLink && (
+            <Button
+              variant="text"
+              size="small"
+              text={dictionary.components.coachingSessionCard.copyLinkText}
+              onClick={() => navigator.clipboard.writeText(props.meetingLink!)}
+            />
+          )}
           <p className="text-xs text-text-secondary leading-[100%]">
             {dictionary.components.coachingSessionCard.meetingLinkVisibilityInfo}
           </p>
