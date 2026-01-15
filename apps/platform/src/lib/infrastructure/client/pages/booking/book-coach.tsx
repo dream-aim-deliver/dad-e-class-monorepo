@@ -602,7 +602,6 @@ function BookCoachPageContent({
 
         // TODO: Check if there is availability for the selected time
 
-        // briefing and lessonComponentId are supported by the backend but not yet in @dream-aim-deliver/e-class-cms-rest types
         requestSessionMutation.mutate(
             {
                 coachUsername,
@@ -614,9 +613,11 @@ function BookCoachPageContent({
             {
                 onSuccess: (data) => {
                     if (data.success === false) {
-                        // Get user-friendly error message based on error type
-                        const errorType = data.data.data.errorType;
-                        setSubmitError(getSchedulingErrorMessage(errorType));
+                        // Get user-friendly error message based on error type and message
+                        // Note: errorType from cms-rest may be generic (e.g., "ValidationError")
+                        // so we also pass the message for pattern-based fallback matching
+                        const errorData = data.data as { errorType?: string; message?: string };
+                        setSubmitError(getSchedulingErrorMessage(errorData.errorType, errorData.message));
                         return;
                     }
                     setBookingSuccess(true);
