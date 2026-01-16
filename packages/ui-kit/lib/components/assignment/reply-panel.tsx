@@ -162,7 +162,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                     onUploadComplete={(file) => onUploadComplete(file)}
                     locale={locale}
                     className="w-full"
-                    maxSize={5}
+                    maxSize={50} // 50 MB
                 />
                 <div className="flex flex-col items-center justify-center gap-[10px] w-full">
                     {links.map((link, index) =>

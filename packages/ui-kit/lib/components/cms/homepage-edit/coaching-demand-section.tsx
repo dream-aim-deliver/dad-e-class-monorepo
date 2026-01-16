@@ -162,7 +162,7 @@ export default function CoachingDemandSection({
                             onFilesChange={(file, abortSignal) => handleOnFilesChange('desktop', file, abortSignal)}
                             onUploadComplete={(file) => handleUploadComplete('desktop', file)}
                             locale="en"
-                            maxSize={10}
+                            maxSize={20} // 20 MB
                             uploadProgress={uploadProgress}
                         />
                     </div>
@@ -179,7 +179,7 @@ export default function CoachingDemandSection({
                             onFilesChange={(file, abortSignal) => handleOnFilesChange('tablet', file, abortSignal)}
                             onUploadComplete={(file) => handleUploadComplete('tablet', file)}
                             locale="en"
-                            maxSize={10}
+                            maxSize={20} // 20 MB
                             uploadProgress={uploadProgress}
                         />
                     </div>
@@ -196,7 +196,7 @@ export default function CoachingDemandSection({
                             onFilesChange={(file, abortSignal) => handleOnFilesChange('mobile', file, abortSignal)}
                             onUploadComplete={(file) => handleUploadComplete('mobile', file)}
                             locale={locale}
-                            maxSize={10}
+                            maxSize={20} // 20 MB
                             uploadProgress={uploadProgress}
                         />
                     </div>
