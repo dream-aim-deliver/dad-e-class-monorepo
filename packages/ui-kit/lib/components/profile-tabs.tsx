@@ -48,6 +48,7 @@ export interface ProfileTabsProps extends isLocalAware {
   isSaving?: boolean;
   hasProfessionalProfile?: boolean;
   onTabChange?: (tab: string) => boolean;
+  skillsLanguageHint?: string;
 }
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
@@ -73,6 +74,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   isSaving = false,
   hasProfessionalProfile = false,
   onTabChange,
+  skillsLanguageHint,
 }) => {
   const personalForm = useFormState(personalProfile, {
     enableReloadProtection: true
@@ -237,6 +239,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             locale={locale as TLocale}
             uploadProgress={curriculumVitaeUploadProgress}
             isSaving={isProfessionalSaveDisabled}
+            skillsLanguageHint={skillsLanguageHint}
           />
         </TabContent>
       </Tabs.Root>

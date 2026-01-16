@@ -12,6 +12,7 @@ import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { useState } from 'react';
+import Tooltip from '../tooltip';
 
 type TProfessionalProfileAPI = viewModels.TGetProfessionalProfileSuccess['profile'];
 type TSkill = { id: string | number; name: string; slug: string };
@@ -33,6 +34,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   uploadProgress?: number;
   isSaving?: boolean;
   variant?: 'professionalInfo' | 'becomeACoach';
+  skillsLanguageHint?: string;
 }
 
 
@@ -90,6 +92,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   uploadProgress,
   isSaving = false,
   variant = 'professionalInfo',
+  skillsLanguageHint,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const dictionary = getDictionary(locale);
@@ -303,14 +306,18 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 />
               </div>
 
-              <h3 className="text-lg leading-[100%] font-bold text-text-primary ">
-                Select Skills
+              <h3 className="text-lg font-bold text-text-primary">
+                <Tooltip
+                  text={dictionary.components.professionalInfo.selectSkills}
+                  description={skillsLanguageHint || ''}
+                  tipPosition="right"
+                />
               </h3>
               <InputField
                 value={skillSearchQuery}
                 setValue={(value: string) => setSkillSearchQuery(value)}
                 hasLeftContent={true}
-                inputText="Search Skills"
+                inputText={dictionary.components.professionalInfo.searchSkillsPlaceholder}
                 leftContent={<IconSearch />}
               />
               <div className=" space-y-2 max-h-60 overflow-y-auto gap-2">

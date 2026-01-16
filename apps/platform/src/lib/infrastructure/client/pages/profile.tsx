@@ -72,6 +72,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const searchParams = useSearchParams();
 	const t = useTranslations('pages.profile');
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+	const professionalInfoTranslations = useTranslations('components.professionalInfo');
 	const utils = trpc.useUtils();
 
 	// Upload progress state - separate for each upload type
@@ -91,9 +92,12 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		refetchOnWindowFocus: false,
 		staleTime: 5 * 60 * 1000,
 	});
+	// Topics are locale-dependent - force refetch on mount to get correct language
+	// (React Query cache key doesn't include locale from Accept-Language header)
 	const topicsQuery = trpc.listTopics.useQuery({}, {
 		refetchOnWindowFocus: false,
-		staleTime: 10 * 60 * 1000,
+		staleTime: 0,
+		refetchOnMount: 'always',
 	});
 
 
@@ -434,6 +438,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						isSaving={savePersonalMutation.isPending || saveProfessionalMutation.isPending}
 						hasProfessionalProfile={isCoach}
 						onTabChange={handleTabChange}
+						skillsLanguageHint={professionalInfoTranslations('skillsLanguageHint')}
 					/>
 
 
