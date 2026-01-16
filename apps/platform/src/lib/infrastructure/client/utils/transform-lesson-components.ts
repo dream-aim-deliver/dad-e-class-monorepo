@@ -394,7 +394,7 @@ function transformCoachingSession(
         type: LessonElementType.CoachingSession,
         id: component.id,
         coachingSession: {
-            id: component.coachingOfferingId,  // Backend now returns coachingOfferingId
+            id: component.coachingOfferingId ?? undefined,  // Backend now returns coachingOfferingId
             name: component.name,
             duration: component.duration,
         },
