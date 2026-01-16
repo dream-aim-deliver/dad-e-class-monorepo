@@ -3283,6 +3283,9 @@ export const DE: TDictionary = {
         emailName: 'Absendername',
         emailNamePlaceholder: 'z.B. Plattform-Team',
         emailNameDescription: 'Der Anzeigename, der neben der Absender-E-Mail-Adresse erscheint',
+        supportEmailAddress: 'Support-E-Mail-Adresse',
+        supportEmailAddressPlaceholder: 'z.B. support@plattform.de',
+        supportEmailAddressDescription: 'Die E-Mail-Adresse für Kundenanfragen',
       },
       error: {
         title: 'Fehler',

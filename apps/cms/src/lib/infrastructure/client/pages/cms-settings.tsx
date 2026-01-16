@@ -38,6 +38,37 @@ interface CmsSettingsProps {
   platformLocale: string;
 }
 
+// Field name mapping for user-friendly error messages
+const fieldNameMap: Record<string, string> = {
+  supportEmailAddress: 'Support Email Address',
+  name: 'Platform Name',
+  companyName: 'Company Name',
+  companyAddress: 'Company Address',
+  companyUuid: 'Company UUID',
+  logoId: 'Logo',
+  backgroundImageId: 'Background Image',
+};
+
+// Parse validation errors into user-friendly messages
+function parseValidationErrors(errorMessage: string): string {
+  try {
+    const errors = JSON.parse(errorMessage);
+    if (Array.isArray(errors)) {
+      return errors
+        .map((err) => {
+          const fieldName = err.path?.[0];
+          const friendlyFieldName = fieldNameMap[fieldName] || fieldName;
+          const message = err.message || 'Invalid value';
+          return `${friendlyFieldName}: ${message}`;
+        })
+        .join('. ');
+    }
+  } catch {
+    // Not JSON, return as-is
+  }
+  return errorMessage;
+}
+
 export default function CmsSettings({ platformSlug, platformLocale }: CmsSettingsProps) {
   // TRPC utils for query invalidation
   const utils = trpc.useUtils();
@@ -107,6 +138,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
   const [slug, setSlug] = useState<string>('');
   const [currency, setCurrency] = useState<string>('');
   const [domainName, setDomainName] = useState<string>('');
+  const [supportEmailAddress, setSupportEmailAddress] = useState<string>('');
 
   // Email configuration fields
   const [templateId, setTemplateId] = useState<string>('');
@@ -128,7 +160,10 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
     },
     onError: (error) => {
       setSaveStatus('error');
-      setSaveMessage((error.message ?? t('saveError')) ?? 'An error occurred while saving');
+      const friendlyMessage = error.message
+        ? parseValidationErrors(error.message)
+        : (t('saveError') ?? 'An error occurred while saving');
+      setSaveMessage(friendlyMessage);
       console.error('Error saving platform settings:', error);
     },
   });
@@ -148,7 +183,10 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
     },
     onError: (error) => {
       setEmailSaveStatus('error');
-      setEmailSaveMessage((error.message ?? t('saveError')) ?? 'An error occurred while saving');
+      const friendlyMessage = error.message
+        ? parseValidationErrors(error.message)
+        : (t('saveError') ?? 'An error occurred while saving');
+      setEmailSaveMessage(friendlyMessage);
       console.error('Error saving email config:', error);
     },
   });
@@ -195,6 +233,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
       setSlug(data.slug ?? '');
       setCurrency(data.currency ?? '');
       setDomainName(data.domainName ?? '');
+      setSupportEmailAddress(data.supportEmailAddress ?? '');
     }
   }, [platformViewModel]);
 
@@ -280,6 +319,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
       companyUuid: companyUuid || '',
       logoId: logo?.id ? Number(logo.id) : null,
       backgroundImageId: backgroundImage?.id ? Number(backgroundImage.id) : null,
+      supportEmailAddress: supportEmailAddress || '',
     });
 
     // Also save email config
@@ -318,24 +358,24 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
       <Breadcrumbs items={breadcrumbItems} />
 
       <div className="flex flex-col space-y-2">
-          <h1>{t('title')}</h1>
+        <h1>{t('title')}</h1>
         <p className="text-text-secondary text-sm">
           {t('description')} | Platform: {platform.name}
         </p>
       </div>
       <div className="sticky top-18 z-50 flex justify-end">
-          <Button
-            variant="primary"
-            size="medium"
-            text={
-              (updatePlatformMutation.isPending || saveEmailConfigMutation.isPending)
-                ? (t('saving') ?? 'Saving...')
-                : (t('saveButton') ?? 'Save Changes')
-            }
-            onClick={handleSave}
-            disabled={updatePlatformMutation.isPending || saveEmailConfigMutation.isPending}
-            className='shadow-lg'
-          />
+        <Button
+          variant="primary"
+          size="medium"
+          text={
+            (updatePlatformMutation.isPending || saveEmailConfigMutation.isPending)
+              ? (t('saving') ?? 'Saving...')
+              : (t('saveButton') ?? 'Save Changes')
+          }
+          onClick={handleSave}
+          disabled={updatePlatformMutation.isPending || saveEmailConfigMutation.isPending}
+          className='shadow-lg'
+        />
       </div>
 
       {/* Save Status Banner */}
@@ -407,9 +447,24 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
               className="opacity-70 cursor-not-allowed"
             />
           </div>
+
+          {/* Support Email Address */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-text-primary">
+              {t('fields.supportEmailAddress') ?? 'Support Email Address'}
+            </label>
+            <InputField
+              inputText={t('fields.supportEmailAddressPlaceholder') ?? 'e.g., support@platform.com'}
+              value={supportEmailAddress}
+              setValue={setSupportEmailAddress}
+            />
+            <p className="text-xs text-text-secondary">
+              {t('fields.supportEmailAddressDescription') ?? 'The email address for customer support inquiries'}
+            </p>
+          </div>
         </div>
 
-        <Divider className='my-1'/>
+        <Divider className='my-1' />
 
         {/* Company Information Section */}
         <div className="flex flex-col gap-4">
@@ -451,7 +506,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
           </div>
         </div>
 
-        <Divider className='my-1'/>
+        <Divider className='my-1' />
 
         {/* Branding Section */}
         <div className="flex flex-col gap-4">
@@ -510,7 +565,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
           </div>
         </div>
 
-        <Divider className='my-1'/>
+        <Divider className='my-1' />
 
         {/* Email Configuration Section */}
         <div className="flex flex-col gap-4">

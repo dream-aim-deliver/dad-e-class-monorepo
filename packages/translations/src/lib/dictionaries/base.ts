@@ -3324,6 +3324,9 @@ export const DictionarySchema = z.object({
         emailName: z.string(),
         emailNamePlaceholder: z.string(),
         emailNameDescription: z.string(),
+        supportEmailAddress: z.string(),
+        supportEmailAddressPlaceholder: z.string(),
+        supportEmailAddressDescription: z.string(),
       }),
       error: z.object({
         title: z.string(),
