@@ -3280,6 +3280,9 @@ export const EN: TDictionary = {
         emailName: 'Sender Name',
         emailNamePlaceholder: 'e.g., Platform Team',
         emailNameDescription: 'The display name that appears alongside the sender email address',
+        supportEmailAddress: 'Support Email Address',
+        supportEmailAddressPlaceholder: 'e.g., support@platform.com',
+        supportEmailAddressDescription: 'The email address for customer support inquiries',
       },
       error: {
         title: 'Error',
