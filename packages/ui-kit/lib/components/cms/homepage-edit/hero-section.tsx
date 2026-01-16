@@ -184,7 +184,7 @@ export default function HeroSection({
                         onFilesChange={handleOnThumbnailChange}
                         onUploadComplete={handleThumbnailUploadComplete}
                         locale={locale}
-                        maxSize={10}
+                        maxSize={20} // 20 MB
                         uploadProgress={uploadProgress}
                     />
                 </div>
@@ -201,7 +201,7 @@ export default function HeroSection({
                         onFilesChange={handleOnVideoChange}
                         onUploadComplete={handleVideoUploadComplete}
                         locale="en"
-                        maxSize={2000000}
+                        maxSize={5120} // 5 GB
                         uploadProgress={videoUploadProgress}
                         isDeletionAllowed
                     />

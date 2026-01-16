@@ -267,7 +267,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             onDelete={(id) => onFileDelete?.(id)}
             locale={locale}
             className="w-full"
-            maxSize={5}
+            maxSize={20} // 20 MB
             uploadProgress={uploadProgress}
           />
         </div>
