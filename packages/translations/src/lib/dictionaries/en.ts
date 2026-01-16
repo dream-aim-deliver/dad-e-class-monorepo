@@ -355,6 +355,9 @@ export const EN: TDictionary = {
 
       skills: 'Your skills',
       addSkills: 'Add skills',
+      selectSkills: 'Select Skills',
+      searchSkillsPlaceholder: 'Search Skills',
+      skillsLanguageHint: 'The list below shows only the skills available in the current language',
       privateProfile:
         'Private profile (only registered users can see your name, surname and bio)',
       buttontext1: 'Discard',

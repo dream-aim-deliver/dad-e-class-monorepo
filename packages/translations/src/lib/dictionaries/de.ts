@@ -358,6 +358,9 @@ export const DE: TDictionary = {
 
       skills: 'Deine Fähigkeiten',
       addSkills: 'Fähigkeiten hinzufügen',
+      selectSkills: 'Fähigkeiten auswählen',
+      searchSkillsPlaceholder: 'Fähigkeiten suchen',
+      skillsLanguageHint: 'Die folgende Liste zeigt nur die in der aktuellen Sprache verfügbaren Fähigkeiten',
       privateProfile:
         'Privates Profil (nur registrierte Benutzer können deinen Namen, Nachnamen und deine Biografie sehen)',
       buttontext1: 'Verwerfen',
