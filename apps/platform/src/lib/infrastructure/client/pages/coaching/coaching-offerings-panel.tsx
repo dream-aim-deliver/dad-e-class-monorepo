@@ -335,6 +335,76 @@ export default function CoachingOfferingsPanel() {
 
     // Handle coupon validation via prepareCheckout
     const handleApplyCoupon = useCallback(async (couponCode: string): Promise<CouponValidationResult> => {
+        // Handle multiple offerings case
+        if (multipleOfferings && multipleOfferings.length > 1) {
+            try {
+                // Make separate prepareCheckout calls for each offering with coupon code
+                const checkoutPromises = multipleOfferings.map((offering) =>
+                    utils.prepareCheckout.fetch({
+                        purchaseType: 'StudentCoachingSessionPurchase',
+                        coachingOfferingId: offering.offeringId,
+                        quantity: offering.quantity,
+                        couponCode,
+                    } as TPrepareCheckoutRequest)
+                );
+
+                const responses = await Promise.all(checkoutPromises);
+
+                // Check if any response failed
+                const failedResponse = responses.find((r) => !r.success);
+                if (failedResponse && failedResponse.success === false && failedResponse.data) {
+                    // Extract error data
+                    const errorData = 'data' in failedResponse.data ? failedResponse.data.data : failedResponse.data;
+                    const errorMode = getCheckoutErrorMode(errorData as { errorType?: string; message?: string });
+                    const errorMessage = getCheckoutErrorDescription(errorMode);
+
+                    return {
+                        success: false,
+                        errorMessage
+                    };
+                }
+
+                // Combine all line items from all offerings
+                const allLineItems: Array<{
+                    name: string;
+                    description: string;
+                    unitPrice: number;
+                    quantity: number;
+                    totalPrice: number;
+                }> = [];
+                let totalPrice = 0;
+                let currency = 'CHF';
+
+                responses.forEach((response) => {
+                    if (response.success && response.data) {
+                        const data = response.data as any;
+                        if (data.lineItems) {
+                            allLineItems.push(...data.lineItems);
+                            totalPrice += data.finalPrice || 0;
+                            currency = data.currency || currency;
+                        }
+                    }
+                });
+
+                // Return combined transaction draft
+                return {
+                    success: true,
+                    data: {
+                        lineItems: allLineItems,
+                        currency,
+                        finalPrice: totalPrice,
+                        couponCode,
+                    }
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    errorMessage: getCheckoutErrorDescription('kaboom')
+                };
+            }
+        }
+
+        // Single offering case - use existing logic
         if (!currentRequest) {
             return {
                 success: false,
@@ -380,7 +450,7 @@ export default function CoachingOfferingsPanel() {
                 errorMessage: getCheckoutErrorDescription('kaboom')
             };
         }
-    }, [currentRequest, utils, getCheckoutErrorDescription]);
+    }, [multipleOfferings, currentRequest, utils, getCheckoutErrorDescription]);
 
     if (!coachingOfferingsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;

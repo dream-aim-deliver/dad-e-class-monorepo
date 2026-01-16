@@ -89,8 +89,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const [showCouponSuccess, setShowCouponSuccess] = useState(false);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [isLoadingPayment, setIsLoadingPayment] = useState(false);
-    const [discountPercentage, setDiscountPercentage] = useState(0);
-    const [hasBlurred, setHasBlurred] = useState(false);
     // Track current transaction draft (updated when coupon is applied)
     const [currentTransactionDraft, setCurrentTransactionDraft] = useState<TransactionDraft>(transactionDraft);
 
@@ -98,24 +96,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         () => loadStripe(stripePublishableKey),
         [stripePublishableKey],
     );
-
-    // Extract discount percentage from coupon code (e.g., "XXX10" -> 10)
-    // Used as fallback when onApplyCoupon callback is not provided
-    const extractDiscountFromCoupon = (coupon: string): number => {
-        const match = coupon.match(/\d+/);
-        return match ? parseInt(match[0], 10) : 0;
-    };
-
-
-    // Calculate discount amount (only used for fallback mock implementation)
-    const discountAmount = useMemo(() => {
-        if (!appliedCoupon || discountPercentage === 0) return 0;
-        const subtotalValue = currentTransactionDraft.lineItems.reduce(
-            (sum, item) => sum + item.totalPrice,
-            0,
-        );
-        return Math.round((subtotalValue * discountPercentage) / 100);
-    }, [appliedCoupon, discountPercentage, currentTransactionDraft.lineItems]);
 
     // Calculate totals
     const subtotal = useMemo(() => {
@@ -125,47 +105,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         );
     }, [currentTransactionDraft.lineItems]);
 
-    // When using onApplyCoupon, the finalPrice from backend already includes discount
-    // When using fallback mock, calculate manually
+    // Backend returns finalPrice with discount already applied
     const total = useMemo(() => {
-        if (onApplyCoupon && appliedCoupon) {
-            // Backend returned discounted finalPrice
-            return currentTransactionDraft.finalPrice;
-        }
-        // Fallback: manual calculation
-        return subtotal - discountAmount;
-    }, [subtotal, discountAmount, onApplyCoupon, appliedCoupon, currentTransactionDraft.finalPrice]);
-
-    // Validate coupon format on blur
-    const validateCouponFormat = (coupon: string): boolean => {
-        if (!coupon.trim()) return false;
-        // Must contain at least one number
-        return /\d/.test(coupon);
-    };
-
-    const handleCouponBlur = () => {
-        setHasBlurred(true);
-        if (couponInput && !validateCouponFormat(couponInput)) {
-            setCouponError(dictionary.components.checkoutModal.invalidCoupon);
-        } else {
-            setCouponError(null);
-        }
-    };
+        return currentTransactionDraft.finalPrice;
+    }, [currentTransactionDraft.finalPrice]);
 
     const handleApplyCoupon = async () => {
         if (!couponInput.trim()) return;
-
-        // Only validate format when using fallback (no onApplyCoupon callback)
-        if (!onApplyCoupon && !validateCouponFormat(couponInput)) {
-            setCouponError(dictionary.components.checkoutModal.invalidCoupon);
-            return;
-        }
 
         setIsValidatingCoupon(true);
         setCouponError(null);
 
         try {
-            // If callback provided, use real backend validation
             if (onApplyCoupon) {
                 const result = await onApplyCoupon(couponInput);
 
@@ -180,7 +131,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     setAppliedCoupon(couponInput);
                     setShowCouponSuccess(true);
                     setCouponInput('');
-                    setHasBlurred(false);
 
                     // Hide success message after 3 seconds
                     setTimeout(() => setShowCouponSuccess(false), 3000);
@@ -189,21 +139,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     setCouponError(result.errorMessage);
                 }
             } else {
-                // Fallback: extract discount percentage from coupon code
-                const percentage = extractDiscountFromCoupon(couponInput);
-
-                if (percentage === 0) {
-                    throw new Error('Invalid coupon');
-                }
-
-                setAppliedCoupon(couponInput);
-                setDiscountPercentage(percentage);
-                setShowCouponSuccess(true);
-                setCouponInput('');
-                setHasBlurred(false);
-
-                // Hide success message after 3 seconds
-                setTimeout(() => setShowCouponSuccess(false), 3000);
+                // This should never happen - all usages provide onApplyCoupon
+                throw new Error('Coupon validation callback not provided');
             }
         } catch (error) {
             setCouponError(dictionary.components.checkoutModal.couponError);
@@ -215,7 +152,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const handleRemoveCoupon = () => {
         setCurrentTransactionDraft(transactionDraft); // Reset to original
         setAppliedCoupon(null);
-        setDiscountPercentage(0);
         setShowCouponSuccess(false);
         setCouponError(null);
     };
@@ -226,10 +162,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         try {
             // Build query parameters
             const params = new URLSearchParams();
-            // Pass the ORIGINAL price (before discount) to Stripe
-            // Stripe will apply the coupon discount, so we must NOT send the already-discounted price
-            const priceToSend = currentTransactionDraft.originalPrice ?? currentTransactionDraft.finalPrice;
-            params.append('amount', (priceToSend * 100).toString());
+            // Send line items and final price to calculate discount in Stripe
+            params.append('lineItems', JSON.stringify(currentTransactionDraft.lineItems));
+            params.append('currency', currentTransactionDraft.currency);
+            params.append('finalPrice', currentTransactionDraft.finalPrice.toString());
             if (appliedCoupon) {
                 params.append('coupon', appliedCoupon);
             }
@@ -400,36 +336,29 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             <div className="flex flex-col gap-3">
                                 {!appliedCoupon ? (
                                     <>
-                                        <div onBlur={handleCouponBlur}>
-                                            <InputField
-                                                inputText={
-                                                    dictionary.components
-                                                        .checkoutModal
-                                                        .enterCoupon
+                                        <InputField
+                                            inputText={
+                                                dictionary.components
+                                                    .checkoutModal
+                                                    .enterCoupon
+                                            }
+                                            value={couponInput}
+                                            setValue={(value) => {
+                                                setCouponInput(value);
+                                                if (couponError) {
+                                                    setCouponError(null);
                                                 }
-                                                value={couponInput}
-                                                setValue={(value) => {
-                                                    setCouponInput(value);
-                                                    // Clear error when user starts typing
-                                                    if (
-                                                        hasBlurred &&
-                                                        couponError
-                                                    ) {
-                                                        setHasBlurred(false);
-                                                        setCouponError(null);
-                                                    }
-                                                }}
-                                                state={
-                                                    hasBlurred && couponError
-                                                        ? 'error'
-                                                        : couponInput
-                                                          ? 'filling'
-                                                          : 'placeholder'
-                                                }
-                                                type="text"
-                                            />
-                                        </div>
-                                        {hasBlurred && couponError && (
+                                            }}
+                                            state={
+                                                couponError
+                                                    ? 'error'
+                                                    : couponInput
+                                                      ? 'filling'
+                                                      : 'placeholder'
+                                            }
+                                            type="text"
+                                        />
+                                        {couponError && (
                                             <p className="text-red-600 text-sm -mt-2">
                                                 {couponError}
                                             </p>
@@ -489,7 +418,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             </div>
 
                             {/* Discount Display */}
-                            {appliedCoupon && (onApplyCoupon ? (subtotal - currentTransactionDraft.finalPrice) > 0 : discountAmount > 0) && (
+                            {appliedCoupon && (subtotal - currentTransactionDraft.finalPrice) > 0 && (
                                 <>
                                     <div className="flex justify-between items-center p-2">
                                         <span className="text-green-600 font-medium">
@@ -497,10 +426,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                                 dictionary.components
                                                     .checkoutModal.discount
                                             }
-                                            {!onApplyCoupon && ` (${discountPercentage}%)`}
                                         </span>
                                         <span className="text-green-600 font-semibold">
-                                            -{formatPrice(onApplyCoupon ? (subtotal - currentTransactionDraft.finalPrice) : discountAmount)}
+                                            -{formatPrice(subtotal - currentTransactionDraft.finalPrice)}
                                         </span>
                                     </div>
                                     <div className="w-full h-[1px] bg-divider" />

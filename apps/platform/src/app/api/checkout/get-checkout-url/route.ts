@@ -1,17 +1,52 @@
 import { createCheckoutSession } from '../../../../lib/infrastructure/server/config/payments/stripe.config';
 import env from '../../../../lib/infrastructure/server/config/env';
 
-function extractDiscountFromCoupon(coupon: string): number {
-    // Extract number from coupon code (e.g., "XXX5" -> 5, "XXX10" -> 10)
-    const match = coupon.match(/\d+/)
-    return match ? parseInt(match[0], 10) : 0
-}
-
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const couponCode = searchParams.get('coupon');
     const customerEmail = searchParams.get('email');
-    const discountPercentage = couponCode ? extractDiscountFromCoupon(couponCode) : 0;
+
+    // Extract line items, currency, and final price
+    const lineItemsParam = searchParams.get('lineItems');
+    const currency = searchParams.get('currency') || 'chf';
+    const finalPriceParam = searchParams.get('finalPrice');
+
+    // Validate line items parameter
+    if (!lineItemsParam) {
+        return Response.json(
+            { error: 'Missing lineItems parameter' },
+            { status: 400 }
+        );
+    }
+
+    let lineItems;
+    try {
+        lineItems = JSON.parse(lineItemsParam);
+        if (!Array.isArray(lineItems) || lineItems.length === 0) {
+            throw new Error('lineItems must be a non-empty array');
+        }
+    } catch (error) {
+        return Response.json(
+            { error: 'Invalid lineItems parameter' },
+            { status: 400 }
+        );
+    }
+
+    // Validate final price parameter
+    if (!finalPriceParam) {
+        return Response.json(
+            { error: 'Missing finalPrice parameter' },
+            { status: 400 }
+        );
+    }
+
+    const finalPrice = parseFloat(finalPriceParam);
+    if (isNaN(finalPrice) || finalPrice < 0) {
+        return Response.json(
+            { error: 'Invalid finalPrice parameter' },
+            { status: 400 }
+        );
+    }
 
     // Extract purchase metadata
     const purchaseType = searchParams.get('purchaseType');
@@ -24,25 +59,6 @@ export async function GET(req: Request) {
     const withCoaching = searchParams.get('withCoaching');
     const lessonComponentIds = searchParams.get('lessonComponentIds'); // Comma-separated list of lesson component IDs
     const coachUsername = searchParams.get('coachUsername'); // For coaching session purchase - redirect back to coach's calendar
-
-    // Get the amount in cents (Stripe expects cents)
-    const amountParam = searchParams.get('amount');
-
-    // Validate amount parameter
-    if (!amountParam) {
-        return Response.json(
-            { error: 'Missing amount parameter' },
-            { status: 400 }
-        );
-    }
-
-    const amountInCents = parseInt(amountParam, 10);
-    if (isNaN(amountInCents) || amountInCents <= 0) {
-        return Response.json(
-            { error: 'Invalid amount parameter' },
-            { status: 400 }
-        );
-    }
 
     // Build metadata object
     const metadata: Record<string, string> = {};
@@ -65,9 +81,10 @@ export async function GET(req: Request) {
 
     const origin = env.NEXT_PUBLIC_APP_URL;
     const checkoutSession = await createCheckoutSession(
-        amountInCents,
+        lineItems,
+        currency,
+        finalPrice,
         origin,
-        discountPercentage,
         customerEmail || undefined,
         Object.keys(metadata).length > 0 ? metadata : undefined
     );
