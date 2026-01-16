@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import { validateCallbackUrl } from '@maany_shr/e-class-auth';
-import env from '../config/env';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface LoginPageProps {
     platform: string;
@@ -17,6 +17,7 @@ interface LoginPageProps {
 const LoginPage = (props: LoginPageProps) => {
     const searchParams = useSearchParams();
     const loggedOut = searchParams?.get('loggedout');
+    const runtimeConfig = useRuntimeConfig();
 
     // Get and validate callback URL from query parameters
     const rawCallbackUrl = searchParams?.get('callbackUrl');
@@ -48,17 +49,18 @@ const LoginPage = (props: LoginPageProps) => {
                 // TODO: the logo URL is passed from the backend
                 platform_logo_public_url: 'mock',
                 // TODO: the platform is identified by its ID ( Not in Auth0 Setup)
-                platform_short_name: env.NEXT_PUBLIC_E_CLASS_RUNTIME,
+                platform_short_name: runtimeConfig.NEXT_PUBLIC_E_CLASS_RUNTIME,
                 terms_and_conditions_title:
                     dictionary.pages.sso.termsAndConditions.title,
                 terms_and_conditions_content:
                     dictionary.pages.sso.termsAndConditions.content,
                 terms_and_conditions_confirmation_text:
                     dictionary.pages.sso.termsAndConditions.confirmationText,
-                privacy_policy_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/privacy-policy`,
-                terms_of_use_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
-                rules_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/rules`,
-                courses_information_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/offer-information`,
+                // CMS only has /terms-of-use route, so all legal/info URLs point there
+                privacy_policy_url: `${runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
+                terms_of_use_url: `${runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
+                rules_url: `${runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
+                courses_information_url: `${runtimeConfig.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
             },
         );
     };
