@@ -1,4 +1,4 @@
-﻿import { TDictionary } from './base';
+import { TDictionary } from './base';
 import { Home_EN } from '../pages/home/home-en';
 import { Login_EN } from '../pages/login/login-en';
 import { SSO_EN } from '../pages/sso/sso-en';
@@ -344,6 +344,7 @@ export const EN: TDictionary = {
       linkedinPlaceholder: 'https://www.linkedin.com/in/company/bewerbeagentur/',
 
       curriculumVitae: 'Curriculum Vitae (CV)',
+      cvRequired: 'CV is required',
       portfolioWebsite: 'Portfolio website URL (optional)',
       portfolioWebsitePlaceholder: 'https://wimlanz.ch/',
 
@@ -2479,6 +2480,12 @@ export const EN: TDictionary = {
       emailRequired: 'Email is required',
       bioRequired: 'Bio is required',
       bioTooLong: 'Bio must be 280 characters or less',
+      applyToBecomeCoach: 'Apply to become a coach',
+      coachApplicationTitle: 'Apply to Become a Coach',
+      coachApplicationDescription: 'Fill out your professional profile to apply for coach status. A CV is required for your application.',
+      cvRequiredForApplication: 'CV is required for coach application',
+      applicationSubmittedSuccessfully: 'Your application has been submitted successfully. We will review it and get back to you soon.',
+      applicationRateLimitExceeded: 'You can apply up to 3 times per month. Please try again later.',
       unsavedChangesDialog: {
         title: 'Unsaved Changes',
         description: 'You have unsaved changes. Would you like to save them or discard them?',

@@ -35,6 +35,8 @@ interface ProfessionalInfoProps extends isLocalAware {
   isSaving?: boolean;
   variant?: 'professionalInfo' | 'becomeACoach';
   skillsLanguageHint?: string;
+  applicationMode?: boolean;
+  requireCV?: boolean;
 }
 
 
@@ -93,8 +95,11 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   isSaving = false,
   variant = 'professionalInfo',
   skillsLanguageHint,
+  applicationMode = false,
+  requireCV = false,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [cvError, setCvError] = useState<string | null>(null);
   const dictionary = getDictionary(locale);
 
   const [skillSearchQuery, setSkillSearchQuery] = useState('');
@@ -132,6 +137,14 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // CV validation in application mode
+    if (requireCV && !curriculumVitaeFile) {
+      setCvError(dictionary.components.professionalInfo.cvRequired || 'CV is required');
+      return;
+    }
+    
+    setCvError(null);
     onSave?.(initialData);
   };
   const handleUploadedFiles = async (
@@ -184,6 +197,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <p className="text-sm text-text-secondary flex items-start">
             {' '}
             {dictionary.components.professionalInfo.curriculumVitae}
+            {requireCV && <span className="text-error ml-1">*</span>}
           </p>
           <Uploader
             type="single"
@@ -191,12 +205,21 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             file={curriculumVitaeFile ?? null}
             acceptedFileTypes={['application/pdf']}
             onFilesChange={handleUploadedFiles}
-            onUploadComplete={onUploadComplete}
-            onDelete={(id) => onFileDelete?.(id)}
+            onUploadComplete={(file) => {
+              setCvError(null);
+              onUploadComplete(file);
+            }}
+            onDelete={(id) => {
+              setCvError(null);
+              onFileDelete?.(id);
+            }}
             onDownload={(id) => onFileDownload?.(id)}
             locale={locale}
             uploadProgress={uploadProgress}
           />
+          {cvError && (
+            <p className="text-sm text-error">{cvError}</p>
+          )}
         </div>
 
         <div className=" w-full ">
