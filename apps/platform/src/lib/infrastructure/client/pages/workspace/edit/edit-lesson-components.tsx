@@ -295,6 +295,7 @@ function VideoComponent({
     validationError,
 }: LessonComponentProps) {
     const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+    const editLessonT = useTranslations('pages.editLesson');
 
     const updateComponent = (
         comp: LessonElement,
@@ -371,17 +372,14 @@ function VideoComponent({
                 validationError={validationError}
                 uploadProgress={uploadProgress}
             />
-            {uploadError && (() => {
-                const editLessonT = useTranslations('pages.editLesson');
-                return (
-                    <DefaultError
-                        type="simple"
-                        locale={locale}
-                        title={editLessonT('error.title')}
-                        description={uploadError}
-                    />
-                );
-            })()}
+            {uploadError && (
+                <DefaultError
+                    type="simple"
+                    locale={locale}
+                    title={editLessonT('error.title')}
+                    description={uploadError}
+                />
+            )}
         </div>
     );
 }
@@ -397,6 +395,7 @@ function ImageComponent({
     validationError,
 }: LessonComponentProps) {
     const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+    const editLessonT = useTranslations('pages.editLesson');
 
     const updateComponent = (
         comp: LessonElement,
@@ -473,17 +472,14 @@ function ImageComponent({
                 validationError={validationError}
                 uploadProgress={uploadProgress}
             />
-            {uploadError && (() => {
-                const editLessonT = useTranslations('pages.editLesson');
-                return (
-                    <DefaultError
-                        type="simple"
-                        locale={locale}
-                        title={editLessonT('error.title')}
-                        description={uploadError}
-                    />
-                );
-            })()}
+            {uploadError && (
+                <DefaultError
+                    type="simple"
+                    locale={locale}
+                    title={editLessonT('error.title')}
+                    description={uploadError}
+                />
+            )}
         </div>
     );
 }
@@ -498,6 +494,8 @@ function ImageGalleryComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
+    const editLessonT = useTranslations('pages.editLesson');
+
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
         if (elementInstance.type !== CourseElementType.ImageGallery) return;
         setComponents((prevComponents) =>
@@ -577,17 +575,14 @@ function ImageGalleryComponent({
                 validationError={validationError}
                 uploadProgress={uploadProgress}
             />
-            {uploadError && (() => {
-                const editLessonT = useTranslations('pages.editLesson');
-                return (
-                    <DefaultError
-                        type="simple"
-                        locale={locale}
-                        title={editLessonT('error.title')}
-                        description={uploadError}
-                    />
-                );
-            })()}
+            {uploadError && (
+                <DefaultError
+                    type="simple"
+                    locale={locale}
+                    title={editLessonT('error.title')}
+                    description={uploadError}
+                />
+            )}
         </div>
     );
 }
@@ -602,6 +597,8 @@ function DownloadFilesComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
+    const editLessonT = useTranslations('pages.editLesson');
+
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
         if (elementInstance.type !== CourseElementType.DownloadFiles) return;
         setComponents((prevComponents) =>
@@ -671,17 +668,14 @@ function DownloadFilesComponent({
                 validationError={validationError}
                 uploadProgress={uploadProgress}
             />
-            {uploadError && (() => {
-                const editLessonT = useTranslations('pages.editLesson');
-                return (
-                    <DefaultError
-                        type="simple"
-                        locale={locale}
-                        title={editLessonT('error.title')}
-                        description={uploadError}
-                    />
-                );
-            })()}
+            {uploadError && (
+                <DefaultError
+                    type="simple"
+                    locale={locale}
+                    title={editLessonT('error.title')}
+                    description={uploadError}
+                />
+            )}
         </div>
     );
 }
@@ -1625,6 +1619,7 @@ function CoachingSessionComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
+    const editLessonT = useTranslations('pages.editLesson');
     const [coachingOfferingsResponse] =
         trpc.listCoachingOfferings.useSuspenseQuery({});
     const [coachingOfferingsViewModel, setCoachingOfferingsViewModel] =
@@ -1641,8 +1636,6 @@ function CoachingSessionComponent({
     if (!coachingOfferingsViewModel) {
         return <DefaultLoading locale={locale} />;
     }
-
-    const editLessonT = useTranslations('pages.editLesson');
     if (coachingOfferingsViewModel.mode !== 'default') {
         return (
             <DefaultError
