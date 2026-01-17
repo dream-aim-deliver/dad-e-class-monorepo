@@ -870,6 +870,8 @@ export const EN: TDictionary = {
       confirmDuplicateMessage: 'Are you sure you want to duplicate this course?',
       confirmDuplicateButton: 'Yes, Duplicate',
       goBack: 'No, go back',
+      searchFailedTitle: 'Search failed',
+      searchFailedDescription: 'An error occurred while searching for courses.',
     },
     editCategoryTopicModal: {
       categoryName: 'Category name',

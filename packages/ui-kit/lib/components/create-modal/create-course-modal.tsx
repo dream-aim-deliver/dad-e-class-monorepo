@@ -209,8 +209,8 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                             <DefaultError
                                 type="simple"
                                 locale={props.locale}
-                                title="Search failed"
-                                description="An error occurred while searching for courses."
+                                title={dictionary.searchFailedTitle}
+                                description={dictionary.searchFailedDescription}
                             />
                         )}
                         {isQuerySuccessful &&

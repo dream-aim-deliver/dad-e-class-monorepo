@@ -874,6 +874,8 @@ export const DE: TDictionary = {
       confirmDuplicateMessage: 'Möchtest du diesen Kurs wirklich duplizieren?',
       confirmDuplicateButton: 'Ja, duplizieren',
       goBack: "Nein, geh zurück",
+      searchFailedTitle: 'Suche fehlgeschlagen',
+      searchFailedDescription: 'Beim Suchen nach Kursen ist ein Fehler aufgetreten.',
     },
     editCategoryTopicModal: {
       categoryName: 'Kategoriename',

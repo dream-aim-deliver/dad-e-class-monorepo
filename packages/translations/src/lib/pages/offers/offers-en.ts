@@ -18,7 +18,7 @@ export const Offers_EN: TDictionary["pages"]["offers"] = {
   },
   packagesNotFound: {
     title: "No packages found",
-    description: "There are currently no packages available. Please check back soon – or share with us what kind of offers you'd like.",
+    description: "There are currently no packages available. Please check back soon.",
   },
   loadError: {
     title: "Failed to Load Offers",

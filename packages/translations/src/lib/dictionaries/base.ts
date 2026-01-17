@@ -860,6 +860,8 @@ export const DictionarySchema = z.object({
       confirmDuplicateMessage: z.string(),
       confirmDuplicateButton: z.string(),
       goBack: z.string(),
+      searchFailedTitle: z.string(),
+      searchFailedDescription: z.string(),
     }),
     editCategoryTopicModal: z.object({
       categoryName: z.string(),
