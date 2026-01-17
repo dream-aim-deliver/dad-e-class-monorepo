@@ -29,6 +29,8 @@ interface ProfileInfoProps extends isLocalAware {
   onFileDownload?: (id: string) => void;
   uploadProgress?: number;
   isSaving?: boolean;
+  showApplyToCoachButton?: boolean;
+  onApplyToCoachClick?: () => void;
 }
 
 
@@ -83,6 +85,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   locale,
   uploadProgress,
   isSaving = false,
+  showApplyToCoachButton = false,
+  onApplyToCoachClick,
 }) => {
   const dictionary = getDictionary(locale);
 
@@ -370,6 +374,18 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             disabled={isSaving}
           />
         </div>
+
+        {showApplyToCoachButton && (
+          <div className="mt-6 pt-6 border-t border-card-stroke">
+            <Button
+              variant="primary"
+              size="medium"
+              text={dictionary.pages.profile.applyToBecomeCoach}
+              onClick={onApplyToCoachClick}
+              className="w-full"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
