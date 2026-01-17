@@ -206,6 +206,7 @@ export default function ManageCoachingPage({
   if (coachingPageViewModel?.mode === 'kaboom') {
     return (
       <DefaultError
+        type="simple"
         locale={locale}
         title={t('error.title')}
         description={t('error.description')}
@@ -217,6 +218,7 @@ export default function ManageCoachingPage({
   if (!session || !isAdmin) {
     return (
       <DefaultError
+        type="simple"
         locale={locale}
         title={t('error.unauthorized.title')}
         description={t('error.unauthorized.description')}

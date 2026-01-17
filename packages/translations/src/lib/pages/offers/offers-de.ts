@@ -19,5 +19,9 @@ export const Offers_DE: TDictionary['pages']['offers'] = {
   packagesNotFound: {
     title: "Keine Pakete gefunden",
     description: "Momentan sind keine Pakete verfügbar. Schau bald wieder vorbei – oder teile uns mit, welche Angebote dich interessieren würden.",
-  }
+  },
+  loadError: {
+    title: "Angebote konnten nicht geladen werden",
+    description: "Die Angebote konnten nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.",
+  },
 };

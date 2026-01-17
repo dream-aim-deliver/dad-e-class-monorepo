@@ -275,6 +275,7 @@ export default function ManageOffersPage({
     if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
                 title={t('error.title')}
                 description={t('error.description')}
@@ -285,6 +286,7 @@ export default function ManageOffersPage({
     if (!session || !isAdmin) {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
                 title={t('error.unauthorized.title')}
                 description={t('error.unauthorized.description')}

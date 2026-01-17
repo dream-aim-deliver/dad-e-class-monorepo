@@ -32,6 +32,7 @@ export default function GroupWorkspace({ locale, courseSlug }: GroupWorkspacePro
   if (!isStudent) {
     return (
       <DefaultError
+        type="simple"
         locale={locale}
         title={t('error.unauthorized.title')}
         description={t('error.unauthorized.description')}

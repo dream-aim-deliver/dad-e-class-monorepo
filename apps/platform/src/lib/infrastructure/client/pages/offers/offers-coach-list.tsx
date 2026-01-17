@@ -60,7 +60,14 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     }
 
     if (coachesViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={offersTranslations('loadError.title')}
+                description={offersTranslations('loadError.description')}
+            />
+        );
     }
 
     const coaches = coachesViewModel.data.coaches;

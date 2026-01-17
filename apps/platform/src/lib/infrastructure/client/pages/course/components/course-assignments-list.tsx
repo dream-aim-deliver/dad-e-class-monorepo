@@ -147,7 +147,14 @@ function CourseAssignmentsListContent({
 
     // Error state (kaboom only - not-found means no assignments which is fine)
     if (assignmentsViewModel?.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     // Empty state (includes not-found from backend)

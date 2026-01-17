@@ -305,6 +305,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     if (personalProfileViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
                 title={t('errorFailed')}
                 description={t('errorFailed')}

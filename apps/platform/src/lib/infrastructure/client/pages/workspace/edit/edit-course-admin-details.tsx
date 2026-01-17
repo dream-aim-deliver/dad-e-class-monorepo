@@ -25,6 +25,7 @@ interface EditCourseAdminDetailsProps {
 export default function EditCourseAdminDetails(props: EditCourseAdminDetailsProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.editCourse.adminDetails');
+    const editCourseT = useTranslations('pages.editCourse');
     const courseViewModel = useCourseDetails(props.slug);
 
     const [isFormLoading, setIsFormLoading] = useState(true);
@@ -56,7 +57,14 @@ export default function EditCourseAdminDetails(props: EditCourseAdminDetailsProp
     }
 
     if (courseViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editCourseT('error.title')}
+                description={editCourseT('error.description')}
+            />
+        );
     }
 
     return (

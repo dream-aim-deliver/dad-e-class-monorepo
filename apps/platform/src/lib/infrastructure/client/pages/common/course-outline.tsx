@@ -27,19 +27,34 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
     presenter.present(outlineResponse, outlineViewModel);
 
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.courseOutline');
 
     if (!outlineViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (outlineViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     const outline = outlineViewModel.data;
 
     if (outline.items.length === 0) {
-        return <DefaultError locale={locale} description="The course doesn't have an outline." />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.notFound.title')}
+                description={t('error.notFound.description')}
+            />
+        );
     }
 
     return (

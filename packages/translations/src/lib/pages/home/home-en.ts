@@ -8,5 +8,13 @@ export const Home_EN: TDictionary["pages"]["home"] = {
     notSignedInText: 'Not signed in',
     welcomeText: 'Welcome',
     signOutText: 'Sign out',
-    topicsTitle: 'Offers by topic'
+    topicsTitle: 'Offers by topic',
+    loadError: {
+        title: 'Unable to load home page',
+        description: 'We couldn\'t load the home page content. Please try again.',
+    },
+    topicsLoadError: {
+        title: 'Unable to load topics',
+        description: 'We couldn\'t load the topics list. Please try again.',
+    },
 };

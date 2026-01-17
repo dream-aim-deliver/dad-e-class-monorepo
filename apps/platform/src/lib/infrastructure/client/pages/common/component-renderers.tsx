@@ -40,7 +40,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
 import { JSX, useEffect, useState, useMemo } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useFileUploadContext } from '../course/utils/file-upload';
 import { useAssignmentView } from '../course/utils/assignment-view';
@@ -392,6 +392,7 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const t = useTranslations('pages.course.lessonCoaches');
 
     const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
         courseSlug: courseSlug,
@@ -431,7 +432,14 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
     }
 
     if (coachesViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     const renderCoachCard = (coach: typeof coaches[0]) => (

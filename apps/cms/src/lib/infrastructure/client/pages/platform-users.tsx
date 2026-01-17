@@ -139,6 +139,7 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
     console.error(errorData);
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}
@@ -151,6 +152,7 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
     console.error(errorData);
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.notFound.title')}
         description={t('error.notFound.description')}

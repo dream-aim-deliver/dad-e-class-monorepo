@@ -222,7 +222,14 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 
 	if (coachIntroductionViewModel?.mode === 'kaboom' ||
 		coachProfileAccessViewModel?.mode === 'kaboom') {
-		return <DefaultError locale={locale} />;
+		return (
+			<DefaultError
+				type="simple"
+				locale={locale}
+				title={coachProfileTranslations('error.title')}
+				description={coachProfileTranslations('error.description')}
+			/>
+		);
 	}
 
 	// Access control check - if profile access is denied, show not found
@@ -481,7 +488,12 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 					{!coachCoursesViewModel ? (
 						<DefaultLoading locale={locale} variant="minimal" />
 					) : coachCoursesViewModel.mode === 'kaboom' ? (
-						<DefaultError locale={locale} />
+						<DefaultError
+							type="simple"
+							locale={locale}
+							title={coachProfileTranslations('error.title')}
+							description={coachProfileTranslations('error.description')}
+						/>
 					) : (
 						<>
 							<CourseCardList
@@ -544,7 +556,12 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 				{!coachReviewsViewModel ? (
 					<DefaultLoading locale={locale} variant="minimal" />
 				) : coachReviewsViewModel.mode === 'kaboom' ? (
-					<DefaultError locale={locale} />
+					<DefaultError
+						type="simple"
+						locale={locale}
+						title={coachProfileTranslations('error.title')}
+						description={coachProfileTranslations('error.description')}
+					/>
 				) : (
 					<>
 						<CoachReviewCardList locale={locale}>
@@ -616,7 +633,12 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 					{!coachCoursesViewModel ? (
 						<DefaultLoading locale={locale} variant="minimal" />
 					) : coachCoursesViewModel.mode === 'kaboom' ? (
-						<DefaultError locale={locale} />
+						<DefaultError
+							type="simple"
+							locale={locale}
+							title={coachProfileTranslations('error.title')}
+							description={coachProfileTranslations('error.description')}
+						/>
 					) : (
 						<>
 							<CourseCardList

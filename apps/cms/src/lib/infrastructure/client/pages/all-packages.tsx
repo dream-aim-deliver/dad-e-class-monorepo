@@ -222,10 +222,16 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
   }
 
-  // Error handling 
+  // Error handling
   if (listPackagesViewModel.mode === 'kaboom') {
-    const errorData = listPackagesViewModel.data;
-    return <DefaultError locale={currentLocale} />;
+    return (
+      <DefaultError
+        type="simple"
+        locale={currentLocale}
+        title={t('error.title')}
+        description={t('error.description')}
+      />
+    );
   }
 
   if (listPackagesViewModel.mode === 'not-found') {

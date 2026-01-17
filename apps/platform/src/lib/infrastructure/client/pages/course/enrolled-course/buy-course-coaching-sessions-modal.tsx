@@ -3,6 +3,7 @@
 import { Dialog, DialogContent, DialogBody, DefaultLoading, DefaultError } from '@maany_shr/e-class-ui-kit';
 import { BuyCourseCoachingSessions } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useState, useEffect } from 'react';
@@ -24,6 +25,7 @@ export default function BuyCourseCoachingSessionsModal({
     locale,
     onPurchase,
 }: BuyCourseCoachingSessionsModalProps) {
+    const t = useTranslations('pages.enrolledCourse');
     const [coachingSessionsResponse] =
         trpc.listCourseCoachingSessionPurchaseStatus.useSuspenseQuery({
             courseSlug,
@@ -101,8 +103,9 @@ export default function BuyCourseCoachingSessionsModal({
                 >
                     <DialogBody className="p-6">
                         <DefaultError
+                            type="simple"
                             locale={locale}
-                            title="Error"
+                            title={t('error.title')}
                             description={errorMessage}
                             onRetry={() => {
                                 // Retry logic can be added here if needed

@@ -3,7 +3,7 @@ import { TGetCourseIntroductionUseCaseResponse } from '@dream-aim-deliver/e-clas
 import { trpc } from '../../trpc/cms-client';
 import { Suspense, useState } from 'react';
 import { useGetCourseIntroductionPresenter } from '../../hooks/use-course-introduction-presenter';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     CourseIntroBanner,
@@ -31,13 +31,21 @@ function IntroductionBanner({ courseSlug }: CourseIntroductionProps) {
     presenter.present(actualResponse, introductionViewModel);
 
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.courseIntroduction');
 
     if (!introductionViewModel) {
         return <DefaultLoading locale={locale} variant='minimal'/>;
     }
 
     if (introductionViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     const introduction = introductionViewModel.data;

@@ -6,7 +6,7 @@ import {
     IconModule,
     DuplicateLessonDialog,
 } from '@maany_shr/e-class-ui-kit';
-import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import { TLocale } from '@maany_shr/e-class-translations';
 import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -33,7 +33,8 @@ export default function EditCourseStructure({
     courseStatus,
 }: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
-    const dictionary = getDictionary(locale);
+    const editCourseT = useTranslations('pages.editCourse');
+    const duplicateLessonT = useTranslations('components.duplicateLessonDialog');
     const courseStructureViewModel = useCourseStructure(slug);
     const { expandedModuleIndex, setExpandedModuleIndex, onExpand } =
         useModuleExpansion();
@@ -90,7 +91,7 @@ export default function EditCourseStructure({
 
             if (!result.success) {
                 setDuplicateErrorMessage(
-                    dictionary.components.duplicateLessonDialog.errorMessage,
+                    duplicateLessonT('errorMessage'),
                 );
                 return;
             }
@@ -115,7 +116,7 @@ export default function EditCourseStructure({
             setTimeout(() => setShowDuplicateSuccess(false), 5000);
         } catch {
             setDuplicateErrorMessage(
-                dictionary.components.duplicateLessonDialog.errorMessage,
+                duplicateLessonT('errorMessage'),
             );
         }
     };
@@ -134,7 +135,14 @@ export default function EditCourseStructure({
     }
 
     if (courseStructureViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editCourseT('error.title')}
+                description={editCourseT('error.description')}
+            />
+        );
     }
 
     return (
@@ -166,7 +174,7 @@ export default function EditCourseStructure({
                     {showDuplicateSuccess && (
                         <Banner
                             style="success"
-                            title={dictionary.components.duplicateLessonDialog.successMessage}
+                            title={duplicateLessonT('successMessage')}
                             closeable={true}
                             onClose={() => setShowDuplicateSuccess(false)}
                         />
@@ -223,7 +231,7 @@ export default function EditCourseStructure({
                             .filter((m) => m.id !== undefined)
                             .map((m) => ({
                                 id: m.id!,
-                                title: m.title || dictionary.components.duplicateLessonDialog.selectModulePlaceholder,
+                                title: m.title || duplicateLessonT('selectModulePlaceholder'),
                             }))}
                         onConfirm={handleDuplicateConfirm}
                         locale={locale}

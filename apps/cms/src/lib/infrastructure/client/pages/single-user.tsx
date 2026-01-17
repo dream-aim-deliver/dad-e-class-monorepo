@@ -14,7 +14,7 @@
 
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard, Dropdown, ConfirmationModal, CoachReviewCard, Banner } from '@maany_shr/e-class-ui-kit';
@@ -109,9 +109,13 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
 
   // Error handling - only for page-critical data
   if (personalProfileVM.mode === 'kaboom' || userRolesVM.mode === 'kaboom') {
+    const dictionary = getDictionary(currentLocale);
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
+        title={dictionary.components.defaultError.title}
+        description={dictionary.components.defaultError.description}
         onRetry={() => {
           refetchPersonalProfile();
           refetchUserRoles();

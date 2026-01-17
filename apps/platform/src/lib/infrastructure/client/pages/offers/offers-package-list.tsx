@@ -188,7 +188,14 @@ export default function PackageList() {
     }
 
     if (packagesViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('loadError.title')}
+                description={t('loadError.description')}
+            />
+        );
     }
 
     const packages = packagesViewModel.data.packages;

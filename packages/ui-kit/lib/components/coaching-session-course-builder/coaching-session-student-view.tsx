@@ -36,6 +36,7 @@ export const CoachingSessionStudentView: FC<
     if (validationError) {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
                 title={dictionary.components.lessons.elementValidationText}
                 description={validationError}

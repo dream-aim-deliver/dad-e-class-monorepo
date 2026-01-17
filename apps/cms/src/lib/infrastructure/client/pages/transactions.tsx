@@ -136,13 +136,28 @@ export default function Transactions(_props: TransactionsProps) {
   if (listTransactionsViewModel.mode === 'kaboom') {
     const errorData = listTransactionsViewModel.data;
     console.error(errorData);
-    return (
-      <DefaultError
-        locale={locale}
-        title={t('error.kaboom.title')}
-        description={t('error.kaboom.description')}
-      />
-    );
+    const supportEmail = platform.supportEmailAddress;
+
+    if (supportEmail && supportEmail.trim() !== '') {
+      return (
+        <DefaultError
+          type="withSupportEmail"
+          locale={locale}
+          title={t('error.kaboom.title')}
+          description={t('error.kaboom.description')}
+          supportEmailAddress={supportEmail}
+        />
+      );
+    } else {
+      return (
+        <DefaultError
+          type="simple"
+          locale={locale}
+          title={t('error.kaboom.title')}
+          description={t('error.kaboom.description')}
+        />
+      );
+    }
   }
 
   if (listTransactionsViewModel.mode === 'not-found') {
@@ -150,6 +165,7 @@ export default function Transactions(_props: TransactionsProps) {
     console.error(errorData);
     return (
       <DefaultError
+        type="simple"
         locale={locale}
         title={t('error.notFoundError.title')}
         description={t('error.notFoundError.description')}

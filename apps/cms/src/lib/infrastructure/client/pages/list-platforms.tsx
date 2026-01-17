@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 
 export default function ListPlatforms() {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.listPlatforms');
     const router = useRouter();
 
     const [platformsResponse, { refetch }] = trpc.listPlatforms.useSuspenseQuery({});
@@ -39,7 +40,10 @@ export default function ListPlatforms() {
     if (platformsViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
                 onRetry={() => {
                     refetch();
                 }}

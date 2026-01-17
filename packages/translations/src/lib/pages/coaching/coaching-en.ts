@@ -11,4 +11,8 @@ export const Coaching_EN: TDictionary["pages"]["coaching"] = {
   briefingOutcome: "Outcome: What result or outcome you'd like to achieve by the end of the session.",
   briefingButtonText: "Prep your coach",
   briefingPlaceholder: "Enter your briefing here...",
+  error: {
+    title: "Failed to Load Coaching",
+    description: "Unable to load coaching information. Please refresh the page or try again later.",
+  },
 }

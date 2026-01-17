@@ -26,6 +26,7 @@ import { useListLanguagesPresenter } from '../hooks/use-list-languages-presenter
 import { useProfilePictureUpload } from './workspace/edit/hooks/use-profile-picture-upload';
 import { useCurriculumVitaeUpload } from './workspace/edit/hooks/use-curriculum-vitae-upload';
 import Banner from 'packages/ui-kit/lib/components/banner';
+import { usePlatform } from '../context/platform-context';
 
 interface ProfileProps {
 	locale: string;
@@ -74,6 +75,8 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 	const professionalInfoTranslations = useTranslations('components.professionalInfo');
 	const utils = trpc.useUtils();
+	const platformContext = usePlatform();
+	const supportEmail = platformContext?.platform.supportEmailAddress;
 
 	// Upload progress state - separate for each upload type
 	const [profilePictureUploadProgress, setProfilePictureUploadProgress] = useState<number>(0);
@@ -242,21 +245,54 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
-	// Error handling - only kaboom errors should prevent rendering
+	// Error handling - profile or languages data failed to load
 	if (personalProfileViewModel.mode === 'kaboom' || languagesViewModel.mode === 'kaboom') {
-		return <DefaultError locale={locale} />;
+		if (supportEmail && supportEmail.trim() !== '') {
+			return (
+				<DefaultError
+					type="withSupportEmail"
+					locale={locale}
+					title={t('loadError.title')}
+					description={t('loadError.description')}
+					supportEmailAddress={supportEmail}
+				/>
+			);
+		} else {
+			return (
+				<DefaultError
+					type="simple"
+					locale={locale}
+					title={t('loadError.title')}
+					description={t('loadError.description')}
+				/>
+			);
+		}
 	}
 
 	// Languages are required for both tabs
 	if (languagesViewModel.mode !== 'default') {
-		return <DefaultError locale={locale} />;
+		return (
+			<DefaultError
+				type="simple"
+				locale={locale}
+				title={t('languagesLoadError.title')}
+				description={t('languagesLoadError.description')}
+			/>
+		);
 	}
 
 	const allLanguages = languagesViewModel.data.languages;
 
 	// Ensure we have languages
 	if (!allLanguages || allLanguages.length === 0) {
-		return <DefaultError locale={locale} title={"Language data missing"} description={'[Profile] Languages data is missing or empty despite mode being default'} />;
+		return (
+			<DefaultError
+				type="simple"
+				locale={locale}
+				title={t('languagesMissingError.title')}
+				description={t('languagesMissingError.description')}
+			/>
+		);
 	}
 
 	// Save handlers - must be defined after early returns

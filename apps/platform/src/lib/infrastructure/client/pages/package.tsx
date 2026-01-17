@@ -218,6 +218,7 @@ export default function Package({ locale, packageId }: PackageProps) {
     console.error(errorData);
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.kaboom.title')}
         description={t('error.kaboom.description')}

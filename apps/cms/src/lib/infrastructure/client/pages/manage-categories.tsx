@@ -296,7 +296,10 @@ export default function ManageCategories({
     if (categoriesViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={appLocale}
+                title={t('error.title')}
+                description={t('error.description')}
                 onRetry={() => {
                     refetchCategories();
                 }}

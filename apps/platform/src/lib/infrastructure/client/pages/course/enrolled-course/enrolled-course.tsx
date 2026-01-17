@@ -34,6 +34,7 @@ import { useGetCourseStatusPresenter } from '../../../hooks/use-get-course-statu
 import { useGetCourseCertificateDataPresenter } from '../../../hooks/use-get-course-certificate-data-presenter';
 import CourseCompletion from '../../course-completion';
 import { CourseAssignmentsList } from '../components/course-assignments-list';
+import { usePlatform } from '../../../context/platform-context';
 
 
 interface EnrolledCourseProps {
@@ -156,6 +157,9 @@ interface EnrolledCourseContentProps extends EnrolledCourseProps {
 
 
 export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
+    const courseT = useTranslations('pages.course');
+    const platformContext = usePlatform();
+    const supportEmail = platformContext?.platform.supportEmailAddress;
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery({
         courseSlug: props.courseSlug,
     });
@@ -273,7 +277,26 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     }
 
     if (courseViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        if (supportEmail && supportEmail.trim() !== '') {
+            return (
+                <DefaultError
+                    type="withSupportEmail"
+                    locale={locale}
+                    title={courseT('error.title')}
+                    description={courseT('error.description')}
+                    supportEmailAddress={supportEmail}
+                />
+            );
+        } else {
+            return (
+                <DefaultError
+                    type="simple"
+                    locale={locale}
+                    title={courseT('error.title')}
+                    description={courseT('error.description')}
+                />
+            );
+        }
     }
 
     const tabContentClass = 'mt-10';

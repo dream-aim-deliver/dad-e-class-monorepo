@@ -188,7 +188,14 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
 
   // Error handling - kaboom (hard error)
   if (listTopicsViewModel.mode === 'kaboom') {
-    return <DefaultError locale={locale} />;
+    return (
+      <DefaultError
+        type="simple"
+        locale={locale}
+        title={t('loadError.title')}
+        description={t('loadError.description')}
+      />
+    );
   }
 
   // Extract topics data and convert to TSkill format

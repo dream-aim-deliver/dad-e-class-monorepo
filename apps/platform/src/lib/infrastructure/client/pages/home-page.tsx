@@ -53,7 +53,10 @@ function Topics() {
     if (topicsViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('topicsLoadError.title')}
+                description={t('topicsLoadError.description')}
                 onRetry={() => {
                     refetch();
                 }}
@@ -68,6 +71,7 @@ function Topics() {
 
 export default function HomePage() {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.home');
 
     const [homePageResponse] = trpc.getHomePage.useSuspenseQuery({});
     const [homePageViewModel, setHomePageViewModel] = useState<
@@ -85,7 +89,14 @@ export default function HomePage() {
     }
 
     if (homePageViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('loadError.title')}
+                description={t('loadError.description')}
+            />
+        );
     }
 
     if (homePageViewModel.mode === 'not-found') {

@@ -131,6 +131,7 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
   if (listCoursesViewModel.mode === 'kaboom') {
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}
@@ -142,9 +143,10 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
   if (listCoursesViewModel.mode === 'not-found') {
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
-        title={t('error.title')}
-        description={t('error.description')}
+        title={t('error.notFound.title')}
+        description={t('error.notFound.description')}
       />
     );
   }

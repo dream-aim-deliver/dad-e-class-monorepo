@@ -122,7 +122,14 @@ function CalendarContent({ courseSlug, groupId }: { courseSlug: string; groupId:
     }
 
     if (groupCoachingSessionsViewModel.mode !== 'default' || coachCoachingSessionsViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('loadError.title')}
+                description={t('loadError.description')}
+            />
+        );
     }
 
     return (
@@ -244,6 +251,7 @@ export default function AddGroupSession({ locale, courseSlug, groupId }: AddGrou
     if (!session || !session.user?.roles?.includes('coach')) {
         return (
             <DefaultError
+                type="simple"
                 locale={currentLocale}
                 title={t('error.unauthorized')}
                 description={t('error.unauthorized')}

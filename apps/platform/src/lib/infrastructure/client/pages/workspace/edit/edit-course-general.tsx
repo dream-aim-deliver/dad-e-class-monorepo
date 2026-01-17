@@ -1,9 +1,9 @@
 import { TLocale } from '@maany_shr/e-class-translations';
-import { 
+import {
     TListCategoriesUseCaseResponse,
-    TListTopicsUseCaseResponse 
+    TListTopicsUseCaseResponse
 } from '@dream-aim-deliver/e-class-cms-rest';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { CourseImageUploadState } from '../../common/hooks/use-course-image-upload';
 import {
     CourseDetailsState,
@@ -23,13 +23,21 @@ import { useListCategoriesPresenter } from '../../../hooks/use-categories-presen
 export function EditCourseGeneralPreview({ slug }: { slug: string }) {
     const courseViewModel = useCourseDetails(slug);
     const locale = useLocale() as TLocale;
+    const editCourseT = useTranslations('pages.editCourse');
 
     if (!courseViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (courseViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editCourseT('error.title')}
+                description={editCourseT('error.description')}
+            />
+        );
     }
 
     const course = courseViewModel.data;
@@ -88,6 +96,7 @@ interface EditCourseGeneralProps {
 
 export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     const locale = useLocale() as TLocale;
+    const editCourseT = useTranslations('pages.editCourse');
 
     const courseViewModel = useCourseDetails(props.slug);
 
@@ -148,7 +157,14 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
         topicsViewModel.mode !== 'default' ||
         categoriesViewModel.mode !== 'default'
     ) {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editCourseT('error.title')}
+                description={editCourseT('error.description')}
+            />
+        );
     }
 
     return (

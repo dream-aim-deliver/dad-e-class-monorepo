@@ -227,6 +227,7 @@ export default function ConfirmTimeContent({
             )}
             {hasTimeError && (
                 <DefaultError
+                    type="simple"
                     locale={locale}
                     title={t('invalidTimeFormatTitle')}
                     description={t('invalidTimeFormatDescription')}
@@ -234,6 +235,7 @@ export default function ConfirmTimeContent({
             )}
             {submitError && (
                 <DefaultError
+                    type="simple"
                     locale={locale}
                     title={submitError.title}
                     description={submitError.description}

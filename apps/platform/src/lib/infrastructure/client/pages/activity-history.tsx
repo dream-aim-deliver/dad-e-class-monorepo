@@ -126,9 +126,17 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
     return <DefaultNotFound locale={locale} />;
   }
 
-  // Error handling - kaboom
+  // Error handling - notifications failed to load
   if (listNotificationsViewModel.mode === 'kaboom') {
-    return <DefaultError locale={locale} />;
+    return (
+      <DefaultError
+        type="simple"
+        locale={locale}
+        title={t('loadError.title')}
+        description={t('loadError.description')}
+        onRetry={() => refetchNotifications()}
+      />
+    );
   }
 
   // Extract notifications data and convert to ExtendedNotification format
@@ -173,7 +181,14 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
         />
       </div>
 
-      {errorMessage && <DefaultError locale={locale} title={errorMessage} />}
+      {errorMessage && (
+        <DefaultError
+          type="simple"
+          locale={locale}
+          title={t('error.title')}
+          description={errorMessage}
+        />
+      )}
     </div>
   );
 }

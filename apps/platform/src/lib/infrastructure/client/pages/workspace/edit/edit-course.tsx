@@ -172,7 +172,14 @@ function EditCourseContent({
 
     // Handle error state after all hooks
     if (courseViewModel?.mode !== "default") {
-        return <DefaultError locale={locale}/>
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editCourseTranslations('error.title')}
+                description={editCourseTranslations('error.description')}
+            />
+        );
     }
     const courseStatus = courseViewModel?.data.status
 

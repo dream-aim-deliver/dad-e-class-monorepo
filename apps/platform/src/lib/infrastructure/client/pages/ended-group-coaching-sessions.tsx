@@ -204,6 +204,7 @@ export default function EndedGroupCoachingSessions({
     if (!session) {
         return (
             <DefaultError
+                type="simple"
                 locale={currentLocale}
                 title={t('error.accessDenied')}
                 description={t('error.accessDenied')}
@@ -217,6 +218,7 @@ export default function EndedGroupCoachingSessions({
 
         return (
             <DefaultError
+                type="simple"
                 locale={currentLocale}
                 title={t('error.title')}
                 description={errorData.message || t('error.description')}
@@ -229,6 +231,7 @@ export default function EndedGroupCoachingSessions({
 
         return (
             <DefaultError
+                type="simple"
                 locale={currentLocale}
                 title={t('error.title')}
                 description={errorData.message || t('error.description')}

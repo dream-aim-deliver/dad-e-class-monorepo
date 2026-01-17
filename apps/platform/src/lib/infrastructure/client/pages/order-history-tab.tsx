@@ -71,18 +71,39 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
 
   // Handle error states
   if (transactionsViewModel?.mode === 'kaboom') {
-    return (
-      <DefaultError
-        locale={currentLocale}
-        onRetry={() => refetchTransactions()}
-      />
-    );
+    const supportEmail = platform.supportEmailAddress;
+
+    if (supportEmail && supportEmail.trim() !== '') {
+      return (
+        <DefaultError
+          type="withSupportEmail"
+          locale={currentLocale}
+          title={t('error.title')}
+          description={t('error.description')}
+          supportEmailAddress={supportEmail}
+          onRetry={() => refetchTransactions()}
+        />
+      );
+    } else {
+      return (
+        <DefaultError
+          type="simple"
+          locale={currentLocale}
+          title={t('error.title')}
+          description={t('error.description')}
+          onRetry={() => refetchTransactions()}
+        />
+      );
+    }
   }
 
   if (transactionsViewModel?.mode === 'not-found') {
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
+        title={t('error.notFound.title')}
+        description={t('error.notFound.description')}
         onRetry={() => refetchTransactions()}
       />
     );

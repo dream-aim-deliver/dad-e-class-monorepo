@@ -114,7 +114,14 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     }
 
     if (coursesViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={emptyStateTranslations('error.title')}
+                description={emptyStateTranslations('error.description')}
+            />
+        );
     }
 
     if (limitedCourses.length === 0) {

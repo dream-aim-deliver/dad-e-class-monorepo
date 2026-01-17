@@ -79,6 +79,7 @@ export default function CoachingSessions({
 
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}

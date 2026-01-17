@@ -85,7 +85,14 @@ function CalendarContent() {
     }
 
     if (groupCoachingSessionsViewModel.mode !== 'default' || coachCoachingSessionsViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     return (

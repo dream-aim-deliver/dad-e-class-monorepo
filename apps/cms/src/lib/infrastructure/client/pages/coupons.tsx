@@ -240,6 +240,7 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
     console.error(errorData);
     return (
       <DefaultError
+        type="simple"
         locale={locale}
         title={t('error.kaboom.title')}
         description={t('error.kaboom.description')}
@@ -252,6 +253,7 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
     console.error(errorData);
     return (
       <DefaultError
+        type="simple"
         locale={locale}
         title={t('error.notFoundError.title')}
         description={t('error.notFoundError.description')}

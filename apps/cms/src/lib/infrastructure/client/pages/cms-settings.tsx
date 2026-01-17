@@ -254,19 +254,40 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
 
   // Error handling
   if (platformViewModel.mode === 'kaboom') {
-    return (
-      <DefaultError
-        locale={locale}
-        onRetry={() => {
-          refetchPlatform();
-        }}
-      />
-    );
+    const supportEmail = platform.supportEmailAddress;
+
+    if (supportEmail && supportEmail.trim() !== '') {
+      return (
+        <DefaultError
+          type="withSupportEmail"
+          locale={locale}
+          title={t('error.title')}
+          description={t('error.description')}
+          supportEmailAddress={supportEmail}
+          onRetry={() => {
+            refetchPlatform();
+          }}
+        />
+      );
+    } else {
+      return (
+        <DefaultError
+          type="simple"
+          locale={locale}
+          title={t('error.title')}
+          description={t('error.description')}
+          onRetry={() => {
+            refetchPlatform();
+          }}
+        />
+      );
+    }
   }
 
   if (platformViewModel.mode === 'not-found') {
     return (
       <DefaultError
+        type="simple"
         locale={locale}
         title={t('error.notFound.title')}
         description={t('error.notFound.description')}
@@ -279,14 +300,34 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
 
   // Error handling for email config
   if (emailConfigViewModel.mode === 'kaboom') {
-    return (
-      <DefaultError
-        locale={locale}
-        onRetry={() => {
-          refetchEmailConfig();
-        }}
-      />
-    );
+    const supportEmail = platform.supportEmailAddress;
+
+    if (supportEmail && supportEmail.trim() !== '') {
+      return (
+        <DefaultError
+          type="withSupportEmail"
+          locale={locale}
+          title={t('error.emailConfigLoadFailed.title')}
+          description={t('error.emailConfigLoadFailed.description')}
+          supportEmailAddress={supportEmail}
+          onRetry={() => {
+            refetchEmailConfig();
+          }}
+        />
+      );
+    } else {
+      return (
+        <DefaultError
+          type="simple"
+          locale={locale}
+          title={t('error.emailConfigLoadFailed.title')}
+          description={t('error.emailConfigLoadFailed.description')}
+          onRetry={() => {
+            refetchEmailConfig();
+          }}
+        />
+      );
+    }
   }
 
   // Handle logo upload

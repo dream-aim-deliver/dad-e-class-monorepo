@@ -52,7 +52,14 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
     }
 
     if (coachingPageViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     if (coachingPageViewModel.mode === 'not-found') {

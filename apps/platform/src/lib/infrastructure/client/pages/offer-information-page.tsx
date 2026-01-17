@@ -42,7 +42,10 @@ export default function OfferInformationPage() {
     if (offerInformationViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('loadError.title')}
+                description={t('loadError.description')}
                 onRetry={() => refetchOfferInformation()}
             />
         );
@@ -52,7 +55,10 @@ export default function OfferInformationPage() {
     if (richTextError) {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('contentError.title')}
+                description={t('contentError.description')}
                 onRetry={() => {
                     setRichTextError(false);
                     refetchOfferInformation();

@@ -85,7 +85,9 @@ export function AvailabilityDetailsDialog({
                     />
                     {deleteError && (
                         <DefaultError
+                            type="simple"
                             locale={locale}
+                            title={t('error.title')}
                             description={deleteError}
                         />
                     )}

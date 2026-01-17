@@ -206,7 +206,12 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                                 </h6>
                             )}
                         {!props.isLoading && props.hasSearchError && (
-                            <DefaultError locale={props.locale} />
+                            <DefaultError
+                                type="simple"
+                                locale={props.locale}
+                                title="Search failed"
+                                description="An error occurred while searching for courses."
+                            />
                         )}
                         {isQuerySuccessful &&
                             filteredCourses &&

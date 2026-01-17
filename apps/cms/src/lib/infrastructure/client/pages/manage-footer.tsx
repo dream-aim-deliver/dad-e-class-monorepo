@@ -30,7 +30,7 @@ import {
 	IconSave,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 
 export default function ManageFooter() {
@@ -152,9 +152,13 @@ export default function ManageFooter() {
 	}, [currentContent, savePlatformFooterMutation, utils.getPlatform]);
 
 	if (platformViewModel?.mode === 'kaboom') {
+		const dictionary = getDictionary(locale);
 		return (
 			<DefaultError
+				type="simple"
 				locale={locale}
+				title={dictionary.components.defaultError.title}
+				description={dictionary.components.defaultError.description}
 				onRetry={() => refetchPlatform()}
 			/>
 		);
