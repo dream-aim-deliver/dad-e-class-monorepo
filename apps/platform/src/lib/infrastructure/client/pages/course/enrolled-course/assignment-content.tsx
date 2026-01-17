@@ -309,7 +309,7 @@ function AssignmentModalWrapper({
     locale,
 }: AssignmentModalWrapperProps) {
     const handleClickCourse = () => {
-        const courseUrl = `/${locale}/course/${assignment.course.slug}`;
+        const courseUrl = `/${locale}/courses/${assignment.course.slug}`;
         window.open(courseUrl, '_blank', 'noopener,noreferrer');
     };
 
