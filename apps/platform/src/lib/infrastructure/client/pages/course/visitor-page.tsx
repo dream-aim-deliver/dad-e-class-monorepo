@@ -25,7 +25,7 @@ import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream
 import { useState, useEffect, useCallback, } from 'react';
 import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
 import { useGetCoachingPagePresenter } from '../../hooks/use-get-coaching-page-presenter';
 import { useGetPublicCourseDetailsPresenter } from '../../hooks/use-public-course-details-presenter';
@@ -367,7 +367,14 @@ function VisitorPageContent({
     const renderCourseData = () => {
         switch (courseData?.mode) {
             case 'kaboom':
-                return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
             case 'default':
@@ -432,7 +439,14 @@ function VisitorPageContent({
     const renderIntroductionData = () => {
         switch (introductionData?.mode) {
             case 'kaboom':
-                return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
             //@ts-ignore
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
@@ -457,7 +471,14 @@ function VisitorPageContent({
     const renderOutlineData = () => {
         switch (outlineData?.mode) {
             case 'kaboom':
-                return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
             //@ts-ignore
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
@@ -485,7 +506,14 @@ function VisitorPageContent({
     const renderReviewsData = () => {
         switch (reviewsData?.mode) {
             case 'kaboom':
-                return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
             //@ts-ignore
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
@@ -532,7 +560,14 @@ function VisitorPageContent({
     const renderPackagesData = () => {
         switch (packagesData?.mode) {
             case 'kaboom':
-                return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
             case 'default':
@@ -589,7 +624,14 @@ function VisitorPageContent({
     const renderOffersData = () => {
         switch (offersCarouselData?.mode) {
             case 'kaboom':
-                return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
             case 'default':

@@ -1,7 +1,7 @@
 'use client';
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/cms-client';
 import React, { useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -57,6 +57,7 @@ export default function ChooseCoachingSessionContent({
     presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
 
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.coaching');
 
     const groupedOfferings = useMemo(() => {
         if (!availableCoachingsViewModel) return [];
@@ -68,7 +69,14 @@ export default function ChooseCoachingSessionContent({
     }
 
     if (availableCoachingsViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     if (

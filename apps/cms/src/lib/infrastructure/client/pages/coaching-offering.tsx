@@ -329,7 +329,10 @@ export default function CoachingOffering({
     if (listViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
                 onRetry={() => {
                     refetchOfferings();
                 }}
@@ -338,7 +341,14 @@ export default function CoachingOffering({
     }
 
     if (listViewModel.mode === 'not-found') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.notFound.title')}
+                description={t('error.notFound.description')}
+            />
+        );
     }
 
     // Success state - extract data

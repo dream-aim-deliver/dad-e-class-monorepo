@@ -36,6 +36,7 @@ function CoursePreviewLesson(props: {
     isArchived?: boolean;
 }) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.enrolledCourse');
 
     const [componentsResponse, { isPending }] =
         trpc.listLessonComponents.useSuspenseQuery(
@@ -63,7 +64,14 @@ function CoursePreviewLesson(props: {
     }
 
     if (componentsViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     return (
@@ -81,7 +89,8 @@ function CoursePreviewLesson(props: {
 function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const { courseSlug, initialLessonId, studentUsername } = props;
     const locale = useLocale() as TLocale;
-    const t = useTranslations('components.lessonNotes');
+    const lessonNotesT = useTranslations('components.lessonNotes');
+    const t = useTranslations('pages.enrolledCourse');
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -143,7 +152,14 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     }
 
     if (courseStructureViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     const modules = courseStructureViewModel.data.modules;
@@ -223,7 +239,14 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const currentLesson = getCurrentLesson();
 
     if (transformedModules.length === 0) {
-        return <DefaultError locale={locale} description="Course is empty." />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.courseEmpty')}
+            />
+        );
     }
 
     return (
@@ -235,7 +258,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                         <Button
                             variant="secondary"
                             size="medium"
-                            text={showNotes ? t('hideNotesText') : t('showNotesText')}
+                            text={showNotes ? lessonNotesT('hideNotesText') : lessonNotesT('showNotesText')}
                             hasIconLeft
                             iconLeft={showNotes ? <IconEyeHide /> : <IconEyeShow />}
                             onClick={() => setShowNotes(!showNotes)}

@@ -127,7 +127,14 @@ export default function CategoryTopics({
         topicsByCategoryViewModel.mode === 'kaboom' ||
         topicsViewModel.mode === 'kaboom'
     ) {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={categoryTopicsTranslations('error.title')}
+                description={categoryTopicsTranslations('error.description')}
+            />
+        );
     }
 
     // Event handlers

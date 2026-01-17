@@ -88,6 +88,7 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
   if (receivedNotificationsViewModel?.mode === 'kaboom' || sentNotificationsViewModel?.mode === 'kaboom') {
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}
@@ -99,6 +100,7 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
   if (!session || !isAdmin) {
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}

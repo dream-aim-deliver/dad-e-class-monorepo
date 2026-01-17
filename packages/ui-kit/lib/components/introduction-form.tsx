@@ -103,7 +103,9 @@ export function IntroductionForm(props: IntroductionProps) {
                 />
                 {props.uploadError && (
                     <DefaultError
+                        type="simple"
                         locale={props.locale}
+                        title="Upload failed"
                         description={props.uploadError}
                     />
                 )}

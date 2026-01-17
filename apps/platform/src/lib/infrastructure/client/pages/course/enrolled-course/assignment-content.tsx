@@ -6,7 +6,7 @@ import {
     shared,
     viewModels,
 } from '@maany_shr/e-class-models';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     AssignmentModalContent,
@@ -33,6 +33,7 @@ export default function AssignmentContent({
     isArchived,
 }: AssignmentContentProps) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.enrolledCourse');
     const session = useSession();
 
     const [assignmentResponse, { refetch: refetchAssignment }] =
@@ -53,7 +54,14 @@ export default function AssignmentContent({
     }
 
     if (assignmentViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     const assignment = assignmentViewModel.data;

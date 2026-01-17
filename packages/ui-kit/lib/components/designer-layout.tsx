@@ -132,6 +132,7 @@ const DesignerLayout = ({
             <div>{children}</div>
             {validationError && (
                 <DefaultError
+                    type="simple"
                     locale={locale}
                     title={dictionary.components.lessons.elementValidationText}
                     description={validationError}

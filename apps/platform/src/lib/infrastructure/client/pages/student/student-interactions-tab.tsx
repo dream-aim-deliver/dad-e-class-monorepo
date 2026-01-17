@@ -42,7 +42,14 @@ export default function StudentInteractionsTab({
     }
 
     if (viewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     const interactions = viewModel.data;
@@ -55,7 +62,12 @@ export default function StudentInteractionsTab({
     // If interactions doesn't have modules property, show error
     if (!hasModules(interactions)) {
         return (
-            <DefaultError locale={locale} description={interactions?.message} />
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={interactions?.message || t('error.description')}
+            />
         );
     }
 

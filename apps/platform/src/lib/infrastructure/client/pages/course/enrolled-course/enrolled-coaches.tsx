@@ -331,14 +331,23 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     if (courseCoachesViewModel.mode === 'not-found') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('error.title')}
                 description={t('noCoachesAssigned')}
             />
         );
     }
 
     if (courseCoachesViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     // Check for mutation errors and show as full page errors
@@ -346,14 +355,28 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         addCoachViewModel?.mode === 'kaboom'
     ) {
         const errorMessage = addCoachViewModel.data.message;
-        return <DefaultError locale={locale} description={errorMessage} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={errorMessage}
+            />
+        );
     }
 
     if (
         removeCoachViewModel?.mode === 'kaboom'
     ) {
         const errorMessage = removeCoachViewModel.data.message;
-        return <DefaultError locale={locale} description={errorMessage} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={errorMessage}
+            />
+        );
     }
 
 

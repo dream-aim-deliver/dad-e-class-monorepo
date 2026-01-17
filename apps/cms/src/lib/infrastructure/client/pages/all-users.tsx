@@ -103,6 +103,7 @@ export default function AllUsers({ locale }: AllUsersProps) {
     console.error(errorData);
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}
@@ -115,6 +116,7 @@ export default function AllUsers({ locale }: AllUsersProps) {
     console.error(errorData);
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.notFound.title')}
         description={t('error.notFound.description')}

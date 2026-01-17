@@ -52,6 +52,7 @@ export default function Footer({
 }: FooterProps) {
     const pathname = usePathname();
     const router = useRouter();
+    const t = useTranslations('components.footer');
 
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
@@ -59,7 +60,14 @@ export default function Footer({
     };
 
     if (platformViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     return (

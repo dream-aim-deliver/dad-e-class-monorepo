@@ -11,4 +11,8 @@ export const Coaching_DE: TDictionary['pages']['coaching'] = {
   briefingOutcome: 'Ziel: Welches Ergebnis oder welchen Output möchtest du am Ende der Session erreichen?',
   briefingButtonText: 'Coach briefen',
   briefingPlaceholder: 'Gib hier dein Briefing ein...',
+  error: {
+    title: 'Coaching konnte nicht geladen werden',
+    description: 'Die Coaching-Informationen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.',
+  },
 };

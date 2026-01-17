@@ -523,7 +523,14 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     }
 
     if (studentCoachingSessionsViewModel.mode !== 'default' || coachesViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingSessionTranslations('error.title')}
+                description={coachingSessionTranslations('error.description')}
+            />
+        );
     }
 
     // Helper to render available coaches content with two-column layout

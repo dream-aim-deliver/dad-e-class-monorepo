@@ -242,6 +242,7 @@ export function FormComponentWrapper({
         if (validationError) {
             return (
                 <DefaultError
+                    type="simple"
                     locale={locale}
                     title={dictionary.components.lessons.elementValidationText}
                     description={validationError}

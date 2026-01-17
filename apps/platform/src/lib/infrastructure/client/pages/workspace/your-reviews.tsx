@@ -195,7 +195,14 @@ export default function YourReviews({ roles }: YourReviewsProps) {
 
     // Error handling - kaboom (hard error)
     if (coachReviewsViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} description={t('defaultError')} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     // Error handling - not found

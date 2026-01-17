@@ -226,7 +226,12 @@ export default function EnrolledCourseHeading({
                             disabled={isDownloading}
                         />
                         {certificateError && (
-                            <DefaultError title={certificateError} locale={locale} />
+                            <DefaultError
+                                type="simple"
+                                locale={locale}
+                                title={courseTranslations('error.title')}
+                                description={certificateError}
+                            />
                         )}
                     </div>
                 </div>

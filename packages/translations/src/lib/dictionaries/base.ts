@@ -18,6 +18,7 @@ export const DictionarySchema = z.object({
       title: z.string(),
       description: z.string(),
       retry: z.string(),
+      contactSupportLine: z.string(),
     }),
     defaultNotFound: z.object({
       title: z.string(),
@@ -446,6 +447,10 @@ export const DictionarySchema = z.object({
       yourProfile: z.string(),
       logout: z.string(),
       yourCourses: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     cmsNavbar: z.object({
       manageUsers: z.string(),
@@ -461,6 +466,10 @@ export const DictionarySchema = z.object({
       termsOfUse: z.string(),
       rules: z.string(),
       coursesInformation: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     activity: z.object({
       atText: z.string(),
@@ -2037,6 +2046,18 @@ export const DictionarySchema = z.object({
         saveButton: z.string(),
         discardButton: z.string(),
       }),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      languagesLoadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      languagesMissingError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     sso: z.object({
       termsAndConditions: z.object({
@@ -2054,6 +2075,14 @@ export const DictionarySchema = z.object({
       welcomeText: z.string(),
       signOutText: z.string(),
       topicsTitle: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      topicsLoadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     offers: z.object({
       chooseCategory: z.string(),
@@ -2075,9 +2104,17 @@ export const DictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
       }),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     assessmentForm: z.object({
       defaultFormError: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     coaching: z.object({
       chooseCategory: z.string(),
@@ -2090,6 +2127,10 @@ export const DictionarySchema = z.object({
       briefingOutcome: z.string(),
       briefingButtonText: z.string(),
       briefingPlaceholder: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     login: z.object({
       title: z.string(),
@@ -2106,6 +2147,10 @@ export const DictionarySchema = z.object({
         tryAgain: z.string(),
         continueAsVisitor: z.string(),
       }),
+    }),
+    errorBoundary: z.object({
+      title: z.string(),
+      description: z.string(),
     }),
     course: z.object({
       completedPanel: z.object({
@@ -2146,6 +2191,10 @@ export const DictionarySchema = z.object({
         yourStudents: z.string(),
         searchPlaceholder: z.string(),
         noStudentsFound: z.string(),
+        error: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
       }),
       materials: z.object({
         noMaterialsAvailable: z.string(),
@@ -2193,6 +2242,16 @@ export const DictionarySchema = z.object({
         removeSuccess: z.string(),
         addError: z.string(),
         removeError: z.string(),
+        error: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+      lessonCoaches: z.object({
+        error: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
       }),
       groups: z.object({
         title: z.string(),
@@ -2226,6 +2285,26 @@ export const DictionarySchema = z.object({
         becomeCoachButton: z.string(),
         reviewsCount: z.string(),
         noReviewsYet: z.string(),
+        error: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    }),
+    enrolledCourse: z.object({
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        assessmentComponentsLoadFailed: z.string(),
+        courseEmpty: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
       }),
     }),
     userCourses: z.object({
@@ -2264,6 +2343,10 @@ export const DictionarySchema = z.object({
         interactions: z.string(),
         preCourseAssessment: z.string(),
       }),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     createCourse: z.object({
       createTitle: z.string(),
@@ -2275,6 +2358,10 @@ export const DictionarySchema = z.object({
       titleSlugError: z.string(),
       descriptionError: z.string(),
       missingImageError: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     sidebarLayout: z.object({
       dashboard: z.string(),
@@ -2329,6 +2416,10 @@ export const DictionarySchema = z.object({
       roleStudent: z.string(),
       selectRole: z.string(),
       coachingSessions: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     editLesson: z.object({
       richText: z.string(),
@@ -2347,6 +2438,10 @@ export const DictionarySchema = z.object({
       coachingSession: z.string(),
       editLessonTitle: z.string(),
       errorSaving: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     editCourse: z.object({
       module: z.string(),
@@ -2407,6 +2502,10 @@ export const DictionarySchema = z.object({
       imageRequiredForPreview: z.string(),
       modulesRequiredForPreview: z.string(),
       lessonsRequiredForPreview: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     edit: z.object({
       lesson: z.object({
@@ -2415,34 +2514,110 @@ export const DictionarySchema = z.object({
     }),
     editCourseIntroOutline: z.object({
       outlineText: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      noOutline: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     courseOutline: z.object({
       courseContent: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
     }),
     categoryTopics: z.object({
       allText: z.string(),
       noTopicsFound: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
     }),
     userCoursesList: z.object({
       emptyState: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     aboutPage: z.object({
       title: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      contentError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     impressum: z.object({
       title: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      contentError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     termsOfUse: z.object({
       title: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      contentError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     privacyPolicy: z.object({
       title: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      contentError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     rules: z.object({
       title: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      contentError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     offerInformation: z.object({
       title: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      contentError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     studentCoachingSessions: z.object({
       yourCoachingSessions: z.string(),
@@ -2466,6 +2641,10 @@ export const DictionarySchema = z.object({
       home: z.string(),
       workspace: z.string(),
       coachingSessions: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     userDashboard: z.object({
       editProfile: z.string(),
@@ -2488,23 +2667,53 @@ export const DictionarySchema = z.object({
         }),
       }),
     }),
+    notifications: z.object({
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    }),
     manageTopics: z.object({
       title: z.string(),
       description: z.string(),
       createTopic: z.string(),
       deleteTopicConfirmation: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
     }),
     manageCategories: z.object({
       title: z.string(),
       description: z.string(),
       createCategory: z.string(),
       deleteCategoryConfirmation: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
     }),
     coachingOffering: z.object({
       title: z.string(),
       deleteCoachingOffering: z.string(),
       descriptionDeleteCoaching: z.string(),
       newCoachingOffering: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
     }),
     allPackages: z.object({
       title: z.string(),
@@ -2517,6 +2726,22 @@ export const DictionarySchema = z.object({
       errorMessages: z.object({
         archiveFailed: z.string(),
         publishFailed: z.string(),
+      }),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
+    listPlatforms: z.object({
+      title: z.string(),
+      description: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
       }),
     }),
     editPackage: z.object({
@@ -2534,6 +2759,38 @@ export const DictionarySchema = z.object({
       }),
       errorMessages: z.object({
         updateFailed: z.string(),
+      }),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
+    platformManagement: z.object({
+      title: z.string(),
+      description: z.string(),
+      error: z.object({
+        topicsLoadFailed: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        categoriesLoadFailed: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
+    courseIntroduction: z.object({
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
       }),
     }),
     createPackage: z.object({
@@ -2696,6 +2953,10 @@ export const DictionarySchema = z.object({
       viewAllReviews: z.string(),
       noReviewsTitle: z.string(),
       noReviewsDescription: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     coachDashboardStudents: z.object({
       emptyState: z.string(),
@@ -3119,6 +3380,22 @@ export const DictionarySchema = z.object({
       noMatchingSlotsFound: z.string(),
       deletingSlots: z.string(),
       deleteNSlots: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      coachingOfferingsError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      submitError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     manageLegalTexts: z.object({
       title: z.string(),
@@ -3156,6 +3433,10 @@ export const DictionarySchema = z.object({
     activityHistory: z.object({
       title: z.string(),
       description: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
       error: z.object({
         title: z.string(),
         description: z.string(),
@@ -3339,6 +3620,10 @@ export const DictionarySchema = z.object({
           title: z.string(),
           description: z.string(),
         }),
+        emailConfigLoadFailed: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
       }),
     }),
     preCourseAssessmentForm: z.object({
@@ -3356,6 +3641,14 @@ export const DictionarySchema = z.object({
       toggleError: z.string(),
       saveError: z.string(),
       saveSuccess: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
     }),
     yourReviews: z.object({
       title: z.string(),
@@ -3372,6 +3665,10 @@ export const DictionarySchema = z.object({
       loadMore: z.string(),
       errorMessage: z.string(),
       defaultError: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     becomeACoach: z.object({
       title: z.string(),
@@ -3383,6 +3680,10 @@ export const DictionarySchema = z.object({
       successTitle: z.string(),
       successDescription: z.string(),
       mailtoNote: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
       error: z.object({
         title: z.string(),
         description: z.string(),
@@ -3427,6 +3728,10 @@ export const DictionarySchema = z.object({
       creating: z.string(),
       loading: z.string(),
       successMessage: z.string(),
+      loadError: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
       error: z.object({
         title: z.string(),
         description: z.string(),
@@ -3503,6 +3808,10 @@ export const DictionarySchema = z.object({
       worstFirst: z.string(),
       emptyStateCourses: z.string(),
       exploreCourses: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
     checkoutReturn: z.object({
       loading: z.object({

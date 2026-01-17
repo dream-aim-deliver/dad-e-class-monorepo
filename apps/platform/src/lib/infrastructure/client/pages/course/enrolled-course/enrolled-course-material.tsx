@@ -1,7 +1,7 @@
 'use client';
 
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
-import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import { TLocale } from '@maany_shr/e-class-translations';
 import {
     DefaultError,
     DefaultLoading,
@@ -11,6 +11,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Suspense, useState } from 'react';
 import { useListCourseMaterialsPresenter } from '../../../hooks/use-list-course-materials-presenter';
 import { trpc } from '../../../trpc/cms-client';
+import { usePlatform } from '../../../context/platform-context';
 interface EnrolledCourseMaterialProps {
     currentRole: string;
     courseSlug: string;
@@ -19,8 +20,10 @@ interface EnrolledCourseMaterialProps {
 function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
     const { courseSlug, currentRole } = props;
     const locale = useLocale() as TLocale;
-    const dictionary = getDictionary(locale);
+    const t = useTranslations('pages.enrolledCourse');
     const courseTranslations = useTranslations('pages.course');
+    const platformContext = usePlatform();
+    const supportEmail = platformContext?.platform.supportEmailAddress;
 
     const [courseMaterialsResponse] = trpc.listCourseMaterials.useSuspenseQuery(
         {
@@ -47,8 +50,38 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
     }
 
     // Handle different view model modes explicitly using discriminated union
-    if (courseMaterialsViewModel.mode === 'kaboom' || courseMaterialsViewModel.mode === 'not-found') {
-        return <DefaultError locale={locale} />;
+    if (courseMaterialsViewModel.mode === 'kaboom') {
+        if (supportEmail && supportEmail.trim() !== '') {
+            return (
+                <DefaultError
+                    type="withSupportEmail"
+                    locale={locale}
+                    title={t('error.title')}
+                    description={t('error.description')}
+                    supportEmailAddress={supportEmail}
+                />
+            );
+        } else {
+            return (
+                <DefaultError
+                    type="simple"
+                    locale={locale}
+                    title={t('error.title')}
+                    description={t('error.description')}
+                />
+            );
+        }
+    }
+
+    if (courseMaterialsViewModel.mode === 'not-found') {
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.notFound.title')}
+                description={t('error.notFound.description')}
+            />
+        );
     }
 
     // At this point the view model must be the success/default variant.
@@ -69,7 +102,7 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
             {!hasAnyMaterials ? (
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                     <p className="text-text-primary text-md">
-                        {dictionary.pages.course.materials.noMaterialsAvailable}
+                        {courseTranslations('materials.noMaterialsAvailable')}
                     </p>
                 </div>
             ) : (

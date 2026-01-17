@@ -81,7 +81,14 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
     }
 
     if (coachesViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingT('error.title')}
+                description={coachingT('error.description')}
+            />
+        );
     }
 
     if (displayedCoaches.length === 0) {

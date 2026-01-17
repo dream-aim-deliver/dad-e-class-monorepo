@@ -38,6 +38,7 @@ interface EditCourseIntroOutlineProps {
 
 export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
     const locale = useLocale() as TLocale;
+    const editCourseIntroOutlineT = useTranslations('pages.editCourseIntroOutline');
     const introductionViewModel = useCourseIntroduction(slug);
     const outlineViewModel = useCourseOutline(slug);
 
@@ -46,7 +47,14 @@ export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
     }
 
     if (introductionViewModel.mode !== 'default' || outlineViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editCourseIntroOutlineT('error.title')}
+                description={editCourseIntroOutlineT('error.description')}
+            />
+        );
     }
 
     const introduction = introductionViewModel.data;
@@ -83,7 +91,12 @@ export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
                         }))}
                     />
                 ) : (
-                    <DefaultError locale={locale} description="The course doesn't have an outline." />
+                    <DefaultError
+                        type="simple"
+                        locale={locale}
+                        title={editCourseIntroOutlineT('noOutline.title')}
+                        description={editCourseIntroOutlineT('noOutline.description')}
+                    />
                 )}
             </div>
         </div>
@@ -158,7 +171,14 @@ export default function EditCourseIntroOutline({
     }
 
     if (introductionViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editCourseIntroOutlineTranslations('error.title')}
+                description={editCourseIntroOutlineTranslations('error.description')}
+            />
+        );
     }
 
     return (

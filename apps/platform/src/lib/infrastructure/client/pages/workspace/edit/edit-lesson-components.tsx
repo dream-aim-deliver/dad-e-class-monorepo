@@ -371,9 +371,17 @@ function VideoComponent({
                 validationError={validationError}
                 uploadProgress={uploadProgress}
             />
-            {uploadError && (
-                <DefaultError locale={locale} description={uploadError} />
-            )}
+            {uploadError && (() => {
+                const editLessonT = useTranslations('pages.editLesson');
+                return (
+                    <DefaultError
+                        type="simple"
+                        locale={locale}
+                        title={editLessonT('error.title')}
+                        description={uploadError}
+                    />
+                );
+            })()}
         </div>
     );
 }
@@ -465,9 +473,17 @@ function ImageComponent({
                 validationError={validationError}
                 uploadProgress={uploadProgress}
             />
-            {uploadError && (
-                <DefaultError locale={locale} description={uploadError} />
-            )}
+            {uploadError && (() => {
+                const editLessonT = useTranslations('pages.editLesson');
+                return (
+                    <DefaultError
+                        type="simple"
+                        locale={locale}
+                        title={editLessonT('error.title')}
+                        description={uploadError}
+                    />
+                );
+            })()}
         </div>
     );
 }
@@ -561,9 +577,17 @@ function ImageGalleryComponent({
                 validationError={validationError}
                 uploadProgress={uploadProgress}
             />
-            {uploadError && (
-                <DefaultError locale={locale} description={uploadError} />
-            )}
+            {uploadError && (() => {
+                const editLessonT = useTranslations('pages.editLesson');
+                return (
+                    <DefaultError
+                        type="simple"
+                        locale={locale}
+                        title={editLessonT('error.title')}
+                        description={uploadError}
+                    />
+                );
+            })()}
         </div>
     );
 }
@@ -647,9 +671,17 @@ function DownloadFilesComponent({
                 validationError={validationError}
                 uploadProgress={uploadProgress}
             />
-            {uploadError && (
-                <DefaultError locale={locale} description={uploadError} />
-            )}
+            {uploadError && (() => {
+                const editLessonT = useTranslations('pages.editLesson');
+                return (
+                    <DefaultError
+                        type="simple"
+                        locale={locale}
+                        title={editLessonT('error.title')}
+                        description={uploadError}
+                    />
+                );
+            })()}
         </div>
     );
 }
@@ -1610,8 +1642,16 @@ function CoachingSessionComponent({
         return <DefaultLoading locale={locale} />;
     }
 
+    const editLessonT = useTranslations('pages.editLesson');
     if (coachingOfferingsViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editLessonT('error.title')}
+                description={editLessonT('error.description')}
+            />
+        );
     }
 
     // Find matching offering by name+duration (backend doesn't return coachingOfferingId)

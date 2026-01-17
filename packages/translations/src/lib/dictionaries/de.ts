@@ -24,6 +24,7 @@ export const DE: TDictionary = {
       title: 'Etwas ist schiefgelaufen',
       description: 'Ein kritischer Fehler ist aufgetreten. Bitte lade die Seite neu. Wenn das Problem bleibt, kontaktiere uns unter {contactEmail}.',
       retry: 'Erneut versuchen',
+      contactSupportLine: 'Bitte kontaktiere uns unter {supportEmailAddress}.',
     },
     defaultNotFound: {
       title: 'Nicht gefunden',
@@ -444,6 +445,10 @@ export const DE: TDictionary = {
       yourProfile: 'Dein Profil',
       logout: 'Abmelden',
       yourCourses: 'Deine Angebote',
+      error: {
+        title: 'Navigation konnte nicht geladen werden',
+        description: 'Die Navigation konnte nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+      },
     },
     cmsNavbar: {
       manageUsers: 'Alle Benutzer anzeigen',
@@ -459,6 +464,10 @@ export const DE: TDictionary = {
       termsOfUse: 'Nutzungsbedingungen',
       rules: 'Regeln',
       coursesInformation: 'Kursinformationen',
+      error: {
+        title: 'Fußzeile konnte nicht geladen werden',
+        description: 'Die Fußzeile konnte nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+      },
     },
     activity: {
       atText: 'bei',
@@ -2036,6 +2045,10 @@ export const DE: TDictionary = {
     coaching: Coaching_DE,
     assessmentForm: {
       defaultFormError: 'Fehler beim Laden des Formulars. Bitte versuche es erneut.',
+      error: {
+        title: 'Bewertungsformular konnte nicht geladen werden',
+        description: 'Das Bewertungsformular konnte nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
+      },
     },
     auth: {
       errorPage: {
@@ -2044,6 +2057,10 @@ export const DE: TDictionary = {
         tryAgain: 'Nochmal versuchen',
         continueAsVisitor: 'Als Besucher fortfahren',
       },
+    },
+    errorBoundary: {
+      title: 'Etwas ist schiefgelaufen',
+      description: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
     },
     course: {
       completedPanel: {
@@ -2084,6 +2101,10 @@ export const DE: TDictionary = {
         yourStudents: "Deine Studierenden",
         searchPlaceholder: "Suche",
         noStudentsFound: 'Keine Lernenden gefunden...',
+        error: {
+          title: 'Fehler beim Laden der Teilnehmer',
+          description: 'Die Kursteilnehmer konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es erneut.',
+        },
       },
       materials: {
         noMaterialsAvailable: "Noch keine Materialien verfügbar.",
@@ -2131,6 +2152,16 @@ export const DE: TDictionary = {
         removeSuccess: 'Coach erfolgreich entfernt!',
         addError: 'Fehler beim Hinzufügen des Coaches',
         removeError: 'Fehler beim Entfernen des Coaches',
+        error: {
+          title: 'Fehler beim Laden der Coaches',
+          description: 'Die Kurs-Coaches konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es erneut.',
+        },
+      },
+      lessonCoaches: {
+        error: {
+          title: 'Coaches konnten nicht geladen werden',
+          description: 'Die verfügbaren Coaches konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        },
       },
       groups: {
         title: 'Gruppen',
@@ -2164,6 +2195,26 @@ export const DE: TDictionary = {
         becomeCoachButton: 'Coach werden',
         reviewsCount: 'Bewertungen',
         noReviewsYet: 'Dieser Kurs hat noch keine Bewertungen',
+        error: {
+          title: 'Fehler beim Laden des Kurses',
+          description: 'Die Kursdetails konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es erneut.',
+        },
+      },
+      error: {
+        title: 'Fehler beim Laden des Kurses',
+        description: 'Die Kursdetails konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es erneut.',
+      },
+    },
+    enrolledCourse: {
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden des Kursinhalts ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+        assessmentComponentsLoadFailed: 'Die Bewertungskomponenten konnten nicht geladen werden. Bitte aktualisiere die Seite.',
+        courseEmpty: 'Dieser Kurs hat noch keine Inhalte.',
+        notFound: {
+          title: 'Kursinhalt nicht gefunden',
+          description: 'Der angeforderte Kursinhalt konnte nicht gefunden werden. Bitte überprüfe, ob der Kurs existiert, und versuche es erneut.',
+        },
       },
     },
     userCourses: {
@@ -2202,6 +2253,10 @@ export const DE: TDictionary = {
         interactions: 'Interaktionen',
         preCourseAssessment: 'Vorab-Bewertung',
       },
+      error: {
+        title: 'Schüler konnte nicht geladen werden',
+        description: 'Die Schülerdetails konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es erneut.',
+      },
     },
     createCourse: {
       createTitle: "Kurs erstellen",
@@ -2213,6 +2268,10 @@ export const DE: TDictionary = {
       titleSlugError: "Bitte Titel und Slug ausfüllen",
       descriptionError: "Bitte gebe eine Kursbeschreibung an",
       missingImageError: "Bitte lade ein Kursbild hoch",
+      error: {
+        title: "Kurs konnte nicht geladen werden",
+        description: "Die Kursdaten konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.",
+      },
     },
     sidebarLayout: {
       dashboard: "Dashboard",
@@ -2267,6 +2326,10 @@ export const DE: TDictionary = {
       roleStudent: "Studierende",
       selectRole: "Rolle auswählen",
       coachingSessions: "Coaching-Sitzungen",
+      error: {
+        title: "Coaching-Sitzungen konnten nicht geladen werden",
+        description: "Die Coaching-Sitzungen konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.",
+      },
     },
     editLesson: {
       richText: 'Formatierter Text',
@@ -2285,6 +2348,10 @@ export const DE: TDictionary = {
       coachingSession: "Coaching-Sitzung",
       editLessonTitle: "Lektion bearbeiten",
       errorSaving: "Fehler beim Speichern der Lektion.",
+      error: {
+        title: "Komponente konnte nicht hochgeladen werden",
+        description: "Die Lektionskomponente konnte nicht hochgeladen werden. Bitte versuche es erneut.",
+      },
     },
     editCourse: {
       module: 'Modul',
@@ -2345,6 +2412,10 @@ export const DE: TDictionary = {
       imageRequiredForPreview: 'Bitte laden Sie ein Angebotsbild hoch, bevor Sie die Vorschau anzeigen.',
       modulesRequiredForPreview: 'Bitte fügen Sie mindestens ein Modul hinzu, bevor Sie die Vorschau anzeigen.',
       lessonsRequiredForPreview: 'Bitte fügen Sie mindestens eine Lektion oder einen Meilenstein zu einem Modul hinzu, bevor Sie die Vorschau anzeigen.',
+      error: {
+        title: 'Kurs konnte nicht geladen werden',
+        description: 'Die Kursdaten konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
+      },
     },
     edit: {
       lesson: {
@@ -2353,16 +2424,44 @@ export const DE: TDictionary = {
     },
     editCourseIntroOutline: {
       outlineText: 'Details zum Angebot',
+      error: {
+        title: 'Kursdetails konnten nicht geladen werden',
+        description: 'Die Kursdetails konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
+      },
+      noOutline: {
+        title: 'Keine Übersicht verfügbar',
+        description: 'Dieser Kurs hat noch keine Übersicht.',
+      },
     },
     courseOutline: {
       courseContent: 'Details',
+      error: {
+        title: 'Kursübersicht konnte nicht geladen werden',
+        description: 'Die Kursübersicht konnte nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Kursübersicht nicht gefunden',
+          description: 'Die angeforderte Kursübersicht konnte nicht gefunden werden.',
+        },
+      },
     },
     categoryTopics: {
       allText: 'Alle',
       noTopicsFound: 'Keine Themen gefunden',
+      error: {
+        title: 'Themen konnten nicht geladen werden',
+        description: 'Die Kategorie-Themen konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Keine Themen gefunden',
+          description: 'In dieser Kategorie gibt es keine Themen.',
+        },
+      },
     },
     userCoursesList: {
-      emptyState: 'Du hast noch keine Angebote.'
+      emptyState: 'Du hast noch keine Angebote.',
+      error: {
+        title: 'Kursfehler',
+        description: 'Ihre Kurse konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+      },
     },
     profile: {
       yourProfile: 'Dein Profil',
@@ -2384,24 +2483,84 @@ export const DE: TDictionary = {
         saveButton: 'Speichern',
         discardButton: 'Verwerfen',
       },
+      loadError: {
+        title: 'Profil konnte nicht geladen werden',
+        description: 'Deine Profildaten konnten nicht geladen werden. Bitte versuchen Sie es erneut.',
+      },
+      languagesLoadError: {
+        title: 'Sprachen konnten nicht geladen werden',
+        description: 'Die verfügbaren Sprachen konnten nicht geladen werden. Bitte versuchen Sie es erneut.',
+      },
+      languagesMissingError: {
+        title: 'Sprachdaten fehlen',
+        description: 'Die erforderlichen Sprachoptionen sind nicht verfügbar. Bitte versuchen Sie es erneut.',
+      },
     },
     aboutPage: {
       title: 'Über uns',
+      loadError: {
+        title: 'Seite konnte nicht geladen werden',
+        description: 'Der Inhalt der Über-uns-Seite konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+      },
+      contentError: {
+        title: 'Fehler bei der Inhaltsanzeige',
+        description: 'Beim Anzeigen des Seiteninhalts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+      },
     },
     impressum: {
       title: 'Impressum',
+      loadError: {
+        title: 'Impressum konnte nicht geladen werden',
+        description: 'Der Inhalt des Impressums konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+      },
+      contentError: {
+        title: 'Fehler bei der Inhaltsanzeige',
+        description: 'Beim Anzeigen des Impressum-Inhalts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+      },
     },
     termsOfUse: {
       title: 'Nutzungsbedingungen',
+      loadError: {
+        title: 'Nutzungsbedingungen konnten nicht geladen werden',
+        description: 'Der Inhalt der Nutzungsbedingungen konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+      },
+      contentError: {
+        title: 'Fehler bei der Inhaltsanzeige',
+        description: 'Beim Anzeigen der Nutzungsbedingungen ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+      },
     },
     privacyPolicy: {
       title: 'Datenschutzerklärung',
+      loadError: {
+        title: 'Datenschutzerklärung konnte nicht geladen werden',
+        description: 'Der Inhalt der Datenschutzerklärung konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+      },
+      contentError: {
+        title: 'Fehler bei der Inhaltsanzeige',
+        description: 'Beim Anzeigen der Datenschutzerklärung ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+      },
     },
     rules: {
       title: 'Regeln',
+      loadError: {
+        title: 'Regeln konnten nicht geladen werden',
+        description: 'Der Inhalt der Regeln konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+      },
+      contentError: {
+        title: 'Fehler bei der Inhaltsanzeige',
+        description: 'Beim Anzeigen der Regeln ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+      },
     },
     offerInformation: {
       title: 'Angebotsinformationen',
+      loadError: {
+        title: 'Angebotsinformationen konnten nicht geladen werden',
+        description: 'Die Angebotsinformationen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+      },
+      contentError: {
+        title: 'Fehler bei der Inhaltsanzeige',
+        description: 'Der Inhalt der Angebotsinformationen konnte nicht angezeigt werden. Bitte aktualisieren Sie die Seite.',
+      },
     },
     studentCoachingSessions: {
       yourCoachingSessions: 'Ihre Coaching-Sitzungen',
@@ -2425,6 +2584,10 @@ export const DE: TDictionary = {
       home: 'Startseite',
       workspace: 'Arbeitsbereich',
       coachingSessions: 'Coaching-Sitzungen',
+      error: {
+        title: 'Fehler bei den Coaching-Sitzungen',
+        description: 'Ihre Coaching-Sitzungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+      },
     },
     userDashboard: {
       editProfile: 'Profil bearbeiten',
@@ -2447,23 +2610,53 @@ export const DE: TDictionary = {
         },
       },
     },
+    notifications: {
+      error: {
+        title: 'Fehler bei Benachrichtigungen',
+        description: 'Ihre Benachrichtigungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+      },
+    },
     manageTopics: {
       title: 'Themen verwalten (aka Fähigkeiten)',
       description: 'Maximal 25 Themen pro Plattform',
       createTopic: 'Neues Thema',
       deleteTopicConfirmation: 'Sind Sie sicher, dass Sie dieses Thema löschen möchten?',
+      error: {
+        title: 'Themen konnten nicht geladen werden',
+        description: 'Die Themen konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Keine Themen gefunden',
+          description: 'Es gibt keine Themen anzuzeigen.',
+        },
+      },
     },
     manageCategories: {
       title: 'Kategorien verwalten',
       description: 'Maximal 4 Kategorien für jede Plattform',
       createCategory: 'Neue Kategorie',
       deleteCategoryConfirmation: 'Bist du sicher, dass du diese Kategorie löschen möchtest?',
+      error: {
+        title: 'Kategorien konnten nicht geladen werden',
+        description: 'Die Kategorien konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Keine Kategorien gefunden',
+          description: 'Es gibt keine Kategorien anzuzeigen.',
+        },
+      },
     },
     coachingOffering: {
       title: 'Coaching-Angebot',
       deleteCoachingOffering: 'Coaching-Angebot löschen?',
       descriptionDeleteCoaching: 'Studierende können dieses Coaching-Angebot nicht mehr buchen. Bereits gebuchte Coaching-Sessions bleiben unverändert.',
       newCoachingOffering: 'Neues Coaching-Angebot',
+      error: {
+        title: 'Coaching-Angebote konnten nicht geladen werden',
+        description: 'Die Coaching-Angebote konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Keine Coaching-Angebote gefunden',
+          description: 'Es gibt keine Coaching-Angebote anzuzeigen.',
+        },
+      },
     },
     allPackages: {
       title: 'Alle Pakete',
@@ -2476,6 +2669,22 @@ export const DE: TDictionary = {
       errorMessages: {
         archiveFailed: 'Fehler beim Archivieren des Pakets. Bitte versuche es erneut.',
         publishFailed: 'Fehler beim Veröffentlichen des Pakets. Bitte versuche es erneut.',
+      },
+      error: {
+        title: 'Pakete konnten nicht geladen werden',
+        description: 'Die Pakete konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Keine Pakete gefunden',
+          description: 'Es gibt keine Pakete anzuzeigen.',
+        },
+      },
+    },
+    listPlatforms: {
+      title: 'Plattformen',
+      description: 'Verwalte deine Plattformen',
+      error: {
+        title: 'Plattformen konnten nicht geladen werden',
+        description: 'Die Plattformen konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
       },
     },
     editPackage: {
@@ -2493,6 +2702,38 @@ export const DE: TDictionary = {
       },
       errorMessages: {
         updateFailed: 'Fehler beim Aktualisieren des Pakets. Bitte versuche es erneut.',
+      },
+      error: {
+        title: 'Paket konnte nicht geladen werden',
+        description: 'Die Paketdetails konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Paket nicht gefunden',
+          description: 'Das angeforderte Paket konnte nicht gefunden werden.',
+        },
+      },
+    },
+    platformManagement: {
+      title: 'Plattformverwaltung',
+      description: 'Plattforminhalte und -einstellungen verwalten',
+      error: {
+        topicsLoadFailed: {
+          title: 'Themen konnten nicht geladen werden',
+          description: 'Die Themen konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        },
+        categoriesLoadFailed: {
+          title: 'Kategorien konnten nicht geladen werden',
+          description: 'Die Kategorien konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        },
+      },
+    },
+    courseIntroduction: {
+      error: {
+        title: 'Kurseinführung konnte nicht geladen werden',
+        description: 'Die Kurseinführung konnte nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Kurseinführung nicht gefunden',
+          description: 'Die angeforderte Kurseinführung konnte nicht gefunden werden.',
+        },
       },
     },
     createPackage: {
@@ -2655,6 +2896,10 @@ export const DE: TDictionary = {
       viewAllReviews: "Alle Bewertungen anzeigen",
       noReviewsTitle: "Noch keine Bewertungen",
       noReviewsDescription: "Du hast noch keine Bewertungen erhalten. Bewertungen von Studenten erscheinen hier, nachdem sie deine Kurse oder Coaching-Sitzungen abgeschlossen haben.",
+      error: {
+        title: "Bewertungen konnten nicht geladen werden",
+        description: "Die Bewertungen konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.",
+      },
     },
     coachDashboardStudents: {
       emptyState: "Dir sind noch keine Schüler zugewiesen. Schüler erscheinen hier, wenn sie sich in deine Kurse einschreiben oder Coaching-Sitzungen buchen.",
@@ -3078,6 +3323,22 @@ export const DE: TDictionary = {
       noMatchingSlotsFound: 'Keine passenden Zeitfenster gefunden',
       deletingSlots: 'Wird gelöscht...',
       deleteNSlots: '{count} Zeitfenster löschen',
+      loadError: {
+        title: 'Kalenderdaten konnten nicht geladen werden',
+        description: 'Deine Kalender-Sessions konnten nicht geladen werden. Bitte versuche es erneut.',
+      },
+      coachingOfferingsError: {
+        title: 'Coaching-Angebote konnten nicht geladen werden',
+        description: 'Die Coaching-Angebote konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+      },
+      submitError: {
+        title: 'Übermittlung fehlgeschlagen',
+        description: 'Die Änderungen konnten nicht übermittelt werden. Bitte versuche es erneut.',
+      },
+      error: {
+        title: 'Kalender konnte nicht geladen werden',
+        description: 'Die Kalenderdaten konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
+      },
     },
     manageLegalTexts: {
       title: 'Rechtliche Texte verwalten',
@@ -3115,6 +3376,10 @@ export const DE: TDictionary = {
     activityHistory: {
       title: 'Aktivitätsverlauf',
       description: 'Zeige deine Benachrichtigungen und Aktivitäten an',
+      loadError: {
+        title: 'Aktivitätsverlauf konnte nicht geladen werden',
+        description: 'Deine Benachrichtigungen konnten nicht geladen werden. Bitte versuche es erneut.',
+      },
       error: {
         title: 'Fehler',
         description: 'Beim Laden deines Aktivitätsverlaufs ist ein Fehler aufgetreten.',
@@ -3288,10 +3553,14 @@ export const DE: TDictionary = {
         supportEmailAddressDescription: 'Die E-Mail-Adresse für Kundenanfragen',
       },
       error: {
-        title: 'Fehler',
-        description: 'Beim Laden der Plattform-Einstellungen ist ein Fehler aufgetreten.',
+        title: 'Plattform-Einstellungen konnten nicht geladen werden',
+        description: 'Die Plattform-Konfiguration konnte nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        emailConfigLoadFailed: {
+          title: 'E-Mail-Konfiguration konnte nicht geladen werden',
+          description: 'Die E-Mail-Einstellungen konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        },
         notFound: {
-          title: 'Nicht gefunden',
+          title: 'Plattform-Einstellungen nicht gefunden',
           description: 'Die angeforderten Einstellungen konnten nicht gefunden werden.',
         },
         unauthorized: {
@@ -3314,7 +3583,15 @@ export const DE: TDictionary = {
       disabling: "Wird deaktiviert...",
       toggleError: "Beim Umschalten des Formulars ist ein Fehler aufgetreten.",
       saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
-      saveSuccess: "Vorkurs-Bewertungskomponenten erfolgreich gespeichert!"
+      saveSuccess: "Vorkurs-Bewertungskomponenten erfolgreich gespeichert!",
+      error: {
+        title: 'Bewertungsformular konnte nicht geladen werden',
+        description: 'Das Vorkurs-Bewertungsformular konnte nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        notFound: {
+          title: 'Bewertungsformular nicht gefunden',
+          description: 'Das angeforderte Bewertungsformular konnte nicht gefunden werden.',
+        },
+      },
     },
     yourReviews: {
       title: 'Deine Bewertungen',
@@ -3331,6 +3608,10 @@ export const DE: TDictionary = {
       loadMore: "Mehr laden",
       errorMessage: "Die Bewertungen der Coaching-Sitzung konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
       defaultError: "Die Bewertungen der Coaching-Sitzungen konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
+      error: {
+        title: 'Bewertungsfehler',
+        description: 'Ihre Bewertungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+      },
     },
     becomeACoach: {
       title: 'Möchtest du Trainer werden?',
@@ -3342,6 +3623,10 @@ export const DE: TDictionary = {
       successTitle: 'Bewerbung eingereicht!',
       successDescription: 'Vielen Dank für dein Interesse, Coach zu werden. Wir haben deine Bewerbung erhalten und werden sie in Kürze prüfen.',
       mailtoNote: 'Hinweis: Aktuell öffnet sich beim Absenden dein E-Mail-Programm mit einer vorausgefüllten Nachricht, die deine Formulardaten enthält. Die automatisierte E-Mail-Versand-Funktion wird in Kürze verfügbar sein.',
+      loadError: {
+        title: 'Themen konnten nicht geladen werden',
+        description: 'Die verfügbaren Fähigkeitsthemen konnten nicht geladen werden. Bitte versuche es erneut.',
+      },
       error: {
         title: 'Fehler',
         description: 'Beim Absenden deiner Bewerbung ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
@@ -3386,6 +3671,10 @@ export const DE: TDictionary = {
       creating: 'Session wird erstellt...',
       loading: 'Lädt...',
       successMessage: 'Gruppen-Session erfolgreich erstellt!',
+      loadError: {
+        title: 'Session-Daten konnten nicht geladen werden',
+        description: 'Die Coaching-Sessions konnten nicht geladen werden. Bitte versuche es erneut.',
+      },
       error: {
         title: 'Fehler',
         description: 'Beim Erstellen der Session ist ein Fehler aufgetreten. Bitte versuche es später erneut.',
@@ -3462,6 +3751,10 @@ export const DE: TDictionary = {
       worstFirst: "Schlechteste zuerst",
       emptyStateCourses: "Bei diesem Trainer sind keine Kurse verfügbar.",
       exploreCourses: "Entdecken Sie Kurse",
+      error: {
+        title: "Trainerprofil konnte nicht geladen werden",
+        description: "Das Trainerprofil konnte nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.",
+      },
     },
     checkoutReturn: CheckoutReturn_DE,
   },

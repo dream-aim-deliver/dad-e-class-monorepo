@@ -20,7 +20,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetPlatformLanguagePresenter } from '../hooks/use-platform-language-presenter';
 import { useLocale, useTranslations } from 'next-intl';
-import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useGenerateTempId } from './common/hooks/use-generate-temp-id';
 import { useListAssessmentComponentsPresenter } from '../hooks/use-assessment-components-presenter';
 import { transformLessonComponents } from '../utils/transform-lesson-components';
@@ -249,7 +249,14 @@ function PreCourseAssessmentTabs({
     }
 
     if (componentsViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     return (
@@ -379,7 +386,14 @@ function PreCourseAssessmentContent({
     }
 
     if (platformLanguageViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     const isEnabled = platformLanguageViewModel.data.enablePreCourseAssessment;
@@ -445,7 +459,14 @@ function PreCourseAssessmentContent({
             )}
 
             {/* Toggle Error Message */}
-            {toggleError && <DefaultError locale={locale} description={toggleError} />}
+            {toggleError && (
+                <DefaultError
+                    type="simple"
+                    locale={locale}
+                    title={t('error.title')}
+                    description={toggleError}
+                />
+            )}
 
             {!isEnabled && (
                 <PreCourseAssessmentDisabledCard

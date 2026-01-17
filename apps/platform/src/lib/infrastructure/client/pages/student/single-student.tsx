@@ -180,7 +180,14 @@ export default function SingleStudent({
     }
 
     if (viewModel.mode === 'kaboom' || studentDetailsViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     if (viewModel.mode === 'not-found' || studentDetailsViewModel.mode === 'not-found') {
@@ -188,7 +195,14 @@ export default function SingleStudent({
     }
 
     if (viewModel.mode === 'invalid') {
-        return <DefaultError locale={locale} description={viewModel.data.message} />
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={viewModel.data.message}
+            />
+        );
     }
 
     const courses = viewModel.data.courses;

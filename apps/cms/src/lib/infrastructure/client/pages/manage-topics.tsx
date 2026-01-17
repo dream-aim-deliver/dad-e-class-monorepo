@@ -310,7 +310,10 @@ export default function ManageTopics({
     if (topicsViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={appLocale}
+                title={t('error.title')}
+                description={t('error.description')}
                 onRetry={() => {
                     refetchTopics();
                 }}

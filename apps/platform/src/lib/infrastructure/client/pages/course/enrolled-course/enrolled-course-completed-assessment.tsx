@@ -9,7 +9,7 @@ import {
     EmptyState,
 } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListAssessmentProgressesPresenter } from '../../../hooks/use-assessment-progresses-presenter';
 
@@ -22,6 +22,7 @@ export default function EnrolledCourseCompletedAssessment(
     props: EnrolledCourseCompletedAssessmentProps,
 ) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.enrolledCourse');
 
     // Determine if this is a coach viewing a student's PCA
     const isCoachView = !!props.studentUsername;
@@ -66,7 +67,14 @@ export default function EnrolledCourseCompletedAssessment(
     }
 
     if (progressViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     // @ts-ignore - Handle not-found mode if it exists
@@ -93,8 +101,10 @@ export default function EnrolledCourseCompletedAssessment(
     if (progressViewModel.mode === 'default' && formElements.length === 0 && progressViewModel.data.components.length > 0) {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
-                description="Failed to load assessment components. Please try refreshing the page."
+                title={t('error.title')}
+                description={t('error.assessmentComponentsLoadFailed')}
             />
         );
     }

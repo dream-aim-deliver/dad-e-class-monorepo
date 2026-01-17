@@ -38,21 +38,27 @@ export default function AboutPage() {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    // Error handling - kaboom
+    // Error handling - API/data fetch failed
     if (aboutPageViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('loadError.title')}
+                description={t('loadError.description')}
                 onRetry={() => refetchAboutPage()}
             />
         );
     }
 
-    // Error handling - rich text deserialization error
+    // Error handling - content parsing/display failed
     if (richTextError) {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('contentError.title')}
+                description={t('contentError.description')}
                 onRetry={() => {
                     setRichTextError(false);
                     refetchAboutPage();

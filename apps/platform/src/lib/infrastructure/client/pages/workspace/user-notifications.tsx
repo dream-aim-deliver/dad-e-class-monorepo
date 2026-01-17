@@ -10,13 +10,14 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { Activity } from '@maany_shr/e-class-ui-kit';
 import { RecentActivity } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
 import { useRequiredPlatform } from '../../context/platform-context';
 
 export default function UserNotifications() {
     const locale = useLocale() as TLocale;
+    const notificationsT = useTranslations('pages.notifications');
     const sessionDTO = useSession();
     const session = sessionDTO.data;
 
@@ -94,7 +95,14 @@ export default function UserNotifications() {
 
     // Handle error state
     if (viewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={notificationsT('error.title')}
+                description={notificationsT('error.description')}
+            />
+        );
     }
 
     // Handle success state

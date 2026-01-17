@@ -14,7 +14,7 @@
 // ⇒ With a tab for each
 
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { useEffect, useState, useRef } from 'react';
 import { Button, Tabs, Banner, DefaultLoading, DefaultError, RichTextDesignerComponent, RichTextElement, FormElementType, Breadcrumbs } from '@maany_shr/e-class-ui-kit';
@@ -141,9 +141,13 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
   };
 
   if (platformLanguageViewModel?.mode === 'kaboom') {
+    const dictionary = getDictionary(currentLocale);
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
+        title={dictionary.components.defaultError.title}
+        description={dictionary.components.defaultError.description}
         onRetry={() => refetchPlatformLanguage()}
       />
     );

@@ -13,7 +13,7 @@ import {
     type TransactionDraft,
     type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
@@ -26,6 +26,7 @@ import env from '../../config/env';
 
 function AvailableCoachings() {
     const router = useRouter();
+    const coachingT = useTranslations('pages.coaching');
     const [availableCoachingsResponse] =
         trpc.listAvailableCoachings.useSuspenseQuery({});
     const [availableCoachingsViewModel, setAvailableCoachingsViewModel] =
@@ -50,7 +51,14 @@ function AvailableCoachings() {
     }
 
     if (availableCoachingsViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingT('error.title')}
+                description={coachingT('error.description')}
+            />
+        );
     }
 
     if (
@@ -78,6 +86,7 @@ function AvailableCoachings() {
 }
 
 export default function CoachingOfferingsPanel() {
+    const coachingT = useTranslations('pages.coaching');
     const [coachingOfferingsResponse] =
         trpc.listCoachingOfferings.useSuspenseQuery({});
     const [coachingOfferingsViewModel, setCoachingOfferingsViewModel] =
@@ -274,7 +283,7 @@ export default function CoachingOfferingsPanel() {
                 );
 
                 const responses = await Promise.all(checkoutPromises);
-                
+
                 // Combine all line items and calculate total
                 const allLineItems: Array<{
                     name: string;
@@ -310,7 +319,7 @@ export default function CoachingOfferingsPanel() {
 
                 // Set the combined view model
                 setCheckoutViewModel(combinedViewModel);
-                
+
                 // Create a request with the first offering (for type compatibility)
                 // The actual multiple offerings will be passed via getPurchaseIdentifier
                 setCurrentRequest({
@@ -461,7 +470,14 @@ export default function CoachingOfferingsPanel() {
     }
 
     if (coachingOfferingsViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingT('error.title')}
+                description={coachingT('error.description')}
+            />
+        );
     }
 
     const coachingOfferings = coachingOfferingsViewModel.data.offerings;

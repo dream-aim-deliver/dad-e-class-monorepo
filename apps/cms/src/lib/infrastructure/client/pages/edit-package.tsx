@@ -325,11 +325,16 @@ export default function EditPackage({
         return <DefaultLoading locale={currentLocale} variant="minimal" />;
     }
 
-    // Error handling 
+    // Error handling
     if (getPackageViewModel.mode === 'kaboom') {
-        const errorData = getPackageViewModel.data;
-
-        return <DefaultError locale={currentLocale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={currentLocale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     if (getPackageViewModel.mode === 'not-found') {

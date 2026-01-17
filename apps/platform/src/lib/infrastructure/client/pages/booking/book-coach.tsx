@@ -47,6 +47,7 @@ interface AvailableCoachingsProps {
 
 function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps) {
     const locale = useLocale() as TLocale;
+    const coachingT = useTranslations('pages.coaching');
     const [availableCoachingsResponse] =
         trpc.listAvailableCoachings.useSuspenseQuery({}, {
             staleTime: 0,
@@ -72,7 +73,14 @@ function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps)
     }
 
     if (availableCoachingsViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingT('error.title')}
+                description={coachingT('error.description')}
+            />
+        );
     }
 
     if (
@@ -157,6 +165,7 @@ interface CoachingOfferingsPanelProps {
 
 function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, externalSetter }: CoachingOfferingsPanelProps) {
     const locale = useLocale() as TLocale;
+    const coachingT = useTranslations('pages.coaching');
     const router = useRouter();
     const sessionDTO = useSession();
     const isLoggedIn = !!sessionDTO.data;
@@ -476,7 +485,14 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
     }
 
     if (coachingOfferingsViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingT('error.title')}
+                description={coachingT('error.description')}
+            />
+        );
     }
 
     if (coachingOfferingsViewModel.mode === 'not-found') {
@@ -600,6 +616,7 @@ function BookCoachPageContent({
     onBookingInitiated,
 }: BookCoachPageContentProps) {
     const locale = useLocale() as TLocale;
+    const coachingT = useTranslations('pages.coaching');
     const router = useRouter();
 
     // Determine if we're booking from a course context
@@ -742,7 +759,14 @@ function BookCoachPageContent({
     }
 
     if (coachAvailabilityViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingT('error.title')}
+                description={coachingT('error.description')}
+            />
+        );
     }
 
     const coachAvailability = coachAvailabilityViewModel.data;
@@ -909,6 +933,7 @@ function BookCoachWithSessionPage({
     courseSlug,
 }: BookCoachWithSessionPageProps) {
     const locale = useLocale() as TLocale;
+    const coachingT = useTranslations('pages.coaching');
 
     const sessionIdNumber = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
 
@@ -933,14 +958,28 @@ function BookCoachWithSessionPage({
     }
 
     if (coachingSessionViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingT('error.title')}
+                description={coachingT('error.description')}
+            />
+        );
     }
 
     const coachingSession = coachingSessionViewModel.data;
 
     // Guard against undefined data or session
     if (!coachingSession?.session) {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={coachingT('error.title')}
+                description={coachingT('error.description')}
+            />
+        );
     }
 
     // Only check unscheduled status if booking hasn't been initiated
@@ -949,6 +988,7 @@ function BookCoachWithSessionPage({
     if (coachingSession.session.status !== 'unscheduled' && !bookingInitiated) {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
                 title="Invalid request"
                 description="This coaching session has been scheduled"

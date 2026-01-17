@@ -46,7 +46,7 @@ import LessonComponentsBar from './components/lesson-components-bar';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { generateTempId } from './utils/generate-temp-id';
 import dynamic from 'next/dynamic';
 import {
@@ -424,7 +424,14 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     }
 
     if (lessonComponentsViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={editLessonsTranslations('error.title')}
+                description={editLessonsTranslations('error.description')}
+            />
+        );
     }
 
     return (
@@ -446,6 +453,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             />
             {errorMessage && (
                 <DefaultError
+                    type="simple"
                     locale={locale}
                     title={editLessonsTranslations('errorSaving')}
                     description={errorMessage}

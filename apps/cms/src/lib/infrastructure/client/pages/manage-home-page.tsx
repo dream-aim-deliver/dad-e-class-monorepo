@@ -22,7 +22,7 @@ import {
 	FeedBackMessage
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useEffect, useState, useMemo } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
 import { useSaveHomePagePresenter } from '../hooks/use-save-home-page-presenter';
@@ -305,9 +305,13 @@ export default function ManageHomepage() {
 	// Error handling - only kaboom errors should prevent rendering
 	// Note: 'not-found' is acceptable since save mutation supports upsert
 	if (homePageViewModel.mode === 'kaboom') {
+		const dictionary = getDictionary(appLocale);
 		return (
 			<DefaultError
+				type="simple"
 				locale={appLocale}
+				title={dictionary.components.defaultError.title}
+				description={dictionary.components.defaultError.description}
 				onRetry={() => {
 					refetchHomePage();
 				}}

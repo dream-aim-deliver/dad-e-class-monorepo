@@ -357,7 +357,14 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     }
 
     if (coachCoachingSessionsViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     // Helper to render content based on sessions and pagination state

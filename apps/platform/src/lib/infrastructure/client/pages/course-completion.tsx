@@ -257,7 +257,14 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
 
     // Error handling - kaboom
     if (courseStatusViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={courseTranslations('error.title')}
+                description={courseTranslations('error.description')}
+            />
+        );
     }
 
     // Extract course status data
@@ -303,7 +310,14 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                         locale={locale}
                         isDownloadingCertificate={isDownloadingCertificate}
                     />
-                    {certificateError && <DefaultError locale={locale} title={certificateError} />}
+                    {certificateError && (
+                        <DefaultError
+                            type="simple"
+                            locale={locale}
+                            title={courseTranslations('error.title')}
+                            description={certificateError}
+                        />
+                    )}
                 </div>
             )}
             {(modalState === 'review-form' || modalState === 'review-thank-you') && (

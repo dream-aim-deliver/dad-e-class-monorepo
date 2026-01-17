@@ -174,7 +174,14 @@ export default function GroupSessionTimeContent({
     }
 
     if (coachingOfferingsViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('coachingOfferingsError.title')}
+                description={t('coachingOfferingsError.description')}
+            />
+        );
     }
 
     return (
@@ -202,6 +209,7 @@ export default function GroupSessionTimeContent({
             )}
             {hasTimeError && (
                 <DefaultError
+                    type="simple"
                     locale={locale}
                     title={t('invalidTimeFormatTitle')}
                     description={t('invalidTimeFormatDescription')}
@@ -238,8 +246,9 @@ export default function GroupSessionTimeContent({
 
             {submitError && (
                 <DefaultError
+                    type="simple"
                     locale={locale}
-                    title=""
+                    title={t('submitError.title')}
                     description={submitError}
                 />
             )}

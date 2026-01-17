@@ -52,7 +52,14 @@ export default function OffersPage(props: OffersPageProps) {
     }
 
     if (outlineViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('loadError.title')}
+                description={t('loadError.description')}
+            />
+        );
     }
 
     if (outlineViewModel.mode === 'not-found') {

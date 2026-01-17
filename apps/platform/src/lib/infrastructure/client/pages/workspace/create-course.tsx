@@ -274,16 +274,25 @@ function CreateCourseWithDuplication({
     if (duplicationCourseViewModel.mode === 'not-found') {
         return (
             <DefaultError
+                type="simple"
+                locale={locale}
+                title={createCourseTranslations('error.title')}
                 description={createCourseTranslations(
                     'duplicationDefaultError',
                 )}
-                locale={locale}
             />
         );
     }
 
     if (duplicationCourseViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={createCourseTranslations('error.title')}
+                description={createCourseTranslations('error.description')}
+            />
+        );
     }
 
     return (

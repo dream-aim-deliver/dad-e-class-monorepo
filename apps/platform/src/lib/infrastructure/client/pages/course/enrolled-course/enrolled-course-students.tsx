@@ -98,7 +98,14 @@ export function CourseStudents(
     }
 
     if (courseStudentsListViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={courseStudentsTranslations('error.title')}
+                description={courseStudentsTranslations('error.description')}
+            />
+        );
     }
 
     // Helper to render content based on students and search state

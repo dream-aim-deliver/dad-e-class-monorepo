@@ -38,21 +38,27 @@ export default function RulesPage() {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    // Error handling - kaboom
+    // Error handling - API/data fetch failed
     if (rulesViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('loadError.title')}
+                description={t('loadError.description')}
                 onRetry={() => refetchRules()}
             />
         );
     }
 
-    // Error handling - rich text deserialization error
+    // Error handling - content parsing/display failed
     if (richTextError) {
         return (
             <DefaultError
+                type="simple"
                 locale={locale}
+                title={t('contentError.title')}
+                description={t('contentError.description')}
                 onRetry={() => {
                     setRichTextError(false);
                     refetchRules();

@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
 import { useListCategoriesPresenter } from '../hooks/use-categories-presenter';
 import { usePlatformLocale, useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useRequiredPlatform } from '../context/platform-context';
 import { useContentLocale } from '../hooks/use-platform-translations';
 
 /**
@@ -33,6 +34,7 @@ export default function PlatformManagement() {
 
     // Platform context - contains platform-specific information
     const platformContext = useRequiredPlatformLocale();
+    const { platform } = useRequiredPlatform();
 
     // Content locale - the locale for platform content (may differ from app UI locale)
     const contentLocale = useContentLocale();
@@ -45,6 +47,7 @@ export default function PlatformManagement() {
 
     const tCourseCard = useTranslations('components.courseCard');
     const tNavbar = useTranslations('components.navbar');
+    const t = useTranslations('pages.platformManagement');
 
     // These keys are fully typed - try autocomplete in your IDE!
     console.log('[Type Safety Demo] Testing typed translations:', {
@@ -91,26 +94,66 @@ export default function PlatformManagement() {
 
     // Error handling for topics
     if (topicsViewModel.mode === 'kaboom') {
-        return (
-            <DefaultError
-                locale={appLocale}
-                onRetry={() => {
-                    refetchTopics();
-                }}
-            />
-        );
+        const supportEmail = platform.supportEmailAddress;
+
+        if (supportEmail && supportEmail.trim() !== '') {
+            return (
+                <DefaultError
+                    type="withSupportEmail"
+                    locale={appLocale}
+                    title={t('error.topicsLoadFailed.title')}
+                    description={t('error.topicsLoadFailed.description')}
+                    supportEmailAddress={supportEmail}
+                    onRetry={() => {
+                        refetchTopics();
+                    }}
+                />
+            );
+        } else {
+            return (
+                <DefaultError
+                    type="simple"
+                    locale={appLocale}
+                    title={t('error.topicsLoadFailed.title')}
+                    description={t('error.topicsLoadFailed.description')}
+                    onRetry={() => {
+                        refetchTopics();
+                    }}
+                />
+            );
+        }
     }
 
     // Error handling for categories
     if (categoriesViewModel.mode === 'kaboom') {
-        return (
-            <DefaultError
-                locale={appLocale}
-                onRetry={() => {
-                    refetchCategories();
-                }}
-            />
-        );
+        const supportEmail = platform.supportEmailAddress;
+
+        if (supportEmail && supportEmail.trim() !== '') {
+            return (
+                <DefaultError
+                    type="withSupportEmail"
+                    locale={appLocale}
+                    title={t('error.categoriesLoadFailed.title')}
+                    description={t('error.categoriesLoadFailed.description')}
+                    supportEmailAddress={supportEmail}
+                    onRetry={() => {
+                        refetchCategories();
+                    }}
+                />
+            );
+        } else {
+            return (
+                <DefaultError
+                    type="simple"
+                    locale={appLocale}
+                    title={t('error.categoriesLoadFailed.title')}
+                    description={t('error.categoriesLoadFailed.description')}
+                    onRetry={() => {
+                        refetchCategories();
+                    }}
+                />
+            );
+        }
     }
    
 

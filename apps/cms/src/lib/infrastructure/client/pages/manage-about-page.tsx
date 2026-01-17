@@ -29,7 +29,7 @@ import {
 	IconSave,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 
 export default function ManageAboutPage() {
@@ -152,9 +152,13 @@ export default function ManageAboutPage() {
 	}, [currentContent, saveAboutPageMutation, utils.getPlatformLanguage]);
 
 	if (platformLanguageViewModel?.mode === 'kaboom') {
+		const dictionary = getDictionary(locale);
 		return (
 			<DefaultError
+				type="simple"
 				locale={locale}
+				title={dictionary.components.defaultError.title}
+				description={dictionary.components.defaultError.description}
 				onRetry={() => refetchPlatformLanguage()}
 			/>
 		);

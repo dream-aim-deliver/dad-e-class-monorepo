@@ -156,6 +156,7 @@ export default function GroupWorkspaceStudent({
   if (!isStudent) {
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.accessDenied.title')}
         description={t('error.accessDenied.description')}
@@ -178,6 +179,7 @@ export default function GroupWorkspaceStudent({
   if (groupIntroductionViewModel.mode === 'kaboom' || groupNotesViewModel.mode === 'kaboom' || nextSessionViewModel.mode === 'kaboom' || assignmentsViewModel.mode === 'kaboom' || membersViewModel.mode === 'kaboom') {
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}
@@ -188,6 +190,7 @@ export default function GroupWorkspaceStudent({
   if (groupIntroductionViewModel.mode === 'not-found' || groupNotesViewModel.mode === 'not-found' || nextSessionViewModel.mode === 'not-found' || assignmentsViewModel.mode === 'not-found' || membersViewModel.mode === 'not-found') {
     return (
       <DefaultError
+        type="simple"
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}

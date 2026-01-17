@@ -121,7 +121,14 @@ export const ConfirmationModal: React.FC<ModalProps> = ({
 
                         </div>
                         <div>
-                            {viewModel?.mode === 'kaboom' && <DefaultError locale={locale} />}
+                            {viewModel?.mode === 'kaboom' && (
+                                <DefaultError
+                                    type="simple"
+                                    locale={locale}
+                                    title="Operation failed"
+                                    description="An error occurred while processing your request."
+                                />
+                            )}
                             {viewModel?.mode === 'default' && <Banner style="success" description="Operation completed successfully!" />}
                         </div>
                     </div>

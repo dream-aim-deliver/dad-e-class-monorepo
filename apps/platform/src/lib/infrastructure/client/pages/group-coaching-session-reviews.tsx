@@ -139,6 +139,7 @@ export default function GroupCoachingSessionReviews({
     if (!session) {
         return (
             <DefaultError
+                type="simple"
                 locale={currentLocale}
                 title={t('error.title')}
                 description={t('error.description')}
@@ -150,6 +151,7 @@ export default function GroupCoachingSessionReviews({
     if (reviewsViewModel.mode === 'kaboom' || groupIntroductionViewModel.mode === 'kaboom') {
         return (
             <DefaultError
+                type="simple"
                 locale={currentLocale}
                 title={t('error.title')}
                 description={t('error.description')}
@@ -160,6 +162,7 @@ export default function GroupCoachingSessionReviews({
     if (reviewsViewModel.mode === 'not-found' || groupIntroductionViewModel.mode === 'not-found') {
         return (
             <DefaultError
+                type="simple"
                 locale={currentLocale}
                 title={t('error.title')}
                 description={t('error.description')}

@@ -12,7 +12,7 @@ import {
     type TransactionDraft,
     type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useTabContext } from 'packages/ui-kit/lib/components/tabs/tab-context';
 import { StudentCourseTab } from '../../../utils/course-tabs';
@@ -41,11 +41,19 @@ function EnrolledCourseIntroductionContent(
 ) {
     const { courseViewModel, progressViewModel } = props;
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.enrolledCourse');
     const tabContext = useTabContext();
     const router = useRouter();
 
     if (courseViewModel.mode !== 'default' || (progressViewModel && progressViewModel.mode !== 'default')) {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                type="simple"
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
     }
 
     return (

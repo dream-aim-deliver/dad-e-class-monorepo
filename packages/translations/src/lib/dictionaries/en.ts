@@ -24,6 +24,7 @@ export const EN: TDictionary = {
       title: 'Something went wrong',
       description: 'A critical error occurred. Please try reloading the page. If the issue persists, contact us at {contactEmail}.',
       retry: 'Retry',
+      contactSupportLine: 'Please contact us at {supportEmailAddress}.',
     },
     defaultNotFound: {
       title: 'Not found',
@@ -441,6 +442,10 @@ export const EN: TDictionary = {
       yourProfile: 'Your Profile',
       logout: 'Logout',
       yourCourses: 'Your Offers',
+      error: {
+        title: 'Failed to Load Navigation',
+        description: 'Unable to load navigation content. Please refresh the page.',
+      },
     },
     cmsNavbar: {
       manageUsers: 'View All Users',
@@ -456,6 +461,10 @@ export const EN: TDictionary = {
       termsOfUse: 'Terms of Use',
       rules: 'Rules',
       coursesInformation: 'Offer Information',
+      error: {
+        title: 'Failed to Load Footer',
+        description: 'Unable to load footer content. Please refresh the page.',
+      },
     },
     activity: {
       atText: 'at',
@@ -2033,6 +2042,10 @@ export const EN: TDictionary = {
     coaching: Coaching_EN,
     assessmentForm: {
       defaultFormError: 'A critical error occurred while submitting the form. Please try again.',
+      error: {
+        title: 'Failed to Load Assessment Form',
+        description: 'Unable to load assessment form. Please refresh the page or try again later.',
+      },
     },
     auth: {
       errorPage: {
@@ -2041,6 +2054,10 @@ export const EN: TDictionary = {
         tryAgain: 'Try Again',
         continueAsVisitor: 'Continue as visitor',
       },
+    },
+    errorBoundary: {
+      title: 'Something Went Wrong',
+      description: 'An unexpected error occurred. Please try again.',
     },
     course: {
       completedPanel: {
@@ -2081,6 +2098,10 @@ export const EN: TDictionary = {
         yourStudents: "Your students",
         searchPlaceholder: "Search",
         noStudentsFound: "No students found...",
+        error: {
+          title: 'Failed to Load Students',
+          description: 'Unable to load course students. Please refresh the page or try again later.',
+        },
       },
       materials: {
         noMaterialsAvailable: "No materials available yet.",
@@ -2128,6 +2149,16 @@ export const EN: TDictionary = {
         removeSuccess: 'Coach removed successfully!',
         addError: 'Failed to add coach',
         removeError: 'Failed to remove coach',
+        error: {
+          title: 'Failed to Load Coaches',
+          description: 'Unable to load course coaches. Please refresh the page or try again later.',
+        },
+      },
+      lessonCoaches: {
+        error: {
+          title: 'Failed to Load Coaches',
+          description: 'Unable to load available coaches. Please refresh the page.',
+        },
       },
       groups: {
         title: 'Groups',
@@ -2161,6 +2192,26 @@ export const EN: TDictionary = {
         becomeCoachButton: 'Become a Coach',
         reviewsCount: 'reviews',
         noReviewsYet: 'This course has no reviews yet',
+        error: {
+          title: 'Failed to Load Course',
+          description: 'Unable to load course details. Please refresh the page or try again later.',
+        },
+      },
+      error: {
+        title: 'Failed to Load Course',
+        description: 'Unable to load course details. Please refresh the page or try again later.',
+      },
+    },
+    enrolledCourse: {
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading course content. Please try again.',
+        assessmentComponentsLoadFailed: 'Failed to load assessment components. Please try refreshing the page.',
+        courseEmpty: 'This course has no content yet.',
+        notFound: {
+          title: 'Course Content Not Found',
+          description: 'The requested course content could not be found. Please check the course exists and try again.',
+        },
       },
     },
     userCourses: {
@@ -2199,6 +2250,10 @@ export const EN: TDictionary = {
         interactions: 'Interactions',
         preCourseAssessment: 'Pre-Course Assessment',
       },
+      error: {
+        title: 'Failed to Load Student',
+        description: 'Unable to load student details. Please refresh the page or try again later.',
+      },
     },
     createCourse: {
       createTitle: "Create course",
@@ -2210,6 +2265,10 @@ export const EN: TDictionary = {
       titleSlugError: "Please fill in title and slug",
       descriptionError: "Please provide a course description",
       missingImageError: "Please upload a course image",
+      error: {
+        title: "Failed to Load Course",
+        description: "Unable to load course data. Please refresh the page or try again later.",
+      },
     },
     sidebarLayout: {
       dashboard: "Dashboard",
@@ -2264,6 +2323,10 @@ export const EN: TDictionary = {
       roleStudent: "Student",
       selectRole: "Select Role",
       coachingSessions: "Coaching Sessions",
+      error: {
+        title: "Failed to Load Coaching Sessions",
+        description: "Unable to load coaching sessions. Please refresh the page or try again later.",
+      },
     },
     editLesson: {
       richText: "Rich Text",
@@ -2282,6 +2345,10 @@ export const EN: TDictionary = {
       coachingSession: "Coaching Session",
       editLessonTitle: "Edit Lesson",
       errorSaving: "Error saving the lesson.",
+      error: {
+        title: "Failed to Upload Component",
+        description: "Unable to upload the lesson component. Please try again.",
+      },
     },
     editCourse: {
       module: 'Module',
@@ -2342,6 +2409,10 @@ export const EN: TDictionary = {
       imageRequiredForPreview: 'Please upload an offer image before previewing.',
       modulesRequiredForPreview: 'Please add at least one module before previewing.',
       lessonsRequiredForPreview: 'Please add at least one lesson or milestone to a module before previewing.',
+      error: {
+        title: 'Failed to Load Course',
+        description: 'Unable to load course data. Please refresh the page or try again later.',
+      },
     },
     edit: {
       lesson: {
@@ -2350,16 +2421,44 @@ export const EN: TDictionary = {
     },
     editCourseIntroOutline: {
       outlineText: 'Offer Details',
+      error: {
+        title: 'Failed to Load Course Details',
+        description: 'Unable to load course details. Please refresh the page or try again later.',
+      },
+      noOutline: {
+        title: 'No Outline Available',
+        description: 'This course does not have an outline yet.',
+      },
     },
     courseOutline: {
       courseContent: 'Details',
+      error: {
+        title: 'Failed to Load Course Outline',
+        description: 'Unable to load course outline. Please refresh the page or contact support.',
+        notFound: {
+          title: 'Course Outline Not Found',
+          description: 'The requested course outline could not be found.',
+        },
+      },
     },
     categoryTopics: {
       allText: 'All',
       noTopicsFound: 'No topics found',
+      error: {
+        title: 'Failed to Load Topics',
+        description: 'Unable to load category topics. Please refresh the page or contact support.',
+        notFound: {
+          title: 'No Topics Found',
+          description: 'There are no topics in this category.',
+        },
+      },
     },
     userCoursesList: {
-      emptyState: 'You don’t have any offers yet.',
+      emptyState: "You don't have any offers yet.",
+      error: {
+        title: 'Courses Error',
+        description: 'Unable to load your courses. Please refresh the page.',
+      },
     },
     profile: {
       yourProfile: 'Your profile',
@@ -2381,24 +2480,84 @@ export const EN: TDictionary = {
         saveButton: 'Save',
         discardButton: 'Discard',
       },
+      loadError: {
+        title: 'Unable to load profile',
+        description: 'We couldn\'t load your profile data. Please try again.',
+      },
+      languagesLoadError: {
+        title: 'Unable to load languages',
+        description: 'We couldn\'t load the available languages. Please try again.',
+      },
+      languagesMissingError: {
+        title: 'Language data missing',
+        description: 'The required language options are not available. Please try again.',
+      },
     },
     aboutPage: {
       title: 'About us',
+      loadError: {
+        title: 'Unable to load page',
+        description: 'We couldn\'t load the about page content. Please try again.',
+      },
+      contentError: {
+        title: 'Content display error',
+        description: 'There was a problem displaying the page content. Please try again.',
+      },
     },
     impressum: {
       title: 'Impressum',
+      loadError: {
+        title: 'Unable to load impressum',
+        description: 'We couldn\'t load the impressum content. Please try again.',
+      },
+      contentError: {
+        title: 'Content display error',
+        description: 'There was a problem displaying the impressum content. Please try again.',
+      },
     },
     termsOfUse: {
       title: 'Terms of Use',
+      loadError: {
+        title: 'Unable to load terms of use',
+        description: 'We couldn\'t load the terms of use content. Please try again.',
+      },
+      contentError: {
+        title: 'Content display error',
+        description: 'There was a problem displaying the terms of use content. Please try again.',
+      },
     },
     privacyPolicy: {
       title: 'Privacy Policy',
+      loadError: {
+        title: 'Unable to load privacy policy',
+        description: 'We couldn\'t load the privacy policy content. Please try again.',
+      },
+      contentError: {
+        title: 'Content display error',
+        description: 'There was a problem displaying the privacy policy content. Please try again.',
+      },
     },
     rules: {
       title: 'Rules',
+      loadError: {
+        title: 'Unable to load rules',
+        description: 'We couldn\'t load the rules content. Please try again.',
+      },
+      contentError: {
+        title: 'Content display error',
+        description: 'There was a problem displaying the rules content. Please try again.',
+      },
     },
     offerInformation: {
       title: 'Offer Information',
+      loadError: {
+        title: 'Failed to Load Offer Information',
+        description: 'Unable to load offer information. Please refresh the page.',
+      },
+      contentError: {
+        title: 'Content Display Error',
+        description: 'Unable to display the offer information content. Please refresh the page.',
+      },
     },
     studentCoachingSessions: {
       yourCoachingSessions: 'Your coaching sessions',
@@ -2422,6 +2581,10 @@ export const EN: TDictionary = {
       home: 'Home',
       workspace: 'Workspace',
       coachingSessions: 'Coaching Sessions',
+      error: {
+        title: 'Coaching Sessions Error',
+        description: 'Unable to load your coaching sessions. Please refresh the page.',
+      },
     },
     userDashboard: {
       editProfile: 'Edit Profile',
@@ -2444,23 +2607,53 @@ export const EN: TDictionary = {
         },
       },
     },
+    notifications: {
+      error: {
+        title: 'Notifications Error',
+        description: 'Unable to load your notifications. Please refresh the page.',
+      },
+    },
     manageTopics: {
       title: 'Manage Topics (aka Skills)',
       description: 'Maximum 25 topics for each platform',
       createTopic: 'New Topic',
       deleteTopicConfirmation: 'Are you sure you want to delete this topic?',
+      error: {
+        title: 'Failed to Load Topics',
+        description: 'Unable to load topics. Please refresh the page or contact support.',
+        notFound: {
+          title: 'No Topics Found',
+          description: 'There are no topics to display.',
+        },
+      },
     },
     manageCategories: {
       title: 'Manage Categories',
       description: 'Maximum 4 Categories for each platform',
       createCategory: 'New Category',
       deleteCategoryConfirmation: 'Are you sure you want to delete this category?',
+      error: {
+        title: 'Failed to Load Categories',
+        description: 'Unable to load categories. Please refresh the page or contact support.',
+        notFound: {
+          title: 'No Categories Found',
+          description: 'There are no categories to display.',
+        },
+      },
     },
     coachingOffering: {
       title: 'Coaching offering',
       deleteCoachingOffering: 'Delete coaching offering?',
       descriptionDeleteCoaching: "Students won't be able to book this coaching offering anymore. Coaching sessions that are already booked won't be changed.",
       newCoachingOffering: "New coaching offering",
+      error: {
+        title: 'Failed to Load Coaching Offerings',
+        description: 'Unable to load coaching offerings. Please refresh the page or contact support.',
+        notFound: {
+          title: 'No Coaching Offerings Found',
+          description: 'There are no coaching offerings to display.',
+        },
+      },
     },
     allPackages: {
       title: 'All Packages',
@@ -2473,6 +2666,22 @@ export const EN: TDictionary = {
       errorMessages: {
         archiveFailed: 'Failed to archive package. Please try again.',
         publishFailed: 'Failed to publish package. Please try again.',
+      },
+      error: {
+        title: 'Failed to Load Packages',
+        description: 'Unable to load packages. Please refresh the page or contact support.',
+        notFound: {
+          title: 'No Packages Found',
+          description: 'There are no packages to display.',
+        },
+      },
+    },
+    listPlatforms: {
+      title: 'Platforms',
+      description: 'Manage your platforms',
+      error: {
+        title: 'Failed to Load Platforms',
+        description: 'Unable to load platforms. Please refresh the page or contact support.',
       },
     },
     editPackage: {
@@ -2490,6 +2699,38 @@ export const EN: TDictionary = {
       },
       errorMessages: {
         updateFailed: 'Failed to update package. Please try again.',
+      },
+      error: {
+        title: 'Failed to Load Package',
+        description: 'Unable to load package details. Please refresh the page or contact support.',
+        notFound: {
+          title: 'Package Not Found',
+          description: 'The requested package could not be found.',
+        },
+      },
+    },
+    platformManagement: {
+      title: 'Platform Management',
+      description: 'Manage platform content and settings',
+      error: {
+        topicsLoadFailed: {
+          title: 'Failed to Load Topics',
+          description: 'Unable to load topics. Please refresh the page or contact support.',
+        },
+        categoriesLoadFailed: {
+          title: 'Failed to Load Categories',
+          description: 'Unable to load categories. Please refresh the page or contact support.',
+        },
+      },
+    },
+    courseIntroduction: {
+      error: {
+        title: 'Failed to Load Course Introduction',
+        description: 'Unable to load course introduction. Please refresh the page or contact support.',
+        notFound: {
+          title: 'Course Introduction Not Found',
+          description: 'The requested course introduction could not be found.',
+        },
       },
     },
     createPackage: {
@@ -2652,6 +2893,10 @@ export const EN: TDictionary = {
       viewAllReviews: "View All Reviews",
       noReviewsTitle: "No reviews yet",
       noReviewsDescription: "You haven't received any reviews yet. Reviews from students will appear here after they complete your courses or coaching sessions.",
+      error: {
+        title: "Failed to Load Reviews",
+        description: "Unable to load reviews. Please refresh the page or try again later.",
+      },
     },
     coachDashboardStudents: {
       emptyState: "You don't have any students assigned to you yet. Students will appear here when they enroll in your courses or book coaching sessions.",
@@ -3075,6 +3320,22 @@ export const EN: TDictionary = {
       noMatchingSlotsFound: 'No matching slots found',
       deletingSlots: 'Deleting...',
       deleteNSlots: 'Delete {count} Slot(s)',
+      loadError: {
+        title: 'Unable to load calendar data',
+        description: 'We couldn\'t load your calendar sessions. Please try again.',
+      },
+      coachingOfferingsError: {
+        title: 'Failed to Load Coaching Offerings',
+        description: 'Unable to load coaching offerings. Please refresh the page.',
+      },
+      submitError: {
+        title: 'Submission Failed',
+        description: 'Unable to submit your changes. Please try again.',
+      },
+      error: {
+        title: 'Failed to Load Calendar',
+        description: 'Unable to load calendar data. Please refresh the page or try again later.',
+      },
     },
     manageLegalTexts: {
       title: 'Manage Legal Texts',
@@ -3112,6 +3373,10 @@ export const EN: TDictionary = {
     activityHistory: {
       title: 'Activity History',
       description: 'View your notifications and activity',
+      loadError: {
+        title: 'Unable to load activity history',
+        description: 'We couldn\'t load your notifications. Please try again.',
+      },
       error: {
         title: 'Error',
         description: 'An error occurred while loading your activity history.',
@@ -3285,10 +3550,14 @@ export const EN: TDictionary = {
         supportEmailAddressDescription: 'The email address for customer support inquiries',
       },
       error: {
-        title: 'Error',
-        description: 'An error occurred while loading platform settings.',
+        title: 'Failed to Load Platform Settings',
+        description: 'Unable to load platform configuration. Please refresh the page or contact support.',
+        emailConfigLoadFailed: {
+          title: 'Failed to Load Email Configuration',
+          description: 'Unable to load email settings. Please refresh the page or contact support.',
+        },
         notFound: {
-          title: 'Not Found',
+          title: 'Platform Settings Not Found',
           description: 'The requested settings could not be found.',
         },
         unauthorized: {
@@ -3311,7 +3580,15 @@ export const EN: TDictionary = {
       disabling: "Disabling...",
       toggleError: "An error occurred while toggling the form.",
       saveError: "Failed to save components. Please try again.",
-      saveSuccess: "Pre-course assessment components saved successfully!"
+      saveSuccess: "Pre-course assessment components saved successfully!",
+      error: {
+        title: 'Failed to Load Assessment Form',
+        description: 'Unable to load the pre-course assessment form. Please refresh the page or contact support.',
+        notFound: {
+          title: 'Assessment Form Not Found',
+          description: 'The requested assessment form could not be found.',
+        },
+      },
     },
     yourReviews: {
       title: 'Your reviews',
@@ -3328,6 +3605,10 @@ export const EN: TDictionary = {
       loadMore: "Load more",
       errorMessage: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
       defaultError: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
+      error: {
+        title: 'Reviews Error',
+        description: 'Unable to load your reviews. Please refresh the page.',
+      },
     },
     becomeACoach: {
       title: 'Want to become a coach?',
@@ -3339,6 +3620,10 @@ export const EN: TDictionary = {
       successTitle: 'Application Submitted!',
       successDescription: 'Thank you for your interest in becoming a coach. We have received your application and will review it shortly.',
       mailtoNote: 'Note: For now, clicking submit will open your email client with a pre-populated message containing your form data. The automated email submission feature is coming soon.',
+      loadError: {
+        title: 'Unable to load topics',
+        description: 'We couldn\'t load the available skill topics. Please try again.',
+      },
       error: {
         title: 'Error',
         description: 'An error occurred while submitting your application. Please try again later.',
@@ -3383,6 +3668,10 @@ export const EN: TDictionary = {
       creating: 'Creating session...',
       loading: 'Loading...',
       successMessage: 'Group session created successfully!',
+      loadError: {
+        title: 'Unable to load session data',
+        description: 'We couldn\'t load the coaching sessions. Please try again.',
+      },
       error: {
         title: 'Error',
         description: 'An error occurred while creating the session. Please try again later.',
@@ -3454,11 +3743,15 @@ export const EN: TDictionary = {
       selectSort: "Select sorting option",
       filterButton: "Filter",
       mostRecentFirst: "Most recent first",
-      oldestFirst: "Oldest first", 
+      oldestFirst: "Oldest first",
       bestFirst: "Best first",
       worstFirst: "Worst first",
       emptyStateCourses: "No courses available from this coach",
       exploreCourses: "Explore courses",
+      error: {
+        title: "Failed to Load Coach Profile",
+        description: "Unable to load coach profile. Please refresh the page or try again later.",
+      },
     },
     checkoutReturn: CheckoutReturn_EN,
   },
