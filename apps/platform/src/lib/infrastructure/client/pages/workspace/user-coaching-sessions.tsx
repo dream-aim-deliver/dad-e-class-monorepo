@@ -127,7 +127,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                                         // TODO: Implement meeting join functionality
                                     }}
                                     onClickCourse={session.course ? () => {
-                                        router.push(`/${locale}/workspace/course/${session.course?.slug || ''}`);
+                                        router.push(`/${locale}/courses/${session.course?.slug || ''}`);
                                     } : undefined}
                                 />
                             );

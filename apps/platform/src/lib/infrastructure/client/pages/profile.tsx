@@ -14,7 +14,11 @@ import {
 	DefaultLoading,
 	DefaultError,
 	ProfileTabs,
-	Breadcrumbs
+	Breadcrumbs,
+	Dialog,
+	DialogContent,
+	DialogBody,
+	ProfessionalInfo
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -85,6 +89,23 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	// State for messages
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+	// State for application modal
+	const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+	const [applicationFormData, setApplicationFormData] = useState<viewModels.TGetProfessionalProfileSuccess['profile'] | null>(null);
+	// Separate message state for application modal
+	const [applicationModalErrorMessage, setApplicationModalErrorMessage] = useState<string | null>(null);
+	const [applicationModalSuccessMessage, setApplicationModalSuccessMessage] = useState<string | null>(null);
+	// Track if application is being processed (includes pending state and closing delay)
+	const [isApplicationProcessing, setIsApplicationProcessing] = useState(false);
+
+	// Separate CV upload hook for application modal (to avoid conflicts)
+	const [applicationModalCvUploadProgress, setApplicationModalCvUploadProgress] = useState<number>(0);
+	const applicationModalCurriculumVitaeUpload = useCurriculumVitaeUpload({
+		initialDocument: null,
+		onProgressUpdate: setApplicationModalCvUploadProgress,
+	});
+
 
 	// Always fetch personal profile data and languages (needed for default tab)
 	const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
@@ -214,19 +235,101 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	});
 
 	const saveProfessionalMutation = trpc.saveProfessionalProfile.useMutation({
-		onMutate: () => {
-			setErrorMessage(null);
-			setSuccessMessage(null);
+		onMutate: (variables) => {
+			// Only clear messages for the relevant context based on whether this is an application
+			const isApplication = (variables as any)?.applyToBecomeCoach === true;
+			if (isApplication) {
+				// Clear only application modal messages
+				setApplicationModalErrorMessage(null);
+				setApplicationModalSuccessMessage(null);
+				setIsApplicationProcessing(true); // Start processing state
+			} else {
+				// Clear only main page messages
+				setErrorMessage(null);
+				setSuccessMessage(null);
+			}
 		},
-		onSuccess: async (data) => {
-			setSuccessMessage(t('professionalProfileSaved'));
-			setErrorMessage(null);
-			// Invalidate and refetch the professional profile to sync with server state
-			await utils.getProfessionalProfile.invalidate();
+		onSuccess: async (data, variables) => {
+			// Check if this was an application submission by checking if applyToBecomeCoach flag is present
+			const isApplication = (variables as any)?.applyToBecomeCoach === true;
+
+			if (isApplication) {
+
+				// Check if the response actually indicates an error (some backends return 200 with error in body)
+				// Handle case where tRPC returns error in onSuccess with { success: false, data: {...} }
+				if (data && typeof data === 'object') {
+					const dataObj = data as any;
+
+					// Check for error in data.data.message (CAPS framework structure)
+					if (dataObj.data?.message === 'COACH_APPLICATION_RATE_LIMIT') {
+						setApplicationModalErrorMessage(t('applicationRateLimitExceeded'));
+						setApplicationModalSuccessMessage(null);
+						setIsApplicationProcessing(false);
+						return;
+					}
+
+					// Check for success: false pattern
+					if ('success' in dataObj && dataObj.success === false) {
+						const errorData = dataObj.data;
+						if (errorData?.message === 'COACH_APPLICATION_RATE_LIMIT') {
+							setApplicationModalErrorMessage(t('applicationRateLimitExceeded'));
+							setApplicationModalSuccessMessage(null);
+							setIsApplicationProcessing(false);
+							return;
+						}
+					}
+				}
+
+				setApplicationModalSuccessMessage(t('applicationSubmittedSuccessfully'));
+				setApplicationModalErrorMessage(null);
+				// Invalidate and refetch the professional profile to sync with server state
+				await utils.getProfessionalProfile.invalidate();
+
+				// Close modal after delay - keep buttons disabled during this time
+				setTimeout(() => {
+					setIsApplicationModalOpen(false);
+					setApplicationModalSuccessMessage(null);
+					setApplicationModalErrorMessage(null);
+					setIsApplicationProcessing(false); // End processing state
+					// Reset CV upload state
+					if (applicationModalCurriculumVitaeUpload.curriculumVitae) {
+						applicationModalCurriculumVitaeUpload.handleDelete(applicationModalCurriculumVitaeUpload.curriculumVitae.id);
+					}
+				}, 3000);
+			} else {
+				setSuccessMessage(t('professionalProfileSaved'));
+				setErrorMessage(null);
+				// Invalidate and refetch the professional profile to sync with server state
+				await utils.getProfessionalProfile.invalidate();
+			}
 		},
-		onError: (error) => {
-			setErrorMessage(error.message || t('failedToSaveProfessional'));
-			setSuccessMessage(null);
+		onError: (error: any, variables) => {
+			// Check if this was an application submission by checking if applyToBecomeCoach flag is present
+			const isApplication = (variables as any)?.applyToBecomeCoach === true;
+
+			if (isApplication) {
+
+				// Use modal-specific error state
+				// Check for coach application rate limit error (CAPS framework)
+				// Check error.data.message first (as per actual backend response)
+				if (
+					error.data?.message === 'COACH_APPLICATION_RATE_LIMIT' ||
+					error.data?.code === 'COACH_APPLICATION_RATE_LIMIT' ||
+					error.message === 'COACH_APPLICATION_RATE_LIMIT'
+				) {
+					setApplicationModalErrorMessage(t('applicationRateLimitExceeded'));
+					setApplicationModalSuccessMessage(null);
+					setIsApplicationProcessing(false); // End processing state on error
+				} else {
+					setApplicationModalErrorMessage(error.message || t('failedToSaveProfessional'));
+					setApplicationModalSuccessMessage(null);
+					setIsApplicationProcessing(false); // End processing state on error
+				}
+			} else {
+				// Use main page error state
+				setErrorMessage(error.message || t('failedToSaveProfessional'));
+				setSuccessMessage(null);
+			}
 		}
 	});
 
@@ -384,6 +487,66 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const professionalProfileToUse = professionalProfile || defaultProfessionalProfile;
 
 	const isCoach = roles.includes('coach');
+	const isStudent = roles.includes('student') && !roles.includes('coach');
+
+	// Handler for opening application modal
+	const handleOpenApplicationModal = () => {
+		setApplicationModalErrorMessage(null);
+		setApplicationModalSuccessMessage(null);
+		// Use existing professional profile data if available, otherwise use defaults
+		setApplicationFormData(professionalProfileToUse);
+		setIsApplicationProcessing(false);
+
+		// Set CV in the upload hook if professional profile has one
+		if (professionalProfileToUse?.curriculumVitae) {
+			const cvDocument: Extract<fileMetadata.TFileMetadata, { category: 'document' }> = {
+				id: professionalProfileToUse.curriculumVitae.id,
+				name: professionalProfileToUse.curriculumVitae.name,
+				url: professionalProfileToUse.curriculumVitae.downloadUrl,
+				size: professionalProfileToUse.curriculumVitae.size,
+				category: 'document' as const,
+				status: 'available' as const,
+			};
+			applicationModalCurriculumVitaeUpload.handleUploadComplete(cvDocument);
+		} else {
+			// Clear CV if no professional profile CV exists
+			if (applicationModalCurriculumVitaeUpload.curriculumVitae) {
+				applicationModalCurriculumVitaeUpload.handleDelete(applicationModalCurriculumVitaeUpload.curriculumVitae.id);
+			}
+		}
+
+		setIsApplicationModalOpen(true);
+	};
+
+	// Handler for closing modal - reset state
+	const handleCloseApplicationModal = (open: boolean) => {
+		if (!open && !saveProfessionalMutation.isPending && !isApplicationProcessing) {
+			setIsApplicationModalOpen(false);
+			setApplicationModalErrorMessage(null);
+			setApplicationModalSuccessMessage(null);
+			setApplicationFormData(null);
+			setIsApplicationProcessing(false);
+			// Reset CV upload state
+			if (applicationModalCurriculumVitaeUpload.curriculumVitae) {
+				applicationModalCurriculumVitaeUpload.handleDelete(applicationModalCurriculumVitaeUpload.curriculumVitae.id);
+			}
+		}
+	};
+
+	// Handler for discarding changes in modal
+	const handleDiscardApplicationModal = () => {
+		// Prevent discarding while save is in progress or processing
+		if (saveProfessionalMutation.isPending || isApplicationProcessing) {
+			return;
+		}
+		setApplicationFormData(defaultProfessionalProfile);
+		setApplicationModalErrorMessage(null);
+		setApplicationModalSuccessMessage(null);
+		// Reset CV upload state
+		if (applicationModalCurriculumVitaeUpload.curriculumVitae) {
+			applicationModalCurriculumVitaeUpload.handleDelete(applicationModalCurriculumVitaeUpload.curriculumVitae.id);
+		}
+	};
 
 	const handleSaveProfessionalProfile = async (profile: typeof professionalProfile) => {
 		if (!profile) return;
@@ -398,7 +561,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			const errors = validationResult.error.errors.map(err => err.message);
 			setErrorMessage(errors.join(', '));
 			setSuccessMessage(null);
-			throw new Error("Validation failed");
+			return; // Return early, don't call mutation
 		}
 
 		const savePayload = {
@@ -413,13 +576,49 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 				: undefined
 		}
 
-		try {
-			await saveProfessionalMutation.mutateAsync(savePayload);
-		} catch (error) {
-			// Error is already handled by the mutation's onError callback
-			console.error('Failed to save professional profile:', error);
-		}
+		await saveProfessionalMutation.mutateAsync(savePayload);
 	}
+
+	// Handler for application submission
+	const handleApplicationSubmit = async (profile: typeof professionalProfile) => {
+		if (!profile) return;
+
+		// CV validation - return early if validation fails, don't call mutation
+		if (!applicationModalCurriculumVitaeUpload.curriculumVitae) {
+			setApplicationModalErrorMessage(t('cvRequiredForApplication'));
+			setApplicationModalSuccessMessage(null);
+			return;
+		}
+
+		const validationResult = professionalProfileValidationSchema.safeParse({
+			bio: profile.bio,
+			linkedinUrl: profile.linkedinUrl,
+			portfolioWebsite: profile.portfolioWebsite,
+		});
+
+		if (!validationResult.success) {
+			const errors = validationResult.error.errors.map(err => err.message);
+			setApplicationModalErrorMessage(errors.join(', '));
+			setApplicationModalSuccessMessage(null);
+			return; // Return early, don't call mutation
+		}
+
+		const savePayload = {
+			...profile,
+			skillIds: profile.skills.map(skill => {
+				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
+			}),
+			curriculumVitaeId: applicationModalCurriculumVitaeUpload.curriculumVitae?.id
+				? (typeof applicationModalCurriculumVitaeUpload.curriculumVitae.id === 'number'
+					? applicationModalCurriculumVitaeUpload.curriculumVitae.id
+					: parseInt(applicationModalCurriculumVitaeUpload.curriculumVitae.id as string))
+				: undefined,
+			applyToBecomeCoach: true as boolean // Flag for backend - explicitly typed as boolean
+		};
+
+		// Only call mutation if validation passes
+		await saveProfessionalMutation.mutateAsync(savePayload);
+	};
 
 
 	return (
@@ -475,6 +674,8 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						hasProfessionalProfile={isCoach}
 						onTabChange={handleTabChange}
 						skillsLanguageHint={professionalInfoTranslations('skillsLanguageHint')}
+						showApplyToCoachButton={isStudent}
+						onApplyToCoachClick={handleOpenApplicationModal}
 					/>
 
 
@@ -494,6 +695,70 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 					)}
 				</div>
 			</div>
+
+			{/* Application Modal */}
+			<Dialog open={isApplicationModalOpen} onOpenChange={handleCloseApplicationModal} defaultOpen={false}>
+				<DialogContent
+					showCloseButton
+					closeOnOverlayClick={!saveProfessionalMutation.isPending && !isApplicationProcessing}
+					closeOnEscape={!saveProfessionalMutation.isPending && !isApplicationProcessing}
+					disableCloseButton={saveProfessionalMutation.isPending || isApplicationProcessing}
+					className="max-w-2xl max-h-[90vh] overflow-y-auto"
+				>
+					<DialogBody>
+						<div className="flex flex-col gap-4">
+							<h2 className="text-2xl font-bold text-text-primary">
+								{t('coachApplicationTitle')}
+							</h2>
+							<p className="text-text-secondary">
+								{t('coachApplicationDescription')}
+							</p>
+
+							{/* Loading state banner */}
+							{(saveProfessionalMutation.isPending || isApplicationProcessing) && (
+								<Banner style="success" description={saveProfessionalMutation.isPending ? t('saving') : applicationModalSuccessMessage || t('saving')} />
+							)}
+
+							{/* Error message banner */}
+							{applicationModalErrorMessage && !saveProfessionalMutation.isPending && !isApplicationProcessing && (
+								<Banner style="error" description={applicationModalErrorMessage} />
+							)}
+
+							{/* Success message banner */}
+							{applicationModalSuccessMessage && !saveProfessionalMutation.isPending && !isApplicationProcessing && (
+								<Banner style="success" description={applicationModalSuccessMessage} />
+							)}
+
+							<ProfessionalInfo
+								initialData={applicationFormData || defaultProfessionalProfile}
+								onChange={setApplicationFormData}
+								availableSkills={allTopics}
+								onSave={handleApplicationSubmit}
+								onDiscard={handleDiscardApplicationModal}
+								onFileUpload={applicationModalCurriculumVitaeUpload.handleFileChange}
+								curriculumVitaeFile={applicationModalCurriculumVitaeUpload.curriculumVitae}
+								onUploadComplete={applicationModalCurriculumVitaeUpload.handleUploadComplete as (file: fileMetadata.TFileMetadata) => void}
+								onFileDelete={applicationModalCurriculumVitaeUpload.handleDelete}
+								onFileDownload={applicationModalCurriculumVitaeUpload.handleDownload}
+								locale={locale}
+								uploadProgress={applicationModalCvUploadProgress}
+								applicationMode={true}
+								requireCV={true}
+								isSaving={saveProfessionalMutation.isPending || isApplicationProcessing}
+								skillsLanguageHint={professionalInfoTranslations('skillsLanguageHint')}
+								onValidationError={(error) => {
+									if (error) {
+										setApplicationModalErrorMessage(error);
+										setApplicationModalSuccessMessage(null);
+									} else {
+										setApplicationModalErrorMessage(null);
+									}
+								}}
+							/>
+						</div>
+					</DialogBody>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

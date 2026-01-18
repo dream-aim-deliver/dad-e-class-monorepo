@@ -23,9 +23,10 @@ interface Coach {
 }
 
 export interface GroupOverviewCardDetails {
+    groupId: number;
     groupName: string;
     currentStudents: number;
-    totalStudents: number;
+    totalStudents?: number;
     course: Course;
     coaches: Coach[];
     creator: Creator;
@@ -82,7 +83,9 @@ const GroupOverviewCard: FC<GroupOverviewCardProps> = ({
                 <div className="flex items-center gap-1">
                     <IconGroup size="4" className="flex-shrink-0" />
                     <span className="text-text-secondary text-sm">
-                        {cardDetails.currentStudents}/{cardDetails.totalStudents} {dictionary.components.groupCard.students}
+                        {cardDetails.totalStudents != null
+                            ? `${cardDetails.currentStudents}/${cardDetails.totalStudents} ${dictionary.components.groupCard.students}`
+                            : `${cardDetails.currentStudents} ${dictionary.components.groupCard.students}`}
                     </span>
                 </div>
             </div>

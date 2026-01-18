@@ -347,6 +347,7 @@ export const DE: TDictionary = {
       linkedinPlaceholder: 'https://www.linkedin.com/in/company/bewerbeagentur/',
 
       curriculumVitae: 'Lebenslauf (CV)',
+      cvRequired: 'Lebenslauf ist erforderlich',
       portfolioWebsite: 'Portfolio-Webseite-URL (optional)',
       portfolioWebsitePlaceholder: 'https://wimlanz.ch/',
 
@@ -2175,6 +2176,8 @@ export const DE: TDictionary = {
         unknownCreator: 'Unbekannt',
         loadMoreButton: 'Mehr laden...',
         loading: 'Lädt...',
+        couponSuccess: 'Erfolgreich der Gruppe beigetreten!',
+        couponError: 'Gutscheincode konnte nicht validiert werden',
         error: {
           title: 'Fehler beim Laden der Gruppen',
           description: 'Beim Laden der Kursgruppen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
@@ -2183,6 +2186,7 @@ export const DE: TDictionary = {
       archiveCourseButton: 'Kurs archivieren',
       archivedBadge: 'Archiviert',
       editCourseButton: 'Kurs bearbeiten',
+      goToGroup: 'Zur Gruppe',
       visitor: {
         courseOutlineTitle: 'Kursübersicht',
         courseReviewsTitle: 'Kursbewertungen',
@@ -2479,6 +2483,12 @@ export const DE: TDictionary = {
       emailRequired: 'E-Mail ist erforderlich',
       bioRequired: 'Biografie ist erforderlich',
       bioTooLong: 'Biografie darf maximal 280 Zeichen lang sein',
+      applyToBecomeCoach: 'Bewerbung als Coach',
+      coachApplicationTitle: 'Bewerbung als Coach',
+      coachApplicationDescription: 'Füllen Sie Ihr berufliches Profil aus, um sich als Coach zu bewerben. Ein Lebenslauf ist für Ihre Bewerbung erforderlich.',
+      cvRequiredForApplication: 'Lebenslauf ist für die Coach-Bewerbung erforderlich',
+      applicationSubmittedSuccessfully: 'Ihre Bewerbung wurde erfolgreich eingereicht. Wir werden sie prüfen und uns bald bei Ihnen melden.',
+      applicationRateLimitExceeded: 'Sie können sich maximal dreimal pro Monat bewerben. Ihre Bewerbung wurde nicht eingereicht.',
       unsavedChangesDialog: {
         title: 'Ungespeicherte Änderungen',
         description: 'Du hast ungespeicherte Änderungen. Möchtest du sie speichern oder verwerfen?',

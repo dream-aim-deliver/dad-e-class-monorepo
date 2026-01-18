@@ -247,6 +247,22 @@ async function prefetchIntroductionData(
                 courseSlug: slug,
             }),
         );
+        // Prefetch group intro for student group button (shows "Go to Group" if student is in a group)
+        prefetch(
+            trpc.getGroupIntroduction.queryOptions({
+                courseSlug: slug,
+                additionalParams: {
+                    requestType: 'requestForStudent',
+                },
+            }),
+        );
+    } else {
+        // Prefetch course groups for coach/creator/admin GROUPS tab
+        prefetch(
+            trpc.listCourseGroups.queryOptions({
+                courseSlug: slug,
+            }),
+        );
     }
 }
 

@@ -163,7 +163,7 @@ export default function CoachDashboardStudents() {
                                         courseImageUrl: course.imageUrl || '',
                                         onClickCourse: () => {
                                             router.push(
-                                                `/${locale}/course/${course.slug || ''}`,
+                                                `/${locale}/courses/${course.slug || ''}`,
                                             );
                                         },
                                         status: 'no-assignment' as const,
@@ -176,7 +176,7 @@ export default function CoachDashboardStudents() {
                                         courseImageUrl: course.imageUrl || '',
                                         onClickCourse: () => {
                                             router.push(
-                                                `/${locale}/course/${course.slug || ''}`,
+                                                `/${locale}/courses/${course.slug || ''}`,
                                             );
                                         },
                                         status: 'passed' as const,
@@ -190,7 +190,7 @@ export default function CoachDashboardStudents() {
                                     courseImageUrl: course.imageUrl || '',
                                     onClickCourse: () => {
                                         router.push(
-                                            `/${locale}/course/${course.slug || ''}`,
+                                            `/${locale}/courses/${course.slug || ''}`,
                                         );
                                     },
                                     status: status,

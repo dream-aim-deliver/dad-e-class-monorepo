@@ -13,7 +13,8 @@ export interface DefaultStudentCardProps extends isLocalAware {
     coachImageUrl: string;
     courseName: string;
     courseImageUrl: string;
-    onStudentDetails: () => void;
+    /** Optional callback for viewing student details. If not provided, the button is hidden. */
+    onStudentDetails?: () => void;
     coachingSessionsLeft?: number;
     isYou: boolean;
     onClickCourse: () => void;
@@ -225,13 +226,15 @@ export const StudentCard = (props: StudentCardProps) => {
                     )}
             </div>
 
-            {/* Student details button */}
-            <Button
-                onClick={props.onStudentDetails}
-                variant="secondary"
-                size="medium"
-                text={dictionary.studentDetailsButton}
-            />
+            {/* Student details button - only shown if onStudentDetails callback is provided */}
+            {props.onStudentDetails && (
+                <Button
+                    onClick={props.onStudentDetails}
+                    variant="secondary"
+                    size="medium"
+                    text={dictionary.studentDetailsButton}
+                />
+            )}
         </div>
     );
 };

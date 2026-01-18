@@ -24,6 +24,7 @@ export interface GroupsListProps {
   isValidating?: boolean;
   hasValidationMessage?: boolean;
   validationMessage?: string;
+  validationMessageType?: 'error' | 'success';
   
   // Callbacks
   onClickCourse?: (slug: string) => void;
@@ -50,6 +51,7 @@ export interface GroupsListProps {
  * @param isValidating - Whether validation is in progress
  * @param hasValidationMessage - Whether there is a validation message
  * @param validationMessage - Validation message to display
+ * @param validationMessageType - Type of validation message ('error' or 'success')
  * @param onClickCourse - Callback for clicking on course
  * @param onClickManage - Callback for manage action (shown if current user is a coach)
  * @param onClickViewProfile - Callback for view profile action
@@ -67,6 +69,7 @@ export const GroupsList: FC<GroupsListProps> = ({
   isValidating = false,
   hasValidationMessage = false,
   validationMessage,
+  validationMessageType,
   onClickCourse,
   onClickManage,
   onClickViewProfile,
@@ -88,7 +91,7 @@ export const GroupsList: FC<GroupsListProps> = ({
         cardDetails={group}
         locale={locale}
         onClickCourse={onClickCourse}
-        onClickManage={() => onClickManage?.(group.groupName)}
+        onClickManage={() => onClickManage?.(String(group.groupId))}
       />
     );
   };
@@ -144,6 +147,7 @@ export const GroupsList: FC<GroupsListProps> = ({
                   isValidating={isValidating}
                   hasValidationMessage={hasValidationMessage}
                   validationMessage={validationMessage}
+                  validationMessageType={validationMessageType}
                 />
               </div>
               

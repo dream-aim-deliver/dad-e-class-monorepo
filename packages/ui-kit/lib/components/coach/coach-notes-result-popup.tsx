@@ -66,12 +66,6 @@ export const CoachNotesResultPopup: React.FC<CoachNotesResultPopupProps> = ({
           <h5 className="text-lg text-base-white text-justify leading-none">
             {dictionary.components.coachNotes.errorMessage}
           </h5>
-
-          <div className="bg-base-neutral-800 p-3 rounded-lg border border-card-stroke w-full">
-            <p className="text-sm text-stone-300 text-justify">
-              {dictionary.components.coachNotes.description}
-            </p>
-          </div>
         </div>
       </div>
         <Button

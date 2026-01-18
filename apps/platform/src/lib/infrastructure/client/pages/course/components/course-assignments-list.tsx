@@ -213,7 +213,7 @@ function CourseAssignmentsListContent({
                                 locale={locale}
                                 role="coach"
                                 onClickCourse={() => {
-                                    const courseUrl = `/${locale}/course/${assignment.course.slug}`;
+                                    const courseUrl = `/${locale}/courses/${assignment.course.slug}`;
                                     window.open(courseUrl, '_blank', 'noopener,noreferrer');
                                 }}
                                 onClickUser={() => {
@@ -244,7 +244,7 @@ function CourseAssignmentsListContent({
                                 isReplied={true as any}
                                 locale={locale}
                                 onClickCourse={() => {
-                                    const courseUrl = `/${locale}/course/${assignment.course.slug}`;
+                                    const courseUrl = `/${locale}/courses/${assignment.course.slug}`;
                                     window.open(courseUrl, '_blank', 'noopener,noreferrer');
                                 }}
                                 onClickView={() => {

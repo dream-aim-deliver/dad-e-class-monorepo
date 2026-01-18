@@ -234,6 +234,7 @@ export const DictionarySchema = z.object({
       linkedinPlaceholder: z.string(),
 
       curriculumVitae: z.string().optional(),
+      cvRequired: z.string(),
       portfolioWebsite: z.string(),
       portfolioWebsitePlaceholder: z.string(),
       associatedCompanyName: z.string(),
@@ -2042,6 +2043,12 @@ export const DictionarySchema = z.object({
       emailRequired: z.string(),
       bioRequired: z.string(),
       bioTooLong: z.string(),
+      applyToBecomeCoach: z.string(),
+      coachApplicationTitle: z.string(),
+      coachApplicationDescription: z.string(),
+      cvRequiredForApplication: z.string(),
+      applicationSubmittedSuccessfully: z.string(),
+      applicationRateLimitExceeded: z.string(),
       unsavedChangesDialog: z.object({
         title: z.string(),
         description: z.string(),
@@ -2265,6 +2272,8 @@ export const DictionarySchema = z.object({
         unknownCreator: z.string(),
         loadMoreButton: z.string(),
         loading: z.string(),
+        couponSuccess: z.string(),
+        couponError: z.string(),
         error: z.object({
           title: z.string(),
           description: z.string(),
@@ -2273,6 +2282,7 @@ export const DictionarySchema = z.object({
       archiveCourseButton: z.string(),
       archivedBadge: z.string(),
       editCourseButton: z.string(),
+      goToGroup: z.string(),
       visitor: z.object({
         courseOutlineTitle: z.string(),
         courseReviewsTitle: z.string(),
