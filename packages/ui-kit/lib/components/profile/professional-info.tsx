@@ -37,6 +37,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   skillsLanguageHint?: string;
   applicationMode?: boolean;
   requireCV?: boolean;
+  onValidationError?: (error: string) => void;
 }
 
 
@@ -97,6 +98,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   skillsLanguageHint,
   applicationMode = false,
   requireCV = false,
+  onValidationError,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [cvError, setCvError] = useState<string | null>(null);
@@ -137,13 +139,19 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // CV validation in application mode
     if (requireCV && !curriculumVitaeFile) {
-      setCvError(dictionary.components.professionalInfo.cvRequired || 'CV is required');
+      const errorMessage = dictionary.components.professionalInfo.cvRequired || 'CV is required';
+      // In application mode, only show error in banner, not inline
+      if (applicationMode) {
+        onValidationError?.(errorMessage);
+      } else {
+        setCvError(errorMessage);
+      }
       return;
     }
-    
+
     setCvError(null);
     onSave?.(initialData);
   };
@@ -207,17 +215,23 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             onFilesChange={handleUploadedFiles}
             onUploadComplete={(file) => {
               setCvError(null);
+              if (applicationMode) {
+                onValidationError?.(''); // Clear validation error in parent
+              }
               onUploadComplete(file);
             }}
             onDelete={(id) => {
               setCvError(null);
+              if (applicationMode) {
+                onValidationError?.(''); // Clear validation error in parent
+              }
               onFileDelete?.(id);
             }}
             onDownload={(id) => onFileDownload?.(id)}
             locale={locale}
             uploadProgress={uploadProgress}
           />
-          {cvError && (
+          {cvError && !applicationMode && (
             <p className="text-sm text-error">{cvError}</p>
           )}
         </div>
@@ -293,6 +307,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               size="medium"
               text={dictionary.components.professionalInfo.addSkills}
               hasIconLeft
+              disabled={isSaving}
               iconLeft={<IconPlus />}
             />
           </div>
@@ -306,8 +321,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 className="p-0"
                 hasIconRight
                 iconRight={<IconClose />}
-
                 onClick={() => removeSkill(skill.id)}
+                disabled={isSaving}
               />
             ))}
           </div>
@@ -326,6 +341,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                   onClick={() => setShowModal(false)}
                   className="text-button-text-text"
                   type="button"
+                  disabled={isSaving}
                 />
               </div>
 
@@ -398,6 +414,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               onClick={handleDiscard}
               text={dictionary.components.professionalInfo.buttontext1}
               type="button"
+              disabled={isSaving}
             />
             <Button
               variant="primary"

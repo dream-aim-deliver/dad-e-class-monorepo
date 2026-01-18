@@ -36,6 +36,7 @@ interface DialogContentProps {
     closeOnOverlayClick: boolean;
     closeOnEscape: boolean;
     className?: string;
+    disableCloseButton?: boolean;
 }
 
 interface DialogBodyProps {
@@ -128,6 +129,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
     showCloseButton,
     closeOnOverlayClick,
     closeOnEscape,
+    disableCloseButton = false,
 }) => {
     const { isOpen, setIsOpen } = useDialog();
     const contentRef = useRef<HTMLDivElement | null>(null);
@@ -191,10 +193,9 @@ export const DialogContent: React.FC<DialogContentProps> = ({
     return (
         <>
             {/* Overlay with fade-in/out */}
-            <div 
-                className={`fixed inset-0 z-100 bg-neutral-900/60 backdrop-blur-sm transition-all duration-300 ease-out ${
-                    isAnimating || isClosing ? 'opacity-0' : 'opacity-100'
-                }`}
+            <div
+                className={`fixed inset-0 z-100 bg-neutral-900/60 backdrop-blur-sm transition-all duration-300 ease-out ${isAnimating || isClosing ? 'opacity-0' : 'opacity-100'
+                    }`}
             />
 
             {/* Content with scale + fade animation */}
@@ -202,10 +203,9 @@ export const DialogContent: React.FC<DialogContentProps> = ({
                 ref={contentRef}
                 className={`fixed top-1/2 left-1/2 w-full max-w-lg max-h-[80vh] overflow-y-auto
                     bg-card-fill border border-card-stroke rounded-lg shadow-[0_4px_12px_0var(base-neutral-950)]
-                    p-4 transition-all duration-300 ease-out transform -translate-x-1/2 -translate-y-1/2 ${
-                        isAnimating || isClosing
-                            ? 'opacity-0 scale-95'
-                            : 'opacity-100 scale-100'
+                    p-4 transition-all duration-300 ease-out transform -translate-x-1/2 -translate-y-1/2 ${isAnimating || isClosing
+                        ? 'opacity-0 scale-95'
+                        : 'opacity-100 scale-100'
                     } ${className}`}
                 style={{ zIndex: 9999 }}
                 role="dialog"
@@ -220,6 +220,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
                             size="small"
                             onClick={() => setIsOpen(false)}
                             className="text-button-text-text"
+                            disabled={disableCloseButton}
                         />
                     </div>
                 )}

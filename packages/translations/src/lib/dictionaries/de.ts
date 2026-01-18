@@ -2488,7 +2488,7 @@ export const DE: TDictionary = {
       coachApplicationDescription: 'Füllen Sie Ihr berufliches Profil aus, um sich als Coach zu bewerben. Ein Lebenslauf ist für Ihre Bewerbung erforderlich.',
       cvRequiredForApplication: 'Lebenslauf ist für die Coach-Bewerbung erforderlich',
       applicationSubmittedSuccessfully: 'Ihre Bewerbung wurde erfolgreich eingereicht. Wir werden sie prüfen und uns bald bei Ihnen melden.',
-      applicationRateLimitExceeded: 'Sie können sich bis zu 3 Mal pro Monat bewerben. Bitte versuchen Sie es später erneut.',
+      applicationRateLimitExceeded: 'Sie können sich maximal dreimal pro Monat bewerben. Ihre Bewerbung wurde nicht eingereicht.',
       unsavedChangesDialog: {
         title: 'Ungespeicherte Änderungen',
         description: 'Du hast ungespeicherte Änderungen. Möchtest du sie speichern oder verwerfen?',
