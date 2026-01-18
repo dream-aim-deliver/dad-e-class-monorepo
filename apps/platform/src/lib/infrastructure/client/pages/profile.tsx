@@ -254,14 +254,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			const isApplication = (variables as any)?.applyToBecomeCoach === true;
 
 			if (isApplication) {
-				// Debug logging to verify success response
-				console.log('[Coach Application] Success received:', {
-					data,
-					variables,
-					isApplication,
-					dataType: typeof data,
-					dataKeys: data && typeof data === 'object' ? Object.keys(data) : null,
-				});
 
 				// Check if the response actually indicates an error (some backends return 200 with error in body)
 				// Handle case where tRPC returns error in onSuccess with { success: false, data: {...} }
@@ -270,7 +262,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 
 					// Check for error in data.data.message (CAPS framework structure)
 					if (dataObj.data?.message === 'COACH_APPLICATION_RATE_LIMIT') {
-						console.log('[Coach Application] Rate limit error detected in success callback');
 						setApplicationModalErrorMessage(t('applicationRateLimitExceeded'));
 						setApplicationModalSuccessMessage(null);
 						setIsApplicationProcessing(false);
@@ -281,7 +272,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 					if ('success' in dataObj && dataObj.success === false) {
 						const errorData = dataObj.data;
 						if (errorData?.message === 'COACH_APPLICATION_RATE_LIMIT') {
-							console.log('[Coach Application] Rate limit error detected (success: false)');
 							setApplicationModalErrorMessage(t('applicationRateLimitExceeded'));
 							setApplicationModalSuccessMessage(null);
 							setIsApplicationProcessing(false);
@@ -318,14 +308,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			const isApplication = (variables as any)?.applyToBecomeCoach === true;
 
 			if (isApplication) {
-				// Debug logging to see error structure
-				console.log('[Coach Application] Error received:', {
-					error,
-					errorData: error.data,
-					errorMessage: error.message,
-					dataCode: error.data?.code,
-					dataMessage: error.data?.message,
-				});
 
 				// Use modal-specific error state
 				// Check for coach application rate limit error (CAPS framework)
