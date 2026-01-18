@@ -48,6 +48,12 @@ export interface coachNotesProps extends isLocalAware {
     isEditMode: boolean;
     onBack: () => void;
     isLoading?: boolean;
+    /**
+     * Variant for the notes editor:
+     * - 'course': Default behavior with auto-open link editor and "include in materials" checkbox
+     * - 'group': Links are optional (editor closed by default), no "include in materials" checkbox
+     */
+    variant?: 'course' | 'group';
 }
 
 export interface coachNotesViewProps extends isLocalAware {
@@ -69,6 +75,7 @@ function CoachNotesCreate({
     isEditMode,
     onBack,
     isLoading = false,
+    variant = 'course',
 }: coachNotesProps) {
     const dictionary = getDictionary(locale);
 
@@ -82,11 +89,13 @@ function CoachNotesCreate({
         null,
     );
 
+    // Only auto-open link editor for course variant (links required)
+    // For group variant, links are optional so editor starts closed
     useEffect(() => {
-        if (initialNoteLinks.length === 0) {
+        if (variant === 'course' && initialNoteLinks.length === 0) {
             handleAddLink();
         }
-    }, [initialNoteLinks.length]);
+    }, [initialNoteLinks.length, variant]);
 
     const handleAddLink = () => {
         if (editingLinkIndex === null) {
@@ -188,14 +197,16 @@ function CoachNotesCreate({
                         {dictionary.components.coachNotes.usefulLinks}
                     </p>
                 </div>
-                <CheckBox
-                    withText
-                    name="includeLinks"
-                    label={dictionary.components.coachNotes.includeInMaterials}
-                    value="include"
-                    checked={initialIncludeInMaterials}
-                    onChange={handleCheckboxChange}
-                />
+                {variant === 'course' && (
+                    <CheckBox
+                        withText
+                        name="includeLinks"
+                        label={dictionary.components.coachNotes.includeInMaterials}
+                        value="include"
+                        checked={initialIncludeInMaterials}
+                        onChange={handleCheckboxChange}
+                    />
+                )}
 
                 <div className="flex flex-col gap-4 w-full">
                     {initialNoteLinks.map((link, index) => (

@@ -18,6 +18,7 @@ import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { useGetGroupIntroductionPresenter } from '../hooks/use-get-group-introduction-presenter';
 import { useGetGroupNotesPresenter } from '../hooks/use-get-group-notes-presenter';
 import { useGetGroupNextCoachingSessionPresenter } from '../hooks/use-get-group-next-coaching-session-presenter';
+import { useSaveGroupNotesPresenter } from '../hooks/use-save-group-notes-presenter';
 import { useGroupNotesFileUpload } from './common/hooks/use-group-notes-image-upload';
 import { useAssignmentFilters } from './hooks/use-assignment-filters';
 import { useGroupMembers } from './hooks/use-group-members';
@@ -58,9 +59,10 @@ export default function GroupWorkspaceCoach({
   // Edit notes dialog state
   const [isEditNotesDialogOpen, setIsEditNotesDialogOpen] = useState(false);
 
-  // Notes result popup state
-  const [showNotesResultPopup, setShowNotesResultPopup] = useState(false);
-  const [notesResultType, setNotesResultType] = useState<'success' | 'error'>('success');
+  // Save notes view model for mutation result
+  const [saveNotesViewModel, setSaveNotesViewModel] = useState<
+    viewModels.TSaveGroupNotesViewModel | undefined
+  >(undefined);
 
   const [groupIntroductionViewModel, setGroupIntroductionViewModel] = useState<
     viewModels.TGetGroupIntroductionViewModel | undefined
@@ -104,10 +106,12 @@ export default function GroupWorkspaceCoach({
   });
 
   const saveNotesMutation = trpc.saveGroupNotes.useMutation();
+  const utils = trpc.useUtils();
 
   const { presenter: groupIntroductionPresenter } = useGetGroupIntroductionPresenter(setGroupIntroductionViewModel);
   const { presenter: notesPresenter } = useGetGroupNotesPresenter(setGroupNotesViewModel);
   const { presenter: nextSessionPresenter } = useGetGroupNextCoachingSessionPresenter(setNextSessionViewModel);
+  const { presenter: saveNotesPresenter } = useSaveGroupNotesPresenter(setSaveNotesViewModel);
 
   // Assignment filters and sorting hook (includes data fetching and presenter logic)
   const {
@@ -178,60 +182,56 @@ export default function GroupWorkspaceCoach({
     setIsEditNotesDialogOpen(true);
   };
 
-  const handlePublishNotes = (
-    description: string, 
+  const handlePublishNotes = async (
+    description: string,
     links: {
       url: string;
       title: string;
       customIconMetadata?: fileMetadata.TFileMetadata;
       id?: number;
-    }[], 
+    }[],
     includeInMaterials: boolean
   ) => {
-
     // Prevent publishing if already in progress
     if (saveNotesMutation.isPending) {
       return;
     }
 
-    saveNotesMutation.mutate(
-      {
-        notes: description,
-        links: links.map(link => ({
-          title: link.title,
-          url: link.url,
-          state: 'draft' as const,
-          iconFileId: link.customIconMetadata?.id ? Number(link.customIconMetadata.id) : null,
-          id: link.id,
-        }))
-      },
-      {
-        onSuccess: () => {
-          // Close the edit dialog if it's open
-          if (isEditNotesDialogOpen) {
-            setIsEditNotesDialogOpen(false);
-          }
-          
-          // Show success popup
-          setNotesResultType('success');
-          setShowNotesResultPopup(true);
-          
-          // Refetch to get updated notes data
-          refetchGroupNotesResponse();
+    // Reset view model before new operation
+    setSaveNotesViewModel(undefined);
+
+    const result = await saveNotesMutation.mutateAsync({
+      groupId: groupId,
+      notes: description,
+      links: links.map(link => ({
+        title: link.title,
+        url: link.url,
+        state: 'draft' as const,
+        iconFileId: link.customIconMetadata?.id ? Number(link.customIconMetadata.id) : null,
+        id: link.id,
+      }))
+    });
+
+    // Pass through presenter to update view model
+    // @ts-ignore
+    await saveNotesPresenter.present(result, saveNotesViewModel);
+
+    // Close the edit dialog if it's open
+    if (isEditNotesDialogOpen) {
+      setIsEditNotesDialogOpen(false);
+    }
+
+    // Handle success: refetch notes data and invalidate student view
+    if (result.success) {
+      refetchGroupNotesResponse();
+      // Invalidate the student's getGroupNotes query so they see updated notes
+      utils.getGroupNotes.invalidate({
+        courseSlug: courseSlug,
+        additionalParams: {
+          requestType: 'requestForStudent',
         },
-        onError: (error) => {
-          // Close the edit dialog if it's open
-          if (isEditNotesDialogOpen) {
-            setIsEditNotesDialogOpen(false);
-          }
-          
-          // Show error popup
-          setNotesResultType('error');
-          setShowNotesResultPopup(true);
-          
-        }
-      }
-    );
+      });
+    }
   };
 
   const handleBackFromEdit = () => {
@@ -365,7 +365,7 @@ export default function GroupWorkspaceCoach({
         coachingSessionsLeft: member.coachingSessionCount || undefined,
         isYou: member.coach.isCurrentUser,
         onStudentDetails: () => {
-          // TODO: Redirect to user profile page
+          window.open(`/${locale}/students/${member.username}`, '_blank');
         },
         onClickCourse: () => {
           router.push(`/${locale}/courses/${member.course.slug}`)
@@ -506,6 +506,7 @@ export default function GroupWorkspaceCoach({
                 // No action needed on back for create mode
               }}
               isLoading={saveNotesMutation.isPending}
+              variant="group"
             />
           ) :
             <CoachNotesView
@@ -628,7 +629,7 @@ export default function GroupWorkspaceCoach({
                 // TODO: Implement view assignment functionality
               }}
               onClickGroup={() => router.push(`/${locale}/workspace/courses/${assignment.course.slug}/groups/${assignment.groupId}`)}
-              onFileDownload={(url , name) => downloadFile(url, name)}
+              onFileDownload={(url, name) => downloadFile(url, name)}
             />
           )}
         </AssignmentOverviewList>
@@ -710,17 +711,18 @@ export default function GroupWorkspaceCoach({
         onNoteDescriptionChange={setNoteDescription}
         isEditMode={true}
         isLoading={saveNotesMutation.isPending}
+        variant="group"
       />
 
       {/* Coach Notes Result Popup */}
-      {showNotesResultPopup && (
+      {saveNotesViewModel && (
         <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm">
           <CoachNotesResultPopup
             onClose={() => {
-              setShowNotesResultPopup(false);
+              setSaveNotesViewModel(undefined);
             }}
-            isSuccess={notesResultType === 'success'}
-            isError={notesResultType === 'error'}
+            isSuccess={saveNotesViewModel.mode === 'default'}
+            isError={saveNotesViewModel.mode === 'kaboom' || saveNotesViewModel.mode === 'not-found'}
             locale={locale}
           />
         </div>
