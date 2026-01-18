@@ -28,6 +28,13 @@ export default async function GroupWorkspaceCoachServerComponent(
   if(isCoach) {
     // TRPC prefetching for page data
     // Usecases: saveGroupNotes, getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
+    prefetch(trpc.getGroupIntroduction.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForCoach',
+        groupId: props.groupId,
+      },
+    }));
     prefetch(trpc.getGroupNotes.queryOptions({
       courseSlug: props.courseSlug,
       additionalParams: {
@@ -71,6 +78,12 @@ export default async function GroupWorkspaceCoachServerComponent(
   } else {
     // TRPC prefetching for page data
     // Usecases: getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
+    prefetch(trpc.getGroupIntroduction.queryOptions({
+      courseSlug: props.courseSlug,
+      additionalParams: {
+        requestType: 'requestForStudent',
+      },
+    }));
     prefetch(trpc.getGroupNotes.queryOptions({
       courseSlug: props.courseSlug,
       additionalParams: {

@@ -6,10 +6,10 @@
 // User Types: Student
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=6913-292532
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { DefaultLoading, DefaultError, Breadcrumbs, GroupIntroduction, Button, CoachNotesView, Dropdown, IconFilter, AssignmentCardFilterModal, TextInput, IconSearch, StudentCardList, StudentCard, CoachingSessionGroupOverviewCard, AssignmentOverview, AssignmentOverviewList, downloadFile } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, Breadcrumbs, GroupIntroduction, Button, CoachNotesView, Dropdown, IconFilter, AssignmentCardFilterModal, TextInput, IconSearch, StudentCardList, StudentCard, CoachingSessionGroupOverviewCard, AssignmentOverview, AssignmentOverviewList, downloadFile, Dialog, DialogContent } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,7 @@ import { useGetGroupNextCoachingSessionPresenter } from '../hooks/use-get-group-
 import { useAssignmentFilters } from './hooks/use-assignment-filters';
 import { useGroupMembers } from './hooks/use-group-members';
 import useClientSidePagination from '../utils/use-client-side-pagination';
+import AssignmentContent from './course/enrolled-course/assignment-content';
 
 interface GroupWorkspaceStudentProps {
   locale: TLocale;
@@ -52,6 +53,12 @@ export default function GroupWorkspaceStudent({
   const [nextSessionViewModel, setNextSessionViewModel] = useState<
     viewModels.TGetGroupNextCoachingSessionViewModel | undefined
   >(undefined);
+
+  // State for assignment modal
+  const [selectedAssignment, setSelectedAssignment] = useState<{
+    id: string;
+    studentUsername?: string;
+  } | null>(null);
 
   // TRPC queries for page data
 
@@ -260,7 +267,7 @@ export default function GroupWorkspaceStudent({
         );
       }
 
-      const { status, title } = member.lastAssignment;
+      const { id: assignmentId, status, title } = member.lastAssignment;
 
       if (status === "waiting-feedback") {
         return (
@@ -270,7 +277,10 @@ export default function GroupWorkspaceStudent({
             status="waiting-feedback"
             assignmentTitle={title}
             onViewAssignment={() => {
-              // TODO: Implement view assignment functionality
+              setSelectedAssignment({
+                id: assignmentId,
+                studentUsername: member.username,
+              });
             }}
           />
         );
@@ -284,7 +294,10 @@ export default function GroupWorkspaceStudent({
             status="long-wait"
             assignmentTitle={title}
             onViewAssignment={() => {
-              // TODO: Implement view assignment functionality
+              setSelectedAssignment({
+                id: assignmentId,
+                studentUsername: member.username,
+              });
             }}
           />
         );
@@ -446,7 +459,10 @@ export default function GroupWorkspaceStudent({
                 // TODO: Navigate to student profile page
               }}
               onClickView={() => {
-                // TODO: Implement view assignment functionality
+                setSelectedAssignment({
+                  id: assignment.id,
+                  studentUsername: assignment.student?.username,
+                });
               }}
               onClickGroup={() => router.push(`/${locale}/workspace/courses/${assignment.course.slug}/groups/${assignment.groupId}`)}
               onFileDownload={(url , name) => downloadFile(url, name)}
@@ -512,6 +528,32 @@ export default function GroupWorkspaceStudent({
           availableLessons={availableLessons}
           locale={locale}
         />
+      )}
+
+      {/* Assignment View Modal */}
+      {selectedAssignment && (
+        <Dialog
+          open={!!selectedAssignment}
+          defaultOpen={false}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedAssignment(null);
+            }
+          }}
+        >
+          <DialogContent
+            showCloseButton
+            closeOnOverlayClick
+            closeOnEscape
+          >
+            <Suspense fallback={<DefaultLoading locale={currentLocale} />}>
+              <AssignmentContent
+                assignmentId={selectedAssignment.id}
+                studentUsername={selectedAssignment.studentUsername}
+              />
+            </Suspense>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

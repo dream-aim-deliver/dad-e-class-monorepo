@@ -5,7 +5,9 @@ import { ProgressBar } from './progress-bar';
 
 export interface CourseProgressBarProps extends isLocalAware {
     percentage: number;
-    onClickResume: () => void;
+    onClickResume?: () => void;
+    /** Hide the Resume/Begin button. Useful when user is already viewing the course. */
+    hideButton?: boolean;
 }
 
 /**
@@ -29,6 +31,7 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
     percentage,
     onClickResume,
     locale,
+    hideButton = false,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -51,13 +54,15 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
                     {Number(percentage.toFixed(2))}%
                 </p>
             </div>
-            <Button
-                variant="text"
-                size="small"
-                className="px-0"
-                onClick={onClickResume}
-                text={buttonText}
-            />
+            {!hideButton && onClickResume && (
+                <Button
+                    variant="text"
+                    size="small"
+                    className="px-0"
+                    onClick={onClickResume}
+                    text={buttonText}
+                />
+            )}
         </div>
     );
 };
