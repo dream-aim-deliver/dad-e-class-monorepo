@@ -12,6 +12,7 @@ interface JoinGroupProps {
   isValidating?: boolean;
   hasValidationMessage?: boolean;
   validationMessage?: string;
+  validationMessageType?: 'error' | 'success';
   className?: string;
 }
 
@@ -25,6 +26,7 @@ interface JoinGroupProps {
  * @param isValidating - Whether validation is in progress
  * @param hasValidationMessage - Whether there is a validation message to show
  * @param validationMessage - Error/validation message to display
+ * @param validationMessageType - Type of validation message ('error' or 'success')
  * @param className - Additional CSS classes
  */
 export const JoinGroup: FC<JoinGroupProps> = ({
@@ -35,6 +37,7 @@ export const JoinGroup: FC<JoinGroupProps> = ({
   isValidating = false,
   hasValidationMessage = false,
   validationMessage,
+  validationMessageType = 'error',
   className,
 }) => {
   const dictionary = getDictionary(locale);
@@ -81,7 +84,7 @@ export const JoinGroup: FC<JoinGroupProps> = ({
             feedbackMessage={
               hasValidationMessage && validationMessage
                 ? {
-                    type: 'error' as const,
+                    type: validationMessageType,
                     message: validationMessage,
                   }
                 : undefined

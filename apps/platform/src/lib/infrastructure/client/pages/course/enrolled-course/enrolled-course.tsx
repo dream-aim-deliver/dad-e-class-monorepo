@@ -7,6 +7,7 @@ import {
     IconAssignment,
     IconCoach,
     IconEyeShow,
+    IconGroup,
     IconHourglass,
     IconInfoCircle,
     IconLesson,
@@ -30,6 +31,7 @@ import EnrolledCoaches from './enrolled-coaches';
 import { trpc } from '../../../trpc/cms-client';
 import EnrolledCourseStudents from './enrolled-course-students';
 import EnrolledCourseNotes from './enrolled-course-notes';
+import CoachCourseGroups from './coach-course-groups';
 import { useGetCourseStatusPresenter } from '../../../hooks/use-get-course-status-presenter';
 import { useGetCourseCertificateDataPresenter } from '../../../hooks/use-get-course-certificate-data-presenter';
 import CourseCompletion from '../../course-completion';
@@ -121,6 +123,11 @@ function CourseTabList({ role }: { role: string }) {
                     icon: <IconCoach />,
                     value: CoachCourseTab.COACHES,
                     label: courseTranslations('tabs.coaches'),
+                },
+                {
+                    icon: <IconGroup />,
+                    value: CoachCourseTab.GROUPS,
+                    label: courseTranslations('tabs.groups'),
                 },
                 {
                     icon: <IconLesson />,
@@ -378,6 +385,21 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                             courseSlug={props.courseSlug}
                             currentRole={props.currentRole}
                             isArchived={props.isArchived}
+                        />
+                    </Suspense>
+                </Tabs.Content>
+                <Tabs.Content
+                    value={CoachCourseTab.GROUPS}
+                    className={tabContentClass}
+                >
+                    <Suspense
+                        fallback={
+                            <DefaultLoading locale={locale} variant="minimal" />
+                        }
+                    >
+                        <CoachCourseGroups
+                            courseSlug={props.courseSlug}
+                            currentRole={props.currentRole}
                         />
                     </Suspense>
                 </Tabs.Content>

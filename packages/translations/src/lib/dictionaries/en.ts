@@ -2172,6 +2172,8 @@ export const EN: TDictionary = {
         unknownCreator: 'Unknown',
         loadMoreButton: 'Load More...',
         loading: 'Loading...',
+        couponSuccess: 'Successfully joined the group!',
+        couponError: 'Failed to validate coupon code',
         error: {
           title: 'Failed to load groups',
           description: 'An error occurred while loading course groups. Please try again.',
@@ -2180,6 +2182,7 @@ export const EN: TDictionary = {
       archiveCourseButton: 'Archive Course',
       archivedBadge: 'Archived',
       editCourseButton: 'Edit Course',
+      goToGroup: 'Go to Group',
       visitor: {
         courseOutlineTitle: 'Course Outline',
         courseReviewsTitle: 'Course Reviews',

@@ -2175,6 +2175,8 @@ export const DE: TDictionary = {
         unknownCreator: 'Unbekannt',
         loadMoreButton: 'Mehr laden...',
         loading: 'Lädt...',
+        couponSuccess: 'Erfolgreich der Gruppe beigetreten!',
+        couponError: 'Gutscheincode konnte nicht validiert werden',
         error: {
           title: 'Fehler beim Laden der Gruppen',
           description: 'Beim Laden der Kursgruppen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
@@ -2183,6 +2185,7 @@ export const DE: TDictionary = {
       archiveCourseButton: 'Kurs archivieren',
       archivedBadge: 'Archiviert',
       editCourseButton: 'Kurs bearbeiten',
+      goToGroup: 'Zur Gruppe',
       visitor: {
         courseOutlineTitle: 'Kursübersicht',
         courseReviewsTitle: 'Kursbewertungen',

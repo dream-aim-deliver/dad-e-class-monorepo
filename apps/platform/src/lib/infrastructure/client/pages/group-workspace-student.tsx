@@ -24,7 +24,7 @@ import useClientSidePagination from '../utils/use-client-side-pagination';
 interface GroupWorkspaceStudentProps {
   locale: TLocale;
   courseSlug: string;
-  groupId: number;
+  groupId?: number;
 }
 
 export default function GroupWorkspaceStudent({
@@ -203,15 +203,11 @@ export default function GroupWorkspaceStudent({
   const notesData = groupNotesViewModel.data;
   const nextSessionData = nextSessionViewModel.data;
 
-  // Breadcrumb items for navigation
+  // Breadcrumb items for navigation (simplified for student view)
   const breadcrumbItems = [
     {
       label: breadcrumbsTranslations('home'),
       onClick: () => router.push(`/${locale}`),
-    },
-    {
-      label: breadcrumbsTranslations('workspace'),
-      onClick: () => router.push(`/${locale}/workspace`),
     },
     {
       label: breadcrumbsTranslations('yourCourses'),
@@ -222,12 +218,8 @@ export default function GroupWorkspaceStudent({
       onClick: () => router.push(`/${locale}/courses/${courseSlug}`),
     },
     {
-      label: breadcrumbsTranslations('groups'),
-      onClick: () => router.push(`/${locale}/workspace/courses/${courseSlug}/groups`),
-    },
-    {
       label: introductionData.name,
-      onClick: () => router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}`),
+      onClick: () => router.push(`/${locale}/courses/${courseSlug}/group`),
     },
   ];
 

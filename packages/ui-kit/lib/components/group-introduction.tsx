@@ -20,7 +20,7 @@ interface GroupIntroductionProps extends isLocalAware {
     coaches: CoachProps[];
     courseImageUrl?: string;
     actualStudentCount: number;
-    maxStudentCount: number;
+    maxStudentCount?: number | null;
     onClickCourse: () => void;
     onClickUser: (username: string) => void;
 };
@@ -74,7 +74,9 @@ export const GroupIntroduction: FC<GroupIntroductionProps> = ({
                 <Badge
                     hasIconLeft
                     iconLeft={<IconGroup size='4' />}
-                    text={`${actualStudentCount}/${maxStudentCount} ${t.students}`}
+                    text={maxStudentCount != null
+                        ? `${actualStudentCount}/${maxStudentCount} ${t.students}`
+                        : `${actualStudentCount} ${t.students}`}
                     variant="info"
                     className="text-sm"
                 />

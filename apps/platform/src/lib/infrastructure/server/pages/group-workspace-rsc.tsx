@@ -6,7 +6,7 @@
 import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
-import GroupWorkspace from '../../client/pages/group-workspace';
+import GroupWorkspaceStudent from '../../client/pages/group-workspace-student';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { redirect } from 'next/navigation';
 import getSession from '../config/auth/get-session';
@@ -60,7 +60,7 @@ export default async function GroupWorkspaceServerComponent(
   return (
     <HydrateClient>
       <Suspense fallback={<DefaultLoadingWrapper />}>
-        <GroupWorkspace locale={props.locale} courseSlug={props.courseSlug} />
+        <GroupWorkspaceStudent locale={props.locale} courseSlug={props.courseSlug} />
       </Suspense>
     </HydrateClient>
   );

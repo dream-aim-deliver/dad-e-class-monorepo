@@ -8,11 +8,13 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import type { GroupOverviewCardDetails } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { trpc } from '../../../trpc/cms-client';
 import { useListCourseGroupsPresenter } from '../../../hooks/use-list-course-groups-presenter';
+import { useRegisterCoachToGroupPresenter } from '../../../hooks/use-register-coach-to-group-presenter';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import { useTranslations } from 'next-intl';
 
@@ -27,7 +29,7 @@ interface BackendGroup {
     id: number;
     name: string;
     actualStudentCount: number;
-    maxStudentCount: number;
+    maxStudentCount?: number | null;
     course: {
         id: number;
         title: string;
@@ -49,6 +51,7 @@ export default function CoachCourseGroups({
     currentRole,
 }: EnrolledCourseGroupsProps) {
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
     // Add translations
     const t = useTranslations('pages.course.groups');
@@ -62,26 +65,44 @@ export default function CoachCourseGroups({
     >(undefined);
 
     const { presenter } = useListCourseGroupsPresenter(setGroupsViewModel);
-    
+
     const utils = trpc.useUtils();
-    
-    const registerCoachMutation = trpc.registerCoachToGroup.useMutation({
-        onSuccess: (data) => {
-            // Clear the coupon code on success
-            setCouponCode('');
-            setValidationError('');
-            // Refetch groups to get updated data
-            utils.listCourseGroups.invalidate({ courseSlug });
-        },
-        onError: (error) => {
-            setValidationError(error.message || 'Failed to register coach');
-        }
-    });
 
     // State for coupon code handling
     const [couponCode, setCouponCode] = useState<string>('');
-    const [validationError, setValidationError] = useState<string>('');
-    
+
+    // View model state for register mutation result
+    const [registerViewModel, setRegisterViewModel] = useState<
+        viewModels.TRegisterCoachToGroupViewModel | undefined
+    >(undefined);
+
+    // Presenter for transforming mutation results
+    const { presenter: registerPresenter } = useRegisterCoachToGroupPresenter(setRegisterViewModel);
+
+    const registerCoachMutation = trpc.registerCoachToGroup.useMutation();
+
+    // Derive feedback from view model
+    const feedbackMessage = useMemo(() => {
+        if (!registerViewModel) return undefined;
+        if (registerViewModel.mode === 'default') {
+            return { type: 'success' as const, message: t('couponSuccess') };
+        }
+        if (registerViewModel.mode === 'kaboom' || registerViewModel.mode === 'not-found') {
+            return { type: 'error' as const, message: t('couponError') };
+        }
+        return undefined;
+    }, [registerViewModel, t]);
+
+    // Auto-dismiss feedback after 10 seconds
+    useEffect(() => {
+        if (registerViewModel) {
+            const timer = setTimeout(() => {
+                setRegisterViewModel(undefined);
+            }, 10000);
+            return () => clearTimeout(timer);
+        }
+    }, [registerViewModel]);
+
     // State for load more loading
     const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
@@ -90,7 +111,7 @@ export default function CoachCourseGroups({
         // Access groups from the TRPC response structure - using type assertion due to mock typing
         const responseData = groupsResponse as any;
         const groups = responseData?.data?.groups || [];
-        
+
         if (!Array.isArray(groups)) return [];
 
         return (groups as BackendGroup[]).map((group: BackendGroup) => {
@@ -98,9 +119,10 @@ export default function CoachCourseGroups({
             const creator = group.coaches && group.coaches[0];
 
             return {
+                groupId: group.id,
                 groupName: group.name,
                 currentStudents: group.actualStudentCount,
-                totalStudents: group.maxStudentCount,
+                totalStudents: group.maxStudentCount ?? undefined,
                 course: {
                     image: group.course.imageUrl || '',
                     title: group.course.title,
@@ -143,21 +165,32 @@ export default function CoachCourseGroups({
     // Handle coupon code changes
     const handleCouponCodeChange = useCallback((value: string) => {
         setCouponCode(value);
-        // Clear validation error when user starts typing
-        if (validationError) {
-            setValidationError('');
+        // Clear feedback when user starts typing
+        if (registerViewModel) {
+            setRegisterViewModel(undefined);
         }
-    }, [validationError]);
+    }, [registerViewModel]);
 
     // Handle coupon code validation and registration
-    const handleValidateCode = useCallback(() => {
+    const handleValidateCode = useCallback(async () => {
         if (!couponCode.trim()) return;
-        
-        setValidationError('');
-        registerCoachMutation.mutate({
+
+        // Reset view model before operation
+        setRegisterViewModel(undefined);
+
+        const result = await registerCoachMutation.mutateAsync({
             couponCode: couponCode.trim(),
         });
-    }, [couponCode, registerCoachMutation]);
+
+        // Pass through presenter to update view model
+        // @ts-ignore
+        await registerPresenter.present(result, registerViewModel);
+
+        if (result.success) {
+            setCouponCode('');
+            utils.listCourseGroups.invalidate({ courseSlug });
+        }
+    }, [couponCode, registerCoachMutation, registerPresenter, registerViewModel, utils, courseSlug]);
 
     // Handle course navigation
     const handleClickCourse = useCallback((slug: string) => {
@@ -166,8 +199,8 @@ export default function CoachCourseGroups({
 
     // Handle group management
     const handleManageGroup = useCallback((groupId: string) => {
-        // TODO: Implement group management navigation
-    }, []);
+        router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}`);
+    }, [router, locale, courseSlug]);
 
 
 
@@ -198,11 +231,12 @@ export default function CoachCourseGroups({
                 onClickCourse={handleClickCourse}
                 onClickManage={handleManageGroup}
                 isValidating={registerCoachMutation.isPending}
-                hasValidationMessage={!!validationError}
-                validationMessage={validationError}
+                hasValidationMessage={!!feedbackMessage}
+                validationMessage={feedbackMessage?.message}
+                validationMessageType={feedbackMessage?.type}
                 isLoading={registerCoachMutation.isPending}
             />
-            
+
             {/* Load More Button */}
             {hasMoreItems && (
                 <div className="flex justify-center mt-8">
