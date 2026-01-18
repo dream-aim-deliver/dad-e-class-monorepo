@@ -555,7 +555,7 @@ export default function GroupWorkspaceCoach({
               variant="text"
               text={t('nextCoachingSession.closedSessionsButton')}
               onClick={() => {
-                // TODO: Implement view closed sessions functionality
+                router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}/coaching-sessions`);
               }}
             />
           </div>
@@ -582,7 +582,7 @@ export default function GroupWorkspaceCoach({
                 }
               }}
               onClickScheduleSession={() => {
-                // TODO: Implement schedule session functionality
+                router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}/calendar`);
               }}
             />
           ) : (
