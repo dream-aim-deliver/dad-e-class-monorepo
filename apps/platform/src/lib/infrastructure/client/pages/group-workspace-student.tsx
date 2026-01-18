@@ -227,6 +227,7 @@ export default function GroupWorkspaceStudent({
   const renderStudentCards = (members: viewModels.TListGroupMembersSuccess['members']) => {
     return members.map((member, index) => {
       // Base props common to all student card variants
+      // Note: onStudentDetails is intentionally omitted - students can't view other students' profiles
       const baseProps = {
         locale: locale,
         studentName: member.username,
@@ -237,9 +238,6 @@ export default function GroupWorkspaceStudent({
         courseImageUrl: member.course.imageUrl || '',
         coachingSessionsLeft: member.coachingSessionCount || undefined,
         isYou: member.coach.isCurrentUser,
-        onStudentDetails: () => {
-          // TODO: Navigate to student details page
-        },
         onClickCourse: () => {
           router.push(`/${locale}/courses/${member.course.slug}`)
         },
