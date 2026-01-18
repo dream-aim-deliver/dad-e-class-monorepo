@@ -254,17 +254,24 @@ function AssignmentInteraction({
     const isSending =
         sendReplyMutation.isPending || passAssignmentMutation.isPending;
 
-    const isStudent = session.data?.user?.name === studentUsername;
+    const isAssignmentOwner = session.data?.user?.name === studentUsername;
+    const isCoach = session.data?.user?.roles?.includes('coach');
 
-    // Don't show reply panel if assignment is already passed or course is archived
+    // Don't show reply panel if:
+    // - Assignment is already passed or course is archived
+    // - User is neither the assignment owner nor a coach (e.g., another student viewing)
     if (assignment.progress?.passedDetails || isArchived) {
+        return null;
+    }
+
+    if (!isAssignmentOwner && !isCoach) {
         return null;
     }
 
     // TODO: display uploadError somewhere in the UI
     return (
         <ReplyPanel
-            role={isStudent ? 'student' : 'coach'}
+            role={isAssignmentOwner ? 'student' : 'coach'}
             comment={comment}
             files={files}
             links={links}

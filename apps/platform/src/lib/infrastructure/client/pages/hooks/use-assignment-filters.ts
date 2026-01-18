@@ -79,7 +79,9 @@ export function useAssignmentFilters({
 
     // Present the data
     useEffect(() => {
+        console.log('[useAssignmentFilters] assignmentsResponse:', assignmentsResponse);
         if (assignmentsResponse) {
+            console.log('[useAssignmentFilters] Calling presenter.present');
             assignmentsPresenter.present(
                 // @ts-ignore
                 assignmentsResponse,
@@ -87,6 +89,14 @@ export function useAssignmentFilters({
             );
         }
     }, [assignmentsResponse]);
+
+    // Debug: Log view model state
+    useEffect(() => {
+        console.log('[useAssignmentFilters] assignmentsViewModel:', assignmentsViewModel);
+        if (assignmentsViewModel?.mode === 'default') {
+            console.log('[useAssignmentFilters] assignments data:', assignmentsViewModel.data);
+        }
+    }, [assignmentsViewModel]);
 
     // Extract assignments from ViewModel
     const assignments = useMemo(() => {

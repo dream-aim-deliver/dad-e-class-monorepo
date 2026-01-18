@@ -59,7 +59,9 @@ export function useGroupMembers({
 
     // Present the data
     useEffect(() => {
+        console.log('[useGroupMembers] membersResponse:', membersResponse);
         if (membersResponse) {
+            console.log('[useGroupMembers] Calling presenter.present');
             membersPresenter.present(
                 // @ts-ignore
                 membersResponse,
@@ -67,6 +69,14 @@ export function useGroupMembers({
             );
         }
     }, [membersResponse]);
+
+    // Debug: Log view model state
+    useEffect(() => {
+        console.log('[useGroupMembers] membersViewModel:', membersViewModel);
+        if (membersViewModel?.mode === 'default') {
+            console.log('[useGroupMembers] members data:', membersViewModel.data);
+        }
+    }, [membersViewModel]);
 
     // Extract members from ViewModel
     const allMembers = useMemo(() => {

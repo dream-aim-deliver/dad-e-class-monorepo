@@ -355,35 +355,34 @@ export default function EnrolledCourseHeading({
                                 </span>
                             </div>
                         </div>
-                        {isCompleted ? (
-                            <Badge
-                                className="w-fit"
-                                size="medium"
-                                text={courseTranslations('completedPanel.badgeText')}
-                                variant="successprimary"
-                            />
-                        ) : (
-                            hasProgress && (
-                                <CourseProgressBar
-                                    percentage={progressPercent ?? 0}
-                                    locale={locale}
-                                    onClickResume={() => {
-                                        // ✅ Use Next.js router for instant SPA navigation
-                                        router.push(`/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`);
-                                    }}
+                        <div className="flex items-center gap-2">
+                            {isCompleted ? (
+                                <Badge
+                                    className="w-fit"
+                                    size="medium"
+                                    text={courseTranslations('completedPanel.badgeText')}
+                                    variant="successprimary"
                                 />
-                            )
-                        )}
+                            ) : (
+                                hasProgress && (
+                                    <CourseProgressBar
+                                        percentage={progressPercent ?? 0}
+                                        locale={locale}
+                                        hideButton
+                                    />
+                                )
+                            )}
+                            {currentRole === "student" && (
+                                <Suspense fallback={null}>
+                                    <StudentGroupButton
+                                        courseSlug={courseSlug}
+                                        currentRole={currentRole}
+                                    />
+                                </Suspense>
+                            )}
+                        </div>
                     </div>
                     <div className="flex flex-wrap gap-2 items-center justify-end">
-                        {currentRole === "student" && (
-                            <Suspense fallback={null}>
-                                <StudentGroupButton
-                                    courseSlug={courseSlug}
-                                    currentRole={currentRole}
-                                />
-                            </Suspense>
-                        )}
                         {currentRole === "admin" && (
                             <Button
                                 variant="text"
