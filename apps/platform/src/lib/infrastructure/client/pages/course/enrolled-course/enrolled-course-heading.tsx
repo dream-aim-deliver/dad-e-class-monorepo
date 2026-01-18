@@ -21,9 +21,10 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState, useRef } from 'react';
+import { useMemo, useState, useRef, Suspense } from 'react';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/cms-client';
+import StudentGroupButton from './student-group-button';
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -375,6 +376,14 @@ export default function EnrolledCourseHeading({
                         )}
                     </div>
                     <div className="flex flex-wrap gap-2 items-center justify-end">
+                        {currentRole === "student" && (
+                            <Suspense fallback={null}>
+                                <StudentGroupButton
+                                    courseSlug={courseSlug}
+                                    currentRole={currentRole}
+                                />
+                            </Suspense>
+                        )}
                         {currentRole === "admin" && (
                             <Button
                                 variant="text"

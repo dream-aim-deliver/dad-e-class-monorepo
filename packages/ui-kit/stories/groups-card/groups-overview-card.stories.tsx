@@ -25,6 +25,7 @@ export default meta;
 type Story = StoryObj<typeof GroupOverviewCard>;
 
 const sampleGroupDetails = {
+  groupId: 1,
   groupName: 'Marketing Team Group',
   currentStudents: 22,
   totalStudents: 24,

@@ -2265,6 +2265,8 @@ export const DictionarySchema = z.object({
         unknownCreator: z.string(),
         loadMoreButton: z.string(),
         loading: z.string(),
+        couponSuccess: z.string(),
+        couponError: z.string(),
         error: z.object({
           title: z.string(),
           description: z.string(),
@@ -2273,6 +2275,7 @@ export const DictionarySchema = z.object({
       archiveCourseButton: z.string(),
       archivedBadge: z.string(),
       editCourseButton: z.string(),
+      goToGroup: z.string(),
       visitor: z.object({
         courseOutlineTitle: z.string(),
         courseReviewsTitle: z.string(),
