@@ -105,6 +105,7 @@ export function AddGroupSessionDialog({
                 showCloseButton
                 closeOnOverlayClick
                 closeOnEscape
+                className="overflow-visible"
             >
                 <GroupSessionTimeContent
                     startTime={startTime}

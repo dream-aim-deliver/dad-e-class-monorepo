@@ -3069,6 +3069,44 @@ export const DictionarySchema = z.object({
         minutes: z.string(),
       }),
     }),
+    groupWorkspaceStudent: z.object({
+      title: z.string(),
+      description: z.string(),
+      assignments: z.object({
+        title: z.string(),
+        sortBy: z.string(),
+        selectSort: z.string(),
+        filterButton: z.string(),
+        selectCoursePrompt: z.string(),
+        noAssignmentsFound: z.string(),
+        sortOptions: z.object({
+          title: z.string(),
+          status: z.string(),
+          date: z.string(),
+          student: z.string(),
+        }),
+      }),
+      nextCoachingSession: z.object({
+        title: z.string(),
+        noSession: z.string(),
+        closedSessionsButton: z.string(),
+      }),
+      members: z.object({
+        title: z.string(),
+        searchstudent: z.string(),
+      }),
+      notes: z.object({
+        title: z.string(),
+      }),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        accessDenied: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
     coachingSessions: z.object({
       title: z.string(),
       description: z.string(),

@@ -3012,6 +3012,44 @@ export const DE: TDictionary = {
         minutes: 'Min.',
       },
     },
+    groupWorkspaceStudent: {
+      title: 'Gruppen-Workspace',
+      description: 'Sieh dir deine Gruppe an und verfolge deinen Fortschritt',
+      assignments: {
+        title: 'Aufgaben',
+        sortBy: 'Sortieren nach',
+        selectSort: 'Sortieroption auswählen',
+        filterButton: 'Filter',
+        selectCoursePrompt: 'Bitte wähle einen Kurs aus, um Aufgaben anzuzeigen',
+        noAssignmentsFound: 'Keine Aufgaben gefunden',
+        sortOptions: {
+          title: 'Titel (A-Z)',
+          status: 'Status',
+          date: 'Datum (Neueste)',
+          student: 'Schüler (A-Z)',
+        },
+      },
+      nextCoachingSession: {
+        title: 'Nächste Sitzung',
+        noSession: 'Keine bevorstehende Coaching-Sitzung geplant',
+        closedSessionsButton: 'Geschlossene Sitzungen',
+      },
+      members: {
+        title: 'Gruppenmitglieder',
+        searchstudent: 'Schüler suchen',
+      },
+      notes: {
+        title: 'Gruppennotizen',
+      },
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden des Gruppen-Workspace ist ein Fehler aufgetreten.',
+        accessDenied: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, auf diesen Gruppen-Workspace zuzugreifen.',
+        },
+      },
+    },
     coachingSessions: {
       title: 'Coaching-Sitzungen',
       description: 'Verwalte und betrachte alle Coaching-Sitzungen deiner Plattform',

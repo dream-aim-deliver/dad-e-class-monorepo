@@ -3009,6 +3009,44 @@ export const EN: TDictionary = {
         minutes: 'min',
       },
     },
+    groupWorkspaceStudent: {
+      title: 'Group Workspace',
+      description: 'View your group and track your progress',
+      assignments: {
+        title: 'Assignments',
+        sortBy: 'Sort by',
+        selectSort: 'Select sort option',
+        filterButton: 'Filters',
+        selectCoursePrompt: 'Please select a course to view assignments',
+        noAssignmentsFound: 'No assignments found',
+        sortOptions: {
+          title: 'Title (A-Z)',
+          status: 'Status',
+          date: 'Date (Latest)',
+          student: 'Student (A-Z)',
+        },
+      },
+      nextCoachingSession: {
+        title: 'Next session',
+        noSession: 'No upcoming coaching session scheduled',
+        closedSessionsButton: 'Closed sessions',
+      },
+      members: {
+        title: 'Group Members',
+        searchstudent: 'search student',
+      },
+      notes: {
+        title: 'Group Notes',
+      },
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading the group workspace.',
+        accessDenied: {
+          title: 'Access Denied',
+          description: 'You do not have permission to access this group workspace.',
+        },
+      },
+    },
     coachingSessions: {
       title: 'Coaching Sessions',
       description: 'Manage and view all coaching sessions across your platform',
