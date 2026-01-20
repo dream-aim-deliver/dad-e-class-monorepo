@@ -53,7 +53,9 @@ export function CourseAssignmentsList({
     isArchived,
 }: CourseAssignmentsListProps) {
     const locale = useLocale() as TLocale;
-    const t = useTranslations('pages.groupWorkspaceCoach');
+    const tCoach = useTranslations('pages.groupWorkspaceCoach');
+    const tStudent = useTranslations('pages.groupWorkspaceStudent');
+    const t = role === 'coach' ? tCoach : tStudent;
 
     // Show "select a course" message if no course is selected
     if (!courseSlug || courseSlug === '') {
@@ -89,7 +91,9 @@ function CourseAssignmentsListContent({
 }: CourseAssignmentsListProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
-    const t = useTranslations('pages.groupWorkspaceCoach');
+    const tCoach = useTranslations('pages.groupWorkspaceCoach');
+    const tStudent = useTranslations('pages.groupWorkspaceStudent');
+    const t = role === 'coach' ? tCoach : tStudent;
     const paginationTranslations = useTranslations('components.paginationButton');
 
     // Determine request type based on role

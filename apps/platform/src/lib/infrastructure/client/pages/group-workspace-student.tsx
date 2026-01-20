@@ -35,7 +35,7 @@ export default function GroupWorkspaceStudent({
 }: GroupWorkspaceStudentProps) {
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();
-  const t = useTranslations('pages.groupWorkspaceCoach');
+  const t = useTranslations('pages.groupWorkspaceStudent');
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
   const paginationTranslations = useTranslations('components.paginationButton');
 
