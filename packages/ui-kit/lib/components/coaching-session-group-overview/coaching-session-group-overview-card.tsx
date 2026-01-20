@@ -178,7 +178,7 @@ type CoachUnscheduledCard = {
     onClickCourse?: () => void;
     onClickGroup?: () => void;
     onClickCreator?: () => void;
-    onClickScheduleSession: () => void;
+    onClickScheduleSession?: () => void;
 };
 
 /**

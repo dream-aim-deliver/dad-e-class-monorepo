@@ -384,7 +384,19 @@ export default function GroupWorkspaceCoach({
 
       const key = member.id ?? index;
 
-      // Handle different status cases based on lastAssignment
+      // Check course completion FIRST - if courseCompletionDate is set, student completed the course
+      if (member.courseCompletionDate) {
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="passed"
+            completedCourseDate={new Date(member.courseCompletionDate)}
+          />
+        );
+      }
+
+      // Then check assignment status
       if (!member.lastAssignment) {
         // No assignment case
         return (
@@ -433,12 +445,13 @@ export default function GroupWorkspaceCoach({
       }
 
       if (status === "passed") {
+        // Assignment passed but course not yet completed
         return (
           <StudentCard
             {...baseProps}
             key={key}
-            status="passed"
-            completedCourseDate={member.courseCompletionDate ? new Date(member.courseCompletionDate) : new Date()}
+            status="assignment-passed"
+            assignmentTitle={title}
           />
         );
       }
@@ -551,13 +564,24 @@ export default function GroupWorkspaceCoach({
             <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%] whitespace-nowrap'>
               {t('nextCoachingSession.title')}
             </h3>
-            <Button
-              variant="text"
-              text={t('nextCoachingSession.closedSessionsButton')}
-              onClick={() => {
-                router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}/coaching-sessions`);
-              }}
-            />
+            <div className='flex items-center gap-2'>
+              <Button
+                variant="secondary"
+                size="medium"
+                text={t('nextCoachingSession.scheduleSession')}
+                onClick={() => {
+                  router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}/calendar`);
+                }}
+              />
+              <Button
+                variant="secondary"
+                size="medium"
+                text={t('nextCoachingSession.closedSessionsButton')}
+                onClick={() => {
+                  router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}/coaching-sessions`);
+                }}
+              />
+            </div>
           </div>
           {/* Group Coaching Sessions */}
           {nextSessionData.nextSession ? (
@@ -580,9 +604,6 @@ export default function GroupWorkspaceCoach({
                 if (nextSessionData?.nextSession?.course.slug && nextSessionData?.nextSession?.groupId) {
                   router.push(`/${locale}/workspace/courses/${nextSessionData?.nextSession?.course.slug}/groups/${nextSessionData?.nextSession?.groupId}`)
                 }
-              }}
-              onClickScheduleSession={() => {
-                router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}/calendar`);
               }}
             />
           ) : (
