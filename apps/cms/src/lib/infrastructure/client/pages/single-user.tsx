@@ -13,6 +13,7 @@
 // For Coach and higher: PersonalProfile, ProfessionalProfile, StudentCourses, CoachCourses, CoachReviews, Roles
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
@@ -21,11 +22,11 @@ import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
 import { useListUserRolesPresenter } from '../hooks/use-list-user-roles-presenter';
 
-// TEMPORARILY DISABLED: These imports will be re-enabled once the app is optimized end-to-end
-// import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
-// import { useListStudentCoursesPresenter } from '../hooks/use-list-student-courses-presenter';
-// import { useListCoachReviewsPresenter } from '../hooks/use-list-coach-reviews-presenter';
-// import { useListCoachCoursesPresenter } from '../hooks/use-list-coach-courses-presenter';
+import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
+import { useListStudentCoursesPresenter } from '../hooks/use-list-student-courses-presenter';
+import { useListCoachReviewsPresenter } from '../hooks/use-list-coach-reviews-presenter';
+import { useListCoachCoursesPresenter } from '../hooks/use-list-coach-courses-presenter';
+import { useGetCoachApplicationPresenter } from '../hooks/use-get-coach-application-presenter';
 import { getHighestRole } from '../../common/utils/role-utils';
 import { TEClassRole } from '@dream-aim-deliver/e-class-cms-rest';
 import Tooltip from 'packages/ui-kit/lib/components/tooltip';
@@ -50,11 +51,11 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
   const [personalProfileVM, setPersonalProfileVM] = useState<viewModels.TGetPersonalProfileViewModel | undefined>(undefined);
   const [userRolesVM, setUserRolesVM] = useState<viewModels.TListUserRolesViewModel | undefined>(undefined);
 
-  // TEMPORARILY DISABLED: These view models will be re-enabled once the app is optimized end-to-end
-  // const [professionalProfileVM, setProfessionalProfileVM] = useState<viewModels.TGetProfessionalProfileViewModel | undefined>(undefined);
-  // const [studentCoursesVM, setStudentCoursesVM] = useState<viewModels.TListStudentCoursesViewModel | undefined>(undefined);
-  // const [coachReviewsVM, setCoachReviewsVM] = useState<viewModels.TListCoachReviewsViewModel | undefined>(undefined);
-  // const [coachCoursesVM, setCoachCoursesVM] = useState<viewModels.TListCoachCoursesViewModel | undefined>(undefined);
+  const [professionalProfileVM, setProfessionalProfileVM] = useState<viewModels.TGetProfessionalProfileViewModel | undefined>(undefined);
+  const [studentCoursesVM, setStudentCoursesVM] = useState<viewModels.TListStudentCoursesViewModel | undefined>(undefined);
+  const [coachReviewsVM, setCoachReviewsVM] = useState<viewModels.TListCoachReviewsViewModel | undefined>(undefined);
+  const [coachCoursesVM, setCoachCoursesVM] = useState<viewModels.TListCoachCoursesViewModel | undefined>(undefined);
+  const [coachApplicationVM, setCoachApplicationVM] = useState<viewModels.TGetCoachApplicationViewModel | undefined>(undefined);
 
   // Role management state
   const [selectedRole, setSelectedRole] = useState<string>('');
@@ -62,26 +63,27 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
   const [roleUpdateSuccess, setRoleUpdateSuccess] = useState<string | null>(null);
   const [roleUpdateError, setRoleUpdateError] = useState<string | null>(null);
 
-  // TEMPORARILY DISABLED: Review sorting state will be re-enabled once the app is optimized end-to-end
-  // const [reviewSortOrder, setReviewSortOrder] = useState<string>('highest');
+  const [reviewSortOrder, setReviewSortOrder] = useState<string>('highest');
 
   const { presenter: personalProfilePresenter } = useGetPersonalProfilePresenter(setPersonalProfileVM);
   const { presenter: userRolesPresenter } = useListUserRolesPresenter(setUserRolesVM);
 
-  // TEMPORARILY DISABLED: These presenters will be re-enabled once the app is optimized end-to-end
-  // const { presenter: professionalProfilePresenter } = useGetProfessionalProfilePresenter(setProfessionalProfileVM);
-  // const { presenter: studentCoursesPresenter } = useListStudentCoursesPresenter(setStudentCoursesVM);
-  // const { presenter: coachReviewsPresenter } = useListCoachReviewsPresenter(setCoachReviewsVM);
-  // const { presenter: coachCoursesPresenter } = useListCoachCoursesPresenter(setCoachCoursesVM);
+  const { presenter: professionalProfilePresenter } = useGetProfessionalProfilePresenter(setProfessionalProfileVM);
+  const { presenter: studentCoursesPresenter } = useListStudentCoursesPresenter(setStudentCoursesVM);
+  const { presenter: coachReviewsPresenter } = useListCoachReviewsPresenter(setCoachReviewsVM);
+  const { presenter: coachCoursesPresenter } = useListCoachCoursesPresenter(setCoachCoursesVM);
+  const { presenter: coachApplicationPresenter } = useGetCoachApplicationPresenter(setCoachApplicationVM);
 
   const [personalProfileResponse, { refetch: refetchPersonalProfile }] = trpc.getPersonalProfile.useSuspenseQuery({ username: username });
   const [userRolesResponse, { refetch: refetchUserRoles }] = trpc.listUserRoles.useSuspenseQuery({ username: username });
 
-  // TEMPORARILY DISABLED: These queries will be re-enabled once the app is optimized end-to-end
-  // const [professionalProfileResponse, { refetch: refetchProfessionalProfile }] = trpc.getProfessionalProfile.useSuspenseQuery({ username: username });
-  // const [studentCoursesResponse] = trpc.listStudentCourses.useSuspenseQuery({ studentUsername: username });
-  // const [coachReviewsResponse] = trpc.listCoachReviews.useSuspenseQuery({ coachUsername: username });
-  // const [coachCoursesResponse] = trpc.listCoachCourses.useSuspenseQuery({ forStudent: false, coachUsername: username });
+  const [professionalProfileResponse] = trpc.getProfessionalProfile.useSuspenseQuery({ username: username });
+  const [studentCoursesResponse] = trpc.listStudentCourses.useSuspenseQuery({ studentUsername: username });
+  const [coachReviewsResponse] = trpc.listCoachReviews.useSuspenseQuery({ coachUsername: username });
+  const [coachCoursesResponse] = trpc.listCoachCourses.useSuspenseQuery({ forStudent: false, coachUsername: username });
+
+  // Query coach application (for students who may have applied to become a coach)
+  const [coachApplicationResponse] = trpc.getCoachApplication.useSuspenseQuery({ username: username });
 
   // Mutation for updating user roles
   const updateUserRolesMutation = trpc.updateUserRoles.useMutation();
@@ -92,15 +94,16 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
   // @ts-ignore
   userRolesPresenter.present(userRolesResponse, userRolesVM);
 
-  // TEMPORARILY DISABLED: These presenters will be re-enabled once the app is optimized end-to-end
-  // // @ts-ignore
-  // professionalProfilePresenter.present(professionalProfileResponse, professionalProfileVM);
-  // // @ts-ignore
-  // studentCoursesPresenter.present(studentCoursesResponse, studentCoursesVM);
-  // // @ts-ignore
-  // coachReviewsPresenter.present(coachReviewsResponse, coachReviewsVM);
-  // // @ts-ignore
-  // coachCoursesPresenter.present(coachCoursesResponse, coachCoursesVM);
+  // @ts-ignore
+  professionalProfilePresenter.present(professionalProfileResponse, professionalProfileVM);
+  // @ts-ignore
+  studentCoursesPresenter.present(studentCoursesResponse, studentCoursesVM);
+  // @ts-ignore
+  coachReviewsPresenter.present(coachReviewsResponse, coachReviewsVM);
+  // @ts-ignore
+  coachCoursesPresenter.present(coachCoursesResponse, coachCoursesVM);
+  // @ts-ignore
+  coachApplicationPresenter.present(coachApplicationResponse, coachApplicationVM);
 
   // Loading state - only for page-critical data
   if (!personalProfileVM || !userRolesVM) {
@@ -124,6 +127,17 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
     );
   }
 
+  // User truly not found - both profile AND roles fail
+  if (personalProfileVM.mode === 'not-found' && userRolesVM.mode === 'not-found') {
+    return (
+      <DefaultError
+        type="simple"
+        locale={currentLocale}
+        title={t('error.notFound.title')}
+        description={t('error.notFound.description')}
+      />
+    );
+  }
 
   const personalProfile = personalProfileVM.mode === 'default' ? personalProfileVM.data : null;
   const userRoles = userRolesVM.mode === 'default' ? userRolesVM.data : null;
@@ -133,32 +147,36 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
     ? `${personalProfile.profile.name} ${personalProfile.profile.surname}`
     : personalProfile?.profile.name || personalProfile?.profile.surname || username;
 
-  // TEMPORARILY DISABLED: These data extractions will be re-enabled once the app is optimized end-to-end
-  // const professionalProfile = professionalProfileVM.mode === 'default' ? professionalProfileVM.data : null;
-  // const studentCourses = studentCoursesVM?.mode === 'default' && studentCoursesVM.data
-  //   ? studentCoursesVM.data.courses || []
-  //   : [];
-  // const coachCourses = coachCoursesVM?.mode === 'default' && coachCoursesVM.data
-  //   ? coachCoursesVM.data.courses || []
-  //   : [];
-  // const coachReviews = coachReviewsVM?.mode === 'default' && coachReviewsVM.data
-  //   ? coachReviewsVM.data.reviews || []
-  //   : [];
-  // const averageRating = coachReviews && coachReviews.length > 0
-  //   ? coachReviews.reduce((sum, review) => sum + (review.rating || 0), 0) / coachReviews.length
-  //   : 0;
-  // const totalReviews = coachReviews?.length || 0;
-  // const isCoachOrHigher = userRoles?.roles && userRoles.roles.some(role =>
-  //   ['coach', 'course-creator', 'admin'].includes(role.toLowerCase())
-  // );
-  // const sortedReviews = [...coachReviews].sort((a, b) => {
-  //   if (reviewSortOrder === 'highest') {
-  //     return (b.rating || 0) - (a.rating || 0);
-  //   } else if (reviewSortOrder === 'lowest') {
-  //     return (a.rating || 0) - (b.rating || 0);
-  //   }
-  //   return 0;
-  // });
+  const professionalProfile = professionalProfileVM?.mode === 'default' ? professionalProfileVM.data : null;
+  const studentCourses = studentCoursesVM?.mode === 'default' && studentCoursesVM.data
+    ? studentCoursesVM.data.courses || []
+    : [];
+  const coachCourses = coachCoursesVM?.mode === 'default' && coachCoursesVM.data
+    ? coachCoursesVM.data.courses || []
+    : [];
+  const coachReviews = coachReviewsVM?.mode === 'default' && coachReviewsVM.data
+    ? coachReviewsVM.data.reviews || []
+    : [];
+  const averageRating = coachReviews && coachReviews.length > 0
+    ? coachReviews.reduce((sum, review) => sum + (review.rating || 0), 0) / coachReviews.length
+    : 0;
+  const totalReviews = coachReviews?.length || 0;
+  const isCoachOrHigher = userRoles?.roles && userRoles.roles.some(role =>
+    ['coach', 'course-creator', 'admin'].includes(role.toLowerCase())
+  );
+  const isStudent = userRoles?.roles && userRoles.roles.includes('student');
+
+  // Extract coach application data from view model
+  const coachApplication = coachApplicationVM?.mode === 'default' ? coachApplicationVM.data : null;
+
+  const sortedReviews = [...coachReviews].sort((a, b) => {
+    if (reviewSortOrder === 'highest') {
+      return (b.rating || 0) - (a.rating || 0);
+    } else if (reviewSortOrder === 'lowest') {
+      return (a.rating || 0) - (b.rating || 0);
+    }
+    return 0;
+  });
 
   // Handle role change
   const handleRoleChange = (value: string | string[] | null) => {
@@ -216,12 +234,11 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
     setSelectedRole('');
   };
 
-  // TEMPORARILY DISABLED: Review sort handler will be re-enabled once the app is optimized end-to-end
-  // const handleReviewSortChange = (value: string | string[] | null) => {
-  //   if (typeof value === 'string') {
-  //     setReviewSortOrder(value);
-  //   }
-  // };
+  const handleReviewSortChange = (value: string | string[] | null) => {
+    if (typeof value === 'string') {
+      setReviewSortOrder(value);
+    }
+  };
 
   const roleOptions = [
     { label: tRoles('student'), value: 'student' },
@@ -230,11 +247,10 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
     { label: tRoles('admin'), value: 'admin' },
   ];
 
-  // TEMPORARILY DISABLED: Review sort options will be re-enabled once the app is optimized end-to-end
-  // const reviewSortOptions = [
-  //   { label: t('highestRating'), value: 'highest' },
-  //   { label: t('lowestRating'), value: 'lowest' },
-  // ];
+  const reviewSortOptions = [
+    { label: t('highestRating'), value: 'highest' },
+    { label: t('lowestRating'), value: 'lowest' },
+  ];
 
   // Check if user is superadmin - if so, disable role changes
   const isSuperadmin = userRoles?.roles && userRoles.roles.includes('superadmin');
@@ -258,6 +274,14 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
           onClose={() => setRoleUpdateError(null)}
         />
       )}
+
+      {/* Back Link */}
+      <Link
+        href={`/${locale}/platform/${platformSlug}/${platformLocale}/users`}
+        className="text-sm text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1 w-fit"
+      >
+        ← {t('backToUsers')}
+      </Link>
 
       {/* Hero Section with Personal & Professional Profile */}
       <div className="flex flex-col gap-6 ">
@@ -283,7 +307,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                 </div>
               ) : (
                 <div className="flex flex-row min-w-[200px] gap-1 items-center">
-                  <Tooltip text='' description='After changing roles, it may take up to 15 minutes for the system to fully update.' tipPosition='bottom'/>
+                  <Tooltip text='' description='After changing roles, it may take up to 15 minutes for the system to fully update.' tipPosition='bottom' />
                   <Dropdown
                     type="simple"
                     options={roleOptions}
@@ -314,8 +338,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                 );
               })()}
 
-              {/* TEMPORARILY DISABLED: Reviews display will be re-enabled once the app is optimized end-to-end */}
-              {/* {totalReviews > 0 && (
+              {totalReviews > 0 && (
                 <div className="flex flex-row gap-2 items-center">
                   <StarRating
                     rating={averageRating}
@@ -328,7 +351,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                     ({totalReviews})
                   </span>
                 </div>
-              )} */}
+              )}
             </div>
           </div>
         </div>
@@ -336,28 +359,66 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
         {/* Personal Profile Information */}
         <div className="flex flex-col gap-3 border-t border-card-stroke pt-4">
           <h3 className="text-text-primary">{t('personalInformation')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <p className="text-sm text-text-secondary">{t('name')}</p>
-              <p className="text-text-primary">{personalProfile?.profile.name || '-'}</p>
+          {personalProfile ? (
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <p className="text-sm text-text-secondary">{t('name')}</p>
+                  <p className="text-text-primary">{personalProfile.profile.name || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">{t('surname')}</p>
+                  <p className="text-text-primary">{personalProfile.profile.surname || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">{t('email')}</p>
+                  <p className="text-text-primary">{personalProfile.profile.email || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">{t('phone')}</p>
+                  <p className="text-text-primary">{personalProfile.profile.phone || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">{t('dateOfBirth')}</p>
+                  <p className="text-text-primary">
+                    {personalProfile?.profile?.dateOfBirth
+                      ? new Date(personalProfile.profile.dateOfBirth).toLocaleDateString(currentLocale, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
+                      : '-'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Company Information (if representing a company) */}
+              {personalProfile?.profile?.companyDetails?.isRepresentingCompany && (
+                <div className="border-t border-card-stroke/50 pt-4">
+                  <h4 className="text-text-secondary text-sm font-medium mb-3">{t('companyInformation')}</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-text-secondary">{t('companyName')}</p>
+                      <p className="text-text-primary">{personalProfile.profile.companyDetails.companyName ?? '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-text-secondary">{t('companyUid')}</p>
+                      <p className="text-text-primary">{personalProfile.profile.companyDetails.companyUid ?? '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-text-secondary">{t('companyAddress')}</p>
+                      <p className="text-text-primary">{personalProfile.profile.companyDetails.companyAddress ?? '-'}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            <div>
-              <p className="text-sm text-text-secondary">{t('surname')}</p>
-              <p className="text-text-primary">{personalProfile?.profile.surname || '-'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-text-secondary">{t('email')}</p>
-              <p className="text-text-primary">{personalProfile?.profile.email || '-'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-text-secondary">{t('phone')}</p>
-              <p className="text-text-primary">{personalProfile?.profile.phone || '-'}</p>
-            </div>
-          </div>
+          ) : (
+            <p className="text-text-secondary">{t('noPersonalProfile')}</p>
+          )}
         </div>
 
-        {/* TEMPORARILY DISABLED: Professional Profile section will be re-enabled once the app is optimized end-to-end */}
-        {/* {isCoachOrHigher && professionalProfile && (
+        {isCoachOrHigher && professionalProfile && (
           <div className="flex flex-col gap-3 border-t border-card-stroke pt-4">
             <h3 className="text-text-primary">{t('professionalInformation')}</h3>
             <div className="flex flex-col gap-4">
@@ -377,20 +438,212 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                   )}
                 </div>
               </div>
+
+              {/* Links */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                  <p className="text-sm text-text-secondary">{t('linkedinUrl')}</p>
+                  {professionalProfile?.profile?.linkedinUrl ? (
+                    <a
+                      href={professionalProfile.profile.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-button-primary-fill hover:underline"
+                    >
+                      {professionalProfile.profile.linkedinUrl}
+                    </a>
+                  ) : (
+                    <p className="text-text-primary">-</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">{t('portfolioWebsite')}</p>
+                  {professionalProfile?.profile?.portfolioWebsite ? (
+                    <a
+                      href={professionalProfile.profile.portfolioWebsite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-button-primary-fill hover:underline"
+                    >
+                      {professionalProfile.profile.portfolioWebsite}
+                    </a>
+                  ) : (
+                    <p className="text-text-primary">-</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">{t('coachApplication.cv')}</p>
+                  {professionalProfile?.profile?.curriculumVitae?.downloadUrl ? (
+                    <a
+                      href={professionalProfile.profile.curriculumVitae.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-button-primary-fill hover:underline"
+                    >
+                      {t('coachApplication.downloadCv')}
+                    </a>
+                  ) : (
+                    <p className="text-text-primary">-</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Professional Company Information */}
+              {(professionalProfile?.profile?.companyName || professionalProfile?.profile?.companyRole || professionalProfile?.profile?.companyIndustry) && (
+                <div className="border-t border-card-stroke/50 pt-4">
+                  <h4 className="text-text-secondary text-sm font-medium mb-3">{t('professionalCompanyInfo')}</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-text-secondary">{t('companyName')}</p>
+                      <p className="text-text-primary">{professionalProfile?.profile?.companyName ?? '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-text-secondary">{t('companyRole')}</p>
+                      <p className="text-text-primary">{professionalProfile?.profile?.companyRole ?? '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-text-secondary">{t('companyIndustry')}</p>
+                      <p className="text-text-primary">{professionalProfile?.profile?.companyIndustry ?? '-'}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        )} */}
+        )}
+
+        {/* Coach Application Section - for students who have applied to become a coach */}
+        {isStudent && coachApplication && (
+          <div className="flex flex-col gap-3 border-t border-card-stroke pt-4">
+            <div>
+              <h3 className="text-text-primary">{t('coachApplication.title')}</h3>
+              <p className="text-text-secondary text-sm italic mt-1">{t('coachApplication.helperText')}</p>
+            </div>
+
+            {/* Application Submission Date */}
+            <div>
+              <p className="text-sm text-text-secondary">{t('coachApplication.submittedOn')}</p>
+              <p className="text-text-primary">
+                {coachApplication.createdAt
+                  ? new Date(coachApplication.createdAt).toLocaleString(currentLocale, {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
+                  : '-'}
+              </p>
+            </div>
+
+            {/* Professional Profile submitted with the application */}
+            {professionalProfile && (
+              <div className="flex flex-col gap-4 mt-2">
+                <div>
+                  <p className="text-sm text-text-secondary">{t('professionalBio')}</p>
+                  <p className="text-text-primary">{professionalProfile?.profile.bio || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">{t('skills')}</p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {professionalProfile?.profile.skills && professionalProfile.profile.skills.length > 0 ? (
+                      professionalProfile.profile.skills.map((skill, index) => (
+                        <Badge key={index} text={skill.name} variant="primary" size="small" />
+                      ))
+                    ) : (
+                      <p className="text-text-primary">-</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Links */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-sm text-text-secondary">{t('linkedinUrl')}</p>
+                    {professionalProfile?.profile?.linkedinUrl ? (
+                      <a
+                        href={professionalProfile.profile.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-button-primary-fill hover:underline"
+                      >
+                        {professionalProfile.profile.linkedinUrl}
+                      </a>
+                    ) : (
+                      <p className="text-text-primary">-</p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm text-text-secondary">{t('portfolioWebsite')}</p>
+                    {professionalProfile?.profile?.portfolioWebsite ? (
+                      <a
+                        href={professionalProfile.profile.portfolioWebsite}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-button-primary-fill hover:underline"
+                      >
+                        {professionalProfile.profile.portfolioWebsite}
+                      </a>
+                    ) : (
+                      <p className="text-text-primary">-</p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm text-text-secondary">{t('coachApplication.cv')}</p>
+                    {professionalProfile?.profile?.curriculumVitae?.downloadUrl ? (
+                      <a
+                        href={professionalProfile.profile.curriculumVitae.downloadUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-button-primary-fill hover:underline"
+                      >
+                        {t('coachApplication.downloadCv')}
+                      </a>
+                    ) : (
+                      <p className="text-text-primary">-</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Company Information */}
+                {(professionalProfile?.profile?.companyName || professionalProfile?.profile?.companyRole || professionalProfile?.profile?.companyIndustry) && (
+                  <div className="border-t border-card-stroke/50 pt-4">
+                    <h4 className="text-text-secondary text-sm font-medium mb-3">{t('professionalCompanyInfo')}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div>
+                        <p className="text-sm text-text-secondary">{t('companyName')}</p>
+                        <p className="text-text-primary">{professionalProfile?.profile?.companyName ?? '-'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-text-secondary">{t('companyRole')}</p>
+                        <p className="text-text-primary">{professionalProfile?.profile?.companyRole ?? '-'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-text-secondary">{t('companyIndustry')}</p>
+                        <p className="text-text-primary">{professionalProfile?.profile?.companyIndustry ?? '-'}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* TEMPORARILY DISABLED: Student Courses section will be re-enabled once the app is optimized end-to-end */}
-      {/* <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <div className="flex flex-row justify-between items-center">
           <h3>{t('studentCourses')}</h3>
         </div>
         {!studentCoursesVM ? (
           <DefaultLoading locale={currentLocale} variant="minimal" />
         ) : studentCoursesVM.mode === 'kaboom' ? (
-          <DefaultError locale={currentLocale} />
+          <DefaultError
+            type="simple"
+            locale={currentLocale}
+            title={t('error.title')}
+            description={t('error.description')}
+          />
         ) : studentCourses && studentCourses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {studentCourses.map((course) => {
@@ -448,10 +701,9 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
         ) : (
           <p className="text-text-secondary">{t('noCoursesFound')}</p>
         )}
-      </div> */}
+      </div>
 
-      {/* TEMPORARILY DISABLED: Coach Courses section will be re-enabled once the app is optimized end-to-end */}
-      {/* {isCoachOrHigher && (
+      {isCoachOrHigher && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center">
             <h3>{t('coachCourses')}</h3>
@@ -459,7 +711,12 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
           {!coachCoursesVM ? (
             <DefaultLoading locale={currentLocale} variant="minimal" />
           ) : coachCoursesVM.mode === 'kaboom' ? (
-            <DefaultError locale={currentLocale} />
+            <DefaultError
+              type="simple"
+              locale={currentLocale}
+              title={t('error.title')}
+              description={t('error.description')}
+            />
           ) : coachCourses && coachCourses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {coachCourses.map((course) => {
@@ -508,10 +765,9 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
             <p className="text-text-secondary">{t('noCoursesFound')}</p>
           )}
         </div>
-      )} */}
+      )}
 
-      {/* TEMPORARILY DISABLED: Coach Reviews section will be re-enabled once the app is optimized end-to-end */}
-      {/* {isCoachOrHigher && (
+      {isCoachOrHigher && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center">
             <h3>{t('coachReviews')}</h3>
@@ -530,7 +786,12 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
           {!coachReviewsVM ? (
             <DefaultLoading locale={currentLocale} variant="minimal" />
           ) : coachReviewsVM.mode === 'kaboom' ? (
-            <DefaultError locale={currentLocale} />
+            <DefaultError
+              type="simple"
+              locale={currentLocale}
+              title={t('error.title')}
+              description={t('error.description')}
+            />
           ) : coachReviews && coachReviews.length > 0 ? (
             <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-1 grid-cols-1">
               {sortedReviews
@@ -577,7 +838,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
             <p className="text-text-secondary">{t('noReviewsFound')}</p>
           )}
         </div>
-      )} */}
+      )}
 
       {/* Confirmation Modal for Role Changes */}
       {showConfirmation && (
