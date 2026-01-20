@@ -165,3 +165,4 @@ export * from './get-email-config-view-model';
 export * from './save-email-config-view-model';
 export * from './prepare-checkout-view-model';
 export * from './process-purchase-view-model';
+export * from './get-coach-application-view-model';
