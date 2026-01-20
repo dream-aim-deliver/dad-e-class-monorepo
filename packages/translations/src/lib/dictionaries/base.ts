@@ -964,6 +964,7 @@ export const DictionarySchema = z.object({
       course: z.string(),
       waitingFeedbackBadge: z.string(),
       longWaitBadge: z.string(),
+      assignmentPassedBadge: z.string(),
       completedCourseBadge: z.string(),
       completedOnBadge: z.string(),
       you: z.string(),

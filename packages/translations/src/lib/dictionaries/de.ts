@@ -978,6 +978,7 @@ export const DE: TDictionary = {
       course: 'Kurs',
       waitingFeedbackBadge: 'Wartet auf Rückmeldung',
       longWaitBadge: 'Wartet seit über 48 Stunden',
+      assignmentPassedBadge: 'Aufgabe bestanden',
       completedCourseBadge: 'Kurs abgeschlossen am',
       completedOnBadge: 'Abgeschlossen am',
       you: 'Du',
@@ -2961,7 +2962,7 @@ export const DE: TDictionary = {
         title: 'Gruppenvorstellung',
       },
       assignments: {
-        title: 'Aufgaben',
+        title: 'Zu überprüfende Aufgaben',
         sortBy: 'Sortieren nach',
         selectSort: 'Sortieroption auswählen',
         filterButton: 'Filter',

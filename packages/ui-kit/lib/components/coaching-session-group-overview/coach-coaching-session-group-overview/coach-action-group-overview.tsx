@@ -77,9 +77,9 @@ type CoachActionGroupOverviewProps = Extract<CoachingSessionGroupOverviewCardPro
 export const CoachActionGroupOverview: React.FC<CoachActionGroupOverviewProps> = (props) => {
   const dictionary = getDictionary(props.locale);
 
-  // Special handling for unscheduled sessions - show schedule button
+  // Special handling for unscheduled sessions - show schedule button if callback is provided
   if (props.status === 'unscheduled') {
-    return (
+    return props.onClickScheduleSession ? (
       <Button
         variant="primary"
         size="medium"
@@ -87,7 +87,7 @@ export const CoachActionGroupOverview: React.FC<CoachActionGroupOverviewProps> =
         text={dictionary.components.coachingSessionCard.scheduleSessionText}
         onClick={props.onClickScheduleSession}
       />
-    );
+    ) : null;
   }
 
   switch (props.status) {

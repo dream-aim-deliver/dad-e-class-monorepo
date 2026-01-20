@@ -38,6 +38,11 @@ export interface WaitingFeedbackStudentCardProps
     onViewAssignment: () => void;
 }
 
+export interface AssignmentPassedStudentCardProps extends DefaultStudentCardProps {
+    status: 'assignment-passed';
+    assignmentTitle: string;
+}
+
 export interface CompletedStudentCardProps extends DefaultStudentCardProps {
     status: 'passed';
     completedCourseDate: Date;
@@ -47,6 +52,7 @@ export type StudentCardProps =
     | NoAssignmentStudentCardProps
     | LongWaitStudentCardProps
     | WaitingFeedbackStudentCardProps
+    | AssignmentPassedStudentCardProps
     | CompletedStudentCardProps;
 
 /**
@@ -213,6 +219,28 @@ export const StudentCard = (props: StudentCardProps) => {
                         />
                     </div>
                 )}
+
+            {/* Assignment passed badge */}
+            {props.status === 'assignment-passed' && (
+                <div className="flex flex-col gap-2 items-start justify-between bg-neutral-800 p-2 rounded-small border border-neutral-700">
+                    <div className="flex flex-row w-full items-center justify-between">
+                        <div className="flex flex-row gap-2 items-center">
+                            <IconAssignment
+                                classNames="text-text-primary"
+                                size="4"
+                            />
+                            <p className="text-md text-text-primary font-bold">
+                                {props.assignmentTitle}
+                            </p>
+                        </div>
+                    </div>
+                    <Badge
+                        variant="successprimary"
+                        size="small"
+                        text={dictionary.assignmentPassedBadge}
+                    />
+                </div>
+            )}
 
             {/* Course completed badge */}
             <div className="flex flex-col mb-2 items-start justify-between">
