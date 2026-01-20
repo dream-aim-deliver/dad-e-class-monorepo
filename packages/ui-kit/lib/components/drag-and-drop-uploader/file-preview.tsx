@@ -242,11 +242,9 @@ export const FilePreview = (props: FilePreviewProps) => {
                             {uploadResponse.name}
                         </span>
                         <span className="text-xs text-text-secondary">
-                            {(
-                                (uploadResponse.size as number) /
-                                (1024 * 1024)
-                            ).toFixed(2)}{' '}
-                            MB
+                            {(uploadResponse.size as number) >= 1024 * 1024 * 1024
+                                ? `${((uploadResponse.size as number) / (1024 * 1024 * 1024)).toFixed(2)} GB`
+                                : `${((uploadResponse.size as number) / (1024 * 1024)).toFixed(2)} MB`}
                         </span>
                     </>
                 )}

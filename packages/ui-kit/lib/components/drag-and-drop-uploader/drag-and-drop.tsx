@@ -75,8 +75,11 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
       onDrop: (acceptedFiles: File[], fileRejections) => {
         setError(null);
         if (fileRejections.length > 0) {
+          const sizeDisplay = maxSize >= 1024 * 1024 * 1024
+            ? `${maxSize / (1024 * 1024 * 1024)} GB`
+            : `${maxSize / (1024 * 1024)} MB`;
           setError(
-            `Some files were rejected. Max size: ${maxSize / (1024 * 1024)} MB. Accepted types: ${acceptedFileTypes.join(', ')}`,
+            `Some files were rejected. Max size: ${sizeDisplay}. Accepted types: ${acceptedFileTypes.join(', ')}`,
           );
         } else if (!multiple && acceptedFiles.length > 1) {
           // Extra check for single file mode
@@ -111,7 +114,9 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
             </p>
           </div>
           <p className="text-xs text-text-secondary flex items-start">
-            <span>{text.maxSizeText}</span>: {maxSize / (1024 * 1024)} MB
+            <span>{text.maxSizeText}</span>: {maxSize >= 1024 * 1024 * 1024
+              ? `${maxSize / (1024 * 1024 * 1024)} GB`
+              : `${maxSize / (1024 * 1024)} MB`}
           </p>
         </div>
       </div>
