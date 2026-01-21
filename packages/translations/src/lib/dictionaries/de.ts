@@ -2698,7 +2698,7 @@ export const DE: TDictionary = {
         visibilityTitle: 'Sichtbarkeit auf der Angebotsseite',
         visibilityDescription: 'Pakete werden nicht automatisch auf der öffentlichen Angebotsseite angezeigt. Um ein Paket sichtbar zu machen, müssen Sie es explizit im Angebotsseiten-Editor (CMS → Angebotsseite) für jede Sprache auswählen, in der es erscheinen soll.',
         languageTitle: 'Sprachunabhängigkeit',
-        languageDescription: 'Pakete sind bewusst nicht direkt mit einer bestimmten Sprache verknüpft – nur die zugehörigen Kurse haben Spracheinstellungen. Dieses Design ermöglicht mehr Flexibilität, einschließlich der Möglichkeit, in Zukunft mehrsprachige Pakete zu erstellen. Daher werden hier alle Pakete unabhängig von der aktuell ausgewählten Inhaltssprache angezeigt.',
+        languageDescription: 'Pakete sind bewusst nicht direkt mit einer bestimmten Sprache verknüpft – nur die zugehörigen Kurse haben Spracheinstellungen. Daher werden hier alle Pakete unabhängig von der aktuell ausgewählten Inhaltssprache angezeigt.',
       },
     },
     listPlatforms: {
