@@ -2696,7 +2696,7 @@ export const EN: TDictionary = {
         visibilityTitle: 'Visibility on Offers Page',
         visibilityDescription: 'Packages are not automatically displayed on the public offers page. To make a package visible, you must explicitly select it in the Offers Page editor (CMS → Offers Page) for each language where you want it to appear.',
         languageTitle: 'Language Independence',
-        languageDescription: 'Packages are intentionally not linked directly to a specific language—only their associated courses carry language settings. This design allows for greater flexibility, including the possibility of creating multi-language packages in the future. As a result, all packages are displayed here regardless of the currently selected content language.',
+        languageDescription: 'Packages are intentionally not linked directly to a specific language—only their associated courses carry language settings. As a result, all packages are displayed here regardless of the currently selected content language.',
       },
     },
     listPlatforms: {
