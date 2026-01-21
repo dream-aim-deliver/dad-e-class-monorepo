@@ -13,7 +13,7 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
     const session = await nextAuth.auth();
     const isLoggedIn = session !== null;
     return (
-        <div className="flex flex-row lg:gap-3 p-5">
+        <div className="flex flex-row lg:gap-3 p-5 overflow-hidden">
             {isLoggedIn && (
                 <div
                     id="sidebar"
@@ -40,7 +40,7 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                     </WorkspaceSidebar>
                 </div>
             )}
-            <div id="content" className="w-full px-5">
+            <div id="content" className="w-full min-w-0 px-5">
                 {props.children}
             </div>
         </div>

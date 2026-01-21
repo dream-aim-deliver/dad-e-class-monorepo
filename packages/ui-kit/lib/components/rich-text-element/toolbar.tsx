@@ -81,7 +81,7 @@ export default function Toolbar({ locale }: isLocalAware) {
   };
   const dictionary = getDictionary(locale);
   return (
-    <div className="sticky top-0 z-10 min-h-14 flex flex-nowrap text-text-primary overflow-x-auto gap-4 bg-base-neutral-700 p-3 shadow-md">
+    <div className="sticky top-0 z-10 min-h-14 flex flex-nowrap text-text-primary overflow-x-auto gap-4 bg-base-neutral-700 p-3 shadow-md w-full">
       <div className="flex items-center space-x-2">
         <select
           className="px-4 py-2 border border-neutral-500 rounded-md focus:outline-none focus:ring-1"
