@@ -491,6 +491,7 @@ export const DictionarySchema = z.object({
       coursesText: z.string(),
       saveText: z.string(),
       archivedBadge: z.string(),
+      publishedBadge: z.string(),
       editButton: z.string(),
       publishButton: z.string(),
       archiveButton: z.string(),
@@ -675,6 +676,7 @@ export const DictionarySchema = z.object({
       uploadVideo: z.object({
         choseVideos: z.string(),
         description: z.string(),
+        processingHelperText: z.string(),
       }),
       uploadFile: z.object({
         choseFiles: z.string(),
@@ -1745,6 +1747,7 @@ export const DictionarySchema = z.object({
         uploadThumbnailLabel: z.string(),
         heroVideoTitle: z.string(),
         heroVideoDescription: z.string(),
+        videoProcessingHelperText: z.string(),
       }),
       coachingDemandSection: z.object({
         heading: z.string(),
@@ -2748,6 +2751,12 @@ export const DictionarySchema = z.object({
           title: z.string(),
           description: z.string(),
         }),
+      }),
+      helperText: z.object({
+        visibilityTitle: z.string(),
+        visibilityDescription: z.string(),
+        languageTitle: z.string(),
+        languageDescription: z.string(),
       }),
     }),
     listPlatforms: z.object({
