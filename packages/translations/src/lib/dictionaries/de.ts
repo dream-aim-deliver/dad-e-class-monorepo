@@ -1239,6 +1239,7 @@ export const DE: TDictionary = {
       coupons: 'Gutscheine',
       yourCourses: 'Ihre Kurse',
       groups: 'Gruppen',
+      groupLabel: "Gruppe '{name}'",
       coachingSessionReviews: 'Coaching-Sitzungsbewertungen',
       cmsSettings: 'Einstellungen',
       transactions: 'Transaktionen',

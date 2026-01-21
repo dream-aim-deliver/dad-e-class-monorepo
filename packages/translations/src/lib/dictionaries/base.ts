@@ -1222,6 +1222,7 @@ export const DictionarySchema = z.object({
       coupons: z.string(),
       yourCourses: z.string(),
       groups: z.string(),
+      groupLabel: z.string(),
       coachingSessionReviews: z.string(),
       cmsSettings: z.string(),
       transactions: z.string(),

@@ -3,12 +3,11 @@
 // Usecases: createGroupCoachingSession (NOT IMPLEMENTED), listGroupCoachingSessions, listCoachingOfferings
 // User Types: Coach
 
-import { HydrateClient, prefetch, trpc } from '../config/trpc/server';
+import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import AddGroupSession from '../../client/pages/add-group-session';
 import { TLocale } from '@maany_shr/e-class-translations';
-import MockTRPCClientProviders from '../../client/trpc/mock-client-providers';
 
 interface AddGroupSessionServerComponentProps {
   locale: TLocale;
@@ -22,6 +21,13 @@ export default async function AddGroupSessionServerComponent(
 
   // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
   // React will stream HTML while queries are pending
+  prefetch(trpc.getGroupIntroduction.queryOptions({
+    courseSlug: props.courseSlug,
+    additionalParams: {
+      groupId: parseInt(props.groupId),
+      requestType: 'requestForCoach',
+    },
+  }));
   prefetch(trpc.listGroupCoachingSessions.queryOptions({
     groupId: parseInt(props.groupId),
   }));
@@ -30,15 +36,13 @@ export default async function AddGroupSessionServerComponent(
 
   return (
     <HydrateClient>
-      <MockTRPCClientProviders>
-        <Suspense fallback={<DefaultLoadingWrapper />}>
-          <AddGroupSession
-            locale={props.locale}
-            courseSlug={props.courseSlug}
-            groupId={props.groupId}
-          />
-        </Suspense>
-      </MockTRPCClientProviders>
+      <Suspense fallback={<DefaultLoadingWrapper />}>
+        <AddGroupSession
+          locale={props.locale}
+          courseSlug={props.courseSlug}
+          groupId={props.groupId}
+        />
+      </Suspense>
     </HydrateClient>
   );
 }
