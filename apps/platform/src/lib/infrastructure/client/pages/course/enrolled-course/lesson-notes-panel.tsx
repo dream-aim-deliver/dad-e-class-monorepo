@@ -90,7 +90,7 @@ export default function LessonNotesPanel({ lessonId, isArchived }: LessonNotesPa
 
     if (isLoadingNote) {
         return (
-            <div className="w-full lg:w-[350px] xl:w-[400px] shrink min-w-0 sticky top-4 h-fit">
+            <div className="w-full lg:basis-[350px] xl:basis-[400px] shrink min-w-[280px] sticky top-4 h-fit">
                 <DefaultLoading locale={locale} variant="minimal" />
             </div>
         );
@@ -106,7 +106,7 @@ export default function LessonNotesPanel({ lessonId, isArchived }: LessonNotesPa
 
     return (
         <>
-            <div className="w-full lg:w-[350px] xl:w-[400px] shrink min-w-0 sticky top-4 h-fit">
+            <div className="w-full lg:basis-[350px] xl:basis-[400px] shrink min-w-[280px] sticky top-4 h-fit">
                 <LessonNoteBuilderView
                     key={componentKey}
                     id={lessonId}
