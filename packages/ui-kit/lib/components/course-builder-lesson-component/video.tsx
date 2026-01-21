@@ -163,6 +163,9 @@ export function DesignerComponent({
                 isDeletionAllowed={true}
                 uploadProgress={uploadProgress}
             />
+            <p className="text-xs text-text-secondary mt-2">
+                {dictionary.components.uploadingSection.uploadVideo.processingHelperText}
+            </p>
         </DesignerLayout>
     );
 }

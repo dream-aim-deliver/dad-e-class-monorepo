@@ -205,6 +205,9 @@ export default function HeroSection({
                         uploadProgress={videoUploadProgress}
                         isDeletionAllowed
                     />
+                    <p className="text-xs text-text-secondary mt-2">
+                        {t.videoProcessingHelperText}
+                    </p>
                 </div>
             </div>
         </div>

@@ -486,6 +486,7 @@ export const EN: TDictionary = {
       coursesText: 'offers',
       saveText: 'save',
       archivedBadge: 'Archived',
+      publishedBadge: 'Published',
       editButton: 'Edit',
       publishButton: 'Publish',
       archiveButton: 'Archive',
@@ -671,6 +672,7 @@ export const EN: TDictionary = {
       uploadVideo: {
         choseVideos: 'Choose videos',
         description: 'or drag and drop videos here',
+        processingHelperText: 'After uploading, videos are processed in the background. During this time, users viewing the content will see a "Video does not exist" message. This is normal and may take a few minutes. Large videos (hundreds of MB or more) may take longer. If the video hasn\'t appeared after a couple of hours, please contact support.',
       },
       uploadFile: {
         choseFiles: 'Choose files',
@@ -1754,6 +1756,7 @@ export const EN: TDictionary = {
         uploadThumbnailLabel: 'Upload Thumbnail',
         heroVideoTitle: 'Hero Video',
         heroVideoDescription: 'Upload a video for the hero section. The video will be displayed prominently on the homepage.',
+        videoProcessingHelperText: 'After uploading, videos are processed in the background. During this time, users viewing the content will see a "Video does not exist" message. This is normal and may take a few minutes. Large videos (hundreds of MB or more) may take longer. If the video hasn\'t appeared after a couple of hours, please contact support.',
       },
       coachingDemandSection: {
         heading: 'Coaching On Demand Section',
@@ -2688,6 +2691,12 @@ export const EN: TDictionary = {
           title: 'No Packages Found',
           description: 'There are no packages to display.',
         },
+      },
+      helperText: {
+        visibilityTitle: 'Visibility on Offers Page',
+        visibilityDescription: 'Packages are not automatically displayed on the public offers page. To make a package visible, you must explicitly select it in the Offers Page editor (CMS → Offers Page) for each language where you want it to appear.',
+        languageTitle: 'Language Independence',
+        languageDescription: 'Packages are intentionally not linked directly to a specific language—only their associated courses carry language settings. This design allows for greater flexibility, including the possibility of creating multi-language packages in the future. As a result, all packages are displayed here regardless of the currently selected content language.',
       },
     },
     listPlatforms: {

@@ -489,6 +489,7 @@ export const DE: TDictionary = {
       coursesText: 'Angebote',
       saveText: 'Speichern',
       archivedBadge: 'Archiviert',
+      publishedBadge: 'Veröffentlicht',
       editButton: 'Bearbeiten',
       publishButton: 'Veröffentlichen',
       archiveButton: 'Archivieren',
@@ -678,7 +679,7 @@ export const DE: TDictionary = {
       uploadVideo: {
         choseVideos: "Videos auswählen",
         description: "oder Videos per Drag & Drop reinziehen",
-
+        processingHelperText: 'Nach dem Hochladen werden Videos im Hintergrund verarbeitet. Während dieser Zeit sehen Nutzer, die den Inhalt aufrufen, die Meldung „Video existiert nicht". Das ist normal und kann einige Minuten dauern. Große Videos (Hunderte von MB oder mehr) können länger dauern. Wenn das Video nach einigen Stunden nicht erschienen ist, wenden Sie sich bitte an den Support.',
       },
     },
     formRenderer: {
@@ -1757,6 +1758,7 @@ export const DE: TDictionary = {
         uploadThumbnailLabel: 'Vorschaubild hochladen',
         heroVideoTitle: 'Hero-Video',
         heroVideoDescription: 'Lade ein Video für den Hero-Bereich hoch. Das Video wird prominent auf der Startseite angezeigt.',
+        videoProcessingHelperText: 'Nach dem Hochladen werden Videos im Hintergrund verarbeitet. Während dieser Zeit sehen Nutzer, die den Inhalt aufrufen, die Meldung „Video existiert nicht". Das ist normal und kann einige Minuten dauern. Große Videos (Hunderte von MB oder mehr) können länger dauern. Wenn das Video nach einigen Stunden nicht erschienen ist, wenden Sie sich bitte an den Support.',
       },
       coachingDemandSection: {
         heading: 'Coaching On Demand Section',
@@ -2691,6 +2693,12 @@ export const DE: TDictionary = {
           title: 'Keine Pakete gefunden',
           description: 'Es gibt keine Pakete anzuzeigen.',
         },
+      },
+      helperText: {
+        visibilityTitle: 'Sichtbarkeit auf der Angebotsseite',
+        visibilityDescription: 'Pakete werden nicht automatisch auf der öffentlichen Angebotsseite angezeigt. Um ein Paket sichtbar zu machen, müssen Sie es explizit im Angebotsseiten-Editor (CMS → Angebotsseite) für jede Sprache auswählen, in der es erscheinen soll.',
+        languageTitle: 'Sprachunabhängigkeit',
+        languageDescription: 'Pakete sind bewusst nicht direkt mit einer bestimmten Sprache verknüpft – nur die zugehörigen Kurse haben Spracheinstellungen. Dieses Design ermöglicht mehr Flexibilität, einschließlich der Möglichkeit, in Zukunft mehrsprachige Pakete zu erstellen. Daher werden hier alle Pakete unabhängig von der aktuell ausgewählten Inhaltssprache angezeigt.',
       },
     },
     listPlatforms: {
