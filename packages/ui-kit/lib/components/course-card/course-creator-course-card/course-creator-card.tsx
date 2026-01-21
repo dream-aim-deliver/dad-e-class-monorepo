@@ -213,7 +213,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             creatorName={author.name}
                             imageUrl={author.image}
                             locale={locale as TLocale}
-                            you={true}
+                            you={false}
                             onClickUser={onClickUser}
                         />}
 
