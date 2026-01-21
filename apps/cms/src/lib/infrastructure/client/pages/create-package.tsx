@@ -137,7 +137,7 @@ export default function CreatePackage() {
     const { presenter: createPresenter } = useCreatePackagePresenter(setCreatePackageViewModel);
 
     // Courses data from TRPC usecase
-    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({ showFilter: "live" });
+    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({ showFilter: "live_all_languages" });
     const allCourses: CourseData[] = (() => {
         console.log('coursesResponse:', coursesResponse);
         if (!coursesResponse.success) {
