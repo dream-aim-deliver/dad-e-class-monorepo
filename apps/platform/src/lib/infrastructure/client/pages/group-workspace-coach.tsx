@@ -344,15 +344,15 @@ export default function GroupWorkspaceCoach({
       onClick: () => router.push(`/${locale}/workspace/courses`),
     },
     {
-      label: courseSlug,
+      label: introductionData.course.title,
       onClick: () => router.push(`/${locale}/courses/${courseSlug}`),
     },
     {
       label: breadcrumbsTranslations('groups'),
-      onClick: () => router.push(`/${locale}/workspace/courses/${courseSlug}/groups`),
+      onClick: () => router.push(`/${locale}/courses/${courseSlug}?tab=groups`),
     },
     {
-      label: introductionData.name,
+      label: breadcrumbsTranslations('groupLabel').replace('{name}', introductionData.name),
       onClick: () => router.push(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}`),
     },
   ];

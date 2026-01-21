@@ -221,11 +221,11 @@ export default function GroupWorkspaceStudent({
       onClick: () => router.push(`/${locale}/workspace/courses`),
     },
     {
-      label: courseSlug,
+      label: introductionData.course.title,
       onClick: () => router.push(`/${locale}/courses/${courseSlug}`),
     },
     {
-      label: introductionData.name,
+      label: breadcrumbsTranslations('groupLabel').replace('{name}', introductionData.name),
       onClick: () => router.push(`/${locale}/courses/${courseSlug}/group`),
     },
   ];
@@ -255,7 +255,19 @@ export default function GroupWorkspaceStudent({
 
       const key = member.id ?? index;
 
-      // Handle different status cases based on lastAssignment
+      // Check course completion FIRST - if courseCompletionDate is set, student completed the course
+      if (member.courseCompletionDate) {
+        return (
+          <StudentCard
+            {...baseProps}
+            key={key}
+            status="passed"
+            completedCourseDate={new Date(member.courseCompletionDate)}
+          />
+        );
+      }
+
+      // Then check assignment status
       if (!member.lastAssignment) {
         // No assignment case
         return (
@@ -304,12 +316,13 @@ export default function GroupWorkspaceStudent({
       }
 
       if (status === "passed") {
+        // Assignment passed but course not yet completed
         return (
           <StudentCard
             {...baseProps}
             key={key}
-            status="passed"
-            completedCourseDate={member.courseCompletionDate ? new Date(member.courseCompletionDate) : new Date()}
+            status="assignment-passed"
+            assignmentTitle={title}
           />
         );
       }

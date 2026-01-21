@@ -28,6 +28,7 @@ import {
 } from './common/group-coaching-calendar-wrappers';
 import { useListGroupCoachingSessionsPresenter } from '../hooks/use-list-group-coaching-sessions-presenter';
 import { useListCoachCoachingSessionsPresenter } from '../hooks/use-list-coach-coaching-sessions-presenter';
+import { useGetGroupIntroductionPresenter } from '../hooks/use-get-group-introduction-presenter';
 import { z } from 'zod';
 
 // TODO: Wire up createGroupCoachingSession usecase when it's implemented
@@ -242,6 +243,20 @@ export default function AddGroupSession({ locale, courseSlug, groupId }: AddGrou
     const mainBreadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const t = useTranslations('pages.addGroupSession');
 
+    // Fetch group introduction to get group name and course title
+    const [groupIntroductionResponse] = trpc.getGroupIntroduction.useSuspenseQuery({
+        courseSlug: courseSlug,
+        additionalParams: {
+            groupId: parseInt(groupId),
+            requestType: 'requestForCoach',
+        },
+    });
+    const [groupIntroductionViewModel, setGroupIntroductionViewModel] =
+        React.useState<viewModels.TGetGroupIntroductionViewModel | undefined>(undefined);
+    const { presenter: introPresenter } = useGetGroupIntroductionPresenter(setGroupIntroductionViewModel);
+    // @ts-ignore
+    introPresenter.present(groupIntroductionResponse, groupIntroductionViewModel);
+
     // Loading state
     if (status === 'loading') {
         return <DefaultLoading locale={currentLocale} />;
@@ -258,6 +273,14 @@ export default function AddGroupSession({ locale, courseSlug, groupId }: AddGrou
             />
         );
     }
+
+    // Get group name and course title from introduction data (fallback to slug/id if not available)
+    const groupName = groupIntroductionViewModel?.mode === 'default'
+        ? groupIntroductionViewModel.data.name
+        : `Group ${groupId}`;
+    const courseTitle = groupIntroductionViewModel?.mode === 'default'
+        ? groupIntroductionViewModel.data.course.title
+        : courseSlug;
 
     return (
         <div className="flex flex-col space-y-2">
@@ -276,15 +299,15 @@ export default function AddGroupSession({ locale, courseSlug, groupId }: AddGrou
                         onClick: () => router.push(`/${currentLocale}/workspace/courses`),
                     },
                     {
-                        label: courseSlug,
-                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}`),
+                        label: courseTitle,
+                        onClick: () => router.push(`/${currentLocale}/courses/${courseSlug}`),
                     },
                     {
                         label: breadcrumbsTranslations('groups'),
-                        onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups`),
+                        onClick: () => router.push(`/${currentLocale}/courses/${courseSlug}?tab=groups`),
                     },
                     {
-                        label: `Group ${groupId}`,
+                        label: breadcrumbsTranslations('groupLabel').replace('{name}', groupName),
                         onClick: () => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups/${groupId}`),
                     },
                     {

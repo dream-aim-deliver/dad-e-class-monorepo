@@ -1235,6 +1235,7 @@ export const EN: TDictionary = {
       coupons: 'Coupons',
       yourCourses: 'Your Courses',
       groups: 'Groups',
+      groupLabel: "Group '{name}'",
       coachingSessionReviews: 'Coaching Session Reviews',
       cmsSettings: 'Settings',
       transactions: 'Transactions',
