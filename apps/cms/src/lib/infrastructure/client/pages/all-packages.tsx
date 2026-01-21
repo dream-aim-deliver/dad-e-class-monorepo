@@ -273,6 +273,18 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
         showArchived={showArchived}
         onClickCheckbox={() => setShowArchived(!showArchived)}
         onCreatePackage={handleCreatePackage}
+        helperContent={
+          <div className="flex flex-col gap-3 bg-card-fill p-4 border border-card-stroke rounded-medium text-sm">
+            <div>
+              <p className="font-semibold text-text-primary text-base">{t('helperText.visibilityTitle')}</p>
+              <p className="text-text-secondary">{t('helperText.visibilityDescription')}</p>
+            </div>
+            <div>
+              <p className="font-semibold text-text-primary text-base">{t('helperText.languageTitle')}</p>
+              <p className="text-text-secondary">{t('helperText.languageDescription')}</p>
+            </div>
+          </div>
+        }
       >
         {packages.map((pkg) => {
           const baseProps = {
@@ -290,6 +302,10 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
             },
             locale: currentLocale,
             onClickEdit: () => handleEditPackage(`${pkg.id}`),
+            onClickGoToPackage: () => window.open(
+              `${platform.domainName}/${platformLocale}/packages/${pkg.id}`,
+              '_blank'
+            ),
           };
 
           if (pkg.status === 'published') {

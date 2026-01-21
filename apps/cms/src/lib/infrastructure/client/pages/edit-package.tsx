@@ -249,14 +249,15 @@ export default function EditPackage({
                         d.courseAmount < derivedSelectedCourseCount,
                 );
             
-            // Map accordion items
+            // Map accordion items - preserve original IDs for existing items
             const accordionItemsPayload = packageDetailsFormData.accordionItems.map((item: AccordionBuilderItem, idx: number) => ({
+                id: item.id ? idToNumber(item.id) : undefined,  // Preserve original ID, undefined for new items
                 title: item.title,
                 description: item.content,
                 position: idx + 1,
                 iconId: idToNumber(item.icon?.id),
             }));
-            
+
             const payload = {
                 id: packageIdInt,
                 title: packageDetailsFormData.packageTitle,
@@ -265,10 +266,7 @@ export default function EditPackage({
                 priceWithCoachings,
                 partialDiscounts: partialDiscountsPayload,
                 showAccordionNumbers: packageDetailsFormData.showListItemNumbers,
-                accordionItems: accordionItemsPayload.map((item, idx) => ({
-                    ...item,
-                    id: idx + 1, // Add required id field
-                })),
+                accordionItems: accordionItemsPayload,
                 featuredImageId: null,
             };
             
