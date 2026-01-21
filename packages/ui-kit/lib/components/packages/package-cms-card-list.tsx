@@ -12,6 +12,8 @@ export interface PackageCmsCardListProps extends isLocalAware {
     showArchived: boolean;
     onClickCheckbox: () => void;
     onCreatePackage: () => void;
+    /** Optional content to render below the title row (e.g., helper text) */
+    helperContent?: ReactNode;
 }
 
 /**
@@ -100,6 +102,7 @@ export function PackageCmsCardList({
     showArchived,
     onClickCheckbox,
     onCreatePackage,
+    helperContent,
 }: PackageCmsCardListProps) {
     const dictionary = getDictionary(locale).components.packages;
 
@@ -155,6 +158,9 @@ export function PackageCmsCardList({
                     </div>
                 </div>
 
+                {/* Helper content (if provided) */}
+                {helperContent}
+
                 {/* Empty state message */}
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                     <p className="text-text-primary text-md">
@@ -194,6 +200,9 @@ export function PackageCmsCardList({
                     />
                 </div>
             </div>
+
+            {/* Helper content (if provided) */}
+            {helperContent}
 
             {/* List of cards */}
             <div className="flex flex-col gap-4 justify-center items-center">
