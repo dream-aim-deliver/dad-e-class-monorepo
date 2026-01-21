@@ -12,6 +12,7 @@ import { useImageComponent } from '../../contexts/image-component-context';
 interface PackageCmsBaseCardProps extends eClassPackage.TEClassPackage, isLocalAware {
     courseCount: number;
     onClickEdit: () => void;
+    onClickGoToPackage: () => void;
 }
 
 export interface PackageCmsPublishedCardProps extends PackageCmsBaseCardProps {
@@ -99,6 +100,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
         imageUrl,
         title,
         onClickEdit,
+        onClickGoToPackage,
         description,
         duration,
         courseCount,
@@ -173,6 +175,15 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                         <Badge
                             text={dictionary.archivedBadge}
                             variant="errorprimary"
+                            className="w-fit h-6"
+                            size="big"
+                        />
+                    )}
+                    {/* Badge for Published Card */}
+                    {props.status === 'published' && (
+                        <Badge
+                            text={dictionary.publishedBadge}
+                            variant="successprimary"
                             className="w-fit h-6"
                             size="big"
                         />
@@ -279,6 +290,14 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                         onClick={onClickEdit}
                         hasIconLeft
                         iconLeft={<IconEdit size="5" />}
+                        className="text-md lg:text-lg w-full md:flex-1"
+                    />
+
+                    <Button
+                        variant="text"
+                        size="big"
+                        text={dictionary.viewPackage}
+                        onClick={onClickGoToPackage}
                         className="text-md lg:text-lg w-full md:flex-1"
                     />
                 </div>

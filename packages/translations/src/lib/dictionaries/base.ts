@@ -500,6 +500,7 @@ export const DictionarySchema = z.object({
       showArchivedText: z.string(),
       createPackageButton: z.string(),
       savingsTooltip: z.string(),
+      viewPackage: z.string(),
     }),
     sideMenu: z.object({
       studentText: z.string(),

@@ -495,6 +495,7 @@ export const EN: TDictionary = {
       showArchivedText: 'Show archived',
       createPackageButton: 'Create Package',
       savingsTooltip: 'You save this amount compared to buying courses and coaching sessions separately',
+      viewPackage: 'View package',
     },
     sideMenu: {
       studentText: 'Student',

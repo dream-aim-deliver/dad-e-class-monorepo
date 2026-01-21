@@ -498,6 +498,7 @@ export const DE: TDictionary = {
       showArchivedText: 'Show archived',
       createPackageButton: 'Create Package',
       savingsTooltip: 'Sie sparen diesen Betrag im Vergleich zum separaten Kauf von Kursen und Coaching-Sitzungen',
+      viewPackage: 'Paket ansehen',
     },
     sideMenu: {
       studentText: 'Studierende',
