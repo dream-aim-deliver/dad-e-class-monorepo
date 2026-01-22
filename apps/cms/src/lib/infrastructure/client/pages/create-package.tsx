@@ -268,10 +268,34 @@ export default function CreatePackage() {
         }
     }, [createPackageMutation.isError, createPackageMutation.error]);
 
+    // Validate accordion items - all must have title and description
+    const validateAccordionItems = useCallback((): string | null => {
+        const items = packageDetailsFormData.accordionItems;
+        if (items.length === 0) return null;
+
+        for (const item of items) {
+            if (!item.title || item.title.trim() === '') {
+                return t('errorMessages.accordionItemTitleRequired');
+            }
+            if (!item.content || item.content.trim() === '') {
+                return t('errorMessages.accordionItemDescriptionRequired');
+            }
+        }
+        return null;
+    }, [packageDetailsFormData.accordionItems, t]);
+
     const handlePublishPackage = useCallback(async () => {
         setIsPublishing(true);
         setErrorMessage(null);
         setSuccessMessage(null);
+
+        // Validate accordion items before submitting
+        const validationError = validateAccordionItems();
+        if (validationError) {
+            setErrorMessage(validationError);
+            setIsPublishing(false);
+            return;
+        }
 
         try {
             // Build payload matching backend contract
@@ -322,7 +346,8 @@ export default function CreatePackage() {
         }
     }, [
         packageDetailsFormData, selectedCourseIds, pricingFormData,
-        coachingIncluded, router, locale, platformSlug, platformLocale, createPackageMutation
+        coachingIncluded, router, locale, platformSlug, platformLocale, createPackageMutation,
+        validateAccordionItems
     ]);
 
     const selectedCourses = allCourses.filter((course) =>

@@ -16,6 +16,7 @@ import { Descendant } from 'slate';
 type ImageFile = z.infer<typeof fileMetadata.FileMetadataImageSchema> | null;
 
 export interface AccordionBuilderItem {
+    id?: string;
     title: string;
     content: string;
     icon: ImageFile;
