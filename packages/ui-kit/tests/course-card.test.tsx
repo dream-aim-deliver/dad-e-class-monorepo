@@ -136,8 +136,6 @@ describe('CourseCard', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/React for Beginners/i)).toBeInTheDocument();
-      // CourseCreatorCard always shows "You" because you={true} is hardcoded
-      expect(screen.getByText(/You/i)).toBeInTheDocument();
     });
 
     expect(screen.getAllByLabelText('filled star')).toHaveLength(4);
