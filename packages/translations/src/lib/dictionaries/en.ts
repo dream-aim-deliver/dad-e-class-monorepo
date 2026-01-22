@@ -2723,6 +2723,8 @@ export const EN: TDictionary = {
       },
       errorMessages: {
         updateFailed: 'Failed to update package. Please try again.',
+        accordionItemTitleRequired: 'All accordion items must have a title.',
+        accordionItemDescriptionRequired: 'All accordion items must have a description.',
       },
       error: {
         title: 'Failed to Load Package',
@@ -2789,6 +2791,8 @@ export const EN: TDictionary = {
       },
       errorMessages: {
         createFailed: 'Failed to create package. Please try again.',
+        accordionItemTitleRequired: 'All accordion items must have a title.',
+        accordionItemDescriptionRequired: 'All accordion items must have a description.',
       },
       alerts: {
         previewPurchaseNotAvailable: 'This is a preview. Package purchasing is not available in creation mode.',

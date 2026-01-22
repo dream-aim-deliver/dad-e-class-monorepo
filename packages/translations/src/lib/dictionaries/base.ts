@@ -2783,6 +2783,8 @@ export const DictionarySchema = z.object({
       }),
       errorMessages: z.object({
         updateFailed: z.string(),
+        accordionItemTitleRequired: z.string(),
+        accordionItemDescriptionRequired: z.string(),
       }),
       error: z.object({
         title: z.string(),
@@ -2849,6 +2851,8 @@ export const DictionarySchema = z.object({
       }),
       errorMessages: z.object({
         createFailed: z.string(),
+        accordionItemTitleRequired: z.string(),
+        accordionItemDescriptionRequired: z.string(),
       }),
       alerts: z.object({
         previewPurchaseNotAvailable: z.string(),
