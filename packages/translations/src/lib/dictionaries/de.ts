@@ -2725,6 +2725,8 @@ export const DE: TDictionary = {
       },
       errorMessages: {
         updateFailed: 'Fehler beim Aktualisieren des Pakets. Bitte versuche es erneut.',
+        accordionItemTitleRequired: 'Alle Akkordeon-Elemente müssen einen Titel haben.',
+        accordionItemDescriptionRequired: 'Alle Akkordeon-Elemente müssen eine Beschreibung haben.',
       },
       error: {
         title: 'Paket konnte nicht geladen werden',
@@ -2791,6 +2793,8 @@ export const DE: TDictionary = {
       },
       errorMessages: {
         createFailed: 'Fehler beim Erstellen des Pakets. Bitte versuche es erneut.',
+        accordionItemTitleRequired: 'Alle Akkordeon-Elemente müssen einen Titel haben.',
+        accordionItemDescriptionRequired: 'Alle Akkordeon-Elemente müssen eine Beschreibung haben.',
       },
       alerts: {
         previewPurchaseNotAvailable: 'Dies ist eine Vorschau. Der Kauf von Paketen ist im Erstellungsmodus nicht verfügbar.',
