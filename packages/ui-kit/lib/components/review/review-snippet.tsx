@@ -27,11 +27,12 @@ export const ReviewSnippet = ({
         setIsExpanded((isExpanded) => !isExpanded);
     };
 
-    const isLongText = reviewText.length > 100;
+    const safeReviewText = reviewText ?? '';
+    const isLongText = safeReviewText.length > 100;
 
     const truncatedText = isLongText
-        ? `${reviewText.slice(0, 100)}...`
-        : reviewText;
+        ? `${safeReviewText.slice(0, 100)}...`
+        : safeReviewText;
 
     return (
         <div className="flex flex-col w-full p-3 items-start text-text-secondary gap-1 text-sm bg-base-neutral-800 rounded-small border border-base-neutral-700">
@@ -47,7 +48,7 @@ export const ReviewSnippet = ({
             </div>
 
             <p className="text-md text-text-primary text-left">
-                {isExpanded ? reviewText : truncatedText}
+                {isExpanded ? safeReviewText : truncatedText}
             </p>
             {isLongText && (
                 <Button
