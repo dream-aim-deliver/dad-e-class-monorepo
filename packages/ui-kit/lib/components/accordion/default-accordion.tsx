@@ -20,7 +20,8 @@ interface DefaultAccordionProps {
 
 export function DefaultAccordion({ items, children, showNumbers, className }: DefaultAccordionProps) {
     const ImageComponent = useImageComponent();
-    const defaultValue = items?.length ? [items[0].title] : [];
+    const safeItems = items ?? [];
+    const defaultValue = safeItems.length ? [safeItems[0].title] : [];
 
     return <Accordion
             className={cn("flex flex-col gap-7", className)}
@@ -29,11 +30,11 @@ export function DefaultAccordion({ items, children, showNumbers, className }: De
         >
             {children}
             <div className="w-full">
-                {items?.map((item, index) => (
+                {safeItems.map((item, index) => (
                     <AccordionItem
                         className={cn(
                             'py-6',
-                            items.length - 1 !== index &&
+                            safeItems.length - 1 !== index &&
                                 'border-b border-divider',
                         )}
                         key={item.title}

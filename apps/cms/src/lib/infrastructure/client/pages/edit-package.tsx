@@ -14,7 +14,6 @@ import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { usePackageFileUpload } from './common/hooks/use-package-file-upload';
 import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
-import { slateifySerialize } from '@maany_shr/e-class-ui-kit';
 import React from 'react';
 import { idToNumber } from '../utils/id-to-number';
 import { useEffect } from 'react';
@@ -131,17 +130,20 @@ export default function EditPackage({
         packageId: packageIdInt
     });
 
-    // @ts-ignore
-    presenter.present(getPackageResponse, getPackageViewModel);
+    // Present data in useEffect (following cms-settings.tsx pattern)
+    useEffect(() => {
+        // @ts-ignore
+        presenter.present(getPackageResponse, getPackageViewModel);
+    }, [getPackageResponse, presenter, getPackageViewModel]);
 
-    // Success state - extract package data
+    // Derived packageData for conditional rendering
     const packageData = getPackageViewModel?.data;
 
     // Populate form data when package data is loaded
-    React.useEffect(() => {
+    useEffect(() => {
         if (packageData && typeof packageData === 'object' && 'package' in packageData) {
             const pkg = (packageData as { package: any }).package;
-            
+
             // Populate package details
             setPackageDetailsFormData({
                 packageTitle: pkg.title || '',
@@ -149,29 +151,29 @@ export default function EditPackage({
                 featuredImage: pkg.image ? {
                     status: 'available' as const,
                     name: pkg.image.name || '',
-                    id: pkg.image.id || '',
+                    id: String(pkg.image.id) || '',
                     category: 'image' as const,
                     size: pkg.image.size || 0,
                     url: pkg.image.downloadUrl || '',
                     thumbnailUrl: null,
                 } : null,
-                showListItemNumbers: true, 
-                accordionItems: pkg.accordionItems?.map((item: { id?: string; title?: string; description?: string; content?: string; icon?: any }) => ({
-                    id: item.id || String(Math.random()),
+                showListItemNumbers: pkg.showAccordionNumbers ?? true,
+                accordionItems: (pkg.accordionItems ?? []).map((item: { id?: string | number; title?: string; description?: string; content?: string; icon?: any }) => ({
+                    id: String(item.id) || String(Math.random()),
                     title: item.title || '',
-                    content: slateifySerialize(item.description || item.content || ''),
+                    content: item.description || item.content || '',
                     icon: item.icon || null,
-                })) || [],
+                })),
             });
-            
+
             // Populate pricing - convert numbers to string format
             setPricingFormData({
                 completePackageWithCoaching: pkg.priceWithCoachings ? `${pkg.priceWithCoachings} CHF` : '',
                 completePackageWithoutCoaching: pkg.price ? `${pkg.price} CHF` : '',
-                partialDiscounts: pkg.partialDiscounts?.reduce((acc: Record<string, string>, d: { courseAmount: number; discountPercent: number }) => {
+                partialDiscounts: (pkg.partialDiscounts ?? []).reduce((acc: Record<string, string>, d: { courseAmount: number; discountPercent: number }) => {
                     acc[String(d.courseAmount)] = `${d.discountPercent}%`;
                     return acc;
-                }, { '2': '', '3': '', '4': '', '5': '', '6': '', '7': '' }) || { '2': '', '3': '', '4': '', '5': '', '6': '', '7': '' }
+                }, { '2': '', '3': '', '4': '', '5': '', '6': '', '7': '' })
             });
         }
     }, [packageData]);
@@ -225,11 +227,35 @@ export default function EditPackage({
         return Math.max(...discountKeys) + 1;
     }, [pricingFormData.partialDiscounts]);
 
+    // Validate accordion items - all must have title and description
+    const validateAccordionItems = useCallback((): string | null => {
+        const items = packageDetailsFormData.accordionItems;
+        if (items.length === 0) return null;
+
+        for (const item of items) {
+            if (!item.title || item.title.trim() === '') {
+                return t('errorMessages.accordionItemTitleRequired');
+            }
+            if (!item.content || item.content.trim() === '') {
+                return t('errorMessages.accordionItemDescriptionRequired');
+            }
+        }
+        return null;
+    }, [packageDetailsFormData.accordionItems, t]);
+
     const handleUpdatePackage = useCallback(async () => {
         setIsUpdating(true);
         setErrorMessage(null);
         setSuccessMessage(null);
-        
+
+        // Validate accordion items before submitting
+        const validationError = validateAccordionItems();
+        if (validationError) {
+            setErrorMessage(validationError);
+            setIsUpdating(false);
+            return;
+        }
+
         try {
             // Parse prices from string format
             const price = parseFloat(pricingFormData.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
@@ -287,6 +313,7 @@ export default function EditPackage({
         platformSlug,
         platformLocale,
         derivedSelectedCourseCount,
+        validateAccordionItems,
     ]);
 
     // Conditional returns after all hooks
