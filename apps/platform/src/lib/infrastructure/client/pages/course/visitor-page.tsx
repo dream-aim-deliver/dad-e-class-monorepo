@@ -412,15 +412,15 @@ function VisitorPageContent({
                             courseData.data.author.averageRating * 10,
                         )}
                         imageUrl={courseData.data.imageFile?.downloadUrl || ''}
-                        coaches={courseData.data.coaches.map((coach) => ({
+                        coaches={(courseData.data.coaches ?? []).map((coach) => ({
                             name: coach.name,
                             avatarUrl: coach.avatarUrl || '',
                         }))}
-                        totalCoachesCount={courseData.data.coaches.length}
+                        totalCoachesCount={(courseData.data.coaches ?? []).length}
                         coachingIncluded={coachingIncluded}
                         onCoachingIncludedChange={handleCoachingIncludedChange}
                         onClickBuyCourse={handleClickBuyCourse}
-                        requiredCourses={courseData.data.requirements.map(
+                        requiredCourses={(courseData.data.requirements ?? []).map(
                             (req) => ({
                                 image: '', // Could be enhanced to fetch course images
                                 courseTitle: req.courseName,
@@ -486,7 +486,7 @@ function VisitorPageContent({
                 return (
                     <div className="p-6 bg-card-fill border border-card-stroke rounded-medium">
                         <DefaultAccordion
-                            items={outlineData.data.items.map((item) => ({
+                            items={(outlineData.data.items ?? []).map((item) => ({
                                 title: item.title,
                                 content: item.description,
                                 position: item.position,
@@ -518,7 +518,8 @@ function VisitorPageContent({
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
             case 'default':
-                if (reviewsData.data.reviews.length === 0) {
+                const reviews = reviewsData.data.reviews ?? [];
+                if (reviews.length === 0) {
                     return (
                         <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:max-w-[22rem]">
                             <p className="text-text-primary text-md">
@@ -529,7 +530,7 @@ function VisitorPageContent({
                 }
                 return (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {reviewsData.data.reviews
+                        {reviews
                             .sort((a: any, b: any) =>
                                 sortOrder === 'newest'
                                     ? new Date(b.createdAt).getTime() -
@@ -571,7 +572,8 @@ function VisitorPageContent({
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
             case 'default':
-                if (packagesData.data.packages.length === 0) return null;
+                const packages = packagesData.data.packages ?? [];
+                if (packages.length === 0) return null;
                 return (
                     <div className="w-full flex flex-col gap-6">
                         <div className="flex flex-col gap-4">
@@ -583,7 +585,7 @@ function VisitorPageContent({
                             </p>
                         </div>
                         <PackageCardList locale={locale}>
-                            {packagesData.data.packages.map((pkg) => {
+                            {packages.map((pkg) => {
                                 // Map the package data to the expected UI structure
                                 const mappedPackage = {
                                     id: String(pkg.id),
@@ -635,7 +637,7 @@ function VisitorPageContent({
             case 'not-found':
                 return <DefaultNotFound locale={locale} />;
             case 'default':
-                return <OffersCarousel items={offersCarouselData.data.items} />;
+                return <OffersCarousel items={offersCarouselData.data.items ?? []} />;
             default:
                 return null;
         }
@@ -746,7 +748,7 @@ function VisitorPageContent({
                 {renderPackagesData()}
 
                 {/* Offers Carousel Section */}
-                {offersCarouselData?.mode === 'default' && offersCarouselData.data.items.length > 0 && (
+                {offersCarouselData?.mode === 'default' && (offersCarouselData.data.items ?? []).length > 0 && (
                     <div className="flex flex-col justify-center gap-10">
                         <h2>
                             {t('notFoundTitle')}

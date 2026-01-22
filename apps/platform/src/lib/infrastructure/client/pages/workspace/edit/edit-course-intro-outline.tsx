@@ -79,11 +79,11 @@ export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
             {/* Outline Section */}
             <div className="flex flex-col space-y-6">
                 <h2>Course Content</h2>
-                {outline.items.length > 0 ? (
+                {(outline.items ?? []).length > 0 ? (
                     <DefaultAccordion
                         className="px-6 py-4 bg-card-fill border border-card-stroke rounded-md"
                         showNumbers={true}
-                        items={outline.items.map((item) => ({
+                        items={(outline.items ?? []).map((item) => ({
                             title: item.title,
                             content: item.description,
                             position: item.position,
@@ -148,7 +148,7 @@ export default function EditCourseIntroOutline({
         console.log('[EditCourseIntroOutline] useEffect triggered, outlineViewModel:', outlineViewModel);
         if (!outlineViewModel || outlineViewModel.mode !== 'default') return;
 
-        const mappedItems = outlineViewModel.data.items.map((item) => ({
+        const mappedItems = (outlineViewModel.data.items ?? []).map((item) => ({
             title: item.title,
             content: item.description,
             icon: item.icon

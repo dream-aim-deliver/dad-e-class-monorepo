@@ -86,7 +86,7 @@ function EnrolledCourseIntroductionContent(
                 }}
                 progress={progressViewModel?.data.progressPercent ?? 0}
                 imageUrl={courseViewModel.data.imageFile?.downloadUrl ?? ''}
-                students={courseViewModel.data.students.map((student) => ({
+                students={(courseViewModel.data.students ?? []).map((student) => ({
                     name: student.name,
                     avatarUrl: student.avatarUrl ?? '',
                 }))}

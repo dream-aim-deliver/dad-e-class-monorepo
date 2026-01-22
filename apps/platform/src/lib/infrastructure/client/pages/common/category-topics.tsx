@@ -97,15 +97,15 @@ export default function CategoryTopics({
     // Get categories from listCategories (independent of topics)
     const categories = useMemo(() => {
         if (!isCategoriesViewModelValid) return [];
-        return categoriesViewModel.data.categories.map((c) => c.name);
+        return (categoriesViewModel.data.categories ?? []).map((c) => c.name);
     }, [isCategoriesViewModelValid, categoriesViewModel]);
 
     // Create a map of category name to topics for relationship logic
     const categoryToTopicsMap = useMemo(() => {
         if (!isMapViewModelValid) return new Map<string, viewModels.TMatrixTopic[]>();
         const map = new Map<string, viewModels.TMatrixTopic[]>();
-        for (const category of topicsByCategoryViewModel.data.categories) {
-            map.set(category.name, category.topics);
+        for (const category of (topicsByCategoryViewModel.data.categories ?? [])) {
+            map.set(category.name, category.topics ?? []);
         }
         return map;
     }, [isMapViewModelValid, topicsByCategoryViewModel]);
@@ -116,8 +116,8 @@ export default function CategoryTopics({
         const existingSlugs = new Set<string>();
         const topics: viewModels.TMatrixTopic[] = [];
 
-        for (const category of topicsByCategoryViewModel.data.categories) {
-            for (const topic of category.topics) {
+        for (const category of (topicsByCategoryViewModel.data.categories ?? [])) {
+            for (const topic of (category.topics ?? [])) {
                 if (!existingSlugs.has(topic.slug)) {
                     topics.push(topic);
                     existingSlugs.add(topic.slug);
@@ -125,7 +125,7 @@ export default function CategoryTopics({
             }
         }
 
-        for (const topic of topicsViewModel.data.topics) {
+        for (const topic of (topicsViewModel.data.topics ?? [])) {
             if (!existingSlugs.has(topic.slug)) {
                 topics.push({
                     name: topic.name,

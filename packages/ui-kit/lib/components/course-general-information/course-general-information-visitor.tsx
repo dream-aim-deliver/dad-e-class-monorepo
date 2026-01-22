@@ -148,8 +148,10 @@ export const CourseGeneralInformationVisitor: FC<
         );
         const ImageComponent = useImageComponent();
 
+        const safeRequiredCourses = requiredCourses ?? [];
+        const safeCoaches = coaches ?? [];
         const finalRequirementsDetails = requirementsDetails ||
-            (requiredCourses.length > 0
+            (safeRequiredCourses.length > 0
                 ? dictionary.components.courseGeneralInformationView
                     .requirementsDetails
                 : dictionary.components.courseGeneralInformationView.noRequirements);
@@ -358,7 +360,7 @@ export const CourseGeneralInformationVisitor: FC<
                         </div>
 
                         {/* Taught by */}
-                        {coaches.length > 0 && (
+                        {safeCoaches.length > 0 && (
                             <div className="flex flex-col gap-2 items-start">
                                 <h6 className="text-text-primary text-lg">
                                     {
@@ -367,9 +369,9 @@ export const CourseGeneralInformationVisitor: FC<
                                     }
                                 </h6>
                                 <UserAvatarReel
-                                    users={coaches}
+                                    users={safeCoaches}
                                     totalUsersCount={
-                                        totalCoachesCount ?? coaches.length
+                                        totalCoachesCount ?? safeCoaches.length
                                     }
                                     locale={locale}
                                 />
@@ -387,7 +389,7 @@ export const CourseGeneralInformationVisitor: FC<
                         </h6>
                         <p className="text-text-secondary">{finalRequirementsDetails}</p>
                         <div className="flex flex-wrap gap-3">
-                            {requiredCourses.map((course) => (
+                            {safeRequiredCourses.map((course) => (
                                 <Button
                                     key={course.courseTitle}
                                     className="p-0 gap-1 text-sm sm:w-auto truncate"

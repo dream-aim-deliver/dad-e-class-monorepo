@@ -143,7 +143,7 @@ export default function GroupSessionTimeContent({
             return [];
         }
         
-        return coachingOfferingsViewModel.data.offerings.map((offering) => ({
+        return (coachingOfferingsViewModel.data.offerings ?? []).map((offering) => ({
             value: offering.id.toString(),
             label: `${offering.name} (${offering.duration} min)`,
             data: {
