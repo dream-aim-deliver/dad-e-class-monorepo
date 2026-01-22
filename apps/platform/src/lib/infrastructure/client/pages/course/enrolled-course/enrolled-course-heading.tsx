@@ -383,17 +383,6 @@ export default function EnrolledCourseHeading({
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2 items-center justify-end">
-                        {currentRole === "admin" && (
-                            <Button
-                                variant="text"
-                                hasIconLeft
-                                iconLeft={<IconTrashAlt />}
-                                text={courseTranslations('archiveCourseButton')}
-                                size="medium"
-                                onClick={() => {
-                                    //TODO: Implement course deletion
-                                }} />
-                        )}
                         {(currentRole === "admin" || currentRole === "course_creator") && (
                             <Button
                                 variant="secondary"
@@ -402,7 +391,7 @@ export default function EnrolledCourseHeading({
                                 size="medium"
                                 text={courseTranslations('editCourseButton')}
                                 onClick={() => {
-                                    //TODO: Implement course editing
+                                    window.open(`/${locale}/edit/course/${courseSlug}`, '_blank');
                                 }} />
                         )}
                     </div>
