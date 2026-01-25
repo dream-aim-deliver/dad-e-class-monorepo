@@ -76,6 +76,7 @@ export interface CourseDetailsState {
     setDuration: (duration: number | undefined) => void;
     onAddRequirement: (requirement: CourseRequirement) => void;
     onRemoveRequirement: (requirementId: number) => void;
+    setRequirements: (requirements: CourseRequirement[]) => void;
     setCategoryId: (id: number | undefined) => void;
     setTopicIds: (ids: number[]) => void;
 
@@ -181,6 +182,7 @@ export function useCourseForm(
         setDuration,
         onAddRequirement: handleAddRequirement,
         onRemoveRequirement: handleRemoveRequirement,
+        setRequirements,
         setCategoryId,
         setTopicIds,
 
