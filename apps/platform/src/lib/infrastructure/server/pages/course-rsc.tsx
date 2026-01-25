@@ -230,10 +230,6 @@ async function prefetchIntroductionData(
                 courseId,
             }),
         );
-        // Need to fetch available courses to get slugs for required courses
-        prefetch(
-            trpc.listPlatformCoursesShort.queryOptions({}),
-        );
     }
 
     // TSK-PERF-014: Remove role restriction - course status used by all roles

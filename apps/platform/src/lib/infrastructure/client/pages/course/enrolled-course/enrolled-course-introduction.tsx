@@ -24,7 +24,6 @@ import { usePrepareCheckoutPresenter } from '../../../hooks/use-prepare-checkout
 import { useCheckoutIntent } from '../../../hooks/use-checkout-intent';
 import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../../hooks/use-checkout-errors';
 import { useListRequiredCoursesPresenter } from '../../../hooks/use-list-required-courses-presenter';
-import { useListPlatformCoursesShortPresenter } from '../../../hooks/use-list-platform-courses-short-presenter';
 import { useSession } from 'next-auth/react';
 import env from '../../../config/env';
 import CourseIntroduction from '../../common/course-introduction';
@@ -137,7 +136,7 @@ function IncludedCoachingSessions({
         trpc.listIncludedCoachingSessions.useSuspenseQuery({
             courseSlug: courseSlug,
         });
-        
+
     const [coachingSessionsViewModel, setCoachingSessionsViewModel] = useState<
         viewModels.TIncludedCoachingSessionListViewModel | undefined
     >(undefined);
@@ -198,47 +197,28 @@ function RequiredCourses({
     const [requiredCoursesViewModel, setRequiredCoursesViewModel] = useState<
         viewModels.TListRequiredCoursesViewModel | undefined
     >(undefined);
-    const { presenter: requiredCoursesPresenter } = useListRequiredCoursesPresenter(setRequiredCoursesViewModel);
+    const { presenter } = useListRequiredCoursesPresenter(setRequiredCoursesViewModel);
     // @ts-ignore
-    requiredCoursesPresenter.present(requiredCoursesResponse, requiredCoursesViewModel);
-
-    // Fetch available courses to get slugs
-    const [coursesResponse] = trpc.listPlatformCoursesShort.useSuspenseQuery({});
-    const [coursesViewModel, setCoursesViewModel] = useState<
-        viewModels.TListPlatformCoursesShortViewModel | undefined
-    >(undefined);
-    const { presenter: coursesPresenter } = useListPlatformCoursesShortPresenter(setCoursesViewModel);
-    // @ts-ignore
-    coursesPresenter.present(coursesResponse, coursesViewModel);
+    presenter.present(requiredCoursesResponse, requiredCoursesViewModel);
 
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
 
-    if (!requiredCoursesViewModel || !coursesViewModel) {
+    if (!requiredCoursesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     // If there is an error, render nothing
-    if (requiredCoursesViewModel.mode !== 'default' || coursesViewModel.mode !== 'default') {
+    if (requiredCoursesViewModel.mode !== 'default') {
         return null;
     }
 
     const requiredCourses = requiredCoursesViewModel.data.requiredCourses ?? [];
-    const availableCourses = coursesViewModel.data.courses ?? [];
 
     // Don't show section if no requirements
     if (requiredCourses.length === 0) {
         return null;
     }
-
-    // Match slugs from available courses
-    const coursesWithSlugs = requiredCourses.map((req) => {
-        const course = availableCourses.find((c) => c.id === req.id);
-        return {
-            ...req,
-            slug: course?.slug ?? '',
-        };
-    });
 
     return (
         <div className="flex flex-col gap-1 items-start w-full">
@@ -249,7 +229,7 @@ function RequiredCourses({
                 {dictionary.components.courseGeneralInformationView.requirementsDetails}
             </p>
             <div className="flex flex-wrap gap-3">
-                {coursesWithSlugs.map((course) => (
+                {requiredCourses.map((course) => (
                     <Button
                         key={course.id}
                         className="p-0 gap-1 text-sm sm:w-auto truncate"
