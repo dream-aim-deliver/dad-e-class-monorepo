@@ -49,8 +49,10 @@ export function useSaveDetails({
         onSuccess: () => {
             // Invalidate related queries to refetch fresh data
             utils.getEnrolledCourseDetails.invalidate({ courseSlug: slug });
+            utils.getPublicCourseDetails.invalidate({ courseSlug: slug });
             utils.listUserCourses.invalidate();
             utils.listPlatformCoursesShort.invalidate();
+            utils.listRequiredCourses.invalidate();
         },
     });
 
@@ -82,6 +84,11 @@ export function useSaveDetails({
         if (!validateCourseDetails()) return;
 
         setErrorMessage(null);
+
+        // DEBUG: Log what we're sending
+        console.log('[DEBUG] courseDetails.requirements:', courseDetails.requirements);
+        console.log('[DEBUG] requirementIds:', courseDetails.requirements?.map((r) => r.id));
+
         const result = await saveDetailsMutation.mutateAsync({
             courseSlug: slug,
             courseVersion: courseVersion,
@@ -91,6 +98,7 @@ export function useSaveDetails({
             imageId: idToNumber(courseImageUpload.courseImage?.id),
             categoryId: courseDetails.categoryId,
             topicIds: courseDetails.topicIds,
+            requirementIds: courseDetails.requirements?.map((r) => r.id),
         });
         if (!result.success) {
             // TODO: Fix typing

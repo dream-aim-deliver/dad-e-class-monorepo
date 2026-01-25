@@ -13,12 +13,111 @@ import {
     DefaultLoading,
     Dropdown,
 } from '@maany_shr/e-class-ui-kit';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState, useMemo } from 'react';
 import { useCourseDetails } from './hooks/edit-details-hooks';
 import { trpc } from '../../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListTopicsPresenter } from '../../../hooks/use-topics-presenter';
 import { useListCategoriesPresenter } from '../../../hooks/use-categories-presenter';
+import { useListPlatformCoursesShortPresenter } from '../../../hooks/use-list-platform-courses-short-presenter';
+import { useListRequiredCoursesPresenter } from '../../../hooks/use-list-required-courses-presenter';
+
+interface CourseRequirement {
+    id: number;
+    title: string;
+    slug: string;
+    imageUrl: string;
+}
+
+interface AvailableCourse {
+    id: number;
+    title: string;
+    slug: string;
+}
+
+interface RequirementsDropdownProps {
+    courseId: number;
+    slug: string;
+    courseForm: CourseDetailsState;
+    availableCourses: AvailableCourse[];
+    setIsEdited: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function RequirementsDropdown({
+    courseId,
+    slug,
+    courseForm,
+    availableCourses,
+    setIsEdited,
+}: RequirementsDropdownProps) {
+    const [requiredCoursesResponse] = trpc.listRequiredCourses.useSuspenseQuery({
+        courseId: courseId,
+    });
+    const [requiredCoursesViewModel, setRequiredCoursesViewModel] = useState<
+        viewModels.TListRequiredCoursesViewModel | undefined
+    >(undefined);
+    const { presenter: requiredCoursesPresenter } = useListRequiredCoursesPresenter(setRequiredCoursesViewModel);
+    // @ts-ignore
+    requiredCoursesPresenter.present(requiredCoursesResponse, requiredCoursesViewModel);
+
+    const [requirementsInitialized, setRequirementsInitialized] = useState(false);
+
+    // Build requirements options (exclude current course)
+    const requirementOptions = useMemo(() => {
+        return availableCourses
+            .filter((c) => c.slug !== slug)
+            .map((c) => ({
+                value: c.id.toString(),
+                label: c.title,
+            }));
+    }, [availableCourses, slug]);
+
+    // Initialize requirements from current course data
+    useEffect(() => {
+        if (requirementsInitialized || !requiredCoursesViewModel || requiredCoursesViewModel.mode !== 'default') return;
+        const requiredCourses = requiredCoursesViewModel.data.requiredCourses ?? [];
+        const initialRequirements = requiredCourses.map((req) => {
+            const course = availableCourses.find((c) => c.id === req.id);
+            return {
+                id: req.id,
+                title: req.title,
+                slug: course?.slug ?? '',
+                imageUrl: req.imageUrl ?? '',
+            };
+        });
+        courseForm.setRequirements(initialRequirements);
+        setRequirementsInitialized(true);
+        setIsEdited(false);
+    }, [requiredCoursesViewModel, availableCourses, requirementsInitialized]);
+
+    if (!requiredCoursesViewModel || requiredCoursesViewModel.mode !== 'default') {
+        return null;
+    }
+
+    return (
+        <Dropdown
+            type="multiple-choice-and-search"
+            defaultValue={(courseForm.requirements ?? []).map((r) => r.id.toString())}
+            text={{
+                multiText: 'Requirements',
+            }}
+            onSelectionChange={(selectedValues) => {
+                const selectedIds = (!selectedValues || typeof selectedValues === 'string')
+                    ? []
+                    : selectedValues.map((v) => parseInt(v, 10));
+
+                const newRequirements = selectedIds
+                    .map((id) => availableCourses.find((c) => c.id === id))
+                    .filter((c): c is NonNullable<typeof c> => c !== undefined)
+                    .map((c) => ({ id: c.id, title: c.title, slug: c.slug, imageUrl: '' }));
+
+                courseForm.setRequirements(newRequirements);
+            }}
+            options={requirementOptions}
+            absolutePosition={false}
+        />
+    );
+}
 
 export function EditCourseGeneralPreview({ slug }: { slug: string }) {
     const courseViewModel = useCourseDetails(slug);
@@ -116,9 +215,17 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     const { presenter: categoriesPresenter } = useListCategoriesPresenter(
         setCategoriesViewModel,
     );
-    // Extract the actual response data from the TRPC wrapper and type it correctly
     // @ts-ignore
     categoriesPresenter.present(categoriesResponse, categoriesViewModel);
+
+    // Fetch available courses for requirements dropdown
+    const [coursesResponse] = trpc.listPlatformCoursesShort.useSuspenseQuery({});
+    const [coursesViewModel, setCoursesViewModel] = useState<
+        viewModels.TListPlatformCoursesShortViewModel | undefined
+    >(undefined);
+    const { presenter: coursesPresenter } = useListPlatformCoursesShortPresenter(setCoursesViewModel);
+    // @ts-ignore
+    coursesPresenter.present(coursesResponse, coursesViewModel);
 
     const [isFormLoading, setIsFormLoading] = useState(true);
 
@@ -147,7 +254,8 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
         !courseViewModel ||
         isFormLoading ||
         !topicsViewModel ||
-        !categoriesViewModel
+        !categoriesViewModel ||
+        !coursesViewModel
     ) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
@@ -155,7 +263,8 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     if (
         courseViewModel.mode !== 'default' ||
         topicsViewModel.mode !== 'default' ||
-        categoriesViewModel.mode !== 'default'
+        categoriesViewModel.mode !== 'default' ||
+        coursesViewModel.mode !== 'default'
     ) {
         return (
             <DefaultError
@@ -237,6 +346,15 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
                 }}
                 absolutePosition={false}
             />
+            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+                <RequirementsDropdown
+                    courseId={courseViewModel.data.id}
+                    slug={props.slug}
+                    courseForm={props.courseForm}
+                    availableCourses={coursesViewModel.data.courses ?? []}
+                    setIsEdited={props.setIsEdited}
+                />
+            </Suspense>
         </div>
     );
 }

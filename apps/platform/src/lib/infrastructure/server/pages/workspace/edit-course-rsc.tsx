@@ -1,5 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { createGetCourseAccessPresenter } from '../../presenter/get-course-access-presenter';
+import EnrolledCourseDetailsPresenter from '../../../common/presenters/enrolled-course-details-presenter';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import EditCourse from '../../../client/pages/workspace/edit/edit-course';
@@ -35,12 +36,16 @@ export default async function EditCourseServerComponent({
     // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
     // All data needed across tabs - React will stream HTML while queries are pending
 
-    // General Tab data
-    prefetch(trpc.getEnrolledCourseDetails.queryOptions({
-        courseSlug: slug,
-    }));
+    // General Tab data - need courseId for listRequiredCourses
+    const enrolledCourseViewModel = await fetchEnrolledCourseDetails(slug);
+    const courseId = enrolledCourseViewModel.mode === 'default' ? enrolledCourseViewModel.data.id : 0;
+
     prefetch(trpc.listTopics.queryOptions({}));
     prefetch(trpc.listCategories.queryOptions({}));
+    prefetch(trpc.listPlatformCoursesShort.queryOptions({}));
+    if (courseId > 0) {
+        prefetch(trpc.listRequiredCourses.queryOptions({ courseId }));
+    }
 
     // Intro/Outline Tab data
     prefetch(trpc.getCourseIntroduction.queryOptions({
@@ -87,6 +92,30 @@ async function fetchCourseAccess(
     }
 
     return courseAccessViewModel;
+}
+
+async function fetchEnrolledCourseDetails(
+    slug: string,
+): Promise<viewModels.TEnrolledCourseDetailsViewModel> {
+    const queryOptions = trpc.getEnrolledCourseDetails.queryOptions({
+        courseSlug: slug,
+    });
+    const queryClient = getQueryClient();
+    const enrolledCourseResponse = await queryClient.fetchQuery(queryOptions);
+
+    let enrolledCourseViewModel: viewModels.TEnrolledCourseDetailsViewModel | undefined;
+    const presenter = new EnrolledCourseDetailsPresenter((viewModel) => {
+        enrolledCourseViewModel = viewModel;
+    }, {});
+
+    // @ts-ignore
+    await presenter.present(enrolledCourseResponse, enrolledCourseViewModel);
+
+    if (!enrolledCourseViewModel) {
+        throw new Error('Failed to load enrolled course data');
+    }
+
+    return enrolledCourseViewModel;
 }
 
 function handleAccessModes(

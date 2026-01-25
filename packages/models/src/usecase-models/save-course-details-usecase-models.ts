@@ -14,7 +14,7 @@ export const SaveCourseDetailsRequestSchema = z.object({
   imageId: z.string().optional(),
   categoryId: z.number().optional(),
   topicIds: z.array(z.number()).optional(),
-  requirementsIds: z.array(z.number()).optional(),
+  requirementIds: z.array(z.number()).optional(),
 });
 
 export type TSaveCourseDetailsRequest = z.infer<typeof SaveCourseDetailsRequestSchema>;
