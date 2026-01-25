@@ -85,10 +85,6 @@ export function useSaveDetails({
 
         setErrorMessage(null);
 
-        // DEBUG: Log what we're sending
-        console.log('[DEBUG] courseDetails.requirements:', courseDetails.requirements);
-        console.log('[DEBUG] requirementIds:', courseDetails.requirements?.map((r) => r.id));
-
         const result = await saveDetailsMutation.mutateAsync({
             courseSlug: slug,
             courseVersion: courseVersion,

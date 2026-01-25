@@ -346,8 +346,7 @@ function VisitorPageContent({
     };
 
     const handleClickRequiredCourse = (slug: string) => {
-        // TODO: Implement navigation to required course
-        console.log('Navigate to required course:', slug);
+        window.open(`/${locale}/courses/${slug}`, '_blank');
     };
 
     const handleErrorCallback = (message: string, error: any) => {

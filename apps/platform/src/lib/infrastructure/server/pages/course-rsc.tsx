@@ -117,7 +117,7 @@ export default async function CourseServerComponent({
     }
 
     // TODO: might differ base on the tab
-    await prefetchIntroductionData(slug, currentRole);
+    await prefetchIntroductionData(slug, currentRole, course.id);
 
     // Block interactions for archived and draft courses
     const isArchived = course.status === 'archived' || course.status === 'draft';
@@ -214,6 +214,7 @@ async function renderAssessmentForm(slug: string, courseLanguage?: TLocale) {
 async function prefetchIntroductionData(
     slug: string,
     currentRole: string,
+    courseId?: number,
 ): Promise<void> {
     // Streaming pattern: Fire prefetches without awaiting
     prefetch(
@@ -221,6 +222,19 @@ async function prefetchIntroductionData(
             courseSlug: slug,
         }),
     );
+
+    // Prefetch required courses for intro tab
+    if (courseId && courseId > 0) {
+        prefetch(
+            trpc.listRequiredCourses.queryOptions({
+                courseId,
+            }),
+        );
+        // Need to fetch available courses to get slugs for required courses
+        prefetch(
+            trpc.listPlatformCoursesShort.queryOptions({}),
+        );
+    }
 
     // TSK-PERF-014: Remove role restriction - course status used by all roles
     prefetch(
