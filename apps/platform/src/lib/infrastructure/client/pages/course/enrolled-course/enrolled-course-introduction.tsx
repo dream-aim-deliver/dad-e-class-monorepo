@@ -1,6 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import {
     CoachingSessionItem,
     CoachingSessionTracker,
@@ -9,6 +9,7 @@ import {
     DefaultLoading,
     CheckoutModal,
     Banner,
+    Button,
     type TransactionDraft,
     type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
@@ -22,6 +23,8 @@ import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-inc
 import { usePrepareCheckoutPresenter } from '../../../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../../../hooks/use-checkout-intent';
 import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../../hooks/use-checkout-errors';
+import { useListRequiredCoursesPresenter } from '../../../hooks/use-list-required-courses-presenter';
+import { useListPlatformCoursesShortPresenter } from '../../../hooks/use-list-platform-courses-short-presenter';
 import { useSession } from 'next-auth/react';
 import env from '../../../config/env';
 import CourseIntroduction from '../../common/course-introduction';
@@ -55,6 +58,10 @@ function EnrolledCourseIntroductionContent(
             />
         );
     }
+
+    const handleClickRequiredCourse = (slug: string) => {
+        window.open(`/${locale}/courses/${slug}`, '_blank');
+    };
 
     return (
         <div className="flex flex-col space-y-10">
@@ -103,6 +110,12 @@ function EnrolledCourseIntroductionContent(
                     // TODO: add a callback
                 }}
             />
+            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+                <RequiredCourses
+                    courseId={courseViewModel.data.id}
+                    onClickRequiredCourse={handleClickRequiredCourse}
+                />
+            </Suspense>
             {/* <CourseIntroduction courseSlug={props.courseSlug} /> */}
             <CourseOutline courseSlug={props.courseSlug} />
         </div>
@@ -168,6 +181,86 @@ function IncludedCoachingSessions({
                 />
             ))}
         </CoachingSessionTracker>
+    );
+}
+
+function RequiredCourses({
+    courseId,
+    onClickRequiredCourse,
+}: {
+    courseId: number;
+    onClickRequiredCourse: (slug: string) => void;
+}) {
+    const [requiredCoursesResponse] = trpc.listRequiredCourses.useSuspenseQuery({
+        courseId,
+    });
+
+    const [requiredCoursesViewModel, setRequiredCoursesViewModel] = useState<
+        viewModels.TListRequiredCoursesViewModel | undefined
+    >(undefined);
+    const { presenter: requiredCoursesPresenter } = useListRequiredCoursesPresenter(setRequiredCoursesViewModel);
+    // @ts-ignore
+    requiredCoursesPresenter.present(requiredCoursesResponse, requiredCoursesViewModel);
+
+    // Fetch available courses to get slugs
+    const [coursesResponse] = trpc.listPlatformCoursesShort.useSuspenseQuery({});
+    const [coursesViewModel, setCoursesViewModel] = useState<
+        viewModels.TListPlatformCoursesShortViewModel | undefined
+    >(undefined);
+    const { presenter: coursesPresenter } = useListPlatformCoursesShortPresenter(setCoursesViewModel);
+    // @ts-ignore
+    coursesPresenter.present(coursesResponse, coursesViewModel);
+
+    const locale = useLocale() as TLocale;
+    const dictionary = getDictionary(locale);
+
+    if (!requiredCoursesViewModel || !coursesViewModel) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    // If there is an error, render nothing
+    if (requiredCoursesViewModel.mode !== 'default' || coursesViewModel.mode !== 'default') {
+        return null;
+    }
+
+    const requiredCourses = requiredCoursesViewModel.data.requiredCourses ?? [];
+    const availableCourses = coursesViewModel.data.courses ?? [];
+
+    // Don't show section if no requirements
+    if (requiredCourses.length === 0) {
+        return null;
+    }
+
+    // Match slugs from available courses
+    const coursesWithSlugs = requiredCourses.map((req) => {
+        const course = availableCourses.find((c) => c.id === req.id);
+        return {
+            ...req,
+            slug: course?.slug ?? '',
+        };
+    });
+
+    return (
+        <div className="flex flex-col gap-1 items-start w-full">
+            <h6 className="text-text-primary text-lg">
+                {dictionary.components.courseGeneralInformationView.requirementsTitle}
+            </h6>
+            <p className="text-text-secondary">
+                {dictionary.components.courseGeneralInformationView.requirementsDetails}
+            </p>
+            <div className="flex flex-wrap gap-3">
+                {coursesWithSlugs.map((course) => (
+                    <Button
+                        key={course.id}
+                        className="p-0 gap-1 text-sm sm:w-auto truncate"
+                        size="small"
+                        variant="text"
+                        text={course.title}
+                        onClick={() => onClickRequiredCourse(course.slug)}
+                    />
+                ))}
+            </div>
+        </div>
     );
 }
 
