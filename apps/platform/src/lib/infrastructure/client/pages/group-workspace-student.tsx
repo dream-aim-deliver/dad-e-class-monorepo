@@ -25,13 +25,11 @@ import AssignmentContent from './course/enrolled-course/assignment-content';
 interface GroupWorkspaceStudentProps {
   locale: TLocale;
   courseSlug: string;
-  groupId?: number;
 }
 
 export default function GroupWorkspaceStudent({
   locale,
   courseSlug,
-  groupId,
 }: GroupWorkspaceStudentProps) {
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();

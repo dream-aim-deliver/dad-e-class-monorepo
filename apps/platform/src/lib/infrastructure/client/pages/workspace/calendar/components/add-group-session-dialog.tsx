@@ -86,10 +86,29 @@ export function AddGroupSessionDialog({
             };
 
             await createGroupCoachingSessionMutation.mutateAsync(sessionData);
-            
+
             onSuccess();
-        } catch (err) {
-            setError('Failed to create group coaching session');
+        } catch (err: unknown) {
+            // Handle specific error types for better user feedback
+            if (err && typeof err === 'object' && 'message' in err) {
+                const errorMessage = (err as { message: string }).message;
+
+                // Check for common error patterns
+                if (errorMessage.includes('conflict') || errorMessage.includes('already exists')) {
+                    setError('A session already exists at this time. Please choose a different time slot.');
+                } else if (errorMessage.includes('unauthorized') || errorMessage.includes('permission')) {
+                    setError('You do not have permission to create sessions for this group.');
+                } else if (errorMessage.includes('not found')) {
+                    setError('The group or coaching offering could not be found.');
+                } else if (errorMessage.includes('validation') || errorMessage.includes('invalid')) {
+                    setError('Invalid session data. Please check your inputs and try again.');
+                } else {
+                    // Use the actual error message if it's user-friendly, otherwise fallback
+                    setError(errorMessage.length < 100 ? errorMessage : 'Failed to create group coaching session. Please try again.');
+                }
+            } else {
+                setError('Failed to create group coaching session. Please try again.');
+            }
         } finally {
             setIsSubmitting(false);
         }

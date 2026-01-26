@@ -775,6 +775,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                   checked={groupCourseWithCoaching}
                   onChange={() => setGroupCourseWithCoaching(!groupCourseWithCoaching)}
                   withText
+                  disabled={!selectedGroupCourse}
                 />
               </div>
             )}
