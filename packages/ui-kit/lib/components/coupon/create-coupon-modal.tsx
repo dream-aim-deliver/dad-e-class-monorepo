@@ -140,6 +140,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   const [discountPercentage, setDiscountPercentage] = useState<number | null>(null);
   const [selectedGroupCourse, setSelectedGroupCourse] = useState<number | null>(null);
   const [groupName, setGroupName] = useState('');
+  const [groupCourseWithCoaching, setGroupCourseWithCoaching] = useState(false);
 
   // Search state
   const [courseSearchQuery, setCourseSearchQuery] = useState('');
@@ -318,7 +319,8 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
         couponContent = {
           type: 'groupCourse',
           courseId: selectedGroupCourse,
-          groupName: groupName
+          groupName: groupName,
+          withCoaching: groupCourseWithCoaching
         };
         break;
     }
@@ -764,6 +766,15 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                     setValue: setGroupName,
                     inputText: dictionary.groupNamePlaceholder,
                   }}
+                />
+
+                <CheckBox
+                  name="groupCourseCoaching"
+                  value="groupCourseCoaching"
+                  label={dictionary.withCoaching}
+                  checked={groupCourseWithCoaching}
+                  onChange={() => setGroupCourseWithCoaching(!groupCourseWithCoaching)}
+                  withText
                 />
               </div>
             )}
