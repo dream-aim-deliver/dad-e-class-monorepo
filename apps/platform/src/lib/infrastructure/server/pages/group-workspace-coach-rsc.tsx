@@ -115,7 +115,6 @@ export default async function GroupWorkspaceCoachServerComponent(
             <GroupWorkspaceStudent
               locale={props.locale}
               courseSlug={props.courseSlug}
-              groupId={props.groupId}
             />
           </Suspense>
         </HydrateClient>
