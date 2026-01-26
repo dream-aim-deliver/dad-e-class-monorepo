@@ -205,10 +205,23 @@ export default function GroupWorkspaceStudent({
     );
   }
 
-  // Success state 
+  // Success state
   const introductionData = groupIntroductionViewModel.data;
   const notesData = groupNotesViewModel.data;
   const nextSessionData = nextSessionViewModel.data;
+
+  // Helper to format ISO datetime to time string (e.g., "10:00 AM")
+  const formatTime = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  // Get first coach from introduction for session card creator info
+  const firstCoach = introductionData.coaches[0];
 
   // Breadcrumb items for navigation (simplified for student view)
   const breadcrumbItems = [
@@ -411,13 +424,37 @@ export default function GroupWorkspaceStudent({
           </div>
           {/* Group Coaching Sessions */}
           {nextSessionData.nextSession ? (
-            <CoachingSessionGroupOverviewCard
-              userType='student'
-              status='unscheduled'
-              locale={locale}
-              title={nextSessionData.nextSession.coachingOfferingTitle}
-              duration={nextSessionData.nextSession.coachingOfferingDuration}
-            />
+            nextSessionData.nextSession.startTime ? (
+              <CoachingSessionGroupOverviewCard
+                userType='student'
+                status='upcoming-locked'
+                locale={locale}
+                title={nextSessionData.nextSession.coachingOfferingTitle}
+                duration={nextSessionData.nextSession.coachingOfferingDuration}
+                date={new Date(nextSessionData.nextSession.startTime)}
+                startTime={formatTime(nextSessionData.nextSession.startTime)}
+                endTime={formatTime(nextSessionData.nextSession.endTime)}
+                withinCourse={true}
+                creatorName={firstCoach ? `${firstCoach.name} ${firstCoach.surname}` : ''}
+                creatorImageUrl={firstCoach?.avatarUrl || ''}
+                onClickCreator={() => {
+                  if (firstCoach?.username) {
+                    router.push(`/${locale}/coaches/${firstCoach.username}`);
+                  }
+                }}
+                onClickJoinMeeting={() => {
+                  // TODO: Implement join meeting functionality when meeting link is available
+                }}
+              />
+            ) : (
+              <CoachingSessionGroupOverviewCard
+                userType='student'
+                status='unscheduled'
+                locale={locale}
+                title={nextSessionData.nextSession.coachingOfferingTitle}
+                duration={nextSessionData.nextSession.coachingOfferingDuration}
+              />
+            )
           ) : (
             <div className='flex items-center justify-center py-16'>
               <p className='text-text-secondary text-sm md:text-md'>

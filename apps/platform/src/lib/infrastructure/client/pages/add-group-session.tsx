@@ -52,7 +52,7 @@ interface AddGroupSessionProps {
   groupId: string;
 }
 
-function CalendarContent({ courseSlug, groupId }: { courseSlug: string; groupId: string }) {
+function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: string; groupId: string; coachUsername: string }) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.calendarPage');
     const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
@@ -150,6 +150,8 @@ function CalendarContent({ courseSlug, groupId }: { courseSlug: string; groupId:
                 onOpenChange={setIsAddDialogOpen}
                 onSuccess={handleGroupSessionAdded}
                 initialStartTime={newSessionStart}
+                groupId={parseInt(groupId)}
+                coachUsername={coachUsername}
             />
 
             <Tabs.Root
@@ -318,7 +320,7 @@ export default function AddGroupSession({ locale, courseSlug, groupId }: AddGrou
                     },
                 ]}
             />
-            <CalendarContent courseSlug={courseSlug} groupId={groupId} />
+            <CalendarContent courseSlug={courseSlug} groupId={groupId} coachUsername={session.user?.name || ''} />
         </div>
     );
 }
