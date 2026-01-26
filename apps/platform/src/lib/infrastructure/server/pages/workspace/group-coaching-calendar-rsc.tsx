@@ -1,3 +1,10 @@
+/**
+ * NOT WIRED TO ANY ROUTE - TBD if we need this
+ *
+ * Purpose: RSC wrapper for the general coach calendar overview.
+ * Would show all coaching sessions for a coach across all courses/groups.
+ */
+
 import GroupCoachingCalendar from '../../../client/pages/workspace/calendar/group-coaching-calendar';
 import { HydrateClient } from '../../config/trpc/server';
 import { Suspense } from 'react';

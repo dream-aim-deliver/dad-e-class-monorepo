@@ -1,5 +1,14 @@
 'use client';
 
+/**
+ * NOT WIRED TO ANY ROUTE - TBD if we need this
+ *
+ * Purpose: General coach calendar showing ALL coaching sessions for the logged-in coach
+ * across all courses/groups. This is meant to be an overview calendar, as opposed to
+ * the specific group calendar at /workspace/courses/[slug]/groups/[groupId]/calendar
+ * which shows sessions for a single group.
+ */
+
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/cms-client';
@@ -13,7 +22,6 @@ import {
     CalendarNavigationHeader,
     Divider,
 } from '@maany_shr/e-class-ui-kit';
-import { AddGroupSessionDialog } from './components/add-group-session-dialog';
 import { useSession } from 'next-auth/react';
 import {
     MonthlyGroupCoachingCalendarWrapper,
@@ -32,27 +40,14 @@ function CalendarContent() {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(
         undefined,
     );
-    const [newSessionStart, setNewSessionStart] = useState<Date | undefined>(
-        undefined,
-    );
 
     // Initialize date on client side only to avoid hydration mismatch
     useEffect(() => {
         setCurrentDate(new Date());
     }, []);
 
-    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-
-    // For the general calendar view, we don't show group sessions since those are managed 
-    // in specific group calendars. Set group sessions view model to empty state.
-    const [groupCoachingSessionsViewModel, setGroupCoachingSessionsViewModel] =
-        useState<viewModels.TListGroupCoachingSessionsViewModel>({
-            mode: 'default',
-            data: { sessions: [] }
-        });
-
-    // Fetch coach's individual coaching sessions
-    const [coachCoachingSessionsResponse, { refetch: refetchCoachSessions }] =
+    // Fetch coach's coaching sessions (includes all sessions for this coach)
+    const [coachCoachingSessionsResponse] =
         trpc.listCoachCoachingSessions.useSuspenseQuery({});
     const [coachCoachingSessionsViewModel, setCoachCoachingSessionsViewModel] =
         useState<viewModels.TListCoachCoachingSessionsViewModel | undefined>(undefined);
@@ -60,8 +55,6 @@ function CalendarContent() {
         setCoachCoachingSessionsViewModel,
     );
 
-    // Present data to view models using useEffect
-    // Note: No need to present group sessions in general calendar since they're empty
     useEffect(() => {
         if (coachCoachingSessionsResponse) {
             // @ts-ignore - Follow standard pattern used throughout codebase
@@ -69,22 +62,11 @@ function CalendarContent() {
         }
     }, [coachCoachingSessionsResponse, coachSessionsPresenter, coachCoachingSessionsViewModel]);
 
-    const handleGroupSessionAdded = () => {
-        refetchCoachSessions();
-        setIsAddDialogOpen(false);
-        setNewSessionStart(undefined);
-    };
-
-    const handleNewSessionStart = (startTime: Date) => {
-        setNewSessionStart(startTime);
-        setIsAddDialogOpen(true);
-    };
-
     if (!coachCoachingSessionsViewModel || !currentDate) {
         return <DefaultLoading locale={locale} />;
     }
 
-    if (groupCoachingSessionsViewModel.mode !== 'default' || coachCoachingSessionsViewModel.mode !== 'default') {
+    if (coachCoachingSessionsViewModel.mode !== 'default') {
         return (
             <DefaultError
                 type="simple"
@@ -101,13 +83,6 @@ function CalendarContent() {
                 <h1>{t('groupCoachingTitle')}</h1>
             </div>
             <Divider className="my-4" />
-
-            <AddGroupSessionDialog
-                isOpen={isAddDialogOpen}
-                onOpenChange={setIsAddDialogOpen}
-                onSuccess={handleGroupSessionAdded}
-                initialStartTime={newSessionStart}
-            />
 
             <Tabs.Root
                 defaultTab="weekly"
@@ -148,11 +123,10 @@ function CalendarContent() {
                                 className="flex-1 min-h-0"
                             >
                                 <WeeklyGroupCoachingCalendarWrapper
-                                    groupCoachingSessionsViewModel={groupCoachingSessionsViewModel}
+                                    groupCoachingSessionsViewModel={undefined}
                                     coachCoachingSessionsViewModel={coachCoachingSessionsViewModel}
                                     currentDate={currentDate}
                                     setCurrentDate={setCurrentDate}
-                                    setNewSessionStart={handleNewSessionStart}
                                 />
                             </Tabs.Content>
                             <Tabs.Content
@@ -160,13 +134,12 @@ function CalendarContent() {
                                 className="flex-1 min-h-0"
                             >
                                 <MonthlyGroupCoachingCalendarWrapper
-                                    groupCoachingSessionsViewModel={groupCoachingSessionsViewModel}
+                                    groupCoachingSessionsViewModel={undefined}
                                     coachCoachingSessionsViewModel={coachCoachingSessionsViewModel}
                                     currentDate={currentDate}
                                     setCurrentDate={setCurrentDate}
                                     selectedDate={selectedDate}
                                     setSelectedDate={setSelectedDate}
-                                    setNewSessionStart={handleNewSessionStart}
                                     variant="full"
                                 />
                             </Tabs.Content>
@@ -175,11 +148,10 @@ function CalendarContent() {
                     {/* Mobile view - always shows monthly */}
                     <div className="flex flex-col md:hidden">
                         <MonthlyGroupCoachingCalendarWrapper
-                            groupCoachingSessionsViewModel={groupCoachingSessionsViewModel}
+                            groupCoachingSessionsViewModel={undefined}
                             coachCoachingSessionsViewModel={coachCoachingSessionsViewModel}
                             currentDate={currentDate}
                             setCurrentDate={setCurrentDate}
-                            setNewSessionStart={handleNewSessionStart}
                         />
                     </div>
                 </div>

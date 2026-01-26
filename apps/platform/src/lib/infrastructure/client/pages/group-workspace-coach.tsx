@@ -324,10 +324,20 @@ export default function GroupWorkspaceCoach({
     );
   }
 
-  // Success state 
+  // Success state
   const introductionData = groupIntroductionViewModel.data;
   const notesData = groupNotesViewModel.data;
   const nextSessionData = nextSessionViewModel.data;
+
+  // Helper to format ISO datetime to time string (e.g., "10:00 AM")
+  const formatTime = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
 
   // Breadcrumb items for navigation
   const breadcrumbItems = [
@@ -585,27 +595,57 @@ export default function GroupWorkspaceCoach({
           </div>
           {/* Group Coaching Sessions */}
           {nextSessionData.nextSession ? (
-            <CoachingSessionGroupOverviewCard
-              userType='coach'
-              status='unscheduled'
-              locale={locale}
-              title={nextSessionData.nextSession.coachingOfferingTitle}
-              duration={nextSessionData.nextSession.coachingOfferingDuration}
-              withinCourse={true}
-              courseName={nextSessionData.nextSession.course.title}
-              courseImageUrl={nextSessionData.nextSession.course.imageUrl || ''}
-              groupName={nextSessionData.nextSession.groupName}
-              onClickCourse={() => {
-                if (nextSessionData?.nextSession?.course.slug) {
-                  router.push(`/${locale}/courses/${nextSessionData?.nextSession?.course.slug}`)
-                }
-              }}
-              onClickGroup={() => {
-                if (nextSessionData?.nextSession?.course.slug && nextSessionData?.nextSession?.groupId) {
-                  router.push(`/${locale}/workspace/courses/${nextSessionData?.nextSession?.course.slug}/groups/${nextSessionData?.nextSession?.groupId}`)
-                }
-              }}
-            />
+            nextSessionData.nextSession.startTime ? (
+              <CoachingSessionGroupOverviewCard
+                userType='coach'
+                status='upcoming-locked'
+                locale={locale}
+                title={nextSessionData.nextSession.coachingOfferingTitle}
+                duration={nextSessionData.nextSession.coachingOfferingDuration}
+                date={new Date(nextSessionData.nextSession.startTime)}
+                startTime={formatTime(nextSessionData.nextSession.startTime)}
+                endTime={formatTime(nextSessionData.nextSession.endTime)}
+                withinCourse={true}
+                courseName={nextSessionData.nextSession.course.title}
+                courseImageUrl={nextSessionData.nextSession.course.imageUrl || ''}
+                groupName={nextSessionData.nextSession.groupName}
+                onClickCourse={() => {
+                  if (nextSessionData?.nextSession?.course.slug) {
+                    router.push(`/${locale}/courses/${nextSessionData?.nextSession?.course.slug}`)
+                  }
+                }}
+                onClickGroup={() => {
+                  if (nextSessionData?.nextSession?.course.slug && nextSessionData?.nextSession?.groupId) {
+                    router.push(`/${locale}/workspace/courses/${nextSessionData?.nextSession?.course.slug}/groups/${nextSessionData?.nextSession?.groupId}`)
+                  }
+                }}
+                onClickJoinMeeting={() => {
+                  // TODO: Implement join meeting functionality when meeting link is available
+                }}
+              />
+            ) : (
+              <CoachingSessionGroupOverviewCard
+                userType='coach'
+                status='unscheduled'
+                locale={locale}
+                title={nextSessionData.nextSession.coachingOfferingTitle}
+                duration={nextSessionData.nextSession.coachingOfferingDuration}
+                withinCourse={true}
+                courseName={nextSessionData.nextSession.course.title}
+                courseImageUrl={nextSessionData.nextSession.course.imageUrl || ''}
+                groupName={nextSessionData.nextSession.groupName}
+                onClickCourse={() => {
+                  if (nextSessionData?.nextSession?.course.slug) {
+                    router.push(`/${locale}/courses/${nextSessionData?.nextSession?.course.slug}`)
+                  }
+                }}
+                onClickGroup={() => {
+                  if (nextSessionData?.nextSession?.course.slug && nextSessionData?.nextSession?.groupId) {
+                    router.push(`/${locale}/workspace/courses/${nextSessionData?.nextSession?.course.slug}/groups/${nextSessionData?.nextSession?.groupId}`)
+                  }
+                }}
+              />
+            )
           ) : (
             <div className='flex items-center justify-center py-16'>
               <p className='text-text-secondary text-sm md:text-md'>

@@ -8,7 +8,7 @@ import GroupSessionTimeContent from '../../../common/group-session-time-content'
 import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import React from 'react';
-import { trpc } from '../../../../trpc/client';
+import { trpc } from '../../../../trpc/cms-client';
 
 interface CoachingOffering {
     id: number;
@@ -21,6 +21,8 @@ interface AddGroupSessionDialogProps {
     onOpenChange: (open: boolean) => void;
     onSuccess: () => void;
     initialStartTime?: Date;
+    groupId: number;
+    coachUsername: string;
 }
 
 export function AddGroupSessionDialog({
@@ -28,6 +30,8 @@ export function AddGroupSessionDialog({
     onOpenChange,
     onSuccess,
     initialStartTime,
+    groupId,
+    coachUsername,
 }: AddGroupSessionDialogProps) {
     const t = useTranslations('pages.calendarPage');
     const [startTime, setStartTime] = useState<Date>(initialStartTime || new Date());
@@ -73,13 +77,12 @@ export function AddGroupSessionDialog({
         setIsSubmitting(true);
 
         try {
-            // TODO: Wire up createGroupCoachingSession usecase - currently using mock implementation
             const sessionData = {
                 startTime: startTime.toISOString(),
-                coachingOfferingId: selectedOffering.id,
-                coachingOfferingName: selectedOffering.name,
+                coachingOfferingTitle: selectedOffering.name,
                 coachingOfferingDuration: selectedOffering.duration,
-                endTime: new Date(startTime.getTime() + selectedOffering.duration * 60 * 1000).toISOString(),
+                groupId,
+                coachUsername,
             };
 
             await createGroupCoachingSessionMutation.mutateAsync(sessionData);
