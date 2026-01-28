@@ -414,13 +414,13 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		}
 
 		if (!profile.username || profile.username.trim() === '') {
-			errors.push(t('usernameRequired') || 'Username is required');
+			errors.push(t('usernameRequired'));
 		} else if (!USERNAME_REGEX.test(profile.username)) {
-			errors.push(t('usernameInvalid') || 'Username can only contain letters, numbers, underscores, and hyphens');
+			errors.push(t('usernameInvalid'));
 		}
 
 		if (!profile.email || profile.email.trim() === '') {
-			errors.push(t('emailRequired') || 'Email is required');
+			errors.push(t('emailRequired'));
 		}
 
 		if (errors.length > 0) {
