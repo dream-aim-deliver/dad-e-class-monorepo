@@ -2142,6 +2142,10 @@ export const DictionarySchema = z.object({
       briefingOutcome: z.string(),
       briefingButtonText: z.string(),
       briefingPlaceholder: z.string(),
+      shortNoticeWarning: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
       error: z.object({
         title: z.string(),
         description: z.string(),

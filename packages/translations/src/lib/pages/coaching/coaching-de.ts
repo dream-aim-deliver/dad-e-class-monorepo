@@ -11,6 +11,10 @@ export const Coaching_DE: TDictionary['pages']['coaching'] = {
   briefingOutcome: 'Ziel: Welches Ergebnis oder welchen Output möchtest du am Ende der Session erreichen?',
   briefingButtonText: 'Coach briefen',
   briefingPlaceholder: 'Gib hier dein Briefing ein...',
+  shortNoticeWarning: {
+    title: 'Kurzfristige Buchung',
+    description: 'Du buchst eine Session mit weniger als {hours} Stunden Vorlaufzeit. Dein Coach sieht diese Anfrage möglicherweise nicht rechtzeitig. Wähle einen späteren Termin für eine höhere Bestätigungswahrscheinlichkeit.',
+  },
   error: {
     title: 'Coaching konnte nicht geladen werden',
     description: 'Die Coaching-Informationen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.',

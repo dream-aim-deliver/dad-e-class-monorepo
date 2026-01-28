@@ -11,6 +11,10 @@ export const Coaching_EN: TDictionary["pages"]["coaching"] = {
   briefingOutcome: "Outcome: What result or outcome you'd like to achieve by the end of the session.",
   briefingButtonText: "Prep your coach",
   briefingPlaceholder: "Enter your briefing here...",
+  shortNoticeWarning: {
+    title: "Short Notice Booking",
+    description: "You are requesting a session with less than {hours} hours notice. Your coach may not see this request in time. Consider selecting a later time slot for a higher chance of confirmation.",
+  },
   error: {
     title: "Failed to Load Coaching",
     description: "Unable to load coaching information. Please refresh the page or try again later.",

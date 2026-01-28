@@ -164,6 +164,7 @@ export const StudentCoachingSessionCard: React.FC<StudentCoachingSessionCardProp
                 />
             )}
             <CourseCreator
+                sessionType="student"
                 creatorName={props.creatorName}
                 creatorImageUrl={props.creatorImageUrl}
                 courseName={props.courseName}
