@@ -2482,7 +2482,7 @@ export const EN: TDictionary = {
       nameRequired: 'Name is required',
       surnameRequired: 'Surname is required',
       usernameRequired: 'Username is required',
-      usernameInvalid: 'Username can only contain letters, numbers, underscores, and hyphens',
+      usernameInvalid: 'Username must be lowercase letters, numbers, and hyphens only (no uppercase, no underscores, no leading/trailing hyphens)',
       emailRequired: 'Email is required',
       bioRequired: 'Bio is required',
       bioTooLong: 'Bio must be 280 characters or less',

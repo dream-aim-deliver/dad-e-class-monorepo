@@ -2484,7 +2484,7 @@ export const DE: TDictionary = {
       nameRequired: 'Name ist erforderlich',
       surnameRequired: 'Nachname ist erforderlich',
       usernameRequired: 'Benutzername ist erforderlich',
-      usernameInvalid: 'Benutzername darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten',
+      usernameInvalid: 'Benutzername darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten (keine Großbuchstaben, keine Unterstriche, keine Bindestriche am Anfang/Ende)',
       emailRequired: 'E-Mail ist erforderlich',
       bioRequired: 'Biografie ist erforderlich',
       bioTooLong: 'Biografie darf maximal 280 Zeichen lang sein',
