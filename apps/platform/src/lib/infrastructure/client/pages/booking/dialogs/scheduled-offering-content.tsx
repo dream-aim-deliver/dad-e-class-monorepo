@@ -2,10 +2,11 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
-import React, { Suspense, useEffect } from 'react';
-import { Button, DefaultLoading, TextAreaInput } from '@maany_shr/e-class-ui-kit';
+import React, { Suspense, useMemo } from 'react';
+import { Banner, Button, DefaultLoading, TextAreaInput } from '@maany_shr/e-class-ui-kit';
 import ConfirmTimeContent from '../../common/confirm-time-content';
 import ChooseCoachingSessionContent from './choose-coaching-session-content';
+import { MIN_ADVISED_BOOKING_HOURS } from '../../../config/booking-constants';
 
 interface ScheduledOfferingContentProps {
     offering: ScheduledOffering | null;
@@ -42,6 +43,14 @@ export default function ScheduledOfferingContent({
 }: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.coaching');
+
+    // Calculate if the selected booking time is within the short-notice threshold
+    const isShortNoticeBooking = useMemo(() => {
+        if (!session?.startTime || MIN_ADVISED_BOOKING_HOURS <= 0) return false;
+        const now = new Date();
+        const hoursUntilSession = (session.startTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+        return hoursUntilSession < MIN_ADVISED_BOOKING_HOURS;
+    }, [session?.startTime]);
 
     if (!session) return null;
 
@@ -108,6 +117,14 @@ export default function ScheduledOfferingContent({
                         setValue={setBriefing}
                     />
                 </div>
+            )}
+            {session.session && session.startTime && session.endTime && isShortNoticeBooking && (
+                <Banner
+                    style="warning"
+                    icon={true}
+                    title={t('shortNoticeWarning.title')}
+                    description={t('shortNoticeWarning.description', { hours: MIN_ADVISED_BOOKING_HOURS })}
+                />
             )}
             {session.session && session.startTime && session.endTime && (
                 <ConfirmTimeContent

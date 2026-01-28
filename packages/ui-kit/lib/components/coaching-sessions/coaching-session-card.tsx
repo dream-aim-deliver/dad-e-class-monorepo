@@ -4,7 +4,7 @@ import { StudentCoachingSessionCard } from './student-coaching-session/student-c
 
 /**
  * Base properties shared across all coaching session card variants.
- * Contains common fields like locale, session details, and optional course/group information.
+ * Contains common fields like locale, session details, and optional course information.
  */
 interface BaseCardSharedProps {
     locale: TLocale;
@@ -15,10 +15,41 @@ interface BaseCardSharedProps {
     endTime: string;
     courseName?: string;
     courseImageUrl?: string;
-    groupName?: string;
     onClickCourse?: () => void;
+}
+
+/**
+ * Props specific to individual (1:1) student sessions from coach perspective.
+ */
+interface CoachStudentSessionProps {
+    sessionType: 'student';
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+    groupName?: string;
     onClickGroup?: () => void;
 }
+
+/**
+ * Props specific to group sessions from coach perspective.
+ */
+interface CoachGroupSessionProps {
+    sessionType: 'group';
+    groupName: string;
+    onClickGroup: () => void;
+    studentName?: never;
+    studentImageUrl?: never;
+    onClickStudent?: never;
+}
+
+/**
+ * Union type for session type discrimination in coach cards.
+ */
+type CoachSessionTypeProps = CoachStudentSessionProps | CoachGroupSessionProps;
+
+// =============================================================================
+// STUDENT CARD TYPES (unchanged - students only see 1:1 sessions)
+// =============================================================================
 
 /**
  * Student coaching session card for ongoing sessions.
@@ -32,6 +63,8 @@ type StudentOngoingCard = BaseCardSharedProps & {
     meetingLink?: string;
     onClickCreator: () => void;
     onClickJoinMeeting: () => void;
+    groupName?: string;
+    onClickGroup?: () => void;
 };
 
 /**
@@ -50,6 +83,8 @@ type StudentUpcomingEditableCard = BaseCardSharedProps & {
     /** Optional reschedule handler. If not provided, the reschedule button won't render */
     onClickReschedule?: () => void;
     onClickCancel: () => void;
+    groupName?: string;
+    onClickGroup?: () => void;
 };
 
 /**
@@ -64,6 +99,8 @@ type StudentUpcomingLockedCard = BaseCardSharedProps & {
     meetingLink?: string;
     onClickCreator: () => void;
     onClickJoinMeeting: () => void;
+    groupName?: string;
+    onClickGroup?: () => void;
 };
 
 /**
@@ -80,6 +117,8 @@ type StudentEndedWithoutReviewCard = BaseCardSharedProps & {
     onClickReviewCoachingSession: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
+    groupName?: string;
+    onClickGroup?: () => void;
 };
 
 /**
@@ -97,6 +136,8 @@ type StudentEndedWithReviewCard = BaseCardSharedProps & {
     onClickCreator: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
+    groupName?: string;
+    onClickGroup?: () => void;
 };
 
 /**
@@ -110,6 +151,8 @@ type StudentRequestedCard = BaseCardSharedProps & {
     creatorImageUrl: string;
     onClickCreator: () => void;
     onClickCancel: () => void;
+    groupName?: string;
+    onClickGroup?: () => void;
 };
 
 /**
@@ -128,6 +171,8 @@ type StudentRescheduledCard = BaseCardSharedProps & {
     onClickAccept: () => void;
     onClickDecline: () => void;
     onClickSuggestAnotherDate: () => void;
+    groupName?: string;
+    onClickGroup?: () => void;
 };
 
 /**
@@ -140,6 +185,8 @@ type StudentCanceledCard = BaseCardSharedProps & {
     creatorName: string;
     creatorImageUrl: string;
     onClickCreator: () => void;
+    groupName?: string;
+    onClickGroup?: () => void;
 };
 
 /**
@@ -154,17 +201,18 @@ type StudentToBeDefinedCard = {
     duration: number;
 };
 
+// =============================================================================
+// COACH CARD TYPES (with sessionType discriminated union)
+// =============================================================================
+
 /**
  * Coach coaching session card for ongoing sessions.
  * Displays session currently in progress from coach perspective with join meeting functionality.
  */
-type CoachOngoingCard = BaseCardSharedProps & {
+type CoachOngoingCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'ongoing';
-    studentName: string;
-    studentImageUrl: string;
     meetingLink?: string;
-    onClickStudent: () => void;
     onClickJoinMeeting: () => void;
 };
 
@@ -172,15 +220,12 @@ type CoachOngoingCard = BaseCardSharedProps & {
  * Coach coaching session card for upcoming sessions that can still be modified.
  * Shows remaining time to edit and provides reschedule/cancel options from coach perspective.
  */
-type CoachUpcomingEditableCard = BaseCardSharedProps & {
+type CoachUpcomingEditableCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'upcoming-editable';
     hoursLeftToEdit: number;
     /** Minutes remaining when hoursLeftToEdit is 0. If provided and hours is 0, shows minutes instead */
     minutesLeftToEdit?: number;
-    studentName: string;
-    studentImageUrl: string;
-    onClickStudent: () => void;
     onClickCancel: () => void;
 };
 
@@ -188,13 +233,10 @@ type CoachUpcomingEditableCard = BaseCardSharedProps & {
  * Coach coaching session card for upcoming sessions that cannot be modified.
  * Session is locked from editing but allows joining when time comes from coach perspective.
  */
-type CoachUpcomingLockedCard = BaseCardSharedProps & {
+type CoachUpcomingLockedCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'upcoming-locked';
-    studentName: string;
-    studentImageUrl: string;
     meetingLink?: string;
-    onClickStudent: () => void;
     onClickJoinMeeting: () => void;
 };
 
@@ -202,15 +244,12 @@ type CoachUpcomingLockedCard = BaseCardSharedProps & {
  * Coach coaching session card for completed sessions with student review.
  * Displays the session review from student with rating functionality for coach.
  */
-type CoachEndedSessionReviewCard = BaseCardSharedProps & {
+type CoachEndedSessionReviewCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'ended';
     reviewType: 'session-review';
     reviewText: string;
     rating: number;
-    studentName: string;
-    studentImageUrl: string;
-    onClickStudent: () => void;
     onClickRateCallQuality: () => void;
     onClickDownloadRecording: () => void;
 };
@@ -219,14 +258,11 @@ type CoachEndedSessionReviewCard = BaseCardSharedProps & {
  * Coach coaching session card for completed sessions with call quality rating.
  * Shows the call quality rating with recording download functionality.
  */
-type CoachEndedCallQualityCard = BaseCardSharedProps & {
+type CoachEndedCallQualityCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'ended';
     reviewType: 'call-quality';
     callQualityRating: number;
-    studentName: string;
-    studentImageUrl: string;
-    onClickStudent: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
 };
@@ -235,13 +271,10 @@ type CoachEndedCallQualityCard = BaseCardSharedProps & {
  * Coach coaching session card for completed sessions without a student review.
  * Shows download recording option for sessions that haven't been reviewed yet.
  */
-type CoachEndedWithoutReviewCard = BaseCardSharedProps & {
+type CoachEndedWithoutReviewCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'ended';
     reviewType: 'no-review';
-    studentName: string;
-    studentImageUrl: string;
-    onClickStudent: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
 };
@@ -250,12 +283,9 @@ type CoachEndedWithoutReviewCard = BaseCardSharedProps & {
  * Coach coaching session card for sessions with pending approval from coach.
  * Shows student request awaiting coach's decision with accept/decline/reschedule options.
  */
-type CoachRequestedCard = BaseCardSharedProps & {
+type CoachRequestedCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'requested';
-    studentName: string;
-    studentImageUrl: string;
-    onClickStudent: () => void;
     onClickAccept: () => void;
     onClickDecline: () => void;
 };
@@ -264,15 +294,12 @@ type CoachRequestedCard = BaseCardSharedProps & {
  * Coach coaching session card for sessions that have been rescheduled by the student.
  * Shows original and new times with options to accept, decline, or suggest alternative from coach perspective.
  */
-type CoachRescheduledCard = BaseCardSharedProps & {
+type CoachRescheduledCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'rescheduled';
     previousDate: Date;
     previousStartTime: string;
     previousEndTime: string;
-    studentName: string;
-    studentImageUrl: string;
-    onClickStudent: () => void;
     onClickAccept: () => void;
     onClickDecline: () => void;
 };
@@ -281,12 +308,9 @@ type CoachRescheduledCard = BaseCardSharedProps & {
  * Coach coaching session card for canceled sessions.
  * Displays session that has been canceled by either party from coach perspective.
  */
-type CoachCanceledCard = BaseCardSharedProps & {
+type CoachCanceledCard = BaseCardSharedProps & CoachSessionTypeProps & {
     userType: 'coach';
     status: 'canceled';
-    studentName: string;
-    studentImageUrl: string;
-    onClickStudent: () => void;
 };
 
 /**
@@ -340,10 +364,11 @@ export type CoachingSessionCardProps =
  * />
  *
  * @example
- * // Coach requested session
+ * // Coach requested session (student type)
  * <CoachingSessionCard
  *   userType="coach"
  *   status="requested"
+ *   sessionType="student"
  *   title="JavaScript Fundamentals"
  *   duration={45}
  *   date={new Date()}
@@ -354,7 +379,24 @@ export type CoachingSessionCardProps =
  *   onClickStudent={() => console.log("Student clicked")}
  *   onClickAccept={() => console.log("Accept request")}
  *   onClickDecline={() => console.log("Decline request")}
- *   onClickSuggestAnotherDate={() => console.log("Suggest new date")}
+ *   locale="en"
+ * />
+ *
+ * @example
+ * // Coach requested session (group type)
+ * <CoachingSessionCard
+ *   userType="coach"
+ *   status="requested"
+ *   sessionType="group"
+ *   title="Group Session"
+ *   duration={60}
+ *   date={new Date()}
+ *   startTime="10:00"
+ *   endTime="11:00"
+ *   groupName="Advanced Python Group"
+ *   onClickGroup={() => console.log("Group clicked")}
+ *   onClickAccept={() => console.log("Accept request")}
+ *   onClickDecline={() => console.log("Decline request")}
  *   locale="en"
  * />
  */

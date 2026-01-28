@@ -15,12 +15,35 @@ import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedul
 import { TListCoachCoachingSessionsSuccessResponse } from "@dream-aim-deliver/e-class-cms-rest";
 import StudentCoachingSessions from "./student-coaching-sessions";
 
+// Type for a single session from the API response
+type TCoachSession = TListCoachCoachingSessionsSuccessResponse['data']['sessions'][number];
+
+// Type for scheduled sessions only (have meetingUrl)
+type TScheduledSession = Extract<TCoachSession, { sessionType: 'individual-scheduled' | 'group-scheduled' }>;
+
+// Type guards for session type narrowing
+function isIndividualSession(session: TCoachSession): session is Extract<TCoachSession, { sessionType: `individual-${string}` }> {
+    return session.sessionType.startsWith('individual-');
+}
+
+function isGroupSession(session: TCoachSession): session is Extract<TCoachSession, { sessionType: `group-${string}` }> {
+    return session.sessionType.startsWith('group-');
+}
+
+function isScheduledSession(session: TCoachSession): session is TScheduledSession {
+    return session.sessionType === 'individual-scheduled' || session.sessionType === 'group-scheduled';
+}
+
+function isGroupScheduledSession(session: TScheduledSession): session is Extract<TScheduledSession, { sessionType: 'group-scheduled' }> {
+    return session.sessionType === 'group-scheduled';
+}
 
 // Wrapper component for scheduled sessions that handles time-based status client-side only
 interface ScheduledCoachSessionCardProps {
-    session: TListCoachCoachingSessionsSuccessResponse['data']['sessions'][number];
+    session: TScheduledSession;
     locale: TLocale;
     onStudentClick: () => void;
+    onGroupClick: () => void;
     onJoinMeeting: () => void;
     onCancel: () => void;
     formatTime: (isoString: string) => string;
@@ -30,12 +53,13 @@ function ScheduledCoachSessionCard({
     session,
     locale,
     onStudentClick,
+    onGroupClick,
     onJoinMeeting,
     onCancel,
     formatTime,
 }: ScheduledCoachSessionCardProps) {
     const startDateTime = new Date(session.startTime);
-    const studentName = `${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username;
+    const isGroup = isGroupScheduledSession(session);
 
     // Client-side only status calculation to avoid hydration mismatch
     const [status, setStatus] = useState<{
@@ -78,6 +102,20 @@ function ScheduledCoachSessionCard({
 
     const { cardStatus, hoursLeftToEdit, minutesLeftToEdit } = status;
 
+    // Build props based on session type
+    const sessionTypeProps = isGroup
+        ? {
+            sessionType: 'group' as const,
+            groupName: session.group.name,
+            onClickGroup: onGroupClick,
+        }
+        : {
+            sessionType: 'student' as const,
+            studentName: session.student.username,
+            studentImageUrl: session.student.avatarUrl || "",
+            onClickStudent: onStudentClick,
+        };
+
     const commonProps = {
         locale,
         userType: "coach" as const,
@@ -86,9 +124,7 @@ function ScheduledCoachSessionCard({
         date: startDateTime,
         startTime: formatTime(session.startTime),
         endTime: formatTime(session.endTime),
-        studentName,
-        studentImageUrl: session.student.avatarUrl || "",
-        onClickStudent: onStudentClick,
+        ...sessionTypeProps,
     };
 
     if (cardStatus === 'ongoing') {
@@ -96,7 +132,7 @@ function ScheduledCoachSessionCard({
             <CoachingSessionCard
                 {...commonProps}
                 status="ongoing"
-                meetingLink={session.status === "scheduled" ? session?.meetingUrl || undefined : undefined}
+                meetingLink={session.meetingUrl || undefined}
                 onClickJoinMeeting={onJoinMeeting}
             />
         );
@@ -107,7 +143,7 @@ function ScheduledCoachSessionCard({
             <CoachingSessionCard
                 {...commonProps}
                 status="upcoming-locked"
-                meetingLink={session.status === "scheduled" ? session?.meetingUrl || undefined : undefined}
+                meetingLink={session.meetingUrl || undefined}
                 onClickJoinMeeting={onJoinMeeting}
             />
         );
@@ -227,6 +263,10 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     // Helper functions for navigation and actions
     const handleStudentClick = (studentUsername: string) => {
         window.open(`/${locale}/students/${studentUsername}`, '_blank');
+    };
+
+    const handleGroupClick = (courseSlug: string, groupId: number) => {
+        window.open(`/${locale}/workspace/courses/${courseSlug}/groups/${groupId}`, '_blank');
     };
 
     const handleJoinMeeting = (meetingUrl: string | null | undefined) => {
@@ -369,8 +409,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
     // Helper to render content based on sessions and pagination state
     const renderSessionContent = (
-        sessions: TListCoachCoachingSessionsSuccessResponse['data']['sessions'],
-        displayedSessions: TListCoachCoachingSessionsSuccessResponse['data']['sessions'],
+        sessions: TCoachSession[],
+        displayedSessions: TCoachSession[],
         hasMore: boolean,
         handleLoadMore: () => void
     ) => {
@@ -405,11 +445,25 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     };
 
     // Helper to render session cards (extracted to avoid duplication)
-    const renderSessionCards = (sessions: TListCoachCoachingSessionsSuccessResponse['data']['sessions']) => {
-
+    const renderSessionCards = (sessions: TCoachSession[]) => {
         return sessions.map((session) => {
             // Create start DateTime for time calculations
             const startDateTime = new Date(session.startTime);
+            const isGroup = isGroupSession(session);
+
+            // Build session type props based on discriminated union
+            const sessionTypeProps = isGroup
+                ? {
+                    sessionType: 'group' as const,
+                    groupName: session.group.name,
+                    onClickGroup: () => handleGroupClick(session.course.slug, session.group.id),
+                }
+                : {
+                    sessionType: 'student' as const,
+                    studentName: session.student.username,
+                    studentImageUrl: session.student.avatarUrl || "",
+                    onClickStudent: () => handleStudentClick(session.student.username),
+                };
 
             if (session.status === 'requested') {
                 // For requested sessions (upcoming tab)
@@ -424,32 +478,36 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         date={startDateTime}
                         startTime={formatTime(session.startTime)}
                         endTime={formatTime(session.endTime)}
-                        studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
-                        studentImageUrl={session.student.avatarUrl || ""}
-                        onClickStudent={() => handleStudentClick(session.student.username || '')}
+                        {...sessionTypeProps}
                         onClickAccept={() => handleAcceptClick(parseInt(`${session.id}`))}
                         onClickDecline={() => handleDeclineClick(parseInt(`${session.id}`))}
                     />
                 );
             }
 
-            if (session.status === 'scheduled') {
+            if (isScheduledSession(session)) {
+                const scheduledSession = session;
+                const isGroupScheduled = isGroupScheduledSession(scheduledSession);
                 return (
                     <ScheduledCoachSessionCard
-                        key={session.id}
-                        session={session}
+                        key={scheduledSession.id}
+                        session={scheduledSession}
                         locale={locale}
                         formatTime={formatTime}
-                        onStudentClick={() => handleStudentClick(session.student.username || '')}
-                        onJoinMeeting={() => handleJoinMeeting(session?.meetingUrl)}
-                        onCancel={() => handleDeclineClick(parseInt(`${session.id}`))}
+                        onStudentClick={() => !isGroupScheduled && handleStudentClick(scheduledSession.student.username)}
+                        onGroupClick={() => isGroupScheduled && handleGroupClick(scheduledSession.course.slug, scheduledSession.group.id)}
+                        onJoinMeeting={() => handleJoinMeeting(scheduledSession.meetingUrl)}
+                        onCancel={() => handleDeclineClick(parseInt(`${scheduledSession.id}`))}
                     />
                 );
             }
 
             if (session.status === 'completed') {
                 // For completed sessions (ended tab)
-                if (session.review) {
+                // Check if review exists (for completed sessions, the review is optional)
+                const hasReview = 'review' in session && session.review !== undefined;
+
+                if (hasReview && session.review) {
                     return (
                         <CoachingSessionCard
                             key={session.id}
@@ -461,11 +519,9 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             date={startDateTime}
                             startTime={formatTime(session.startTime)}
                             endTime={formatTime(session.endTime)}
-                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
-                            studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => handleStudentClick(session.student.username || '')}
+                            {...sessionTypeProps}
                             reviewType="call-quality"
-                            callQualityRating={session.review?.rating || 0}
+                            callQualityRating={session.review.rating || 0}
                             onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}
                         />
@@ -484,9 +540,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             date={startDateTime}
                             startTime={formatTime(session.startTime)}
                             endTime={formatTime(session.endTime)}
-                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
-                            studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => handleStudentClick(session.student.username || '')}
+                            {...sessionTypeProps}
                             onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}
                         />
