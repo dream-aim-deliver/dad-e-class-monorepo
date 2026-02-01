@@ -145,6 +145,7 @@ export { CourseCertificate, type CourseCertificateProps } from './components/cou
 export { PaginatedCertificate, type PaginatedCertificateHandle } from './components/paginated-certificate';
 
 export { LessonHeader } from './components/lesson-header';
+export { ModulePagination } from './components/module-pagination';
 
 
 export { FormComponent as RichTextFormComponent } from './components/lesson-components/rich-text';
