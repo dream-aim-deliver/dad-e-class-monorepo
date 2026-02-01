@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import { trpc } from '../../../../trpc/cms-client';
+import { useSchedulingErrors, getSchedulingErrorKey } from '../../../../hooks/use-scheduling-errors';
 
 interface CoachingOffering {
     id: number;
@@ -34,6 +35,7 @@ export function AddGroupSessionDialog({
     coachUsername,
 }: AddGroupSessionDialogProps) {
     const t = useTranslations('pages.calendarPage');
+    const { getSchedulingErrorMessage } = useSchedulingErrors();
     const [startTime, setStartTime] = useState<Date>(initialStartTime || new Date());
     const [selectedOffering, setSelectedOffering] = useState<CoachingOffering | undefined>(undefined);
     const [error, setError] = useState<string | undefined>(undefined);
@@ -89,26 +91,32 @@ export function AddGroupSessionDialog({
 
             onSuccess();
         } catch (err: unknown) {
-            // Handle specific error types for better user feedback
-            if (err && typeof err === 'object' && 'message' in err) {
-                const errorMessage = (err as { message: string }).message;
+            // Extract error type and message from the error response
+            let errorType: string | undefined;
+            let errorMessage: string | undefined;
 
-                // Check for common error patterns
-                if (errorMessage.includes('conflict') || errorMessage.includes('already exists')) {
-                    setError('A session already exists at this time. Please choose a different time slot.');
-                } else if (errorMessage.includes('unauthorized') || errorMessage.includes('permission')) {
-                    setError('You do not have permission to create sessions for this group.');
-                } else if (errorMessage.includes('not found')) {
-                    setError('The group or coaching offering could not be found.');
-                } else if (errorMessage.includes('validation') || errorMessage.includes('invalid')) {
-                    setError('Invalid session data. Please check your inputs and try again.');
-                } else {
-                    // Use the actual error message if it's user-friendly, otherwise fallback
-                    setError(errorMessage.length < 100 ? errorMessage : 'Failed to create group coaching session. Please try again.');
+            if (err && typeof err === 'object') {
+                // Try to extract error_type from various possible locations
+                const errorObj = err as Record<string, unknown>;
+
+                // Check for error_type in data.context
+                if (errorObj.data && typeof errorObj.data === 'object') {
+                    const data = errorObj.data as Record<string, unknown>;
+                    if (data.context && typeof data.context === 'object') {
+                        const context = data.context as Record<string, unknown>;
+                        errorType = context.error_type as string | undefined;
+                    }
                 }
-            } else {
-                setError('Failed to create group coaching session. Please try again.');
+
+                // Check for message
+                if ('message' in errorObj) {
+                    errorMessage = errorObj.message as string;
+                }
             }
+
+            // Use the scheduling errors hook to get localized error message
+            const { title, description } = getSchedulingErrorMessage(errorType, errorMessage);
+            setError(`${title}: ${description}`);
         } finally {
             setIsSubmitting(false);
         }

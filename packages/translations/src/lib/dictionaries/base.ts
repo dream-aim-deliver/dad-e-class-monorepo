@@ -1933,6 +1933,50 @@ export const DictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
       }),
+      coachSessionOverlap: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      forbidden: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      coachNotAssignedToGroup: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      courseCreatorNotAuthorized: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      groupNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      groupNoCourse: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      groupInvalidPlatformLanguage: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      groupNotInPlatform: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      groupNoStudents: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      platformIdRequired: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      invalidStartTimeFormat: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
       cannotLinkStandaloneSession: z.object({
         title: z.string(),
         description: z.string(),
