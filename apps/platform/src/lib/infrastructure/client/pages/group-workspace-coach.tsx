@@ -562,7 +562,7 @@ export default function GroupWorkspaceCoach({
               }))}
               locale={locale}
               onExploreCourses={() => {
-                // TODO: Implement explore courses functionality
+                router.push(`/${currentLocale}/offers`);
               }}
             />
           }
