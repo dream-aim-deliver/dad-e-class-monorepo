@@ -104,7 +104,7 @@ const SkillBadges: React.FC<SkillBadgesProps> = ({ skills = [], locale }) => {
     };
 
     return (
-        <div className="flex flex-col w-full min-h-8 max-h-24">
+        <div className="flex flex-col w-full max-h-24">
             <div
                 ref={containerRef}
                 className={`w-full flex flex-wrap gap-2 ${expanded ? 'max-h-16 overflow-y-auto' : 'max-h-8 overflow-hidden'

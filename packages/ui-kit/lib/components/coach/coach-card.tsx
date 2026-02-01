@@ -126,7 +126,7 @@ const CoachCard: FC<CoachCardProps> = (props) => {
       </div>
 
       {/* Skills section*/}
-      <div className="h-16 flex-shrink-0">
+      <div className="flex-shrink-0">
         <SkillBadges locale={locale} skills={cardDetails.skills} />
       </div>
 
