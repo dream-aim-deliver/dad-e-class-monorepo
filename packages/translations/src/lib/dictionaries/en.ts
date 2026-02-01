@@ -325,7 +325,7 @@ export const EN: TDictionary = {
       companyUID: 'Company UID (VAT) (optional)',
       companyUIDPlaceholder: 'e.g. CHE123456789',
       address: 'Address',
-      addressPlaceholder: 'Examplestreet 70, 8002 ZÃ¼rich',
+      addressPlaceholder: 'Examplestreet 70, 8002 Zürich',
       profilePicture: 'Profile Picture',
       profilePictureHint: 'Recommended: square image (1:1), at least 250 x 250 px. Keep the subject centered for best results with circular cropping.',
       platformPreferences: 'Platform Preference',
