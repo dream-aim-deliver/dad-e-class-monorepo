@@ -21,11 +21,12 @@ import { useRequiredPlatform } from '../context/platform-context';
 interface CoursesProps {
   locale: TLocale;
   platformSlug: string;
+  platformLocale: string;
 }
 
 type Course = TListCmsCoursesSuccess['courses'][number];
 
-export default function Courses({ locale, platformSlug }: CoursesProps) {
+export default function Courses({ locale, platformSlug, platformLocale }: CoursesProps) {
   const t = useTranslations('pages.cmsCourses');
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();
@@ -270,6 +271,7 @@ export default function Courses({ locale, platformSlug }: CoursesProps) {
                           sessions={course.coachingSessionCount}
                           sales={course.salesCount}
                           onEdit={() => window.open(`${platform.domainName}/edit/course/${course.slug}`, '_blank')}
+                          onGoToOffer={() => window.open(`${platform.domainName}/${platformLocale}/courses/${course.slug}`, '_blank')}
                         />
                       );
                     })}

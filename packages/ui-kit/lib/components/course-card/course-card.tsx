@@ -22,6 +22,7 @@ type CreatorCourseCardProps = BaseCourseCardProps & {
   sessions: number;
   sales: number;
   onEdit?: () => void;
+  onGoToOffer?: () => void;
 };
 
 // Student-specific props
@@ -155,7 +156,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
 
   switch (userType) {
     case 'course_creator': {
-      const { creatorStatus, sessions, sales, onEdit} = props;
+      const { creatorStatus, sessions, sales, onEdit, onGoToOffer} = props;
       return (
         <div className={className}>
           <CourseCreatorCard
@@ -171,6 +172,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             status={creatorStatus}
             locale={locale}
             onEdit={onEdit}
+            onGoToOffer={onGoToOffer}
             onClickUser={onClickUser}
           />
         </div>

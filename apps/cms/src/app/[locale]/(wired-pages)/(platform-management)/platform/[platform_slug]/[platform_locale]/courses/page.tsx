@@ -9,7 +9,7 @@ export default async function CoursesPage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale; platform_slug: string }>;
+  params: Promise<{ locale: TLocale; platform_slug: string; platform_locale: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
@@ -18,7 +18,7 @@ export default async function CoursesPage({
     <CoursesServerComponent
       locale={params.locale}
       platformSlug={params.platform_slug}
-      
+      platformLocale={params.platform_locale}
     />
   );
 }
