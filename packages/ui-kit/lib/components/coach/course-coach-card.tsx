@@ -114,7 +114,7 @@ const CourseCoachCard: FC<CoachCardProps> = ({
           {cardDetails.courses.slice(0, 3).map((course) => (
             <Button
               key={course.title}
-              className="p-0 gap-1 text-sm truncate"
+              className="p-0 gap-1 text-sm truncate min-w-0 max-w-full"
               size='small'
               title={course.title}
               variant="text"
