@@ -2851,7 +2851,7 @@ export const DE: TDictionary = {
       save: 'Änderungen speichern',
       saving: 'Speichert…',
       saved: 'Änderungen erfolgreich gespeichert',
-      savingBanner: 'Speichert Änderungs­einstellungen der Angebotsseite…',
+      savingBanner: 'Speichert Änderungseinstellungen der Angebotsseite…',
       savedBanner: 'Angebotsseite erfolgreich gespeichert!',
       failedBanner: 'Fehler beim Speichern der Angebotsseite',
       error: {
@@ -2868,12 +2868,12 @@ export const DE: TDictionary = {
       },
     },
     manageCoachingPage: {
-      title: 'Seite „Coaching verwalt​en“',
+      title: 'Seite „Coaching verwalten"',
       description: 'Passen Sie den Inhalt und das Layout Ihrer Coaching-Seite an',
       save: 'Änderungen speichern',
       saving: 'Speichert…',
       saved: 'Änderungen erfolgreich gespeichert',
-      savingBanner: 'Speichert Änderungs­einstellungen der Coaching-Seite…',
+      savingBanner: 'Speichert Änderungseinstellungen der Coaching-Seite…',
       savedBanner: 'Coaching-Seite erfolgreich gespeichert!',
       failedBanner: 'Fehler beim Speichern der Coaching-Seite',
       error: {
