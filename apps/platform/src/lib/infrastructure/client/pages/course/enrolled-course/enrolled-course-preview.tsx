@@ -9,6 +9,7 @@ import {
     IconEyeHide,
     IconEyeShow,
     LessonHeader,
+    ModulePagination,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { Suspense, useState, useEffect, useRef } from 'react';
@@ -308,6 +309,14 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                                         isArchived={props.isArchived}
                                     />
                                 </Suspense>
+                                <Divider className="my-6" />
+                                <ModulePagination
+                                    currentIndex={activeLessonIndex ?? 0}
+                                    totalLessons={currentModule.lessons.length}
+                                    onPrevious={handlePreviousLesson}
+                                    onNext={handleNextLesson}
+                                    locale={locale}
+                                />
                             </>
                         )}
                     </div>
