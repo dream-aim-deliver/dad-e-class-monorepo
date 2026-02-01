@@ -14,6 +14,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 interface CoursesServerComponentProps {
   locale: TLocale;
   platformSlug: string;
+  platformLocale: string;
 }
 
 export default async function CoursesServerComponent(
@@ -33,6 +34,7 @@ export default async function CoursesServerComponent(
         <Courses
           locale={props.locale}
           platformSlug={props.platformSlug}
+          platformLocale={props.platformLocale}
         />
       </Suspense>
     </HydrateClient>
