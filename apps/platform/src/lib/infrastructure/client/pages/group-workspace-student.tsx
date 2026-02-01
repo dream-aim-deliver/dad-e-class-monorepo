@@ -401,7 +401,7 @@ export default function GroupWorkspaceStudent({
             }))}
             locale={locale}
             onExploreCourses={() => {
-              // No action needed on back for create mode
+              router.push(`/${locale}/offers`);
             }}
           />
         </div>
