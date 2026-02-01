@@ -217,6 +217,7 @@ export const DictionarySchema = z.object({
       address: z.string(),
       addressPlaceholder: z.string(),
       profilePicture: z.string(),
+      profilePictureHint: z.string(),
       platformPreferences: z.string(),
       platformPP: z.string(),
       interfaceLang: z.string(),

@@ -274,6 +274,9 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             maxSize={20} // 20 MB
             uploadProgress={uploadProgress}
           />
+          <p className="text-sm text-text-secondary">
+            {dictionary.components.profileInfo.profilePictureHint}
+          </p>
         </div>
 
         <LanguageSelector
