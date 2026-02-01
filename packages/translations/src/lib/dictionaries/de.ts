@@ -330,6 +330,7 @@ export const DE: TDictionary = {
       address: 'Adresse',
       addressPlaceholder: 'Musterstrasse 70, 8002 Zürich',
       profilePicture: 'Profilbild',
+      profilePictureHint: 'Empfohlen: quadratisches Bild (1:1), mindestens 250 x 250 px. Motiv zentriert halten für optimale Darstellung im Kreisformat.',
       platformPreferences: 'Plattformpräferenzen',
       platformPP: 'Fliessend gesprochene Sprachen (C1 und höher)',
       interfaceLang: 'Bevorzugte Sprache',

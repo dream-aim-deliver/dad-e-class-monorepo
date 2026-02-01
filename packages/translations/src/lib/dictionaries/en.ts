@@ -327,6 +327,7 @@ export const EN: TDictionary = {
       address: 'Address',
       addressPlaceholder: 'Examplestreet 70, 8002 ZÃ¼rich',
       profilePicture: 'Profile Picture',
+      profilePictureHint: 'Recommended: square image (1:1), at least 250 x 250 px. Keep the subject centered for best results with circular cropping.',
       platformPreferences: 'Platform Preference',
       platformPP: 'Languages spoken fluently (C1 and above)',
       interfaceLang: 'Preferred Language',
