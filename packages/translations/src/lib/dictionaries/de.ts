@@ -2330,7 +2330,7 @@ export const DE: TDictionary = {
     },
     sidebarLayout: {
       dashboard: "Dashboard",
-      courses: "Kurse",
+      courses: "Angebote",
       yourCourses: "Deine Angebote",
       coachingSessions: "Coaching-Sitzungen",
       yourCoachingSessions: "Deine Coaching-Sitzungen",

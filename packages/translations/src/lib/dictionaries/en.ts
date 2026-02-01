@@ -2328,7 +2328,7 @@ export const EN: TDictionary = {
     },
     sidebarLayout: {
       dashboard: "Dashboard",
-      courses: "Courses",
+      courses: "Offers",
       yourCourses: "Your offers",
       coachingSessions: "Coaching Sessions",
       yourCoachingSessions: "Your Coaching Sessions",
