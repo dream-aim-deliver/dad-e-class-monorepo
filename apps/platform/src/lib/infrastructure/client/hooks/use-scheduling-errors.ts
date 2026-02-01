@@ -10,9 +10,10 @@ import { RequestCoachingSessionErrorType } from '@dream-aim-deliver/e-class-cms-
  * translation keys used in the schedulingErrors namespace.
  */
 export const ERROR_TYPE_TO_TRANSLATION_KEY: Record<string, string> = {
-  // Authentication errors
+  // Authentication errors (RequestCoachingSessionErrorType enum values)
   [RequestCoachingSessionErrorType.NOT_AUTHENTICATED]: 'notAuthenticated',
   [RequestCoachingSessionErrorType.NOT_STUDENT]: 'notStudent',
+  'forbidden': 'forbidden',
 
   // Session state errors
   [RequestCoachingSessionErrorType.SESSION_NOT_FOUND]: 'sessionNotFound',
@@ -23,10 +24,24 @@ export const ERROR_TYPE_TO_TRANSLATION_KEY: Record<string, string> = {
   [RequestCoachingSessionErrorType.INSUFFICIENT_ADVANCE_NOTICE]: 'insufficientAdvanceNotice',
   [RequestCoachingSessionErrorType.COACH_UNAVAILABLE]: 'coachUnavailable',
   [RequestCoachingSessionErrorType.SESSION_OVERLAP]: 'sessionOverlap',
+  'invalid_start_time_format': 'invalidStartTimeFormat',
 
   // Coach errors
   [RequestCoachingSessionErrorType.COACH_NOT_FOUND]: 'coachNotFound',
   [RequestCoachingSessionErrorType.COACH_NOT_ASSIGNED_TO_COURSE]: 'coachNotAssignedToCourse',
+  'coach_not_assigned_to_group': 'coachNotAssignedToGroup',
+  'course_creator_not_authorized': 'courseCreatorNotAuthorized',
+
+  // Coach session overlap (CreateGroupCoachingSession)
+  'coach_session_overlap': 'coachSessionOverlap',
+
+  // Group errors (CreateGroupCoachingSession)
+  'group_not_found': 'groupNotFound',
+  'group_no_course': 'groupNoCourse',
+  'group_invalid_platform_language': 'groupInvalidPlatformLanguage',
+  'group_not_in_platform': 'groupNotInPlatform',
+  'group_no_students': 'groupNoStudents',
+  'platform_id_required': 'platformIdRequired',
 
   // Lesson component errors
   [RequestCoachingSessionErrorType.CANNOT_LINK_STANDALONE_SESSION]: 'cannotLinkStandaloneSession',
@@ -55,6 +70,8 @@ const ERROR_MESSAGE_PATTERNS: Array<{ pattern: RegExp; key: string }> = [
   { pattern: /scheduled at least/i, key: 'insufficientAdvanceNotice' },
   { pattern: /not available at the selected time/i, key: 'coachUnavailable' },
   { pattern: /coach.*is not available/i, key: 'coachUnavailable' },
+  { pattern: /coach.*already has.*session/i, key: 'coachSessionOverlap' },
+  { pattern: /coach_session_overlap/i, key: 'coachSessionOverlap' },
   { pattern: /already has a session/i, key: 'sessionOverlap' },
   { pattern: /session overlap/i, key: 'sessionOverlap' },
   { pattern: /in the past/i, key: 'sessionInPast' },
@@ -63,6 +80,12 @@ const ERROR_MESSAGE_PATTERNS: Array<{ pattern: RegExp; key: string }> = [
   { pattern: /session not found/i, key: 'sessionNotFound' },
   { pattern: /coach not found/i, key: 'coachNotFound' },
   { pattern: /not assigned to.*course/i, key: 'coachNotAssignedToCourse' },
+  { pattern: /not assigned to.*group/i, key: 'coachNotAssignedToGroup' },
+  { pattern: /group not found/i, key: 'groupNotFound' },
+  { pattern: /group.*no course/i, key: 'groupNoCourse' },
+  { pattern: /group.*no students/i, key: 'groupNoStudents' },
+  { pattern: /forbidden/i, key: 'forbidden' },
+  { pattern: /invalid.*start.*time/i, key: 'invalidStartTimeFormat' },
 ];
 
 /**

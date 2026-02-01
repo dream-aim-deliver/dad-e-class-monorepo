@@ -1942,6 +1942,50 @@ export const EN: TDictionary = {
         title: 'Time Conflict',
         description: 'The coach already has a session scheduled at this time. Please select a different time.',
       },
+      coachSessionOverlap: {
+        title: 'Coach Has Conflicting Session',
+        description: 'The coach already has a coaching session (scheduled or pending) at this time. Please select a different time slot.',
+      },
+      forbidden: {
+        title: 'Access Denied',
+        description: 'You do not have permission to perform this action.',
+      },
+      coachNotAssignedToGroup: {
+        title: 'Coach Not Assigned',
+        description: 'You are not assigned as a coach for this group.',
+      },
+      courseCreatorNotAuthorized: {
+        title: 'Not Authorized',
+        description: 'You are not authorized to create sessions for this course.',
+      },
+      groupNotFound: {
+        title: 'Group Not Found',
+        description: 'The group could not be found.',
+      },
+      groupNoCourse: {
+        title: 'No Course Assigned',
+        description: 'This group is not associated with a course.',
+      },
+      groupInvalidPlatformLanguage: {
+        title: 'Invalid Configuration',
+        description: 'The group\'s course has an invalid platform configuration.',
+      },
+      groupNotInPlatform: {
+        title: 'Invalid Platform',
+        description: 'This group belongs to a different platform.',
+      },
+      groupNoStudents: {
+        title: 'No Students in Group',
+        description: 'Cannot create a session for a group with no students enrolled.',
+      },
+      platformIdRequired: {
+        title: 'Platform Error',
+        description: 'Platform information is missing. Please try again.',
+      },
+      invalidStartTimeFormat: {
+        title: 'Invalid Time Format',
+        description: 'The session start time format is invalid. Please select a valid time.',
+      },
       cannotLinkStandaloneSession: {
         title: 'Cannot Link Session',
         description: 'Standalone coaching sessions cannot be linked to lesson components.',

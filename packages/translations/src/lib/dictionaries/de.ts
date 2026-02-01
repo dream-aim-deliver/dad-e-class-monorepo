@@ -1944,6 +1944,50 @@ export const DE: TDictionary = {
         title: 'Zeitkonflikt',
         description: 'Der Coach hat bereits eine Sitzung zu diesem Zeitpunkt. Bitte wählen Sie einen anderen Zeitpunkt.',
       },
+      coachSessionOverlap: {
+        title: 'Coach hat Terminkonflikt',
+        description: 'Der Coach hat bereits eine Coaching-Sitzung (geplant oder ausstehend) zu diesem Zeitpunkt. Bitte wählen Sie einen anderen Zeitslot.',
+      },
+      forbidden: {
+        title: 'Zugriff verweigert',
+        description: 'Sie haben keine Berechtigung für diese Aktion.',
+      },
+      coachNotAssignedToGroup: {
+        title: 'Coach nicht zugewiesen',
+        description: 'Sie sind nicht als Coach für diese Gruppe zugewiesen.',
+      },
+      courseCreatorNotAuthorized: {
+        title: 'Nicht berechtigt',
+        description: 'Sie sind nicht berechtigt, Sitzungen für diesen Kurs zu erstellen.',
+      },
+      groupNotFound: {
+        title: 'Gruppe nicht gefunden',
+        description: 'Die Gruppe konnte nicht gefunden werden.',
+      },
+      groupNoCourse: {
+        title: 'Kein Kurs zugewiesen',
+        description: 'Diese Gruppe ist keinem Kurs zugeordnet.',
+      },
+      groupInvalidPlatformLanguage: {
+        title: 'Ungültige Konfiguration',
+        description: 'Der Kurs der Gruppe hat eine ungültige Plattformkonfiguration.',
+      },
+      groupNotInPlatform: {
+        title: 'Ungültige Plattform',
+        description: 'Diese Gruppe gehört zu einer anderen Plattform.',
+      },
+      groupNoStudents: {
+        title: 'Keine Studierenden in der Gruppe',
+        description: 'Für eine Gruppe ohne eingeschriebene Studierende kann keine Sitzung erstellt werden.',
+      },
+      platformIdRequired: {
+        title: 'Plattformfehler',
+        description: 'Plattforminformationen fehlen. Bitte versuchen Sie es erneut.',
+      },
+      invalidStartTimeFormat: {
+        title: 'Ungültiges Zeitformat',
+        description: 'Das Startzeitformat der Sitzung ist ungültig. Bitte wählen Sie eine gültige Zeit.',
+      },
       cannotLinkStandaloneSession: {
         title: 'Verknüpfung nicht möglich',
         description: 'Eigenständige Coaching-Sitzungen können nicht mit Lektionskomponenten verknüpft werden.',
