@@ -132,6 +132,8 @@ export const DictionarySchema = z.object({
       selected: z.string(),
       sendNotification: z.string(),
       hideActions: z.string(),
+      roleColumn: z.string(),
+      exportSelection: z.string(),
       all: z.string(),
       students: z.string(),
       coaches: z.string(),

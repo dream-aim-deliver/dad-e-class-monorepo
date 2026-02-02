@@ -50,6 +50,7 @@ export interface UserGridProps extends isLocalAware {
     enableSelection?: boolean;
     onSendNotifications?: (userIds: number[]) => void;
     showDetailsColumn: boolean;
+    variant: 'platform' | 'all';
 }
 
 // Role icon component
@@ -114,6 +115,47 @@ const PlatformCellRenderer = (props: any) => {
     );
 };
 
+
+const ROLE_HIERARCHY = ['superadmin', 'admin', 'course_creator', 'coach', 'student'];
+
+function getHighestRole(roles: { platformName: string; role: string }[]): string {
+    for (const role of ROLE_HIERARCHY) {
+        if (roles.some(r => r.role === role)) return role;
+    }
+    return roles[0]?.role ?? '';
+}
+
+function formatRoleDisplay(role: string): string {
+    return role.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function getRoleValueForVariant(variant: 'platform' | 'all', roles: { platformName: string; role: string }[]): string {
+    if (!roles || roles.length === 0) return '';
+
+    if (variant === 'platform') {
+        return formatRoleDisplay(getHighestRole(roles));
+    }
+
+    // variant === 'all'
+    if (roles.some(r => r.role === 'superadmin')) {
+        return 'Superadmin';
+    }
+
+    // Group roles by platform, pick highest role per platform
+    const platformMap = new Map<string, { platformName: string; role: string }[]>();
+    for (const r of roles) {
+        const existing = platformMap.get(r.platformName) ?? [];
+        existing.push(r);
+        platformMap.set(r.platformName, existing);
+    }
+
+    const parts: string[] = [];
+    for (const [platformName, platformRoles] of platformMap) {
+        const highest = getHighestRole(platformRoles);
+        parts.push(`${platformName}: ${formatRoleDisplay(highest)}`);
+    }
+    return parts.join(', ');
+}
 
 /**
  * A reusable UserGrid component for displaying and managing a grid of user data with filtering, sorting, and selection capabilities.
@@ -208,6 +250,15 @@ export const UserGrid = (props: UserGridProps) => {
             filter: 'agTextColumnFilter'
         },
         {
+            headerName: dictionary.roleColumn,
+            valueGetter: (params: any) => {
+                const data: UserRow = params.data;
+                if (!data?.roles) return '';
+                return getRoleValueForVariant(props.variant, data.roles);
+            },
+            filter: 'agTextColumnFilter'
+        },
+        {
             field: 'phone',
             headerName: dictionary.phoneNumberColumn,
             filter: 'agTextColumnFilter'
@@ -263,7 +314,7 @@ export const UserGrid = (props: UserGridProps) => {
             },
             filter: 'agDateColumnFilter'
         }
-    ], [dictionary, props.emailTooltip, props.showDetailsColumn, props.onUserDetailsClick]);
+    ], [dictionary, props.emailTooltip, props.showDetailsColumn, props.onUserDetailsClick, props.variant]);
 
     // For filter modal
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
@@ -322,6 +373,18 @@ export const UserGrid = (props: UserGridProps) => {
             props.gridRef.current.api.exportDataAsCsv({
                 fileName: `user_grid_export_${new Date().toISOString()}.csv`,
                 onlySelected: false,
+                skipPinnedTop: true,
+                skipPinnedBottom: true
+            });
+        }
+    }, [props.gridRef]);
+
+    // Export selected rows to CSV
+    const handleExportSelected = useCallback(() => {
+        if (props.gridRef.current?.api) {
+            props.gridRef.current.api.exportDataAsCsv({
+                fileName: `user_grid_selected_export_${new Date().toISOString()}.csv`,
+                onlySelected: true,
                 skipPinnedTop: true,
                 skipPinnedBottom: true
             });
@@ -560,6 +623,17 @@ export const UserGrid = (props: UserGridProps) => {
                                     className={selectedUserCount > 0 ? 'opacity-100' : 'opacity-50'}
                                 />
                             )}
+
+                            <Button
+                                variant="primary"
+                                size="medium"
+                                text={dictionary.exportSelection}
+                                hasIconLeft
+                                iconLeft={<IconCloudDownload />}
+                                onClick={handleExportSelected}
+                                disabled={selectedUserCount === 0}
+                                className={selectedUserCount > 0 ? 'opacity-100' : 'opacity-50'}
+                            />
 
                             <Button
                                 variant="secondary"
