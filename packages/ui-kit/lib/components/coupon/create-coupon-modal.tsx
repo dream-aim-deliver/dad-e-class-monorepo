@@ -361,11 +361,14 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
       packageIds.includes(pkg.id.toString())
     );
     
-    const newSelectedPackages = packages.map((pkg: any) => ({
-      id: pkg.id,
-      title: pkg.title,
-      withCoaching: false
-    }));
+    const newSelectedPackages = packages.map((pkg: any) => {
+      const existing = selectedPackages.find(sp => sp.id === pkg.id);
+      return {
+        id: pkg.id,
+        title: pkg.title,
+        withCoaching: existing?.withCoaching ?? false,
+      };
+    });
     
     setSelectedPackages(newSelectedPackages);
   };
