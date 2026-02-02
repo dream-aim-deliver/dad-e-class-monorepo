@@ -58,6 +58,9 @@ vi.mock('@maany_shr/e-class-translations', () => ({
         buttontext1: 'Cancel',
         buttontext2: 'Save',
       },
+      dateInput: {
+        placeholder: 'Select date',
+      },
       languageSelector: 'Languages',
       uploadingSection: {
         uploadImage: 'Upload Image',
