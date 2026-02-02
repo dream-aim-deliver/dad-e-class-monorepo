@@ -76,3 +76,4 @@ export { IconFooter } from './icon-footer';
 
 export {IconSent} from './icon-sent';
 export { IconPaste } from './icon-paste';
+export { IconMoreHorizontal } from './icon-more-horizontal';
