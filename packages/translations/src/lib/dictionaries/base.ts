@@ -2807,6 +2807,8 @@ export const DictionarySchema = z.object({
         visibilityDescription: z.string(),
         languageTitle: z.string(),
         languageDescription: z.string(),
+        badgeTitle: z.string(),
+        badgeDescription: z.string(),
       }),
     }),
     listPlatforms: z.object({

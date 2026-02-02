@@ -2745,6 +2745,8 @@ export const DE: TDictionary = {
         visibilityDescription: 'Pakete werden nicht automatisch auf der öffentlichen Angebotsseite angezeigt. Um ein Paket sichtbar zu machen, müssen Sie es explizit im Angebotsseiten-Editor (CMS → Angebotsseite) für jede Sprache auswählen, in der es erscheinen soll.',
         languageTitle: 'Sprachunabhängigkeit',
         languageDescription: 'Pakete sind bewusst nicht direkt mit einer bestimmten Sprache verknüpft – nur die zugehörigen Kurse haben Spracheinstellungen. Daher werden hier alle Pakete unabhängig von der aktuell ausgewählten Inhaltssprache angezeigt.',
+        badgeTitle: 'Veröffentlicht-Badge',
+        badgeDescription: 'Das Badge „Veröffentlicht" bedeutet, dass das Paket aktiv und kaufbar ist – aber nicht, dass es auf der Angebotsseite sichtbar ist. Dazu müssen Sie es im Angebotsseiten-Editor (CMS → Angebotsseite) hinzufügen.',
       },
     },
     listPlatforms: {
