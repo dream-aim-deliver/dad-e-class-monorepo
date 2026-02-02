@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TUpcomingStudentCoachingSession } from '@dream-aim-deliver/e-class-cms-rest';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { Button, CoachingSessionCard } from '@maany_shr/e-class-ui-kit';
+import { Button, CoachingSessionCard, AvailableCoachingSessions } from '@maany_shr/e-class-ui-kit';
 import { useListUpcomingStudentCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-student-coaching-sessions-presenter';
+import { useListStudentCoachingSessionsPresenter } from '../../hooks/use-list-student-coaching-sessions-presenter';
 import { trpc } from '../../trpc/cms-client';
 
 interface UserCoachingSessionsProps {
@@ -30,14 +31,55 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const [viewModel, setViewModel] = useState<viewModels.TListUpcomingStudentCoachingSessionsViewModel | null>(null);
     const { presenter } = useListUpcomingStudentCoachingSessionsPresenter(setViewModel);
 
+    const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
+        viewModels.TStudentCoachingSessionsListViewModel | undefined
+    >(undefined);
+    const { presenter: allSessionsPresenter } = useListStudentCoachingSessionsPresenter(setStudentCoachingSessionsViewModel);
+
     const [upcomingSessionsResponse] = trpc.listUpcomingStudentCoachingSessions.useSuspenseQuery({
         studentUsername: studentUsername || ''
     });
+
+    const [studentCoachingSessionsResponse] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
 
     useEffect(() => {
         // @ts-ignore
         presenter.present(upcomingSessionsResponse, viewModel);
     }, [upcomingSessionsResponse, presenter]);
+
+    useEffect(() => {
+        if (studentCoachingSessionsResponse) {
+            // @ts-ignore
+            allSessionsPresenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
+        }
+    }, [studentCoachingSessionsResponse, allSessionsPresenter]);
+
+    // Filter unscheduled sessions and group by offering title+duration
+    const availableCoachingSessionsData = useMemo(() => {
+        if (!studentCoachingSessionsViewModel || studentCoachingSessionsViewModel.mode !== 'default' || !studentCoachingSessionsViewModel.data) {
+            return [];
+        }
+        const allSessions = studentCoachingSessionsViewModel.data.sessions || [];
+        const unscheduledSessions = allSessions.filter(session => session.status === 'unscheduled');
+
+        const sessionGroups = unscheduledSessions.reduce((acc, session) => {
+            if (!session?.coachingOfferingTitle || session?.coachingOfferingDuration === undefined) {
+                return acc;
+            }
+            const key = `${session.coachingOfferingTitle}-${session.coachingOfferingDuration}`;
+            if (!acc[key]) {
+                acc[key] = {
+                    title: session.coachingOfferingTitle,
+                    time: session.coachingOfferingDuration,
+                    numberOfSessions: 0
+                };
+            }
+            acc[key].numberOfSessions += 1;
+            return acc;
+        }, {} as Record<string, { title: string; time: number; numberOfSessions: number }>);
+
+        return Object.values(sessionGroups);
+    }, [studentCoachingSessionsViewModel]);
 
     const handleViewAllCoachingSessions = useCallback(() => {
         router.push(`/${locale}/workspace/coaching-sessions`);
@@ -124,7 +166,6 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                                     }}
                                     onClickJoinMeeting={() => {
                                         console.log('Join meeting for session', session.id);
-                                        // TODO: Implement meeting join functionality
                                     }}
                                     onClickCourse={session.course ? () => {
                                         router.push(`/${locale}/courses/${session.course?.slug || ''}`);
@@ -141,6 +182,22 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                     </div>
                 )}
             </div>
+
+            {availableCoachingSessionsData.length > 0 && (
+                <div className="mt-10">
+                    <p className="text-2xl font-semibold text-white mb-6">
+                        {t('availableCoachingSessions')}
+                    </p>
+                    <AvailableCoachingSessions
+                        locale={locale}
+                        availableCoachingSessionsData={availableCoachingSessionsData}
+                        onClickBuyMoreSessions={() => {
+                            console.log('Buy more sessions clicked');
+                        }}
+                        hideButton={availableCoachingSessionsData.length === 0}
+                    />
+                </div>
+            )}
         </div>
     );
 }

@@ -43,6 +43,7 @@ export default async function UserDashboardServerComponent() {
     prefetch(trpc.listUpcomingStudentCoachingSessions.queryOptions({
         studentUsername: session.user.name || ''
     }));
+    prefetch(trpc.listStudentCoachingSessions.queryOptions({}));
 
     // Add coach-specific data prefetching
     if (isCoach) {

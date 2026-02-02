@@ -2646,6 +2646,8 @@ export const EN: TDictionary = {
       home: 'Home',
       workspace: 'Workspace',
       coachingSessions: 'Coaching Sessions',
+      upcomingAndAvailable: 'Upcoming & Available',
+      availableCoachingSessions: 'Available coaching sessions',
       error: {
         title: 'Coaching Sessions Error',
         description: 'Unable to load your coaching sessions. Please refresh the page.',

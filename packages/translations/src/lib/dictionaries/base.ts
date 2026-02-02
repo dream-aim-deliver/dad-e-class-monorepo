@@ -2710,6 +2710,8 @@ export const DictionarySchema = z.object({
       home: z.string(),
       workspace: z.string(),
       coachingSessions: z.string(),
+      upcomingAndAvailable: z.string(),
+      availableCoachingSessions: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),
