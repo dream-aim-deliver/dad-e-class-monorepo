@@ -22,6 +22,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
@@ -78,6 +79,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const t = useTranslations('pages.profile');
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 	const professionalInfoTranslations = useTranslations('components.professionalInfo');
+	const { update: updateSession } = useSession();
 	const utils = trpc.useUtils();
 	const platformContext = usePlatform();
 	const supportEmail = platformContext?.platform.supportEmailAddress;
@@ -227,6 +229,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			setSuccessMessage(t('personalProfileSaved'));
 			setErrorMessage(null);
 			await utils.getPersonalProfile.invalidate();
+			await updateSession(); // Refresh NextAuth session so nav bars show updated profile picture
 		},
 		onError: (error) => {
 			setErrorMessage(error.message || t('failedToSavePersonal'));

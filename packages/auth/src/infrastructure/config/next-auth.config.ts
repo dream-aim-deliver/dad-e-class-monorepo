@@ -273,6 +273,23 @@ export const generateNextAuthConfig = (config: {
                 // Also refresh if idTokenExpires is missing (timeUntilExpiry < 0)
                 const shouldRefresh = !tokenExpires || timeUntilExpiry < 5 * 60 * 1000;
 
+                // Handle explicit session update (e.g. after profile picture change)
+                if (trigger === 'update') {
+                    const idToken = (token.account as Account)?.id_token;
+                    if (idToken) {
+                        console.log('[Auth JWT] 🔄 Session update triggered, re-fetching user data...');
+                        const cachedData = await fetchUserDataForCache(
+                            idToken,
+                            token.jti,
+                            (token.user as TAuthProviderProfileDTO).sub,
+                            (token.user as TAuthProviderProfileDTO).image
+                        );
+                        token.cachedRoles = cachedData.roles;
+                        token.cachedUserDetails = cachedData.userDetails;
+                    }
+                    return token;
+                }
+
                 if (!shouldRefresh) {
                     console.log(`[Auth JWT] ✅ ID token still valid, no refresh needed (expires in ${minutesUntilExpiry} minutes)`);
                     return token;
