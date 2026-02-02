@@ -9,7 +9,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams, usePathname } from 'next/navigation';
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useListCourseMaterialsPresenter } from '../../../hooks/use-list-course-materials-presenter';
 import { trpc } from '../../../trpc/cms-client';
 import { usePlatform } from '../../../context/platform-context';
@@ -24,12 +24,29 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const lessonMaterialId = searchParams.get('lesson-material') ?? undefined;
+    const [copiedLessonId, setCopiedLessonId] = useState<string | null>(null);
+    const scrollRef = useRef<boolean>(false);
 
-    const getLessonLink = useCallback((lessonId: string) => {
+    // Scroll to the target lesson on deep-link
+    useEffect(() => {
+        if (lessonMaterialId && !scrollRef.current) {
+            scrollRef.current = true;
+            const timer = setTimeout(() => {
+                const element = document.getElementById(`lesson-material-${lessonMaterialId}`);
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [lessonMaterialId]);
+
+    const handleCopyLessonLink = useCallback((lessonId: string) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('tab', 'material');
         params.set('lesson-material', lessonId);
-        return `${window.location.origin}${pathname}?${params.toString()}`;
+        const link = `${window.location.origin}${pathname}?${params.toString()}`;
+        navigator.clipboard.writeText(link);
+        setCopiedLessonId(lessonId);
+        setTimeout(() => setCopiedLessonId(null), 2000);
     }, [searchParams, pathname]);
     const t = useTranslations('pages.enrolledCourse');
     const courseTranslations = useTranslations('pages.course');
@@ -117,7 +134,7 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
                     </p>
                 </div>
             ) : (
-                <CourseMaterialsAccordion data={successData} locale={locale} expandLessonId={lessonMaterialId} getLessonLink={getLessonLink} />
+                <CourseMaterialsAccordion data={successData} locale={locale} expandLessonId={lessonMaterialId} onCopyLessonLink={handleCopyLessonLink} copiedLessonId={copiedLessonId} />
             )}
         </div>
     );
