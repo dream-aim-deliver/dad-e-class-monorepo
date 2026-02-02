@@ -8,8 +8,8 @@ import {
     CourseMaterialsAccordion,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { useSearchParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { useSearchParams, usePathname } from 'next/navigation';
+import { Suspense, useCallback, useState } from 'react';
 import { useListCourseMaterialsPresenter } from '../../../hooks/use-list-course-materials-presenter';
 import { trpc } from '../../../trpc/cms-client';
 import { usePlatform } from '../../../context/platform-context';
@@ -22,7 +22,15 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
     const { courseSlug, currentRole } = props;
     const locale = useLocale() as TLocale;
     const searchParams = useSearchParams();
+    const pathname = usePathname();
     const lessonMaterialId = searchParams.get('lesson-material') ?? undefined;
+
+    const getLessonLink = useCallback((lessonId: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('tab', 'material');
+        params.set('lesson-material', lessonId);
+        return `${window.location.origin}${pathname}?${params.toString()}`;
+    }, [searchParams, pathname]);
     const t = useTranslations('pages.enrolledCourse');
     const courseTranslations = useTranslations('pages.course');
     const platformContext = usePlatform();
@@ -109,7 +117,7 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
                     </p>
                 </div>
             ) : (
-                <CourseMaterialsAccordion data={successData} locale={locale} expandLessonId={lessonMaterialId} />
+                <CourseMaterialsAccordion data={successData} locale={locale} expandLessonId={lessonMaterialId} getLessonLink={getLessonLink} />
             )}
         </div>
     );

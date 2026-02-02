@@ -1365,6 +1365,8 @@ export const DE: TDictionary = {
       module: 'Modul',
       lesson: 'Lektion',
       noMaterials: 'Keine Materialien für diese Lektion verfügbar.',
+      copyLink: 'Link kopieren',
+      linkCopied: 'Link kopiert!',
     },
     useCourseImageUpload: {
       uploadCredentialsError: 'Upload-Anmeldeinformationen konnten nicht abgerufen werden',

@@ -1363,6 +1363,8 @@ export const EN: TDictionary = {
       module: 'Module',
       lesson: 'Lesson',
       noMaterials: 'No materials available for this lesson.',
+      copyLink: 'Copy link',
+      linkCopied: 'Link copied!',
     },
     useCourseImageUpload: {
       uploadCredentialsError: 'Failed to get upload credentials',

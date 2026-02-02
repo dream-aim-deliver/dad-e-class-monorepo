@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
@@ -15,6 +15,7 @@ import RichTextRenderer from '../rich-text-element/renderer';
 import { LinkPreview } from '../links';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { IconCloudDownload } from '../icons';
+import { IconLink } from '../icons/icon-link';
 
 /**
  * Props for the CourseMaterialsAccordion component
@@ -24,6 +25,8 @@ interface CourseMaterialsAccordionProps extends isLocalAware {
     data: viewModels.TCourseMaterialsListSuccess;
     /** Optional lesson ID to auto-expand and scroll to (for deep-linking) */
     expandLessonId?: string;
+    /** Callback to get the deep-link URL for a lesson (for copy-to-clipboard) */
+    getLessonLink?: (lessonId: string) => string;
 }
 
 /**
@@ -33,10 +36,11 @@ interface CourseMaterialsAccordionProps extends isLocalAware {
 export const CourseMaterialsAccordion: React.FC<
     CourseMaterialsAccordionProps
 > = (props) => {
-    const { data, locale, expandLessonId } = props;
+    const { data, locale, expandLessonId, getLessonLink } = props;
     const { modules, moduleCount } = data;
     const dictionary = getDictionary(locale);
     const scrollRef = useRef<boolean>(false);
+    const [copiedLessonId, setCopiedLessonId] = useState<string | null>(null);
 
     // Filter modules to only include those with lessons that have materials
     const modulesWithMaterials = modules?.map(module => ({
@@ -254,6 +258,29 @@ export const CourseMaterialsAccordion: React.FC<
                                                             .lesson
                                                     }
                                                 </span>
+                                                {getLessonLink && (
+                                                    <button
+                                                        type="button"
+                                                        title={copiedLessonId === lesson.id
+                                                            ? dictionary.components.courseMaterialsAccordion.linkCopied
+                                                            : dictionary.components.courseMaterialsAccordion.copyLink}
+                                                        className="flex items-center gap-1 text-text-secondary hover:text-text-primary text-xs md:text-sm ml-auto flex-shrink-0"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            const link = getLessonLink(lesson.id!);
+                                                            navigator.clipboard.writeText(link);
+                                                            setCopiedLessonId(lesson.id!);
+                                                            setTimeout(() => setCopiedLessonId(null), 2000);
+                                                        }}
+                                                    >
+                                                        <IconLink size="4" />
+                                                        <span className="hidden md:inline">
+                                                            {copiedLessonId === lesson.id
+                                                                ? dictionary.components.courseMaterialsAccordion.linkCopied
+                                                                : dictionary.components.courseMaterialsAccordion.copyLink}
+                                                        </span>
+                                                    </button>
+                                                )}
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent value={lesson.id!}>
