@@ -164,7 +164,7 @@ export const CourseMaterialsAccordion: React.FC<
                         <div className="flex items-center gap-4 flex-1">
                             <h3>{module.title}</h3>
                             <span className="text-text-secondary text-xs md:text-sm">
-                                {module.position}/{moduleCount}{' '}
+                                {moduleIndex + 1}/{moduleCount}{' '}
                                 {
                                     dictionary.components
                                         .courseMaterialsAccordion.module
@@ -221,7 +221,7 @@ export const CourseMaterialsAccordion: React.FC<
                                             <div className="flex items-center gap-4 flex-1">
                                                 <h4>{lesson.title}</h4>
                                                 <span className="text-text-secondary text-xs md:text-sm">
-                                                    {lesson.position}/
+                                                    {lessonIndex + 1}/
                                                     {module.lessonCount}{' '}
                                                     {
                                                         dictionary.components

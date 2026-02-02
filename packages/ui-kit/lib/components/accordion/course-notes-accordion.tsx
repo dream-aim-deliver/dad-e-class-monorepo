@@ -79,7 +79,7 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                                     dictionary.components
                                         .courseMaterialsAccordion.module
                                 }{' '}
-                                {module.position} - {module.title}
+                                {moduleIndex + 1} - {module.title}
                             </h4>
                         </div>
                     </AccordionTrigger>
@@ -145,7 +145,7 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                                                                 (mod.lessonCount ?? 0),
                                                             0,
                                                         ) +
-                                                        (lesson.position ?? 0)}{' '}
+                                                        (lessonIndex + 1)}{' '}
                                                     - {lesson.title}
                                                 </h5>
                                                 <Button
