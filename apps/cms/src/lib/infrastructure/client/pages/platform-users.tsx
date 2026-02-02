@@ -203,6 +203,7 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
           enableSelection={true}
           onSendNotifications={handleSendNotifications}
           showDetailsColumn={true}
+          variant="platform"
         />
       </div>
 

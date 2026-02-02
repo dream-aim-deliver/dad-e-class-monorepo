@@ -162,8 +162,9 @@ export default function AllUsers({ locale }: AllUsersProps) {
           }}
           onEmailClick={handleEmailClick}
           emailTooltip={t('copyEmailTooltip')}
-          enableSelection={false}
+          enableSelection={true}
           showDetailsColumn={false}
+          variant="all"
         />
       </div>
     </div>

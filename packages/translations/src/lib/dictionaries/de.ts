@@ -133,6 +133,8 @@ export const DE: TDictionary = {
       selected: 'Ausgewählt',
       sendNotification: 'Benachrichtigung senden',
       hideActions: 'Aktionen ausblenden',
+      roleColumn: 'Rolle',
+      exportSelection: 'Auswahl exportieren',
       all: 'Alle',
       students: 'Studierende', // Guidelines: gender-neutral wording
       coaches: 'Coaches',
