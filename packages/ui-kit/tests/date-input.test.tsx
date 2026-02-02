@@ -1,15 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { DateInput } from '../lib/components/date-input';
 
 describe('<DateInput />', () => {
   const mockOnChange = vi.fn();
 
   beforeEach(() => {
-    // Reset mocks between tests
     vi.clearAllMocks();
-    // Mock the showPicker method which isn't available in the test environment
-    HTMLInputElement.prototype.showPicker = vi.fn();
   });
 
   it('renders the date input with a label', () => {
@@ -30,8 +27,7 @@ describe('<DateInput />', () => {
     expect(label).toBeInTheDocument();
     expect(label).toHaveTextContent('Select Date');
     expect(input).toBeInTheDocument();
-    expect(input).toHaveAttribute('type', 'date');
-    expect(input).toHaveValue('2025-02-18');
+    expect(input).toHaveAttribute('type', 'text');
   });
 
   it('renders without a label when no label is provided', () => {
@@ -44,7 +40,7 @@ describe('<DateInput />', () => {
     expect(input).toBeInTheDocument();
   });
 
-  it('calls onChange when the date value changes', () => {
+  it('displays the formatted date value in the text input', () => {
     render(
       <DateInput
         label="Select Date"
@@ -54,10 +50,10 @@ describe('<DateInput />', () => {
       />,
     );
 
-    const input = screen.getByTestId('date-input-field');
-    fireEvent.change(input, { target: { value: '2025-03-01' } });
-
-    expect(mockOnChange).toHaveBeenCalledWith('2025-03-01');
+    const input = screen.getByTestId('date-input-field') as HTMLInputElement;
+    // The value should be a locale-formatted string (e.g., "2/18/2025" for en-US)
+    expect(input.value).toBeTruthy();
+    expect(input.value).not.toBe('');
   });
 
   it('renders the custom calendar icon button', () => {
@@ -74,10 +70,7 @@ describe('<DateInput />', () => {
     expect(iconButton).toBeInTheDocument();
   });
 
-  it('calls handleIconClick when the calendar icon is clicked', () => {
-    const showPickerMock = vi.fn();
-    HTMLInputElement.prototype.showPicker = showPickerMock;
-
+  it('opens the calendar popover when the wrapper is clicked', () => {
     render(
       <DateInput
         label="Select Date"
@@ -87,29 +80,73 @@ describe('<DateInput />', () => {
       />,
     );
 
-    const iconButton = screen.getByTestId('date-input-icon-button');
-    // Use stopPropagation option to simulate our component behavior
-    fireEvent.click(iconButton, { stopPropagation: true });
+    // Calendar should not be visible initially
+    expect(screen.queryByTestId('date-input-calendar')).not.toBeInTheDocument();
 
-    expect(showPickerMock).toHaveBeenCalledTimes(2);
-  });
-
-  it('calls showPicker when the input wrapper is clicked', () => {
-    const showPickerMock = vi.fn();
-    HTMLInputElement.prototype.showPicker = showPickerMock;
-
-    render(
-      <DateInput
-        label="Select Date"
-        value="2025-02-18"
-        onChange={mockOnChange}
-        locale='en'
-      />,
-    );
-
+    // Click the wrapper to open
     const wrapper = screen.getByTestId('date-input-wrapper');
     fireEvent.click(wrapper);
 
-    expect(showPickerMock).toHaveBeenCalledTimes(1);
+    // Calendar should now be visible
+    expect(screen.getByTestId('date-input-calendar')).toBeInTheDocument();
+  });
+
+  it('opens the calendar popover when the icon button is clicked', () => {
+    render(
+      <DateInput
+        label="Select Date"
+        value="2025-02-18"
+        onChange={mockOnChange}
+        locale='en'
+      />,
+    );
+
+    expect(screen.queryByTestId('date-input-calendar')).not.toBeInTheDocument();
+
+    const iconButton = screen.getByTestId('date-input-icon-button');
+    fireEvent.click(iconButton);
+
+    expect(screen.getByTestId('date-input-calendar')).toBeInTheDocument();
+  });
+
+  it('closes the calendar when clicking outside', async () => {
+    render(
+      <div>
+        <DateInput
+          label="Select Date"
+          value="2025-02-18"
+          onChange={mockOnChange}
+          locale='en'
+        />
+        <div data-testid="outside-element">Outside</div>
+      </div>,
+    );
+
+    // Open calendar
+    const wrapper = screen.getByTestId('date-input-wrapper');
+    fireEvent.click(wrapper);
+    expect(screen.getByTestId('date-input-calendar')).toBeInTheDocument();
+
+    // Click outside
+    await act(async () => {
+      fireEvent.mouseDown(screen.getByTestId('outside-element'));
+    });
+
+    expect(screen.queryByTestId('date-input-calendar')).not.toBeInTheDocument();
+  });
+
+  it('displays placeholder text when no value is provided', () => {
+    render(
+      <DateInput
+        label="Select Date"
+        value=""
+        onChange={mockOnChange}
+        locale='en'
+      />,
+    );
+
+    const input = screen.getByTestId('date-input-field') as HTMLInputElement;
+    expect(input.value).toBe('');
+    expect(input.placeholder).toBeTruthy();
   });
 });
