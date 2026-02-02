@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
@@ -23,10 +23,12 @@ import { IconLink } from '../icons/icon-link';
 interface CourseMaterialsAccordionProps extends isLocalAware {
     /** The course materials data containing modules and module count */
     data: viewModels.TCourseMaterialsListSuccess;
-    /** Optional lesson ID to auto-expand and scroll to (for deep-linking) */
+    /** Optional lesson ID to auto-expand (for deep-linking) */
     expandLessonId?: string;
-    /** Callback to get the deep-link URL for a lesson (for copy-to-clipboard) */
-    getLessonLink?: (lessonId: string) => string;
+    /** Callback when user clicks copy link on a lesson */
+    onCopyLessonLink?: (lessonId: string) => void;
+    /** Which lesson ID was just copied (for visual feedback) */
+    copiedLessonId?: string | null;
 }
 
 /**
@@ -36,11 +38,9 @@ interface CourseMaterialsAccordionProps extends isLocalAware {
 export const CourseMaterialsAccordion: React.FC<
     CourseMaterialsAccordionProps
 > = (props) => {
-    const { data, locale, expandLessonId, getLessonLink } = props;
+    const { data, locale, expandLessonId, onCopyLessonLink, copiedLessonId } = props;
     const { modules, moduleCount } = data;
     const dictionary = getDictionary(locale);
-    const scrollRef = useRef<boolean>(false);
-    const [copiedLessonId, setCopiedLessonId] = useState<string | null>(null);
 
     // Filter modules to only include those with lessons that have materials
     const modulesWithMaterials = modules?.map(module => ({
@@ -54,18 +54,6 @@ export const CourseMaterialsAccordion: React.FC<
     const targetModuleId = expandLessonId
         ? modulesWithMaterials?.find(m => m.lessons?.some(l => l.id === expandLessonId))?.id
         : undefined;
-
-    // Scroll the target lesson into view after initial render
-    useEffect(() => {
-        if (expandLessonId && targetModuleId && !scrollRef.current) {
-            scrollRef.current = true;
-            const timer = setTimeout(() => {
-                const element = document.getElementById(`lesson-material-${expandLessonId}`);
-                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 300);
-            return () => clearTimeout(timer);
-        }
-    }, [expandLessonId, targetModuleId]);
 
     const renderMaterial = (material: useCaseModels.TCourseMaterial) => {
         switch (material.type) {
@@ -258,7 +246,7 @@ export const CourseMaterialsAccordion: React.FC<
                                                             .lesson
                                                     }
                                                 </span>
-                                                {getLessonLink && (
+                                                {onCopyLessonLink && (
                                                     <button
                                                         type="button"
                                                         title={copiedLessonId === lesson.id
@@ -267,10 +255,7 @@ export const CourseMaterialsAccordion: React.FC<
                                                         className="flex items-center gap-1 text-text-secondary hover:text-text-primary text-xs md:text-sm ml-auto flex-shrink-0"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            const link = getLessonLink(lesson.id!);
-                                                            navigator.clipboard.writeText(link);
-                                                            setCopiedLessonId(lesson.id!);
-                                                            setTimeout(() => setCopiedLessonId(null), 2000);
+                                                            onCopyLessonLink(lesson.id!);
                                                         }}
                                                     >
                                                         <IconLink size="4" />
