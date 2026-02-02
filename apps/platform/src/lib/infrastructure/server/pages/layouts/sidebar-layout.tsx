@@ -13,7 +13,7 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
     const session = await nextAuth.auth();
     const isLoggedIn = session !== null;
     return (
-        <div className="flex flex-row lg:gap-3 p-5 overflow-hidden">
+        <div className="flex flex-row lg:gap-3 p-5 overflow-y-auto">
             {isLoggedIn && (
                 <div
                     id="sidebar"
