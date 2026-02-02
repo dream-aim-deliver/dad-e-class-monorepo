@@ -197,7 +197,9 @@ export default function RedeemStandaloneCoupon(
                             <div className="flex items-center gap-2">
                                 {getTypeIcon(couponData.type)}
                                 <span className="text-text-secondary text-sm md:text-md">
-                                    {getTypeLabel(couponData.type)}
+                                    {couponData.type === 'group' && couponData.title
+                                        ? `${getTypeLabel(couponData.type)}: ${couponData.title}`
+                                        : getTypeLabel(couponData.type)}
                                 </span>
                                 {(couponData.type === 'course' ||
                                     couponData.type === 'package') && couponData.title && (
