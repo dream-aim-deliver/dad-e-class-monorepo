@@ -257,6 +257,11 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
         if (newTab !== StudentCourseTab.STUDY) {
             params.delete('lesson');
         }
+
+        // Remove lesson-material parameter when switching away from material tab
+        if (newTab !== 'material') {
+            params.delete('lesson-material');
+        }
         
         // Preserve role parameter
         if (currentRole) {

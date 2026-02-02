@@ -19,13 +19,15 @@ interface AccordionItemProps {
   children: ReactNode;
   value: string;
   className?: string;
+  id?: string;
 }
 
 const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(
-  ({ children, value, className }, ref) => {
+  ({ children, value, className, id }, ref) => {
     return (
       <div
         ref={ref}
+        id={id}
         className={cn("", className)}
         data-value={value}
       >

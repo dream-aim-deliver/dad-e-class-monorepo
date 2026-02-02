@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
@@ -22,6 +22,8 @@ import { IconCloudDownload } from '../icons';
 interface CourseMaterialsAccordionProps extends isLocalAware {
     /** The course materials data containing modules and module count */
     data: viewModels.TCourseMaterialsListSuccess;
+    /** Optional lesson ID to auto-expand and scroll to (for deep-linking) */
+    expandLessonId?: string;
 }
 
 /**
@@ -31,9 +33,10 @@ interface CourseMaterialsAccordionProps extends isLocalAware {
 export const CourseMaterialsAccordion: React.FC<
     CourseMaterialsAccordionProps
 > = (props) => {
-    const { data, locale } = props;
+    const { data, locale, expandLessonId } = props;
     const { modules, moduleCount } = data;
     const dictionary = getDictionary(locale);
+    const scrollRef = useRef<boolean>(false);
 
     // Filter modules to only include those with lessons that have materials
     const modulesWithMaterials = modules?.map(module => ({
@@ -42,6 +45,23 @@ export const CourseMaterialsAccordion: React.FC<
             lesson.materials && lesson.materials.length > 0
         ) || [],
     })).filter(module => module.lessons.length > 0);
+
+    // Find the module that contains the target lesson for deep-linking
+    const targetModuleId = expandLessonId
+        ? modulesWithMaterials?.find(m => m.lessons?.some(l => l.id === expandLessonId))?.id
+        : undefined;
+
+    // Scroll the target lesson into view after initial render
+    useEffect(() => {
+        if (expandLessonId && targetModuleId && !scrollRef.current) {
+            scrollRef.current = true;
+            const timer = setTimeout(() => {
+                const element = document.getElementById(`lesson-material-${expandLessonId}`);
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [expandLessonId, targetModuleId]);
 
     const renderMaterial = (material: useCaseModels.TCourseMaterial) => {
         switch (material.type) {
@@ -126,7 +146,11 @@ export const CourseMaterialsAccordion: React.FC<
         <Accordion
             className={cn('flex flex-col gap-6')}
             type="multiple"
-            defaultValue={modulesWithMaterials?.[0]?.id ? [modulesWithMaterials[0].id] : []}
+            defaultValue={
+                targetModuleId ? [targetModuleId]
+                : modulesWithMaterials?.[0]?.id ? [modulesWithMaterials[0].id]
+                : []
+            }
         >
             {modulesWithMaterials?.map((module, moduleIndex) => {
                 return (
@@ -180,15 +204,16 @@ export const CourseMaterialsAccordion: React.FC<
                                 type="multiple"
                                 className="flex flex-col gap-4"
                                 defaultValue={
-                                    moduleIndex === 0 && module.lessons?.[0]?.id
-                                        ? [module.lessons[0].id]
-                                        : undefined
+                                    targetModuleId === module.id && expandLessonId ? [expandLessonId]
+                                    : moduleIndex === 0 && module.lessons?.[0]?.id ? [module.lessons[0].id]
+                                    : undefined
                                 }
                             >
                                 {module.lessons?.map((lesson, lessonIndex) => (
                                     <AccordionItem
                                         key={lesson.id}
                                         value={lesson.id!}
+                                        id={`lesson-material-${lesson.id}`}
                                         className="bg-base-neutral-800 p-4 rounded-medium border border-base-neutral-700"
                                     >
                                         <AccordionTrigger
