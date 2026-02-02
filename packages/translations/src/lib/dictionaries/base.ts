@@ -1352,6 +1352,8 @@ export const DictionarySchema = z.object({
       module: z.string(),
       lesson: z.string(),
       noMaterials: z.string(),
+      copyLink: z.string(),
+      linkCopied: z.string(),
     }),
     useCourseImageUpload: z.object({
       uploadCredentialsError: z.string(),
