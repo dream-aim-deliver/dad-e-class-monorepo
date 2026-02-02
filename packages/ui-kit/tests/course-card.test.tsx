@@ -16,6 +16,8 @@ const mockDictionary = {
       reviewCourseButton: 'Review Course',
       viewDetailsButton: 'View Details',
       buyButton: 'Buy',
+      fromButton: 'from',
+      detailsCourseButton: 'Go to offer',
       cochingSession: 'coaching sessions',
       sales: 'sales',
       creatorText: 'by',
@@ -107,6 +109,7 @@ describe('CourseCard', () => {
         sessions={24}
         sales={1850}
         onBuy={mockOnBuy}
+        onDetails={mockOnDetails}
       />
     );
 
@@ -114,9 +117,9 @@ describe('CourseCard', () => {
       expect(screen.getByText(/React for Beginners/i)).toBeInTheDocument();
     });
 
-    // Check for Buy button instead of Manage button for visitor card
-    fireEvent.click(screen.getByText(/buy/i));
-    expect(mockOnBuy).toHaveBeenCalled();
+    // Price button now links to details page (no direct buy from card)
+    fireEvent.click(screen.getByText(/from/i));
+    expect(mockOnDetails).toHaveBeenCalled();
   });
 
   it('renders CourseCreatorCard for course_creator user type', async () => {
