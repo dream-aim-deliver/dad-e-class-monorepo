@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/style.css';
 import { IconButton } from './icon-button';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconCalendarAlt } from './icons/icon-calendar-alt';
@@ -12,18 +14,46 @@ export interface DateInputProps extends isLocalAware {
 }
 
 /**
- * A reusable DateInput component with a custom calendar icon and optional label.
- * The date picker opens below the text field when clicked.
+ * Converts an ISO date string (YYYY-MM-DD) to a Date object.
+ * Returns undefined if the string is empty or invalid.
+ */
+function parseISODate(isoString: string): Date | undefined {
+  if (!isoString) return undefined;
+  const parts = isoString.split('-');
+  if (parts.length !== 3) return undefined;
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1;
+  const day = parseInt(parts[2], 10);
+  if (isNaN(year) || isNaN(month) || isNaN(day)) return undefined;
+  const date = new Date(year, month, day);
+  if (isNaN(date.getTime())) return undefined;
+  return date;
+}
+
+/**
+ * Converts a Date to an ISO string (YYYY-MM-DD).
+ */
+function toISODateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * A reusable DateInput component with a calendar popover using react-day-picker.
+ * Features year/month dropdown navigation for fast date selection (e.g., birth dates).
  *
  * @param label Optional label to display above the date input field.
- * @param value The current value of the date input field (in ISO format).
- * @param onChange Callback function triggered when the date value changes. Receives the new date as a string.
+ * @param value The current value of the date input field (in ISO format YYYY-MM-DD).
+ * @param onChange Callback function triggered when the date value changes. Receives the new date as an ISO string.
  *
  * @example
  * <DateInput
  *   label="Select a Date"
  *   value="2023-10-01"
  *   onChange={(date) => console.log("Selected date:", date)}
+ *   locale="en"
  * />
  */
 export const DateInput: React.FC<DateInputProps> = ({
@@ -32,68 +62,84 @@ export const DateInput: React.FC<DateInputProps> = ({
   label,
   locale
 }) => {
-
   const dictionary = getDictionary(locale).components.dateInput;
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const dateInputRef = useRef<HTMLInputElement>(null);
-  const [isFirefox, setIsFirefox] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [textValue, setTextValue] = useState('');
 
+  const selectedDate = parseISODate(value);
+
+  // Sync text value with the prop value
   useEffect(() => {
-    // Detect Firefox browser
-    setIsFirefox(navigator.userAgent.toLowerCase().indexOf('firefox') > -1);
-
-    // Apply Firefox-specific positioning if needed
-    if (isFirefox && dateInputRef.current) {
-      const styleElement = document.createElement('style');
-      styleElement.textContent = `
-        /* Firefox date picker positioning */
-        #${dateInputRef.current.id}::-moz-calendar-picker-wrapper {
-          margin-top: 40px !important;
-        }
-      `;
-      document.head.appendChild(styleElement);
-
-      return () => {
-        document.head.removeChild(styleElement);
-      };
+    if (selectedDate) {
+      const localeStr = locale === 'de' ? 'de-DE' : 'en-US';
+      setTextValue(selectedDate.toLocaleDateString(localeStr));
+    } else {
+      setTextValue('');
     }
-  }, [isFirefox]);
+  }, [value, locale]);
 
-  const handleTextFieldClick = () => {
-    if (dateInputRef.current) {
-      dateInputRef.current.showPicker();
-
-      // In some browsers, we need to apply additional positioning
-      if (!isFirefox && wrapperRef.current) {
-        const wrapperRect = wrapperRef.current.getBoundingClientRect();
-
-        // For webkit browsers, we can create a style to position the calendar
-        const styleElement = document.createElement('style');
-        styleElement.textContent = `
-          ::-webkit-datetime-edit-fields-wrapper {
-            position: relative;
-          }
-          ::-webkit-calendar-picker-indicator {
-            position: relative;
-          }
-          ::-webkit-calendar-picker {
-            margin-top: ${wrapperRect.height + 8}px !important;
-          }
-        `;
-        document.head.appendChild(styleElement);
-
-        // Remove the style after a short delay
-        setTimeout(() => {
-          document.head.removeChild(styleElement);
-        }, 500);
+  // Close popover on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
       }
     }
-  };
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const handleDaySelect = useCallback((day: Date | undefined) => {
+    if (day) {
+      onChange(toISODateString(day));
+    }
+    setIsOpen(false);
+  }, [onChange]);
+
+  const handleToggleCalendar = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
+
+  const handleInputClick = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const handleTextChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setTextValue(e.target.value);
+  }, []);
+
+  const handleTextBlur = useCallback(() => {
+    // Try to parse the typed text as a date
+    const parsed = new Date(textValue);
+    if (!isNaN(parsed.getTime())) {
+      onChange(toISODateString(parsed));
+    } else if (textValue === '') {
+      onChange('');
+    }
+    // If invalid, revert to previous value display on next render via useEffect
+  }, [textValue, onChange]);
+
+  const handleTextKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleTextBlur();
+      setIsOpen(false);
+    }
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  }, [handleTextBlur]);
 
   return (
     <div
-      className="flex flex-col w-full justify-start max-md:max-w-full"
+      ref={containerRef}
+      className="flex flex-col w-full justify-start max-md:max-w-full relative"
       data-testid="date-input-container"
     >
       {label && (
@@ -106,55 +152,84 @@ export const DateInput: React.FC<DateInputProps> = ({
         </label>
       )}
       <div
-        ref={wrapperRef}
         className="relative flex justify-between items-center px-3 py-2 w-full rounded-medium border border-solid bg-input-fill border-input-stroke min-h-[40px] max-md:max-w-full hover:border-base-neutral-400 cursor-pointer"
         data-testid="date-input-wrapper"
-        onClick={handleTextFieldClick}
+        onClick={handleInputClick}
       >
-        {/* For custom Firefox styling */}
-        {isFirefox && (
-          <style>
-            {`
-              input[type="date"]::-moz-calendar-picker-indicator {
-                opacity: 0;
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                left: 0;
-                cursor: pointer;
-              }
-            `}
-          </style>
-        )}
-
-        {/* Custom date input wrapper to manage the hidden input */}
         <div className="relative flex-1">
           <input
             id="date-input"
-            ref={dateInputRef}
-            type="date"
-            value={value}
-            onChange={(e) => onChange?.(e.target.value)}
-            className={`w-full h-full absolute top-3 left-0 opacity-0 cursor-pointer ${isFirefox ? 'z-10' : ''}`}
+            ref={inputRef}
+            type="text"
+            value={textValue}
+            placeholder={dictionary.placeholder}
+            onChange={handleTextChange}
+            onBlur={handleTextBlur}
+            onKeyDown={handleTextKeyDown}
+            className="w-full bg-transparent text-md text-text-primary outline-none border-none cursor-pointer placeholder:text-text-secondary"
             data-testid="date-input-field"
+            onClick={(e) => e.stopPropagation()}
+            onFocus={() => setIsOpen(true)}
+            autoComplete="off"
           />
-
-          {/* Visible text that shows the selected date */}
-          <div className="text-md text-text-primary">
-            {value ? new Date(value).toLocaleDateString() : dictionary.placeholder}
-          </div>
         </div>
 
-        {/* Custom calendar icon */}
         <IconButton
           size="small"
           styles="text"
           icon={<IconCalendarAlt />}
-          onClick={handleTextFieldClick}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleToggleCalendar();
+          }}
           data-testid="date-input-icon-button"
         />
       </div>
+
+      {isOpen && (
+        <div
+          className="absolute top-full left-0 z-50 mt-1 bg-base-neutral-800 border border-base-neutral-700 rounded-medium shadow-lg"
+          data-testid="date-input-calendar"
+          style={{
+            '--rdp-accent-color': 'var(--color-base-brand-400)',
+            '--rdp-accent-background-color': 'rgba(251, 146, 60, 0.15)',
+            '--rdp-day-height': '36px',
+            '--rdp-day-width': '36px',
+            '--rdp-day_button-height': '34px',
+            '--rdp-day_button-width': '34px',
+            '--rdp-day_button-border-radius': 'var(--radius-medium, 0.5rem)',
+            '--rdp-selected-border': '2px solid var(--color-base-brand-400)',
+            '--rdp-today-color': 'var(--color-base-brand-400)',
+            '--rdp-disabled-opacity': '0.3',
+            '--rdp-outside-opacity': '0.5',
+          } as React.CSSProperties}
+        >
+          <DayPicker
+            mode="single"
+            captionLayout="dropdown"
+            selected={selectedDate}
+            onSelect={handleDaySelect}
+            defaultMonth={selectedDate || new Date()}
+            startMonth={new Date(1920, 0)}
+            endMonth={new Date()}
+            classNames={{
+              root: 'p-3 text-text-primary',
+              month_caption: 'text-text-primary mb-2',
+              weekday: 'text-text-secondary text-xs',
+              day: 'text-text-primary hover:bg-base-neutral-700 rounded-medium',
+              today: 'font-bold',
+              selected: 'bg-button-primary-fill text-button-primary-text rounded-medium',
+              outside: 'text-text-secondary opacity-50',
+              dropdown: 'bg-base-neutral-700 text-text-primary border border-base-neutral-600 rounded-medium px-1 py-0.5 text-sm',
+              nav: 'text-text-primary',
+              button_next: 'hover:bg-base-neutral-700 rounded-medium',
+              button_previous: 'hover:bg-base-neutral-700 rounded-medium',
+              chevron: 'fill-button-primary-fill',
+              disabled: 'opacity-30 cursor-not-allowed',
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
