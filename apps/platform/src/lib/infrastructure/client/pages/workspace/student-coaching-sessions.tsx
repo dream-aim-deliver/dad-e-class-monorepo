@@ -155,7 +155,11 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     const searchParams = useSearchParams();
 
     // Current tab state from URL, defaults to 'upcoming'
-    const currentTab = searchParams.get('tab') || 'upcoming';
+    // Normalize stale 'available' tab URLs to 'upcoming' since Available is now merged
+    const currentTab = (() => {
+        const tab = searchParams.get('tab') || 'upcoming';
+        return tab === 'available' ? 'upcoming' : tab;
+    })();
 
     // Handle tab change and update search params
     const onTabChange = (tab: string) => {
@@ -775,27 +779,23 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         </h1>
                         <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
                             <Tabs.Trigger value="upcoming" isLast={false}>
-                                {coachingSessionTranslations('upcoming')}
+                                {coachingSessionTranslations('upcomingAndAvailable')}
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="ended" isLast={false}>
+                            <Tabs.Trigger value="ended" isLast={true}>
                                 {coachingSessionTranslations('ended')}
-                            </Tabs.Trigger>
-                            <Tabs.Trigger value="available" isLast={true}>
-                                {coachingSessionTranslations('available')}
                             </Tabs.Trigger>
                         </Tabs.List>
                     </div>
                 </div>
                 <Tabs.Content value="upcoming" className="mt-10">
                     {renderSessionContent(upcomingSessions, displayedUpcomingSessions, hasMoreUpcomingSessions, handleLoadMoreUpcomingSessions)}
+                    <div className="mt-10">
+                        {renderAvailableCoachesContent()}
+                    </div>
                 </Tabs.Content>
 
                 <Tabs.Content value="ended" className="mt-10">
                     {renderSessionContent(endedSessions, displayedEndedSessions, hasMoreEndedSessions, handleLoadMoreEndedSessions)}
-                </Tabs.Content>
-
-                <Tabs.Content value="available" className="mt-10">
-                    {renderAvailableCoachesContent()}
                 </Tabs.Content>
             </Tabs.Root >
 

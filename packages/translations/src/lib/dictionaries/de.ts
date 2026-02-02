@@ -2648,6 +2648,8 @@ export const DE: TDictionary = {
       home: 'Startseite',
       workspace: 'Arbeitsbereich',
       coachingSessions: 'Coaching-Sitzungen',
+      upcomingAndAvailable: 'Bevorstehend & Verfügbar',
+      availableCoachingSessions: 'Verfügbare Coaching-Sitzungen',
       error: {
         title: 'Fehler bei den Coaching-Sitzungen',
         description: 'Ihre Coaching-Sitzungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
