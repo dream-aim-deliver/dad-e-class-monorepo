@@ -283,6 +283,10 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
               <p className="font-semibold text-text-primary text-base">{t('helperText.languageTitle')}</p>
               <p className="text-text-secondary">{t('helperText.languageDescription')}</p>
             </div>
+            <div>
+              <p className="font-semibold text-text-primary text-base">{t('helperText.badgeTitle')}</p>
+              <p className="text-text-secondary">{t('helperText.badgeDescription')}</p>
+            </div>
           </div>
         }
       >

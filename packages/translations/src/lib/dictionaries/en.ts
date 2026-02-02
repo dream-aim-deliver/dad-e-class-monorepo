@@ -2743,6 +2743,8 @@ export const EN: TDictionary = {
         visibilityDescription: 'Packages are not automatically displayed on the public offers page. To make a package visible, you must explicitly select it in the Offers Page editor (CMS → Offers Page) for each language where you want it to appear.',
         languageTitle: 'Language Independence',
         languageDescription: 'Packages are intentionally not linked directly to a specific language—only their associated courses carry language settings. As a result, all packages are displayed here regardless of the currently selected content language.',
+        badgeTitle: 'Published Badge',
+        badgeDescription: 'The "Published" badge means the package is live and can be purchased, but it does not mean it is visible on the offers page. To display it there, you must add it via the Offers Page editor (CMS → Offers Page).',
       },
     },
     listPlatforms: {
