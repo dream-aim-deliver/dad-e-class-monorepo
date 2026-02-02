@@ -99,7 +99,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    const pricingValue = coachingIncluded
+    const pricingLabel = coachingIncluded
         ? `${(pricing as any).currency} ${(pricing as any).fullPrice}`
         : `${dictionary.components.courseCard.fromButton} ${(pricing as any).currency} ${(pricing as any).partialPrice}`;
     return (
@@ -193,8 +193,8 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             className=""
                             variant={'primary'}
                             size={'medium'}
-                            onClick={onBuy}
-                            text={`${dictionary.components.courseCard.buyButton} (${pricingValue})`}
+                            onClick={onDetails}
+                            text={pricingLabel}
                         />
                     </div>
                 </div>
