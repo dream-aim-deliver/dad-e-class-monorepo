@@ -99,11 +99,22 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
     }
   });
 
-  // Handle notification click
+  // Mark a single notification as read (no navigation)
+  const handleMarkAsRead = (notification: ExtendedNotification) => {
+    if (!notification.isRead) {
+      const numericId = Number(notification.id);
+      if (!Number.isNaN(numericId)) {
+        markNotificationsAsReadMutation.mutate({ notificationIds: [numericId] });
+      }
+    }
+  };
+
+  // Handle notification action click — open URL and mark as read
   const handleNotificationClick = (notification: ExtendedNotification) => {
     if (notification.action?.url && notification.action.url !== '#') {
       window.open(notification.action.url, '_blank', 'noopener,noreferrer');
     }
+    handleMarkAsRead(notification);
   };
 
   // Handle mark selected notifications as read
@@ -174,6 +185,7 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
           locale={locale}
           notifications={extendedNotifications}
           onNotificationClick={handleNotificationClick}
+          onMarkAsRead={handleMarkAsRead}
           onMarkAllRead={handleMarkAllAsRead}
           gridRef={gridRef}
           variant={userType}

@@ -143,6 +143,11 @@ export default function Notifications({ locale, platformSlug }: NotificationsPro
           sentNotifications={sentNotificationsData}
           onMarkAllRead={handleMarkAllRead}
           onMarkSelectedAsRead={handleMarkSelectedAsRead}
+          onRowClicked={(notification) => {
+            if (notification.type === 'received' && !notification.isRead && notification.id) {
+              handleMarkSelectedAsRead([notification.id]);
+            }
+          }}
           gridRef={gridRef}
           locale={currentLocale}
           loading={markNotificationsAsReadMutation.isPending}
