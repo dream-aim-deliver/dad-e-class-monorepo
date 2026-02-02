@@ -57,6 +57,7 @@ export interface CMSNotificationGridProps extends isLocalAware {
     sentNotifications: SentNotification[];
     onMarkAllRead: () => void;
     onMarkSelectedAsRead: (ids: string[]) => void;
+    onRowClicked?: (notification: NotificationRow) => void;
     gridRef: RefObject<AgGridReact>;
     loading: boolean;
 }
@@ -190,6 +191,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
         sentNotifications,
         onMarkAllRead,
         onMarkSelectedAsRead,
+        onRowClicked,
         gridRef,
         locale,
         loading,
@@ -244,17 +246,26 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             cellRenderer: NotificationMessageRenderer,
             filter: 'agTextColumnFilter',
             minWidth: 500,
+            onCellClicked: (event: { data: NotificationRow }) => {
+                if (event.data && onRowClicked) onRowClicked(event.data);
+            },
         },
         {
             field: 'type',
             headerName: dictionary.type,
-            valueFormatter: (params: { value: string }) => params.value === 'received' ? dictionary.received : dictionary.sent
+            valueFormatter: (params: { value: string }) => params.value === 'received' ? dictionary.received : dictionary.sent,
+            onCellClicked: (event: { data: NotificationRow }) => {
+                if (event.data && onRowClicked) onRowClicked(event.data);
+            },
         },
         {
             field: 'recipients',
             headerName: dictionary.recipientsHeader,
             cellRenderer: RecipientsRenderer,
-            hide: false
+            hide: false,
+            onCellClicked: (event: { data: NotificationRow }) => {
+                if (event.data && onRowClicked) onRowClicked(event.data);
+            },
         },
         {
             field: 'action',
@@ -264,12 +275,18 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             maxWidth: 200,
             headerClass: 'ag-header-cell-center',
             cellClass: 'ag-cell-center',
+            onCellClicked: (event: { data: NotificationRow }) => {
+                if (event.data && onRowClicked) onRowClicked(event.data);
+            },
         },
         {
             field: 'timestamp',
             headerName: dictionary.dateTime,
             valueFormatter: (params: { value: string | number | Date; }) => (params.value ? formatDate(new Date(params.value)) : ''),
             filter: 'agDateColumnFilter',
+            onCellClicked: (event: { data: NotificationRow }) => {
+                if (event.data && onRowClicked) onRowClicked(event.data);
+            },
             sort: 'desc' as 'asc' | 'desc' | null
         },
         {

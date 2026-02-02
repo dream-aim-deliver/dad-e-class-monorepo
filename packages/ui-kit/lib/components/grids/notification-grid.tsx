@@ -23,6 +23,7 @@ export interface ExtendedNotification extends notification.TNotification {
 export interface PlatformNotificationGridProps extends isLocalAware {
   notifications: ExtendedNotification[];
   onNotificationClick: (notification: ExtendedNotification) => void;
+  onMarkAsRead?: (notification: ExtendedNotification) => void;
   onMarkAllRead: (notificationIds: (number | string)[]) => void;
   gridRef: RefObject<AgGridReact>;
   variant: 'student' | 'coach';
@@ -32,6 +33,7 @@ export interface PlatformNotificationGridProps extends isLocalAware {
 export interface CMSNotificationGridProps extends isLocalAware {
   notifications: ExtendedNotification[];
   onNotificationClick: (notification: ExtendedNotification) => void;
+  onMarkAsRead?: (notification: ExtendedNotification) => void;
   onMarkAllRead: (notificationIds: (number | string)[]) => void;
   gridRef: RefObject<AgGridReact>;
   variant: 'cms';
@@ -120,6 +122,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
   const {
     notifications,
     onNotificationClick,
+    onMarkAsRead,
     onMarkAllRead,
     gridRef,
     variant,
@@ -168,14 +171,16 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       autoHeight: true,
       cellRenderer: NotificationMessageRenderer,
       filter: 'agTextColumnFilter',
+      onCellClicked: (event: { data: ExtendedNotification }) => {
+        if (onMarkAsRead) onMarkAsRead(event.data);
+      },
     },
     {
       field: 'action',
       headerName: dictionary.action,
       cellRenderer: NotificationActionRenderer,
       onCellClicked: (event: { data: ExtendedNotification; }) => {
-        const notification = event.data as ExtendedNotification;
-        onNotificationClick(notification);
+        onNotificationClick(event.data);
       },
       sortable: false,
     },
@@ -185,6 +190,9 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       valueFormatter: (params: { value: string | number | Date; }) => (params.value ? formatDate(new Date(params.value)) : ''),
       filter: 'agDateColumnFilter',
       sort: 'desc' as 'asc' | 'desc' | null,
+      onCellClicked: (event: { data: ExtendedNotification }) => {
+        if (onMarkAsRead) onMarkAsRead(event.data);
+      },
     },
     {
       field: 'platform',

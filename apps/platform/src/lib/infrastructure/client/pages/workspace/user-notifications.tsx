@@ -49,6 +49,12 @@ export default function UserNotifications() {
 
     const utils = trpc.useUtils();
 
+    const markAsReadMutation = trpc.markNotificationsAsRead.useMutation({
+        onSuccess: () => {
+            utils.listNotifications.invalidate();
+        }
+    });
+
     // Memoize activity components at top level
     const activityComponents = useMemo(() => {
         if (!viewModel || viewModel.mode !== 'default') return [];
@@ -67,18 +73,16 @@ export default function UserNotifications() {
                 locale={locale}
                 onClickActivity={(url: string) => () => {
                     window.open(url, '_blank', 'noopener,noreferrer');
-                }
-                }
+                    if (!notification.isRead) {
+                        const numericId = Number(notification.id);
+                        if (!Number.isNaN(numericId)) {
+                            markAsReadMutation.mutate({ notificationIds: [numericId] });
+                        }
+                    }
+                }}
             />
         ));
-    }, [viewModel, locale, platform.name]);
-
-    const markAsReadMutation = trpc.markNotificationsAsRead.useMutation({
-        onSuccess: () => {
-            // Invalidate notifications to refetch updated read status
-            utils.listNotifications.invalidate();
-        }
-    });
+    }, [viewModel, locale, platform.name, markAsReadMutation]);
 
     // Present the data when available
     useEffect(() => {
