@@ -8,6 +8,7 @@ import {
     CourseMaterialsAccordion,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { useListCourseMaterialsPresenter } from '../../../hooks/use-list-course-materials-presenter';
 import { trpc } from '../../../trpc/cms-client';
@@ -20,6 +21,8 @@ interface EnrolledCourseMaterialProps {
 function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
     const { courseSlug, currentRole } = props;
     const locale = useLocale() as TLocale;
+    const searchParams = useSearchParams();
+    const lessonMaterialId = searchParams.get('lesson-material') ?? undefined;
     const t = useTranslations('pages.enrolledCourse');
     const courseTranslations = useTranslations('pages.course');
     const platformContext = usePlatform();
@@ -106,7 +109,7 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
                     </p>
                 </div>
             ) : (
-                <CourseMaterialsAccordion data={successData} locale={locale} />
+                <CourseMaterialsAccordion data={successData} locale={locale} expandLessonId={lessonMaterialId} />
             )}
         </div>
     );
