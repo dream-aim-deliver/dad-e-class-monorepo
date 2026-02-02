@@ -518,8 +518,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     };
 
     const handleBuyMoreSessions = () => {
-        // TODO: Implement buy more sessions functionality
-        console.log('Buy more sessions clicked');
+        router.push(`/${locale}/coaching`);
     };
 
     if (!studentCoachingSessionsViewModel || !coachesViewModel) {

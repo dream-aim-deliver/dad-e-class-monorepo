@@ -192,7 +192,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                         locale={locale}
                         availableCoachingSessionsData={availableCoachingSessionsData}
                         onClickBuyMoreSessions={() => {
-                            console.log('Buy more sessions clicked');
+                            router.push(`/${locale}/coaching`);
                         }}
                         hideButton={availableCoachingSessionsData.length === 0}
                     />
