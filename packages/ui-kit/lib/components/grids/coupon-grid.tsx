@@ -23,7 +23,7 @@ type CouponOutcome =
     | { type: 'freeCoachingSession'; coachingOffering: { id: number; title: string; duration: number }; course: { id: number; title: string; slug: string } | null }
     | { type: 'discountOnEverything'; percentage: number }
     | { type: 'freeCourses'; courses: { id: number; title: string; slug: string; withCoaching: boolean }[] }
-    | { type: 'freeBundles'; packages: { id: number; title: string; withCoaching: boolean }[] };
+    | { type: 'freePackages'; packages: { id: number; title: string; withCoaching: boolean }[] };
 
 export interface CouponRow {
     id: string; // Backend returns string ID
@@ -93,7 +93,7 @@ const OutcomeCellRenderer = (params: { value: CouponRow['outcome']; locale: TLoc
                 </div>
             );
         }
-        case 'freeBundles': {
+        case 'freePackages': {
             const titles = (outcome.packages ?? []).map(p => p.title).join(', ');
             return (
                 <div className="flex flex-col">
@@ -396,7 +396,7 @@ export const CouponGrid = (props: CouponGridProps) => {
                     .join(', ');
                 return `${dictionary.freeCourses}${titles ? `: ${titles}` : ''}`;
             }
-            case 'freeBundles': {
+            case 'freePackages': {
                 const titles = (outcome.packages ?? []).map(p => p.title).join(', ');
                 return `${dictionary.freeCourses}${titles ? `: ${titles}` : ''}`;
             }

@@ -16,7 +16,7 @@ export interface CouponFilterModel {
     createdBefore?: string;
     expiresAfter?: string;
     expiresBefore?: string;
-    outcomeTypes?: ('groupCourse' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freeBundles')[];
+    outcomeTypes?: ('groupCourse' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freePackages')[];
 }
 
 export interface CouponGridFilterModalProps extends isLocalAware {
@@ -60,7 +60,7 @@ export const CouponGridFilterModal: React.FC<CouponGridFilterModalProps> = ({
         setFilters((prev) => ({ ...prev, status: toggleArrayValue(prev.status, value) }));
     };
 
-    const handleOutcomeToggle = (value: 'groupCourse' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freeBundles') => {
+    const handleOutcomeToggle = (value: 'groupCourse' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freePackages') => {
         setFilters((prev) => ({ ...prev, outcomeTypes: toggleArrayValue(prev.outcomeTypes, value) }));
     };
 
@@ -228,12 +228,12 @@ export const CouponGridFilterModal: React.FC<CouponGridFilterModalProps> = ({
                         />
                         <CheckBox
                             name="outcome-free-bundles"
-                            value="freeBundles"
-                            label={dictionary.freeBundlesLabel}
+                            value="freePackages"
+                            label={dictionary.freePackagesLabel}
                             labelClass="text-white text-sm"
-                            checked={(filters.outcomeTypes || []).includes('freeBundles')}
+                            checked={(filters.outcomeTypes || []).includes('freePackages')}
                             withText
-                            onChange={() => handleOutcomeToggle('freeBundles')}
+                            onChange={() => handleOutcomeToggle('freePackages')}
                         />
                     </div>
                 </div>

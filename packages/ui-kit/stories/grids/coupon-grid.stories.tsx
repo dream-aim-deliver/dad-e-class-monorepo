@@ -220,7 +220,7 @@ const mockCoupons: CouponRow[] = [
         createdAt: '2024-02-01T00:00:00.000Z',
         expirationDate: '2024-12-31T00:00:00.000Z',
         outcome: {
-            type: 'freeBundles',
+            type: 'freePackages',
             packages: [
                 { id: 301, title: 'Starter Bundle', withCoaching: false },
                 { id: 302, title: 'Pro Bundle', withCoaching: true },
