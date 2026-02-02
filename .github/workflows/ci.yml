@@ -51,12 +51,40 @@ jobs:
         run: ./tools/check-nx-sync.sh
         shell: bash
 
-      # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-      # - run: pnpm exec nx-cloud record -- echo Hello World
-      # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
-      # When you enable task distribution, run the e2e-ci task instead of e2e
-      - name: Run lint, test, build, and e2e
-        run: pnpm exec nx run-many --no-cloud --skipNxCache -t lint test build # e2e disabled temporarily
+      - name: Lint
+        run: pnpm exec nx run-many --no-cloud --skipNxCache -t lint --parallel=3
+        env:
+          'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
+          'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
+          'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
+          'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
+          'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
+          'NEXTAUTH_URL': 'https://example.com'
+          'NEXTAUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'S3_HOSTNAME': 'localhost'
+          'S3_PORT': '9000'
+          'S3_PROTOCOL': 'http'
+          'E_CLASS_DEV_MODE': 'true'
+
+      - name: Test
+        run: pnpm exec nx run-many --no-cloud --skipNxCache -t test --parallel=2
+        env:
+          'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
+          'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
+          'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
+          'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
+          'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
+          'NEXTAUTH_URL': 'https://example.com'
+          'NEXTAUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'S3_HOSTNAME': 'localhost'
+          'S3_PORT': '9000'
+          'S3_PROTOCOL': 'http'
+          'E_CLASS_DEV_MODE': 'true'
+
+      - name: Build
+        run: pnpm exec nx run-many --no-cloud --skipNxCache -t build --parallel=1
         env:
           'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
           'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
