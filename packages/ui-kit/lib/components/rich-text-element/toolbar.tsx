@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { useSlate } from "slate-react";
 import { Editor, Element } from "slate";
 import {
@@ -12,9 +13,25 @@ import { insertLink, isBlockActive, isLinkActive, isMarkActive, removeLink, togg
 import { EditorType, ElementKey, MarkKey } from "./types"
 import { Link, Unlink } from "lucide-react";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
+import { IconMoreHorizontal } from "../icons";
 
 export default function Toolbar({ locale }: isLocalAware) {
   const editor = useSlate();
+  const [showOverflow, setShowOverflow] = useState(false);
+  const overflowRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (overflowRef.current && !overflowRef.current.contains(event.target as Node)) {
+        setShowOverflow(false);
+      }
+    };
+    if (showOverflow) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showOverflow]);
 
   // Get the current block type from the editor selection
   const getCurrentBlockType = (): string => {
@@ -81,8 +98,8 @@ export default function Toolbar({ locale }: isLocalAware) {
   };
   const dictionary = getDictionary(locale);
   return (
-    <div className="sticky top-0 z-10 min-h-14 flex flex-nowrap text-text-primary overflow-x-auto gap-4 bg-base-neutral-700 p-3 shadow-md w-full">
-      <div className="flex items-center space-x-2">
+    <div className="sticky top-0 z-10 min-h-14 flex flex-wrap text-text-primary gap-1 bg-base-neutral-700 p-3 shadow-md w-full">
+      <div className="flex items-center space-x-1">
         <select
           className="px-4 py-2 border border-neutral-500 rounded-md focus:outline-none focus:ring-1"
           value={currentBlockType}
@@ -95,13 +112,13 @@ export default function Toolbar({ locale }: isLocalAware) {
             </option>
           ))}
         </select>
-        <div className="flex items-center space-x-4 text-text-secondary">
+        <div className="flex items-center space-x-1 text-text-secondary">
           {TEXT_ACTION_OPTIONS(dictionary).map((option) => (
             <button
               type="button"
               key={option.id}
               title={`${option.label}`}
-              className={`p-2 rounded ${getActionSelectionClass()}`}
+              className={`p-1 rounded ${getActionSelectionClass()}`}
               onClick={() => handleAction(option.id)}>
               {option.icon}
             </button>
@@ -109,16 +126,16 @@ export default function Toolbar({ locale }: isLocalAware) {
           <button
             type="button"
             title={dictionary.components.richTextToolbar.link}
-            className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("link" as RichTextAction)}`}
+            className={`p-1 rounded text-text-primary ${getBlockSelectionClass("link" as RichTextAction)}`}
             onClick={handleInsertLink}>
-            <Link size={24} />
+            <Link size={18} />
           </button>
           <button
             type="button"
             title={dictionary.components.richTextToolbar.unlink}
-            className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("unlink" as RichTextAction)} `}
+            className={`p-1 rounded text-text-primary ${getBlockSelectionClass("unlink" as RichTextAction)}`}
             onClick={() => removeLink(editor)} disabled={!isLinkActive(editor)}>
-            <Unlink size={24} />
+            <Unlink size={18} />
           </button>
         </div>
         {TEXT_FORMAT_OPTIONS(dictionary).map(({ id, label, icon }) => (
@@ -127,7 +144,7 @@ export default function Toolbar({ locale }: isLocalAware) {
             title={label}
             key={id}
             aria-label={label}
-            className={`p-2 rounded   text-text-primary ${getMarkSelectionClass(id)}`}
+            className={`p-1 rounded text-text-primary ${getMarkSelectionClass(id)}`}
             onMouseDown={(e) => {
               e.preventDefault();
               onMarkClick(id);
@@ -138,22 +155,34 @@ export default function Toolbar({ locale }: isLocalAware) {
         ))}
       </div>
       <div className="border-l border-gray-300 h-6 self-center" />
-      <div className="flex   items-center space-x-2">
-        {TEXT_BLOCK_OPTIONS(dictionary).map(({ id, label, icon }) => (
-          <button
-            type="button"
-            title={label}
-            key={id}
-            aria-label={label}
-            className={`p-2 rounded  ${getBlockSelectionClass(id)}`}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              onBlockClick(id);
-            }}
-          >
-            {icon}
-          </button>
-        ))}
+      {/* More options button */}
+      <div className="relative flex items-center" ref={overflowRef}>
+        <button
+          type="button"
+          className="p-1 rounded hover:bg-base-neutral-600 text-text-primary"
+          onClick={() => setShowOverflow(!showOverflow)}
+          title="More formatting options"
+        >
+          <IconMoreHorizontal size="4" />
+        </button>
+        {showOverflow && (
+          <div className="absolute top-full left-0 mt-1 bg-base-neutral-700 rounded-medium shadow-lg border border-base-neutral-600 p-2 z-20 flex flex-wrap gap-1 min-w-[200px]">
+            {TEXT_BLOCK_OPTIONS(dictionary).map(({ id, label, icon }) => (
+              <button
+                key={id}
+                type="button"
+                className={`p-1 rounded ${getBlockSelectionClass(id)}`}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onBlockClick(id);
+                }}
+                title={label}
+              >
+                {icon}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
