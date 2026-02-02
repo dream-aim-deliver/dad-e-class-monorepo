@@ -102,7 +102,7 @@ function RedeemCouponDialogContent() {
                             imageUrl: course.imageUrl || undefined,
                         }));
                         break;
-                    case 'freeBundles':
+                    case 'freePackages':
                         type = 'package';
                         title = `Bundle with ${outcome.courses.length} courses`;
                         imageUrl = outcome.courses[0]?.imageUrl || undefined;

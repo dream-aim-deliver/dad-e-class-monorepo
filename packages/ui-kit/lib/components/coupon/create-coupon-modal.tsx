@@ -14,7 +14,7 @@ import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-transla
 import { COUPON_NAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 
 // Types for form data
-type CouponType = 'freeCourses' | 'freeBundles' | 'freeCoachingSession' | 'discountOnEverything' | 'groupCourse';
+type CouponType = 'freeCourses' | 'freePackages' | 'freeCoachingSession' | 'discountOnEverything' | 'groupCourse';
 
 interface CourseOption {
   id: number;
@@ -228,7 +228,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
           errors.push(dictionary.validationErrors.courseRequired);
         }
         break;
-      case 'freeBundles':
+      case 'freePackages':
         if (selectedPackages.length === 0) {
           errors.push(dictionary.validationErrors.packagesRequired);
         }
@@ -284,9 +284,9 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
           }))
         };
         break;
-      case 'freeBundles':
+      case 'freePackages':
         couponContent = {
-          type: 'freeBundles',
+          type: 'freePackages',
           packages: selectedPackages.map(pkg => ({
             id: pkg.id,
             withCoaching: pkg.withCoaching
@@ -495,10 +495,10 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
             
             <RadioButton
               name="couponType"
-              value="freeBundles"
-              label={dictionary.freeBundles}
-              checked={selectedType === 'freeBundles'}
-              onChange={() => setSelectedType('freeBundles')}
+              value="freePackages"
+              label={dictionary.freePackages}
+              checked={selectedType === 'freePackages'}
+              onChange={() => setSelectedType('freePackages')}
               withText
             />
             
@@ -609,7 +609,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
             )}
 
             {/* Free Bundles */}
-            {selectedType === 'freeBundles' && (
+            {selectedType === 'freePackages' && (
               <div className="flex flex-col gap-3">
                 <h4 className="font-medium">{dictionary.selectPackages}</h4>
                 {packagesQuery?.isLoading ? (
