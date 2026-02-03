@@ -71,6 +71,7 @@ jobs:
         run: pnpm exec nx run-many --no-cloud --skipNxCache -t build --parallel=1
         env:
           NODE_OPTIONS: '--max-old-space-size=2560'
+          VITEST: 'true'
           'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
           'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
           'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
