@@ -18,11 +18,11 @@ export default defineConfig({
   //   ],
   // },
   plugins: [
-    dts({
+    !process.env.CI ? dts({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
-    }),
-    !process.env.VITEST ? checker({
+    }) : undefined,
+    !process.env.CI ? checker({
       typescript: {
         buildMode: true
       }
