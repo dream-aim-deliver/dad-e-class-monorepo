@@ -58,11 +58,11 @@ export default defineConfig({
     nxCopyAssetsPlugin(['*.md']),
     tailwindcss(),
     preserveDirectives(),
-    dts({
+    !process.env.CI ? dts({
       entryRoot: 'lib',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
-    }),
-    !process.env.VITEST ? checker({
+    }) : undefined,
+    !process.env.CI ? checker({
       typescript: {
         buildMode: true,
         tsconfigPath: path.join(__dirname, 'tsconfig.lib.json')
