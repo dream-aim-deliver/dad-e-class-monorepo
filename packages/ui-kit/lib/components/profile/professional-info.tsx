@@ -33,6 +33,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   onFileDownload?: (id: string) => void;
   uploadProgress?: number;
   isSaving?: boolean;
+  isSaveDisabled?: boolean;
   variant?: 'professionalInfo' | 'becomeACoach';
   skillsLanguageHint?: string;
   applicationMode?: boolean;
@@ -94,6 +95,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   locale,
   uploadProgress,
   isSaving = false,
+  isSaveDisabled = false,
   variant = 'professionalInfo',
   skillsLanguageHint,
   applicationMode = false,
@@ -414,7 +416,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               onClick={handleDiscard}
               text={dictionary.components.professionalInfo.buttontext1}
               type="button"
-              disabled={isSaving}
+              disabled={isSaveDisabled}
             />
             <Button
               variant="primary"
@@ -422,7 +424,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
               text={dictionary.components.professionalInfo.buttontext2}
               type="submit"
-              disabled={isSaving}
+              disabled={isSaveDisabled}
             />
           </div>
         )}

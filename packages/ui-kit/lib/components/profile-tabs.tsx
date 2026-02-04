@@ -246,7 +246,8 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onFileDownload={onCurriculumVitaeDownload}
             locale={locale as TLocale}
             uploadProgress={curriculumVitaeUploadProgress}
-            isSaving={isProfessionalSaveDisabled}
+            isSaving={isSaving}
+            isSaveDisabled={isProfessionalSaveDisabled}
             skillsLanguageHint={skillsLanguageHint}
           />
         </TabContent>
