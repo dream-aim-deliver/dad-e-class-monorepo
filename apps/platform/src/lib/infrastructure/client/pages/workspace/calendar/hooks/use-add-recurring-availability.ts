@@ -7,7 +7,7 @@ const MAX_AVAILABILITY_MONTHS = 6
 export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 
 interface RecurringAvailability {
-    dayOfWeek?: DayOfWeek;
+    selectedDays: DayOfWeek[];
     startTime: string; // HH:MM format
     endTime: string;   // HH:MM format
     availabilityUntil?: Date;
@@ -108,7 +108,7 @@ function generateSlots(
 
 export function useAddRecurringAvailability({ onSuccess }: UseAddRecurringAvailabilityProps = {}) {
     const [recurringAvailability, setRecurringAvailability] = useState<RecurringAvailability>({
-        dayOfWeek: undefined,
+        selectedDays: [],
         startTime: '09:00',
         endTime: '17:00',
         availabilityUntil: undefined,
@@ -123,8 +123,13 @@ export function useAddRecurringAvailability({ onSuccess }: UseAddRecurringAvaila
         },
     });
 
-    const setDayOfWeek = (day: DayOfWeek) => {
-        setRecurringAvailability((prev) => ({ ...prev, dayOfWeek: day }));
+    const toggleDay = (day: DayOfWeek) => {
+        setRecurringAvailability((prev) => ({
+            ...prev,
+            selectedDays: prev.selectedDays.includes(day)
+                ? prev.selectedDays.filter((d) => d !== day)
+                : [...prev.selectedDays, day],
+        }));
     };
 
     const setStartTime = (time: string) => {
@@ -141,7 +146,7 @@ export function useAddRecurringAvailability({ onSuccess }: UseAddRecurringAvaila
 
     const reset = () => {
         setRecurringAvailability({
-            dayOfWeek: undefined,
+            selectedDays: [],
             startTime: '09:00',
             endTime: '17:00',
             availabilityUntil: undefined,
@@ -150,11 +155,11 @@ export function useAddRecurringAvailability({ onSuccess }: UseAddRecurringAvaila
     };
 
     const validateAndSubmit = () => {
-        const { dayOfWeek, startTime, endTime, availabilityUntil } = recurringAvailability;
+        const { selectedDays, startTime, endTime, availabilityUntil } = recurringAvailability;
 
         // Validate day selection
-        if (!dayOfWeek) {
-            setError('Please select a day of the week.');
+        if (selectedDays.length === 0) {
+            setError('Please select at least one day of the week.');
             return;
         }
 
@@ -195,8 +200,10 @@ export function useAddRecurringAvailability({ onSuccess }: UseAddRecurringAvaila
             return;
         }
 
-        // Generate slots
-        const slots = generateSlots(dayOfWeek, startTime, endTime, availabilityUntil);
+        // Generate slots for each selected day and combine
+        const slots = selectedDays.flatMap((day) =>
+            generateSlots(day, startTime, endTime, availabilityUntil)
+        );
 
         if (slots.length === 0) {
             setError('No availability slots can be generated. Please select a later "Available Until" date.');
@@ -224,11 +231,11 @@ export function useAddRecurringAvailability({ onSuccess }: UseAddRecurringAvaila
     };
 
     return {
-        dayOfWeek: recurringAvailability.dayOfWeek,
+        selectedDays: recurringAvailability.selectedDays,
         startTime: recurringAvailability.startTime,
         endTime: recurringAvailability.endTime,
         availabilityUntil: recurringAvailability.availabilityUntil,
-        setDayOfWeek,
+        toggleDay,
         setStartTime,
         setEndTime,
         setAvailabilityUntil,

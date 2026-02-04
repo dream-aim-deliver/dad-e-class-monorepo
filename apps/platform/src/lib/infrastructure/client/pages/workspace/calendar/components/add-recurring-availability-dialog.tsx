@@ -5,7 +5,7 @@ import {
     Dialog,
     DialogContent,
     DialogTrigger,
-    RadioButton,
+    CheckBox,
     InputField,
 } from '@maany_shr/e-class-ui-kit';
 import { useAddRecurringAvailability, DayOfWeek, getMaxAvailabilityDate } from '../hooks/use-add-recurring-availability';
@@ -46,11 +46,11 @@ export function AddRecurringAvailabilityDialog({
 }: AddRecurringAvailabilityDialogProps) {
     const t = useTranslations('pages.calendarPage');
     const {
-        dayOfWeek,
+        selectedDays,
         startTime,
         endTime,
         availabilityUntil,
-        setDayOfWeek,
+        toggleDay,
         setStartTime,
         setEndTime,
         setAvailabilityUntil,
@@ -91,16 +91,15 @@ export function AddRecurringAvailabilityDialog({
                             {t('selectDayOfWeek') || 'Select Day of Week'}
                         </p>
                         <div className="grid grid-cols-2 gap-2">
-                            {daysOfWeek.map((day) => (
-                                <RadioButton
+                            {daysOfWeek.map((day, index) => (
+                                <CheckBox
                                     key={day}
-                                    name="dayOfWeek"
+                                    name={`checklist-${index}`}
                                     value={day}
                                     label={t(dayTranslationKeys[day])}
-                                    checked={dayOfWeek === day}
-                                    onChange={(value) => setDayOfWeek(value as DayOfWeek)}
+                                    checked={selectedDays.includes(day)}
+                                    onChange={() => toggleDay(day)}
                                     withText
-                                    size="small"
                                     labelClass="text-sm text-text-primary"
                                 />
                             ))}
