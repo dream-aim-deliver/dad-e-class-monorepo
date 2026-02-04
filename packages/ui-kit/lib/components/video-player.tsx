@@ -160,6 +160,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                         accentColor="var(--color-base-brand-500)"
                         className="w-full h-full"
                         autoPlay={autoPlay}
+                        poster={thumbnailUrl ?? ''}
                         onCanPlay={handlePlayerReady}
                         onError={handleVideoError}
                     />
