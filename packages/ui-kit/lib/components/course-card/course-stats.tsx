@@ -4,16 +4,19 @@ import { IconCoachingSession } from '../../components/icons/icon-coaching-sessio
 import { IconClock } from '../../components/icons/icon-clock';
 import { IconSales } from '../../components/icons/icon-sales';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import Tooltip from '../tooltip';
 
 interface StatItemProps {
   icon: React.ReactNode;
   text: string;
+  tooltip?: string;
 }
 
-const StatItem: React.FC<StatItemProps> = ({ icon, text }) => (
+const StatItem: React.FC<StatItemProps> = ({ icon, text, tooltip }) => (
   <div className="flex gap-1 items-center whitespace-nowrap">
     {icon}
     <label className="text-sm text-text-secondary">{text}</label>
+    {tooltip && <Tooltip text="" description={tooltip} />}
   </div>
 );
 
@@ -57,10 +60,15 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
       icon: <IconLanguage classNames="fill-text-secondary" size="5" />,
       text: language,
     },
-    {
-      icon: <IconCoachingSession classNames="text-text-secondary" size="5" />,
-      text: `${sessions} ${dictionary.components.courseCard.cochingSession}`,
-    },
+    ...(sessions
+      ? [
+          {
+            icon: <IconCoachingSession classNames="text-text-secondary" size="5" />,
+            text: `${sessions} ${dictionary.components.courseCard.cochingSession}`,
+            tooltip: dictionary.components.courseCard.cochingSessionHint,
+          },
+        ]
+      : []),
   ];
 
   // Second row: Duration and Sales

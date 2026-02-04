@@ -19,6 +19,7 @@ interface StudentCourseCardProps extends TCourseMetadata {
   locale: TLocale;
   reviewCount: number;
   sales: number;
+  coachingSessionCount?: number | null;
   progress?: number;
   hasReviewed?: boolean;
   status?: 'archived';
@@ -75,6 +76,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   duration,
   reviewCount,
   sales,
+  coachingSessionCount,
   imageUrl,
   rating,
   author,
@@ -208,7 +210,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
             <CourseStats
               locale={locale as TLocale}
               language={(language as any).name as string}
-              sessions={10}
+              sessions={coachingSessionCount ?? 0}
               duration={formattedDuration}
               sales={sales}
             />

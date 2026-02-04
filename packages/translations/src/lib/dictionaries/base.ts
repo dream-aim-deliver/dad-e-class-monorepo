@@ -362,6 +362,7 @@ export const DictionarySchema = z.object({
       draftBadge: z.string(),
       completedBadge: z.string(),
       cochingSession: z.string(),
+      cochingSessionHint: z.string(),
       sales: z.string(),
       hours: z.string(),
       includeCourseButton: z.string(),
