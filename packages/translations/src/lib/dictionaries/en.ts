@@ -2178,8 +2178,8 @@ export const EN: TDictionary = {
         },
       },
       study: {
-        submit: 'Submit',
-        submitting: 'Submitting...',
+        save: 'Save',
+        saving: 'Saving...',
       },
       enrolledCoaches: {
         title: 'Coaches',

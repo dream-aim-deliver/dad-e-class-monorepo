@@ -21,7 +21,6 @@ import { trpc } from '../../../trpc/cms-client';
 import { FileUploadProvider } from '../utils/file-upload';
 import { idToNumber } from '../../workspace/edit/utils/id-to-number';
 import { AssignmentViewProvider } from '../utils/assignment-view';
-import { useSession } from 'next-auth/react';
 import { useCourseSlug } from '../utils/course-slug-context';
 
 interface LessonFormProps {
@@ -184,16 +183,6 @@ export default function LessonForm({
         return getLessonComponentsMap(components);
     }, [components]);
 
-    const hasInteractiveElements = useMemo(() => {
-        const interactiveTypes = Object.keys(typeToProgressTransformers);
-        for (const component of components) {
-            if (interactiveTypes.includes(component.type)) {
-                return true;
-            }
-        }
-        return false;
-    }, [components]);
-
     const elementProgress = useRef(new Map([...formElements]));
     const trpcUtils = trpc.useUtils();
     const courseSlug = useCourseSlug(); // Get courseSlug from context
@@ -213,6 +202,9 @@ export default function LessonForm({
     });
     // When implementing student submission, this will be used to track progress
 
+    const isInteractiveType = (type: string) =>
+        type in typeToProgressTransformers;
+
     const renderComponent = (component: TLessonComponent) => {
         const formElement = formElements.get(component.id) as
             | FormElement
@@ -228,14 +220,36 @@ export default function LessonForm({
         };
 
         const ComponentRenderer = typeToRendererMap[formElement.type];
-        if (ComponentRenderer) {
+        if (!ComponentRenderer) return null;
+
+        const rendered = (
+            <ComponentRenderer
+                key={`component-renderer-${component.id}`}
+                {...props}
+            />
+        );
+
+        if (enableSubmit && isInteractiveType(formElement.type)) {
             return (
-                <ComponentRenderer
-                    key={`component-renderer-${component.id}`}
-                    {...props}
-                />
+                <div
+                    key={`interactive-wrapper-${component.id}`}
+                    className="flex flex-col gap-2 p-4 border border-divider rounded-md"
+                >
+                    {rendered}
+                    <Button
+                        variant="primary"
+                        size="small"
+                        text={isSubmitting ? dictionary.pages.course.study.saving : dictionary.pages.course.study.save}
+                        disabled={isSubmitting}
+                        onClick={submitProgress}
+                        hasIconLeft
+                        iconLeft={<IconSave />}
+                    />
+                </div>
             );
         }
+
+        return rendered;
     };
 
     const submitProgress = async () => {
@@ -269,17 +283,6 @@ export default function LessonForm({
             >
                 <div className="flex flex-col gap-4 w-full">
                     {components.map(renderComponent)}
-                    {enableSubmit && hasInteractiveElements && (
-                        <Button
-                            className="sticky bottom-4"
-                            variant="primary"
-                            text={isSubmitting ? dictionary.pages.course.study.submitting : dictionary.pages.course.study.submit}
-                            disabled={isSubmitting}
-                            onClick={submitProgress}
-                            hasIconLeft
-                            iconLeft={<IconSave />}
-                        />
-                    )}
                 </div>
             </FileUploadProvider>
         </AssignmentViewProvider>
