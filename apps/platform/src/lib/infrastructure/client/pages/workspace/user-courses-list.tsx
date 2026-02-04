@@ -248,6 +248,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 locale={locale}
                                 sales={course.salesCount ?? 0}
                                 reviewCount={course.reviewCount ?? 0}
+                                coachingSessionCount={course.coachingSessionCount ?? 0}
                                 title={course.title || ''}
                                 description={course.description || ''}
                                 language={language}
