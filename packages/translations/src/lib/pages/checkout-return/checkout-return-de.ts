@@ -39,8 +39,7 @@ export const CheckoutReturn_DE: TDictionary['pages']['checkoutReturn'] = {
     actions: {
         goToCourse: 'Zum Kurs',
         viewMyCourses: 'Meine Kurse ansehen',
-        browseOfferings: 'Angebote durchsuchen',
-        bookSession: 'Sitzung buchen',
+        viewCoachingSessions: 'Coaching-Sitzungen ansehen',
         continue: 'Weiter',
     },
 };

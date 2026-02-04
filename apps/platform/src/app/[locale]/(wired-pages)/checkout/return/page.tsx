@@ -156,10 +156,7 @@ export default function CheckoutReturnPage() {
             case 'StudentPackagePurchaseWithCoaching':
                 return `/${locale}/workspace/courses`;
             case 'StudentCoachingSessionPurchase':
-                if (identifier?.coachUsername) {
-                    return `/${locale}/coaches/${identifier.coachUsername}/book`;
-                }
-                return `/${locale}/offers`;
+                return `/${locale}/workspace/coaching-sessions`;
             default:
                 return `/${locale}/workspace/courses`;
         }
@@ -174,10 +171,7 @@ export default function CheckoutReturnPage() {
             case 'StudentPackagePurchaseWithCoaching':
                 return dictionary.pages.checkoutReturn.actions.viewMyCourses;
             case 'StudentCoachingSessionPurchase':
-                if (purchaseIdentifier?.coachUsername) {
-                    return dictionary.pages.checkoutReturn.actions.bookSession;
-                }
-                return dictionary.pages.checkoutReturn.actions.browseOfferings;
+                return dictionary.pages.checkoutReturn.actions.viewCoachingSessions;
             default:
                 return dictionary.pages.checkoutReturn.actions.continue;
         }
