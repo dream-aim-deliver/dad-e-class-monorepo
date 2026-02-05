@@ -234,6 +234,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 author={author}
                                 duration={duration}
                                 rating={course.averageRating ?? 0}
+                                groupName={course.group?.name}
                                 onManage={() => onCourseVisit(course.slug || '')}
                                 onClickUser={() =>
                                     onClickUser(course.author?.username || '')
@@ -264,6 +265,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 onResume={() => onCourseVisit(course.slug || '')}
                                 onReview={() => onReviewCourse(course.slug || '', course.title || '')}
                                 onDetails={() => onCourseVisit(course.slug || '')}
+                                groupName={course.group?.name}
                                 onClickUser={() =>
                                     onClickUser(course.author?.username || '')
                                 }

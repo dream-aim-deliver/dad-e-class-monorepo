@@ -28,6 +28,7 @@ interface StudentCourseCardProps extends TCourseMetadata {
   onReview?: () => void;
   onDetails?: () => void;
   onClickUser?: () => void;
+  groupName?: string;
 }
 
 /**
@@ -90,6 +91,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   onReview,
   onDetails,
   onClickUser,
+  groupName,
 }) => {
   const ImageComponent = useImageComponent();
   // Helper function to extract plain text from rich text content
@@ -215,6 +217,15 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               sales={sales}
             />
           </div>
+
+          {groupName && (
+            <Badge
+              className="px-3 py-1 gap-2 self-start"
+              variant="info"
+              size="big"
+              text={dictionary.components.courseCard.group}
+            />
+          )}
 
           {studyProgress === 'yet-to-start' && description && (
             <div
