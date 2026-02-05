@@ -44,6 +44,7 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
   const [isSearchLoading, setIsSearchLoading] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<Course[]>([]);
   const [sortOrder, setSortOrder] = useState('desc');
+  const [coachingFilter, setCoachingFilter] = useState<'all' | 'with-coaching'>('all');
 
 
   useEffect(() => {
@@ -83,12 +84,16 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
     ? listCoursesViewModel.data.courses
     : [];
 
-  // Filter courses based on active tab
+  // Filter courses based on active tab and coaching filter
   const filteredCourses = useMemo(() => {
-    return activeTab === 'all'
+    let result = activeTab === 'all'
       ? courses
       : courses.filter((course: Course) => course.status === activeTab);
-  }, [activeTab, courses]);
+    if (coachingFilter === 'with-coaching') {
+      result = result.filter((course: Course) => course.coachingSessionCount > 0);
+    }
+    return result;
+  }, [activeTab, courses, coachingFilter]);
 
   // Memoized sorted filtered courses
   const sortedFilteredCourses = useMemo(() => {
@@ -193,6 +198,28 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
               />
             </div>
             <div className="flex gap-2 items-center">
+              <Dropdown
+                type="simple"
+                options={[
+                  {
+                    label: 'With Feedback',
+                    value: 'all',
+                  },
+                  {
+                    label: 'With Coaching Sessions',
+                    value: 'with-coaching',
+                  },
+                ]}
+                defaultValue={coachingFilter}
+                onSelectionChange={(selected) => {
+                  if (selected === 'all' || selected === 'with-coaching') {
+                    setCoachingFilter(selected);
+                  }
+                }}
+                text={{ simpleText: 'Filter' }}
+              />
+            </div>
+            <div className="flex gap-2 items-center">
               <label className="text-sm md:text-md text-base-white">
                 Sort by:
               </label>
@@ -253,9 +280,9 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
                           name: course.language,
                         },
                         duration: {
-                          video: 0,
-                          coaching: course.duration || 0,
-                          selfStudy: 0,
+                          video: course.duration.video ?? 0,
+                          coaching: course.duration.coaching ?? 0,
+                          selfStudy: course.duration.selfStudy ?? 0,
                         },
                       };
 
