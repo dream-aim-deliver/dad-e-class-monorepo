@@ -324,6 +324,41 @@ export const CourseGeneralInformationVisitor: FC<
                         </div>
                     </div>
 
+                    {/* Requirements */}
+                    <div className="flex flex-col gap-1 items-start w-full">
+                        <h6 className="text-text-primary text-lg">
+                            {
+                                dictionary.components.courseGeneralInformationView
+                                    .requirementsTitle
+                            }
+                        </h6>
+                        <p className="text-text-secondary">{finalRequirementsDetails}</p>
+                        <div className="flex flex-wrap gap-3">
+                            {safeRequiredCourses.map((course) => (
+                                <Button
+                                    key={course.courseTitle}
+                                    className="p-0 gap-1 text-sm sm:w-auto truncate"
+                                    size="small"
+                                    title={course.courseTitle}
+                                    variant="text"
+                                    onClick={() =>
+                                        onClickRequiredCourse(course.slug)
+                                    }
+                                    hasIconLeft
+                                    iconLeft={
+                                        <UserAvatar
+                                            fullName={course.courseTitle}
+                                            imageUrl={course.image}
+                                            className="rounded-small"
+                                            size="xSmall"
+                                        />
+                                    }
+                                    text={course.courseTitle}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-1 items-center lg:grid-cols-2 gap-6 w-full">
                         {/* Created by */}
                         <div className="flex flex-col gap-2 items-start">
@@ -379,70 +414,64 @@ export const CourseGeneralInformationVisitor: FC<
                         )}
                     </div>
 
-                    {/* Requirements */}
-                    <div className="flex flex-col gap-1 items-start w-full">
+                    {/* Choose your support level */}
+                    <div className="flex flex-col gap-2 items-start w-full">
                         <h6 className="text-text-primary text-lg">
                             {
                                 dictionary.components.courseGeneralInformationView
-                                    .requirementsTitle
+                                    .chooseSupportLevel
                             }
                         </h6>
-                        <p className="text-text-secondary">{finalRequirementsDetails}</p>
-                        <div className="flex flex-wrap gap-3">
-                            {safeRequiredCourses.map((course) => (
-                                <Button
-                                    key={course.courseTitle}
-                                    className="p-0 gap-1 text-sm sm:w-auto truncate"
-                                    size="small"
-                                    title={course.courseTitle}
-                                    variant="text"
-                                    onClick={() =>
-                                        onClickRequiredCourse(course.slug)
-                                    }
-                                    hasIconLeft
-                                    iconLeft={
-                                        <UserAvatar
-                                            fullName={course.courseTitle}
-                                            imageUrl={course.image}
-                                            className="rounded-small"
-                                            size="xSmall"
-                                        />
-                                    }
-                                    text={course.courseTitle}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Checkbox coaching included */}
-                    <div className="flex flex-row items-center gap-2">
-                        <CheckBox
-                            name="coachingIncluded"
-                            value="coachingIncluded"
-                            checked={coachingIncluded}
-                            size="medium"
-                            withText={true}
-                            label={
+                        <p className="text-text-secondary text-sm">
+                            {
                                 dictionary.components.courseGeneralInformationView
-                                    .coachingIncluded
+                                    .chooseSupportLevelDescription
                             }
-                            labelClass="text-text-secondary text-md"
-                            onChange={handleCheckboxChange}
-                        />
-                        {/* Show savings when coaching is included and savings data is available */}
-                        {coachingIncluded && (pricing as any).savingsWithCoachings != null && (pricing as any).savingsWithCoachings > 0 && (
-                            <div className="flex items-center gap-1">
-                                <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
-                                    {dictionary.components.courseGeneralInformationView.saveLabel}{' '}
-                                    {(pricing as any).currency as string}{' '}
-                                    {Math.round((pricing as any).savingsWithCoachings * 100) / 100}
-                                </p>
-                                <Tooltip
-                                    text=""
-                                    description={dictionary.components.courseCard.savingsWithCoachingTooltip}
-                                />
-                            </div>
-                        )}
+                        </p>
+                        <div className="flex flex-row items-center gap-2">
+                            <CheckBox
+                                name="withFeedback"
+                                value="withFeedback"
+                                checked={true}
+                                size="medium"
+                                withText={true}
+                                label={
+                                    dictionary.components.courseGeneralInformationView
+                                        .withFeedback
+                                }
+                                labelClass="text-text-secondary text-md"
+                                // eslint-disable-next-line @typescript-eslint/no-empty-function
+                                onChange={() => {}}
+                            />
+                        </div>
+                        <div className="flex flex-row items-center gap-2">
+                            <CheckBox
+                                name="coachingIncluded"
+                                value="coachingIncluded"
+                                checked={coachingIncluded}
+                                size="medium"
+                                withText={true}
+                                label={
+                                    dictionary.components.courseGeneralInformationView
+                                        .coachingIncluded
+                                }
+                                labelClass="text-text-secondary text-md"
+                                onChange={handleCheckboxChange}
+                            />
+                            {coachingIncluded && (pricing as any).savingsWithCoachings != null && (pricing as any).savingsWithCoachings > 0 && (
+                                <div className="flex items-center gap-1">
+                                    <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
+                                        {dictionary.components.courseGeneralInformationView.saveLabel}{' '}
+                                        {(pricing as any).currency as string}{' '}
+                                        {Math.round((pricing as any).savingsWithCoachings * 100) / 100}
+                                    </p>
+                                    <Tooltip
+                                        text=""
+                                        description={dictionary.components.courseCard.savingsWithCoachingTooltip}
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Button */}

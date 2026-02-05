@@ -645,7 +645,7 @@ export const DE: TDictionary = {
       hourText: 'Stunde',
       hoursText: 'Stunden',
       filmMaterialText: 'von Filmmaterial',
-      coachingWithAProfessionalText: 'von 1-zu-1-Coaching mit einem professionellen',
+      coachingWithAProfessionalText: 'von 1-zu-1-Coaching mit einem Industry Expert',
       selfStudyMaterialText: 'von Selbstlernmaterial',
       createdByText: 'Erstellt von',
       yourProgressText: 'Dein Fortschritt',
@@ -653,6 +653,9 @@ export const DE: TDictionary = {
       viewProfileText: 'Profil anzeigen',
       buyButton: 'Kurs kaufen',
       coachingIncluded: 'Coaching inklusiv',
+      withFeedback: 'Mit Feedback',
+      chooseSupportLevel: 'Wähle deinen Support-Level',
+      chooseSupportLevelDescription: 'Jeder Kurs enthält Feedback von Industry Experts. Wenn du zusätzlich one-to-one Coachings möchtest, wähle bitte die Coaching-Option.',
       saveLabel: 'Sparen',
       reviewLabel: 'Bewerten',
       bookLabel: 'Buchen',
@@ -1870,6 +1873,8 @@ export const DE: TDictionary = {
       proceedToPayment: 'Zur Zahlung',
       invalidCoupon: 'Ungültiger Gutscheincode. Muss Zahlen enthalten.',
       couponError: 'Gutschein konnte nicht angewendet werden. Bitte versuchen Sie es erneut.',
+      withCoachingSession: 'Mit Coaching Sessions',
+      addCoachingHelperText: 'Füge Coaching Sessions zu einem vergünstigten Preis hinzu und erhalte persönliche Unterstützung und Feedback von unseren Experten.',
     },
     checkoutErrors: {
       alreadyOwned: {

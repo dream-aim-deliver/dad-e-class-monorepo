@@ -653,6 +653,9 @@ export const DictionarySchema = z.object({
       viewProfileText: z.string(),
       buyButton: z.string(),
       coachingIncluded: z.string(),
+      withFeedback: z.string(),
+      chooseSupportLevel: z.string(),
+      chooseSupportLevelDescription: z.string(),
       saveLabel: z.string(),
       reviewLabel: z.string(),
       bookLabel: z.string(),
@@ -1859,6 +1862,8 @@ export const DictionarySchema = z.object({
       proceedToPayment: z.string(),
       invalidCoupon: z.string(),
       couponError: z.string(),
+      withCoachingSession: z.string(),
+      addCoachingHelperText: z.string(),
     }),
     checkoutErrors: z.object({
       alreadyOwned: z.object({
