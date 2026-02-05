@@ -5,7 +5,7 @@ import { Button } from '../../button';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
-import { IconGroup } from '../../icons/icon-group';
+import { Badge } from '../../badge';
 import { course } from '@maany_shr/e-class-models';
 import {
   TLocale,
@@ -152,13 +152,12 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
             />
           </div>
           {groupName && (
-            <div className="flex gap-1 flex-wrap items-center w-full">
-              <div className="flex items-center gap-1">
-                <IconGroup classNames="text-text-primary" size="5" />
-                <p className="text-text-secondary text-sm">{dictionary.components.courseCard.group}</p>
-              </div>
-              <Button variant="text" text={groupName} className="p-0 max-w-full" />
-            </div>
+            <Badge
+              className="px-3 py-1 gap-2 self-start"
+              variant="info"
+              size="big"
+              text={dictionary.components.courseCard.group}
+            />
           )}
           <Button
             onClick={onManage}
