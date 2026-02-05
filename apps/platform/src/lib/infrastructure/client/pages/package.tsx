@@ -207,6 +207,31 @@ export default function Package({ locale, packageId }: PackageProps) {
     }
   }, [currentRequest, utils, getCheckoutErrorDescription]);
 
+  // Async coaching toggle for checkout modal upsell (must be before conditional returns)
+  const handleCheckoutToggleCoaching = useCallback(async (withCoaching: boolean): Promise<TransactionDraft | null> => {
+    try {
+      const request: TPrepareCheckoutRequest = {
+        purchaseType: withCoaching
+          ? 'StudentPackagePurchaseWithCoaching'
+          : 'StudentPackagePurchase',
+        packageId: packageId,
+        selectedCourseIds: selectedCourseIds.length > 0 ? selectedCourseIds : undefined,
+      };
+      // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+      const response = await utils.prepareCheckout.fetch(request);
+
+      if (response && typeof response === 'object' && 'success' in response) {
+        if (response.success === true && response.data) {
+          return response.data as unknown as TransactionDraft;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to toggle coaching in checkout:', error);
+      return null;
+    }
+  }, [packageId, selectedCourseIds, utils]);
+
   // Loading state
   if (!packageViewModel || !relatedPackagesViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
@@ -495,6 +520,7 @@ export default function Package({ locale, packageId }: PackageProps) {
 
   // Handlers
   const handleToggleCoaching = () => setCoachingIncluded(!coachingIncluded);
+
   const handleIncludeExclude = (courseId: string) => {
     const courseIdNum = parseInt(courseId);
     setSelectedCourseIds(prev =>
@@ -798,6 +824,7 @@ export default function Package({ locale, packageId }: PackageProps) {
             locale={currentLocale}
             onPaymentComplete={handlePaymentComplete}
             onApplyCoupon={handleApplyCoupon}
+            onToggleCoaching={handleCheckoutToggleCoaching}
           />
         )
       )}

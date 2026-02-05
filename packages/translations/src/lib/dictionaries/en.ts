@@ -642,7 +642,7 @@ export const EN: TDictionary = {
       hourText: 'hour',
       hoursText: 'hours',
       filmMaterialText: 'of film material',
-      coachingWithAProfessionalText: 'of 1-to-1 coaching with a professional',
+      coachingWithAProfessionalText: 'of 1-to-1 coaching with an industry expert',
       selfStudyMaterialText: 'of self-study material',
       createdByText: 'Created by',
       yourProgressText: 'Your progress',
@@ -650,6 +650,9 @@ export const EN: TDictionary = {
       viewProfileText: 'View profile',
       buyButton: 'Buy Offer',
       coachingIncluded: 'Coaching Included',
+      withFeedback: 'With Feedback',
+      chooseSupportLevel: 'Choose your support level',
+      chooseSupportLevelDescription: 'Every course includes human feedback. If you also want one-to-one coaching sessions, please select the coaching option.',
       saveLabel: 'save',
       reviewLabel: 'reviews',
       bookLabel: 'Book',
@@ -1868,6 +1871,8 @@ export const EN: TDictionary = {
       proceedToPayment: 'Proceed to Payment',
       invalidCoupon: 'Invalid coupon code. Must contain numbers.',
       couponError: 'Unable to apply coupon. Please try again.',
+      withCoachingSession: 'With Coaching Sessions',
+      addCoachingHelperText: 'For a discounted price, add coaching sessions to get personalized support and feedback from our experts.',
     },
     checkoutErrors: {
       alreadyOwned: {

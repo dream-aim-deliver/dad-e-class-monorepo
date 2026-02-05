@@ -314,12 +314,37 @@ function VisitorPageContent({
         }
     }, [currentRequest, utils, getCheckoutErrorDescription]);
 
+    // Handle coaching toggle in checkout modal (upsell from non-coaching to coaching)
+    const handleToggleCoaching = useCallback(async (withCoaching: boolean): Promise<TransactionDraft | null> => {
+        try {
+            const request: TPrepareCheckoutRequest = {
+                purchaseType: withCoaching
+                    ? 'StudentCoursePurchaseWithCoaching'
+                    : 'StudentCoursePurchase',
+                courseSlug,
+            };
+            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
+            const response = await utils.prepareCheckout.fetch(request);
+
+            if (response && typeof response === 'object' && 'success' in response) {
+                if (response.success === true && response.data) {
+                    return response.data as unknown as TransactionDraft;
+                }
+            }
+            return null;
+        } catch (error) {
+            console.error('Failed to toggle coaching in checkout:', error);
+            return null;
+        }
+    }, [courseSlug, utils]);
+
     // Helper to build purchase identifier from request (handles discriminated union)
     const getPurchaseIdentifier = (request: TPrepareCheckoutRequest) => {
         switch (request.purchaseType) {
             case 'StudentCoursePurchase':
                 return {
                     courseSlug: request.courseSlug,
+                    withCoaching: false,
                 };
             case 'StudentCoursePurchaseWithCoaching':
                 return {
@@ -796,6 +821,7 @@ function VisitorPageContent({
                     locale={locale}
                     onPaymentComplete={handlePaymentComplete}
                     onApplyCoupon={handleApplyCoupon}
+                    onToggleCoaching={handleToggleCoaching}
                 />
             )}
         </div>

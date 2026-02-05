@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
     EmbeddedCheckoutProvider,
     EmbeddedCheckout,
@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogBody } from '../dialog';
 import { Button } from '../button';
 import { InputField } from '../input-field';
 import { IconPayments, IconClose, IconCheck } from '../icons';
+import { CheckBox } from '../checkbox';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface TransactionDraft {
@@ -62,6 +63,12 @@ export interface CheckoutModalProps extends isLocalAware {
      * Returns error object with errorType on failure.
      */
     onApplyCoupon?: (couponCode: string) => Promise<CouponValidationResult>;
+    /**
+     * Optional callback when the user toggles coaching in the checkout modal.
+     * Called when the user checks "With Coaching Sessions" checkbox.
+     * Should return an updated TransactionDraft with coaching pricing, or null on failure.
+     */
+    onToggleCoaching?: (withCoaching: boolean) => Promise<TransactionDraft | null>;
 }
 
 type ModalState = 'summary' | 'payment';
@@ -77,6 +84,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     purchaseIdentifier,
     locale,
     onApplyCoupon,
+    onToggleCoaching,
 }) => {
     const dictionary = getDictionary(locale);
     const [modalState, setModalState] = useState<ModalState>('summary');
@@ -91,6 +99,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const [isLoadingPayment, setIsLoadingPayment] = useState(false);
     // Track current transaction draft (updated when coupon is applied)
     const [currentTransactionDraft, setCurrentTransactionDraft] = useState<TransactionDraft>(transactionDraft);
+    // Coaching upsell: only shown when purchaseIdentifier.withCoaching === false
+    const [addCoachingChecked, setAddCoachingChecked] = useState(false);
+    const [isTogglingCoaching, setIsTogglingCoaching] = useState(false);
 
     const stripePromise = useMemo(
         () => loadStripe(stripePublishableKey),
@@ -156,6 +167,27 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         setCouponError(null);
     };
 
+    const handleToggleCoaching = useCallback(async () => {
+        if (!onToggleCoaching) return;
+        const newValue = !addCoachingChecked;
+        setIsTogglingCoaching(true);
+        try {
+            if (newValue) {
+                const updatedDraft = await onToggleCoaching(true);
+                if (updatedDraft) {
+                    setCurrentTransactionDraft(updatedDraft);
+                    setAddCoachingChecked(true);
+                }
+            } else {
+                // Uncheck: revert to original transaction draft
+                setCurrentTransactionDraft(transactionDraft);
+                setAddCoachingChecked(false);
+            }
+        } finally {
+            setIsTogglingCoaching(false);
+        }
+    }, [addCoachingChecked, onToggleCoaching, transactionDraft]);
+
     const handleProceedToPayment = async () => {
         setIsLoadingPayment(true);
 
@@ -195,7 +227,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 params.append('offerings', (purchaseIdentifier as any).offerings);
             }
             if (purchaseIdentifier.withCoaching !== undefined) {
-                params.append('withCoaching', purchaseIdentifier.withCoaching.toString());
+                const effectiveWithCoaching = purchaseIdentifier.withCoaching || addCoachingChecked;
+                params.append('withCoaching', effectiveWithCoaching.toString());
             }
             if (purchaseIdentifier.lessonComponentIds && purchaseIdentifier.lessonComponentIds.length > 0) {
                 params.append('lessonComponentIds', purchaseIdentifier.lessonComponentIds.join(','));
@@ -316,6 +349,28 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                     ),
                                 )}
                             </div>
+
+                            {/* Coaching upsell checkbox */}
+                            {purchaseIdentifier.withCoaching === false && onToggleCoaching && (
+                                <div className="flex flex-col gap-2 p-3 border border-card-stroke rounded-md">
+                                    <div className="flex flex-row items-center gap-2">
+                                        <CheckBox
+                                            name="addCoaching"
+                                            value="addCoaching"
+                                            checked={addCoachingChecked}
+                                            size="medium"
+                                            withText={true}
+                                            label={dictionary.components.checkoutModal.withCoachingSession}
+                                            labelClass="text-text-primary text-md font-medium"
+                                            onChange={handleToggleCoaching}
+                                            disabled={isTogglingCoaching}
+                                        />
+                                    </div>
+                                    <p className="text-text-secondary text-sm">
+                                        {dictionary.components.checkoutModal.addCoachingHelperText}
+                                    </p>
+                                </div>
+                            )}
 
                             {/* Subtotal */}
                             <div className="flex justify-between items-center p-2">
