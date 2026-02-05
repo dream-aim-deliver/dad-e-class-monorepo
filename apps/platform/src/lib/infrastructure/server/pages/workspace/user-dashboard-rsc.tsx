@@ -47,6 +47,8 @@ export default async function UserDashboardServerComponent() {
 
     // Add coach-specific data prefetching
     if (isCoach) {
+        prefetch(trpc.listCoachCoachingSessions.queryOptions({}));
+
         // TSK-PERF-014: Fix pagination - changed from pageSize 3 to 8 (matches client)
         prefetch(
             trpc.listCoachStudents.queryOptions({

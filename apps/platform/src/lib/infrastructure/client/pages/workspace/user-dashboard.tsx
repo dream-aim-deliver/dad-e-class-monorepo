@@ -395,6 +395,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         <div className="xl:col-span-3 lg:col-span-2 space-y-6">
                             <UserCoachingSessions
                                 studentUsername={session?.user?.name}
+                                isCoach={true}
                             />
 
                             {/* Your courses */}
