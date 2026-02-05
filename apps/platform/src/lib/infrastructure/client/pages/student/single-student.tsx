@@ -309,7 +309,7 @@ export default function SingleStudent({
             <Tabs.Root defaultTab={activeTab} onValueChange={handleTabChange}>
                 <StudentTabList />
                 <Tabs.Content value={StudentTab.ASSIGNMENTS} className={tabContentClass}>
-                    {selectedCourse ? (
+                    {currentSelectedCourseData ? (
                         <Suspense
                             fallback={
                                 <DefaultLoading locale={locale} variant="minimal" />
@@ -330,7 +330,7 @@ export default function SingleStudent({
                 </Tabs.Content>
 
                 <Tabs.Content value={StudentTab.INTERACTIONS} className={tabContentClass}>
-                    {selectedCourse ? (
+                    {currentSelectedCourseData ? (
                         <Suspense
                             fallback={
                                 <DefaultLoading locale={locale} variant="minimal" />
@@ -352,7 +352,7 @@ export default function SingleStudent({
                 </Tabs.Content>
 
                 <Tabs.Content value={StudentTab.PRE_COURSE_ASSESSMENT} className={tabContentClass}>
-                    {selectedCourse ? (
+                    {currentSelectedCourseData ? (
                         <Suspense
                             fallback={
                                 <DefaultLoading locale={locale} variant="minimal" />
