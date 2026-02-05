@@ -28,6 +28,7 @@ import { getPlatformCached } from '../../../lib/infrastructure/server/utils/get-
 import { OTelBrowserProvider } from '../../../lib/infrastructure/client/telemetry';
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import env from '../../../lib/infrastructure/server/config/env';
+import SidebarLayout from '../../../lib/infrastructure/server/pages/layouts/sidebar-layout';
 
 type MetadataProps = {
     params: Promise<{ locale: string }>;
@@ -238,7 +239,9 @@ export default async function RootLayout({
                                                 <Suspense fallback={<DefaultLoadingWrapper />}>
                                                     <PlatformProviderWithSuspense platform={platformData}>
                                                         <Layout availableLocales={availableLocales}>
-                                                            {children}
+                                                            <SidebarLayout params={{ locale }}>
+                                                                {children}
+                                                            </SidebarLayout>
                                                         </Layout>
                                                     </PlatformProviderWithSuspense>
                                                 </Suspense>
