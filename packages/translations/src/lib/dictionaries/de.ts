@@ -1368,6 +1368,7 @@ export const DE: TDictionary = {
       collapse: 'Zusammenklappen',
       usefulLinks: 'Nützliche Links:',
       downloadFiles: 'Dateien herunterladen:',
+      assignment: 'Aufgabe',
       module: 'Modul',
       lesson: 'Lektion',
       noMaterials: 'Keine Materialien für diese Lektion verfügbar.',

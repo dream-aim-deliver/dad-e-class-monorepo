@@ -1366,6 +1366,7 @@ export const EN: TDictionary = {
       collapse: 'Collapse',
       usefulLinks: 'Useful Links:',
       downloadFiles: 'Download Files:',
+      assignment: 'Assignment',
       module: 'Module',
       lesson: 'Lesson',
       noMaterials: 'No materials available for this lesson.',
