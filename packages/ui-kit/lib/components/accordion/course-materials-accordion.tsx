@@ -144,9 +144,9 @@ export const CourseMaterialsAccordion: React.FC<
                                 className="text-text-secondary leading-normal [&_ol]:ml-2 [&_ol_li]:mb-3"
                             />
                         )}
-                        {material.links?.length > 0 && (
+                        {(material.links?.length ?? 0) > 0 && (
                             <div className="p-4 border border-base-neutral-700 rounded-medium">
-                                {material.links.map((link: any, idx: number) => (
+                                {material.links?.map((link: any, idx: number) => (
                                     <LinkPreview
                                         key={idx}
                                         title={link.title}
@@ -156,9 +156,9 @@ export const CourseMaterialsAccordion: React.FC<
                                 ))}
                             </div>
                         )}
-                        {material.resources?.filter(Boolean).length > 0 && (
+                        {(material.resources?.filter(Boolean).length ?? 0) > 0 && (
                             <div className="px-4 border border-base-neutral-700 rounded-medium">
-                                {material.resources.filter(Boolean).map((file: any, idx: number) => (
+                                {material.resources?.filter(Boolean).map((file: any, idx: number) => (
                                     <FilePreview
                                         key={idx}
                                         uploadResponse={{

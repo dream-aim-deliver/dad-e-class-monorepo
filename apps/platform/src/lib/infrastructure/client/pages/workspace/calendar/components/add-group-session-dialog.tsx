@@ -102,8 +102,9 @@ export function AddGroupSessionDialog({
             const result = await createGroupCoachingSessionMutation.mutateAsync(sessionData);
 
             // Check for student overlap warnings
-            const conflicts = result?.data?.conflictingStudents;
-            if (conflicts && conflicts.length > 0) {
+            const data = result?.data as Record<string, unknown> | undefined;
+            const conflicts = data?.conflictingStudents;
+            if (Array.isArray(conflicts) && conflicts.length > 0) {
                 setConflictWarning(conflicts as ConflictInfo[]);
                 return;
             }
