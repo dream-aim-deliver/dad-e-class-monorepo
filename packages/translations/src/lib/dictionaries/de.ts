@@ -646,6 +646,7 @@ export const DE: TDictionary = {
       hoursText: 'Stunden',
       filmMaterialText: 'von Filmmaterial',
       coachingWithAProfessionalText: 'von 1-zu-1-Coaching mit einem Industry Expert',
+      feedbackFromExpertsText: 'Mit Feedback von Industry Experts',
       selfStudyMaterialText: 'von Selbstlernmaterial',
       createdByText: 'Erstellt von',
       yourProgressText: 'Dein Fortschritt',

@@ -646,6 +646,7 @@ export const DictionarySchema = z.object({
       hoursText: z.string(),
       filmMaterialText: z.string(),
       coachingWithAProfessionalText: z.string(),
+      feedbackFromExpertsText: z.string(),
       selfStudyMaterialText: z.string(),
       createdByText: z.string(),
       yourProgressText: z.string(),

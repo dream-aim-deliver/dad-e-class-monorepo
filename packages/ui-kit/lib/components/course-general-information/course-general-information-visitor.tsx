@@ -139,7 +139,7 @@ export const CourseGeneralInformationVisitor: FC<
     totalCoachesCount,
     requiredCourses,
     requirementsDetails,
-    coachingIncluded: initialCoachingIncluded = true,
+    coachingIncluded: initialCoachingIncluded = false,
 }) => {
         const dictionary = getDictionary(locale);
         const [isImageError, setIsImageError] = useState(false);
@@ -292,14 +292,12 @@ export const CourseGeneralInformationVisitor: FC<
                                     size="4"
                                 />
                                 <p className="text-text-secondary text-sm">
-                                    {formatSingleDurationSegment(
-                                        (duration as any).coaching as number,
-                                        dictionary,
-                                    )}{' '}
-                                    {
-                                        dictionary.components
-                                            .courseGeneralInformationView
-                                            .coachingWithAProfessionalText
+                                    {coachingIncluded
+                                        ? `${formatSingleDurationSegment(
+                                              (duration as any).coaching as number,
+                                              dictionary,
+                                          )} ${dictionary.components.courseGeneralInformationView.coachingWithAProfessionalText}`
+                                        : dictionary.components.courseGeneralInformationView.feedbackFromExpertsText
                                     }
                                 </p>
                             </div>
