@@ -3,6 +3,7 @@
 import {
     Dialog,
     DialogContent,
+    Button,
 } from '@maany_shr/e-class-ui-kit';
 import GroupSessionTimeContent from '../../../common/group-session-time-content';
 import { useTranslations } from 'next-intl';
@@ -10,6 +11,15 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import { trpc } from '../../../../trpc/cms-client';
 import { useSchedulingErrors, getSchedulingErrorKey } from '../../../../hooks/use-scheduling-errors';
+
+interface ConflictInfo {
+    studentUsername: string;
+    studentName: string;
+    conflictingSessionTitle: string;
+    conflictingSessionStart: string;
+    conflictingSessionEnd: string;
+    isGroupSession: boolean;
+}
 
 interface CoachingOffering {
     id: number;
@@ -39,6 +49,7 @@ export function AddGroupSessionDialog({
     const [startTime, setStartTime] = useState<Date>(initialStartTime || new Date());
     const [selectedOffering, setSelectedOffering] = useState<CoachingOffering | undefined>(undefined);
     const [error, setError] = useState<string | undefined>(undefined);
+    const [conflictWarning, setConflictWarning] = useState<ConflictInfo[] | undefined>(undefined);
 
     const createGroupCoachingSessionMutation = trpc.createGroupCoachingSession.useMutation();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,6 +58,7 @@ export function AddGroupSessionDialog({
         setStartTime(new Date());
         setSelectedOffering(undefined);
         setError(undefined);
+        setConflictWarning(undefined);
         setIsSubmitting(false);
     };
 
@@ -87,7 +99,14 @@ export function AddGroupSessionDialog({
                 coachUsername,
             };
 
-            await createGroupCoachingSessionMutation.mutateAsync(sessionData);
+            const result = await createGroupCoachingSessionMutation.mutateAsync(sessionData);
+
+            // Check for student overlap warnings
+            const conflicts = result?.data?.conflictingStudents;
+            if (conflicts && conflicts.length > 0) {
+                setConflictWarning(conflicts as ConflictInfo[]);
+                return;
+            }
 
             onSuccess();
         } catch (err: unknown) {
@@ -122,6 +141,11 @@ export function AddGroupSessionDialog({
         }
     };
 
+    const handleWarningDismiss = () => {
+        setConflictWarning(undefined);
+        onSuccess();
+    };
+
     // Update start time when initialStartTime changes
     React.useEffect(() => {
         if (initialStartTime) {
@@ -137,16 +161,47 @@ export function AddGroupSessionDialog({
                 closeOnEscape
                 className="overflow-visible"
             >
-                <GroupSessionTimeContent
-                    startTime={startTime}
-                    setStartTime={setStartTime}
-                    selectedOffering={selectedOffering}
-                    setSelectedOffering={setSelectedOffering}
-                    isSubmitting={isSubmitting}
-                    onSubmit={validateAndSubmit}
-                    submitError={error}
-                    buttonText={isSubmitting ? t('addingGroupSession') : t('createGroupSession')}
-                />
+                {conflictWarning ? (
+                    <div className="flex flex-col gap-4 p-4">
+                        <h3 className="text-lg font-semibold text-text-primary">
+                            {t('studentOverlapWarning.title')}
+                        </h3>
+                        <p className="text-sm text-text-secondary">
+                            {t('studentOverlapWarning.description')}
+                        </p>
+                        <ul className="list-disc pl-5 space-y-2">
+                            {conflictWarning.map((conflict, idx) => (
+                                <li key={idx} className="text-sm text-text-secondary">
+                                    <span className="font-medium">{conflict.studentName}</span>
+                                    {' — '}
+                                    {conflict.conflictingSessionTitle}
+                                    {' ('}
+                                    {new Date(conflict.conflictingSessionStart).toLocaleString()}
+                                    {' – '}
+                                    {new Date(conflict.conflictingSessionEnd).toLocaleString()}
+                                    {')'}
+                                </li>
+                            ))}
+                        </ul>
+                        <Button
+                            onClick={handleWarningDismiss}
+                            variant="primary"
+                            text={t('studentOverlapWarning.acknowledge')}
+                            className="mt-2"
+                        />
+                    </div>
+                ) : (
+                    <GroupSessionTimeContent
+                        startTime={startTime}
+                        setStartTime={setStartTime}
+                        selectedOffering={selectedOffering}
+                        setSelectedOffering={setSelectedOffering}
+                        isSubmitting={isSubmitting}
+                        onSubmit={validateAndSubmit}
+                        submitError={error}
+                        buttonText={isSubmitting ? t('addingGroupSession') : t('createGroupSession')}
+                    />
+                )}
             </DialogContent>
         </Dialog>
     );

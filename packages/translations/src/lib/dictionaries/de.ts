@@ -3465,6 +3465,11 @@ export const DE: TDictionary = {
         title: 'Kalender konnte nicht geladen werden',
         description: 'Die Kalenderdaten konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
       },
+      studentOverlapWarning: {
+        title: 'Terminkonflikt bei Studierenden',
+        description: 'Die Sitzung wurde erstellt, aber folgende Studierende haben überschneidende Sitzungen:',
+        acknowledge: 'OK, verstanden',
+      },
     },
     manageLegalTexts: {
       title: 'Rechtliche Texte verwalten',

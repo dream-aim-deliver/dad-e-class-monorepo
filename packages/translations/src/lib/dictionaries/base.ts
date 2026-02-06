@@ -3527,6 +3527,11 @@ export const DictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
       }),
+      studentOverlapWarning: z.object({
+        title: z.string(),
+        description: z.string(),
+        acknowledge: z.string(),
+      }),
     }),
     manageLegalTexts: z.object({
       title: z.string(),
