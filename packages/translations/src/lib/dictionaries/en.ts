@@ -3463,6 +3463,11 @@ export const EN: TDictionary = {
         title: 'Failed to Load Calendar',
         description: 'Unable to load calendar data. Please refresh the page or try again later.',
       },
+      studentOverlapWarning: {
+        title: 'Student Schedule Conflicts',
+        description: 'The session was created, but these students have overlapping sessions:',
+        acknowledge: 'OK, Got It',
+      },
     },
     manageLegalTexts: {
       title: 'Manage Legal Texts',
