@@ -2,16 +2,12 @@ import {
     Button,
     CardListLayout,
     CheckBox,
-    CheckoutModal,
     DefaultError,
     DefaultLoading,
     EmptyState,
     VisitorCourseCard,
-    Banner,
-    type TransactionDraft,
-    type CouponValidationResult,
 } from '@maany_shr/e-class-ui-kit';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
@@ -19,13 +15,7 @@ import { useListCoursesPresenter } from '../../hooks/use-list-courses-presenter'
 import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
-import { usePrepareCheckoutPresenter } from '../../hooks/use-prepare-checkout-presenter';
-import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../hooks/use-checkout-errors';
-import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
-import env from '../../config/env';
 import { viewModels } from '@maany_shr/e-class-models';
-import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
-import { useSession } from 'next-auth/react';
 
 interface OffersCourseHeadingProps {
     coachingIncluded: boolean;
@@ -77,153 +67,8 @@ export function OffersCourseList({
         'components.paginationButton',
     );
     const offersTranslations = useTranslations('pages.offers');
-    const { getCheckoutErrorTitle, getCheckoutErrorDescription } = useCheckoutErrors();
 
     const router = useRouter();
-    const sessionDTO = useSession();
-    const isLoggedIn = !!sessionDTO.data;
-
-    // Checkout modal state
-    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-    const [transactionDraft, setTransactionDraft] =
-        useState<TransactionDraft | null>(null);
-    const [currentRequest, setCurrentRequest] =
-        useState<TPrepareCheckoutRequest | null>(null);
-    const [checkoutViewModel, setCheckoutViewModel] =
-        useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
-    const [checkoutError, setCheckoutError] =
-        useState<viewModels.TPrepareCheckoutViewModel | null>(null);
-    const { presenter: checkoutPresenter } =
-        usePrepareCheckoutPresenter(setCheckoutViewModel);
-    const utils = trpc.useUtils();
-
-    // Helper to execute checkout
-    const executeCheckout = useCallback(async (
-        request: TPrepareCheckoutRequest,
-    ) => {
-        try {
-            setCurrentRequest(request); // Save current request for metadata
-            setCheckoutError(null); // Clear any previous error
-            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
-            const response = await utils.prepareCheckout.fetch(request);
-            // Unwrap TBaseResult if needed
-            if (response && typeof response === 'object' && 'success' in response) {
-                if (response.success === true && response.data) {
-                    checkoutPresenter.present({ success: true, data: response.data } as unknown as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
-                } else if (response.success === false && response.data) {
-                    // Access the nested data structure from tRPC response
-                    const errorData = 'data' in response.data ? response.data.data : response.data;
-                    const errorViewModel = createCheckoutErrorViewModel(errorData as { message?: string; errorType?: string; operation?: string; context?: unknown });
-                    setCheckoutError(errorViewModel);
-                    // Scroll to top so user can see the error banner
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            } else {
-                checkoutPresenter.present(response as TPrepareCheckoutUseCaseResponse, checkoutViewModel);
-            }
-        } catch (err) {
-            console.error('Failed to prepare checkout:', err);
-        }
-    }, [utils, checkoutPresenter, checkoutViewModel]);
-
-    // Watch for checkoutViewModel changes and open modal when ready
-    useEffect(() => {
-        if (checkoutViewModel) {
-            if (checkoutViewModel.mode === 'default') {
-                setTransactionDraft(checkoutViewModel.data);
-                setIsCheckoutOpen(true);
-                setCheckoutError(null);
-            } else {
-                setCheckoutError(checkoutViewModel);
-            }
-        }
-    }, [checkoutViewModel]);
-
-    // Checkout intent hook for login flow preservation
-    const { saveIntent } = useCheckoutIntent({
-        onResumeCheckout: executeCheckout,
-    });
-
-    const handleBuyCourse = (
-        courseSlug: string,
-        withCoaching: boolean,
-    ) => {
-        const request: TPrepareCheckoutRequest = {
-            purchaseType: withCoaching
-                ? 'StudentCoursePurchaseWithCoaching'
-                : 'StudentCoursePurchase',
-            courseSlug,
-        };
-
-        // If user is not logged in, save intent and redirect to login
-        if (!isLoggedIn) {
-            saveIntent(request, window.location.pathname);
-            router.push(
-                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-            );
-            return;
-        }
-
-        // User is logged in, execute checkout
-        executeCheckout(request);
-    };
-
-    const handlePaymentComplete = (sessionId: string) => {
-        setIsCheckoutOpen(false);
-        setTransactionDraft(null);
-        setCheckoutViewModel(undefined);
-        setCurrentRequest(null);
-        // TODO: Redirect to success page or show success message
-    };
-
-    // Handle coupon validation via prepareCheckout
-    const handleApplyCoupon = useCallback(async (couponCode: string): Promise<CouponValidationResult> => {
-        if (!currentRequest) {
-            return {
-                success: false,
-                errorMessage: getCheckoutErrorDescription('kaboom')
-            };
-        }
-
-        try {
-            const requestWithCoupon = { ...currentRequest, couponCode };
-            // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
-            const response = await utils.prepareCheckout.fetch(requestWithCoupon);
-
-            if (response && typeof response === 'object' && 'success' in response) {
-                if (response.success === true && response.data) {
-                    return {
-                        success: true,
-                        data: response.data as unknown as TransactionDraft,
-                    };
-                } else if (response.success === false && response.data) {
-                    // Extract error data from response
-                    const errorData = 'data' in response.data ? response.data.data : response.data;
-
-                    // Get error mode using centralized logic
-                    const errorMode = getCheckoutErrorMode(errorData as { errorType?: string; message?: string });
-
-                    // Get translated error message
-                    const errorMessage = getCheckoutErrorDescription(errorMode);
-
-                    return {
-                        success: false,
-                        errorMessage
-                    };
-                }
-            }
-
-            return {
-                success: false,
-                errorMessage: getCheckoutErrorDescription('kaboom')
-            };
-        } catch (error) {
-            return {
-                success: false,
-                errorMessage: getCheckoutErrorDescription('kaboom')
-            };
-        }
-    }, [currentRequest, utils, getCheckoutErrorDescription]);
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default') {
@@ -281,20 +126,6 @@ export function OffersCourseList({
 
     return (
         <div className="flex flex-col justify-center space-y-4">
-            {/* Checkout Error Banner */}
-            {checkoutError && checkoutError.mode !== 'default' && (
-                <Banner
-                    style="error"
-                    icon
-                    closeable
-                    title={getCheckoutErrorTitle(checkoutError.mode)}
-                    description={getCheckoutErrorDescription(checkoutError.mode)}
-                    onClose={() => {
-                        setCheckoutError(null);
-                        setCheckoutViewModel(undefined);
-                    }}
-                />
-            )}
             <CardListLayout>
                 {displayedCourses.map((course) => {
                     return (
@@ -302,9 +133,6 @@ export function OffersCourseList({
                             coachingIncluded={coachingIncluded}
                             onDetails={() => {
                                 router.push(`/courses/${course.slug}`);
-                            }}
-                            onBuy={() => {
-                                handleBuyCourse(course.slug, coachingIncluded);
                             }}
                             onClickUser={() => {
                                 router.push(
@@ -351,31 +179,6 @@ export function OffersCourseList({
                     variant="text"
                     text={paginationTranslations('loadMore')}
                     onClick={handleLoadMore}
-                />
-            )}
-
-            {transactionDraft && currentRequest && (currentRequest.purchaseType === 'StudentCoursePurchase' || currentRequest.purchaseType === 'StudentCoursePurchaseWithCoaching') && (
-                <CheckoutModal
-                    isOpen={isCheckoutOpen}
-                    onClose={() => {
-                        setIsCheckoutOpen(false);
-                        setTransactionDraft(null);
-                        setCheckoutViewModel(undefined);
-                        setCurrentRequest(null);
-                    }}
-                    transactionDraft={transactionDraft}
-                    stripePublishableKey={
-                        env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-                    }
-                    customerEmail={sessionDTO.data?.user?.email}
-                    purchaseType={currentRequest.purchaseType}
-                    purchaseIdentifier={{
-                        courseSlug: currentRequest.courseSlug,
-                        withCoaching: currentRequest.purchaseType === 'StudentCoursePurchaseWithCoaching',
-                    }}
-                    locale={locale}
-                    onPaymentComplete={handlePaymentComplete}
-                    onApplyCoupon={handleApplyCoupon}
                 />
             )}
         </div>

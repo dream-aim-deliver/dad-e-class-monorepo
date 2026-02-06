@@ -99,9 +99,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    const pricingLabel = coachingIncluded
-        ? `${(pricing as any).currency} ${(pricing as any).fullPrice}`
-        : `${dictionary.components.courseCard.fromButton} ${(pricing as any).currency} ${(pricing as any).partialPrice}`;
+    const pricingLabel = `${dictionary.components.courseCard.fromButton} ${(pricing as any).currency} ${(pricing as any).partialPrice}`;
     return (
         <div className="w-full mx-auto">
             <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">

@@ -643,6 +643,7 @@ export const EN: TDictionary = {
       hoursText: 'hours',
       filmMaterialText: 'of film material',
       coachingWithAProfessionalText: 'of 1-to-1 coaching with an industry expert',
+      feedbackFromExpertsText: 'With feedback from Industry Experts',
       selfStudyMaterialText: 'of self-study material',
       createdByText: 'Created by',
       yourProgressText: 'Your progress',
@@ -1597,7 +1598,9 @@ export const EN: TDictionary = {
       freeCoachingSessions: 'Free Coaching Sessions',
       discountOnEverything: '% Discount on Everything',
       groupCourse: 'Group Course',
+      groupPackage: 'Group Package',
       selectPackages: 'Select Packages',
+      selectPackage: 'Select Package',
       duration: 'Duration',
       minutes: 'minutes',
       isPartOfCourse: 'Is coaching session part of a course?',
@@ -1623,7 +1626,8 @@ export const EN: TDictionary = {
         coachingRequired: 'Please select a coaching offering',
         percentageInvalid: 'Percentage must be between 1 and 100',
         courseRequired: 'Please select a course',
-        groupNameRequired: 'Group name is required'
+        groupNameRequired: 'Group name is required',
+        packageRequired: 'Please select a package'
       },
       error: {
         createFailed: 'Failed to create coupon. Please try again.'
@@ -3462,6 +3466,11 @@ export const EN: TDictionary = {
       error: {
         title: 'Failed to Load Calendar',
         description: 'Unable to load calendar data. Please refresh the page or try again later.',
+      },
+      studentOverlapWarning: {
+        title: 'Student Schedule Conflicts',
+        description: 'The session was created, but these students have overlapping sessions:',
+        acknowledge: 'OK, Got It',
       },
     },
     manageLegalTexts: {

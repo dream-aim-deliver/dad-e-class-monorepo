@@ -646,6 +646,7 @@ export const DE: TDictionary = {
       hoursText: 'Stunden',
       filmMaterialText: 'von Filmmaterial',
       coachingWithAProfessionalText: 'von 1-zu-1-Coaching mit einem Industry Expert',
+      feedbackFromExpertsText: 'Mit Feedback von Industry Experts',
       selfStudyMaterialText: 'von Selbstlernmaterial',
       createdByText: 'Erstellt von',
       yourProgressText: 'Dein Fortschritt',
@@ -1599,7 +1600,9 @@ export const DE: TDictionary = {
       freeCoachingSessions: 'Kostenlose Coaching-Sitzungen',
       discountOnEverything: '% Rabatt auf alles',
       groupCourse: 'Gruppenkurs',
+      groupPackage: 'Gruppenpaket',
       selectPackages: 'Pakete auswählen',
+      selectPackage: 'Paket auswählen',
       duration: 'Dauer',
       minutes: 'Minuten',
       isPartOfCourse: 'Ist die Coaching-Sitzung Teil eines Kurses?',
@@ -1625,7 +1628,8 @@ export const DE: TDictionary = {
         coachingRequired: 'Bitte wähle ein Coaching-Angebot aus',
         percentageInvalid: 'Prozentsatz muss zwischen 1 und 100 liegen',
         courseRequired: 'Bitte wähle einen Kurs aus',
-        groupNameRequired: 'Gruppenname ist erforderlich'
+        groupNameRequired: 'Gruppenname ist erforderlich',
+        packageRequired: 'Bitte wähle ein Paket aus'
       },
       error: {
         createFailed: 'Gutschein konnte nicht erstellt werden. Bitte versuchen Sie es erneut.'
@@ -3464,6 +3468,11 @@ export const DE: TDictionary = {
       error: {
         title: 'Kalender konnte nicht geladen werden',
         description: 'Die Kalenderdaten konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
+      },
+      studentOverlapWarning: {
+        title: 'Terminkonflikt bei Studierenden',
+        description: 'Die Sitzung wurde erstellt, aber folgende Studierende haben überschneidende Sitzungen:',
+        acknowledge: 'OK, verstanden',
       },
     },
     manageLegalTexts: {
