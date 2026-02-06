@@ -22,7 +22,8 @@ const mockDictionary = {
       sales: 'sales',
       creatorText: 'by',
       you: 'You',
-      createdBy: 'by'
+      createdBy: 'by',
+      group: 'Group'
     },
     coachBanner: {
       placeHolderText: 'Image not available'
@@ -89,7 +90,7 @@ describe('CourseCard', () => {
     await waitFor(() => {
       expect(screen.getByText(/React for Beginners/i)).toBeInTheDocument();
       expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
-      expect(screen.getByText(/React Group/i)).toBeInTheDocument();
+      expect(screen.getByText(/Group/i)).toBeInTheDocument();
     });
 
     expect(screen.getAllByLabelText('filled star')).toHaveLength(4);
