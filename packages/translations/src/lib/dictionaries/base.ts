@@ -1355,6 +1355,7 @@ export const DictionarySchema = z.object({
       collapse: z.string(),
       usefulLinks: z.string(),
       downloadFiles: z.string(),
+      assignment: z.string(),
       module: z.string(),
       lesson: z.string(),
       noMaterials: z.string(),

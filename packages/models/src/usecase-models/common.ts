@@ -367,6 +367,14 @@ const AssignmentSchema = BaseComponent.extend({
     progress: AssignmentProgressSchema.optional().nullable(),
 });
 
+export const AssignmentMaterialSchema = BaseComponent.extend({
+    type: z.literal('assignmentMaterial'),
+    title: z.string(),
+    description: z.string(),
+    resources: z.array(DownloadFileSchema.nullable()),
+    links: z.array(LinkItemSchema),
+});
+
 export const AssessmentComponentSchema = z.discriminatedUnion('type', [
     RichTextSchema,
     HeadingSchema,

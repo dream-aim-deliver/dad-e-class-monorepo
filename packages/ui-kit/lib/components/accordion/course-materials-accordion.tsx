@@ -129,6 +129,58 @@ export const CourseMaterialsAccordion: React.FC<
                         </div>
                     </div>
                 );
+            case 'assignmentMaterial':
+                return (
+                    <div key={material.id} className="flex flex-col gap-3 p-4 rounded-medium border border-base-neutral-700 mb-4">
+                        <h4 className="text-text-primary">
+                            {dictionary.components.courseMaterialsAccordion.assignment}: {material.title}
+                        </h4>
+                        {material.description && (
+                            <RichTextRenderer
+                                content={material.description}
+                                onDeserializationError={(message, error) => {
+                                    console.error('Error deserializing assignment description:', message, error);
+                                }}
+                                className="text-text-secondary leading-normal [&_ol]:ml-2 [&_ol_li]:mb-3"
+                            />
+                        )}
+                        {material.links?.length > 0 && (
+                            <div className="p-4 border border-base-neutral-700 rounded-medium">
+                                {material.links.map((link: any, idx: number) => (
+                                    <LinkPreview
+                                        key={idx}
+                                        title={link.title}
+                                        url={link.url}
+                                        preview={false}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                        {material.resources?.filter(Boolean).length > 0 && (
+                            <div className="px-4 border border-base-neutral-700 rounded-medium">
+                                {material.resources.filter(Boolean).map((file: any, idx: number) => (
+                                    <FilePreview
+                                        key={idx}
+                                        uploadResponse={{
+                                            id: file.id || `file-${idx}`,
+                                            name: file.name,
+                                            size: file.size || 0,
+                                            category: 'generic',
+                                            status: 'available',
+                                            url: file.downloadUrl,
+                                        }}
+                                        onDownload={() =>
+                                            window.open(file.downloadUrl, '_blank')
+                                        }
+                                        deletion={{ isAllowed: false }}
+                                        readOnly={true}
+                                        locale={locale}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                );
             default:
                 return null;
         }

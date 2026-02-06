@@ -4,7 +4,7 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
-import { RichTextSchema, LinksSchema, DownloadFilesSchema } from './common';
+import { RichTextSchema, LinksSchema, DownloadFilesSchema, AssignmentMaterialSchema } from './common';
 
 export const ListCourseMaterialsRequestSchema = z.object({
     courseSlug: z.string(),
@@ -15,6 +15,7 @@ export const CourseMaterialSchema = z.discriminatedUnion('type', [
     RichTextSchema,
     LinksSchema,
     DownloadFilesSchema,
+    AssignmentMaterialSchema,
 ]);
 export type TCourseMaterial = z.infer<typeof CourseMaterialSchema>;
 
