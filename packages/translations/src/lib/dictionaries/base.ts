@@ -1587,7 +1587,9 @@ export const DictionarySchema = z.object({
       freeCoachingSessions: z.string(),
       discountOnEverything: z.string(),
       groupCourse: z.string(),
+      groupPackage: z.string(),
       selectPackages: z.string(),
+      selectPackage: z.string(),
       duration: z.string(),
       minutes: z.string(),
       isPartOfCourse: z.string(),
@@ -1613,7 +1615,8 @@ export const DictionarySchema = z.object({
         coachingRequired: z.string(),
         percentageInvalid: z.string(),
         courseRequired: z.string(),
-        groupNameRequired: z.string()
+        groupNameRequired: z.string(),
+        packageRequired: z.string()
       }),
       error: z.object({
         createFailed: z.string()

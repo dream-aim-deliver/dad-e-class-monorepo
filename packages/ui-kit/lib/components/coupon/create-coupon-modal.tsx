@@ -14,7 +14,7 @@ import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-transla
 import { COUPON_NAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 
 // Types for form data
-type CouponType = 'freeCourses' | 'freePackages' | 'freeCoachingSession' | 'discountOnEverything' | 'groupCourse';
+type CouponType = 'freeCourses' | 'freePackages' | 'freeCoachingSession' | 'discountOnEverything' | 'groupCourse' | 'groupPackage';
 
 interface CourseOption {
   id: number;
@@ -141,6 +141,9 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   const [selectedGroupCourse, setSelectedGroupCourse] = useState<number | null>(null);
   const [groupName, setGroupName] = useState('');
   const [groupCourseWithCoaching, setGroupCourseWithCoaching] = useState(false);
+  const [selectedGroupPackage, setSelectedGroupPackage] = useState<number | null>(null);
+  const [groupPackageName, setGroupPackageName] = useState('');
+  const [groupPackageWithCoaching, setGroupPackageWithCoaching] = useState(false);
 
   // Search state
   const [courseSearchQuery, setCourseSearchQuery] = useState('');
@@ -254,6 +257,14 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
           errors.push(dictionary.validationErrors.groupNameRequired);
         }
         break;
+      case 'groupPackage':
+        if (!selectedGroupPackage) {
+          errors.push(dictionary.validationErrors.packageRequired);
+        }
+        if (!groupPackageName.trim()) {
+          errors.push(dictionary.validationErrors.groupNameRequired);
+        }
+        break;
     }
 
     return errors;
@@ -321,6 +332,17 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
           courseId: selectedGroupCourse,
           groupName: groupName,
           withCoaching: groupCourseWithCoaching
+        };
+        break;
+      case 'groupPackage':
+        if (!selectedGroupPackage) {
+          throw new Error('Package ID is required for group package coupon');
+        }
+        couponContent = {
+          type: 'groupPackage',
+          packageId: selectedGroupPackage,
+          groupName: groupPackageName,
+          withCoaching: groupPackageWithCoaching
         };
         break;
     }
@@ -526,6 +548,15 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
               label={dictionary.groupCourse}
               checked={selectedType === 'groupCourse'}
               onChange={() => setSelectedType('groupCourse')}
+              withText
+            />
+
+            <RadioButton
+              name="couponType"
+              value="groupPackage"
+              label={dictionary.groupPackage}
+              checked={selectedType === 'groupPackage'}
+              onChange={() => setSelectedType('groupPackage')}
               withText
             />
           </div>
@@ -761,7 +792,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                     />
                   </div>
                 )}
-                
+
                 <TextInput
                   label={dictionary.groupName}
                   inputField={{
@@ -779,6 +810,47 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                   onChange={() => setGroupCourseWithCoaching(!groupCourseWithCoaching)}
                   withText
                   disabled={!selectedGroupCourse}
+                />
+              </div>
+            )}
+
+            {/* Group Package */}
+            {selectedType === 'groupPackage' && (
+              <div className="flex flex-col gap-3">
+                {packagesQuery?.data?.data?.packages && (
+                  <div className="flex flex-col gap-2">
+                    <h4 className="font-medium">{dictionary.selectPackage}</h4>
+                    <Dropdown
+                      type="simple"
+                      options={packagesQuery.data.data.packages.map((pkg: any) => ({
+                        label: pkg.title,
+                        value: pkg.id.toString()
+                      }))}
+                      onSelectionChange={(selected) => setSelectedGroupPackage(selected && typeof selected === 'string' ? parseInt(selected) : null)}
+                      text={{ simpleText: dictionary.selectPackage }}
+                      defaultValue={selectedGroupPackage?.toString()}
+                      className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
+                    />
+                  </div>
+                )}
+
+                <TextInput
+                  label={dictionary.groupName}
+                  inputField={{
+                    value: groupPackageName,
+                    setValue: setGroupPackageName,
+                    inputText: dictionary.groupNamePlaceholder,
+                  }}
+                />
+
+                <CheckBox
+                  name="groupPackageCoaching"
+                  value="groupPackageCoaching"
+                  label={dictionary.withCoaching}
+                  checked={groupPackageWithCoaching}
+                  onChange={() => setGroupPackageWithCoaching(!groupPackageWithCoaching)}
+                  withText
+                  disabled={!selectedGroupPackage}
                 />
               </div>
             )}
