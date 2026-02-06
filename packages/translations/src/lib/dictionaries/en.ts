@@ -1598,7 +1598,9 @@ export const EN: TDictionary = {
       freeCoachingSessions: 'Free Coaching Sessions',
       discountOnEverything: '% Discount on Everything',
       groupCourse: 'Group Course',
+      groupPackage: 'Group Package',
       selectPackages: 'Select Packages',
+      selectPackage: 'Select Package',
       duration: 'Duration',
       minutes: 'minutes',
       isPartOfCourse: 'Is coaching session part of a course?',
@@ -1624,7 +1626,8 @@ export const EN: TDictionary = {
         coachingRequired: 'Please select a coaching offering',
         percentageInvalid: 'Percentage must be between 1 and 100',
         courseRequired: 'Please select a course',
-        groupNameRequired: 'Group name is required'
+        groupNameRequired: 'Group name is required',
+        packageRequired: 'Please select a package'
       },
       error: {
         createFailed: 'Failed to create coupon. Please try again.'
