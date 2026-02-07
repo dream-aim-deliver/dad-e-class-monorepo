@@ -215,6 +215,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               sessions={coachingSessionCount ?? 0}
               duration={formattedDuration}
               sales={sales}
+              sessionLabelVariant="available"
             />
           </div>
 
