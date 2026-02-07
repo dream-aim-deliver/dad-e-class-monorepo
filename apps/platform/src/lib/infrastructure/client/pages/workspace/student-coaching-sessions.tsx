@@ -27,6 +27,7 @@ interface ScheduledStudentSessionCardProps {
     onCancel: () => void;
     onViewCourse?: () => void;
     courseName?: string;
+    groupName?: string;
 }
 
 interface StudentCoachingSessionsProps {
@@ -42,6 +43,7 @@ function ScheduledStudentSessionCard({
     onCancel,
     onViewCourse,
     courseName,
+    groupName,
 }: ScheduledStudentSessionCardProps) {
     const startDateTime = new Date(session.startTime);
     const coach = session.coach;
@@ -103,6 +105,7 @@ function ScheduledStudentSessionCard({
         onClickCreator: onCreatorClick,
         courseName,
         onClickCourse: onViewCourse,
+        groupName,
     };
 
     if (cardStatus === 'ongoing') {
@@ -669,6 +672,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
             // Common properties for all session cards (excluding key)
             const coach = session.coach;
             const course = 'course' in session ? session.course : undefined;
+            const group = 'group' in session ? session.group : undefined;
             const coachName = `${coach.name || ''} ${coach.surname || ''}`.trim() || coach.username || 'Unknown Coach';
 
             const commonProps = {
@@ -684,6 +688,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                 onClickCreator: () => handleCreatorClick(coach.username || ''),
                 courseName: course?.title,
                 onClickCourse: course?.slug ? () => handleViewCourse(course.slug || '') : undefined,
+                groupName: group?.name,
             };
 
             if (session.status === 'requested') {
@@ -711,6 +716,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         onCancel={() => handleOpenCancelModal(session.id!)}
                         onViewCourse={course?.slug ? () => handleViewCourse(course.slug || '') : undefined}
                         courseName={course?.title}
+                        groupName={group?.name}
                     />
                 );
             }
