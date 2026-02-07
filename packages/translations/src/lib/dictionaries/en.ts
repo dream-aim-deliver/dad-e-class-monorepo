@@ -249,6 +249,8 @@ export const EN: TDictionary = {
       completedBadge: 'Offer Completed',
       cochingSession: 'Total Coaching Sessions',
       cochingSessionHint: 'This is the total number of coaching sessions that are part of this course. It does not reflect how many you have already purchased or how many are still available to book.',
+      availableCoachingSession: 'Available Coaching Sessions',
+      availableCoachingSessionHint: 'The number of coaching sessions available for you to book in this course.',
       sales: 'sales',
       hours: 'hours',
       includeCourseButton: 'Include',

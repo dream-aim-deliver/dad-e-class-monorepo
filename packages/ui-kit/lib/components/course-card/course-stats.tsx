@@ -25,6 +25,7 @@ export interface CourseStatsProps extends isLocalAware{
   sessions: number;
   duration: string;
   sales: number;
+  sessionLabelVariant?: 'total' | 'available';
 }
 
 /**
@@ -50,9 +51,17 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
   sessions,
   duration,
   sales,
-  locale
+  locale,
+  sessionLabelVariant,
 }) => {
   const dictionary = getDictionary(locale);
+
+  const sessionLabel = sessionLabelVariant === 'available'
+    ? dictionary.components.courseCard.availableCoachingSession
+    : dictionary.components.courseCard.cochingSession;
+  const sessionHint = sessionLabelVariant === 'available'
+    ? dictionary.components.courseCard.availableCoachingSessionHint
+    : dictionary.components.courseCard.cochingSessionHint;
 
   // First row: Language and Coaching Session
   const firstRowStats = [
@@ -64,8 +73,8 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
       ? [
           {
             icon: <IconCoachingSession classNames="text-text-secondary" size="5" />,
-            text: `${sessions} ${dictionary.components.courseCard.cochingSession}`,
-            tooltip: dictionary.components.courseCard.cochingSessionHint,
+            text: `${sessions} ${sessionLabel}`,
+            tooltip: sessionHint,
           },
         ]
       : []),
