@@ -325,6 +325,7 @@ export const DictionarySchema = z.object({
       more: z.string(),
       viewProfile: z.string(),
       bookSession: z.string(),
+      nextAvailable: z.string(),
     }),
     reviewModal: z.object({
       coachingTitle: z.string(),
@@ -2207,6 +2208,11 @@ export const DictionarySchema = z.object({
       shortNoticeWarning: z.object({
         title: z.string(),
         description: z.string(),
+      }),
+      notAvailableToday: z.object({
+        title: z.string(),
+        description: z.string(),
+        goToDate: z.string(),
       }),
       error: z.object({
         title: z.string(),

@@ -754,6 +754,33 @@ function BookCoachPageContent({
         }
     }, [coachAvailabilityViewModel, router]);
 
+    const { isAvailableToday, nextAvailableDate } = useMemo(() => {
+        if (!coachAvailabilityViewModel || coachAvailabilityViewModel.mode !== 'default') {
+            return { isAvailableToday: true, nextAvailableDate: null };
+        }
+
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tomorrowStart = new Date(todayStart);
+        tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+
+        const slots = coachAvailabilityViewModel.data.availability;
+
+        const todaySlots = slots.filter((slot) => {
+            const slotStart = new Date(slot.startTime);
+            return slotStart >= todayStart && slotStart < tomorrowStart && slotStart > now;
+        });
+
+        const futureSlots = slots
+            .filter((slot) => new Date(slot.startTime) > now)
+            .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+        return {
+            isAvailableToday: todaySlots.length > 0,
+            nextAvailableDate: futureSlots.length > 0 ? new Date(futureSlots[0].startTime) : null,
+        };
+    }, [coachAvailabilityViewModel]);
+
     if (!coachAvailabilityViewModel || !currentDate) {
         return <DefaultLoading locale={locale} />;
     }
@@ -836,6 +863,31 @@ function BookCoachPageContent({
                 <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                     <CoachHeader coachUsername={coachUsername} />
                 </Suspense>
+                {/* Not available today banner */}
+                {!isAvailableToday && (
+                    <div className="my-3">
+                        <Banner
+                            style="neutral"
+                            icon
+                            title={coachingT('notAvailableToday.title')}
+                            description={
+                                nextAvailableDate
+                                    ? coachingT('notAvailableToday.description', {
+                                          date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+                                      })
+                                    : undefined
+                            }
+                            button={
+                                nextAvailableDate
+                                    ? {
+                                          label: coachingT('notAvailableToday.goToDate'),
+                                          onClick: () => setCurrentDate(nextAvailableDate),
+                                      }
+                                    : undefined
+                            }
+                        />
+                    </div>
+                )}
                 {/* Desktop Layout: Calendar on left, AvailableCoachings on right */}
                 <div className="h-[calc(100vh-300px)] flex-row hidden md:flex gap-6">
                     <div className="rounded-lg bg-card-fill p-4 flex-1">

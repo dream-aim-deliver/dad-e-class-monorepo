@@ -15,6 +15,11 @@ export const Coaching_EN: TDictionary["pages"]["coaching"] = {
     title: "Short Notice Booking",
     description: "You are requesting a session with less than {hours} hours notice. Your coach may not see this request in time. Consider selecting a later time slot for a higher chance of confirmation.",
   },
+  notAvailableToday: {
+    title: "Not available today",
+    description: "Next available: {date}",
+    goToDate: "Go to date",
+  },
   error: {
     title: "Failed to Load Coaching",
     description: "Unable to load coaching information. Please refresh the page or try again later.",

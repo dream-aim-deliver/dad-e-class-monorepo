@@ -8,6 +8,7 @@ import { IconCoachingSession } from '../icons/icon-coaching-session';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import SkillBadges from '../skill-badges';
 import { IconAccountInformation, IconTrashAlt } from '../icons';
+import { IconCalendarAvailability } from '../icons/icon-calendar-availability';
 
 interface Course {
   image: string;
@@ -25,6 +26,7 @@ export interface CoachCardDetails {
   courses: Course[];
   rating: number;
   totalRatings: number;
+  nextAvailableDate?: string | null;
 }
 
 type BaseCoachCardProps = {
@@ -122,6 +124,15 @@ const CoachCard: FC<CoachCardProps> = (props) => {
               </p>
             )}
           </div>
+        )}
+        {cardDetails.nextAvailableDate && (
+          <p className="flex items-center gap-1 text-feedback-success-primary">
+            <IconCalendarAvailability classNames='flex-shrink-0' size="4" />
+            <span className="truncate">
+              {dictionary.components.coachCard.nextAvailable}:{' '}
+              {new Date(cardDetails.nextAvailableDate).toLocaleDateString(locale, { month: 'short', day: 'numeric' })}
+            </span>
+          </p>
         )}
       </div>
 

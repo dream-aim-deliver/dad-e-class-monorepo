@@ -393,6 +393,7 @@ export const DE: TDictionary = {
       teaches: "Unterrichtet",
       viewProfile: "Profil ansehen",
       bookSession: "Sitzung buchen",
+      nextAvailable: "Nächster Termin",
     },
     buyCoachingSession: {
       title: "Coaching-Sitzung kaufen",
