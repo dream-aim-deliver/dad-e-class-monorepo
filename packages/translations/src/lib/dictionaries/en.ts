@@ -2318,6 +2318,7 @@ export const EN: TDictionary = {
       selectCourseToViewAssignments: 'Please select a course to view assignments',
       selectCourseToViewInteractions: 'Please select a course to view interactions',
       selectCourseToViewAssessment: 'Please select a course to view the pre-course assessment',
+      showingAssessmentFor: 'Showing assessment for: {course}',
       studentInteractions: 'Student Interactions',
       noInteractionsFound: 'No interactions found for this course',
       tabs: {

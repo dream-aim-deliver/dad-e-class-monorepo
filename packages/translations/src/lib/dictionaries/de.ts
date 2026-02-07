@@ -2320,6 +2320,7 @@ export const DE: TDictionary = {
       selectCourseToViewAssignments: 'Bitte wähle einen Kurs, um die Aufgaben anzuzeigen',
       selectCourseToViewInteractions: 'Bitte wähle einen Kurs, um die Interaktionen anzuzeigen',
       selectCourseToViewAssessment: 'Bitte wähle einen Kurs, um die Vorab-Bewertung anzuzeigen',
+      showingAssessmentFor: 'Bewertung angezeigt für: {course}',
       studentInteractions: 'Schüler-Interaktionen',
       noInteractionsFound: 'Keine Interaktionen für diesen Kurs gefunden',
       tabs: {

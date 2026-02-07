@@ -352,23 +352,43 @@ export default function SingleStudent({
                 </Tabs.Content>
 
                 <Tabs.Content value={StudentTab.PRE_COURSE_ASSESSMENT} className={tabContentClass}>
-                    {currentSelectedCourseData ? (
-                        <Suspense
-                            fallback={
-                                <DefaultLoading locale={locale} variant="minimal" />
-                            }
-                        >
-                            <EnrolledCourseCompletedAssessment
-                                courseSlug={selectedCourse}
-                                studentUsername={studentUsername}
+                    {(() => {
+                        const assessmentCourse = selectedCourse
+                            ? courses.find(c => c.slug === selectedCourse)
+                            : courses
+                                .filter(c => c.preAssessmentCompleted && c.assessmentCompletedAt)
+                                .sort((a, b) =>
+                                    new Date(b.assessmentCompletedAt!).getTime() -
+                                    new Date(a.assessmentCompletedAt!).getTime()
+                                )[0];
+                        if (assessmentCourse) {
+                            return (
+                                <div className="flex flex-col gap-4">
+                                    {!selectedCourse && (
+                                        <p className="text-sm text-text-secondary">
+                                            {t('showingAssessmentFor', { course: assessmentCourse.title })}
+                                        </p>
+                                    )}
+                                    <Suspense
+                                        fallback={
+                                            <DefaultLoading locale={locale} variant="minimal" />
+                                        }
+                                    >
+                                        <EnrolledCourseCompletedAssessment
+                                            courseSlug={assessmentCourse.slug}
+                                            studentUsername={studentUsername}
+                                        />
+                                    </Suspense>
+                                </div>
+                            );
+                        }
+                        return (
+                            <EmptyState
+                                locale={locale}
+                                message={t('selectCourseToViewAssessment')}
                             />
-                        </Suspense>
-                    ) : (
-                        <EmptyState
-                            locale={locale}
-                            message={t('selectCourseToViewAssessment')}
-                        />
-                    )}
+                        );
+                    })()}
                 </Tabs.Content>
             </Tabs.Root>
         </div>
