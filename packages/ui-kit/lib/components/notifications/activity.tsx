@@ -146,7 +146,7 @@ export const Activity: FC<ActivityProps> = ({
             </div>
             {/* Content section */}
             <div className="flex flex-col items-start gap-1 min-w-0 flex-1 pr-6">
-                <p className="text-sm text-text-primary leading-[150%] text-left text-wrap break-words w-full">
+                <p className="text-sm text-text-primary leading-[150%] text-left break-words w-full line-clamp-2">
                     {message}
                 </p>
                 {children}
