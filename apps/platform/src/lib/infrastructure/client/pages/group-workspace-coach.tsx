@@ -395,9 +395,9 @@ export default function GroupWorkspaceCoach({
         onClickCourse: () => {
           router.push(`/${locale}/courses/${member.course.slug}`)
         },
-        onClickCoach: memberFirstCoach ? () => {
-          router.push(`/${locale}/coaches/${memberFirstCoach.username}`)
-        } : undefined,
+        onClickCoach: memberFirstCoach
+          ? () => { router.push(`/${locale}/coaches/${memberFirstCoach.username}`); }
+          : () => { return; },
       };
 
       const key = member.id ?? index;

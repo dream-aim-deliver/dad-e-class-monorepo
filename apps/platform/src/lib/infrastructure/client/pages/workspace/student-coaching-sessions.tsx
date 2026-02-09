@@ -24,7 +24,7 @@ interface ScheduledStudentSessionCardProps {
     formatTime: (isoString: string) => string;
     onCreatorClick: () => void;
     onJoinMeeting: () => void;
-    onCancel: () => void;
+    onCancel?: () => void;
     onViewCourse?: () => void;
     courseName?: string;
     groupName?: string;
@@ -137,7 +137,7 @@ function ScheduledStudentSessionCard({
             status="upcoming-editable"
             hoursLeftToEdit={hoursLeftToEdit}
             minutesLeftToEdit={minutesLeftToEdit}
-            onClickCancel={onCancel}
+            onClickCancel={onCancel || (() => { return; })}
         />
     );
 }
@@ -697,7 +697,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         key={session.id}
                         {...commonProps}
                         status="requested"
-                        onClickCancel={group ? undefined : () => handleOpenCancelModal(session.id!)}
+                        onClickCancel={group ? () => { return; } : () => handleOpenCancelModal(session.id!)}
                     />
                 );
             }
