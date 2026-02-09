@@ -218,8 +218,14 @@ export default function GroupWorkspaceStudent({
     });
   };
 
-  // Get first coach from introduction for session card creator info
+  // Build coach display for session card
   const firstCoach = introductionData.coaches[0];
+  const coachCount = introductionData.coaches.length;
+  const coachDisplayName = firstCoach
+    ? coachCount > 1
+      ? `${firstCoach.name} ${firstCoach.surname} + ${coachCount - 1} more`
+      : `${firstCoach.name} ${firstCoach.surname}`
+    : '';
 
   // Breadcrumb items for navigation (simplified for student view)
   const breadcrumbItems = [
@@ -246,21 +252,30 @@ export default function GroupWorkspaceStudent({
     return members.map((member, index) => {
       // Base props common to all student card variants
       // Note: onStudentDetails is intentionally omitted - students can't view other students' profiles
+      const memberFirstCoach = member.coaches?.[0];
+      const memberCoachCount = member.coaches?.length ?? 0;
+      const memberCoachName = memberFirstCoach
+        ? memberCoachCount > 1
+          ? `${memberFirstCoach.name} ${memberFirstCoach.surname} + ${memberCoachCount - 1} more`
+          : `${memberFirstCoach.name} ${memberFirstCoach.surname}`
+        : '';
       const baseProps = {
         locale: locale,
         studentName: member.username,
         studentImageUrl: member.avatarUrl || '',
-        coachName: `${member.coach.name} ${member.coach.surname}`,
-        coachImageUrl: member.coach.avatarUrl || '',
+        coachName: memberCoachName,
+        coachImageUrl: memberFirstCoach?.avatarUrl || '',
         courseName: member.course.title,
         courseImageUrl: member.course.imageUrl || '',
         coachingSessionsLeft: member.coachingSessionCount || undefined,
-        isYou: member.coach.isCurrentUser,
+        isYou: memberFirstCoach?.isCurrentUser ?? false,
         onClickCourse: () => {
           router.push(`/${locale}/courses/${member.course.slug}`)
         },
         onClickCoach: () => {
-          router.push(`/${locale}/coaches/${member.coach.username}`)
+          if (memberFirstCoach?.username) {
+            router.push(`/${locale}/coaches/${memberFirstCoach.username}`)
+          }
         },
       };
 
@@ -433,7 +448,7 @@ export default function GroupWorkspaceStudent({
                 startTime={formatTime(nextSessionData.nextSession.startTime)}
                 endTime={formatTime(nextSessionData.nextSession.endTime)}
                 withinCourse={true}
-                creatorName={firstCoach ? `${firstCoach.name} ${firstCoach.surname}` : ''}
+                creatorName={coachDisplayName}
                 creatorImageUrl={firstCoach?.avatarUrl || ''}
                 onClickCreator={() => {
                   if (firstCoach?.username) {

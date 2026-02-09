@@ -115,9 +115,6 @@ export default function CoachCourseGroups({
         if (!Array.isArray(groups)) return [];
 
         return (groups as BackendGroup[]).map((group: BackendGroup) => {
-            // For creator, use the first coach as creator (or could be a separate field)
-            const creator = group.coaches && group.coaches[0];
-
             return {
                 groupId: group.id,
                 groupName: group.name,
@@ -133,13 +130,6 @@ export default function CoachCourseGroups({
                     isCurrentUser: coach.isCurrentUser,
                     avatarUrl: coach.avatarUrl || undefined,
                 })) || [],
-                creator: creator ? {
-                    name: `${creator.name} ${creator.surname}`,
-                    image: creator.avatarUrl || undefined,
-                } : {
-                    name: t('unknownCreator'),
-                    image: undefined,
-                },
             };
         });
     }, [groupsResponse, t]);

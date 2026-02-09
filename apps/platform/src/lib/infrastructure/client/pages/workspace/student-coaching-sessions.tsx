@@ -697,7 +697,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         key={session.id}
                         {...commonProps}
                         status="requested"
-                        onClickCancel={() => handleOpenCancelModal(session.id!)}
+                        onClickCancel={group ? undefined : () => handleOpenCancelModal(session.id!)}
                     />
                 );
             }
@@ -713,7 +713,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         formatTime={formatTime}
                         onCreatorClick={() => handleCreatorClick(coach.username || '')}
                         onJoinMeeting={() => handleJoinMeeting(meetingUrl)}
-                        onCancel={() => handleOpenCancelModal(session.id!)}
+                        onCancel={group ? undefined : () => handleOpenCancelModal(session.id!)}
                         onViewCourse={course?.slug ? () => handleViewCourse(course.slug || '') : undefined}
                         courseName={course?.title}
                         groupName={group?.name}

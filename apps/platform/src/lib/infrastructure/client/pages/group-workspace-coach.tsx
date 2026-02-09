@@ -371,25 +371,33 @@ export default function GroupWorkspaceCoach({
   const renderStudentCards = (members: viewModels.TListGroupMembersSuccess['members']) => {
     return members.map((member, index) => {
       // Base props common to all student card variants
+      const memberFirstCoach = member.coaches?.[0];
+      const memberCoachCount = member.coaches?.length ?? 0;
+      const memberCoachName = memberFirstCoach
+        ? memberCoachCount > 1
+          ? `${memberFirstCoach.name} ${memberFirstCoach.surname} + ${memberCoachCount - 1} more`
+          : `${memberFirstCoach.name} ${memberFirstCoach.surname}`
+        : '';
+
       const baseProps = {
         locale: locale,
         studentName: member.username,
         studentImageUrl: member.avatarUrl || '',
-        coachName: `${member.coach.name} ${member.coach.surname}`,
-        coachImageUrl: member.coach.avatarUrl || '',
+        coachName: memberCoachName,
+        coachImageUrl: memberFirstCoach?.avatarUrl || '',
         courseName: member.course.title,
         courseImageUrl: member.course.imageUrl || '',
         coachingSessionsLeft: member.coachingSessionCount || undefined,
-        isYou: member.coach.isCurrentUser,
+        isYou: memberFirstCoach?.isCurrentUser ?? false,
         onStudentDetails: () => {
           window.open(`/${locale}/students/${member.username}`, '_blank');
         },
         onClickCourse: () => {
           router.push(`/${locale}/courses/${member.course.slug}`)
         },
-        onClickCoach: () => {
-          router.push(`/${locale}/coaches/${member.coach.username}`)
-        },
+        onClickCoach: memberFirstCoach ? () => {
+          router.push(`/${locale}/coaches/${memberFirstCoach.username}`)
+        } : undefined,
       };
 
       const key = member.id ?? index;
