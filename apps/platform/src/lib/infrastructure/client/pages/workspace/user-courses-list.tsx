@@ -167,10 +167,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                 {limitedCourses.map((course: viewModels.TListUserCoursesSuccess['courses'][number]) => {
                     // Leaving some fields empty as neither response provides them, nor the view uses them
 
-                    const language = {
-                        code: '',
-                        name: course.language,
-                    };
+                    const language = course.language;
                     const author = {
                         name: getAuthorDisplayName(
                             course.author?.name || null,

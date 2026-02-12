@@ -145,7 +145,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
 
             <CourseStats
               locale={locale as TLocale}
-              language={(language as any).name as string}
+              language={language?.code?.toUpperCase() ?? ''}
               sessions={sessions}
               duration={formattedDuration}
               sales={sales}

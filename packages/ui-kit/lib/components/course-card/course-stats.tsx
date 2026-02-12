@@ -10,12 +10,13 @@ interface StatItemProps {
   icon: React.ReactNode;
   text: string;
   tooltip?: string;
+  className?: string;
 }
 
-const StatItem: React.FC<StatItemProps> = ({ icon, text, tooltip }) => (
-  <div className="flex gap-1 items-center min-w-0">
+const StatItem: React.FC<StatItemProps> = ({ icon, text, tooltip, className }) => (
+  <div className={`flex gap-1 items-center min-w-0 ${className ?? ''}`}>
     <div className="shrink-0 flex">{icon}</div>
-    <label className="text-sm text-text-secondary line-clamp-1" title={text}>{text}</label>
+    <label className="text-sm text-text-secondary truncate" title={text}>{text}</label>
     {tooltip && <div className="shrink-0 flex"><Tooltip text="" description={tooltip} /></div>}
   </div>
 );
@@ -68,6 +69,7 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
     {
       icon: <IconLanguage classNames="fill-text-secondary" size="5" />,
       text: language,
+      className: 'shrink-0',
     },
     ...(sessions
       ? [
