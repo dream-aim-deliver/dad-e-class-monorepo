@@ -118,6 +118,45 @@ function Tooltip({
   }, [isVisible, tipPosition]);
 
 
+  const tooltipPopup = isVisible ? (
+    <div
+      id="tooltip-content"
+      ref={tooltipRef}
+      className={cn(
+        'absolute z-[9999] p-4 w-64 max-w-xs text-xs shadow-lg rounded-md',
+        'bg-base-neutral-700',
+        'transition-opacity duration-200',
+        tipPosition !== 'auto' ? positionClasses[tipPosition] : positionClasses[position],
+        contentClassName
+      )}
+      role="tooltip"
+    >
+      {title && <span className="block font-important text-sm text-text-primary mb-1">{title}</span>}
+      <p className="text-sm font-normal text-text-secondary">{description}</p>
+      <div
+        className={cn(
+          'absolute w-0 h-0',
+          tipPosition !== 'auto' ? arrowClasses[tipPosition] : arrowClasses[position]
+        )}
+      />
+    </div>
+  ) : null;
+
+  // Icon-only mode: flat single-div structure for proper flex alignment
+  if (!text) {
+    return (
+      <div
+        ref={triggerRef}
+        className="relative flex"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <IconInfoCircle size="4" classNames={cn('flex-shrink-0 text-text-secondary hover:text-text-primary')} />
+        {tooltipPopup}
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
@@ -125,44 +164,16 @@ function Tooltip({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Tooltip trigger element */}
       <div
         ref={triggerRef}
         className="inline-flex relative gap-1 items-center leading-[150%]"
       >
         <span className="line-clamp-2 text-text-secondary">{text}</span>
-        <div className='relative'>
+        <div className='relative flex'>
           <IconInfoCircle size="4" classNames={cn('flex-shrink-0 text-text-secondary hover:text-text-primary')} />
-          {/* Tooltip content */}
-          {isVisible && (
-            <div
-              id="tooltip-content"
-              ref={tooltipRef}
-              className={cn(
-                'absolute z-[9999] p-4 w-64 max-w-xs text-xs shadow-lg rounded-md',
-                'bg-base-neutral-700',
-                'transition-opacity duration-200',
-                tipPosition !== 'auto' ? positionClasses[tipPosition] : positionClasses[position],
-                contentClassName
-              )}
-              role="tooltip"
-            >
-              {title && <span className="block font-important text-sm text-text-primary mb-1">{title}</span>}
-              <p className="text-sm font-normal text-text-secondary">{description}</p>
-
-              {/* Tooltip arrow */}
-              <div
-                className={cn(
-                  'absolute w-0 h-0',
-                  tipPosition !== 'auto' ? arrowClasses[tipPosition] : arrowClasses[position]
-                )}
-              />
-            </div>
-          )}
+          {tooltipPopup}
         </div>
       </div>
-
-
     </div>
   );
 }
