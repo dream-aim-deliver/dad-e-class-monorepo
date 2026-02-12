@@ -13,10 +13,10 @@ interface StatItemProps {
 }
 
 const StatItem: React.FC<StatItemProps> = ({ icon, text, tooltip }) => (
-  <div className="flex gap-1 items-center whitespace-nowrap">
-    {icon}
-    <label className="text-sm text-text-secondary">{text}</label>
-    {tooltip && <Tooltip text="" description={tooltip} />}
+  <div className="flex gap-1 items-center min-w-0">
+    <div className="shrink-0 flex">{icon}</div>
+    <label className="text-sm text-text-secondary line-clamp-1" title={text}>{text}</label>
+    {tooltip && <div className="shrink-0 flex"><Tooltip text="" description={tooltip} /></div>}
   </div>
 );
 
