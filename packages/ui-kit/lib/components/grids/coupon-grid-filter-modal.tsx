@@ -16,7 +16,7 @@ export interface CouponFilterModel {
     createdBefore?: string;
     expiresAfter?: string;
     expiresBefore?: string;
-    outcomeTypes?: ('groupCourse' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freePackages')[];
+    outcomeTypes?: ('groupCourse' | 'groupPackage' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freePackages')[];
 }
 
 export interface CouponGridFilterModalProps extends isLocalAware {
@@ -60,7 +60,7 @@ export const CouponGridFilterModal: React.FC<CouponGridFilterModalProps> = ({
         setFilters((prev) => ({ ...prev, status: toggleArrayValue(prev.status, value) }));
     };
 
-    const handleOutcomeToggle = (value: 'groupCourse' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freePackages') => {
+    const handleOutcomeToggle = (value: 'groupCourse' | 'groupPackage' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freePackages') => {
         setFilters((prev) => ({ ...prev, outcomeTypes: toggleArrayValue(prev.outcomeTypes, value) }));
     };
 
@@ -198,6 +198,15 @@ export const CouponGridFilterModal: React.FC<CouponGridFilterModalProps> = ({
                             checked={(filters.outcomeTypes || []).includes('groupCourse')}
                             withText
                             onChange={() => handleOutcomeToggle('groupCourse')}
+                        />
+                        <CheckBox
+                            name="outcome-group-package"
+                            value="groupPackage"
+                            label={dictionary.groupPackageLabel}
+                            labelClass="text-white text-sm"
+                            checked={(filters.outcomeTypes || []).includes('groupPackage')}
+                            withText
+                            onChange={() => handleOutcomeToggle('groupPackage')}
                         />
                         <CheckBox
                             name="outcome-coaching"

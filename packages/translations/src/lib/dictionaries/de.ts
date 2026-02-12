@@ -1553,6 +1553,9 @@ export const DE: TDictionary = {
       emptyState: 'Keine Gutscheine gefunden',
       withCoachingSessions: 'mit Coaching-Sitzungen',
       withCoachingSessionsShort: '+ CS',
+      groupCourse: 'Gruppenkurs',
+      groupPackage: 'Gruppenpaket',
+      freePackages: 'Kostenlose Pakete',
     },
     couponGridFilterModal: {
       title: 'Coupons filtern',
@@ -1575,6 +1578,7 @@ export const DE: TDictionary = {
       discountLabel: 'Rabatt',
       coachingLabel: 'Coaching',
       groupCourseLabel: 'Gruppenkurs',
+      groupPackageLabel: 'Gruppenpaket',
       freePackagesLabel: 'Kostenlose Pakete',
       resetFilters: 'Filter zurücksetzen',
       applyFilters: 'Filter anwenden',

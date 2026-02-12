@@ -1540,6 +1540,9 @@ export const DictionarySchema = z.object({
       emptyState: z.string(),
       withCoachingSessions: z.string(),
       withCoachingSessionsShort: z.string(),
+      groupCourse: z.string(),
+      groupPackage: z.string(),
+      freePackages: z.string(),
     }),
     couponGridFilterModal: z.object({
       title: z.string(),
@@ -1562,6 +1565,7 @@ export const DictionarySchema = z.object({
       discountLabel: z.string(),
       coachingLabel: z.string(),
       groupCourseLabel: z.string(),
+      groupPackageLabel: z.string(),
       freePackagesLabel: z.string(),
       resetFilters: z.string(),
       applyFilters: z.string(),
