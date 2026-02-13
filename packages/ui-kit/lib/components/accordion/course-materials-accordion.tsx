@@ -82,7 +82,7 @@ export const CourseMaterialsAccordion: React.FC<
                                     .usefulLinks
                             }
                         </h4>
-                        <div className="p-4 border border-base-neutral-700 rounded-medium mb-4">
+                        <div className="flex flex-col gap-3 p-4 border border-base-neutral-700 rounded-medium mb-4">
                             {material.links?.map((link: any, idx: number) => (
                                 <LinkPreview
                                     key={idx}
@@ -145,7 +145,7 @@ export const CourseMaterialsAccordion: React.FC<
                             />
                         )}
                         {(material.links?.length ?? 0) > 0 && (
-                            <div className="p-4 border border-base-neutral-700 rounded-medium">
+                            <div className="flex flex-col gap-3 p-4 border border-base-neutral-700 rounded-medium">
                                 {material.links?.map((link: any, idx: number) => (
                                     <LinkPreview
                                         key={idx}
