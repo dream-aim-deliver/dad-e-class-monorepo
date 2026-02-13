@@ -557,10 +557,17 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                 {/* Right side - Available Coaches */}
                 <div className="lg:w-3/4">
                     {availableCoaches.length === 0 ? (
-                        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
-                            <p className="text-text-primary text-md">
+                        <div className="flex flex-col md:p-5 p-3 gap-4 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                            <p className="text-text-primary text-md font-semibold">
                                 {coachingSessionTranslations('noCoachesFound')}
                             </p>
+                            <p className="text-text-secondary text-sm">
+                                {coachingSessionTranslations('noCoachesDescription')}
+                            </p>
+                            <Button
+                                text={coachingSessionTranslations('exploreCoaches')}
+                                onClick={() => router.push(`/${locale}/coaching`)}
+                            />
                         </div>
                     ) : (
                         <>

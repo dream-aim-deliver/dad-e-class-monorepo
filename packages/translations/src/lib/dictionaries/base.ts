@@ -2722,6 +2722,8 @@ export const DictionarySchema = z.object({
       available: z.string(),
       availableSessionsDescription: z.string(),
       noCoachesFound: z.string(),
+      noCoachesDescription: z.string(),
+      exploreCoaches: z.string(),
       yourPastCoaches: z.string(),
       viewAllCoaches: z.string(),
       noSessionsFound: z.string(),
