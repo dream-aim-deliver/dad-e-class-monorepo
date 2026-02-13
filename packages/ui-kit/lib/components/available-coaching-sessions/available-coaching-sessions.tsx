@@ -11,6 +11,7 @@ export interface CoachingSessionData {
 
 export interface AvailableCoachingSessionsProps extends isLocalAware {
     text?: string;
+    buttonText?: string;
     availableCoachingSessionsData: CoachingSessionData[];
     onClickBuyMoreSessions: () => void;
     isLoading?: boolean;
@@ -51,6 +52,7 @@ export interface AvailableCoachingSessionsProps extends isLocalAware {
 export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
     locale,
     text,
+    buttonText,
     availableCoachingSessionsData,
     onClickBuyMoreSessions,
     isLoading = false,
@@ -146,7 +148,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                     className="w-full"
                     onClick={onClickBuyMoreSessions}
                     text={
-                        dictionary?.components?.availableCoachingSessions
+                        buttonText ?? dictionary?.components?.availableCoachingSessions
                             ?.buyMoreSessions
                     }
                 />
