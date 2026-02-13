@@ -147,7 +147,7 @@ function Tooltip({
     return (
       <div
         ref={triggerRef}
-        className="relative flex"
+        className={cn("relative flex", isVisible && "z-[9999]")}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -160,7 +160,7 @@ function Tooltip({
   return (
     <div
       ref={containerRef}
-      className="relative inline-block"
+      className={cn("relative inline-block", isVisible && "z-[9999]")}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
