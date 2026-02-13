@@ -244,7 +244,7 @@ export const EN: TDictionary = {
       publishedBadge: 'Published',
       underReviewBadge: 'Under Review',
       buyButton: 'Buy',
-      fromButton: 'from',
+      fromButton: 'From',
       draftBadge: 'Draft',
       completedBadge: 'Offer Completed',
       cochingSession: 'Total Coaching Sessions',
@@ -939,7 +939,7 @@ export const EN: TDictionary = {
     },
     buyCompletePackageBanner: {
       purchaseButton: 'Purchase Package',
-      fromText: 'from',
+      fromText: 'From',
       saveText: 'save',
       coachingIncluded: 'Coaching included',
     },
@@ -979,7 +979,7 @@ export const EN: TDictionary = {
     packageGeneralInformation: {
       coachingIncluded: 'Coaching included',
       purchaseButton: 'Purchase Package',
-      fromText: 'from',
+      fromText: 'From',
       saveText: 'save',
       errorImageText: 'Image not available.',
     },

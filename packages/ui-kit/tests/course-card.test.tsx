@@ -16,7 +16,7 @@ const mockDictionary = {
       reviewCourseButton: 'Review Course',
       viewDetailsButton: 'View Details',
       buyButton: 'Buy',
-      fromButton: 'from',
+      fromButton: 'From',
       detailsCourseButton: 'Go to offer',
       cochingSession: 'coaching sessions',
       sales: 'sales',

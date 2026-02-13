@@ -9,7 +9,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
             packageGeneralInformation: {
                 coachingIncluded: 'Coaching included',
                 purchaseButton: 'Buy Now',
-                fromText: 'from',
+                fromText: 'From',
                 saveText: 'save',
                 errorImageText: 'Image not available',
             },
