@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TUpcomingStudentCoachingSession, TListCoachCoachingSessionsSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { Button, CoachingSessionCard, AvailableCoachingSessions, ConfirmationModal, CancelCoachingSessionModal } from '@maany_shr/e-class-ui-kit';
 import { useListUpcomingStudentCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-student-coaching-sessions-presenter';
 import { useListStudentCoachingSessionsPresenter } from '../../hooks/use-list-student-coaching-sessions-presenter';
@@ -516,6 +516,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                     <AvailableCoachingSessions
                         locale={locale}
                         availableCoachingSessionsData={availableCoachingSessionsData}
+                        buttonText={getDictionary(locale)?.components?.availableCoachingSessions?.exploreOurCoaches}
                         onClickBuyMoreSessions={() => {
                             router.push(`/${locale}/coaching`);
                         }}

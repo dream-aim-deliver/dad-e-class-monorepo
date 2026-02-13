@@ -68,6 +68,7 @@ function RedeemCouponDialogContent() {
             // Invalidate queries to refetch user data after successful redemption
             void utils.listUserCourses.invalidate();
             void utils.listUpcomingStudentCoachingSessions.invalidate();
+            void utils.listStudentCoachingSessions.invalidate();
         }
     });
 
@@ -122,6 +123,7 @@ function RedeemCouponDialogContent() {
                 // Invalidate queries to refetch user data after successful redemption
                 void utils.listUserCourses.invalidate();
                 void utils.listUpcomingStudentCoachingSessions.invalidate();
+                void utils.listStudentCoachingSessions.invalidate();
 
                 return {
                     valid: true,

@@ -378,6 +378,7 @@ export const DE: TDictionary = {
     availableCoachingSessions: {
       title: 'Verfügbare Coaching-Sitzungen',
       buyMoreSessions: 'Kaufe mehr Sitzungen',
+      exploreOurCoaches: 'Entdecke unsere Coaches',
       durationMinutes: 'Minuten',
       loadingText: 'Sitzungen werden geladen...',
       noAvailableSessionText: 'Keine verfügbaren Sitzungen',
