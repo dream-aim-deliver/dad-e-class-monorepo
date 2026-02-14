@@ -26,7 +26,7 @@ export function CalendarView({
     return (
         <div className="flex flex-col h-full">
             <div className="h-[calc(100vh-250px)] flex-row hidden md:flex">
-                <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col">
+                <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col overflow-hidden">
                     <CalendarNavigationHeader
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
