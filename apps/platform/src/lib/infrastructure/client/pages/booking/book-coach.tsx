@@ -852,7 +852,7 @@ function BookCoachPageContent({
                     />
                 </DialogContent>
             </Dialog>
-            <div className="flex flex-col h-screen p-4 md:p-6">
+            <div className="flex flex-col h-[calc(100dvh-100px)] p-4 md:p-6">
                 {returnTo && (
                     <div className="mb-4">
                         <Button
@@ -896,7 +896,7 @@ function BookCoachPageContent({
                     </div>
                 )}
                 {/* Desktop Layout: Calendar on left, AvailableCoachings on right */}
-                <div className="h-[calc(100vh-300px)] flex-row hidden md:flex gap-6">
+                <div className="flex-1 min-h-0 flex-row hidden md:flex gap-6">
                     <div className="rounded-lg bg-card-fill p-4 flex-1 overflow-hidden flex flex-col">
                         <Tabs.Root
                             defaultTab="weekly"
