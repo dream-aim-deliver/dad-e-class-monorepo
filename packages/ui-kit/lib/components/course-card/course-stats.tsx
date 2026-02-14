@@ -68,7 +68,7 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
   const firstRowStats = [
     {
       icon: <IconLanguage classNames="fill-text-secondary" size="5" />,
-      text: language,
+      text: language.toUpperCase(),
       className: 'shrink-0',
     },
     ...(sessions
