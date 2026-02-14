@@ -233,7 +233,7 @@ export const CourseMaterialsAccordion: React.FC<
                         <div className="flex items-center gap-4 flex-1">
                             <h3>{module.title}</h3>
                             <span className="text-text-secondary text-xs md:text-sm flex items-center gap-1">
-                                {dictionaryFormat(dictionary.components.courseMaterialsAccordion.moduleLabel, { position: module.position, total: moduleCount })}
+                                {dictionaryFormat(dictionary.components.courseMaterialsAccordion.moduleLabel, { position: module.position ?? 0, total: moduleCount ?? 0 })}
                                 <Tooltip
                                     text=""
                                     description={dictionary.components.courseMaterialsAccordion.moduleTooltip}
@@ -291,7 +291,7 @@ export const CourseMaterialsAccordion: React.FC<
                                             <div className="flex items-center gap-4 flex-1">
                                                 <h4>{lesson.title}</h4>
                                                 <span className="text-text-secondary text-xs md:text-sm flex items-center gap-1">
-                                                    {dictionaryFormat(dictionary.components.courseMaterialsAccordion.lessonLabel, { position: lesson.position, total: module.lessonCount })}
+                                                    {dictionaryFormat(dictionary.components.courseMaterialsAccordion.lessonLabel, { position: lesson.position ?? 0, total: module.lessonCount ?? 0 })}
                                                     <Tooltip
                                                         text=""
                                                         description={dictionary.components.courseMaterialsAccordion.lessonTooltip}

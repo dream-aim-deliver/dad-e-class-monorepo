@@ -1,5 +1,5 @@
 import React from 'react';
-import { isLocalAware } from '@maany_shr/e-class-translations';
+import { isLocalAware, dictionaryFormat } from '@maany_shr/e-class-translations';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
 import {
@@ -75,11 +75,7 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                     >
                         <div className="flex items-center gap-4 flex-1">
                             <h4 className="text-base-white md:text-2xl text-xl font-semibold">
-                                {
-                                    dictionary.components
-                                        .courseMaterialsAccordion.module
-                                }{' '}
-                                {moduleIndex + 1} - {module.title}
+                                {dictionaryFormat(dictionary.components.courseMaterialsAccordion.moduleLabel, { position: moduleIndex + 1, total: modules?.length ?? 0 })} - {module.title}
                             </h4>
                         </div>
                     </AccordionTrigger>
@@ -132,21 +128,18 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                                         >
                                             <div className="flex items-center gap-4 flex-1 justify-between">
                                                 <h5>
-                                                    {
-                                                        dictionary.components
-                                                            .courseMaterialsAccordion
-                                                            .lesson
-                                                    }{' '}
-                                                    {modules
-                                                        .slice(0, moduleIndex)
-                                                        .reduce(
-                                                            (sum, mod) =>
-                                                                sum +
-                                                                (mod.lessonCount ?? 0),
-                                                            0,
-                                                        ) +
-                                                        (lessonIndex + 1)}{' '}
-                                                    - {lesson.title}
+                                                    {dictionaryFormat(dictionary.components.courseMaterialsAccordion.lessonLabel, {
+                                                        position: modules
+                                                            .slice(0, moduleIndex)
+                                                            .reduce(
+                                                                (sum, mod) =>
+                                                                    sum +
+                                                                    (mod.lessonCount ?? 0),
+                                                                0,
+                                                            ) +
+                                                            (lessonIndex + 1),
+                                                        total: modules.reduce((sum, mod) => sum + (mod.lessonCount ?? 0), 0)
+                                                    })} - {lesson.title}
                                                 </h5>
                                                 <Button
                                                     variant="text"
