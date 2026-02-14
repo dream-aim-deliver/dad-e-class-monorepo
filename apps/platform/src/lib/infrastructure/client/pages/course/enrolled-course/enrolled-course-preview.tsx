@@ -316,6 +316,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                                     onPrevious={handlePreviousLesson}
                                     onNext={handleNextLesson}
                                     locale={locale}
+                                    className="justify-end"
                                 />
                             </>
                         )}
