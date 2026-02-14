@@ -416,7 +416,7 @@ export default function GroupWorkspaceStudent({
             }))}
             locale={locale}
             onExploreCourses={() => {
-              router.push(`/${locale}/offers`);
+              router.push(`/${locale}/coaching`);
             }}
           />
         </div>

@@ -105,7 +105,7 @@ function RedeemCouponDialogContent() {
                         break;
                     case 'freePackages':
                         type = 'package';
-                        title = `Bundle with ${outcome.courses.length} courses`;
+                        title = t('coupon.packageCoursesCount').replace('{count}', outcome.courses.length.toString());
                         imageUrl = outcome.courses[0]?.imageUrl || undefined;
                         break;
                     case 'freeCoachingSession':
@@ -117,6 +117,15 @@ function RedeemCouponDialogContent() {
                         type = 'group';
                         title = outcome.group.name;
                         imageUrl = outcome.course.imageUrl || undefined;
+                        break;
+                    case 'groupPackage':
+                        type = 'group';
+                        title = outcome.group.name;
+                        imageUrl = outcome.courses?.[0]?.imageUrl || undefined;
+                        courses = outcome.courses?.map((course: any) => ({
+                            title: course.title,
+                            imageUrl: course.imageUrl || undefined,
+                        }));
                         break;
                 }
 

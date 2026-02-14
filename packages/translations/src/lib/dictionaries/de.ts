@@ -1103,7 +1103,7 @@ export const DE: TDictionary = {
       usefulLinks: 'Nützliche Links',
       validateLink: 'Link validieren',
       validateTitle: 'Titel validieren',
-      notesValidation: 'Diese Gruppe hat noch keinen Coach. Weise einen Coach zu und sende ihm/ihr den Gutschein. Die Person wird Coach dieser Gruppe.',
+      notesValidation: 'Diese Gruppe hat noch keinen Coach. Ein Coach wird in Kürze zugewiesen.',
       publishNotes: 'Notizen veröffentlichen',
       includeInMaterials: 'In Kursmaterialien einbeziehen',
       customIcon: 'Benutzerdefiniertes Symbol',
@@ -1111,7 +1111,7 @@ export const DE: TDictionary = {
       publishEditNotes: "Änderungen veröffentlichen",
       back: "Zurück",
       editCoachNotes: "Coach Notizen bearbeiten",
-      exploreCourses: "Kurse erkunden",
+      exploreCourses: "Coaches erkunden",
       description: "Hinweis: Jede von dir vorgenommene Änderung sendet eine Benachrichtigung an alle Studierenden in dieser Gruppe. Bitte überprüfe diese sorgfältig, bevor du sie veröffentlichst.", // Guidelines: informal 'Du' instead of formal 'Sie/Ihnen'
       errorMessage: "Fehler beim Speichern der Notizen. Bitte versuche es erneut.",
       successMessage: "Notizen erfolgreich gespeichert!",
@@ -2700,6 +2700,7 @@ export const DE: TDictionary = {
           redeemFailed: "Gutschein konnte nicht eingelöst werden",
           redeemFailedGeneric: "Der Gutscheincode konnte nicht eingelöst werden. Bitte überprüfen Sie den Code und versuchen Sie es erneut.",
         },
+        packageCoursesCount: "Paket mit {count} Kursen",
       },
     },
     notifications: {
