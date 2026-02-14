@@ -359,38 +359,40 @@ export const CourseGeneralInformationVisitor: FC<
 
                     <div className="grid grid-cols-1 items-center lg:grid-cols-2 gap-6 w-full">
                         {/* Created by */}
-                        <div className="flex flex-col gap-2 items-start">
-                            <h6 className="text-text-primary text-lg">
-                                {
-                                    dictionary.components
-                                        .courseGeneralInformationView.createdByText
-                                }
-                            </h6>
-                            <div className="flex items-center gap-3 min-w-0">
-                                <UserAvatar
-                                    size="medium"
-                                    fullName={(author as any).name as string}
-                                    imageUrl={(author as any).image as string}
-                                />
-                                <div className="flex flex-col min-w-0">
-                                    <p className="text-md text-text-primary font-important truncate">
-                                        {(author as any).name as string}
-                                    </p>
-                                </div>
-                                {onClickBook && (
-                                    <Button
+                        {author?.name?.trim() && (
+                            <div className="flex flex-col gap-2 items-start">
+                                <h6 className="text-text-primary text-lg">
+                                    {
+                                        dictionary.components
+                                            .courseGeneralInformationView.createdByText
+                                    }
+                                </h6>
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <UserAvatar
                                         size="medium"
-                                        variant="text"
-                                        text={
-                                            dictionary.components
-                                                .courseGeneralInformationView.bookLabel
-                                        }
-                                        onClick={onClickBook}
-                                        className="px-0 ml-auto hidden md:block"
+                                        fullName={(author as any).name as string}
+                                        imageUrl={(author as any).image as string}
                                     />
-                                )}
+                                    <div className="flex flex-col min-w-0">
+                                        <p className="text-md text-text-primary font-important truncate">
+                                            {(author as any).name as string}
+                                        </p>
+                                    </div>
+                                    {onClickBook && (
+                                        <Button
+                                            size="medium"
+                                            variant="text"
+                                            text={
+                                                dictionary.components
+                                                    .courseGeneralInformationView.bookLabel
+                                            }
+                                            onClick={onClickBook}
+                                            className="px-0 ml-auto hidden md:block"
+                                        />
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Taught by */}
                         {safeCoaches.length > 0 && (
