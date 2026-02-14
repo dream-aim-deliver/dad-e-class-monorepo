@@ -2767,6 +2767,7 @@ export const DictionarySchema = z.object({
           redeemFailed: z.string(),
           redeemFailedGeneric: z.string(),
         }),
+        packageCoursesCount: z.string(),
       }),
     }),
     notifications: z.object({
