@@ -275,10 +275,7 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
                           image: course.creator.avatarUrl || '',
                         },
                         rating: course.rating || 0,
-                        language: {
-                          code: course.language,
-                          name: course.language,
-                        },
+                        language: course.language,
                         duration: {
                           video: course.duration.video ?? 0,
                           coaching: course.duration.coaching ?? 0,
@@ -292,7 +289,7 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
                           userType="course_creator"
                           reviewCount={course.ratingCount}
                           locale={currentLocale}
-                          language={{ code: course.language, name: course.language }}
+                          language={course.language}
                           creatorStatus={course.status}
                           course={courseMetadata}
                           sessions={course.coachingSessionCount}

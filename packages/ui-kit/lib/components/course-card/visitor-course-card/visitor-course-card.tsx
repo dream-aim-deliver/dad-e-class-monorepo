@@ -81,7 +81,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     const totalDurationInMinutes = (((((duration as any).video as number) +
         (duration as any).coaching) as number) +
         (duration as any).selfStudy) as number;
-    
+
     // Format duration as "Xh Ym" or just "Ym" if less than an hour
     const formatDuration = (minutes: number): string => {
         if (minutes <= 0) return '0m';
@@ -102,8 +102,8 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     const pricingLabel = `${dictionary.components.courseCard.fromButton} ${(pricing as any).currency} ${(pricing as any).partialPrice}`;
     return (
         <div className="w-full mx-auto">
-            <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
-                <div className="relative flex-shrink-0">
+            <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-visible transition-transform hover:scale-[1.02]">
+                <div className="relative flex-shrink-0 overflow-hidden rounded-t-medium">
                     {shouldShowPlaceholder ? (
                         // Placeholder for broken image (matching CoachBanner styling)
                         <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
