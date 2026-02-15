@@ -2295,6 +2295,7 @@ export const EN: TDictionary = {
       },
     },
     enrolledCourse: {
+      noSubmittedAssessment: 'No submitted pre-course assessment found for this course.',
       error: {
         title: 'Error',
         description: 'An error occurred while loading course content. Please try again.',

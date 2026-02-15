@@ -77,12 +77,11 @@ export default function EnrolledCourseCompletedAssessment(
         );
     }
 
-    // @ts-ignore - Handle not-found mode if it exists
     if (progressViewModel.mode === 'not-found') {
         return (
             <EmptyState
                 locale={locale}
-                message="This course does not have a pre-course assessment."
+                message={t('noSubmittedAssessment')}
             />
         );
     }
@@ -92,7 +91,7 @@ export default function EnrolledCourseCompletedAssessment(
         return (
             <EmptyState
                 locale={locale}
-                message="No submitted pre course assessment found for this course."
+                message={t('noSubmittedAssessment')}
             />
         );
     }
