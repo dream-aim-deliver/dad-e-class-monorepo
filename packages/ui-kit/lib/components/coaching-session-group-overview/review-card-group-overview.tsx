@@ -60,13 +60,15 @@ export const ReviewCardGroupOverview: React.FC<ReviewCardGroupOverviewProps> = (
               </span>
             </div>
           </div>
-            <Button
-              text={dictionary.components.coachingSessionCard.readReviewsText}
-              variant="text"
-              size="small"
-              className="p-0 max-w-[15rem] text-left justify-start"
-              onClick={props.onClickReadReviews}
-            />
+            {props.onClickReadReviews && (
+              <Button
+                text={dictionary.components.coachingSessionCard.readReviewsText}
+                variant="text"
+                size="small"
+                className="p-0 max-w-[15rem] text-left justify-start"
+                onClick={props.onClickReadReviews}
+              />
+            )}
         </div>
     </div>
   );

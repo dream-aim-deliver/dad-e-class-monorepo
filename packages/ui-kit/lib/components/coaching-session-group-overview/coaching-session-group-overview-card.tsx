@@ -147,7 +147,7 @@ type CoachEndedCard = BaseCardSharedProps & {
     averageRating: number;
     reviewCount: number;
     studentCount: number;
-    onClickReadReviews: () => void;
+    onClickReadReviews?: () => void;
 };
 
 /**
