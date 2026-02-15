@@ -29,6 +29,7 @@ export default async function ProfileServerComponent(props: ProfileProps) {
 	// React will stream HTML while queries are pending
 	prefetch(trpc.getPersonalProfile.queryOptions({}));
 	prefetch(trpc.listLanguages.queryOptions({ queryType: "all" }));
+	prefetch(trpc.listLanguages.queryOptions({}));
 	prefetch(trpc.getProfessionalProfile.queryOptions({}));
 
 	return (
