@@ -167,13 +167,6 @@ function VisitorPageContent({
         }
     }, [coachingPageResponse]);
 
-    useEffect(() => {
-        if (checkoutViewModel) {
-            // @ts-ignore
-            checkoutPresenter.present(checkoutViewModel, checkoutViewModel);
-        }
-    }, [checkoutViewModel]);
-
     // Handle coaching page loading and error states
     if (!coachingPageViewModel) {
         // We'll continue with the page render but without banner data
@@ -328,6 +321,7 @@ function VisitorPageContent({
 
             if (response && typeof response === 'object' && 'success' in response) {
                 if (response.success === true && response.data) {
+                    setCurrentRequest(request);
                     return response.data as unknown as TransactionDraft;
                 }
             }
@@ -379,13 +373,11 @@ function VisitorPageContent({
     };
 
     const handlePackagePurchase = (packageId: string) => {
-        // TODO: Implement package purchase logic
-        console.log('Package purchase clicked:', packageId);
+        router.push(`/${locale}/packages/${packageId}`);
     };
 
     const handlePackageDetails = (packageId: string) => {
-        // TODO: Implement package details logic
-        console.log('Package details clicked:', packageId);
+        router.push(`/${locale}/packages/${packageId}`);
     };
 
     const renderCourseData = () => {
@@ -732,15 +724,15 @@ function VisitorPageContent({
                             </h3>
                             {courseData?.mode === 'default' && (
                                 <div className="flex flex-row items-center gap-2">
-                                    <h6 className="text-text-primary">
+                                    <p className="text-text-primary text-sm font-semibold">
                                         {courseData.data.averageRating}
-                                    </h6>
+                                    </p>
                                     <StarRating
                                         totalStars={5}
                                         size="4"
                                         rating={courseData.data.averageRating}
                                     />
-                                    <p className="text-text-secondary text-xs">
+                                    <p className="text-text-secondary text-sm">
                                         {courseData.data.reviewCount}{' '}
                                         {t('reviewsCount')}
                                     </p>
@@ -810,6 +802,7 @@ function VisitorPageContent({
                         setTransactionDraft(null);
                         setCheckoutViewModel(undefined);
                         setCurrentRequest(null);
+                        setCheckoutError(null);
                     }}
                     transactionDraft={transactionDraft}
                     stripePublishableKey={

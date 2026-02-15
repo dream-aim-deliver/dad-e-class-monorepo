@@ -29,7 +29,7 @@ const ERROR_TYPE_TO_MODE: Record<PrepareCheckoutErrorType | string, string> = {
   [PrepareCheckoutErrorType.ALREADY_ENROLLED_IN_COURSE]: 'already-owned',
   [PrepareCheckoutErrorType.ALREADY_HAS_COACHING_FOR_COURSE]: 'already-owned',
   [PrepareCheckoutErrorType.PACKAGE_ALREADY_PURCHASED]: 'already-owned',
-  [PrepareCheckoutErrorType.SELECTED_COURSES_ALREADY_OWNER]: 'already-owned',
+  [PrepareCheckoutErrorType.SELECTED_COURSES_ALREADY_OWNED]: 'already-owned',
 
   // Already purchased coaching
   [PrepareCheckoutErrorType.PACKAGE_COACHING_ALREADY_PURCHASED]: 'already-purchased',

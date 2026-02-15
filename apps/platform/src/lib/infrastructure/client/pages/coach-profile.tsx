@@ -394,7 +394,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 							handleReviewAction(course);
 						}}
 						onDetails={() => {
-							window.open(`/${locale}/courses/${course.slug}`, '_blank');
+							route.push(`/${locale}/courses/${course.slug}`);
 						}}
 					/>
 				);
@@ -407,10 +407,10 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						sessions={course.coachingSessionCount}
 						sales={course.salesCount}
 						onDetails={() => {
-							window.open(`/${locale}/courses/${course.slug}`, '_blank');
+							route.push(`/${locale}/courses/${course.slug}`);
 						}}
 						onBuy={() => {
-							// TODO: Implement course purchase functionality
+							route.push(`/${locale}/courses/${course.slug}`);
 						}}
 					/>
 				);
