@@ -355,7 +355,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         },
                     ]}
                 />
-                <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center pb-15">
+                <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center pb-15">
                     <div className="flex items-center space-x-4">
                         <UserAvatar
                             size="xLarge"
@@ -387,7 +387,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                             </div>
                         </div>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex flex-wrap gap-2">
                         <Button
                             variant="text"
                             hasIconLeft
