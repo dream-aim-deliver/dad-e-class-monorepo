@@ -23,6 +23,7 @@ import { useGroupNotesFileUpload } from './common/hooks/use-group-notes-image-up
 import { useAssignmentFilters } from './hooks/use-assignment-filters';
 import { useGroupMembers } from './hooks/use-group-members';
 import useClientSidePagination from '../utils/use-client-side-pagination';
+import { hasNoteContent } from '../utils/has-note-content';
 import AssignmentContent from './course/enrolled-course/assignment-content';
 
 interface GroupWorkspaceCoachProps {
@@ -523,7 +524,7 @@ export default function GroupWorkspaceCoach({
               {t('notes.title')}
             </h3>
             {/* Only show edit button when notes data exists */}
-            {notesData.notes !== '' || (notesData.links && notesData.links.length > 0) ? (
+            {hasNoteContent(notesData.notes) || (notesData.links && notesData.links.length > 0 && notesData.links.some(link => link.title.trim() || (link.url && link.url.trim()))) ? (
               <Button
                 variant="text"
                 text={t('notes.editButton')}
@@ -533,7 +534,7 @@ export default function GroupWorkspaceCoach({
               />
             ) : null}
           </div>
-          {notesData.notes === '' && (!notesData.links || notesData.links.length === 0) ? (
+          {!hasNoteContent(notesData.notes) && (!notesData.links || notesData.links.length === 0 || !notesData.links.some(link => link.title.trim() || (link.url && link.url.trim()))) ? (
             <CoachNotesCreate
               noteDescription={noteDescription}
               noteLinks={noteLinks}

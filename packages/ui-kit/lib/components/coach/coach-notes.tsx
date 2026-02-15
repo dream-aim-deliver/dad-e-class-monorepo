@@ -59,7 +59,7 @@ export interface coachNotesProps extends isLocalAware {
 export interface coachNotesViewProps extends isLocalAware {
     noteDescription: string;
     noteLinks: noteLink[];
-    onExploreCourses: () => void;
+    onExploreCourses?: () => void;
 }
 function CoachNotesCreate({
     noteDescription: initialNoteDescription,
@@ -372,7 +372,6 @@ function CoachNotesView({
     noteDescription,
     noteLinks,
     locale,
-    onExploreCourses,
 }: coachNotesViewProps) {
     const dictionary = getDictionary(locale);
     const hasDescription = () => {
@@ -402,19 +401,9 @@ function CoachNotesView({
 
     const hasValidDescription = hasDescription();
 
-    // If neither description nor links exist, show explore courses button
+    // If neither description nor links exist, render nothing
     if (!hasValidDescription && !hasLinks) {
-        return (
-            <div className="p-6 bg-[#211F1E] rounded-xl flex flex-col items-start justify-center gap-4 text-text-primary">
-                <p className="text-lg md:text[24px]">
-                    {dictionary.components.coachNotes.notesValidation}
-                </p>
-                <Button
-                    text={dictionary.components.coachNotes.exploreCourses}
-                    onClick={onExploreCourses}
-                />
-            </div>
-        );
+        return null;
     }
 
     return (
