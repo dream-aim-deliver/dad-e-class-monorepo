@@ -5,7 +5,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import {
     Breadcrumbs,
     DefaultError,
@@ -13,6 +13,7 @@ import {
     DefaultNotFound,
     Dropdown,
     EmptyState,
+    IconLanguage,
     Tabs,
     UserAvatar,
 } from '@maany_shr/e-class-ui-kit';
@@ -244,9 +245,23 @@ export default function SingleStudent({
                             imageUrl={profile?.avatarImage?.downloadUrl}
                             size="xLarge"
                         />
-                        <h1 className='text-text-primary md:text-4xl text-2xl font-bold'>
-                            {studentUsername}
-                        </h1>
+                        <div className='flex flex-col gap-1'>
+                            <h1 className='text-text-primary md:text-4xl text-2xl font-bold'>
+                                {studentUsername}
+                            </h1>
+                            {profile.languages && profile.languages.length > 0 && (() => {
+                                const dictionary = getDictionary(locale);
+                                const translatedLanguages = profile.languages.map(
+                                    (lang) => dictionary.components.languageSelector.languageNames[lang.code as keyof typeof dictionary.components.languageSelector.languageNames] ?? lang.name
+                                );
+                                return (
+                                    <p className="flex items-center gap-1 text-text-secondary text-sm">
+                                        <IconLanguage classNames="flex-shrink-0" size="4" />
+                                        <span className="truncate">{translatedLanguages.join(', ')}</span>
+                                    </p>
+                                );
+                            })()}
+                        </div>
                     </div>
                     <div className='flex items-center gap-4'>
                         <p className='text-text-secondary md:text-sm text-xs'>

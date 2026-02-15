@@ -4,6 +4,7 @@ import { UserAvatar } from './avatar/user-avatar';
 import { Badge } from './badge';
 import { StarRating } from './star-rating';
 import SkillBadges from './skill-badges';
+import { IconLanguage } from './icons/icon-language';
 
 export interface BuyCoachingSessionBannerProps extends isLocalAware {
     coachName: string;
@@ -14,6 +15,7 @@ export interface BuyCoachingSessionBannerProps extends isLocalAware {
     onBookSessionWith: () => void;
     isCourseCreator?: boolean;
     skills: string[];
+    languages?: string[];
 }
 
 /**
@@ -49,6 +51,7 @@ export const BuyCoachingSessionBanner = ({
     locale,
     skills,
     isCourseCreator = false,
+    languages,
 }: BuyCoachingSessionBannerProps) => {
     const dictionary =
         getDictionary(locale).components.buyCoachingSessionBanner;
@@ -100,6 +103,13 @@ export const BuyCoachingSessionBanner = ({
                 />
             </div>
             <p className="text-text-secondary"> {description} </p>
+
+            {languages && languages.length > 0 && (
+                <p className="flex items-center gap-1 text-text-secondary">
+                    <IconLanguage classNames="flex-shrink-0" size="4" />
+                    <span className="truncate">{languages.join(', ')}</span>
+                </p>
+            )}
 
             {/* Skills section*/}
             <div className="flex flex-row gap-2 h-16 flex-shrink-0">

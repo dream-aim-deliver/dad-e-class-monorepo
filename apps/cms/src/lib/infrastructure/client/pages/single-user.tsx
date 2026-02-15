@@ -18,7 +18,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
-import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard, Dropdown, ConfirmationModal, CoachReviewCard, Banner } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard, Dropdown, ConfirmationModal, CoachReviewCard, Banner, IconLanguage } from '@maany_shr/e-class-ui-kit';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
 import { useListUserRolesPresenter } from '../hooks/use-list-user-roles-presenter';
 
@@ -337,6 +337,19 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                     variant="info"
                     size="medium"
                   />
+                );
+              })()}
+
+              {personalProfile?.profile.languages && personalProfile.profile.languages.length > 0 && (() => {
+                const dictionary = getDictionary(currentLocale);
+                const translatedLanguages = personalProfile.profile.languages.map(
+                  (lang: { code: string; name: string }) => dictionary.components.languageSelector.languageNames[lang.code as keyof typeof dictionary.components.languageSelector.languageNames] ?? lang.name
+                );
+                return (
+                  <p className="flex items-center gap-1 text-text-secondary text-sm">
+                    <IconLanguage classNames="flex-shrink-0" size="4" />
+                    <span className="truncate">{translatedLanguages.join(', ')}</span>
+                  </p>
                 );
               })()}
 

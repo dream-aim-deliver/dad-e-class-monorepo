@@ -111,7 +111,7 @@ const CoachCard: FC<CoachCardProps> = (props) => {
             {cardDetails.languages.length > 0 && (
               <p className="flex items-center gap-1 lg:truncate">
                 <IconLanguage classNames='flex-shrink-0' size="4" />
-                <span className="capitalize truncate">{cardDetails.languages.join(', ')}</span>
+                <span className="uppercase truncate">{cardDetails.languages.join(', ')}</span>
               </p>
             )}
             {cardDetails.sessionCount > 0 && (
