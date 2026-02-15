@@ -2746,6 +2746,8 @@ export const DictionarySchema = z.object({
       coachingSessions: z.string(),
       upcomingAndAvailable: z.string(),
       availableCoachingSessions: z.string(),
+      asCoach: z.string(),
+      asStudent: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),

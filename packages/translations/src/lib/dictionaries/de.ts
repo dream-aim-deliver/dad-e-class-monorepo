@@ -2679,6 +2679,8 @@ export const DE: TDictionary = {
       coachingSessions: 'Coaching-Sitzungen',
       upcomingAndAvailable: 'Bevorstehend & Verfügbar',
       availableCoachingSessions: 'Verfügbare Coaching-Sitzungen',
+      asCoach: 'Als Coach',
+      asStudent: 'Als Teilnehmer',
       error: {
         title: 'Fehler bei den Coaching-Sitzungen',
         description: 'Ihre Coaching-Sitzungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',

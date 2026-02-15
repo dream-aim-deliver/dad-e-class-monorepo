@@ -446,7 +446,8 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
             {/* Coach sessions section (as coach) */}
             {isCoach && hasCoachSessions && (
                 <div className="mt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <p className="text-sm text-text-secondary mb-2">{t('asCoach')}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {renderCoachSessionCards()}
                     </div>
                 </div>
@@ -455,7 +456,9 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
             {/* Student sessions section (as student) */}
             <div className="mt-6">
                 {hasUpcomingSessions ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <>
+                    {isCoach && <p className="text-sm text-text-secondary mb-2">{t('asStudent')}</p>}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {upcomingSessions.slice(0, 3).map((session) => {
                             const safeDate = (iso?: string | null) => {
                                 if (!iso) return null;
@@ -499,6 +502,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                             );
                         })}
                     </div>
+                    </>
                 ) : !hasCoachSessions ? (
                     <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                         <p className="text-text-primary text-md">
