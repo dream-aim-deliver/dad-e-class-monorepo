@@ -822,6 +822,7 @@ export const EN: TDictionary = {
       course: 'Course',
       coach: 'Coach',
       you: 'You',
+      noCoach: 'No coach assigned yet',
     },
     reviewSnippet: {
       by: 'by',
@@ -2251,6 +2252,8 @@ export const EN: TDictionary = {
         loading: 'Loading...',
         couponSuccess: 'Successfully joined the group!',
         couponError: 'Failed to validate coupon code',
+        crossCourseSuccess: 'You\'re now a coach for group {groupName} of course {courseTitle}',
+        goToCourse: 'Go to course',
         error: {
           title: 'Failed to load groups',
           description: 'An error occurred while loading course groups. Please try again.',
