@@ -249,7 +249,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {userProfile || defaultUserProfile}
             {showNotifications && (
               <div
-                className="relative flex items-center"
+                className="relative flex items-center pr-4"
                 onClick={onNotificationClick}
                 role="button"
                 tabIndex={0}
@@ -257,7 +257,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <IconChat size="6" classNames="cursor-pointer" />
                 {notificationCount > 0 && (
-                  <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
+                  <span className="absolute -top-2 left-3 bg-button-primary-fill text-black text-[10px] font-bold leading-none rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center">
                     {formatNotificationCount(notificationCount)}
                   </span>
                 )}
@@ -337,7 +337,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <IconChat size="6" classNames="cursor-pointer" />
                   {notificationCount > 0 && (
-                    <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
+                    <span className="absolute -top-2 left-3 bg-button-primary-fill text-black text-[10px] font-bold leading-none rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center">
                       {formatNotificationCount(notificationCount)}
                     </span>
                   )}
