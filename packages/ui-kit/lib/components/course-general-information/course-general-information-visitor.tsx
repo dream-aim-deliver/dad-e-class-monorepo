@@ -216,10 +216,10 @@ export const CourseGeneralInformationVisitor: FC<
                 <div className="flex flex-col basis-full md:flex-1 gap-4 md:gap-6 md:pt-9 items-start order-1 md:order-2 min-w-0">
                     {/* Title & rating */}
                     <h1 className="text-text-primary"> {title} </h1>
-                    <div className="flex flex-row gap-2">
-                        <h6 className="text-text-primary"> {rating} </h6>
+                    <div className="flex flex-row items-center gap-2">
+                        <p className="text-text-primary text-sm font-semibold"> {rating} </p>
                         <StarRating totalStars={5} size={'4'} rating={rating} />
-                        <p className="text-text-secondary text-xs">
+                        <p className="text-text-secondary text-sm">
                             {' '}
                             {totalRating}{' '}
                             {
