@@ -137,7 +137,7 @@ function ScheduledStudentSessionCard({
             status="upcoming-editable"
             hoursLeftToEdit={hoursLeftToEdit}
             minutesLeftToEdit={minutesLeftToEdit}
-            onClickCancel={onCancel || (() => { return; })}
+            onClickCancel={onCancel}
         />
     );
 }
@@ -704,7 +704,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         key={session.id}
                         {...commonProps}
                         status="requested"
-                        onClickCancel={group ? () => { return; } : () => handleOpenCancelModal(session.id!)}
+                        onClickCancel={group ? undefined : () => handleOpenCancelModal(session.id!)}
                     />
                 );
             }

@@ -82,7 +82,8 @@ type StudentUpcomingEditableCard = BaseCardSharedProps & {
     onClickCreator: () => void;
     /** Optional reschedule handler. If not provided, the reschedule button won't render */
     onClickReschedule?: () => void;
-    onClickCancel: () => void;
+    /** Optional cancel handler. If not provided, the cancel button won't render (e.g. group sessions) */
+    onClickCancel?: () => void;
     groupName?: string;
     onClickGroup?: () => void;
 };
@@ -150,7 +151,8 @@ type StudentRequestedCard = BaseCardSharedProps & {
     creatorName: string;
     creatorImageUrl: string;
     onClickCreator: () => void;
-    onClickCancel: () => void;
+    /** Optional cancel handler. If not provided, the cancel button won't render (e.g. group sessions) */
+    onClickCancel?: () => void;
     groupName?: string;
     onClickGroup?: () => void;
 };
