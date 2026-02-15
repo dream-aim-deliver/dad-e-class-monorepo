@@ -134,6 +134,7 @@ export const EN: TDictionary = {
       sendNotification: 'Send notification',
       hideActions: 'Hide actions',
       roleColumn: 'Role',
+      rolesColumn: 'Roles',
       exportSelection: 'Export Selection',
       all: 'All',
       students: 'Students',
