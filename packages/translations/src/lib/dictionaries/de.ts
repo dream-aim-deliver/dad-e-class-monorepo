@@ -1113,7 +1113,7 @@ export const DE: TDictionary = {
       back: "Zurück",
       editCoachNotes: "Coach Notizen bearbeiten",
       exploreCourses: "Coaches erkunden",
-      description: "Hinweis: Jede von dir vorgenommene Änderung sendet eine Benachrichtigung an alle Studierenden in dieser Gruppe. Bitte überprüfe diese sorgfältig, bevor du sie veröffentlichst.", // Guidelines: informal 'Du' instead of formal 'Sie/Ihnen'
+      description: "Änderungen werden für alle Studierenden in dieser Gruppe sichtbar.",
       errorMessage: "Fehler beim Speichern der Notizen. Bitte versuche es erneut.",
       successMessage: "Notizen erfolgreich gespeichert!",
       closeButton: "Schließen",
