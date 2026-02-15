@@ -67,14 +67,22 @@ export default class AssessmentProgressesPresenter extends BasePresenter<
             TListAssessmentProgressesResponseMiddleware
         >,
     ): viewModels.TAssessmentProgressListViewModel {
+        if (response.data.errorType === 'ForbiddenError' || response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {
-
                 message: response.data.message,
                 operation: response.data.operation,
                 context: response.data.context
-
             }
         };
     }

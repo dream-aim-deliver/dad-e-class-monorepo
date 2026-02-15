@@ -2396,6 +2396,7 @@ export const DictionarySchema = z.object({
       }),
     }),
     enrolledCourse: z.object({
+      noSubmittedAssessment: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),

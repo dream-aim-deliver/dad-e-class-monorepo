@@ -13,10 +13,12 @@ export const AssessmentProgressListSuccessSchema = ListAssessmentProgressesSucce
 export type TAssessmentProgressListSuccess = z.infer<typeof AssessmentProgressListSuccessSchema>;
 
 const AssessmentProgressListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", AssessmentProgressListSuccessSchema);
+const AssessmentProgressListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 const AssessmentProgressListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const AssessmentProgressListViewModelSchemaMap = {
     default: AssessmentProgressListDefaultViewModelSchema,
+    "not-found": AssessmentProgressListNotFoundViewModelSchema,
     kaboom: AssessmentProgressListKaboomViewModelSchema,
 };
 export type TAssessmentProgressListViewModelSchemaMap = typeof AssessmentProgressListViewModelSchemaMap;

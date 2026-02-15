@@ -2297,6 +2297,7 @@ export const DE: TDictionary = {
       },
     },
     enrolledCourse: {
+      noSubmittedAssessment: 'Für diesen Kurs wurde keine Vorkurs-Selbsteinschätzung eingereicht.',
       error: {
         title: 'Fehler',
         description: 'Beim Laden des Kursinhalts ist ein Fehler aufgetreten. Bitte versuche es erneut.',
