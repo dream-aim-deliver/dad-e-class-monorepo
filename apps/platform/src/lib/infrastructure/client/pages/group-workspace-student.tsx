@@ -523,7 +523,7 @@ export default function GroupWorkspaceStudent({
               role="coach"
               onClickCourse={() => router.push(`/${locale}/courses/${assignment.course.slug}`)}
               onClickUser={() => {
-                // TODO: Navigate to student profile page
+                router.push(`/${locale}/students/${assignment.student?.username}`);
               }}
               onClickView={() => {
                 setSelectedAssignment({

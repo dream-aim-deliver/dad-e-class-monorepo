@@ -367,8 +367,8 @@ export default function EndedGroupCoachingSessions({
                                     averageRating={session.averageRating || 0}
                                     studentCount={session.studentCount}
                                     onClickReadReviews={() => console.log("Read reviews clicked")}
-                                    onClickCourse={() => console.log("Course is clicked")}
-                                    onClickGroup={() => console.log("Group is clicked")}
+                                    onClickCourse={() => router.push(`/${currentLocale}/courses/${courseSlug}`)}
+                                    onClickGroup={() => router.push(`/${currentLocale}/workspace/courses/${courseSlug}/groups/${groupId}`)}
                                 />
                             ))}
                         </CoachingSessionGroupOverviewList>

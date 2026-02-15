@@ -206,8 +206,8 @@ export default function CoachCourseGroups({
 
     // Handle course navigation
     const handleClickCourse = useCallback((slug: string) => {
-        // TODO: Implement navigation to course page
-    }, []);
+        router.push(`/${locale}/courses/${slug}`);
+    }, [router, locale]);
 
     // Handle group management
     const handleManageGroup = useCallback((groupId: string) => {
