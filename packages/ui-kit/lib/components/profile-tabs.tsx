@@ -25,6 +25,7 @@ export interface ProfileTabsProps extends isLocalAware {
   professionalProfile?: TProfessionalProfile | null;
   availableSkills: TSkill[];
   availableLanguages: TLanguageListSuccess['languages'];
+  availableInterfaceLanguages?: TLanguageListSuccess['languages'];
   onSavePersonal?: (profile: TPersonalProfile) => void;
   onSaveProfessional?: (profile: TProfessionalProfile) => void;
   onPersonalFileUpload: (
@@ -59,6 +60,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   professionalProfile,
   availableSkills = [],
   availableLanguages = [],
+  availableInterfaceLanguages,
   onSavePersonal,
   onSaveProfessional,
   onPersonalFileUpload,
@@ -188,6 +190,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           onFileDelete={onProfilePictureDelete}
           onFileDownload={onProfilePictureDownload}
           availableLanguages={availableLanguages}
+          availableInterfaceLanguages={availableInterfaceLanguages}
           locale={locale as TLocale}
           uploadProgress={profilePictureUploadProgress}
           isSaving={isPersonalSaveDisabled}
@@ -227,6 +230,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onFileDelete={onProfilePictureDelete}
             onFileDownload={onProfilePictureDownload}
             availableLanguages={availableLanguages}
+            availableInterfaceLanguages={availableInterfaceLanguages}
             locale={locale as TLocale}
             uploadProgress={profilePictureUploadProgress}
             isSaving={isPersonalSaveDisabled}

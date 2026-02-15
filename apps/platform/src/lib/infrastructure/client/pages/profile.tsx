@@ -112,6 +112,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	// Always fetch personal profile data and languages (needed for default tab)
 	const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
 	const [languagesResponse] = trpc.listLanguages.useSuspenseQuery({ queryType: "all" });
+	const [interfaceLanguagesResponse] = trpc.listLanguages.useSuspenseQuery({});
 
 	// Lazy fetch professional profile data and topics only when needed
 	const professionalProfileQuery = trpc.getProfessionalProfile.useQuery({}, {
@@ -139,6 +140,9 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const [languagesViewModel, setLanguagesViewModel] = useState<
 		viewModels.TLanguageListViewModel | undefined
 	>(undefined);
+	const [interfaceLanguagesViewModel, setInterfaceLanguagesViewModel] = useState<
+		viewModels.TLanguageListViewModel | undefined
+	>(undefined);
 
 	// Initialize presenters
 	const { presenter: professionalPresenter } = useGetProfessionalProfilePresenter(
@@ -152,6 +156,9 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	);
 	const { presenter: languagesPresenter } = useListLanguagesPresenter(
 		setLanguagesViewModel
+	);
+	const { presenter: interfaceLanguagesPresenter } = useListLanguagesPresenter(
+		setInterfaceLanguagesViewModel
 	);
 
 	const handleTabChange = (newTab: string) => {
@@ -168,7 +175,9 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		personalPresenter.present(personalProfileResponse, personalProfileViewModel);
 		// @ts-ignore - Presenter type compatibility issue
 		languagesPresenter.present(languagesResponse, languagesViewModel);
-	}, [personalProfileResponse, languagesResponse, personalPresenter, languagesPresenter, personalProfileViewModel, languagesViewModel]);
+		// @ts-ignore - Presenter type compatibility issue
+		interfaceLanguagesPresenter.present(interfaceLanguagesResponse, interfaceLanguagesViewModel);
+	}, [personalProfileResponse, languagesResponse, interfaceLanguagesResponse, personalPresenter, languagesPresenter, interfaceLanguagesPresenter, personalProfileViewModel, languagesViewModel, interfaceLanguagesViewModel]);
 
 	// Present professional data only when available
 	useEffect(() => {
@@ -351,7 +360,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		onProgressUpdate: setCurriculumVitaeUploadProgress,
 	});
 
-	if (!personalProfileViewModel || !languagesViewModel) {
+	if (!personalProfileViewModel || !languagesViewModel || !interfaceLanguagesViewModel) {
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
@@ -380,7 +389,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	}
 
 	// Languages are required for both tabs
-	if (languagesViewModel.mode !== 'default') {
+	if (languagesViewModel.mode !== 'default' || interfaceLanguagesViewModel?.mode !== 'default') {
 		return (
 			<DefaultError
 				type="simple"
@@ -392,6 +401,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	}
 
 	const allLanguages = languagesViewModel.data.languages;
+	const platformLanguages = interfaceLanguagesViewModel.data.languages;
 
 	// Ensure we have languages
 	if (!allLanguages || allLanguages.length === 0) {
@@ -662,6 +672,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						professionalProfile={professionalProfileToUse}
 						availableSkills={allTopics}
 						availableLanguages={allLanguages}
+						availableInterfaceLanguages={platformLanguages}
 						onSavePersonal={handleSavePersonalProfile}
 						onSaveProfessional={handleSaveProfessionalProfile}
 						onPersonalFileUpload={profilePictureUpload.handleFileChange}

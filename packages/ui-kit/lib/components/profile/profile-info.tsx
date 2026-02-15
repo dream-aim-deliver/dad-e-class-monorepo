@@ -17,6 +17,7 @@ interface ProfileInfoProps extends isLocalAware {
   initialData: TPersonalProfileAPI;
   onChange: (data: TPersonalProfileAPI) => void;
   availableLanguages: TLanguageListSuccess["languages"];
+  availableInterfaceLanguages?: TLanguageListSuccess["languages"];
   onSave: (profile: TPersonalProfileAPI) => void;
   onDiscard: () => void;
   onFileUpload: (
@@ -83,6 +84,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   onFileDelete,
   onFileDownload,
   availableLanguages = [],
+  availableInterfaceLanguages,
   locale,
   uploadProgress,
   isSaving = false,
@@ -294,6 +296,10 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           })) || []}
           // Convert API languages to simple format with translated names
           availableLanguages={availableLanguages.map(lang => ({
+            name: dictionary.components.languageSelector.languageNames[lang.code as string] ?? lang.name,
+            code: lang.code
+          }))}
+          availableInterfaceLanguages={availableInterfaceLanguages?.map(lang => ({
             name: dictionary.components.languageSelector.languageNames[lang.code as string] ?? lang.name,
             code: lang.code
           }))}

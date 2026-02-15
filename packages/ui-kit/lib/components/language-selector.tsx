@@ -17,6 +17,7 @@ export interface LanguageSelectorProps {
   };
   selectedLanguages: language.TLanguage[];
   availableLanguages: language.TLanguage[];
+  availableInterfaceLanguages?: language.TLanguage[];
   selectedInterfaceLanguage: language.TLanguage | null;
   onChange?: (languages: language.TLanguage[]) => void;
   onInterfaceLanguageChange?: (language: language.TLanguage | null) => void;
@@ -67,12 +68,14 @@ export interface LanguageSelectorProps {
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   selectedLanguages,
   availableLanguages,
+  availableInterfaceLanguages,
   selectedInterfaceLanguage,
   text,
   onChange,
   onInterfaceLanguageChange,
 }) => {
   const languageOptions = availableLanguages;
+  const interfaceLanguageOptions = availableInterfaceLanguages ?? availableLanguages;
 
   const [interfaceLanguage, setInterfaceLanguage] =
     React.useState<language.TLanguage | null>(selectedInterfaceLanguage || null);
@@ -111,7 +114,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   ) => {
     if (typeof selected === 'string') {
       const newLanguage =
-        languageOptions.find((lang) => lang.code === selected) || null;
+        interfaceLanguageOptions.find((lang) => lang.code === selected) || null;
       setInterfaceLanguage(newLanguage);
       onInterfaceLanguageChange?.(newLanguage);
     } else {
@@ -171,7 +174,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         </label>
         <Dropdown
           type="simple"
-          options={languageOptions.map((lang) => ({
+          options={interfaceLanguageOptions.map((lang) => ({
             label: lang.name as string,
             value: lang.code as string,
           }))}
