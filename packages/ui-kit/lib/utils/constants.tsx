@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   Bold,
   Italic,
@@ -17,6 +18,8 @@ import {
   Undo,
   Redo,
   Minus,
+  Link,
+  Unlink,
 } from "lucide-react";
 
 export enum RichTextAction {
@@ -44,25 +47,25 @@ export enum RichTextAction {
 }
 
 export const TEXT_FORMAT_OPTIONS = (dictionary: any) => [
-  { id: RichTextAction.Bold, icon: <Bold size={18} />, label: dictionary.components.richTextToolbar.bold },
-  { id: RichTextAction.Italics, icon: <Italic size={18} />, label: dictionary.components.richTextToolbar.italic },
-  { id: RichTextAction.Underline, icon: <Underline size={18} />, label: dictionary.components.richTextToolbar.underline },
-  { id: RichTextAction.Highlight, icon: <Highlighter size={18} />, label: dictionary.components.richTextToolbar.highlight },
-  { id: RichTextAction.Strikethrough, icon: <Strikethrough size={18} />, label: dictionary.components.richTextToolbar.strikethrough },
-  { id: RichTextAction.Superscript, icon: <Superscript size={18} />, label: dictionary.components.richTextToolbar.superscript },
-  { id: RichTextAction.Subscript, icon: <Subscript size={18} />, label: dictionary.components.richTextToolbar.subscript },
-  { id: RichTextAction.Code, icon: <Code size={18} />, label: dictionary.components.richTextToolbar.code },
+  { id: RichTextAction.Bold, icon: <Bold size={16} />, label: dictionary.components.richTextToolbar.bold },
+  { id: RichTextAction.Italics, icon: <Italic size={16} />, label: dictionary.components.richTextToolbar.italic },
+  { id: RichTextAction.Underline, icon: <Underline size={16} />, label: dictionary.components.richTextToolbar.underline },
+  { id: RichTextAction.Highlight, icon: <Highlighter size={16} />, label: dictionary.components.richTextToolbar.highlight },
+  { id: RichTextAction.Strikethrough, icon: <Strikethrough size={16} />, label: dictionary.components.richTextToolbar.strikethrough },
+  { id: RichTextAction.Superscript, icon: <Superscript size={16} />, label: dictionary.components.richTextToolbar.superscript },
+  { id: RichTextAction.Subscript, icon: <Subscript size={16} />, label: dictionary.components.richTextToolbar.subscript },
+  { id: RichTextAction.Code, icon: <Code size={16} />, label: dictionary.components.richTextToolbar.code },
 ];
 
 export const TEXT_BLOCK_OPTIONS = (dictionary: any) => [
-  { id: RichTextAction.LeftAlign, icon: <AlignLeft size={18} />, label: dictionary.components.richTextToolbar.leftAlign },
-  { id: RichTextAction.CenterAlign, icon: <AlignCenter size={18} />, label: dictionary.components.richTextToolbar.centerAlign },
-  { id: RichTextAction.RightAlign, icon: <AlignRight size={18} />, label: dictionary.components.richTextToolbar.rightAlign },
-  { id: RichTextAction.JustifyAlign, icon: <AlignJustify size={18} />, label: dictionary.components.richTextToolbar.justifyAlign },
-  { id: RichTextAction.BlockQuote, icon: <Quote size={18} />, label: dictionary.components.richTextToolbar.blockQuote },
-  { id: RichTextAction.BulletedList, icon: <List size={18} />, label: dictionary.components.richTextToolbar.bulletedList },
-  { id: RichTextAction.NumberedList, icon: <ListOrdered size={18} />, label: dictionary.components.richTextToolbar.numberedList },
-  { id: RichTextAction.HorizontalRule, icon: <Minus size={18} />, label: dictionary.components.richTextToolbar.horizontalRule },
+  { id: RichTextAction.LeftAlign, icon: <AlignLeft size={16} />, label: dictionary.components.richTextToolbar.leftAlign },
+  { id: RichTextAction.CenterAlign, icon: <AlignCenter size={16} />, label: dictionary.components.richTextToolbar.centerAlign },
+  { id: RichTextAction.RightAlign, icon: <AlignRight size={16} />, label: dictionary.components.richTextToolbar.rightAlign },
+  { id: RichTextAction.JustifyAlign, icon: <AlignJustify size={16} />, label: dictionary.components.richTextToolbar.justifyAlign },
+  { id: RichTextAction.BlockQuote, icon: <Quote size={16} />, label: dictionary.components.richTextToolbar.blockQuote },
+  { id: RichTextAction.BulletedList, icon: <List size={16} />, label: dictionary.components.richTextToolbar.bulletedList },
+  { id: RichTextAction.NumberedList, icon: <ListOrdered size={16} />, label: dictionary.components.richTextToolbar.numberedList },
+  { id: RichTextAction.HorizontalRule, icon: <Minus size={16} />, label: dictionary.components.richTextToolbar.horizontalRule },
 ];
 
 export const HEADINGS = ["h1", "h2", "h3", "h4", "h5", "h6"];
@@ -71,17 +74,47 @@ export const LIST_TYPES = ["numbered-list", "bulleted-list"];
 export const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
 export const TEXT_ACTION_OPTIONS = (dictionary: any) => [
   {
-    id: "undo", // You may need to define these actions in your Slate commands
-    icon: <Undo size={18} />,
+    id: "undo",
+    icon: <Undo size={16} />,
     label: dictionary.components.richTextToolbar.undo
-
   },
   {
     id: "redo",
-    icon: <Redo size={18} />,
+    icon: <Redo size={16} />,
     label: dictionary.components.richTextToolbar.redo
-
   },
+];
+
+export type ToolbarItemKind = "action" | "mark" | "block" | "link" | "unlink";
+
+export interface ToolbarItem {
+  id: string;
+  icon: ReactNode;
+  label: string;
+  kind: ToolbarItemKind;
+}
+
+export const TOOLBAR_ITEMS = (dictionary: any, iconSize = 16): ToolbarItem[] => [
+  { id: "undo", icon: <Undo size={iconSize} />, label: dictionary.components.richTextToolbar.undo, kind: "action" },
+  { id: "redo", icon: <Redo size={iconSize} />, label: dictionary.components.richTextToolbar.redo, kind: "action" },
+  { id: "link", icon: <Link size={iconSize} />, label: dictionary.components.richTextToolbar.link, kind: "link" },
+  { id: "unlink", icon: <Unlink size={iconSize} />, label: dictionary.components.richTextToolbar.unlink, kind: "unlink" },
+  { id: RichTextAction.Bold, icon: <Bold size={iconSize} />, label: dictionary.components.richTextToolbar.bold, kind: "mark" },
+  { id: RichTextAction.Italics, icon: <Italic size={iconSize} />, label: dictionary.components.richTextToolbar.italic, kind: "mark" },
+  { id: RichTextAction.Underline, icon: <Underline size={iconSize} />, label: dictionary.components.richTextToolbar.underline, kind: "mark" },
+  { id: RichTextAction.Highlight, icon: <Highlighter size={iconSize} />, label: dictionary.components.richTextToolbar.highlight, kind: "mark" },
+  { id: RichTextAction.Strikethrough, icon: <Strikethrough size={iconSize} />, label: dictionary.components.richTextToolbar.strikethrough, kind: "mark" },
+  { id: RichTextAction.Superscript, icon: <Superscript size={iconSize} />, label: dictionary.components.richTextToolbar.superscript, kind: "mark" },
+  { id: RichTextAction.Subscript, icon: <Subscript size={iconSize} />, label: dictionary.components.richTextToolbar.subscript, kind: "mark" },
+  { id: RichTextAction.Code, icon: <Code size={iconSize} />, label: dictionary.components.richTextToolbar.code, kind: "mark" },
+  { id: RichTextAction.LeftAlign, icon: <AlignLeft size={iconSize} />, label: dictionary.components.richTextToolbar.leftAlign, kind: "block" },
+  { id: RichTextAction.CenterAlign, icon: <AlignCenter size={iconSize} />, label: dictionary.components.richTextToolbar.centerAlign, kind: "block" },
+  { id: RichTextAction.RightAlign, icon: <AlignRight size={iconSize} />, label: dictionary.components.richTextToolbar.rightAlign, kind: "block" },
+  { id: RichTextAction.JustifyAlign, icon: <AlignJustify size={iconSize} />, label: dictionary.components.richTextToolbar.justifyAlign, kind: "block" },
+  { id: RichTextAction.BlockQuote, icon: <Quote size={iconSize} />, label: dictionary.components.richTextToolbar.blockQuote, kind: "block" },
+  { id: RichTextAction.BulletedList, icon: <List size={iconSize} />, label: dictionary.components.richTextToolbar.bulletedList, kind: "block" },
+  { id: RichTextAction.NumberedList, icon: <ListOrdered size={iconSize} />, label: dictionary.components.richTextToolbar.numberedList, kind: "block" },
+  { id: RichTextAction.HorizontalRule, icon: <Minus size={iconSize} />, label: dictionary.components.richTextToolbar.horizontalRule, kind: "block" },
 ];
 export const HeadingOptions = [
   { label: "H1", value: "h1" },
