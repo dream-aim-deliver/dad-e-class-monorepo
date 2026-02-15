@@ -383,7 +383,7 @@ export default function CmsSettings({ platformSlug, platformLocale }: CmsSetting
     {
       label: platform.name,
       onClick: () => {
-        // TODO: Implement navigation to platform
+        router.push(`/${locale}/platform/${platformSlug}/${platformLocale}`);
       },
     },
     {

@@ -191,7 +191,7 @@ function CreateCourseContent(props: CreateCourseContentProps) {
         {
             label: courseTitle || breadcrumbTranslations('newCourse'),
             onClick: () => {
-                // TODO: implement navigation
+                // No-op: course doesn't exist yet during creation
             },
         },
         {
