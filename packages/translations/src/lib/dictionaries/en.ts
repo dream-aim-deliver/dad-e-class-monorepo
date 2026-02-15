@@ -1105,7 +1105,7 @@ export const EN: TDictionary = {
       back: "Back",
       editCoachNotes: "Edit Coach Notes",
       exploreCourses: "Explore Coaches",
-      description: "Note: Every edit you make will send a notification to all students in this group. Please review carefully before publishing.",
+      description: "Changes will be visible to all students in this group.",
       errorMessage: "Failed to save notes. Please try again.",
       successMessage: "Notes saved successfully!",
       closeButton: "Close",
