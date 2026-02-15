@@ -92,7 +92,7 @@ export default function SingleStudent({
                 return initialTab;
             }
         }
-        return StudentTab.ASSIGNMENTS;
+        return StudentTab.PRE_COURSE_ASSESSMENT;
     }, [initialTab]);
 
     // Tab state management
@@ -371,7 +371,7 @@ export default function SingleStudent({
                         const assessmentCourse = selectedCourse
                             ? courses.find(c => c.slug === selectedCourse)
                             : courses
-                                .filter(c => c.preAssessmentCompleted && c.assessmentCompletedAt)
+                                .filter(c => c.preCourseAssessmentCompleted && c.assessmentCompletedAt)
                                 .sort((a, b) =>
                                     new Date(b.assessmentCompletedAt!).getTime() -
                                     new Date(a.assessmentCompletedAt!).getTime()
