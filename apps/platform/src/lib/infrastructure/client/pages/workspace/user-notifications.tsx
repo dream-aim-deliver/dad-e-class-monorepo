@@ -52,6 +52,7 @@ export default function UserNotifications() {
     const markAsReadMutation = trpc.markNotificationsAsRead.useMutation({
         onSuccess: () => {
             utils.listNotifications.invalidate();
+            utils.countUnreadNotifications.invalidate();
         }
     });
 

@@ -92,6 +92,7 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
       markNotificationsPresenter.present(data, markNotificationsViewModel);
       // Invalidate cache and refetch to get updated data from backend
       await utils.listNotifications.invalidate();
+      await utils.countUnreadNotifications.invalidate();
     },
 
     onError: (error) => {
