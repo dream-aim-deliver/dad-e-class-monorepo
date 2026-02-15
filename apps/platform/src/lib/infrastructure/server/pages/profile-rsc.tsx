@@ -28,7 +28,7 @@ export default async function ProfileServerComponent(props: ProfileProps) {
 	// Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
 	// React will stream HTML while queries are pending
 	prefetch(trpc.getPersonalProfile.queryOptions({}));
-	prefetch(trpc.listLanguages.queryOptions({}));
+	prefetch(trpc.listLanguages.queryOptions({ queryType: "all" }));
 	prefetch(trpc.getProfessionalProfile.queryOptions({}));
 
 	return (

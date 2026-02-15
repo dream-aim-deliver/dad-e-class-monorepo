@@ -287,19 +287,19 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
         <LanguageSelector
           text={dictionary.components.languageSelector}
-          // Convert initialData languages to simple format for LanguageSelector
+          // Convert initialData languages to simple format with translated names
           selectedLanguages={initialData.languages?.map(lang => ({
-            name: lang.name,
+            name: dictionary.components.languageSelector.languageNames[lang.code as string] ?? lang.name,
             code: lang.code
           })) || []}
-          // Convert API languages to simple format for LanguageSelector dropdown
+          // Convert API languages to simple format with translated names
           availableLanguages={availableLanguages.map(lang => ({
-            name: lang.name,
+            name: dictionary.components.languageSelector.languageNames[lang.code as string] ?? lang.name,
             code: lang.code
           }))}
-          // Convert initialData interface language to simple format
+          // Convert initialData interface language to simple format with translated name
           selectedInterfaceLanguage={initialData.interfaceLanguage ? {
-            name: initialData.interfaceLanguage.name,
+            name: dictionary.components.languageSelector.languageNames[initialData.interfaceLanguage.code as string] ?? initialData.interfaceLanguage.name,
             code: initialData.interfaceLanguage.code
           } : null}
           onChange={(selectedSimpleLanguages) => {

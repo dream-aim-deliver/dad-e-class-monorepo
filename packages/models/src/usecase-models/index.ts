@@ -1,6 +1,5 @@
 export * from './get-platform-usecase-models';
 export * from './get-home-page-usecase-models';
-export * from './list-languages-usecase-models';
 export * from './list-topics-usecase-models';
 export * from './get-offers-page-outline-usecase-models';
 export * from './list-topics-by-category-usecase-models';

@@ -111,7 +111,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 
 	// Always fetch personal profile data and languages (needed for default tab)
 	const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
-	const [languagesResponse] = trpc.listLanguages.useSuspenseQuery({});
+	const [languagesResponse] = trpc.listLanguages.useSuspenseQuery({ queryType: "all" });
 
 	// Lazy fetch professional profile data and topics only when needed
 	const professionalProfileQuery = trpc.getProfessionalProfile.useQuery({}, {

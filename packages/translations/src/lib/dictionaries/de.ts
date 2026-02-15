@@ -309,8 +309,14 @@ export const DE: TDictionary = {
       chooseLanguage: 'Sprache wählen',
       chooseColor: 'Farbe wählen',
       chooseOptions: 'Optionen wählen',
-      english: 'Englisch',
-      german: 'Deutsch',
+      languageNames: {
+        en: 'Englisch',
+        de: 'Deutsch',
+        it: 'Italienisch',
+        fr: 'Französisch',
+        es: 'Spanisch',
+        pt: 'Portugiesisch',
+      },
     },
 
     profileInfo: {
