@@ -298,8 +298,8 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                 return `${profile.name} ${profile.surname}`;
             }
         }
-        return isCoach ? 'Coach' : 'Student';
-    }, [personalProfileViewModel, isCoach]);
+        return session?.user?.name ?? '';
+    }, [personalProfileViewModel, session]);
 
     const formatRoles = useCallback(() => {
         if (!roles || roles.length === 0) return [];
