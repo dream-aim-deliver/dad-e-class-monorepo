@@ -188,7 +188,7 @@ export default function CoachCourseGroups({
 
         if (result.success) {
             setCouponCode('');
-            const group = result.data?.group;
+            const group = (result as any).data?.group;
             if (group && group.course.slug !== courseSlug) {
                 // Group belongs to a different course — show cross-course dialog
                 setCrossCourseInfo({
