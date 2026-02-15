@@ -208,6 +208,8 @@ export default function GroupWorkspaceStudent({
   const notesData = groupNotesViewModel.data;
   const nextSessionData = nextSessionViewModel.data;
 
+  const hasGroupNotes = notesData.notes !== '' || (notesData.links && notesData.links.length > 0);
+
   // Helper to format ISO datetime to time string (e.g., "10:00 AM")
   const formatTime = (isoString: string) => {
     const date = new Date(isoString);
@@ -394,32 +396,34 @@ export default function GroupWorkspaceStudent({
 
       {/* Section: Group Notes (saveGroupNotes, getGroupNotes) */}
       <div className="flex gap-4 items-start w-full flex-col md:flex-row lg:flex-row">
-        {/* Notes section*/}
-        <div className='flex flex-col gap-4 w-full'>
-          <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%] text-left'>
-            {t('notes.title')}
-          </h3>
-          <CoachNotesView
-            noteDescription={notesData.notes}
-            noteLinks={notesData.links?.map(link => ({
-              url: link.url || '',
-              title: link.title,
-              customIconMetadata: link.icon ? {
-                id: link.icon.id,
-                name: link.icon.name,
-                size: link.icon.size,
-                status: 'available' as const,
-                category: link.icon.category,
-                url: link.icon.downloadUrl,
-                thumbnailUrl: link.icon.downloadUrl,
-              } : undefined,
-            }))}
-            locale={locale}
-            onExploreCourses={() => {
-              router.push(`/${locale}/coaching`);
-            }}
-          />
-        </div>
+        {/* Notes section — only render when there are actual notes */}
+        {hasGroupNotes && (
+          <div className='flex flex-col gap-4 w-full'>
+            <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%] text-left'>
+              {t('notes.title')}
+            </h3>
+            <CoachNotesView
+              noteDescription={notesData.notes}
+              noteLinks={notesData.links?.map(link => ({
+                url: link.url || '',
+                title: link.title,
+                customIconMetadata: link.icon ? {
+                  id: link.icon.id,
+                  name: link.icon.name,
+                  size: link.icon.size,
+                  status: 'available' as const,
+                  category: link.icon.category,
+                  url: link.icon.downloadUrl,
+                  thumbnailUrl: link.icon.downloadUrl,
+                } : undefined,
+              }))}
+              locale={locale}
+              onExploreCourses={() => {
+                router.push(`/${locale}/coaching`);
+              }}
+            />
+          </div>
+        )}
 
         {/* Next coaching session */}
         <div className='flex flex-col gap-4 md:w-fit lg:w-fit w-full'>

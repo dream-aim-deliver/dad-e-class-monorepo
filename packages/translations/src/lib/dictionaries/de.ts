@@ -811,6 +811,7 @@ export const DE: TDictionary = {
       course: 'Kurs',
       coach: 'Trainer',
       you: 'Du',
+      noCoach: 'Noch kein Trainer zugewiesen',
     },
     reviewSnippet: {
       by: 'von',
@@ -2253,6 +2254,8 @@ export const DE: TDictionary = {
         loading: 'Lädt...',
         couponSuccess: 'Erfolgreich der Gruppe beigetreten!',
         couponError: 'Gutscheincode konnte nicht validiert werden',
+        crossCourseSuccess: 'Du bist jetzt Coach für Gruppe {groupName} im Kurs {courseTitle}',
+        goToCourse: 'Zum Kurs',
         error: {
           title: 'Fehler beim Laden der Gruppen',
           description: 'Beim Laden der Kursgruppen ist ein Fehler aufgetreten. Bitte versuche es erneut.',

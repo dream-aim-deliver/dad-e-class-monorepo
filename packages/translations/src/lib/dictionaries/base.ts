@@ -812,6 +812,7 @@ export const DictionarySchema = z.object({
       course: z.string(),
       coach: z.string(),
       you: z.string(),
+      noCoach: z.string(),
     }),
     reviewSnippet: z.object({
       by: z.string(),
@@ -2359,6 +2360,8 @@ export const DictionarySchema = z.object({
         loading: z.string(),
         couponSuccess: z.string(),
         couponError: z.string(),
+        crossCourseSuccess: z.string(),
+        goToCourse: z.string(),
         error: z.object({
           title: z.string(),
           description: z.string(),

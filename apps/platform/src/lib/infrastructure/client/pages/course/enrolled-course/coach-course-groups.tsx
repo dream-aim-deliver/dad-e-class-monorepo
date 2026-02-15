@@ -5,6 +5,9 @@ import {
     DefaultError,
     GroupsList,
     Button,
+    Dialog,
+    DialogContent,
+    DialogBody,
 } from '@maany_shr/e-class-ui-kit';
 import type { GroupOverviewCardDetails } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
@@ -70,6 +73,13 @@ export default function CoachCourseGroups({
 
     // State for coupon code handling
     const [couponCode, setCouponCode] = useState<string>('');
+
+    // State for cross-course success dialog
+    const [crossCourseInfo, setCrossCourseInfo] = useState<{
+        groupName: string;
+        courseTitle: string;
+        courseSlug: string;
+    } | null>(null);
 
     // View model state for register mutation result
     const [registerViewModel, setRegisterViewModel] = useState<
@@ -178,7 +188,19 @@ export default function CoachCourseGroups({
 
         if (result.success) {
             setCouponCode('');
-            utils.listCourseGroups.invalidate({ courseSlug });
+            const group = result.data?.group;
+            if (group && group.course.slug !== courseSlug) {
+                // Group belongs to a different course — show cross-course dialog
+                setCrossCourseInfo({
+                    groupName: group.name,
+                    courseTitle: group.course.title,
+                    courseSlug: group.course.slug,
+                });
+                // Clear the inline feedback since we show a dialog instead
+                setRegisterViewModel(undefined);
+            } else {
+                utils.listCourseGroups.invalidate({ courseSlug });
+            }
         }
     }, [couponCode, registerCoachMutation, registerPresenter, registerViewModel, utils, courseSlug]);
 
@@ -212,6 +234,39 @@ export default function CoachCourseGroups({
 
     return (
         <div className="space-y-6">
+            {/* Cross-course success dialog */}
+            <Dialog
+                open={crossCourseInfo !== null}
+                onOpenChange={(open) => {
+                    if (!open) setCrossCourseInfo(null);
+                }}
+                defaultOpen={false}
+            >
+                <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
+                    <DialogBody>
+                        <div className="flex flex-col items-center gap-4 text-center">
+                            <p className="text-base text-text-primary">
+                                {crossCourseInfo && t('crossCourseSuccess', {
+                                    groupName: crossCourseInfo.groupName,
+                                    courseTitle: crossCourseInfo.courseTitle,
+                                })}
+                            </p>
+                            <Button
+                                variant="primary"
+                                size="medium"
+                                text={t('goToCourse')}
+                                onClick={() => {
+                                    if (crossCourseInfo) {
+                                        router.push(`/${locale}/courses/${crossCourseInfo.courseSlug}?tab=groups`);
+                                        setCrossCourseInfo(null);
+                                    }
+                                }}
+                            />
+                        </div>
+                    </DialogBody>
+                </DialogContent>
+            </Dialog>
+
             <GroupsList
                 locale={locale}
                 allGroups={displayedGroups}
