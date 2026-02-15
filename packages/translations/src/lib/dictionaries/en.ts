@@ -992,7 +992,7 @@ export const EN: TDictionary = {
       errorImageText: 'Image not available.',
     },
     studentCard: {
-      coachingSessionsLeftText: 'coaching sessions with you',
+      coachingSessionsLeftText: 'coaching sessions',
       coach: 'Coach',
       course: 'Course',
       waitingFeedbackBadge: 'Waiting for feedback',
