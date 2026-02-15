@@ -117,7 +117,7 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
   }, [searchResults, sortOrder, searchQuery]);
 
   // Determine which courses to display
-  const displayCourses = searchResults.length > 0 || searchQuery.trim()
+  const displayCourses = searchQuery.trim()
     ? sortedSearchResults
     : sortedFilteredCourses;
 

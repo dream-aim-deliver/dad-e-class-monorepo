@@ -139,7 +139,7 @@ export default function RedeemStandaloneCoupon(
     // Redeemed State
     if (state === 'redeemed' && couponData) {
         const isMultipleCourses = couponData.type === 'course' && couponData.courses && couponData.courses.length > 1;
-        const hasCoursesList = couponData.type === 'course' && couponData.courses && couponData.courses.length > 0;
+        const hasCoursesList = (couponData.type === 'course' || couponData.type === 'coaching') && couponData.courses && couponData.courses.length > 0;
 
         return (
             <div className="flex flex-col gap-5">
@@ -202,14 +202,17 @@ export default function RedeemStandaloneCoupon(
                                         : getTypeLabel(couponData.type)}
                                 </span>
                                 {(couponData.type === 'course' ||
-                                    couponData.type === 'package') && couponData.title && (
+                                    couponData.type === 'package' ||
+                                    couponData.type === 'coaching') && couponData.title && (
                                     <>
-                                        <UserAvatar
-                                            size="xSmall"
-                                            imageUrl={couponData.imageUrl}
-                                            fullName={couponData.title}
-                                            className="rounded-small"
-                                        />
+                                        {couponData.type !== 'coaching' && (
+                                            <UserAvatar
+                                                size="xSmall"
+                                                imageUrl={couponData.imageUrl}
+                                                fullName={couponData.title}
+                                                className="rounded-small"
+                                            />
+                                        )}
                                         <span className="text-text-primary font-important text-sm md:text-md">
                                             {couponData.title}
                                         </span>

@@ -96,11 +96,9 @@ export function SearchInput<T>({
         };
     }, [query, debounceDelay]);
 
-    // Update results when items change (without debounce) - but only if query is not empty
+    // Update results when items change (without debounce)
     useEffect(() => {
-        if (query.trim() !== '') {
-            performSearch(query);
-        }
+        performSearch(query);
     }, [items]);
 
     return (

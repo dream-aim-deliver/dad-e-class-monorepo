@@ -69,6 +69,7 @@ function RedeemCouponDialogContent() {
             void utils.listUserCourses.invalidate();
             void utils.listUpcomingStudentCoachingSessions.invalidate();
             void utils.listStudentCoachingSessions.invalidate();
+            void utils.listNotifications.invalidate();
         }
     });
 
@@ -110,7 +111,17 @@ function RedeemCouponDialogContent() {
                         break;
                     case 'freeCoachingSession':
                         type = 'coaching';
-                        title = outcome.coachingOfferings[0]?.title || 'Coaching Session';
+                        if (outcome.coachingOfferings.length > 1) {
+                            courses = outcome.coachingOfferings.map((offering: any) => ({
+                                title: `${offering.title} (${offering.count} ${offering.count > 1 ? 'sessions' : 'session'})`,
+                                imageUrl: undefined,
+                            }));
+                        } else {
+                            const offering = outcome.coachingOfferings[0];
+                            title = offering
+                                ? `${offering.title} (${offering.count} ${offering.count > 1 ? 'sessions' : 'session'})`
+                                : 'Coaching Session';
+                        }
                         imageUrl = outcome.course?.imageUrl || undefined;
                         break;
                     case 'groupCourse':
@@ -133,6 +144,7 @@ function RedeemCouponDialogContent() {
                 void utils.listUserCourses.invalidate();
                 void utils.listUpcomingStudentCoachingSessions.invalidate();
                 void utils.listStudentCoachingSessions.invalidate();
+                void utils.listNotifications.invalidate();
 
                 return {
                     valid: true,
