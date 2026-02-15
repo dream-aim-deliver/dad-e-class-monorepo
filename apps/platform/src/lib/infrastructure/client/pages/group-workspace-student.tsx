@@ -20,6 +20,7 @@ import { useGetGroupNextCoachingSessionPresenter } from '../hooks/use-get-group-
 import { useAssignmentFilters } from './hooks/use-assignment-filters';
 import { useGroupMembers } from './hooks/use-group-members';
 import useClientSidePagination from '../utils/use-client-side-pagination';
+import { hasNoteContent } from '../utils/has-note-content';
 import AssignmentContent from './course/enrolled-course/assignment-content';
 
 interface GroupWorkspaceStudentProps {
@@ -208,7 +209,7 @@ export default function GroupWorkspaceStudent({
   const notesData = groupNotesViewModel.data;
   const nextSessionData = nextSessionViewModel.data;
 
-  const hasGroupNotes = notesData.notes !== '' || (notesData.links && notesData.links.length > 0);
+  const hasGroupNotes = hasNoteContent(notesData.notes) || (notesData.links && notesData.links.length > 0 && notesData.links.some(link => link.title.trim() || (link.url && link.url.trim())));
 
   // Helper to format ISO datetime to time string (e.g., "10:00 AM")
   const formatTime = (isoString: string) => {
