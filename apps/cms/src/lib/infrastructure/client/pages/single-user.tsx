@@ -725,7 +725,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                 return (
                   <CourseCard
                     key={course.id}
-                    userType="course_creator"
+                    userType="coach"
                     reviewCount={course.ratingCount}
                     locale={currentLocale}
                     language={{ name: course.language.name, code: course.language.code }}
@@ -750,10 +750,9 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                       language: course.language,
                       imageUrl: course.image?.downloadUrl || 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg'
                     }}
-                    creatorStatus={"draft"}
                     sessions={course.coachingSessionCount}
                     sales={course.salesCount || 0}
-                    onEdit={() => {
+                    onManage={() => {
                       window.open(`${platform.domainName}/edit/course/${course.slug}`, '_blank');
                     }}
                     onClickUser={() => {
