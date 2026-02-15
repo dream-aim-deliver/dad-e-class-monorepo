@@ -679,6 +679,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						skillsLanguageHint={professionalInfoTranslations('skillsLanguageHint')}
 						showApplyToCoachButton={isStudent}
 						onApplyToCoachClick={handleOpenApplicationModal}
+						usernameValidator={(username) => {
+							if (!username || username.trim() === '') return null;
+							if (!USERNAME_REGEX.test(username)) return t('usernameInvalid');
+							return null;
+						}}
 					/>
 
 
