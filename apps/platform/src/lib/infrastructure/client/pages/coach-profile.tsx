@@ -12,7 +12,7 @@ import { trpc } from '../trpc/cms-client';
 import { useMemo, useState } from 'react';
 import { DefaultLoading, DefaultError, DefaultNotFound, Button, Breadcrumbs, IconChevronLeft, BookSessionWith, BuyCoachingSessionBanner, CourseCardList, CourseCard, Dropdown, CoachReviewCardList, CoachReviewCard, IconFilter, CoachReviewFilterModel, CoachReviewFilterModal, ReviewModal, ReviewDisplay, ReviewDialog } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useGetCoachIntroductionPresenter } from '../hooks/use-get-coach-introduction-presenter';
 import { useListCoachReviewsPresenter } from '../hooks/use-list-coach-reviews-presenter';
 import { useListCoachCoursesPresenter } from '../hooks/use-list-coach-courses-presenter';
@@ -242,6 +242,12 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		? coachIntroductionViewModel.data.coach
 		: null;
 
+	// Translate language codes to human-readable names
+	const dictionary = getDictionary(locale);
+	const translatedLanguages = coachIntroduction?.languages?.map(
+		(lang) => dictionary.components.languageSelector.languageNames[lang.code as keyof typeof dictionary.components.languageSelector.languageNames] ?? lang.name
+	) ?? [];
+
 	// Sort and filter functions
 	const sortOptions = [
 		{ label: coachProfileTranslations('mostRecentFirst'), value: 'mostRecent' },
@@ -460,6 +466,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 							window.open(`/${locale}/coaches/${username}/book`, '_blank');
 						}}
 						isCourseCreator={coachIntroduction.isCourseCreator}
+						languages={translatedLanguages}
 						locale={locale}
 					/>
 				) : (
@@ -474,6 +481,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						}}
 						isCourseCreator={coachIntroduction.isCourseCreator}
 						skills={coachIntroduction.skills.map(skill => skill.name)}
+						languages={translatedLanguages}
 						locale={locale}
 					/>
 				)

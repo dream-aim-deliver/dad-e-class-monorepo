@@ -86,7 +86,7 @@ const CourseCoachCard: FC<CoachCardProps> = ({
         <div className="flex items-start gap-y-1 gap-x-2 w-full flex-wrap">
           <p className="flex items-center gap-1 lg:truncate">
             <IconLanguage classNames='flex-shrink-0' size="4" />
-            <span className="capitalize truncate">{cardDetails.languages.join(', ')}</span>
+            <span className="uppercase truncate">{cardDetails.languages.join(', ')}</span>
           </p>
           <p className="flex items-center gap-1 truncate">
             <IconCoachingSession classNames='flex-shrink-0' size="4" />
