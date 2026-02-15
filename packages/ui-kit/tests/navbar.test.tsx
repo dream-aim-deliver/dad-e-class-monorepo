@@ -139,7 +139,7 @@ describe('Navbar Component', () => {
     );
     const notifications = screen.getAllByText('2');
     expect(notifications.length).toBe(2); // Desktop and mobile
-    expect(notifications[0]).toHaveClass('h-6'); // Desktop version
+    expect(notifications[0]).toHaveClass('h-[18px]'); // Desktop version
     expect(screen.getAllByTestId('icon-chat').length).toBe(2); // Desktop and mobile
   });
 
