@@ -30,6 +30,7 @@ import { useGetCoachApplicationPresenter } from '../hooks/use-get-coach-applicat
 import { getHighestRole } from '../../common/utils/role-utils';
 import { TEClassRole } from '@dream-aim-deliver/e-class-cms-rest';
 import Tooltip from 'packages/ui-kit/lib/components/tooltip';
+import { useRequiredPlatform } from '../context/platform-context';
 
 interface SingleUserProps {
   locale: TLocale;
@@ -46,6 +47,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
   const t = useTranslations('pages.singleUser');
   const tRoles = useTranslations('common.roles');
   const currentLocale = useLocale() as TLocale;
+  const { platform } = useRequiredPlatform();
 
   // View models
   const [personalProfileVM, setPersonalProfileVM] = useState<viewModels.TGetPersonalProfileViewModel | undefined>(undefined);
@@ -680,19 +682,19 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                   progress={progress}
                   sales={course.salesCount}
                   onBegin={() => {
-                    // TODO: Implement begin course action
+                    window.open(`${platform.domainName}/${platformLocale}/courses/${course.slug}`, '_blank');
                   }}
                   onResume={() => {
-                    // TODO: Implement resume course action
+                    window.open(`${platform.domainName}/${platformLocale}/courses/${course.slug}`, '_blank');
                   }}
                   onReview={() => {
-                    // TODO: Implement review course action
+                    window.open(`${platform.domainName}/${platformLocale}/courses/${course.slug}`, '_blank');
                   }}
                   onDetails={() => {
-                    // TODO: Implement view course details action
+                    window.open(`${platform.domainName}/${platformLocale}/courses/${course.slug}`, '_blank');
                   }}
                   onClickUser={() => {
-                    // TODO: Implement view user profile action
+                    // No-op: admin is already viewing this user's profile
                   }}
                 />
               );
@@ -752,10 +754,10 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                     sessions={course.coachingSessionCount}
                     sales={course.salesCount || 0}
                     onEdit={() => {
-                      // TODO: Implement edit course action
+                      window.open(`${platform.domainName}/edit/course/${course.slug}`, '_blank');
                     }}
                     onClickUser={() => {
-                      // TODO: Implement view user profile action
+                      // No-op: admin is already viewing this user's profile
                     }}
                   />
                 );

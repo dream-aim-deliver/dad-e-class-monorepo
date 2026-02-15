@@ -384,10 +384,10 @@ function CourseCoachList() {
                     description={coach.description}
                     defaultCoach={true}
                     onClickProfile={() => {
-                        // TODO: Implement profile click logic
+                        // No-op: lesson preview component with mock coaches
                     }}
                     onClickBook={() => {
-                        // TODO: Implement book click logic
+                        // No-op: lesson preview component with mock coaches
                     }}
                     locale={locale}
                 />

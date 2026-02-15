@@ -196,7 +196,7 @@ export default function CoachDashboardStudents() {
                                     status: status,
                                     assignmentTitle: assignmentTitle!,
                                     onViewAssignment: () => {
-                                        // TODO: Navigate to assignment
+                                        router.push(`/${locale}/students/${student.username}?tab=assignments`);
                                     },
                                 } as CourseAssignment;
                             },
