@@ -107,6 +107,7 @@ export default function Package({ locale, packageId }: PackageProps) {
       setCheckoutError(null); // Clear any previous error
       // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
       const response = await utils.prepareCheckout.fetch(request);
+      console.log('prepareCheckout response', response);
       // Unwrap TBaseResult if needed
       if (response && typeof response === 'object' && 'success' in response) {
         if (response.success === true && response.data) {
@@ -222,6 +223,7 @@ export default function Package({ locale, packageId }: PackageProps) {
 
       if (response && typeof response === 'object' && 'success' in response) {
         if (response.success === true && response.data) {
+          setCurrentRequest(request);
           return response.data as unknown as TransactionDraft;
         }
       }
@@ -572,26 +574,6 @@ export default function Package({ locale, packageId }: PackageProps) {
     router.push(`/${currentLocale}/packages/${packageId}`);
   };
 
-  const handleRelatedPackagePurchase = (packageId: string | number) => {
-    const packageIdNum = typeof packageId === 'string' ? parseInt(packageId, 10) : packageId;
-    const request: TPrepareCheckoutRequest = {
-      purchaseType: 'StudentPackagePurchaseWithCoaching', // Always purchase with coaching for related packages
-      packageId: packageIdNum,
-    };
-
-    // If user is not logged in, save intent and redirect to login
-    if (!isLoggedIn) {
-      saveIntent(request, window.location.pathname);
-      router.push(
-        `/${currentLocale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-      );
-      return;
-    }
-
-    // User is logged in, execute checkout
-    executeCheckout(request);
-  };
-
   const handlePaymentComplete = (sessionId: string) => {
     setIsCheckoutOpen(false);
     setTransactionDraft(null);
@@ -794,7 +776,7 @@ export default function Package({ locale, packageId }: PackageProps) {
                     savingsWithCoachings: relatedPackage.savingsWithCoachings,
                   }}
                   locale={currentLocale}
-                  onClickPurchase={() => handleRelatedPackagePurchase(relatedPackage.id)}
+                  onClickPurchase={() => handleRelatedPackageDetails(relatedPackage.id)}
                   onClickDetails={() => handleRelatedPackageDetails(relatedPackage.id)}
                 />
               ))}
@@ -813,6 +795,7 @@ export default function Package({ locale, packageId }: PackageProps) {
               setTransactionDraft(null);
               setCheckoutViewModel(undefined);
               setCurrentRequest(null);
+              setCheckoutError(null);
             }}
             transactionDraft={transactionDraft}
             stripePublishableKey={
