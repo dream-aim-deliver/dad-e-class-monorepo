@@ -163,7 +163,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.studentCoachingSessions');
     const coachT = useTranslations('pages.coachCoachingSessions');
-    const paginationT = useTranslations('components.paginationButton');
+
 
     const { studentUsername, isCoach } = props;
     const utils = trpc.useUtils();
@@ -430,17 +430,14 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
     return (
         <div className="rounded-lg pb-15">
-            <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4">
-                <p className="text-2xl font-semibold text-white">
-                    {t('yourCoachingSessions')}
-                </p>
+            <div className="flex items-center justify-between">
+                <h3>{t('yourCoachingSessions')}</h3>
                 <Button
                     variant="text"
                     size="small"
                     onClick={handleViewAllCoachingSessions}
-                >
-                    {paginationT('viewAll')}
-                </Button>
+                    text={t('viewAllSessions')}
+                />
             </div>
 
             {/* Coach sessions section (as coach) */}
@@ -514,9 +511,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
             {availableCoachingSessionsData.length > 0 && (
                 <div className="mt-10">
-                    <p className="text-2xl font-semibold text-white mb-6">
-                        {t('availableCoachingSessions')}
-                    </p>
+                    <h3 className="mb-6">{t('availableCoachingSessions')}</h3>
                     <AvailableCoachingSessions
                         locale={locale}
                         availableCoachingSessionsData={availableCoachingSessionsData}

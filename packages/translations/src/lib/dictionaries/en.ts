@@ -2652,7 +2652,7 @@ export const EN: TDictionary = {
       },
     },
     studentCoachingSessions: {
-      yourCoachingSessions: 'Your coaching sessions',
+      yourCoachingSessions: 'Your Coaching Sessions',
       upcoming: 'Upcoming',
       ended: 'Ended',
       available: 'Available',
@@ -2676,7 +2676,8 @@ export const EN: TDictionary = {
       workspace: 'Workspace',
       coachingSessions: 'Coaching Sessions',
       upcomingAndAvailable: 'Upcoming & Available',
-      availableCoachingSessions: 'Available coaching sessions',
+      availableCoachingSessions: 'Available Coaching Sessions',
+      viewAllSessions: 'View All Sessions',
       asCoach: 'As coach',
       asStudent: 'As student',
       error: {

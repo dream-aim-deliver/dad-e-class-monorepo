@@ -2679,6 +2679,7 @@ export const DE: TDictionary = {
       coachingSessions: 'Coaching-Sitzungen',
       upcomingAndAvailable: 'Bevorstehend & Verfügbar',
       availableCoachingSessions: 'Verfügbare Coaching-Sitzungen',
+      viewAllSessions: 'Alle Sitzungen anzeigen',
       asCoach: 'Als Coach',
       asStudent: 'Als Teilnehmer',
       error: {
