@@ -179,6 +179,7 @@ export const LoggedInWithNotifications: StoryObj<typeof Navbar> = {
   args: {
     isLoggedIn: true,
     locale: 'en',
+    showNotifications: true,
     notificationCount: 200,
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
@@ -200,6 +201,7 @@ export const MobileView: StoryObj<typeof Navbar> = {
   args: {
     isLoggedIn: true,
     locale: 'en',
+    showNotifications: true,
     notificationCount: 2,
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',

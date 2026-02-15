@@ -159,7 +159,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
 
                     <CourseStats
                         locale={locale as TLocale}
-                        language={(language as any).name as string}
+                        language={language?.code?.toUpperCase() ?? ''}
                         sessions={10}
                         duration={formattedDuration}
                         sales={sales}

@@ -23,6 +23,7 @@ import { useGroupNotesFileUpload } from './common/hooks/use-group-notes-image-up
 import { useAssignmentFilters } from './hooks/use-assignment-filters';
 import { useGroupMembers } from './hooks/use-group-members';
 import useClientSidePagination from '../utils/use-client-side-pagination';
+import { hasNoteContent } from '../utils/has-note-content';
 import AssignmentContent from './course/enrolled-course/assignment-content';
 
 interface GroupWorkspaceCoachProps {
@@ -371,25 +372,33 @@ export default function GroupWorkspaceCoach({
   const renderStudentCards = (members: viewModels.TListGroupMembersSuccess['members']) => {
     return members.map((member, index) => {
       // Base props common to all student card variants
+      const memberFirstCoach = member.coaches?.[0];
+      const memberCoachCount = member.coaches?.length ?? 0;
+      const memberCoachName = memberFirstCoach
+        ? memberCoachCount > 1
+          ? `${memberFirstCoach.name} ${memberFirstCoach.surname} + ${memberCoachCount - 1} more`
+          : `${memberFirstCoach.name} ${memberFirstCoach.surname}`
+        : '';
+
       const baseProps = {
         locale: locale,
         studentName: member.username,
         studentImageUrl: member.avatarUrl || '',
-        coachName: `${member.coach.name} ${member.coach.surname}`,
-        coachImageUrl: member.coach.avatarUrl || '',
+        coachName: memberCoachName,
+        coachImageUrl: memberFirstCoach?.avatarUrl || '',
         courseName: member.course.title,
         courseImageUrl: member.course.imageUrl || '',
         coachingSessionsLeft: member.coachingSessionCount || undefined,
-        isYou: member.coach.isCurrentUser,
+        isYou: memberFirstCoach?.isCurrentUser ?? false,
         onStudentDetails: () => {
           window.open(`/${locale}/students/${member.username}`, '_blank');
         },
         onClickCourse: () => {
           router.push(`/${locale}/courses/${member.course.slug}`)
         },
-        onClickCoach: () => {
-          router.push(`/${locale}/coaches/${member.coach.username}`)
-        },
+        onClickCoach: memberFirstCoach
+          ? () => { router.push(`/${locale}/coaches/${memberFirstCoach.username}`); }
+          : () => { return; },
       };
 
       const key = member.id ?? index;
@@ -515,7 +524,7 @@ export default function GroupWorkspaceCoach({
               {t('notes.title')}
             </h3>
             {/* Only show edit button when notes data exists */}
-            {notesData.notes !== '' || (notesData.links && notesData.links.length > 0) ? (
+            {hasNoteContent(notesData.notes) || (notesData.links && notesData.links.length > 0 && notesData.links.some(link => link.title.trim() || (link.url && link.url.trim()))) ? (
               <Button
                 variant="text"
                 text={t('notes.editButton')}
@@ -525,7 +534,7 @@ export default function GroupWorkspaceCoach({
               />
             ) : null}
           </div>
-          {notesData.notes === '' && (!notesData.links || notesData.links.length === 0) ? (
+          {!hasNoteContent(notesData.notes) && (!notesData.links || notesData.links.length === 0 || !notesData.links.some(link => link.title.trim() || (link.url && link.url.trim()))) ? (
             <CoachNotesCreate
               noteDescription={noteDescription}
               noteLinks={noteLinks}
@@ -562,7 +571,7 @@ export default function GroupWorkspaceCoach({
               }))}
               locale={locale}
               onExploreCourses={() => {
-                router.push(`/${currentLocale}/offers`);
+                router.push(`/${currentLocale}/coaching`);
               }}
             />
           }
@@ -697,7 +706,7 @@ export default function GroupWorkspaceCoach({
               role="coach"
               onClickCourse={() => router.push(`/${locale}/courses/${assignment.course.slug}`)}
               onClickUser={() => {
-                // TODO: Navigate to student profile page
+                router.push(`/${locale}/students/${assignment.student?.username}`);
               }}
               onClickView={() => {
                 setSelectedAssignment({

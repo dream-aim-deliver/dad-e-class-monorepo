@@ -92,8 +92,8 @@ function CalendarContent() {
             >
                 <div className="flex flex-col h-full">
                     {/* Desktop view with header and calendar */}
-                    <div className="h-[calc(100vh-250px)] flex-row hidden md:flex">
-                        <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col">
+                    <div className="h-[calc(100dvh-300px)] flex-row hidden md:flex">
+                        <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col overflow-hidden">
                             <CalendarNavigationHeader
                                 currentDate={currentDate}
                                 setCurrentDate={setCurrentDate}

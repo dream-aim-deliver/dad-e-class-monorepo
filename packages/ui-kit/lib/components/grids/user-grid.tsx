@@ -92,30 +92,6 @@ const RatingCellRenderer = (props: any) => {
     </div>;
 };
 
-const PlatformCellRenderer = (props: any) => {
-    const data: UserRow = props.data;
-    const roles = data.roles;
-    if (!roles || roles.length === 0) return <span>-</span>;
-
-    const title = roles.map(({ platformName, role }) => `${platformName}: ${role}`).join(', ');
-
-    return (
-        <div className="truncate" title={title}>
-            {roles.map(({ platformName, role }, idx) => (
-                <span
-                    key={platformName + role}
-                    className="inline-flex items-center text-xs align-middle"
-                >
-                    <RoleIcon role={role} className="w-4 h-4" />
-                    <span className="ml-1">{platformName}</span>
-                    {idx < roles.length - 1 && <span>,&nbsp;</span>}
-                </span>
-            ))}
-        </div>
-    );
-};
-
-
 const ROLE_HIERARCHY = ['superadmin', 'admin', 'course_creator', 'coach', 'student'];
 
 function getHighestRole(roles: { platformName: string; role: string }[]): string {
@@ -250,11 +226,15 @@ export const UserGrid = (props: UserGridProps) => {
             filter: 'agTextColumnFilter'
         },
         {
-            headerName: dictionary.roleColumn,
+            headerName: props.variant === 'all' ? dictionary.rolesColumn : dictionary.roleColumn,
             valueGetter: (params: any) => {
                 const data: UserRow = params.data;
                 if (!data?.roles) return '';
                 return getRoleValueForVariant(props.variant, data.roles);
+            },
+            cellRenderer: (params: any) => {
+                const value = params.value ?? '';
+                return <div className="truncate" title={value}>{value}</div>;
             },
             filter: 'agTextColumnFilter'
         },
@@ -268,12 +248,6 @@ export const UserGrid = (props: UserGridProps) => {
             headerName: dictionary.ratingColumn,
             cellRenderer: RatingCellRenderer,
             filter: 'agNumberColumnFilter'
-        },
-        {
-            field: 'platform',
-            headerName: dictionary.platformColumn,
-            cellRenderer: PlatformCellRenderer,
-            filter: 'agTextColumnFilter'
         },
         {
             field: 'coachingSessionsCount',

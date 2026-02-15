@@ -74,7 +74,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   // Sync text value with the prop value
   useEffect(() => {
     if (selectedDate) {
-      const localeStr = locale === 'de' ? 'de-DE' : 'en-US';
+      const localeStr = locale === 'de' ? 'de-DE' : 'en-GB';
       setTextValue(selectedDate.toLocaleDateString(localeStr));
     } else {
       setTextValue('');
@@ -202,6 +202,7 @@ export const DateInput: React.FC<DateInputProps> = ({
             '--rdp-today-color': 'var(--color-base-brand-400)',
             '--rdp-disabled-opacity': '0.3',
             '--rdp-outside-opacity': '0.5',
+            '--rdp-dropdown-gap': '1rem',
           } as React.CSSProperties}
         >
           <DayPicker
@@ -214,14 +215,12 @@ export const DateInput: React.FC<DateInputProps> = ({
             endMonth={new Date()}
             classNames={{
               root: 'p-3 text-text-primary',
-              month_caption: 'text-text-primary mb-2',
+              month_caption: 'text-text-primary mb-2 font-bold text-lg',
               weekday: 'text-text-secondary text-xs',
               day: 'text-text-primary hover:bg-base-neutral-700 rounded-medium',
               today: 'font-bold',
               selected: 'bg-button-primary-fill text-button-primary-text rounded-medium',
               outside: 'text-text-secondary opacity-50',
-              dropdown: 'bg-base-neutral-700 text-text-primary border border-base-neutral-600 rounded-medium px-1 py-0.5 text-sm',
-              nav: 'text-text-primary',
               button_next: 'hover:bg-base-neutral-700 rounded-medium',
               button_previous: 'hover:bg-base-neutral-700 rounded-medium',
               chevron: 'fill-button-primary-fill',

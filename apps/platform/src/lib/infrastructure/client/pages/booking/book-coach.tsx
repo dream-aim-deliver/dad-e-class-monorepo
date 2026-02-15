@@ -132,6 +132,7 @@ function CoachHeader({ coachUsername }: CoachHeaderProps) {
     }
 
     const coach = coachIntroViewModel.data.coach;
+    const displayName = `${coach.name} ${coach.surname}`.trim() || coachUsername;
 
     return (
         <div className="flex flex-col gap-4 mb-6">
@@ -145,10 +146,10 @@ function CoachHeader({ coachUsername }: CoachHeaderProps) {
                 <UserAvatar
                     size="large"
                     imageUrl={coach.avatarImage?.downloadUrl}
-                    fullName={`${coach.name} ${coach.surname}`}
+                    fullName={displayName}
                 />
                 <h2 className="text-2xl lg:text-3xl text-text-primary font-bold">
-                    {coach.name} {coach.surname} Availability
+                    {displayName} Availability
                 </h2>
             </div>
             <hr className="border-divider" />
@@ -644,6 +645,8 @@ function BookCoachPageContent({
     const [bookingSuccess, setBookingSuccess] = useState(false);
     const [briefing, setBriefing] = useState('');
     const [viewType, setViewType] = useState<'weekly' | 'monthly'>('weekly');
+    const [scrollToHour, setScrollToHour] = useState<number | undefined>(undefined);
+    const [scrollKey, setScrollKey] = useState(0);
     const [isBuySectionVisible, setIsBuySectionVisible] = useState(false);
     const [dialogKey, setDialogKey] = useState(0);
     const calendarT = useTranslations('pages.calendarPage');
@@ -754,6 +757,33 @@ function BookCoachPageContent({
         }
     }, [coachAvailabilityViewModel, router]);
 
+    const { isAvailableToday, nextAvailableDate } = useMemo(() => {
+        if (!coachAvailabilityViewModel || coachAvailabilityViewModel.mode !== 'default') {
+            return { isAvailableToday: true, nextAvailableDate: null };
+        }
+
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tomorrowStart = new Date(todayStart);
+        tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+
+        const slots = coachAvailabilityViewModel.data.availability;
+
+        const todaySlots = slots.filter((slot) => {
+            const slotStart = new Date(slot.startTime);
+            return slotStart >= todayStart && slotStart < tomorrowStart && slotStart > now;
+        });
+
+        const futureSlots = slots
+            .filter((slot) => new Date(slot.startTime) > now)
+            .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+        return {
+            isAvailableToday: todaySlots.length > 0,
+            nextAvailableDate: futureSlots.length > 0 ? new Date(futureSlots[0].startTime) : null,
+        };
+    }, [coachAvailabilityViewModel]);
+
     if (!coachAvailabilityViewModel || !currentDate) {
         return <DefaultLoading locale={locale} />;
     }
@@ -822,7 +852,7 @@ function BookCoachPageContent({
                     />
                 </DialogContent>
             </Dialog>
-            <div className="flex flex-col h-screen p-4 md:p-6">
+            <div className="flex flex-col h-[calc(100dvh-100px)] p-4 md:p-6">
                 {returnTo && (
                     <div className="mb-4">
                         <Button
@@ -836,9 +866,38 @@ function BookCoachPageContent({
                 <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                     <CoachHeader coachUsername={coachUsername} />
                 </Suspense>
+                {/* Not available today banner */}
+                {!isAvailableToday && (
+                    <div className="my-3">
+                        <Banner
+                            style="neutral"
+                            icon
+                            title={coachingT('notAvailableToday.title')}
+                            description={
+                                nextAvailableDate
+                                    ? coachingT('notAvailableToday.description', {
+                                          date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+                                      })
+                                    : undefined
+                            }
+                            button={
+                                nextAvailableDate
+                                    ? {
+                                          label: coachingT('notAvailableToday.goToDate'),
+                                          onClick: () => {
+                                              setCurrentDate(nextAvailableDate);
+                                              setScrollToHour(nextAvailableDate.getHours());
+                                              setScrollKey((prev) => prev + 1);
+                                          },
+                                      }
+                                    : undefined
+                            }
+                        />
+                    </div>
+                )}
                 {/* Desktop Layout: Calendar on left, AvailableCoachings on right */}
-                <div className="h-[calc(100vh-300px)] flex-row hidden md:flex gap-6">
-                    <div className="rounded-lg bg-card-fill p-4 flex-1">
+                <div className="flex-1 min-h-0 flex-row hidden md:flex gap-6">
+                    <div className="rounded-lg bg-card-fill p-4 flex-1 overflow-hidden flex flex-col">
                         <Tabs.Root
                             defaultTab="weekly"
                             onValueChange={(value) => setViewType(value as 'weekly' | 'monthly')}
@@ -860,26 +919,30 @@ function BookCoachPageContent({
                                 }
                             />
                         </Tabs.Root>
-                        {viewType === 'weekly' ? (
-                            <WeeklyCoachCalendarWrapper
-                                coachAvailabilityViewModel={
-                                    coachAvailabilityViewModel
-                                }
-                                setNewSessionStart={setNewSessionStart}
-                                openDialog={openDialog}
-                                currentDate={currentDate}
-                                setCurrentDate={setCurrentDate}
-                            />
-                        ) : (
-                            <MonthlyCoachCalendarWrapper
-                                coachAvailabilityViewModel={coachAvailabilityViewModel}
-                                currentDate={currentDate}
-                                setCurrentDate={setCurrentDate}
-                                setNewSessionStart={setNewSessionStart}
-                                openDialog={openDialog}
-                                variant="full"
-                            />
-                        )}
+                        <div className="flex-1 min-h-0 overflow-auto">
+                            {viewType === 'weekly' ? (
+                                <WeeklyCoachCalendarWrapper
+                                    coachAvailabilityViewModel={
+                                        coachAvailabilityViewModel
+                                    }
+                                    setNewSessionStart={setNewSessionStart}
+                                    openDialog={openDialog}
+                                    currentDate={currentDate}
+                                    setCurrentDate={setCurrentDate}
+                                    scrollToHour={scrollToHour}
+                                    scrollKey={scrollKey}
+                                />
+                            ) : (
+                                <MonthlyCoachCalendarWrapper
+                                    coachAvailabilityViewModel={coachAvailabilityViewModel}
+                                    currentDate={currentDate}
+                                    setCurrentDate={setCurrentDate}
+                                    setNewSessionStart={setNewSessionStart}
+                                    openDialog={openDialog}
+                                    variant="full"
+                                />
+                            )}
+                        </div>
                     </div>
                     {!isFromCourse && (
                         <div className="w-[400px] shrink-0">

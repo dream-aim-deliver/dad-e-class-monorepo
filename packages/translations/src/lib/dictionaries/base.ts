@@ -133,6 +133,7 @@ export const DictionarySchema = z.object({
       sendNotification: z.string(),
       hideActions: z.string(),
       roleColumn: z.string(),
+      rolesColumn: z.string(),
       exportSelection: z.string(),
       all: z.string(),
       students: z.string(),
@@ -325,6 +326,7 @@ export const DictionarySchema = z.object({
       more: z.string(),
       viewProfile: z.string(),
       bookSession: z.string(),
+      nextAvailable: z.string(),
     }),
     reviewModal: z.object({
       coachingTitle: z.string(),
@@ -363,6 +365,8 @@ export const DictionarySchema = z.object({
       completedBadge: z.string(),
       cochingSession: z.string(),
       cochingSessionHint: z.string(),
+      availableCoachingSession: z.string(),
+      availableCoachingSessionHint: z.string(),
       sales: z.string(),
       hours: z.string(),
       includeCourseButton: z.string(),
@@ -386,6 +390,7 @@ export const DictionarySchema = z.object({
     availableCoachingSessions: z.object({
       title: z.string(),
       buyMoreSessions: z.string(),
+      exploreOurCoaches: z.string(),
       durationMinutes: z.string(),
       loadingText: z.string(),
       noAvailableSessionText: z.string(),
@@ -646,6 +651,7 @@ export const DictionarySchema = z.object({
       hoursText: z.string(),
       filmMaterialText: z.string(),
       coachingWithAProfessionalText: z.string(),
+      feedbackFromExpertsText: z.string(),
       selfStudyMaterialText: z.string(),
       createdByText: z.string(),
       yourProgressText: z.string(),
@@ -807,6 +813,7 @@ export const DictionarySchema = z.object({
       course: z.string(),
       coach: z.string(),
       you: z.string(),
+      noCoach: z.string(),
     }),
     reviewSnippet: z.object({
       by: z.string(),
@@ -1356,8 +1363,10 @@ export const DictionarySchema = z.object({
       usefulLinks: z.string(),
       downloadFiles: z.string(),
       assignment: z.string(),
-      module: z.string(),
-      lesson: z.string(),
+      moduleLabel: z.string(),
+      lessonLabel: z.string(),
+      moduleTooltip: z.string(),
+      lessonTooltip: z.string(),
       noMaterials: z.string(),
       copyLink: z.string(),
       linkCopied: z.string(),
@@ -1536,6 +1545,9 @@ export const DictionarySchema = z.object({
       emptyState: z.string(),
       withCoachingSessions: z.string(),
       withCoachingSessionsShort: z.string(),
+      groupCourse: z.string(),
+      groupPackage: z.string(),
+      freePackages: z.string(),
     }),
     couponGridFilterModal: z.object({
       title: z.string(),
@@ -1558,6 +1570,7 @@ export const DictionarySchema = z.object({
       discountLabel: z.string(),
       coachingLabel: z.string(),
       groupCourseLabel: z.string(),
+      groupPackageLabel: z.string(),
       freePackagesLabel: z.string(),
       resetFilters: z.string(),
       applyFilters: z.string(),
@@ -1586,7 +1599,9 @@ export const DictionarySchema = z.object({
       freeCoachingSessions: z.string(),
       discountOnEverything: z.string(),
       groupCourse: z.string(),
+      groupPackage: z.string(),
       selectPackages: z.string(),
+      selectPackage: z.string(),
       duration: z.string(),
       minutes: z.string(),
       isPartOfCourse: z.string(),
@@ -1612,7 +1627,8 @@ export const DictionarySchema = z.object({
         coachingRequired: z.string(),
         percentageInvalid: z.string(),
         courseRequired: z.string(),
-        groupNameRequired: z.string()
+        groupNameRequired: z.string(),
+        packageRequired: z.string()
       }),
       error: z.object({
         createFailed: z.string()
@@ -2202,6 +2218,11 @@ export const DictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
       }),
+      notAvailableToday: z.object({
+        title: z.string(),
+        description: z.string(),
+        goToDate: z.string(),
+      }),
       error: z.object({
         title: z.string(),
         description: z.string(),
@@ -2340,6 +2361,8 @@ export const DictionarySchema = z.object({
         loading: z.string(),
         couponSuccess: z.string(),
         couponError: z.string(),
+        crossCourseSuccess: z.string(),
+        goToCourse: z.string(),
         error: z.object({
           title: z.string(),
           description: z.string(),
@@ -2414,6 +2437,7 @@ export const DictionarySchema = z.object({
       selectCourseToViewAssignments: z.string(),
       selectCourseToViewInteractions: z.string(),
       selectCourseToViewAssessment: z.string(),
+      showingAssessmentFor: z.string(),
       studentInteractions: z.string(),
       noInteractionsFound: z.string(),
       tabs: z.object({
@@ -2704,6 +2728,8 @@ export const DictionarySchema = z.object({
       available: z.string(),
       availableSessionsDescription: z.string(),
       noCoachesFound: z.string(),
+      noCoachesDescription: z.string(),
+      exploreCoaches: z.string(),
       yourPastCoaches: z.string(),
       viewAllCoaches: z.string(),
       noSessionsFound: z.string(),
@@ -2721,6 +2747,9 @@ export const DictionarySchema = z.object({
       coachingSessions: z.string(),
       upcomingAndAvailable: z.string(),
       availableCoachingSessions: z.string(),
+      viewAllSessions: z.string(),
+      asCoach: z.string(),
+      asStudent: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),
@@ -2745,6 +2774,7 @@ export const DictionarySchema = z.object({
           redeemFailed: z.string(),
           redeemFailedGeneric: z.string(),
         }),
+        packageCoursesCount: z.string(),
       }),
     }),
     notifications: z.object({
@@ -3526,6 +3556,11 @@ export const DictionarySchema = z.object({
       error: z.object({
         title: z.string(),
         description: z.string(),
+      }),
+      studentOverlapWarning: z.object({
+        title: z.string(),
+        description: z.string(),
+        acknowledge: z.string(),
       }),
     }),
     manageLegalTexts: z.object({

@@ -160,11 +160,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         }
     };
 
-    const handleRemoveCoupon = () => {
-        setCurrentTransactionDraft(transactionDraft); // Reset to original
+    const handleRemoveCoupon = async () => {
         setAppliedCoupon(null);
         setShowCouponSuccess(false);
         setCouponError(null);
+        if (addCoachingChecked && onToggleCoaching) {
+            const coachingDraft = await onToggleCoaching(true);
+            if (coachingDraft) {
+                setCurrentTransactionDraft(coachingDraft);
+                return;
+            }
+        }
+        setCurrentTransactionDraft(transactionDraft);
     };
 
     const handleToggleCoaching = useCallback(async () => {
@@ -172,21 +179,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         const newValue = !addCoachingChecked;
         setIsTogglingCoaching(true);
         try {
-            if (newValue) {
-                const updatedDraft = await onToggleCoaching(true);
-                if (updatedDraft) {
-                    setCurrentTransactionDraft(updatedDraft);
-                    setAddCoachingChecked(true);
-                }
-            } else {
-                // Uncheck: revert to original transaction draft
-                setCurrentTransactionDraft(transactionDraft);
-                setAddCoachingChecked(false);
+            const updatedDraft = await onToggleCoaching(newValue);
+            if (updatedDraft) {
+                setCurrentTransactionDraft(updatedDraft);
+                setAddCoachingChecked(newValue);
             }
         } finally {
             setIsTogglingCoaching(false);
         }
-    }, [addCoachingChecked, onToggleCoaching, transactionDraft]);
+    }, [addCoachingChecked, onToggleCoaching]);
 
     const handleProceedToPayment = async () => {
         setIsLoadingPayment(true);
@@ -363,7 +364,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                             label={dictionary.components.checkoutModal.withCoachingSession}
                                             labelClass="text-text-primary text-md font-medium"
                                             onChange={handleToggleCoaching}
-                                            disabled={isTogglingCoaching}
+                                            disabled={isTogglingCoaching || addCoachingChecked || !!appliedCoupon}
                                         />
                                     </div>
                                     <p className="text-text-secondary text-sm">

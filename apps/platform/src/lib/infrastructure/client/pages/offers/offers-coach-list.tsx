@@ -93,7 +93,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
                         key={`coach-${coach.username}`}
                         locale={locale}
                         cardDetails={{
-                            coachName: coach.name + ' ' + coach.surname,
+                            coachName: [coach.name, coach.surname].filter(Boolean).join(' '),
                             coachImage: coach.avatarUrl ?? undefined,
                             languages: coach.languages,
                             sessionCount: coach.coachingSessionCount,

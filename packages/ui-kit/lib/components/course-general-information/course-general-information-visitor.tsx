@@ -139,7 +139,7 @@ export const CourseGeneralInformationVisitor: FC<
     totalCoachesCount,
     requiredCourses,
     requirementsDetails,
-    coachingIncluded: initialCoachingIncluded = true,
+    coachingIncluded: initialCoachingIncluded = false,
 }) => {
         const dictionary = getDictionary(locale);
         const [isImageError, setIsImageError] = useState(false);
@@ -216,10 +216,10 @@ export const CourseGeneralInformationVisitor: FC<
                 <div className="flex flex-col basis-full md:flex-1 gap-4 md:gap-6 md:pt-9 items-start order-1 md:order-2 min-w-0">
                     {/* Title & rating */}
                     <h1 className="text-text-primary"> {title} </h1>
-                    <div className="flex flex-row gap-2">
-                        <h6 className="text-text-primary"> {rating} </h6>
+                    <div className="flex flex-row items-center gap-2">
+                        <p className="text-text-primary text-sm font-semibold"> {rating} </p>
                         <StarRating totalStars={5} size={'4'} rating={rating} />
-                        <p className="text-text-secondary text-xs">
+                        <p className="text-text-secondary text-sm">
                             {' '}
                             {totalRating}{' '}
                             {
@@ -292,14 +292,12 @@ export const CourseGeneralInformationVisitor: FC<
                                     size="4"
                                 />
                                 <p className="text-text-secondary text-sm">
-                                    {formatSingleDurationSegment(
-                                        (duration as any).coaching as number,
-                                        dictionary,
-                                    )}{' '}
-                                    {
-                                        dictionary.components
-                                            .courseGeneralInformationView
-                                            .coachingWithAProfessionalText
+                                    {coachingIncluded
+                                        ? `${formatSingleDurationSegment(
+                                              (duration as any).coaching as number,
+                                              dictionary,
+                                          )} ${dictionary.components.courseGeneralInformationView.coachingWithAProfessionalText}`
+                                        : dictionary.components.courseGeneralInformationView.feedbackFromExpertsText
                                     }
                                 </p>
                             </div>
@@ -361,38 +359,40 @@ export const CourseGeneralInformationVisitor: FC<
 
                     <div className="grid grid-cols-1 items-center lg:grid-cols-2 gap-6 w-full">
                         {/* Created by */}
-                        <div className="flex flex-col gap-2 items-start">
-                            <h6 className="text-text-primary text-lg">
-                                {
-                                    dictionary.components
-                                        .courseGeneralInformationView.createdByText
-                                }
-                            </h6>
-                            <div className="flex items-center gap-3 min-w-0">
-                                <UserAvatar
-                                    size="medium"
-                                    fullName={(author as any).name as string}
-                                    imageUrl={(author as any).image as string}
-                                />
-                                <div className="flex flex-col min-w-0">
-                                    <p className="text-md text-text-primary font-important truncate">
-                                        {(author as any).name as string}
-                                    </p>
-                                </div>
-                                {onClickBook && (
-                                    <Button
+                        {author?.name?.trim() && (
+                            <div className="flex flex-col gap-2 items-start">
+                                <h6 className="text-text-primary text-lg">
+                                    {
+                                        dictionary.components
+                                            .courseGeneralInformationView.createdByText
+                                    }
+                                </h6>
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <UserAvatar
                                         size="medium"
-                                        variant="text"
-                                        text={
-                                            dictionary.components
-                                                .courseGeneralInformationView.bookLabel
-                                        }
-                                        onClick={onClickBook}
-                                        className="px-0 ml-auto hidden md:block"
+                                        fullName={(author as any).name as string}
+                                        imageUrl={(author as any).image as string}
                                     />
-                                )}
+                                    <div className="flex flex-col min-w-0">
+                                        <p className="text-md text-text-primary font-important truncate">
+                                            {(author as any).name as string}
+                                        </p>
+                                    </div>
+                                    {onClickBook && (
+                                        <Button
+                                            size="medium"
+                                            variant="text"
+                                            text={
+                                                dictionary.components
+                                                    .courseGeneralInformationView.bookLabel
+                                            }
+                                            onClick={onClickBook}
+                                            className="px-0 ml-auto hidden md:block"
+                                        />
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Taught by */}
                         {safeCoaches.length > 0 && (

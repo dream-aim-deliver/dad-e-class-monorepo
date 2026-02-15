@@ -20,6 +20,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 // Coupon outcome types based on listCoupons API
 type CouponOutcome =
     | { type: 'groupCourse'; groupId: number; groupName: string; course: { id: number; title: string; slug: string } }
+    | { type: 'groupPackage'; groupId: number; groupName: string; package: { id: number; title: string } }
     | { type: 'freeCoachingSession'; coachingOffering: { id: number; title: string; duration: number }; course: { id: number; title: string; slug: string } | null }
     | { type: 'discountOnEverything'; percentage: number }
     | { type: 'freeCourses'; courses: { id: number; title: string; slug: string; withCoaching: boolean }[] }
@@ -56,8 +57,18 @@ const OutcomeCellRenderer = (params: { value: CouponRow['outcome']; locale: TLoc
             const group = outcome.groupName ?? '';
             return (
                 <div className="flex flex-col">
-                    <span className="text-text-primary text-sm">{dictionary.freeCourses}</span>
+                    <span className="text-text-primary text-sm">{dictionary.groupCourse}</span>
                     <span className="text-text-secondary text-xs">{title}{group ? ` — ${group}` : ''}</span>
+                </div>
+            );
+        }
+        case 'groupPackage': {
+            const pkgTitle = outcome.package?.title ?? '';
+            const group = outcome.groupName ?? '';
+            return (
+                <div className="flex flex-col">
+                    <span className="text-text-primary text-sm">{dictionary.groupPackage}</span>
+                    <span className="text-text-secondary text-xs">{pkgTitle}{group ? ` — ${group}` : ''}</span>
                 </div>
             );
         }
@@ -97,7 +108,7 @@ const OutcomeCellRenderer = (params: { value: CouponRow['outcome']; locale: TLoc
             const titles = (outcome.packages ?? []).map(p => p.title).join(', ');
             return (
                 <div className="flex flex-col">
-                    <span className="text-text-primary text-sm">{dictionary.freeCourses}</span>
+                    <span className="text-text-primary text-sm">{dictionary.freePackages}</span>
                     <span className="text-text-secondary text-xs">{titles}</span>
                 </div>
             );
@@ -380,7 +391,12 @@ export const CouponGrid = (props: CouponGridProps) => {
             case 'groupCourse': {
                 const title = outcome.course?.title ?? '';
                 const group = outcome.groupName ?? '';
-                return `${dictionary.freeCourses}${title ? `: ${title}` : ''}${group ? ` — ${group}` : ''}`;
+                return `${dictionary.groupCourse}${title ? `: ${title}` : ''}${group ? ` — ${group}` : ''}`;
+            }
+            case 'groupPackage': {
+                const pkgTitle = outcome.package?.title ?? '';
+                const group = outcome.groupName ?? '';
+                return `${dictionary.groupPackage}${pkgTitle ? `: ${pkgTitle}` : ''}${group ? ` — ${group}` : ''}`;
             }
             case 'freeCoachingSession': {
                 const offering = outcome.coachingOffering?.title ?? '';
@@ -398,7 +414,7 @@ export const CouponGrid = (props: CouponGridProps) => {
             }
             case 'freePackages': {
                 const titles = (outcome.packages ?? []).map(p => p.title).join(', ');
-                return `${dictionary.freeCourses}${titles ? `: ${titles}` : ''}`;
+                return `${dictionary.freePackages}${titles ? `: ${titles}` : ''}`;
             }
             default:
                 return '';

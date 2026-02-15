@@ -20,6 +20,7 @@ import { useGetGroupNextCoachingSessionPresenter } from '../hooks/use-get-group-
 import { useAssignmentFilters } from './hooks/use-assignment-filters';
 import { useGroupMembers } from './hooks/use-group-members';
 import useClientSidePagination from '../utils/use-client-side-pagination';
+import { hasNoteContent } from '../utils/has-note-content';
 import AssignmentContent from './course/enrolled-course/assignment-content';
 
 interface GroupWorkspaceStudentProps {
@@ -208,6 +209,8 @@ export default function GroupWorkspaceStudent({
   const notesData = groupNotesViewModel.data;
   const nextSessionData = nextSessionViewModel.data;
 
+  const hasGroupNotes = hasNoteContent(notesData.notes) || (notesData.links && notesData.links.length > 0 && notesData.links.some(link => link.title.trim() || (link.url && link.url.trim())));
+
   // Helper to format ISO datetime to time string (e.g., "10:00 AM")
   const formatTime = (isoString: string) => {
     const date = new Date(isoString);
@@ -218,8 +221,14 @@ export default function GroupWorkspaceStudent({
     });
   };
 
-  // Get first coach from introduction for session card creator info
+  // Build coach display for session card
   const firstCoach = introductionData.coaches[0];
+  const coachCount = introductionData.coaches.length;
+  const coachDisplayName = firstCoach
+    ? coachCount > 1
+      ? `${firstCoach.name} ${firstCoach.surname} + ${coachCount - 1} more`
+      : `${firstCoach.name} ${firstCoach.surname}`
+    : '';
 
   // Breadcrumb items for navigation (simplified for student view)
   const breadcrumbItems = [
@@ -246,21 +255,30 @@ export default function GroupWorkspaceStudent({
     return members.map((member, index) => {
       // Base props common to all student card variants
       // Note: onStudentDetails is intentionally omitted - students can't view other students' profiles
+      const memberFirstCoach = member.coaches?.[0];
+      const memberCoachCount = member.coaches?.length ?? 0;
+      const memberCoachName = memberFirstCoach
+        ? memberCoachCount > 1
+          ? `${memberFirstCoach.name} ${memberFirstCoach.surname} + ${memberCoachCount - 1} more`
+          : `${memberFirstCoach.name} ${memberFirstCoach.surname}`
+        : '';
       const baseProps = {
         locale: locale,
         studentName: member.username,
         studentImageUrl: member.avatarUrl || '',
-        coachName: `${member.coach.name} ${member.coach.surname}`,
-        coachImageUrl: member.coach.avatarUrl || '',
+        coachName: memberCoachName,
+        coachImageUrl: memberFirstCoach?.avatarUrl || '',
         courseName: member.course.title,
         courseImageUrl: member.course.imageUrl || '',
         coachingSessionsLeft: member.coachingSessionCount || undefined,
-        isYou: member.coach.isCurrentUser,
+        isYou: memberFirstCoach?.isCurrentUser ?? false,
         onClickCourse: () => {
           router.push(`/${locale}/courses/${member.course.slug}`)
         },
         onClickCoach: () => {
-          router.push(`/${locale}/coaches/${member.coach.username}`)
+          if (memberFirstCoach?.username) {
+            router.push(`/${locale}/coaches/${memberFirstCoach.username}`)
+          }
         },
       };
 
@@ -379,32 +397,34 @@ export default function GroupWorkspaceStudent({
 
       {/* Section: Group Notes (saveGroupNotes, getGroupNotes) */}
       <div className="flex gap-4 items-start w-full flex-col md:flex-row lg:flex-row">
-        {/* Notes section*/}
-        <div className='flex flex-col gap-4 w-full'>
-          <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%] text-left'>
-            {t('notes.title')}
-          </h3>
-          <CoachNotesView
-            noteDescription={notesData.notes}
-            noteLinks={notesData.links?.map(link => ({
-              url: link.url || '',
-              title: link.title,
-              customIconMetadata: link.icon ? {
-                id: link.icon.id,
-                name: link.icon.name,
-                size: link.icon.size,
-                status: 'available' as const,
-                category: link.icon.category,
-                url: link.icon.downloadUrl,
-                thumbnailUrl: link.icon.downloadUrl,
-              } : undefined,
-            }))}
-            locale={locale}
-            onExploreCourses={() => {
-              router.push(`/${locale}/offers`);
-            }}
-          />
-        </div>
+        {/* Notes section — only render when there are actual notes */}
+        {hasGroupNotes && (
+          <div className='flex flex-col gap-4 w-full'>
+            <h3 className='text-text-primary md:text-2xl text-xl font-bold leading-[110%] text-left'>
+              {t('notes.title')}
+            </h3>
+            <CoachNotesView
+              noteDescription={notesData.notes}
+              noteLinks={notesData.links?.map(link => ({
+                url: link.url || '',
+                title: link.title,
+                customIconMetadata: link.icon ? {
+                  id: link.icon.id,
+                  name: link.icon.name,
+                  size: link.icon.size,
+                  status: 'available' as const,
+                  category: link.icon.category,
+                  url: link.icon.downloadUrl,
+                  thumbnailUrl: link.icon.downloadUrl,
+                } : undefined,
+              }))}
+              locale={locale}
+              onExploreCourses={() => {
+                router.push(`/${locale}/coaching`);
+              }}
+            />
+          </div>
+        )}
 
         {/* Next coaching session */}
         <div className='flex flex-col gap-4 md:w-fit lg:w-fit w-full'>
@@ -433,7 +453,7 @@ export default function GroupWorkspaceStudent({
                 startTime={formatTime(nextSessionData.nextSession.startTime)}
                 endTime={formatTime(nextSessionData.nextSession.endTime)}
                 withinCourse={true}
-                creatorName={firstCoach ? `${firstCoach.name} ${firstCoach.surname}` : ''}
+                creatorName={coachDisplayName}
                 creatorImageUrl={firstCoach?.avatarUrl || ''}
                 onClickCreator={() => {
                   if (firstCoach?.username) {
@@ -504,7 +524,7 @@ export default function GroupWorkspaceStudent({
               role="coach"
               onClickCourse={() => router.push(`/${locale}/courses/${assignment.course.slug}`)}
               onClickUser={() => {
-                // TODO: Navigate to student profile page
+                router.push(`/${locale}/students/${assignment.student?.username}`);
               }}
               onClickView={() => {
                 setSelectedAssignment({

@@ -121,6 +121,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
                             skills: coach.skills.map((skill) => skill.name),
                             rating: coach.averageRating ?? 0,
                             totalRatings: coach.reviewCount,
+                            nextAvailableDate: coach.nextAvailableDate ?? undefined,
                         }}
                         onClickViewProfile={() => {
                             router.push(`/coaches/${coach.username}`);

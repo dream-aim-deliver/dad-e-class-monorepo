@@ -57,6 +57,10 @@ export default function StudentCalendar({ hideBreadcrumbs = false }: StudentCale
     }, []);
 
     const router = useRouter();
+    const currentLocale = locale;
+    const handleSessionClick = (_sessionId: number | string) => {
+        router.push(`/${currentLocale}/workspace/coaching-sessions`);
+    };
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     // Wait for client-side date initialization to avoid hydration mismatch
@@ -95,8 +99,8 @@ export default function StudentCalendar({ hideBreadcrumbs = false }: StudentCale
                 <h1>{t('yourCalendarTitle')}</h1>
                 <Divider className="my-4" />
                 {/* Desktop view with header and calendar */}
-                <div className="h-[calc(100vh-250px)] flex-row hidden md:flex">
-                    <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col">
+                <div className="h-[calc(100dvh-300px)] flex-row hidden md:flex">
+                    <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col overflow-hidden">
                         <CalendarNavigationHeader
                             currentDate={currentDate}
                             setCurrentDate={setCurrentDate}
@@ -122,6 +126,7 @@ export default function StudentCalendar({ hideBreadcrumbs = false }: StudentCale
                                 }
                                 currentDate={currentDate}
                                 setCurrentDate={setCurrentDate}
+                                onSessionClick={handleSessionClick}
                             />
                         </Tabs.Content>
                         <Tabs.Content
@@ -137,6 +142,7 @@ export default function StudentCalendar({ hideBreadcrumbs = false }: StudentCale
                                 selectedDate={selectedDate}
                                 setSelectedDate={setSelectedDate}
                                 variant="full"
+                                onSessionClick={handleSessionClick}
                             />
                         </Tabs.Content>
                     </div>
@@ -149,6 +155,7 @@ export default function StudentCalendar({ hideBreadcrumbs = false }: StudentCale
                         }
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
+                        onSessionClick={handleSessionClick}
                     />
                 </div>
             </div>

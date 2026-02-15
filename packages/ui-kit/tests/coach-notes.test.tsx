@@ -298,32 +298,16 @@ describe('CoachNotesView', () => {
         expect(screen.getByText('View Link')).toBeInTheDocument();
     });
 
-    it('shows explore courses button when no content', () => {
+    it('renders nothing when no content exists', () => {
         const emptyProps = {
             ...defaultViewProps,
             noteDescription: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
             noteLinks: [],
         };
 
-        render(<CoachNotesView {...emptyProps} />);
+        const { container } = render(<CoachNotesView {...emptyProps} />);
 
-        expect(screen.getByText('No notes available yet')).toBeInTheDocument();
-        expect(screen.getByText('Explore Courses')).toBeInTheDocument();
-    });
-
-    it('handles explore courses click', () => {
-        const emptyProps = {
-            ...defaultViewProps,
-            noteDescription: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
-            noteLinks: [],
-        };
-
-        render(<CoachNotesView {...emptyProps} />);
-
-        const exploreButton = screen.getByText('Explore Courses');
-        fireEvent.click(exploreButton);
-
-        expect(defaultViewProps.onExploreCourses).toHaveBeenCalled();
+        expect(container.innerHTML).toBe('');
     });
 
     it('filters out empty links', () => {

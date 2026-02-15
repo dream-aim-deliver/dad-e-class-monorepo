@@ -41,6 +41,7 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
 
     const handleCopyLessonLink = useCallback((lessonId: string) => {
         const params = new URLSearchParams(searchParams.toString());
+        params.delete('role');
         params.set('tab', 'material');
         params.set('lesson-material', lessonId);
         const link = `${window.location.origin}${pathname}?${params.toString()}`;

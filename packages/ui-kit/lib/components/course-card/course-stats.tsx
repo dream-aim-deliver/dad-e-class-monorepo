@@ -10,13 +10,14 @@ interface StatItemProps {
   icon: React.ReactNode;
   text: string;
   tooltip?: string;
+  className?: string;
 }
 
-const StatItem: React.FC<StatItemProps> = ({ icon, text, tooltip }) => (
-  <div className="flex gap-1 items-center whitespace-nowrap">
-    {icon}
-    <label className="text-sm text-text-secondary">{text}</label>
-    {tooltip && <Tooltip text="" description={tooltip} />}
+const StatItem: React.FC<StatItemProps> = ({ icon, text, tooltip, className }) => (
+  <div className={`flex gap-1 items-center min-w-0 ${className ?? ''}`}>
+    <div className="shrink-0 flex">{icon}</div>
+    <label className="text-sm text-text-secondary truncate" title={text}>{text}</label>
+    {tooltip && <div className="shrink-0 flex"><Tooltip text="" description={tooltip} /></div>}
   </div>
 );
 
@@ -25,6 +26,7 @@ export interface CourseStatsProps extends isLocalAware{
   sessions: number;
   duration: string;
   sales: number;
+  sessionLabelVariant?: 'total' | 'available';
 }
 
 /**
@@ -50,22 +52,31 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
   sessions,
   duration,
   sales,
-  locale
+  locale,
+  sessionLabelVariant,
 }) => {
   const dictionary = getDictionary(locale);
+
+  const sessionLabel = sessionLabelVariant === 'available'
+    ? dictionary.components.courseCard.availableCoachingSession
+    : dictionary.components.courseCard.cochingSession;
+  const sessionHint = sessionLabelVariant === 'available'
+    ? dictionary.components.courseCard.availableCoachingSessionHint
+    : dictionary.components.courseCard.cochingSessionHint;
 
   // First row: Language and Coaching Session
   const firstRowStats = [
     {
       icon: <IconLanguage classNames="fill-text-secondary" size="5" />,
-      text: language,
+      text: language.toUpperCase(),
+      className: 'shrink-0',
     },
     ...(sessions
       ? [
           {
             icon: <IconCoachingSession classNames="text-text-secondary" size="5" />,
-            text: `${sessions} ${dictionary.components.courseCard.cochingSession}`,
-            tooltip: dictionary.components.courseCard.cochingSessionHint,
+            text: `${sessions} ${sessionLabel}`,
+            tooltip: sessionHint,
           },
         ]
       : []),

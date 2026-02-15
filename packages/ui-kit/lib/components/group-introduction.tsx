@@ -104,45 +104,56 @@ export const GroupIntroduction: FC<GroupIntroductionProps> = ({
                     />
                 </div>
                 <div className="flex flex-wrap items-center gap-1">
-                    <div className="flex items-center gap-1 text-sm text-text-secondary">
-                        <IconCoachingOffer size='5' data-testid="briefcase-icon" />
-                        <span>{t.coach}</span>
-                    </div>
-                    {coaches.map((coach) => (
-                        <div 
-                            key={coach.id}
-                            className="flex items-center gap-4"
-                        >
-                            {!coach.isCurrentUser ? (
-                                <Button
-                                    size="small"
-                                    variant="text"
-                                    className="flex gap-1 p-0 h-8 max-w-full"
-                                    text={coach.name}
-                                    hasIconLeft
-                                    iconLeft={
-                                        <UserAvatar
-                                            size="xSmall"
-                                            imageUrl={coach.avatarUrl || undefined}
-                                            fullName={coach.name}
-                                        />
-                                    }
-                                    onClick={() => onClickUser(coach.username)}
-                                />
-                            ) : (
-                                <div className="flex gap-1 items-center">
-                                    <UserAvatar
-                                        size="xSmall"
-                                        imageUrl={coach.avatarUrl || undefined}
-                                        fullName={coach.name}
-                                    />
-                                    <p className="text-base-white text-sm font-bold">
-                                        {t.you}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                    {coaches.length === 0 ? (
+                        <span className="text-sm text-text-secondary">{t.noCoach}</span>
+                    ) : (
+                        <>
+                            <div className="flex items-center gap-1 text-sm text-text-secondary">
+                                <IconCoachingOffer size='5' data-testid="briefcase-icon" />
+                                <span>{t.coach}</span>
+                            </div>
+                            {coaches.map((coach) => {
+                                const displayName = (coach.name || coach.surname)
+                                    ? `${coach.name} ${coach.surname}`.trim()
+                                    : coach.username;
+                                return (
+                                    <div
+                                        key={coach.id}
+                                        className="flex items-center gap-4"
+                                    >
+                                        {!coach.isCurrentUser ? (
+                                            <Button
+                                                size="small"
+                                                variant="text"
+                                                className="flex gap-1 p-0 h-8 max-w-full"
+                                                text={displayName}
+                                                hasIconLeft
+                                                iconLeft={
+                                                    <UserAvatar
+                                                        size="xSmall"
+                                                        imageUrl={coach.avatarUrl || undefined}
+                                                        fullName={displayName}
+                                                    />
+                                                }
+                                                onClick={() => onClickUser(coach.username)}
+                                            />
+                                        ) : (
+                                            <div className="flex gap-1 items-center">
+                                                <UserAvatar
+                                                    size="xSmall"
+                                                    imageUrl={coach.avatarUrl || undefined}
+                                                    fullName={displayName}
+                                                />
+                                                <p className="text-base-white text-sm font-bold">
+                                                    {t.you}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </>
+                    )}
                 </div>
             </div>
         </div>

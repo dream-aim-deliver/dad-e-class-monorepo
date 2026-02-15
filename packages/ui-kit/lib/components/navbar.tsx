@@ -249,7 +249,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {userProfile || defaultUserProfile}
             {showNotifications && (
               <div
-                className="relative flex items-center"
+                className="relative flex items-center pr-4"
                 onClick={onNotificationClick}
                 role="button"
                 tabIndex={0}
@@ -257,7 +257,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <IconChat size="6" classNames="cursor-pointer" />
                 {notificationCount > 0 && (
-                  <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
+                  <span className="absolute -top-2 left-3 bg-button-primary-fill text-black text-[10px] font-bold leading-none rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center">
                     {formatNotificationCount(notificationCount)}
                   </span>
                 )}
@@ -337,7 +337,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <IconChat size="6" classNames="cursor-pointer" />
                   {notificationCount > 0 && (
-                    <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
+                    <span className="absolute -top-2 left-3 bg-button-primary-fill text-black text-[10px] font-bold leading-none rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center">
                       {formatNotificationCount(notificationCount)}
                     </span>
                   )}
@@ -360,7 +360,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div
-          className="fixed top-0 left-0 w-full h-full bg-button-primary-text text-white flex flex-col items-center justify-center lg:hidden z-9999"
+          className="fixed top-0 left-0 w-full h-screen bg-button-primary-text text-white flex flex-col items-center justify-start pt-20 overflow-y-auto lg:hidden z-9999"
         >
           <div className="absolute top-3 left-0 right-0 flex justify-between items-center px-4 w-full">
             <a href="/" className="block h-12">

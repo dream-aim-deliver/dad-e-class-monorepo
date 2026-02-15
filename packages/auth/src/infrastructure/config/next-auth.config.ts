@@ -228,7 +228,7 @@ export const generateNextAuthConfig = (config: {
             })
         ],
         callbacks: {
-            jwt: async ({ token, user, account, profile, trigger }) => {
+            jwt: async ({ token, user, account, profile, trigger, session }) => {
                 // Initial sign in - store user and account data
                 if (user) {
                     token.user = user;
@@ -275,6 +275,19 @@ export const generateNextAuthConfig = (config: {
 
                 // Handle explicit session update (e.g. after profile picture change)
                 if (trigger === 'update') {
+                    // If data was passed directly via updateSession({ image: ... }),
+                    // use it without making a backend call (avoids expired token issues)
+                    if (session && typeof session === 'object' && 'image' in session) {
+                        if (token.cachedUserDetails) {
+                            token.cachedUserDetails = {
+                                ...token.cachedUserDetails,
+                                avatarImage: (session as any).image || undefined,
+                            };
+                        }
+                        return token;
+                    }
+
+                    // Fallback: re-fetch from backend (used by session monitor)
                     const idToken = (token.account as Account)?.id_token;
                     if (idToken) {
                         console.log('[Auth JWT] 🔄 Session update triggered, re-fetching user data...');

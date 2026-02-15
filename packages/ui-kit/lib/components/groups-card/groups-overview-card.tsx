@@ -11,11 +11,6 @@ interface Course {
     slug: string;
 }
 
-interface Creator {
-    name: string;
-    image?: string;
-}
-
 interface Coach {
     name: string;
     isCurrentUser: boolean;
@@ -29,7 +24,6 @@ export interface GroupOverviewCardDetails {
     totalStudents?: number;
     course: Course;
     coaches: Coach[];
-    creator: Creator;
 }
 
 type BaseGroupOverviewCardProps = {

@@ -15,6 +15,11 @@ export const Coaching_DE: TDictionary['pages']['coaching'] = {
     title: 'Kurzfristige Buchung',
     description: 'Du buchst eine Session mit weniger als {hours} Stunden Vorlaufzeit. Dein Coach sieht diese Anfrage möglicherweise nicht rechtzeitig. Wähle einen späteren Termin für eine höhere Bestätigungswahrscheinlichkeit.',
   },
+  notAvailableToday: {
+    title: 'Heute nicht verfügbar',
+    description: 'Nächster verfügbarer Termin: {date}',
+    goToDate: 'Zum Termin',
+  },
   error: {
     title: 'Coaching konnte nicht geladen werden',
     description: 'Die Coaching-Informationen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.',

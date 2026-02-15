@@ -157,7 +157,7 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
                     courseName: course.title,
                     courseImageUrl: course.imageUrl || '',
                     onClickCourse: () => {
-                        // TODO: Navigate to course
+                        router.push(`/${locale}/courses/${course.slug}`);
                     },
                     status: 'no-assignment' as const,
                 };
@@ -168,7 +168,7 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
                     courseName: course.title,
                     courseImageUrl: course.imageUrl || '',
                     onClickCourse: () => {
-                        // TODO: Navigate to course
+                        router.push(`/${locale}/courses/${course.slug}`);
                     },
                     status: 'passed' as const,
                     completedCourseDate: completedCourseDate,

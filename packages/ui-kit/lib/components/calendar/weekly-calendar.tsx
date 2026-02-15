@@ -40,6 +40,8 @@ interface WeeklyCalendarProps extends isLocalAware {
     events?: CalendarEvent[];
     onSessionDrop?: (sessionId: string, date: Date, startTime: string) => void;
     isLoading?: boolean;
+    scrollToHour?: number;
+    scrollKey?: number;
 }
 
 interface ProcessedEvent extends CalendarEvent {
@@ -73,6 +75,8 @@ export function WeeklyCalendar({
     locale,
     events,
     isLoading,
+    scrollToHour,
+    scrollKey,
 }: WeeklyCalendarProps) {
     // Get array of dates for the current week
     const getWeekDates = () => {
@@ -216,6 +220,13 @@ export function WeeklyCalendar({
        container.scrollTop = sixAmPosition;
      }
    }, [scrollContainerRef]);
+
+    useEffect(() => {
+        if (scrollToHour !== undefined && scrollContainerRef.current) {
+            const position = scrollToHour * 96;
+            scrollContainerRef.current.scrollTop = position;
+        }
+    }, [scrollToHour, scrollKey]);
 
     return (
         <div

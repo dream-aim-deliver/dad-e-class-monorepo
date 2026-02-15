@@ -91,7 +91,7 @@ export const StudentCoachingSessionCard: React.FC<StudentCoachingSessionCardProp
     // These sessions don't have finalized date/time or creator assignments
     if (props.status === 'to-be-defined') {
         return (
-            <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
+            <div className="flex flex-col md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
                 <div className="flex gap-4 items-center justify-between">
                     <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
                         {props.title}
@@ -125,7 +125,7 @@ export const StudentCoachingSessionCard: React.FC<StudentCoachingSessionCardProp
     // All other session statuses with defined creators and scheduling
     // TypeScript ensures all required props are present based on the specific status
     return (
-        <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
+        <div className="flex flex-col md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
             <div className="flex gap-4 items-center justify-between">
                 <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
                     {props.title}
@@ -176,7 +176,9 @@ export const StudentCoachingSessionCard: React.FC<StudentCoachingSessionCardProp
                 onClickGroup={props.onClickGroup}
                 locale={props.locale}
             />
-            <StudentAction {...props} />
+            <div className="mt-auto">
+                <StudentAction {...props} />
+            </div>
         </div>
     );
 };

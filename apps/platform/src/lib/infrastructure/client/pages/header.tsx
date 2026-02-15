@@ -9,6 +9,8 @@ import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { trpc } from '../trpc/cms-client';
+import { useCountUnreadNotificationsPresenter } from '../hooks/use-count-unread-notifications-presenter';
 
 interface HeaderProps {
     platformViewModel: viewModels.TGetPlatformViewModel;
@@ -125,6 +127,27 @@ export default function Header({
         router.push(`/${locale}/workspace/notifications`);
     };
 
+    const [unreadCountViewModel, setUnreadCountViewModel] = useState<
+        viewModels.TCountUnreadNotificationsViewModel | undefined
+    >(undefined);
+
+    const { data: unreadCountResponse } =
+        trpc.countUnreadNotifications.useQuery(
+            {},
+            {
+                enabled: !!session,
+                refetchInterval: 30000,
+            },
+        );
+
+    const { presenter: unreadCountPresenter } =
+        useCountUnreadNotificationsPresenter(setUnreadCountViewModel);
+
+    if (unreadCountResponse) {
+        // @ts-ignore
+        unreadCountPresenter.present(unreadCountResponse, unreadCountViewModel);
+    }
+
     if (platformViewModel.mode !== 'default') {
         return (
             <DefaultError
@@ -170,6 +193,11 @@ export default function Header({
             dropdownTriggerText={t('workspace')}
             onNotificationClick={handleNotificationClick}
             showNotifications={true}
+            notificationCount={
+                unreadCountViewModel?.mode === 'default'
+                    ? unreadCountViewModel.data.count
+                    : 0
+            }
         >
             <NavLinks locale={locale} pathname={pathname} />
         </Navbar>

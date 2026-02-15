@@ -167,7 +167,7 @@ export default function ManageLegalTexts({ initialTab }: ManageLegalTextsProps) 
     {
       label: platformContext.platformSlug,
       onClick: () => {
-        // TODO: Implement navigation to platform
+        router.push(`/${currentLocale}/platform/${platformContext.platformSlug}/${platformContext.platformLocale}`);
       },
     },
     {

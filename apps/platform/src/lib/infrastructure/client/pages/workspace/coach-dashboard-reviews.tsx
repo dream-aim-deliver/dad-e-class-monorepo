@@ -73,7 +73,7 @@ export default function CoachDashboardReviews() {
 
     return (
         <div className="rounded-lg">
-            <div className="flex items-center mb-6">
+            <div className="flex items-center justify-between mb-6">
                 <h3>{t('title')}</h3>
                 <Button
                     variant="text"

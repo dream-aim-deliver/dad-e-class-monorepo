@@ -134,6 +134,7 @@ export const DE: TDictionary = {
       sendNotification: 'Benachrichtigung senden',
       hideActions: 'Aktionen ausblenden',
       roleColumn: 'Rolle',
+      rolesColumn: 'Rollen',
       exportSelection: 'Auswahl exportieren',
       all: 'Alle',
       students: 'Studierende', // Guidelines: gender-neutral wording
@@ -249,6 +250,8 @@ export const DE: TDictionary = {
       completedBadge: 'Kurs abgeschlossen',
       cochingSession: 'Coaching-Sitzungen gesamt',
       cochingSessionHint: 'Dies ist die Gesamtanzahl der Coaching-Sitzungen, die Teil dieses Kurses sind. Sie spiegelt nicht wider, wie viele Sie bereits erworben haben oder wie viele noch buchbar sind.',
+      availableCoachingSession: 'Verfügbare Coaching-Sitzungen',
+      availableCoachingSessionHint: 'Die Anzahl der Coaching-Sitzungen, die Sie in diesem Kurs buchen können.',
       sales: 'Verkauf',
       hours: 'Stunden',
       includeCourseButton: 'Enthalten',
@@ -376,6 +379,7 @@ export const DE: TDictionary = {
     availableCoachingSessions: {
       title: 'Verfügbare Coaching-Sitzungen',
       buyMoreSessions: 'Kaufe mehr Sitzungen',
+      exploreOurCoaches: 'Entdecke unsere Coaches',
       durationMinutes: 'Minuten',
       loadingText: 'Sitzungen werden geladen...',
       noAvailableSessionText: 'Keine verfügbaren Sitzungen',
@@ -391,6 +395,7 @@ export const DE: TDictionary = {
       teaches: "Unterrichtet",
       viewProfile: "Profil ansehen",
       bookSession: "Sitzung buchen",
+      nextAvailable: "Nächster Termin",
     },
     buyCoachingSession: {
       title: "Coaching-Sitzung kaufen",
@@ -646,6 +651,7 @@ export const DE: TDictionary = {
       hoursText: 'Stunden',
       filmMaterialText: 'von Filmmaterial',
       coachingWithAProfessionalText: 'von 1-zu-1-Coaching mit einem Industry Expert',
+      feedbackFromExpertsText: 'Mit Feedback von Industry Experts',
       selfStudyMaterialText: 'von Selbstlernmaterial',
       createdByText: 'Erstellt von',
       yourProgressText: 'Dein Fortschritt',
@@ -806,6 +812,7 @@ export const DE: TDictionary = {
       course: 'Kurs',
       coach: 'Trainer',
       you: 'Du',
+      noCoach: 'Noch kein Trainer zugewiesen',
     },
     reviewSnippet: {
       by: 'von',
@@ -1098,7 +1105,7 @@ export const DE: TDictionary = {
       usefulLinks: 'Nützliche Links',
       validateLink: 'Link validieren',
       validateTitle: 'Titel validieren',
-      notesValidation: 'Diese Gruppe hat noch keinen Coach. Weise einen Coach zu und sende ihm/ihr den Gutschein. Die Person wird Coach dieser Gruppe.',
+      notesValidation: 'Diese Gruppe hat noch keinen Coach. Ein Coach wird in Kürze zugewiesen.',
       publishNotes: 'Notizen veröffentlichen',
       includeInMaterials: 'In Kursmaterialien einbeziehen',
       customIcon: 'Benutzerdefiniertes Symbol',
@@ -1106,8 +1113,8 @@ export const DE: TDictionary = {
       publishEditNotes: "Änderungen veröffentlichen",
       back: "Zurück",
       editCoachNotes: "Coach Notizen bearbeiten",
-      exploreCourses: "Kurse erkunden",
-      description: "Hinweis: Jede von dir vorgenommene Änderung sendet eine Benachrichtigung an alle Studierenden in dieser Gruppe. Bitte überprüfe diese sorgfältig, bevor du sie veröffentlichst.", // Guidelines: informal 'Du' instead of formal 'Sie/Ihnen'
+      exploreCourses: "Coaches erkunden",
+      description: "Änderungen werden für alle Studierenden in dieser Gruppe sichtbar.",
       errorMessage: "Fehler beim Speichern der Notizen. Bitte versuche es erneut.",
       successMessage: "Notizen erfolgreich gespeichert!",
       closeButton: "Schließen",
@@ -1369,8 +1376,10 @@ export const DE: TDictionary = {
       usefulLinks: 'Nützliche Links:',
       downloadFiles: 'Dateien herunterladen:',
       assignment: 'Aufgabe',
-      module: 'Modul',
-      lesson: 'Lektion',
+      moduleLabel: 'Modul %{position} von %{total}',
+      lessonLabel: 'Lektion %{position} von %{total}',
+      moduleTooltip: 'Es werden nur Module mit Materialien angezeigt. Die Nummer entspricht der ursprünglichen Position im Kurs.',
+      lessonTooltip: 'Es werden nur Lektionen mit Materialien angezeigt. Die Nummer entspricht der ursprünglichen Position im Modul.',
       noMaterials: 'Keine Materialien für diese Lektion verfügbar.',
       copyLink: 'Link kopieren',
       linkCopied: 'Link kopiert!',
@@ -1549,6 +1558,9 @@ export const DE: TDictionary = {
       emptyState: 'Keine Gutscheine gefunden',
       withCoachingSessions: 'mit Coaching-Sitzungen',
       withCoachingSessionsShort: '+ CS',
+      groupCourse: 'Gruppenkurs',
+      groupPackage: 'Gruppenpaket',
+      freePackages: 'Kostenlose Pakete',
     },
     couponGridFilterModal: {
       title: 'Coupons filtern',
@@ -1571,6 +1583,7 @@ export const DE: TDictionary = {
       discountLabel: 'Rabatt',
       coachingLabel: 'Coaching',
       groupCourseLabel: 'Gruppenkurs',
+      groupPackageLabel: 'Gruppenpaket',
       freePackagesLabel: 'Kostenlose Pakete',
       resetFilters: 'Filter zurücksetzen',
       applyFilters: 'Filter anwenden',
@@ -1599,7 +1612,9 @@ export const DE: TDictionary = {
       freeCoachingSessions: 'Kostenlose Coaching-Sitzungen',
       discountOnEverything: '% Rabatt auf alles',
       groupCourse: 'Gruppenkurs',
+      groupPackage: 'Gruppenpaket',
       selectPackages: 'Pakete auswählen',
+      selectPackage: 'Paket auswählen',
       duration: 'Dauer',
       minutes: 'Minuten',
       isPartOfCourse: 'Ist die Coaching-Sitzung Teil eines Kurses?',
@@ -1625,7 +1640,8 @@ export const DE: TDictionary = {
         coachingRequired: 'Bitte wähle ein Coaching-Angebot aus',
         percentageInvalid: 'Prozentsatz muss zwischen 1 und 100 liegen',
         courseRequired: 'Bitte wähle einen Kurs aus',
-        groupNameRequired: 'Gruppenname ist erforderlich'
+        groupNameRequired: 'Gruppenname ist erforderlich',
+        packageRequired: 'Bitte wähle ein Paket aus'
       },
       error: {
         createFailed: 'Gutschein konnte nicht erstellt werden. Bitte versuchen Sie es erneut.'
@@ -2239,6 +2255,8 @@ export const DE: TDictionary = {
         loading: 'Lädt...',
         couponSuccess: 'Erfolgreich der Gruppe beigetreten!',
         couponError: 'Gutscheincode konnte nicht validiert werden',
+        crossCourseSuccess: 'Du bist jetzt Coach für Gruppe {groupName} im Kurs {courseTitle}',
+        goToCourse: 'Zum Kurs',
         error: {
           title: 'Fehler beim Laden der Gruppen',
           description: 'Beim Laden der Kursgruppen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
@@ -2313,6 +2331,7 @@ export const DE: TDictionary = {
       selectCourseToViewAssignments: 'Bitte wähle einen Kurs, um die Aufgaben anzuzeigen',
       selectCourseToViewInteractions: 'Bitte wähle einen Kurs, um die Interaktionen anzuzeigen',
       selectCourseToViewAssessment: 'Bitte wähle einen Kurs, um die Vorab-Bewertung anzuzeigen',
+      showingAssessmentFor: 'Bewertung angezeigt für: {course}',
       studentInteractions: 'Schüler-Interaktionen',
       noInteractionsFound: 'Keine Interaktionen für diesen Kurs gefunden',
       tabs: {
@@ -2641,7 +2660,9 @@ export const DE: TDictionary = {
       ended: 'Beendet',
       available: 'Verfügbar',
       availableSessionsDescription: 'Nehmen Sie an Gruppen-Coachings teil oder buchen Sie eine 1:1-Sitzung mit Ihrem Coach.',
-      noCoachesFound: 'Keine Coaches gefunden',
+      noCoachesFound: 'Du hast noch keine Coaches',
+      noCoachesDescription: 'Entdecke verfügbare Coaches und buche deine erste Sitzung.',
+      exploreCoaches: 'Entdecke unsere Coaches',
       yourPastCoaches: 'Ihre vergangenen Coaches',
       viewAllCoaches: 'Alle Coaches ansehen',
       noSessionsFound: 'Sie haben derzeit keine geplanten Sitzungen.',
@@ -2659,6 +2680,9 @@ export const DE: TDictionary = {
       coachingSessions: 'Coaching-Sitzungen',
       upcomingAndAvailable: 'Bevorstehend & Verfügbar',
       availableCoachingSessions: 'Verfügbare Coaching-Sitzungen',
+      viewAllSessions: 'Alle Sitzungen anzeigen',
+      asCoach: 'Als Coach',
+      asStudent: 'Als Teilnehmer',
       error: {
         title: 'Fehler bei den Coaching-Sitzungen',
         description: 'Ihre Coaching-Sitzungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
@@ -2683,6 +2707,7 @@ export const DE: TDictionary = {
           redeemFailed: "Gutschein konnte nicht eingelöst werden",
           redeemFailedGeneric: "Der Gutscheincode konnte nicht eingelöst werden. Bitte überprüfen Sie den Code und versuchen Sie es erneut.",
         },
+        packageCoursesCount: "Paket mit {count} Kursen",
       },
     },
     notifications: {
@@ -3464,6 +3489,11 @@ export const DE: TDictionary = {
       error: {
         title: 'Kalender konnte nicht geladen werden',
         description: 'Die Kalenderdaten konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
+      },
+      studentOverlapWarning: {
+        title: 'Terminkonflikt bei Studierenden',
+        description: 'Die Sitzung wurde erstellt, aber folgende Studierende haben überschneidende Sitzungen:',
+        acknowledge: 'OK, verstanden',
       },
     },
     manageLegalTexts: {

@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TUpcomingStudentCoachingSession, TListCoachCoachingSessionsSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { Button, CoachingSessionCard, AvailableCoachingSessions, ConfirmationModal, CancelCoachingSessionModal } from '@maany_shr/e-class-ui-kit';
 import { useListUpcomingStudentCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-student-coaching-sessions-presenter';
 import { useListStudentCoachingSessionsPresenter } from '../../hooks/use-list-student-coaching-sessions-presenter';
@@ -163,7 +163,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.studentCoachingSessions');
     const coachT = useTranslations('pages.coachCoachingSessions');
-    const paginationT = useTranslations('components.paginationButton');
+
 
     const { studentUsername, isCoach } = props;
     const utils = trpc.useUtils();
@@ -430,23 +430,21 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
     return (
         <div className="rounded-lg pb-15">
-            <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4">
-                <p className="text-2xl font-semibold text-white">
-                    {t('yourCoachingSessions')}
-                </p>
+            <div className="flex items-center justify-between">
+                <h3>{t('yourCoachingSessions')}</h3>
                 <Button
                     variant="text"
                     size="small"
                     onClick={handleViewAllCoachingSessions}
-                >
-                    {paginationT('viewAll')}
-                </Button>
+                    text={t('viewAllSessions')}
+                />
             </div>
 
             {/* Coach sessions section (as coach) */}
             {isCoach && hasCoachSessions && (
                 <div className="mt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <p className="text-sm text-text-secondary mb-2">{t('asCoach')}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {renderCoachSessionCards()}
                     </div>
                 </div>
@@ -455,7 +453,9 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
             {/* Student sessions section (as student) */}
             <div className="mt-6">
                 {hasUpcomingSessions ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <>
+                    {isCoach && <p className="text-sm text-text-secondary mb-2">{t('asStudent')}</p>}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {upcomingSessions.slice(0, 3).map((session) => {
                             const safeDate = (iso?: string | null) => {
                                 if (!iso) return null;
@@ -499,6 +499,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                             );
                         })}
                     </div>
+                    </>
                 ) : !hasCoachSessions ? (
                     <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                         <p className="text-text-primary text-md">
@@ -510,12 +511,11 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
             {availableCoachingSessionsData.length > 0 && (
                 <div className="mt-10">
-                    <p className="text-2xl font-semibold text-white mb-6">
-                        {t('availableCoachingSessions')}
-                    </p>
+                    <h3 className="mb-6">{t('availableCoachingSessions')}</h3>
                     <AvailableCoachingSessions
                         locale={locale}
                         availableCoachingSessionsData={availableCoachingSessionsData}
+                        buttonText={getDictionary(locale)?.components?.availableCoachingSessions?.exploreOurCoaches}
                         onClickBuyMoreSessions={() => {
                             router.push(`/${locale}/coaching`);
                         }}

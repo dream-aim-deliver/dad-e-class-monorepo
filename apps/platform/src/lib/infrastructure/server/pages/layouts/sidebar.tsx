@@ -19,10 +19,13 @@ import {
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 
 const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
+    const { data: sessionData } = useSession();
+    // Use client-side session image (reactive) over server-provided prop (static from layout)
+    const profileImageUrl = sessionData?.user?.image ?? props.profileImageUrl;
     const sidebarTranslations = useTranslations('pages.sidebarLayout');
     const router = useRouter();
     const pathname = usePathname();
@@ -192,6 +195,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
         <>
             <SideMenu
                 {...props}
+                profileImageUrl={profileImageUrl}
                 isCollapsed={isCollapsed}
                 onClickToggle={handleToggle}
             >

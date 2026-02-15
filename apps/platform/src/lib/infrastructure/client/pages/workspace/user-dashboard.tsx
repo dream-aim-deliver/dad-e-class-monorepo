@@ -68,6 +68,8 @@ function RedeemCouponDialogContent() {
             // Invalidate queries to refetch user data after successful redemption
             void utils.listUserCourses.invalidate();
             void utils.listUpcomingStudentCoachingSessions.invalidate();
+            void utils.listStudentCoachingSessions.invalidate();
+            void utils.listNotifications.invalidate();
         }
     });
 
@@ -104,12 +106,22 @@ function RedeemCouponDialogContent() {
                         break;
                     case 'freePackages':
                         type = 'package';
-                        title = `Bundle with ${outcome.courses.length} courses`;
+                        title = t('coupon.packageCoursesCount').replace('{count}', outcome.courses.length.toString());
                         imageUrl = outcome.courses[0]?.imageUrl || undefined;
                         break;
                     case 'freeCoachingSession':
                         type = 'coaching';
-                        title = outcome.coachingOfferings[0]?.title || 'Coaching Session';
+                        if (outcome.coachingOfferings.length > 1) {
+                            courses = outcome.coachingOfferings.map((offering: any) => ({
+                                title: `${offering.title} (${offering.count} ${offering.count > 1 ? 'sessions' : 'session'})`,
+                                imageUrl: undefined,
+                            }));
+                        } else {
+                            const offering = outcome.coachingOfferings[0];
+                            title = offering
+                                ? `${offering.title} (${offering.count} ${offering.count > 1 ? 'sessions' : 'session'})`
+                                : 'Coaching Session';
+                        }
                         imageUrl = outcome.course?.imageUrl || undefined;
                         break;
                     case 'groupCourse':
@@ -117,11 +129,22 @@ function RedeemCouponDialogContent() {
                         title = outcome.group.name;
                         imageUrl = outcome.course.imageUrl || undefined;
                         break;
+                    case 'groupPackage':
+                        type = 'group';
+                        title = outcome.group.name;
+                        imageUrl = outcome.courses?.[0]?.imageUrl || undefined;
+                        courses = outcome.courses?.map((course: any) => ({
+                            title: course.title,
+                            imageUrl: course.imageUrl || undefined,
+                        }));
+                        break;
                 }
 
                 // Invalidate queries to refetch user data after successful redemption
                 void utils.listUserCourses.invalidate();
                 void utils.listUpcomingStudentCoachingSessions.invalidate();
+                void utils.listStudentCoachingSessions.invalidate();
+                void utils.listNotifications.invalidate();
 
                 return {
                     valid: true,
@@ -275,8 +298,8 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                 return `${profile.name} ${profile.surname}`;
             }
         }
-        return isCoach ? 'Coach' : 'Student';
-    }, [personalProfileViewModel, isCoach]);
+        return session?.user?.name ?? '';
+    }, [personalProfileViewModel, session]);
 
     const formatRoles = useCallback(() => {
         if (!roles || roles.length === 0) return [];
@@ -332,7 +355,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         },
                     ]}
                 />
-                <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center pb-15">
+                <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center pb-15">
                     <div className="flex items-center space-x-4">
                         <UserAvatar
                             size="xLarge"
@@ -364,7 +387,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                             </div>
                         </div>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex flex-wrap gap-2">
                         <Button
                             variant="text"
                             hasIconLeft

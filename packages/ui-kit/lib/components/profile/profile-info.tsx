@@ -31,6 +31,7 @@ interface ProfileInfoProps extends isLocalAware {
   isSaving?: boolean;
   showApplyToCoachButton?: boolean;
   onApplyToCoachClick?: () => void;
+  usernameValidator?: (username: string) => string | null;
 }
 
 
@@ -87,6 +88,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   isSaving = false,
   showApplyToCoachButton = false,
   onApplyToCoachClick,
+  usernameValidator,
 }) => {
   const dictionary = getDictionary(locale);
 
@@ -127,6 +129,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     }
     onChange(newData);
   };
+
+  const usernameError = usernameValidator?.(initialData.username) ?? null;
 
   const handleUploadedFiles = async (
     fileRequest: fileMetadata.TFileUploadRequest,
@@ -191,6 +195,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             setValue: (value) => handleChange('username', value),
             inputText: dictionary.components.profileInfo.usernamePlaceholder,
           }}
+          hasFeedback={!!usernameError}
+          feedbackMessage={usernameError ? { type: 'error', message: usernameError } : undefined}
         />
         <TextInput
           label={dictionary.components.profileInfo.phoneNumber}

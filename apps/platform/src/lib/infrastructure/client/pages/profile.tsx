@@ -229,7 +229,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			setSuccessMessage(t('personalProfileSaved'));
 			setErrorMessage(null);
 			await utils.getPersonalProfile.invalidate();
-			await updateSession(); // Refresh NextAuth session so nav bars show updated profile picture
+			// Pass new avatar URL directly to session update (bypasses expired token issues)
+			const responseData = data as any;
+			const newAvatarUrl = responseData?.data?.profile?.avatarImage?.downloadUrl || null;
+			await updateSession({ image: newAvatarUrl });
+			router.refresh();
 		},
 		onError: (error) => {
 			setErrorMessage(error.message || t('failedToSavePersonal'));
@@ -679,6 +683,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						skillsLanguageHint={professionalInfoTranslations('skillsLanguageHint')}
 						showApplyToCoachButton={isStudent}
 						onApplyToCoachClick={handleOpenApplicationModal}
+						usernameValidator={(username) => {
+							if (!username || username.trim() === '') return null;
+							if (!USERNAME_REGEX.test(username)) return t('usernameInvalid');
+							return null;
+						}}
 					/>
 
 

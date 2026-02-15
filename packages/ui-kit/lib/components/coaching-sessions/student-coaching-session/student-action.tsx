@@ -151,15 +151,17 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                                 text={dictionary.components.coachingSessionCard.rescheduleText}
                             />
                         )}
-                        <Button
-                            onClick={props.onClickCancel}
-                            variant={props.onClickReschedule ? "secondary" : "primary"}
-                            size="small"
-                            className={props.onClickReschedule ? "max-w-full" : "w-full"}
-                            hasIconLeft
-                            iconLeft={<IconTrashAlt size="5" />}
-                            text={dictionary.components.coachingSessionCard.cancelText}
-                        />
+                        {props.onClickCancel && (
+                            <Button
+                                onClick={props.onClickCancel}
+                                variant={props.onClickReschedule ? "secondary" : "primary"}
+                                size="small"
+                                className={props.onClickReschedule ? "max-w-full" : "w-full"}
+                                hasIconLeft
+                                iconLeft={<IconTrashAlt size="5" />}
+                                text={dictionary.components.coachingSessionCard.cancelText}
+                            />
+                        )}
                     </div>
                 </div>
             );
@@ -254,15 +256,17 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                         hasIconLeft
                         iconLeft={<IconHourglass size="5" />}
                     />
-                    <Button
-                        className="max-w-full"
-                        onClick={props.onClickCancel}
-                        variant="secondary"
-                        size="medium"
-                        hasIconLeft
-                        iconLeft={<IconTrashAlt size="5" />}
-                        text={dictionary.components.coachingSessionCard.cancelRequestText}
-                    />
+                    {props.onClickCancel && (
+                        <Button
+                            className="max-w-full"
+                            onClick={props.onClickCancel}
+                            variant="secondary"
+                            size="medium"
+                            hasIconLeft
+                            iconLeft={<IconTrashAlt size="5" />}
+                            text={dictionary.components.coachingSessionCard.cancelRequestText}
+                        />
+                    )}
                 </div>
             );
 

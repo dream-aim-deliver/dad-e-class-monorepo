@@ -167,3 +167,4 @@ export * from './prepare-checkout-view-model';
 export * from './process-purchase-view-model';
 export * from './get-coach-application-view-model';
 export * from './list-required-courses-view-model';
+export * from './count-unread-notifications-view-model';

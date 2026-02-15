@@ -22,6 +22,8 @@ interface WeeklyCoachCalendarWrapperProps {
     setCurrentDate: (date: Date) => void;
     openDialog?: () => void;
     onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
+    scrollToHour?: number;
+    scrollKey?: number;
 }
 
 export function WeeklyCoachCalendarWrapper({
@@ -31,6 +33,8 @@ export function WeeklyCoachCalendarWrapper({
     setCurrentDate,
     onAvailabilityClick,
     openDialog,
+    scrollToHour,
+    scrollKey,
 }: WeeklyCoachCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
 
@@ -54,6 +58,8 @@ export function WeeklyCoachCalendarWrapper({
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
             events={weeklyEvents}
+            scrollToHour={scrollToHour}
+            scrollKey={scrollKey}
         />
     );
 }

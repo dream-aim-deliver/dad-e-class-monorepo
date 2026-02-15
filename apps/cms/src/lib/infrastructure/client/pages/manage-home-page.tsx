@@ -380,7 +380,7 @@ export default function ManageHomepage() {
 		{
 			label: platform.name,
 			onClick: () => {
-				// TODO: Implement navigation to platform
+				router.push(`/${appLocale}/platform/${platformContext.platformSlug}/${platformContext.platformLocale}`);
 			},
 		},
 		{

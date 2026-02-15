@@ -1,5 +1,5 @@
 import React from 'react';
-import { isLocalAware } from '@maany_shr/e-class-translations';
+import { isLocalAware, dictionaryFormat } from '@maany_shr/e-class-translations';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
@@ -16,6 +16,7 @@ import { LinkPreview } from '../links';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { IconCloudDownload } from '../icons';
 import { IconLink } from '../icons/icon-link';
+import Tooltip from '../tooltip';
 
 /**
  * Props for the CourseMaterialsAccordion component
@@ -82,7 +83,7 @@ export const CourseMaterialsAccordion: React.FC<
                                     .usefulLinks
                             }
                         </h4>
-                        <div className="p-4 border border-base-neutral-700 rounded-medium mb-4">
+                        <div className="flex flex-col gap-3 p-4 border border-base-neutral-700 rounded-medium mb-4">
                             {material.links?.map((link: any, idx: number) => (
                                 <LinkPreview
                                     key={idx}
@@ -144,9 +145,9 @@ export const CourseMaterialsAccordion: React.FC<
                                 className="text-text-secondary leading-normal [&_ol]:ml-2 [&_ol_li]:mb-3"
                             />
                         )}
-                        {material.links?.length > 0 && (
-                            <div className="p-4 border border-base-neutral-700 rounded-medium">
-                                {material.links.map((link: any, idx: number) => (
+                        {(material.links?.length ?? 0) > 0 && (
+                            <div className="flex flex-col gap-3 p-4 border border-base-neutral-700 rounded-medium">
+                                {material.links?.map((link: any, idx: number) => (
                                     <LinkPreview
                                         key={idx}
                                         title={link.title}
@@ -156,9 +157,9 @@ export const CourseMaterialsAccordion: React.FC<
                                 ))}
                             </div>
                         )}
-                        {material.resources?.filter(Boolean).length > 0 && (
+                        {(material.resources?.filter(Boolean).length ?? 0) > 0 && (
                             <div className="px-4 border border-base-neutral-700 rounded-medium">
-                                {material.resources.filter(Boolean).map((file: any, idx: number) => (
+                                {material.resources?.filter(Boolean).map((file: any, idx: number) => (
                                     <FilePreview
                                         key={idx}
                                         uploadResponse={{
@@ -231,12 +232,12 @@ export const CourseMaterialsAccordion: React.FC<
                     >
                         <div className="flex items-center gap-4 flex-1">
                             <h3>{module.title}</h3>
-                            <span className="text-text-secondary text-xs md:text-sm">
-                                {moduleIndex + 1}/{moduleCount}{' '}
-                                {
-                                    dictionary.components
-                                        .courseMaterialsAccordion.module
-                                }
+                            <span className="text-text-secondary text-xs md:text-sm flex items-center gap-1">
+                                {dictionaryFormat(dictionary.components.courseMaterialsAccordion.moduleLabel, { position: module.position ?? 0, total: moduleCount ?? 0 })}
+                                <Tooltip
+                                    text=""
+                                    description={dictionary.components.courseMaterialsAccordion.moduleTooltip}
+                                />
                             </span>
                         </div>
                     </AccordionTrigger>
@@ -289,14 +290,12 @@ export const CourseMaterialsAccordion: React.FC<
                                         >
                                             <div className="flex items-center gap-4 flex-1">
                                                 <h4>{lesson.title}</h4>
-                                                <span className="text-text-secondary text-xs md:text-sm">
-                                                    {lessonIndex + 1}/
-                                                    {module.lessonCount}{' '}
-                                                    {
-                                                        dictionary.components
-                                                            .courseMaterialsAccordion
-                                                            .lesson
-                                                    }
+                                                <span className="text-text-secondary text-xs md:text-sm flex items-center gap-1">
+                                                    {dictionaryFormat(dictionary.components.courseMaterialsAccordion.lessonLabel, { position: lesson.position ?? 0, total: module.lessonCount ?? 0 })}
+                                                    <Tooltip
+                                                        text=""
+                                                        description={dictionary.components.courseMaterialsAccordion.lessonTooltip}
+                                                    />
                                                 </span>
                                                 {onCopyLessonLink && (
                                                     <button
@@ -304,7 +303,7 @@ export const CourseMaterialsAccordion: React.FC<
                                                         title={copiedLessonId === lesson.id
                                                             ? dictionary.components.courseMaterialsAccordion.linkCopied
                                                             : dictionary.components.courseMaterialsAccordion.copyLink}
-                                                        className="flex items-center gap-1 text-text-secondary hover:text-text-primary text-xs md:text-sm ml-auto flex-shrink-0"
+                                                        className="flex items-center gap-1 text-text-secondary hover:text-text-primary text-xs md:text-sm ml-auto flex-shrink-0 cursor-pointer"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             onCopyLessonLink(lesson.id!);

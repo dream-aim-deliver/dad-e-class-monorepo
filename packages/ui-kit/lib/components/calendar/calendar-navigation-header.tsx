@@ -87,15 +87,6 @@ export function CalendarNavigationHeader({
     return (
         <div className="flex flex-row mb-4 items-center justify-between">
             <div className="flex flex-row items-center space-x-6">
-                <h3> {getSectionHeading()} </h3>
-                <ChevronLeft
-                    className="cursor-pointer text-base-brand-500"
-                    onClick={() => changeDate(-1)}
-                />
-                <ChevronRight
-                    className="cursor-pointer text-base-brand-500"
-                    onClick={() => changeDate(1)}
-                />
                 <Button
                     variant="secondary"
                     text={dictionary.components.calendar.today}
@@ -108,6 +99,15 @@ export function CalendarNavigationHeader({
                     }}
                     size="small"
                 />
+                <ChevronLeft
+                    className="cursor-pointer text-base-brand-500"
+                    onClick={() => changeDate(-1)}
+                />
+                <ChevronRight
+                    className="cursor-pointer text-base-brand-500"
+                    onClick={() => changeDate(1)}
+                />
+                <h3> {getSectionHeading()} </h3>
             </div>
             {viewTabs && (
                 <div className='flex flex-row gap-7 items-center'>

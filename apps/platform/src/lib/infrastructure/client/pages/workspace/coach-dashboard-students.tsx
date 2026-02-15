@@ -103,7 +103,7 @@ export default function CoachDashboardStudents() {
     if (hasError) {
         return (
             <div className="flex flex-col space-y-4 pb-15">
-                <div className="flex items-center">
+                <div className="flex items-center justify-between">
                     <h3> {t('title')} </h3>
                     <Button
                         variant="text"
@@ -124,7 +124,7 @@ export default function CoachDashboardStudents() {
 
     return (
         <div className="flex flex-col rounded-lg pb-15">
-            <div className="flex items-center mb-6">
+            <div className="flex items-center justify-between mb-6">
                 <h3> {t('title')} </h3>
                 <Button
                     variant="text"
@@ -196,7 +196,7 @@ export default function CoachDashboardStudents() {
                                     status: status,
                                     assignmentTitle: assignmentTitle!,
                                     onViewAssignment: () => {
-                                        // TODO: Navigate to assignment
+                                        router.push(`/${locale}/students/${student.username}?tab=assignments`);
                                     },
                                 } as CourseAssignment;
                             },

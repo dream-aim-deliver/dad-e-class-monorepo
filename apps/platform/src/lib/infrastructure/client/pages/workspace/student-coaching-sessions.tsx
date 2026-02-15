@@ -24,9 +24,10 @@ interface ScheduledStudentSessionCardProps {
     formatTime: (isoString: string) => string;
     onCreatorClick: () => void;
     onJoinMeeting: () => void;
-    onCancel: () => void;
+    onCancel?: () => void;
     onViewCourse?: () => void;
     courseName?: string;
+    groupName?: string;
 }
 
 interface StudentCoachingSessionsProps {
@@ -42,6 +43,7 @@ function ScheduledStudentSessionCard({
     onCancel,
     onViewCourse,
     courseName,
+    groupName,
 }: ScheduledStudentSessionCardProps) {
     const startDateTime = new Date(session.startTime);
     const coach = session.coach;
@@ -103,6 +105,7 @@ function ScheduledStudentSessionCard({
         onClickCreator: onCreatorClick,
         courseName,
         onClickCourse: onViewCourse,
+        groupName,
     };
 
     if (cardStatus === 'ongoing') {
@@ -554,10 +557,17 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                 {/* Right side - Available Coaches */}
                 <div className="lg:w-3/4">
                     {availableCoaches.length === 0 ? (
-                        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
-                            <p className="text-text-primary text-md">
+                        <div className="flex flex-col md:p-5 p-3 gap-4 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                            <p className="text-text-primary text-md font-semibold">
                                 {coachingSessionTranslations('noCoachesFound')}
                             </p>
+                            <p className="text-text-secondary text-sm">
+                                {coachingSessionTranslations('noCoachesDescription')}
+                            </p>
+                            <Button
+                                text={coachingSessionTranslations('exploreCoaches')}
+                                onClick={() => router.push(`/${locale}/coaching`)}
+                            />
                         </div>
                     ) : (
                         <>
@@ -669,6 +679,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
             // Common properties for all session cards (excluding key)
             const coach = session.coach;
             const course = 'course' in session ? session.course : undefined;
+            const group = 'group' in session ? session.group : undefined;
             const coachName = `${coach.name || ''} ${coach.surname || ''}`.trim() || coach.username || 'Unknown Coach';
 
             const commonProps = {
@@ -684,6 +695,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                 onClickCreator: () => handleCreatorClick(coach.username || ''),
                 courseName: course?.title,
                 onClickCourse: course?.slug ? () => handleViewCourse(course.slug || '') : undefined,
+                groupName: group?.name,
             };
 
             if (session.status === 'requested') {
@@ -692,7 +704,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         key={session.id}
                         {...commonProps}
                         status="requested"
-                        onClickCancel={() => handleOpenCancelModal(session.id!)}
+                        onClickCancel={group ? undefined : () => handleOpenCancelModal(session.id!)}
                     />
                 );
             }
@@ -708,9 +720,10 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         formatTime={formatTime}
                         onCreatorClick={() => handleCreatorClick(coach.username || '')}
                         onJoinMeeting={() => handleJoinMeeting(meetingUrl)}
-                        onCancel={() => handleOpenCancelModal(session.id!)}
+                        onCancel={group ? undefined : () => handleOpenCancelModal(session.id!)}
                         onViewCourse={course?.slug ? () => handleViewCourse(course.slug || '') : undefined}
                         courseName={course?.title}
+                        groupName={group?.name}
                     />
                 );
             }
