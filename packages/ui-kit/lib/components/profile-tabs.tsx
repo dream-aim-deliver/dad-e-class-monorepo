@@ -51,6 +51,7 @@ export interface ProfileTabsProps extends isLocalAware {
   skillsLanguageHint?: string;
   showApplyToCoachButton?: boolean;
   onApplyToCoachClick?: () => void;
+  usernameValidator?: (username: string) => string | null;
 }
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
@@ -79,6 +80,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   skillsLanguageHint,
   showApplyToCoachButton = false,
   onApplyToCoachClick,
+  usernameValidator,
 }) => {
   const personalForm = useFormState(personalProfile, {
     enableReloadProtection: true
@@ -191,6 +193,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           isSaving={isPersonalSaveDisabled}
           showApplyToCoachButton={showApplyToCoachButton}
           onApplyToCoachClick={onApplyToCoachClick}
+          usernameValidator={usernameValidator}
         />
       </div>
     );
@@ -229,6 +232,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             isSaving={isPersonalSaveDisabled}
             showApplyToCoachButton={showApplyToCoachButton}
             onApplyToCoachClick={onApplyToCoachClick}
+            usernameValidator={usernameValidator}
           />
         </TabContent>
 
