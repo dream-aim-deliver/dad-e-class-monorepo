@@ -995,7 +995,7 @@ export const DE: TDictionary = {
       errorImageText: 'Bild nicht verfügbar.',
     },
     studentCard: {
-      coachingSessionsLeftText: 'Coaching-Sitzungen mit dir',
+      coachingSessionsLeftText: 'Coaching-Sitzungen',
       coach: 'Coach',
       course: 'Kurs',
       waitingFeedbackBadge: 'Wartet auf Rückmeldung',
