@@ -1,6 +1,5 @@
 import { getPlatform } from './procedures/platform';
 import { t } from './trpc-setup';
-import { listLanguages } from './procedures/language';
 import { getHomePage } from './procedures/home-page';
 import { listTopics } from './procedures/topic';
 import {
@@ -67,7 +66,6 @@ import { listGroupCoachingSessions, listCoachCoachingSessions, createGroupCoachi
 
 export const mockRouter = t.router({
     getPlatform,
-    listLanguages,
     getHomePage,
     listTopics,
     getOffersPageOutline,

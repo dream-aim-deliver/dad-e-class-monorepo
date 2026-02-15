@@ -194,8 +194,7 @@ export const DictionarySchema = z.object({
       chooseLanguage: z.string(),
       chooseColor: z.string(),
       chooseOptions: z.string(),
-      english: z.string(),
-      german: z.string(),
+      languageNames: z.record(z.string(), z.string()),
     }),
     profileInfo: z.object({
       title: z.string(),

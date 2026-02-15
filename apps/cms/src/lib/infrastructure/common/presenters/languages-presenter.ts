@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TListLanguagesUseCaseResponse,
+    ListLanguagesUseCaseResponseSchema,
+    TListLanguagesErrorResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TLanguagesPresenterUtilities = {};
 
 export const ListLanguagesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListLanguagesUseCaseResponse,
+        TListLanguagesUseCaseResponse,
         viewModels.TLanguageListViewModel,
         TLanguagesPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const ListLanguagesResponseMiddleware =
 type TListLanguagesResponseMiddleware = typeof ListLanguagesResponseMiddleware;
 
 export default class LanguagesPresenter extends BasePresenter<
-    useCaseModels.TListLanguagesUseCaseResponse,
+    TListLanguagesUseCaseResponse,
     viewModels.TLanguageListViewModel,
     TLanguagesPresenterUtilities,
     TListLanguagesResponseMiddleware
@@ -29,7 +34,7 @@ export default class LanguagesPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.ListLanguagesUseCaseResponseSchema,
+                responseModel: ListLanguagesUseCaseResponseSchema,
                 viewModel: viewModels.LanguageListViewModelSchema
             },
             middleware: ListLanguagesResponseMiddleware,
@@ -40,20 +45,20 @@ export default class LanguagesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListLanguagesUseCaseResponse,
+            TListLanguagesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TLanguageListViewModel {
         return {
             mode: 'default',
             data: {
-                ...response.data.data
+                ...response.data
             }
         };
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListLanguagesUseCaseErrorResponse,
+            TListLanguagesErrorResponse,
             TListLanguagesResponseMiddleware
         >,
     ): viewModels.TLanguageListViewModel {
