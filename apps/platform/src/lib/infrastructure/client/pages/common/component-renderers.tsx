@@ -452,7 +452,7 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
             description={coach.bio}
             defaultCoach={true}
             onClickProfile={() => {
-                // Add here profile logic if needed
+                window.open(`/${locale}/coaches/${coach.username}`, '_blank');
             }}
             onClickBook={() => {
                 const url = `/${locale}/coaches/${coach.username}/book?sessionId=${sessionId}&lessonComponentId=${lessonComponentId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}${courseSlug ? `&courseSlug=${encodeURIComponent(courseSlug)}` : ''}`;
