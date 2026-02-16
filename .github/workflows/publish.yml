@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     name: Publish
-    runs-on: [self-hosted, org-gh-runner]
+    runs-on: ubuntu-latest
     environment: CI
     permissions:
       contents: write
@@ -109,7 +109,7 @@ jobs:
 
   build-and-push:
     name: Build and Push Docker Images
-    runs-on: [self-hosted, org-gh-runner]
+    runs-on: ubuntu-latest
     needs: test
     permissions:
       contents: write
