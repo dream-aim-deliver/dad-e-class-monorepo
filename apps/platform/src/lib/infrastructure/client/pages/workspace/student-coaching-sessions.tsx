@@ -69,14 +69,19 @@ function ScheduledStudentSessionCard({
                 setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
             } else {
                 // More than 24 hours before session
-                const msUntilLock = msUntilSession - (24 * 60 * 60 * 1000);
-                const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
-                const hoursLeft = Math.floor(totalMinutesLeft / 60);
-                setStatus({
-                    cardStatus: 'upcoming-editable',
-                    hoursLeftToEdit: hoursLeft,
-                    minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined
-                });
+                // Group sessions: students can't cancel/reschedule, so show as locked (no "hours left to edit" badge)
+                if (groupName) {
+                    setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+                } else {
+                    const msUntilLock = msUntilSession - (24 * 60 * 60 * 1000);
+                    const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+                    const hoursLeft = Math.floor(totalMinutesLeft / 60);
+                    setStatus({
+                        cardStatus: 'upcoming-editable',
+                        hoursLeftToEdit: hoursLeft,
+                        minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined
+                    });
+                }
             }
         };
 
