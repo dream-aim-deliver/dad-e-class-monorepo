@@ -34,6 +34,7 @@ apps/platform-e2e/test-output/
 !.vscode/extensions.json
 
 # misc
+/.dadai
 /.sass-cache
 /connect.lock
 /coverage

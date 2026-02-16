@@ -168,7 +168,7 @@ def validate_inputs(workspace_root: str, strategy_name: StrategyName, version: s
         raise ValueError(f"A valid workspace root directory is needed. Found: '{workspace_root}'")
 
     if strategy_name not in VALID_STRATEGIES:
-        raise ValueError(f"A valid strategy is needed. Found: '{strategy_name}'. Expected one of {", ".join([strategy.value for strategy in VALID_STRATEGIES])}")
+        raise ValueError(f"A valid strategy is needed. Found: '{strategy_name}'. Expected one of {', '.join([strategy.value for strategy in VALID_STRATEGIES])}")
 
     elif strategy_name == StrategyName.EXPLICIT and not version:
         raise ValueError(f"Strategy '{strategy_name}' requires a version to be set.")
