@@ -9,6 +9,9 @@ const studentsMockData: Record<string, TGetStudentDetailsSuccessResponse['data']
         surname: 'Johnson',
         email: 'alice.johnson@example.com',
         username: 'alicejohnson',
+        languages: [
+            { id: 1, name: 'English', code: 'en', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+        ],
         avatarImage: {
             id: 'avatar-1',
             name: 'alice-avatar.jpg',
@@ -23,6 +26,10 @@ const studentsMockData: Record<string, TGetStudentDetailsSuccessResponse['data']
         surname: 'Smith',
         email: 'bob.smith@example.com',
         username: 'bobsmith',
+        languages: [
+            { id: 1, name: 'English', code: 'en', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+            { id: 2, name: 'German', code: 'de', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+        ],
         avatarImage: {
             id: 'avatar-2',
             name: 'bob-avatar.jpg',
@@ -37,6 +44,9 @@ const studentsMockData: Record<string, TGetStudentDetailsSuccessResponse['data']
         surname: 'Davis',
         email: 'carol.davis@example.com',
         username: 'caroldavis',
+        languages: [
+            { id: 2, name: 'German', code: 'de', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+        ],
         avatarImage: {
             id: 'avatar-3',
             name: 'carol-avatar.jpg',
@@ -51,6 +61,7 @@ const studentsMockData: Record<string, TGetStudentDetailsSuccessResponse['data']
         surname: 'Wilson',
         email: 'david.wilson@example.com',
         username: 'davidwilson',
+        languages: [],
         avatarImage: null
     },
     'evamartinez': {
@@ -59,6 +70,10 @@ const studentsMockData: Record<string, TGetStudentDetailsSuccessResponse['data']
         surname: 'Martinez',
         email: 'eva.martinez@example.com',
         username: 'evamartinez',
+        languages: [
+            { id: 1, name: 'English', code: 'en', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+            { id: 3, name: 'Spanish', code: 'es', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+        ],
         avatarImage: {
             id: 'avatar-5',
             name: 'eva-avatar.jpg',
