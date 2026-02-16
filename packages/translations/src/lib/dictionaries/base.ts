@@ -2222,6 +2222,12 @@ export const DictionarySchema = z.object({
         description: z.string(),
         goToDate: z.string(),
       }),
+      bookingHelp: z.object({
+        standaloneTitle: z.string(),
+        standaloneDescription: z.string(),
+        courseTitle: z.string(),
+        courseDescription: z.string(),
+      }),
       error: z.object({
         title: z.string(),
         description: z.string(),

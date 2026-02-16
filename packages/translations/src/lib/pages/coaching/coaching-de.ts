@@ -20,6 +20,12 @@ export const Coaching_DE: TDictionary['pages']['coaching'] = {
     description: 'Nächster verfügbarer Termin: {date}',
     goToDate: 'Zum Termin',
   },
+  bookingHelp: {
+    standaloneTitle: 'So buchst du eine Session',
+    standaloneDescription: 'Durchsuche die Verfügbarkeit des Coaches im Kalender und wähle einen passenden Zeitslot aus. Du musst eine deiner verfügbaren Coaching-Sessions auswählen und ein kurzes Briefing abgeben, damit sich dein Coach vorbereiten kann.',
+    courseTitle: 'Coaching-Session planen',
+    courseDescription: 'Wähle einen verfügbaren Zeitslot im Kalender, um die Coaching-Session für deine Kurslektion zu planen. Du wirst gebeten, ein kurzes Briefing abzugeben, damit sich dein Coach vorbereiten kann.',
+  },
   error: {
     title: 'Coaching konnte nicht geladen werden',
     description: 'Die Coaching-Informationen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.',

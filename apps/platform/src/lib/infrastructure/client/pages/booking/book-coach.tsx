@@ -895,6 +895,16 @@ function BookCoachPageContent({
                         />
                     </div>
                 )}
+                {/* Help text banner */}
+                <div className="mb-3">
+                    <Banner
+                        style="neutral"
+                        icon
+                        closeable
+                        title={isFromCourse ? coachingT('bookingHelp.courseTitle') : coachingT('bookingHelp.standaloneTitle')}
+                        description={isFromCourse ? coachingT('bookingHelp.courseDescription') : coachingT('bookingHelp.standaloneDescription')}
+                    />
+                </div>
                 {/* Desktop Layout: Calendar on left, AvailableCoachings on right */}
                 <div className="flex-1 min-h-0 flex-row hidden md:flex gap-6">
                     <div className="rounded-lg bg-card-fill p-4 flex-1 overflow-hidden flex flex-col">
