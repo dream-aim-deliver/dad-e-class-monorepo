@@ -61,7 +61,22 @@ vi.mock('@maany_shr/e-class-translations', () => ({
       dateInput: {
         placeholder: 'Select date',
       },
-      languageSelector: 'Languages',
+      languageSelector: {
+        title: 'Languages spoken fluently (C1 and above)',
+        choosetext: '',
+        interface: 'Preferred language',
+        chooseLanguage: 'Choose language',
+        chooseColor: 'Choose color',
+        chooseOptions: 'Choose options',
+        languageNames: {
+          en: 'English',
+          de: 'German',
+          it: 'Italian',
+          fr: 'French',
+          es: 'Spanish',
+          pt: 'Portuguese',
+        },
+      },
       uploadingSection: {
         uploadImage: 'Upload Image',
         uploadVideo: 'Upload Video',
