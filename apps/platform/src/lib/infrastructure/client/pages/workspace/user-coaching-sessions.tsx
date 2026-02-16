@@ -373,7 +373,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
     // --- Render coach session cards ---
     const renderCoachSessionCards = () => {
-        return upcomingCoachSessions.slice(0, 3).map((session) => {
+        return upcomingCoachSessions.slice(0, 4).map((session) => {
             const startDateTime = new Date(session.startTime);
             const isGroup = isGroupCoachSession(session);
 
@@ -456,7 +456,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                     <>
                     {isCoach && <p className="text-sm text-text-secondary mb-2">{t('asStudent')}</p>}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {upcomingSessions.slice(0, 3).map((session) => {
+                        {upcomingSessions.slice(0, 4).map((session) => {
                             const safeDate = (iso?: string | null) => {
                                 if (!iso) return null;
                                 const d = new Date(iso);
