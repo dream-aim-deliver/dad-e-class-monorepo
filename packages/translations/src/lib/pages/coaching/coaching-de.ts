@@ -18,12 +18,10 @@ export const Coaching_DE: TDictionary['pages']['coaching'] = {
   notAvailableToday: {
     title: 'Heute nicht verfügbar',
     description: 'Nächster verfügbarer Termin: {date}',
-    goToDate: 'Zum Termin',
+    goToDate: 'Zum {date} springen',
   },
   bookingHelp: {
-    standaloneTitle: 'So buchst du eine Session',
     standaloneDescription: 'Durchsuche die Verfügbarkeit des Coaches im Kalender und wähle einen passenden Zeitslot aus. Du musst eine deiner verfügbaren Coaching-Sessions auswählen und ein kurzes Briefing abgeben, damit sich dein Coach vorbereiten kann.',
-    courseTitle: 'Coaching-Session planen',
     courseDescription: 'Wähle einen verfügbaren Zeitslot im Kalender, um die Coaching-Session für deine Kurslektion zu planen. Du wirst gebeten, ein kurzes Briefing abzugeben, damit sich dein Coach vorbereiten kann.',
   },
   error: {

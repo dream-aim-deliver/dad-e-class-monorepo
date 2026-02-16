@@ -17,13 +17,11 @@ export const Coaching_EN: TDictionary["pages"]["coaching"] = {
   },
   notAvailableToday: {
     title: "Not available today",
-    description: "Next available: {date}",
-    goToDate: "Go to date",
+    description: "Next available slot: {date}",
+    goToDate: "Jump to {date}",
   },
   bookingHelp: {
-    standaloneTitle: "How to book a session",
     standaloneDescription: "Browse the coach's availability on the calendar and select a time slot that works for you. You'll need to choose one of your available coaching sessions and provide a short briefing so your coach can prepare.",
-    courseTitle: "Schedule your coaching session",
     courseDescription: "Select an available time slot on the calendar to schedule the coaching session for your course lesson. You'll be asked to provide a short briefing so your coach can prepare.",
   },
   error: {

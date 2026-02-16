@@ -3,6 +3,7 @@ import { UserAvatar } from "../avatar/user-avatar";
 import { StarRating } from "../star-rating";
 import { Button } from "../button";
 import { IconAccountInformation } from "../icons/icon-account-information";
+import { IconCalendarAvailability } from "../icons/icon-calendar-availability";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
 export interface LessonCoachComponentProps extends isLocalAware {
@@ -12,6 +13,7 @@ export interface LessonCoachComponentProps extends isLocalAware {
     numberOfRatings: number;
     description: string;
     defaultCoach: boolean;
+    nextAvailableDate?: string | null;
     onClickProfile: () => void;
     onClickBook: () => void;
 };
@@ -51,6 +53,7 @@ export const LessonCoachComponent: FC<LessonCoachComponentProps> = ({
     numberOfRatings,
     description,
     defaultCoach,
+    nextAvailableDate,
     onClickProfile,
     onClickBook,
     locale,
@@ -79,6 +82,15 @@ export const LessonCoachComponent: FC<LessonCoachComponentProps> = ({
             <p className="text-text-secondary text-sm leading-[150%]">
                 {description}
             </p>
+            {nextAvailableDate && (
+                <p className="flex items-center gap-1 text-feedback-success-primary">
+                    <IconCalendarAvailability classNames='flex-shrink-0' size="4" />
+                    <span className="truncate">
+                        {dictionary.components.coachCard.nextAvailable}:{' '}
+                        {new Date(nextAvailableDate).toLocaleDateString(locale, { month: 'short', day: 'numeric' })}
+                    </span>
+                </p>
+            )}
             <div className="flex gap-4 w-full">
                 <Button
                     variant="text"
