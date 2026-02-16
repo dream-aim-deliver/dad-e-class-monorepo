@@ -866,44 +866,34 @@ function BookCoachPageContent({
                 <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                     <CoachHeader coachUsername={coachUsername} />
                 </Suspense>
-                {/* Not available today banner */}
-                {!isAvailableToday && (
+                {/* Next availability banner — always show when there's a future date, title only when not available today */}
+                {nextAvailableDate && (
                     <div className="my-3">
                         <Banner
                             style="neutral"
                             icon
-                            title={coachingT('notAvailableToday.title')}
-                            description={
-                                nextAvailableDate
-                                    ? coachingT('notAvailableToday.description', {
-                                          date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
-                                      })
-                                    : undefined
-                            }
-                            button={
-                                nextAvailableDate
-                                    ? {
-                                          label: coachingT('notAvailableToday.goToDate'),
-                                          onClick: () => {
-                                              setCurrentDate(nextAvailableDate);
-                                              setScrollToHour(nextAvailableDate.getHours());
-                                              setScrollKey((prev) => prev + 1);
-                                          },
-                                      }
-                                    : undefined
-                            }
+                            title={!isAvailableToday ? coachingT('notAvailableToday.title') : undefined}
+                            description={coachingT('notAvailableToday.description', {
+                                date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+                            })}
+                            button={{
+                                label: coachingT('notAvailableToday.goToDate', {
+                                    date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+                                }),
+                                onClick: () => {
+                                    setCurrentDate(nextAvailableDate);
+                                    setScrollToHour(nextAvailableDate.getHours());
+                                    setScrollKey((prev) => prev + 1);
+                                },
+                            }}
                         />
                     </div>
                 )}
-                {/* Help text banner */}
-                <div className="mb-3">
-                    <Banner
-                        style="neutral"
-                        icon
-                        closeable
-                        title={isFromCourse ? coachingT('bookingHelp.courseTitle') : coachingT('bookingHelp.standaloneTitle')}
-                        description={isFromCourse ? coachingT('bookingHelp.courseDescription') : coachingT('bookingHelp.standaloneDescription')}
-                    />
+                {/* Help text */}
+                <div className="mb-3 px-1">
+                    <p className="text-sm text-text-secondary">
+                        {isFromCourse ? coachingT('bookingHelp.courseDescription') : coachingT('bookingHelp.standaloneDescription')}
+                    </p>
                 </div>
                 {/* Desktop Layout: Calendar on left, AvailableCoachings on right */}
                 <div className="flex-1 min-h-0 flex-row hidden md:flex gap-6">

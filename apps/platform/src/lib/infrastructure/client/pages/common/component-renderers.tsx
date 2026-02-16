@@ -451,6 +451,7 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
             numberOfRatings={coach.reviewCount}
             description={coach.bio}
             defaultCoach={true}
+            nextAvailableDate={coach.nextAvailableDate ?? undefined}
             onClickProfile={() => {
                 window.open(`/${locale}/coaches/${coach.username}`, '_blank');
             }}
