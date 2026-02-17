@@ -2211,6 +2211,7 @@ export const EN: TDictionary = {
       study: {
         save: 'Save',
         saving: 'Saving...',
+        progressSaved: 'Progress saved successfully!',
       },
       enrolledCoaches: {
         title: 'Coaches',

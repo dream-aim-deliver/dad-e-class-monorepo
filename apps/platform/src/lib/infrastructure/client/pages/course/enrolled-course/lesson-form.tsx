@@ -4,12 +4,14 @@ import {
     TLessonProgress
 } from "@dream-aim-deliver/e-class-cms-rest";
 import {
+    Banner,
     Button,
     FormElement,
+    IconLoaderSpinner,
     IconSave,
     LessonElement,
 } from '@maany_shr/e-class-ui-kit';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getLessonComponentsMap } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
@@ -187,8 +189,16 @@ export default function LessonForm({
     const trpcUtils = trpc.useUtils();
     const courseSlug = useCourseSlug(); // Get courseSlug from context
 
+    const [showSuccess, setShowSuccess] = useState(false);
+    useEffect(() => {
+        if (!showSuccess) return;
+        const timer = setTimeout(() => setShowSuccess(false), 3000);
+        return () => clearTimeout(timer);
+    }, [showSuccess]);
+
     const submitProgressMutation = trpc.submitLessonProgresses.useMutation({
         onSuccess: () => {
+            setShowSuccess(true);
             // Invalidate the lesson components query to refetch with updated progress
             trpcUtils.listLessonComponents.invalidate({
                 lessonId: lessonId,
@@ -229,22 +239,32 @@ export default function LessonForm({
             />
         );
 
-        if (enableSubmit && isInteractiveType(formElement.type)) {
+        if (isInteractiveType(formElement.type)) {
             return (
                 <div
                     key={`interactive-wrapper-${component.id}`}
                     className="flex flex-col gap-2 p-4 border border-divider rounded-md"
                 >
                     {rendered}
-                    <Button
-                        variant="primary"
-                        size="small"
-                        text={isSubmitting ? dictionary.pages.course.study.saving : dictionary.pages.course.study.save}
-                        disabled={isSubmitting}
-                        onClick={submitProgress}
-                        hasIconLeft
-                        iconLeft={<IconSave />}
-                    />
+                    {enableSubmit && (
+                        <>
+                            <Button
+                                variant="primary"
+                                size="small"
+                                text={isSubmitting ? dictionary.pages.course.study.saving : dictionary.pages.course.study.save}
+                                disabled={isSubmitting}
+                                onClick={submitProgress}
+                                hasIconLeft
+                                iconLeft={isSubmitting ? <IconLoaderSpinner classNames="animate-spin" /> : <IconSave />}
+                            />
+                            {showSuccess && (
+                                <Banner
+                                    style="success"
+                                    description={dictionary.pages.course.study.progressSaved}
+                                />
+                            )}
+                        </>
+                    )}
                 </div>
             );
         }
