@@ -6,6 +6,7 @@ import {
     DefaultLoading,
     DefaultNotFound,
     Divider,
+    Banner,
     IconEyeHide,
     IconEyeShow,
     LessonHeader,
@@ -28,6 +29,7 @@ interface EnrolledCoursePreviewProps {
     studentUsername?: string;
     initialLessonId?: string;
     isArchived?: boolean;
+    showArchivedBadge?: boolean;
 }
 
 function CoursePreviewLesson(props: {
@@ -253,8 +255,8 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     return (
         <CourseSlugProvider courseSlug={courseSlug}>
             <div className="flex flex-col w-full gap-6 min-w-0">
-                {/* Show/Hide Notes button - only for students with enableSubmit */}
-                {props.enableSubmit && currentLesson && (
+                {/* Show/Hide Notes button - for students, hidden only when course is archived */}
+                {!props.showArchivedBadge && props.enableSubmit && currentLesson && (
                     <div className="flex justify-end">
                         <Button
                             variant="secondary"
@@ -265,6 +267,15 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                             onClick={() => setShowNotes(!showNotes)}
                         />
                     </div>
+                )}
+                {/* Archived course banner - shown instead of notes button */}
+                {props.showArchivedBadge && currentLesson && (
+                    <Banner
+                        style="warning"
+                        icon
+                        title={lessonNotesT('archivedBannerTitle')}
+                        description={lessonNotesT('archivedBannerDescription')}
+                    />
                 )}
 
                 <div className={`flex flex-col w-full gap-6 ${showNotes ? 'lg:flex-row' : 'md:flex-row'}`}>
@@ -322,8 +333,8 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                         )}
                     </div>
 
-                    {/* Lesson Notes Panel - only shown when notes are visible and for students */}
-                    {showNotes && props.enableSubmit && currentLesson && (
+                    {/* Lesson Notes Panel - only shown when notes are visible, hidden for archived courses */}
+                    {showNotes && !props.showArchivedBadge && props.enableSubmit && currentLesson && (
                         <LessonNotesPanel lessonId={currentLesson.id} isArchived={props.isArchived} />
                     )}
                 </div>
@@ -338,6 +349,7 @@ export default function EnrolledCoursePreview({
     studentUsername,
     initialLessonId,
     isArchived,
+    showArchivedBadge,
 }: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     return (
@@ -350,6 +362,7 @@ export default function EnrolledCoursePreview({
                 studentUsername={studentUsername}
                 initialLessonId={initialLessonId}
                 isArchived={isArchived}
+                showArchivedBadge={showArchivedBadge}
             />
         </Suspense>
     );

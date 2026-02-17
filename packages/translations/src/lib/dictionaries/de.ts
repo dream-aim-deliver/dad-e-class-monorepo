@@ -746,6 +746,8 @@ export const DE: TDictionary = {
       notesSavedText: 'Notizen gespeichert',
       showNotesText: 'Notizen anzeigen',
       hideNotesText: 'Notizen verbergen',
+      archivedBannerTitle: 'Kurs archiviert',
+      archivedBannerDescription: 'Dieser Kurs ist archiviert. Interaktive Funktionen sind nicht mehr verfügbar.',
     },
     coachingSessionCourseBuilder: {
       profileText: 'Profil',

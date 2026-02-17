@@ -712,6 +712,8 @@ export const DictionarySchema = z.object({
       notesSavedText: z.string(),
       showNotesText: z.string(),
       hideNotesText: z.string(),
+      archivedBannerTitle: z.string(),
+      archivedBannerDescription: z.string(),
     }),
     coachingSessionCourseBuilder: z.object({
       profileText: z.string(),
