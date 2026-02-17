@@ -2213,6 +2213,7 @@ export const DE: TDictionary = {
       study: {
         save: 'Speichern',
         saving: 'Wird gespeichert...',
+        progressSaved: 'Fortschritt erfolgreich gespeichert!',
       },
       enrolledCoaches: {
         title: 'Coaches',

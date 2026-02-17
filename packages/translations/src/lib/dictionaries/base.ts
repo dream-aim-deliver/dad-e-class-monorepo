@@ -2316,6 +2316,7 @@ export const DictionarySchema = z.object({
       study: z.object({
         save: z.string(),
         saving: z.string(),
+        progressSaved: z.string(),
       }),
       enrolledCoaches: z.object({
         title: z.string(),
