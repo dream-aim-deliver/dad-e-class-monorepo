@@ -743,6 +743,8 @@ export const EN: TDictionary = {
       notesSavedText: 'Notes saved',
       showNotesText: 'Show Notes',
       hideNotesText: 'Hide Notes',
+      archivedBannerTitle: 'Course archived',
+      archivedBannerDescription: 'This course is archived. Interactive features are no longer available.',
     },
     coachingSessionCourseBuilder: {
       profileText: 'Profile',
