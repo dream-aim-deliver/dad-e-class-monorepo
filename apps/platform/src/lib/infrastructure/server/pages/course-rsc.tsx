@@ -119,9 +119,8 @@ export default async function CourseServerComponent({
     // TODO: might differ base on the tab
     await prefetchIntroductionData(slug, currentRole, course.id);
 
-    // Block interactions for archived and draft courses
-    const isArchived = course.status === 'archived' || course.status === 'draft';
-    // Only show badge for archived courses (not draft)
+    // Block interactions for archived courses (draft courses behave like live for enrolled users)
+    const isArchived = course.status === 'archived';
     const showArchivedBadge = course.status === 'archived';
 
     return renderEnrolledCourse({
