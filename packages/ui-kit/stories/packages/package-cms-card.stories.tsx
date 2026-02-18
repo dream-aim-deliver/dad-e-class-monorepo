@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PackageCmsCard } from '../../lib/components/packages/package-cms-card';
 import type {
     PackageCmsPublishedCardProps,

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { NotificationGrid, ExtendedNotification } from '../lib/components/grids/notification-grid';
 import { AgGridReact } from 'ag-grid-react';
 import { NextIntlClientProvider } from 'next-intl';

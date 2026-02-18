@@ -9,13 +9,14 @@ export default async function Page({
 	params: paramsPromise,
 	searchParams: searchParamsPromise,
 }: {
-	params: Promise<{ locale: TLocale; username: string }>;
+	params: Promise<{ locale: string; username: string }>;
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
 	const params = await paramsPromise;
 	const searchParams = await searchParamsPromise;
 
-	const { locale, username } = params;
+	const locale = params.locale as TLocale;
+	const { username } = params;
 
 	return <CoachProfileServerComponent locale={locale} username={username} />;
 }

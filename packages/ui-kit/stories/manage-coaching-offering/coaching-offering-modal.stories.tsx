@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import CoachingOfferingModal from '../../lib/components/coaching-offering-modal';
 import { Dialog, DialogContent, DialogTrigger } from '../../lib/components/dialog';
 import { Button } from '../../lib/components/button';

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { YourStudentCardList } from '../../lib/components/student-card/your-student-card-list';
 import { YourStudentCard } from '../../lib/components/student-card/your-student-card';
 

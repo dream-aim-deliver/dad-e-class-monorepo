@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { LessonNoteView } from '../../lib/components/lesson-note/lesson-note-view';
 
 /**

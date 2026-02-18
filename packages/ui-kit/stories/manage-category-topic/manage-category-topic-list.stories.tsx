@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ManageCategoryTopicList } from '../../lib/components/manage-category-topic/manage-category-topic-list';
 import { ManageCategoryTopicItem } from '../../lib/components/manage-category-topic/manage-category-topic-item';
 

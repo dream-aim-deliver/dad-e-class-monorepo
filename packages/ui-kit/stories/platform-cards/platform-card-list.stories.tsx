@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { PlatformCardList } from '../../lib/components/platform-cards/platform-card-list';
 import {
     PlatformCard,

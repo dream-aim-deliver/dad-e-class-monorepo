@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CancelCoachingSessionModal } from "../../lib/components/coaching-sessions/cancel-coaching-session-modal";
 
 const meta: Meta<typeof CancelCoachingSessionModal> = {

@@ -11,10 +11,10 @@ export default async function PackagePage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale; package_id: string }>;
+  params: Promise<{ locale: string; package_id: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
 
-  return <PackageServerComponent locale={params.locale} packageId={params.package_id} />;
+  return <PackageServerComponent locale={params.locale as TLocale} packageId={params.package_id} />;
 }

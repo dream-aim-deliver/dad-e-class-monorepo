@@ -7,9 +7,9 @@ import BecomeACoachServerComponent from '../../../../lib/infrastructure/server/p
 export default async function BecomeACoachPage({
   params: paramsPromise,
 }: {
-  params: Promise<{ locale: TLocale }>;
+  params: Promise<{ locale: string }>;
 }) {
   const params = await paramsPromise;
 
-  return <BecomeACoachServerComponent locale={params.locale} />;
+  return <BecomeACoachServerComponent locale={params.locale as TLocale} />;
 }

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { VideoPlayer } from '../lib/components/video-player';
 
 const meta: Meta<typeof VideoPlayer> = {

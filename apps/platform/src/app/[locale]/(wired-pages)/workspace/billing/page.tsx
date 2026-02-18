@@ -11,11 +11,11 @@ export default async function BillingPage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale }>;
+  params: Promise<{ locale: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
-  const { locale } = params;
+  const locale = params.locale as TLocale;
 
   // Extract tab parameter for coach navigation
   let tab = searchParams.tab;

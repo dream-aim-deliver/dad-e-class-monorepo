@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BuyCompletePackageBanner } from '../lib/components/buy-complete-package-banner';
 
 export default {

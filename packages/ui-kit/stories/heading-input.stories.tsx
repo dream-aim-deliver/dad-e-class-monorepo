@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { HeadingLesson, HeadingLessonPreview } from '../lib/components/heading-type';
 
 

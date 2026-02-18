@@ -11,12 +11,12 @@ export default async function PlatformLayout({
     params: paramsPromise,
 }: {
     children: React.ReactNode;
-    params: Promise<{ platform_locale: string; platform_slug: string; locale: TLocale }>;
+    params: Promise<{ platform_locale: string; platform_slug: string; locale: string }>;
 }) {
     const params = await paramsPromise;
     const platformLocale = params.platform_locale as TLocale;
     const platformSlug = params.platform_slug;
-    const appLocale = params.locale;
+    const appLocale = params.locale as TLocale;
 
     // Fetch platform details from database via TRPC
     const trpc = getServerTRPC({

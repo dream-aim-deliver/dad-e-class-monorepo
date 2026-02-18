@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { BookSessionWith } from '../lib/components/book-session-with-banner';
 
 export default {

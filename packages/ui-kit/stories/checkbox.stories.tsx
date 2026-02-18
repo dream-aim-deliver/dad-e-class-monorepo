@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CheckBox, CheckBoxProps } from '../lib/components/checkbox';
 
 const meta: Meta<typeof CheckBox> = {

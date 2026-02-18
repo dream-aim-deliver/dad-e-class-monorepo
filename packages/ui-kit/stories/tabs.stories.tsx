@@ -1,5 +1,5 @@
 import { Tabs } from '../lib/components/tabs/tab';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconAccountInformation } from '../lib/components/icons/icon-account-information';
 import { IconAssignment } from '../lib/components/icons/icon-assignment';
 import { IconCertification } from '../lib/components/icons/icon-certification';

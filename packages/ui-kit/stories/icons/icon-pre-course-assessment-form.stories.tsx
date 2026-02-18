@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconPreCourseAssessmentForm } from '../../lib/components/icons/icon-pre-course-assessment-form';
 
 // Meta configuration for Storybook

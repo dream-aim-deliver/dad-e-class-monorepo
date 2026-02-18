@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CoachingSessionList } from '../../lib/components/coaching-sessions/coaching-session-list';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {

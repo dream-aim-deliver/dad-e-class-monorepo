@@ -9,10 +9,10 @@ export default async function ActivityHistoryPage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale }>;
+  params: Promise<{ locale: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
 
-  return <ActivityHistoryServerComponent locale={params.locale} />;
+  return <ActivityHistoryServerComponent locale={params.locale as TLocale} />;
 }

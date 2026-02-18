@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { JoinGroup } from '../../lib/components/groups-card/join-group';
 
 const meta: Meta<typeof JoinGroup> = {

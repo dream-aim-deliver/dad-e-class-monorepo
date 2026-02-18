@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { CourseCardAddToPackage } from '../../../lib/components/course-card/add-to-package/course-card-add-to-package';
 import { TLocale } from '@maany_shr/e-class-translations';

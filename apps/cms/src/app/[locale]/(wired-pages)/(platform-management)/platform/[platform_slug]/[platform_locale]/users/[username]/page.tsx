@@ -9,15 +9,15 @@ export default async function SingleUserPage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale; platform_slug: string; platform_locale: TLocale; username: string }>;
+  params: Promise<{ locale: string; platform_slug: string; platform_locale: string; username: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
 
   return <SingleUserServerComponent
-    locale={params.locale}
+    locale={params.locale as TLocale}
     platformSlug={params.platform_slug}
-    platformLocale={params.platform_locale}
+    platformLocale={params.platform_locale as TLocale}
     username={params.username}
   />;
 }

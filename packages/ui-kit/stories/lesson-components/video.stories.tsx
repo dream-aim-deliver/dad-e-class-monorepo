@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { courseElements } from '../../lib/components/course-builder/course-builder-core';
 import { CourseElementType } from '../../lib/components/course-builder/types';

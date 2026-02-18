@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LessonLink } from '../../lib/components/course-outline/lesson-link';
 import { LessonLinkItem } from '../../lib/components/course-outline/lesson-link-item';
 import { Milestone } from '../../lib/components/course-outline/milestone';

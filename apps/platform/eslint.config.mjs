@@ -13,6 +13,7 @@ const compat = new FlatCompat({
   recommendedConfig: js.configs.recommended,
 });
 
+/** @type {import('eslint').Linter.Config[]} */
 const config =  [
   ...fixupConfigRules(compat.extends('next')),
 

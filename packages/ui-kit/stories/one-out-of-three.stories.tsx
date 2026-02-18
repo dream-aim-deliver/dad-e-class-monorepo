@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { OneOutOfThree, OneOutOfThreeData } from '../lib/components/out-of-three/one-out-of-three';
 import { useState } from 'react';
 

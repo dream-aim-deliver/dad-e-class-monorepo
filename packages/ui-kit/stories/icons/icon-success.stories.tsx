@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconSuccess } from '../../lib/components/icons/icon-success';
 
 // Meta configuration for Storybook

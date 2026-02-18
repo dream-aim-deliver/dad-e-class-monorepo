@@ -1,6 +1,6 @@
 import { ProfileTabs } from '../lib/components/profile-tabs';
 import { fileMetadata } from '@maany_shr/e-class-models';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 
 // Mock Personal Profile Data (matching viewModels.TGetPersonalProfileSuccess['profile'])

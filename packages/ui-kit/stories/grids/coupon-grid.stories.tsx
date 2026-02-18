@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CouponRow, CouponGrid } from '../../lib/components/grids/coupon-grid';
 import { CouponGridFilterModal, CouponFilterModel } from '../../lib/components/grids/coupon-grid-filter-modal';
 import { AgGridReact } from 'ag-grid-react';

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import assignmentElement from "../../../lib/components/course-builder-lesson-component/assignment";
 import { CourseElementType } from "../../../lib/components/course-builder/types";
 import { fileMetadata, shared } from "@maany_shr/e-class-models";

@@ -11,7 +11,7 @@ export default async function TransactionsPage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale; platform_slug: string }>;
+  params: Promise<{ locale: string; platform_slug: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
@@ -19,7 +19,7 @@ export default async function TransactionsPage({
   return (
     <Suspense fallback={<DefaultLoadingWrapper />}> 
       <TransactionsServerComponent
-        locale={params.locale}
+        locale={params.locale as TLocale}
         platformSlug={params.platform_slug}
       />
     </Suspense>

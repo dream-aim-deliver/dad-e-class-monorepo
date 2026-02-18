@@ -2,7 +2,7 @@ import {
   UserAvatar,
   UserAvatarProps,
 } from '../lib/components/avatar/user-avatar';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 
 export default {
   title: 'Components/UserAvatar',

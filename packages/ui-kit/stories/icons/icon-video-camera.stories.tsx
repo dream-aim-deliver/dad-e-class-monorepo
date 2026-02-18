@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconVideoCamera } from '../../lib/components/icons/icon-video-camera';
 
 // Meta configuration for Storybook

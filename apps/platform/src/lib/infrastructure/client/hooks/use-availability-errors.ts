@@ -45,9 +45,7 @@ export function useAvailabilityErrors() {
       const key = getAvailabilityErrorKey(errorType);
 
       return {
-        // @ts-expect-error - Dynamic key access for translations
         title: t(`${key}.title`),
-        // @ts-expect-error - Dynamic key access for translations
         description: t(`${key}.description`),
       };
     },

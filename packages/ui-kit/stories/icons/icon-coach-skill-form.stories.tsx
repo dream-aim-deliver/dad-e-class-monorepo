@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconCoachSkillForm } from '../../lib/components/icons/icon-coach-skill-form';
 
 // Meta configuration for Storybook

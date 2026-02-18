@@ -4,10 +4,10 @@ import EditLessonServerComponent from '../../../../../../lib/infrastructure/serv
 export default async function Page({
     params: paramsPromise,
 }: {
-    params: Promise<{ id: string , locale: TLocale }>;
+    params: Promise<{ id: string , locale: string }>;
 }) {
     const params = await paramsPromise;
-    const dictionary = getDictionary(params.locale);
+    const dictionary = getDictionary(params.locale as TLocale);
 
     const id = parseInt(params.id, 10);
     if (Number.isNaN(id)) {

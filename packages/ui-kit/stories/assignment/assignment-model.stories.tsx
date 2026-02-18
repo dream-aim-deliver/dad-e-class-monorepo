@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AssignmentModal } from '../../lib/components/assignment/assignment-modal';
 import { Message } from '../../lib/components/assignment/message';
 import { ReplyPanel } from '../../lib/components/assignment/reply-panel';

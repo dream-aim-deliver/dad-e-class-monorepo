@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { generateCertificatePDF, type CertificateData } from '../lib/utils/course-certificate-generator';
 import { Button } from '../lib/components/button';

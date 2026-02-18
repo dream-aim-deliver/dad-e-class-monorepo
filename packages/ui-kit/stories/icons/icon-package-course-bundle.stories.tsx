@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconPackageCourseBundle } from '../../lib/components/icons/icon-package-course-bundle';
 
 // Meta configuration for Storybook

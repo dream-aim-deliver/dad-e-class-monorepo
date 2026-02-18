@@ -11,7 +11,7 @@ export default async function GroupCoachingSessionReviewsPage({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
     params: Promise<{
-        locale: TLocale;
+        locale: string;
         course_slug: string;
         group_id: string;
         coaching_session_id: string;
@@ -20,7 +20,8 @@ export default async function GroupCoachingSessionReviewsPage({
     const searchParams = await searchParamsPromise;
     const params = await paramsPromise;
 
-    const { locale, course_slug, group_id, coaching_session_id } = params;
+    const locale = params.locale as TLocale;
+    const { course_slug, group_id, coaching_session_id } = params;
 
     // Parse URL parameters to integers
     const groupIdInt = parseInt(group_id, 10);

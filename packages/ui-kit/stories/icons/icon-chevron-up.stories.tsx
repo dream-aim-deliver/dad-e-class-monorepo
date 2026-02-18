@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import {IconChevronUp} from "../../lib/components/icons/icon-chevron-up"
 
 // Meta configuration for Storybook

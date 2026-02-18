@@ -1,6 +1,6 @@
 import React from 'react';
 import { CoachBanner } from '../lib/components/coach-banner';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 
 interface CoachBannerProps {

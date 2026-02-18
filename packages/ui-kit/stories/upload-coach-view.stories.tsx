@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import UploadCoachView from '../lib/components/upload-coach-view';
 import { fileMetadata } from '@maany_shr/e-class-models';
 

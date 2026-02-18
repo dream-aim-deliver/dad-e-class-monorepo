@@ -1,13 +1,11 @@
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { getRequestConfig } from 'next-intl/server';
-import { headers } from 'next/headers';
+import { hasLocale } from 'next-intl';
 
-export default getRequestConfig(async () => {
-    const headerList = headers();
-    const locale = (await headerList).get('X-NEXT-INTL-LOCALE') || 'en';
-
+export default getRequestConfig(async ({ requestLocale }) => {
+    const requested = await requestLocale;
+    const locale = hasLocale(['en', 'de'], requested) ? requested : 'en';
     const messages = getDictionary(locale as TLocale);
-
     return {
         locale,
         messages: messages,

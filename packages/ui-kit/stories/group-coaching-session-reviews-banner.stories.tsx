@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { GroupCoachingSessionReviewsBanner } from '../lib/components/group-coaching-session-reviews-banner';
 
 export default {

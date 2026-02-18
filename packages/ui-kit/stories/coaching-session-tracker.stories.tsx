@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CoachingSessionTracker } from '../lib/components/coaching-session-tracker/coaching-session-tracker';
 import { CoachingSessionItem } from '../lib/components/coaching-session-tracker/coaching-session-item';
 

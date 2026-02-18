@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import DefaultNotFound from '../lib/components/default-not-found';
 
 const meta: Meta<typeof DefaultNotFound> = {

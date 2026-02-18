@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import RichTextEditor from '../lib/components/rich-text-element/editor';
 
 const meta: Meta<typeof RichTextEditor> = {

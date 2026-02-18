@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { PackageCmsCardList } from '../../lib/components/packages/package-cms-card-list';
 import {
   PackageCmsCard,

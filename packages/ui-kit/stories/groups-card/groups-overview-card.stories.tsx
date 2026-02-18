@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GroupOverviewCard } from '../../lib/components/groups-card/groups-overview-card';
 
 const meta: Meta<typeof GroupOverviewCard> = {

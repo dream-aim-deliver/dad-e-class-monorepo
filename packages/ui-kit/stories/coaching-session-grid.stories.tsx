@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CoachingSessionGrid } from '../lib/components/grids/coaching-session-grid';
 import { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';

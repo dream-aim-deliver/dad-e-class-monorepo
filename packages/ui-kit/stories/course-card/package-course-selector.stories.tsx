@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, useMemo } from 'react';
 import { PackageCourseSelector } from '../../lib/components/course-card/package-course-selector/package-course-selector';
 import { PackageCourseCard } from '../../lib/components/course-card/package-course-selector/package-course-card';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LinkEdit } from '../lib/components/links';
 import { fileMetadata } from '@maany_shr/e-class-models';
 

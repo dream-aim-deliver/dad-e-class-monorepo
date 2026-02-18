@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ModuleCompletionModal } from '../lib/components/module-completion-modal';
 
 const meta: Meta<typeof ModuleCompletionModal> = {

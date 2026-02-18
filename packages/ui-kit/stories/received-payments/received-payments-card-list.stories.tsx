@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ReceivedPaymentsCardList } from '../../lib/components/received-payments/received-payments-card-list';
 import { ReceivedPaymentsCard } from '../../lib/components/received-payments/received-payments-card';
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ScheduleSession } from '../../lib/components/calendar/schedule-session';
 import { useState } from 'react';
 import React from 'react';

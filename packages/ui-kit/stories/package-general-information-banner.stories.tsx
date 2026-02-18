@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PackageGeneralInformation } from '../lib/components/package-general-information-banner';
 
 export default {

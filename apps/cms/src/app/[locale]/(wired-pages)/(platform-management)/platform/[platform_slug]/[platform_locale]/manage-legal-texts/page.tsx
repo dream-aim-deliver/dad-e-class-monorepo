@@ -10,7 +10,7 @@ export default async function ManageLegalTextsPage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale; platform_slug: string; platform_locale: string }>;
+  params: Promise<{ locale: string; platform_slug: string; platform_locale: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
@@ -23,9 +23,9 @@ export default async function ManageLegalTextsPage({
 
   return (
     <ManageLegalTextsServerComponent
-      locale={params.locale}
+      locale={params.locale as TLocale}
       platformSlug={params.platform_slug}
-      platformLocale={params.platform_locale}
+      platformLocale={params.platform_locale as TLocale}
       initialTab={activeTab}
     />
   );

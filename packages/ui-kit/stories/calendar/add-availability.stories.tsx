@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import AvailabilityManager from '../../lib/components/calendar/add-availability/availability-manager';
 import DeleteAvailabilityConfirmation from '../../lib/components/calendar/add-availability/delete-availability-confirmation';
 import DeleteAvailabilitySuccess from '../../lib/components/calendar/add-availability/delete-availability-success';

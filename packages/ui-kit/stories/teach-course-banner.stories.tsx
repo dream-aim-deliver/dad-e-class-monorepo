@@ -1,5 +1,5 @@
 import { TeachCourseBanner } from '../lib/components/teach-course-banner';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 
 interface TeachCourseBannerProps {

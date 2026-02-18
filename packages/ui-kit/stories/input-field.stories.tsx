@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { InputField, InputFieldProps } from '../lib/components/input-field';
 import { IconSearch } from '../lib/components/icons/icon-search';
 import { Button } from '../lib/components/button';

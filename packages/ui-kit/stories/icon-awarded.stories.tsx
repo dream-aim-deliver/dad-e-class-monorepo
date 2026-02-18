@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconAwarded } from '../lib/components/icons/icon-awarded';
 
 const meta: Meta<typeof IconAwarded> = {
