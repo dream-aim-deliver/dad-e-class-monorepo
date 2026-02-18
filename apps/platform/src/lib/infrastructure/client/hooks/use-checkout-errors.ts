@@ -140,7 +140,7 @@ export function useCheckoutErrors() {
   const getCheckoutErrorTitle = useCallback(
     (errorMode: string): string => {
       const key = ERROR_MODE_TO_KEY[errorMode] || 'genericError';
-      // @ts-expect-error - Dynamic key access for translations
+
       return t(`${key}.title`);
     },
     [t]
@@ -149,7 +149,7 @@ export function useCheckoutErrors() {
   const getCheckoutErrorDescription = useCallback(
     (errorMode: string): string => {
       const key = ERROR_MODE_TO_KEY[errorMode] || 'genericError';
-      // @ts-expect-error - Dynamic key access for translations
+
       return t(`${key}.description`);
     },
     [t]

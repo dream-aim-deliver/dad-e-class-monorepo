@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconCheckDouble } from '../../lib/components/icons/icon-check-double';
 
 // Meta configuration for Storybook

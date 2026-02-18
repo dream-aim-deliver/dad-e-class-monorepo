@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useCallback, useRef, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { TransactionsGrid, TransactionRow } from '../../lib/components/grids/transactions-grid';

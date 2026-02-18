@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Stepper } from '../lib/components/stepper/stepper';
 import { CourseCardList } from '../lib/components/course-card/course-card-list';
 import { CourseCard } from '../lib/components/course-card/course-card';

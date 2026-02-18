@@ -14,7 +14,7 @@ export default async function EndedGroupCoachingSessionsPage({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
     params: Promise<{
-        locale: TLocale;
+        locale: string;
         course_slug: string;
         group_id: string;
     }>;
@@ -22,7 +22,8 @@ export default async function EndedGroupCoachingSessionsPage({
     const searchParams = await searchParamsPromise;
     const params = await paramsPromise;
 
-    const { locale, course_slug, group_id } = params;
+    const locale = params.locale as TLocale;
+    const { course_slug, group_id } = params;
 
     // Parse group_id to integer
     const groupIdInt = parseInt(group_id, 10);

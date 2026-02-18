@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Carousel } from '../../lib/components/carousel/carousel';
 import { GeneralCard } from '../../lib/components/carousel/general-card';
 import { homePage } from '@maany_shr/e-class-models';

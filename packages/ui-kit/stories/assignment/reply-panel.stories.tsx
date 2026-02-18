@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ReplyPanel } from '../../lib/components/assignment/reply-panel';
 import { assignment, fileMetadata, role, shared } from '@maany_shr/e-class-models';
 

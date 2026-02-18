@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { Activity } from '../../lib/components/notifications/activity';
 import { NextIntlClientProvider } from 'next-intl';
 

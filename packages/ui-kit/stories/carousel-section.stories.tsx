@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import CarouselSection from '../lib/components/cms/carousel-section';
 import { fileMetadata } from '@maany_shr/e-class-models';
 

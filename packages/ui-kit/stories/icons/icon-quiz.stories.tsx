@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconQuiz } from '../../lib/components/icons/icon-quiz';
 
 // Meta configuration for Storybook

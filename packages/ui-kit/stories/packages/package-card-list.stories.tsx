@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PackageCardList } from '../../lib/components/packages/package-card-list';
 import { PackageCard } from '../../lib/components/packages/package-card';
 import { TLocale } from '@maany_shr/e-class-translations';

@@ -1,4 +1,4 @@
-import type { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 import { AssignmentCardFilterModal } from '../../lib/components/assignment/assignment-card-filter-modal';
 
 // Default Export for Storybook

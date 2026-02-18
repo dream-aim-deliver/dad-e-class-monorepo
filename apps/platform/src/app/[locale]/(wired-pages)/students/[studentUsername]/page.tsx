@@ -8,13 +8,14 @@ export default async function Page({
     params: paramsPromise,
         searchParams: searchParamsPromise,
     }: {
-        params: Promise<{ locale: TLocale; studentUsername: string }>;
+        params: Promise<{ locale: string; studentUsername: string }>;
         searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
     }) {
         const params = await paramsPromise;
         const searchParams = await searchParamsPromise;
 
-        const { locale, studentUsername } = params;
+        const locale = params.locale as TLocale;
+        const { studentUsername } = params;
         let tab = searchParams.tab;
         let courseSlug = searchParams.courseSlug;
 

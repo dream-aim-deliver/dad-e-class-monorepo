@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { NextIntlClientProvider } from 'next-intl';
 import { CoachNotesEditDialog } from '../lib/components/coach/coach-notes-edit-dialog';
 import { Button } from '../lib/components/button';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import DefaultLoading from '../lib/components/default-loading';
 
 const meta: Meta<typeof DefaultLoading> = {

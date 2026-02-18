@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { Footer } from '../lib/components/footer';
 import { NextIntlClientProvider } from 'next-intl';
 import { locales, TLocale } from '@maany_shr/e-class-translations';

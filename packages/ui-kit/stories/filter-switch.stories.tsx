@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import FilterSwitch from '../lib/components/filter-switch';
 
 const meta: Meta<typeof FilterSwitch> = {

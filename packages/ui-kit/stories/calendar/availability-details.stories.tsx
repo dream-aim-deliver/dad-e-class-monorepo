@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AvailabilityDetails } from '../../lib/components/calendar/add-availability/availability-details';
 import { TSingleAvailability, TRecurringAvailability } from '../../lib/components/calendar/add-availability/availability-manager';
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import PageTitleSection from '../lib/components/cms/offerpage-edit/page-title-section';
 
 const meta: Meta<typeof PageTitleSection> = {

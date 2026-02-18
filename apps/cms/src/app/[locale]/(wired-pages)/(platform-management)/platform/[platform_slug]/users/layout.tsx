@@ -11,11 +11,11 @@ export default async function PlatformScopedLayout({
     params: paramsPromise,
 }: {
     children: React.ReactNode;
-    params: Promise<{ platform_slug: string; locale: TLocale }>;
+    params: Promise<{ platform_slug: string; locale: string }>;
 }) {
     const params = await paramsPromise;
     const platformSlug = params.platform_slug;
-    const appLocale = params.locale;
+    const appLocale = params.locale as TLocale;
 
     const platformLocale = appLocale as TLocale;
 

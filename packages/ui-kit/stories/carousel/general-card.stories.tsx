@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GeneralCard } from '../../lib/components/carousel/general-card';
 
 const meta: Meta<typeof GeneralCard> = {

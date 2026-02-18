@@ -68,3 +68,6 @@ storybook-static
 # AI
 .claude
 .playwright-mcp
+vitest.config.*.timestamp*
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md

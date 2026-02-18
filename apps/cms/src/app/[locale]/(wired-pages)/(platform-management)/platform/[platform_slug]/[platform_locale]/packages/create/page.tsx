@@ -15,7 +15,7 @@ export default async function CreatePackagePage({
     searchParams: searchParamsPromise,
 }: {
     params: Promise<{
-        locale: TLocale;
+        locale: string;
         platform_slug: string;
         platform_locale: string;
     }>;
@@ -27,9 +27,9 @@ export default async function CreatePackagePage({
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>
             <CreatePackageServerComponent
-                locale={params.locale}
+                locale={params.locale as TLocale}
                 platformSlug={params.platform_slug}
-                platformLocale={params.platform_locale}
+                platformLocale={params.platform_locale as TLocale}
             />
         </Suspense >
     );

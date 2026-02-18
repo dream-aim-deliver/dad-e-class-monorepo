@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { DesignerComponent, FormComponent, DownloadFilesDesignerProps } from '../../lib/components/course-builder-lesson-component/download-files-lesson';
 import { CourseElementType } from '../../lib/components/course-builder/types';
 import { fileMetadata } from '@maany_shr/e-class-models';

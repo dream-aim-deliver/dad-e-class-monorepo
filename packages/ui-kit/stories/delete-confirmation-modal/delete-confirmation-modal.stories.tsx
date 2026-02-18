@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DeleteConfirmationModal } from "../../lib/components/delete-confirmation-modal/delete-confirmation-modal";
 
 const meta: Meta<typeof DeleteConfirmationModal> = {

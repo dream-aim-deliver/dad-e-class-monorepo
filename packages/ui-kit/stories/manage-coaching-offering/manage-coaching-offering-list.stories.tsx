@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ManageCoachingOfferingList } from '../../lib/components/manage-coaching-offering/manage-coaching-offering-list';
 import { ManageCoachingOfferingItem } from '../../lib/components/manage-coaching-offering/manage-coaching-offering-item';
 

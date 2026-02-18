@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { ModulePagination } from '../lib/components/module-pagination';
 import { NextIntlClientProvider } from 'next-intl';
 import { useState, useEffect } from 'react';

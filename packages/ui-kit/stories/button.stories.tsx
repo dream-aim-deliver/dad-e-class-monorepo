@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { Button, ButtonProps } from '../lib/components/button';
 import { NextIntlClientProvider } from 'next-intl';
 import { IconPlus } from '../lib/components/icons/icon-plus';

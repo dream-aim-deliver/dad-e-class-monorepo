@@ -1,5 +1,5 @@
 import { StudentCardFilterModal, StudentCardFilterModel } from '../../lib/components/student-card/student-card-filter-modal';
-import type { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
 // Mock Data
 const mockFilters: Partial<StudentCardFilterModel> = {

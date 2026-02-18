@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconTrashAlt } from '../../lib/components/icons/icon-trash-alt';
 
 // Meta configuration for Storybook

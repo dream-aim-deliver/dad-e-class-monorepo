@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AssignmentCard } from "../../lib/components/assignment/assignment-card";
 import { assignment, fileMetadata, role, shared } from "@maany_shr/e-class-models";
 import { TLocale } from "@maany_shr/e-class-translations";

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { IconCoachingSession } from '../../lib/components/icons/icon-coaching-session';
 // Meta configuration for Storybook
 const meta: Meta<typeof IconCoachingSession> = {

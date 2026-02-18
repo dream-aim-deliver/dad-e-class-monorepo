@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import { FormElementRenderer } from "../lib/components/lesson/form-renderer";
 import { FormElementType, FormElement } from "../lib/components/pre-assessment/types";
 import { slateifySerialize } from "../lib/components/rich-text-element/serializer";

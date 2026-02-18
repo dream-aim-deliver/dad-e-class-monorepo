@@ -10,10 +10,10 @@ export default async function GroupWorkspacePage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale; slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
 
-  return <GroupWorkspaceServerComponent locale={params.locale} courseSlug={params.slug} />;
+  return <GroupWorkspaceServerComponent locale={params.locale as TLocale} courseSlug={params.slug} />;
 }

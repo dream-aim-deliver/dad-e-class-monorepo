@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import quizElement from "../../../lib/components/course-builder-lesson-component/quiz";
 import { NextIntlClientProvider } from "next-intl";
 import {

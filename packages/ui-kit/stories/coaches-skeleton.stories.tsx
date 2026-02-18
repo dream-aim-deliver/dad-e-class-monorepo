@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { CoachesSkeleton } from '../lib/components/coaches-skeleton';
 
 export default {

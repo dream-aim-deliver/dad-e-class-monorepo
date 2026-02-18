@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconSendEmail } from '../../lib/components/icons/icon-send-email';
 
 // Meta configuration for Storybook

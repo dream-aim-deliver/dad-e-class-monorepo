@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { FormElementType } from '../lib/components/pre-assessment/types';
 import richTextElement from '../lib/components/lesson-components/rich-text';
 import { RichTextElement } from '../lib/components/lesson-components/types';

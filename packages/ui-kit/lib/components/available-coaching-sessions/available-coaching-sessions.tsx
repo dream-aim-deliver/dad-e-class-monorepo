@@ -1,3 +1,4 @@
+"use client";
 import { Button } from '../button';
 import { FC, useRef, useState } from 'react';
 import { AvailableCoachingSessionCard } from './available-coaching-session-card';

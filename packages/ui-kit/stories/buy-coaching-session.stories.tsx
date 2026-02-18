@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuyCoachingSession from '../lib/components/buy-coaching-session';
 import { useState } from 'react';
 

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { ReviewSnippet } from '../../lib/components/review/review-snippet';
 
 export default {

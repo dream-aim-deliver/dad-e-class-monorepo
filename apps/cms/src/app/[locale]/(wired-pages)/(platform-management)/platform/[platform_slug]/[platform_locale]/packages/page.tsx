@@ -7,15 +7,15 @@ import AllPackagesServerComponent from '../../../../../../../../lib/infrastructu
 export default async function AllPackagesPage({
   params: paramsPromise,
 }: {
-  params: Promise<{ locale: TLocale; platform_slug: string; platform_locale: string }>;
+  params: Promise<{ locale: string; platform_slug: string; platform_locale: string }>;
 }) {
   const params = await paramsPromise;
 
   return (
     <AllPackagesServerComponent
-      locale={params.locale}
+      locale={params.locale as TLocale}
       platformSlug={params.platform_slug}
-      platformLocale={params.platform_locale}
+      platformLocale={params.platform_locale as TLocale}
     />
   );
 }

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconClock } from '../../lib/components/icons/icon-clock';
 
 // Meta configuration for Storybook

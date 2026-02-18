@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Message } from '../../lib/components/assignment/message';
 import { fileMetadata, shared } from '@maany_shr/e-class-models';
 

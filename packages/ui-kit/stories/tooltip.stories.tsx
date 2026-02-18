@@ -1,5 +1,5 @@
 // Tooltip.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import Tooltip from '../lib/components/tooltip';
 
 const meta: Meta<typeof Tooltip> = {

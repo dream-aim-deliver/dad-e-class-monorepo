@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { FormElementType } from '../lib/components/pre-assessment/types';
 import textInputElement from '../lib/components/lesson-components/text-input';
 import { slateify } from '../lib/components/rich-text-element/serializer';

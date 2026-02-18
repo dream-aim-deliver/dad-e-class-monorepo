@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SingleChoiceEdit } from '../lib/components/single-choice';
 
 const meta: Meta<typeof SingleChoiceEdit> = {

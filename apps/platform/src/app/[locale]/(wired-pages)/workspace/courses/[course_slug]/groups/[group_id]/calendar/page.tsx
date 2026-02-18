@@ -8,13 +8,13 @@ import AddGroupSessionServerComponent from '../../../../../../../../../lib/infra
 export default async function AddGroupSessionPage({
   params: paramsPromise,
 }: {
-  params: Promise<{ locale: TLocale; course_slug: string; group_id: string }>;
+  params: Promise<{ locale: string; course_slug: string; group_id: string }>;
 }) {
   const params = await paramsPromise;
 
   return (
     <AddGroupSessionServerComponent
-      locale={params.locale}
+      locale={params.locale as TLocale}
       courseSlug={params.course_slug}
       groupId={params.group_id}
     />

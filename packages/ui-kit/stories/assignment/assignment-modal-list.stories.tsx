@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AssignmentModalList } from '../../lib/components/assignment/assignment-modal-list';
 import { AssignmentModalProps } from '../../lib/components/assignment/assignment-modal';
 import { assignment, fileMetadata, shared } from '@maany_shr/e-class-models';

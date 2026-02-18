@@ -1,5 +1,5 @@
 import React from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AssignmentOverview } from "../../lib/components/assignment/assignment-overview";
 import { TLocale } from "@maany_shr/e-class-translations";
 

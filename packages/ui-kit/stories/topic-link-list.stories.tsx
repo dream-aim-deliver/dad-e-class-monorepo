@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import TopicList from '../lib/components/topic-list';
 
 // Sample topics from your list

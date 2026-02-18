@@ -9,7 +9,7 @@ export default async function CoachingSessionsPage({
   params: paramsPromise,
   searchParams: searchParamsPromise,
 }: {
-  params: Promise<{ locale: TLocale; platform_slug: string; platform_locale: TLocale }>;
+  params: Promise<{ locale: string; platform_slug: string; platform_locale: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await paramsPromise;
@@ -17,9 +17,9 @@ export default async function CoachingSessionsPage({
 
   return (
     <CoachingSessionsServerComponent
-      locale={params.locale}
+      locale={params.locale as TLocale}
       platformSlug={params.platform_slug}
-      platformLocale={params.platform_locale}
+      platformLocale={params.platform_locale as TLocale}
     />
   );
 }

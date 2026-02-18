@@ -1,149 +1,155 @@
 {
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "production": [
-      "default",
-      "!{projectRoot}/.eslintrc.json",
-      "!{projectRoot}/eslint.config.js",
-      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/src/test-setup.[jt]s",
-      "!{projectRoot}/test-setup.[jt]s",
-      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
-      "!{projectRoot}/.storybook/**/*",
-      "!{projectRoot}/tsconfig.storybook.json"
-    ],
-    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
-  },
-  "nxCloudId": "6751b4bbf75763480c48fb3d",
-  "plugins": [
-    {
-      "plugin": "@nx/next/plugin",
-      "options": {
-        "startTargetName": "start",
-        "buildTargetName": "build",
-        "devTargetName": "dev",
-        "serveStaticTargetName": "serve-static"
-      }
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "namedInputs": {
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "production": [
+            "default",
+            "!{projectRoot}/.eslintrc.json",
+            "!{projectRoot}/eslint.config.js",
+            "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+            "!{projectRoot}/tsconfig.spec.json",
+            "!{projectRoot}/jest.config.[jt]s",
+            "!{projectRoot}/src/test-setup.[jt]s",
+            "!{projectRoot}/test-setup.[jt]s",
+            "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
+            "!{projectRoot}/.storybook/**/*",
+            "!{projectRoot}/tsconfig.storybook.json"
+        ],
+        "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
     },
-    {
-      "plugin": "@nx/playwright/plugin",
-      "options": {
-        "targetName": "e2e"
-      }
-    },
-    {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
-    {
-      "plugin": "@nx/jest/plugin",
-      "options": {
-        "targetName": "test"
-      }
-    },
-    {
-      "plugin": "@nx/js/typescript",
-      "options": {
-        "typecheck": {
-          "targetName": "typecheck"
+    "nxCloudId": "6751b4bbf75763480c48fb3d",
+    "plugins": [
+        {
+            "plugin": "@nx/next/plugin",
+            "options": {
+                "startTargetName": "start",
+                "buildTargetName": "build",
+                "devTargetName": "dev",
+                "serveStaticTargetName": "serve-static"
+            }
         },
-        "build": {
-          "targetName": "build",
-          "configName": "tsconfig.lib.json",
-          "buildDepsName": "build-deps",
-          "watchDepsName": "watch-deps"
+        {
+            "plugin": "@nx/playwright/plugin",
+            "options": {
+                "targetName": "e2e"
+            }
+        },
+        {
+            "plugin": "@nx/eslint/plugin",
+            "options": {
+                "targetName": "lint"
+            }
+        },
+        {
+            "plugin": "@nx/jest/plugin",
+            "options": {
+                "targetName": "test"
+            }
+        },
+        {
+            "plugin": "@nx/js/typescript",
+            "options": {
+                "typecheck": {
+                    "targetName": "typecheck"
+                },
+                "build": {
+                    "targetName": "build",
+                    "configName": "tsconfig.lib.json",
+                    "buildDepsName": "build-deps",
+                    "watchDepsName": "watch-deps"
+                }
+            }
+        },
+        {
+            "plugin": "@nx/vite/plugin",
+            "options": {
+                "buildTargetName": "build",
+                "serveTargetName": "serve",
+                "devTargetName": "dev",
+                "previewTargetName": "preview",
+                "serveStaticTargetName": "serve-static",
+                "typecheckTargetName": "typecheck",
+                "buildDepsTargetName": "build-deps",
+                "watchDepsTargetName": "watch-deps"
+            }
+        },
+        {
+            "plugin": "@nx/storybook/plugin",
+            "options": {
+                "serveStorybookTargetName": "storybook",
+                "buildStorybookTargetName": "build-storybook",
+                "testStorybookTargetName": "test-storybook",
+                "staticStorybookTargetName": "static-storybook"
+            }
+        },
+        {
+            "plugin": "@nx/vitest",
+            "options": {
+                "testTargetName": "test"
+            }
         }
-      }
-    },
-    {
-      "plugin": "@nx/vite/plugin",
-      "options": {
-        "buildTargetName": "build",
-        "testTargetName": "test",
-        "serveTargetName": "serve",
-        "devTargetName": "dev",
-        "previewTargetName": "preview",
-        "serveStaticTargetName": "serve-static",
-        "typecheckTargetName": "typecheck",
-        "buildDepsTargetName": "build-deps",
-        "watchDepsTargetName": "watch-deps"
-      }
-    },
-    {
-      "plugin": "@nx/storybook/plugin",
-      "options": {
-        "serveStorybookTargetName": "storybook",
-        "buildStorybookTargetName": "build-storybook",
-        "testStorybookTargetName": "test-storybook",
-        "staticStorybookTargetName": "static-storybook"
-      }
-    }
-  ],
-  "targetDefaults": {
-    "e2e-ci--**/*": {
-      "dependsOn": ["^build"]
-    },
-    "@nx/js:tsc": {
-      "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
-    },
-    "nx-release-publish": {
-      "dependsOn": ["^build"],
-      "options": {
-        "packageRoot": "dist/packages/{projectName}"
-      }
-    }
-  },
-  "generators": {
-    "@nx/next": {
-      "application": {
-        "style": "tailwind",
-        "linter": "eslint"
-      }
-    },
-    "@nx/react": {
-      "library": {
-        "style": "none",
-        "linter": "eslint",
-        "unitTestRunner": "vitest"
-      },
-      "application": {
-        "babel": true,
-        "style": "none",
-        "linter": "eslint",
-        "bundler": "vite"
-      },
-      "component": {
-        "style": "none"
-      }
-    }
-  },
-  "release": {
-    "changelog": {
-      "workspaceChangelog": {
-        "createRelease": "github",
-        "file": false
-      }
-    },
-    "conventionalCommits": {
-      "types": {
-        "docs": {
-          "semverBump": "patch"
+    ],
+    "targetDefaults": {
+        "e2e-ci--**/*": {
+            "dependsOn": ["^build"]
+        },
+        "@nx/js:tsc": {
+            "cache": true,
+            "dependsOn": ["^build"],
+            "inputs": ["production", "^production"]
+        },
+        "nx-release-publish": {
+            "dependsOn": ["^build"],
+            "options": {
+                "packageRoot": "dist/packages/{projectName}"
+            }
         }
-      }
     },
-    "version": {
-      "preVersionCommand": "pnpm dlx nx run-many --target=build --all",
-      "generatorOptions": {
-        "skipLockFileUpdate": true
-      }
+    "generators": {
+        "@nx/next": {
+            "application": {
+                "style": "tailwind",
+                "linter": "eslint"
+            }
+        },
+        "@nx/react": {
+            "library": {
+                "style": "none",
+                "linter": "eslint",
+                "unitTestRunner": "vitest"
+            },
+            "application": {
+                "babel": true,
+                "style": "none",
+                "linter": "eslint",
+                "bundler": "vite"
+            },
+            "component": {
+                "style": "none"
+            }
+        }
     },
-    "versionPlans": true
-  }
+    "release": {
+        "changelog": {
+            "workspaceChangelog": {
+                "createRelease": "github",
+                "file": false
+            }
+        },
+        "conventionalCommits": {
+            "types": {
+                "docs": {
+                    "semverBump": "patch"
+                }
+            }
+        },
+        "version": {
+            "preVersionCommand": "pnpm dlx nx run-many --target=build --all",
+            "preserveLocalDependencyProtocols": false,
+            "versionActionsOptions": {
+                "skipLockFileUpdate": true
+            }
+        },
+        "versionPlans": true
+    }
 }

@@ -9,11 +9,11 @@ export default async function YourReviewsPage({
     params: paramsPromise,
     searchParams: searchParamsPromise,
 }: {
-    params: Promise<{ locale: TLocale }>;
+    params: Promise<{ locale: string }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const params = await paramsPromise;
     const searchParams = await searchParamsPromise;
 
-    return <YourReviewsServerComponent locale={params.locale} />;
+    return <YourReviewsServerComponent locale={params.locale as TLocale} />;
 }

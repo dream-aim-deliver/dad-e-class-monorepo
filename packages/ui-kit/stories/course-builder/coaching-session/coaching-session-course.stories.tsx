@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import coachingSessionElement from "../../../lib/components/course-builder-lesson-component/coaching-session";
 import { NextIntlClientProvider } from "next-intl";
 import { CoachingSessionTypes, CoachingSessionStudentViewTypes } from "../../../lib/components/course-builder-lesson-component/types";

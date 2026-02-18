@@ -11,7 +11,7 @@ export default async function EditPackagePage({
     params: paramsPromise,
 }: {
     params: Promise<{
-        locale: TLocale;
+        locale: string;
         platform_slug: string;
         platform_locale: string;
         packageId: string;
@@ -21,9 +21,9 @@ export default async function EditPackagePage({
 
     return (
         <EditPackageServerComponent
-            locale={params.locale}
+            locale={params.locale as TLocale}
             platformSlug={params.platform_slug}
-            platformLocale={params.platform_locale}
+            platformLocale={params.platform_locale as TLocale}
             packageId={params.packageId}
         />
     );

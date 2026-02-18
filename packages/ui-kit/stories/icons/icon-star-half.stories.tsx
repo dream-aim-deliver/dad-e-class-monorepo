@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconStarHalf } from '../../lib/components/icons/icon-star-half';
 
 // Meta configuration for Storybook

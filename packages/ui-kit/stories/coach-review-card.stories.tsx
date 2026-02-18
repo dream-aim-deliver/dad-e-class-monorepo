@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { ReviewCard } from "../lib/components/review/coach-review-card";
 
 export default {

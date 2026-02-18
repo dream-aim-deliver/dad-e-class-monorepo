@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CourseCoachCardList } from '../lib/components/coach/course-coach-card-list';
 import { CoachCardDetails } from '../lib/components/coach/course-coach-card';
 

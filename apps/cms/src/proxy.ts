@@ -10,7 +10,7 @@ const i18n = createMiddleware({
     defaultLocale: i18nConfig.defaultLocale,
 });
 
-export default async function middleware(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     // Skip auth check for auth routes, API routes, and static files

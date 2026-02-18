@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import HeroSection from '../lib/components/cms/homepage-edit/hero-section';
 import { fileMetadata } from '@maany_shr/e-class-models';
 

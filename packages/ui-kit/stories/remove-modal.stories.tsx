@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { RemoveModal } from '../lib/components/remove-modal';
 
 const LocaleProvider: React.FC<{

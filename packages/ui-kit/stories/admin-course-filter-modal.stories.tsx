@@ -1,5 +1,5 @@
 import { AdminCourseFilterModalExpanded } from '../lib/components/admin-course-filter-modal';
-import type { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
 // Mock Data
 const mockCreators = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Brown'];

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Dropdown, DropdownProps } from '../lib/components/dropdown';
 
 const meta: Meta<typeof Dropdown> = {

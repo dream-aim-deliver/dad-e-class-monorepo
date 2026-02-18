@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import CoachCard, { CoachCardDetails } from '../lib/components/coach/coach-card';
 import { TLocale } from '@maany_shr/e-class-translations';
 import CardListLayout from '../lib/components/card-list-layout';

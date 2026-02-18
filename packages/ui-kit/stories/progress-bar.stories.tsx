@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { ProgressBar } from '../lib/components/progress-bar';
 import React from 'react';
 

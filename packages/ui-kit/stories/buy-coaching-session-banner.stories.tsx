@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { BuyCoachingSessionBanner } from '../lib/components/buy-coaching-session-banner';
 
 export default {

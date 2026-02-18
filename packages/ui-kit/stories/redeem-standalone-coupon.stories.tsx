@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import RedeemStandaloneCoupon from '../lib/components/redeem-standalone-coupon';
 import { Dialog, DialogContent, DialogTrigger } from '../lib/components/dialog';
 

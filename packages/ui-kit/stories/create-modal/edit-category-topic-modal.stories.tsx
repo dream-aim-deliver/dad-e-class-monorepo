@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import CreateEditCategoryTopicModal from '../../lib/components/create-modal/create-edit-category-topic-modal';
 import { Dialog, DialogContent, DialogTrigger } from '../../lib/components/dialog';
 

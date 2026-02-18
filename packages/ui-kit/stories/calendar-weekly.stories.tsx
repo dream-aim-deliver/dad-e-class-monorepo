@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { WeeklyCalendar } from '../lib/components/calendar/weekly-calendar';
 import { AnonymousCalendarCard, AvailabilityCalendarCard, SessionCalendarCard } from '../lib/components/calendar/calendar-cards';
 

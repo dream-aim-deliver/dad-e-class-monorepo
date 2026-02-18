@@ -10,12 +10,8 @@ const withNextIntl = createNextIntlPlugin(
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig: NextConfig = {
-    nx: {
-        // Set this to true if you would like to use SVGR
-        // See: https://github.com/gregberge/svgr
-        svgr: false,
-    },
     images: {
+        dangerouslyAllowLocalIP: true,
         formats: ['image/avif', 'image/webp'],
         // Cache optimized images for 10 hours minimum, matching signed URL TTL from MinIO
         minimumCacheTTL: 36000,

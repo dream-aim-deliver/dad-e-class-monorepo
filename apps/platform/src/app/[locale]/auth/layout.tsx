@@ -1,5 +1,8 @@
 import '../global.css';
+import { TLocale } from '@maany_shr/e-class-translations';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 import NextTopLoaderWrapper from '../../../lib/infrastructure/client/components/next-top-loader-wrapper';
 
 export const metadata = {
@@ -28,29 +31,36 @@ const figtree = Figtree({
     subsets: ['latin'],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
+    params: paramsPromise,
 }: {
     children: React.ReactNode;
+    params: Promise<{ locale: string }>;
 }) {
+    const { locale } = await paramsPromise;
+    const messages = await getMessages({ locale });
+
     return (
-        <html lang="en">
+        <html lang={locale}>
             <body
                 className={`theme theme-cms ${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
                 <NextTopLoaderWrapper />
-                <div
-                    className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
-                    style={{
-                        // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4))`,
-                        backgroundSize: '100% auto',
-                        // TODO: have a fallback color
-                        backgroundColor: '#141414',
-                    }}
-                >
-                    {children}
-                </div>
+                <NextIntlClientProvider locale={locale} messages={messages}>
+                    <div
+                        className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
+                        style={{
+                            // Temporary linear gradient to match the Figma. Should be uploaded this dark.
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4))`,
+                            backgroundSize: '100% auto',
+                            // TODO: have a fallback color
+                            backgroundColor: '#141414',
+                        }}
+                    >
+                        {children}
+                    </div>
+                </NextIntlClientProvider>
             </body>
         </html>
     );

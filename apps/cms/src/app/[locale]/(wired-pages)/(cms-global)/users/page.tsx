@@ -9,14 +9,14 @@ export default async function AllUsersPage({
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  params: Promise<{ locale: TLocale }>;
+  params: Promise<{ locale: string }>;
 }) {
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
 
   return (
     <AllUsersServerComponent
-      locale={params.locale}
+      locale={params.locale as TLocale}
     />
   );
 }

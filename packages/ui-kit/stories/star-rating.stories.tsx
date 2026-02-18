@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { StarRating } from '../lib/components/star-rating';
 import React from 'react';
 

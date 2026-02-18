@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconCalendarAlt } from '../../lib/components/icons/icon-calendar-alt';
 
 // Meta configuration for Storybook

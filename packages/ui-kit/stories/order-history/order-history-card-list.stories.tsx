@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { OrderHistoryCardList } from '../../lib/components/order-history/order-history-card-list';
 import { OrderHistoryCard } from '../../lib/components/order-history/order-history-card';
 

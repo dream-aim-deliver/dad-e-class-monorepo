@@ -1,4 +1,4 @@
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-vite';
 import { FormElement, FormElementType } from '../lib/components/pre-assessment/types';
 import headingTextElement from '../lib/components/lesson-components/heading-lesson';
 

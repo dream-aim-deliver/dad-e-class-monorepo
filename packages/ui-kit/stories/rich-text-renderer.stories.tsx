@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import RichTextRenderer from '../lib/components/rich-text-element/renderer';
 import { Descendant } from 'slate';
 import { slateifySerialize } from '../lib/components/rich-text-element/serializer';

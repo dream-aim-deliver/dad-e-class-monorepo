@@ -1,22 +1,16 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "files": [],
+    "extends": "../../tsconfig.base.json",
+    "files": [],
 
-  "references": [
-    {
-      "path": "../translations"
-    },
-    {
-      "path": "../models"
-    },
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    },
-    {
-      "path": "./tsconfig.storybook.json"
-    }
-  ]
+    "references": [
+        {
+            "path": "./tsconfig.lib.json"
+        },
+        {
+            "path": "./tsconfig.spec.json"
+        },
+        {
+            "path": "./tsconfig.storybook.json"
+        }
+    ]
 }

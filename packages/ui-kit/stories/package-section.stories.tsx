@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import PackageSection from '../lib/components/cms/offerpage-edit/package-section';
 
 const meta: Meta<typeof PackageSection> = {

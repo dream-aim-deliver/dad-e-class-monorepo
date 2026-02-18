@@ -1,5 +1,5 @@
 import { ReviewFilterModal, ReviewFilterModel } from '../lib/components/grids/review-filter-modal';
-import type { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
 // Mock Data
 const mockFilters: Partial<ReviewFilterModel> = {

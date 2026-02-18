@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PlatformCard } from '../../lib/components/platform-cards/platform-card';
 
 const meta: Meta<typeof PlatformCard> = {
