@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 export type SessionCardStatus = 'upcoming-editable' | 'upcoming-locked' | 'ongoing';
 
@@ -54,7 +54,7 @@ function calculateSessionStatus(startDateTime: Date): SessionStatusResult {
 
 /**
  * Custom hook to calculate session card status based on time until session start.
- * Returns null initially (for SSR), then calculates on client to avoid hydration mismatch.
+ * Returns null during SSR, then calculates on client to avoid hydration mismatch.
  * Updates every minute to keep status current.
  *
  * Status logic:
@@ -66,20 +66,17 @@ function calculateSessionStatus(startDateTime: Date): SessionStatusResult {
  * @returns SessionStatusResult with status and time remaining info, or null during SSR
  */
 export function useSessionStatus(startDateTime: Date): SessionStatusResult | null {
-  // Start with null to indicate "not yet calculated" - avoids hydration mismatch
-  const [result, setResult] = useState<SessionStatusResult | null>(null);
-
-  useEffect(() => {
-    // Calculate immediately on mount
-    setResult(calculateSessionStatus(startDateTime));
-
-    // Re-check every minute for dynamic updates
-    const interval = setInterval(() => {
-      setResult(calculateSessionStatus(startDateTime));
-    }, 60000);
-
+  const subscribe = useCallback((onStoreChange: () => void) => {
+    const interval = setInterval(onStoreChange, 60000);
     return () => clearInterval(interval);
-  }, [startDateTime]);
+  }, []);
 
-  return result;
+  const getSnapshot = useCallback(
+    () => calculateSessionStatus(startDateTime),
+    [startDateTime]
+  );
+
+  const getServerSnapshot = useCallback(() => null, []);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
