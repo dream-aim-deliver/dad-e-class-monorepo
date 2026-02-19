@@ -14,6 +14,7 @@ export default [...baseConfig, ...nx.configs['flat/react-typescript'], {
           '{projectRoot}/vite.config.{js,ts,mjs,mts}',
           '{projectRoot}/vite.config.ts.timestamp-**.{js,ts,mjs,mts}'
         ],
+        ignoredDependencies: ['@storybook/react'],
       },
     ],
   },

@@ -11,7 +11,7 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "apps/platform",
-        "command": "eslint . --quiet"
+        "command": "eslint ."
       }
     }
   }
