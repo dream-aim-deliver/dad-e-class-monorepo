@@ -5,7 +5,6 @@ import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
-import type { Meta, StoryObj } from '@storybook/react';
 import { useImageComponent } from '../../contexts/image-component-context';
 
 export interface ScheduleSessionProps extends isLocalAware {
