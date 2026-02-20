@@ -59,7 +59,7 @@ const config: UserConfigFnPromise = async () => {
       include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
       reporters: ['default'],
       coverage: {
-        reportsDirectory: '../../coverage/packages/models',
+        reportsDirectory: '../../coverage/packages/translations',
         provider: 'v8',
       },
     },
