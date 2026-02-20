@@ -45,7 +45,7 @@ function CoursePreviewLesson(props: {
         trpc.listLessonComponents.useSuspenseQuery(
             {
                 lessonId: props.lessonId,
-                withProgress: props.enableSubmit ?? false,
+                withProgress: true,
             },
             {
                 staleTime: 0,

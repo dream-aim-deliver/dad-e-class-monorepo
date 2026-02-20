@@ -2212,6 +2212,12 @@ export const EN: TDictionary = {
         save: 'Save',
         saving: 'Saving...',
         progressSaved: 'Progress saved successfully!',
+        saveFailed: 'Failed to save progress. Please try again.',
+        validationTextInput: 'Please fill in the text field before saving.',
+        validationSingleChoice: 'Please select an option before saving.',
+        validationMultiCheck: 'Please select at least one option before saving.',
+        validationOneOutOfThree: 'Please select one option from each row before saving.',
+        validationUploadFiles: 'Please upload at least one file before saving.',
       },
       enrolledCoaches: {
         title: 'Coaches',
