@@ -2317,6 +2317,12 @@ export const DictionarySchema = z.object({
         save: z.string(),
         saving: z.string(),
         progressSaved: z.string(),
+        saveFailed: z.string(),
+        validationTextInput: z.string(),
+        validationSingleChoice: z.string(),
+        validationMultiCheck: z.string(),
+        validationOneOutOfThree: z.string(),
+        validationUploadFiles: z.string(),
       }),
       enrolledCoaches: z.object({
         title: z.string(),

@@ -2214,6 +2214,12 @@ export const DE: TDictionary = {
         save: 'Speichern',
         saving: 'Wird gespeichert...',
         progressSaved: 'Fortschritt erfolgreich gespeichert!',
+        saveFailed: 'Fortschritt konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.',
+        validationTextInput: 'Bitte füllen Sie das Textfeld aus, bevor Sie speichern.',
+        validationSingleChoice: 'Bitte wählen Sie eine Option aus, bevor Sie speichern.',
+        validationMultiCheck: 'Bitte wählen Sie mindestens eine Option aus, bevor Sie speichern.',
+        validationOneOutOfThree: 'Bitte wählen Sie in jeder Zeile eine Option aus, bevor Sie speichern.',
+        validationUploadFiles: 'Bitte laden Sie mindestens eine Datei hoch, bevor Sie speichern.',
       },
       enrolledCoaches: {
         title: 'Coaches',
