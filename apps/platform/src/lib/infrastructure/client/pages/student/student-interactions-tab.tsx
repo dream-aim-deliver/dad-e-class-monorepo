@@ -76,7 +76,7 @@ export default function StudentInteractionsTab({
         .map(module => ({
             ...module,
             lessons: module.lessons?.filter(lesson =>
-                lesson.textInputs && lesson.textInputs.length > 0
+                lesson.interactions && lesson.interactions.length > 0
             ) || []
         }))
         .filter(module => module.lessons.length > 0);
