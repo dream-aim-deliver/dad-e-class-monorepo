@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@dream-aim-deliver/e-class-cms-rest": "3.3.0",
+    "@dream-aim-deliver/e-class-cms-rest": "3.3.1",
     "@maany_shr/e-class-models": "workspace:*",
     "@maany_shr/e-class-translations": "workspace:*",
     "@mux/mux-player-react": "^3.3.0",
