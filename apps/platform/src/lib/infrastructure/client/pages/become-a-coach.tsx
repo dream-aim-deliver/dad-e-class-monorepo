@@ -9,7 +9,7 @@
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=6247-208046
 
 import { useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getLocalizedValue } from '@maany_shr/e-class-translations';
 import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
 import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -75,8 +75,9 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     // Validation
     const errors: string[] = [];
 
-    // Bio validation (required)
-    if (!profile.bio || profile.bio.trim() === '') {
+    // Bio validation (required) — validate the locale-matched bio
+    const resolvedBio = getLocalizedValue(profile.bioEn, profile.bioDe, locale);
+    if (!resolvedBio || resolvedBio.trim() === '') {
       errors.push(t('validation.bioRequired'));
     }
 
@@ -112,7 +113,7 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
 
       // Build email sections dynamically - only include fields that are provided
       const personalInfoLines: string[] = [];
-      personalInfoLines.push(`- ${t('email.bio')}: ${profile.bio}`);
+      personalInfoLines.push(`- ${t('email.bio')}: ${resolvedBio}`);
       if (profile.linkedinUrl) {
         personalInfoLines.push(`- ${t('email.linkedinProfile')}: ${profile.linkedinUrl}`);
       }

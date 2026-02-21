@@ -510,7 +510,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 
 	const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
 		id: 0,
-		bio: '',
 		bioEn: '',
 		bioDe: '',
 		linkedinUrl: null,
