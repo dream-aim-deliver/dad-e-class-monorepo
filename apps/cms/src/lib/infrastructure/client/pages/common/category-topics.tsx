@@ -1,6 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListTopicsByCategoryPresenter } from '../../hooks/use-list-topics-by-category-presenter';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useEffect, useMemo, useState } from 'react';
 import {
     DefaultError,
