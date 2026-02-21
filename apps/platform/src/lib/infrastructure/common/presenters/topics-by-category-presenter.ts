@@ -1,17 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
-    ExtractStatusModel,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TListTopicsByCategoryUseCaseResponse,
+    ListTopicsByCategoryUseCaseResponseSchema,
+    TListTopicsByCategoryErrorResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TTopicsByCategoryPresenterUtilities = {};
 
 export const ListTopicsByCategoryResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListTopicsByCategoryUseCaseResponse,
+        TListTopicsByCategoryUseCaseResponse,
         viewModels.TTopicsByCategoryViewModel,
         TTopicsByCategoryPresenterUtilities
     >;
@@ -20,7 +24,7 @@ type TListTopicsByCategoryResponseMiddleware =
     typeof ListTopicsByCategoryResponseMiddleware;
 
 export default class TopicsByCategoryPresenter extends BasePresenter<
-    useCaseModels.TListTopicsByCategoryUseCaseResponse,
+    TListTopicsByCategoryUseCaseResponse,
     viewModels.TTopicsByCategoryViewModel,
     TTopicsByCategoryPresenterUtilities,
     TListTopicsByCategoryResponseMiddleware
@@ -34,7 +38,7 @@ export default class TopicsByCategoryPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.ListTopicsByCategoryUseCaseResponseSchema,
+                    ListTopicsByCategoryUseCaseResponseSchema,
                 viewModel: viewModels.TopicsByCategoryViewModelSchema
             },
             middleware: ListTopicsByCategoryResponseMiddleware,
@@ -45,7 +49,7 @@ export default class TopicsByCategoryPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListTopicsByCategoryUseCaseResponse,
+            TListTopicsByCategoryUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TTopicsByCategoryViewModel {
@@ -58,7 +62,7 @@ export default class TopicsByCategoryPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListTopicsByCategoryUseCaseErrorResponse,
+            TListTopicsByCategoryErrorResponse,
             TListTopicsByCategoryResponseMiddleware
         >,
     ): viewModels.TTopicsByCategoryViewModel {

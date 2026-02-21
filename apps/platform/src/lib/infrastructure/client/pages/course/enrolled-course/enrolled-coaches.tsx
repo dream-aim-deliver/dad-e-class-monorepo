@@ -481,7 +481,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     };
 
     const isAdmin = props.currentRole === 'admin' || props.currentRole === 'superadmin';
-    const canManageCoaches = isAdmin && !props.isArchived;
+    const canManageCoaches = isAdmin;
 
     return (
         <div className="space-y-6">

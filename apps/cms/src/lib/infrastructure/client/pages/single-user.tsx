@@ -15,7 +15,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary, getLocalizedValue } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { DefaultLoading, DefaultError, UserAvatar, Badge, StarRating, CourseCard, Dropdown, ConfirmationModal, CoachReviewCard, Banner, IconLanguage } from '@maany_shr/e-class-ui-kit';
@@ -439,7 +439,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
             <div className="flex flex-col gap-4">
               <div>
                 <p className="text-sm text-text-secondary">{t('professionalBio')}</p>
-                <p className="text-text-primary">{professionalProfile?.profile.bio || '-'}</p>
+                <p className="text-text-primary">{getLocalizedValue(professionalProfile?.profile.bioEn, professionalProfile?.profile.bioDe, currentLocale) || '-'}</p>
               </div>
               <div>
                 <p className="text-sm text-text-secondary">{t('skills')}</p>
@@ -556,7 +556,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
               <div className="flex flex-col gap-4 mt-2">
                 <div>
                   <p className="text-sm text-text-secondary">{t('professionalBio')}</p>
-                  <p className="text-text-primary">{professionalProfile?.profile.bio || '-'}</p>
+                  <p className="text-text-primary">{getLocalizedValue(professionalProfile?.profile.bioEn, professionalProfile?.profile.bioDe, currentLocale) || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-text-secondary">{t('skills')}</p>

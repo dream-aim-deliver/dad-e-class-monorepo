@@ -45,7 +45,8 @@ const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|s
 
 // Zod schema for professional profile validation
 const professionalProfileValidationSchema = z.object({
-	bio: z.string().min(1, 'Bio is required').max(280, 'Bio must be 280 characters or less'),
+	bioEn: z.string().max(280, 'Bio (English) must be 280 characters or less').optional().nullable(),
+	bioDe: z.string().max(280, 'Bio (German) must be 280 characters or less').optional().nullable(),
 	linkedinUrl: z.union([
 		z.string().refine(
 			(url) => url === '' || linkedInUrlRegex.test(url),
@@ -119,12 +120,14 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		refetchOnWindowFocus: false,
 		staleTime: 5 * 60 * 1000,
 	});
-	// Topics are locale-dependent - force refetch on mount to get correct language
-	// (React Query cache key doesn't include locale from Accept-Language header)
-	const topicsQuery = trpc.listTopics.useQuery({}, {
+	// Fetch topics for BOTH languages so dual-language skill pickers work
+	const topicsEnQuery = trpc.listTopics.useQuery({ languageCode: 'en' }, {
 		refetchOnWindowFocus: false,
-		staleTime: 0,
-		refetchOnMount: 'always',
+		staleTime: 5 * 60 * 1000,
+	});
+	const topicsDeQuery = trpc.listTopics.useQuery({ languageCode: 'de' }, {
+		refetchOnWindowFocus: false,
+		staleTime: 5 * 60 * 1000,
 	});
 
 
@@ -134,7 +137,10 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const [personalProfileViewModel, setPersonalProfileViewModel] = useState<
 		viewModels.TGetPersonalProfileViewModel | undefined
 	>(undefined);
-	const [topicsViewModel, setTopicsViewModel] = useState<
+	const [topicsEnViewModel, setTopicsEnViewModel] = useState<
+		viewModels.TTopicListViewModel | undefined
+	>(undefined);
+	const [topicsDeViewModel, setTopicsDeViewModel] = useState<
 		viewModels.TTopicListViewModel | undefined
 	>(undefined);
 	const [languagesViewModel, setLanguagesViewModel] = useState<
@@ -151,8 +157,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const { presenter: personalPresenter } = useGetPersonalProfilePresenter(
 		setPersonalProfileViewModel
 	);
-	const { presenter: topicsPresenter } = useListTopicsPresenter(
-		setTopicsViewModel
+	const { presenter: topicsEnPresenter } = useListTopicsPresenter(
+		setTopicsEnViewModel
+	);
+	const { presenter: topicsDePresenter } = useListTopicsPresenter(
+		setTopicsDeViewModel
 	);
 	const { presenter: languagesPresenter } = useListLanguagesPresenter(
 		setLanguagesViewModel
@@ -187,13 +196,20 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		}
 	}, [professionalProfileQuery.data, professionalPresenter, professionalProfileViewModel]);
 
-	// Present topics data only when available
+	// Present topics data only when available (EN and DE separately)
 	useEffect(() => {
-		if (topicsQuery.data) {
+		if (topicsEnQuery.data) {
 			// @ts-ignore - Presenter type compatibility issue
-			topicsPresenter.present(topicsQuery.data, topicsViewModel);
+			topicsEnPresenter.present(topicsEnQuery.data, topicsEnViewModel);
 		}
-	}, [topicsQuery.data, topicsPresenter, topicsViewModel]);
+	}, [topicsEnQuery.data, topicsEnPresenter, topicsEnViewModel]);
+
+	useEffect(() => {
+		if (topicsDeQuery.data) {
+			// @ts-ignore - Presenter type compatibility issue
+			topicsDePresenter.present(topicsDeQuery.data, topicsDeViewModel);
+		}
+	}, [topicsDeQuery.data, topicsDePresenter, topicsDeViewModel]);
 
 
 
@@ -469,8 +485,10 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		}
 	};
 
-	// Get topics data (may be undefined if professional tab hasn't been loaded yet)
-	const allTopics = topicsViewModel?.mode === 'default' ? topicsViewModel.data.topics : [];
+	// Get topics data for both languages (may be undefined if professional tab hasn't been loaded yet)
+	const allTopicsEn = topicsEnViewModel?.mode === 'default' ? topicsEnViewModel.data.topics : [];
+	const allTopicsDe = topicsDeViewModel?.mode === 'default' ? topicsDeViewModel.data.topics : [];
+	const allTopics = [...allTopicsEn, ...allTopicsDe];
 
 	// Create default profiles when they don't exist (for upsert functionality)
 	const defaultPersonalProfile: viewModels.TGetPersonalProfileSuccess['profile'] = {
@@ -492,10 +510,13 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 
 	const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
 		id: 0,
-		bio: '',
+		bioEn: '',
+		bioDe: '',
 		linkedinUrl: null,
 		curriculumVitae: null,
 		skills: [],
+		skillsEn: [],
+		skillsDe: [],
 		private: true,
 	};
 
@@ -568,10 +589,12 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const handleSaveProfessionalProfile = async (profile: typeof professionalProfile) => {
 		if (!profile) return;
 
+		const profileAny = profile as any;
 		const validationResult = professionalProfileValidationSchema.safeParse({
-			bio: profile.bio,
+			bioEn: profileAny.bioEn,
+			bioDe: profileAny.bioDe,
 			linkedinUrl: profile.linkedinUrl,
-			portfolioWebsite: profile.portfolioWebsite,
+			portfolioWebsite: profileAny.portfolioWebsite,
 		});
 
 		if (!validationResult.success) {
@@ -581,8 +604,17 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			return; // Return early, don't call mutation
 		}
 
+		// At least one bio must be non-empty
+		if (!profileAny.bioEn?.trim() && !profileAny.bioDe?.trim()) {
+			setErrorMessage('At least one bio (English or German) is required');
+			setSuccessMessage(null);
+			return;
+		}
+
 		const savePayload = {
 			...profile,
+			bioEn: profileAny.bioEn || null,
+			bioDe: profileAny.bioDe || null,
 			skillIds: profile.skills.map(skill => {
 				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
 			}),
@@ -607,10 +639,12 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			return;
 		}
 
+		const profileAny = profile as any;
 		const validationResult = professionalProfileValidationSchema.safeParse({
-			bio: profile.bio,
+			bioEn: profileAny.bioEn,
+			bioDe: profileAny.bioDe,
 			linkedinUrl: profile.linkedinUrl,
-			portfolioWebsite: profile.portfolioWebsite,
+			portfolioWebsite: profileAny.portfolioWebsite,
 		});
 
 		if (!validationResult.success) {
@@ -620,8 +654,17 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			return; // Return early, don't call mutation
 		}
 
+		// At least one bio must be non-empty
+		if (!profileAny.bioEn?.trim() && !profileAny.bioDe?.trim()) {
+			setApplicationModalErrorMessage('At least one bio (English or German) is required');
+			setApplicationModalSuccessMessage(null);
+			return;
+		}
+
 		const savePayload = {
 			...profile,
+			bioEn: profileAny.bioEn || null,
+			bioDe: profileAny.bioDe || null,
 			skillIds: profile.skills.map(skill => {
 				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
 			}),
@@ -671,6 +714,8 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						personalProfile={personalProfileToUse}
 						professionalProfile={professionalProfileToUse}
 						availableSkills={allTopics}
+						availableSkillsEn={allTopicsEn}
+						availableSkillsDe={allTopicsDe}
 						availableLanguages={allLanguages}
 						availableInterfaceLanguages={platformLanguages}
 						onSavePersonal={handleSavePersonalProfile}

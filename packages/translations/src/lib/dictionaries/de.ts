@@ -353,6 +353,8 @@ export const DE: TDictionary = {
     professionalInfo: {
       title: 'Berufliche Informationen',
       bio: 'Biografie (max. 280 Zeichen)',
+      bioEn: 'Biografie auf Englisch (max. 280 Zeichen)',
+      bioDe: 'Biografie auf Deutsch (max. 280 Zeichen)',
       bioPlaceholder:
         'Eine überzeugende Biografie hilft dir, dich von anderen Coaches abzuheben. Dies wird für alle Studierenden sichtbar sein.',
 
@@ -372,6 +374,9 @@ export const DE: TDictionary = {
       associatedCompanyIndustryPlaceholder: 'z. B. Informationstechnologie',
 
       skills: 'Deine Fähigkeiten',
+      skillsEn: 'Fähigkeiten (Englisch)',
+      skillsDe: 'Fähigkeiten (Deutsch)',
+      switchLanguageHint: 'Wechseln Sie zur anderen Sprache, um Fähigkeiten in dieser Sprache hinzuzufügen oder zu bearbeiten',
       addSkills: 'Fähigkeiten hinzufügen',
       selectSkills: 'Fähigkeiten auswählen',
       searchSkillsPlaceholder: 'Fähigkeiten suchen',
@@ -746,6 +751,8 @@ export const DE: TDictionary = {
       notesSavedText: 'Notizen gespeichert',
       showNotesText: 'Notizen anzeigen',
       hideNotesText: 'Notizen verbergen',
+      archivedBannerTitle: 'Kurs archiviert',
+      archivedBannerDescription: 'Dieser Kurs ist archiviert. Interaktive Funktionen sind nicht mehr verfügbar.',
     },
     coachingSessionCourseBuilder: {
       profileText: 'Profil',
@@ -1537,7 +1544,15 @@ export const DE: TDictionary = {
       lesson: 'Lektion',
       viewLesson: 'Lektion anzeigen',
       textInput: 'Texteingabe',
+      singleChoice: 'Einzelauswahl',
+      multipleChoice: 'Mehrfachauswahl',
+      oneOutOfThree: 'Eins aus drei',
+      uploadFiles: 'Datei-Upload',
       studentReply: 'Antwort des Studenten',
+      studentAnswer: 'Antwort des Studenten',
+      filesUploaded: 'Hochgeladene Dateien',
+      comment: 'Kommentar',
+      noAnswer: 'Noch keine Antwort',
       noInteractionsYet: 'Noch keine Interaktionen',
     },
     couponGrid: {
@@ -2211,6 +2226,13 @@ export const DE: TDictionary = {
       study: {
         save: 'Speichern',
         saving: 'Wird gespeichert...',
+        progressSaved: 'Fortschritt erfolgreich gespeichert!',
+        saveFailed: 'Fortschritt konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.',
+        validationTextInput: 'Bitte füllen Sie das Textfeld aus, bevor Sie speichern.',
+        validationSingleChoice: 'Bitte wählen Sie eine Option aus, bevor Sie speichern.',
+        validationMultiCheck: 'Bitte wählen Sie mindestens eine Option aus, bevor Sie speichern.',
+        validationOneOutOfThree: 'Bitte wählen Sie in jeder Zeile eine Option aus, bevor Sie speichern.',
+        validationUploadFiles: 'Bitte laden Sie mindestens eine Datei hoch, bevor Sie speichern.',
       },
       enrolledCoaches: {
         title: 'Coaches',

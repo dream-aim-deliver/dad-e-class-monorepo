@@ -1,6 +1,5 @@
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { createContext, ReactNode, useContext, useState } from 'react';
-import { simulateUploadFile } from '../../../../common/mocks/simple/upload-file';
 import { useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/cms-client';
 import {
@@ -22,6 +21,20 @@ export interface FileUploadService {
     ) => Promise<fileMetadata.TFileMetadata | null>;
     uploadError?: string;
 }
+
+export const simulateUploadFile = (
+    file: File,
+): Promise<fileMetadata.TFileMetadata> => {
+    const blobUrl = URL.createObjectURL(file);
+    return Promise.resolve({
+        id: Math.random().toString(36).substring(2, 15),
+        name: file.name,
+        size: file.size,
+        url: blobUrl,
+        status: 'available',
+        category: 'generic',
+    });
+};
 
 export type FileUploadMode = 'mock' | 'real';
 

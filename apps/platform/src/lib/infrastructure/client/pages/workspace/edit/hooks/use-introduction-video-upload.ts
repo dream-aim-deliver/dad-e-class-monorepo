@@ -5,8 +5,9 @@ import {
     uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
+import { TUploadIntroductionVideoSuccessResponse, TGetDownloadUrlSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useState } from 'react';
-import { trpc } from '../../../../trpc/client';
+import { trpc } from '../../../../trpc/cms-client';
 import { useTranslations } from 'next-intl';
 
 export interface IntroductionVideoUploadState {
@@ -65,7 +66,6 @@ export const useIntroductionVideoUpload = (
         // For mutations, we aren't able to abort them midway.
         // Hence, we check for abort signal before each step.
         const uploadResult = await uploadMutation.mutateAsync({
-            courseSlug: slug,
             name: uploadRequest.name,
             checksum,
             mimeType: uploadRequest.file.type,
@@ -74,6 +74,8 @@ export const useIntroductionVideoUpload = (
         if (!uploadResult.success) {
             throw new Error(uploadCredentialsError);
         }
+
+        const uploadData = uploadResult.data as TUploadIntroductionVideoSuccessResponse['data'];
 
         if (abortSignal?.aborted) {
             throw new AbortError();
@@ -84,9 +86,9 @@ export const useIntroductionVideoUpload = (
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
+            storageUrl: uploadData.storageUrl,
+            objectName: uploadData.file.objectName,
+            formFields: uploadData.formFields,
             abortSignal,
             onProgress: (uploadProgress) => {
                 onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
@@ -94,19 +96,21 @@ export const useIntroductionVideoUpload = (
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
-            fileId: uploadResult.data.file.id,
+            fileId: uploadData.file.id,
         });
         if (!verifyResult.success) {
             throw new Error(verifyImageError);
         }
 
+        const verifyData = verifyResult.data as TGetDownloadUrlSuccessResponse['data'];
+
         return {
-            id: uploadResult.data.file.id,
-            name: uploadResult.data.file.name,
-            url: verifyResult.data.downloadUrl,
-            thumbnailUrl: verifyResult.data.downloadUrl,
-            size: uploadResult.data.file.size,
-            category: uploadResult.data.file.category,
+            id: uploadData.file.id,
+            name: uploadData.file.name,
+            url: verifyData.downloadUrl,
+            thumbnailUrl: verifyData.downloadUrl,
+            size: uploadData.file.size,
+            category: uploadData.file.category,
         } as fileMetadata.TFileMetadata;
     };
 

@@ -147,8 +147,8 @@ export function OffersCourseList({
                             title={course.title}
                             description={course.description}
                             language={{
-                                code: '',
-                                name: course.language,
+                                code: course.language.code,
+                                name: course.language.name,
                             }}
                             imageUrl={course.imageUrl ?? ''}
                             author={{

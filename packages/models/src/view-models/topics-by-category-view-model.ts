@@ -6,14 +6,9 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { ListTopicsByCategorySuccessResponseSchema } from '../usecase-models';
+import { ListTopicsByCategorySuccessResponseSchema, TTopicItem } from '@dream-aim-deliver/e-class-cms-rest';
 
-const TopicSchema = z.object({
-    name: z.string(),
-    slug: z.string(),
-});
-
-export type TMatrixTopic = z.infer<typeof TopicSchema>;
+export type TMatrixTopic = TTopicItem;
 
 export const TopicsByCategorySuccessSchema = ListTopicsByCategorySuccessResponseSchema.shape.data;
 

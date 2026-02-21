@@ -126,7 +126,7 @@ const mockPersonalProfile = {
 // Mock Professional Profile Data (matching viewModels.TGetProfessionalProfileSuccess['profile'])
 const mockProfessionalProfile = {
   id: 1,
-  bio: 'Experienced software engineer with a passion for building scalable applications.',
+  bioEn: 'Experienced software engineer with a passion for building scalable applications.',
   skills: [
     { id: 1, name: 'React', slug: 'react', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
     { id: 2, name: 'Node.js', slug: 'nodejs', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },

@@ -231,6 +231,8 @@ export const DictionarySchema = z.object({
     professionalInfo: z.object({
       title: z.string(),
       bio: z.string(),
+      bioEn: z.string(),
+      bioDe: z.string(),
       bioPlaceholder: z.string(),
 
       linkedinUrl: z.string(),
@@ -247,6 +249,9 @@ export const DictionarySchema = z.object({
       associatedCompanyIndustry: z.string(),
       associatedCompanyIndustryPlaceholder: z.string(),
       skills: z.string(),
+      skillsEn: z.string(),
+      skillsDe: z.string(),
+      switchLanguageHint: z.string(),
       addSkills: z.string(),
       selectSkills: z.string(),
       searchSkillsPlaceholder: z.string(),
@@ -712,6 +717,8 @@ export const DictionarySchema = z.object({
       notesSavedText: z.string(),
       showNotesText: z.string(),
       hideNotesText: z.string(),
+      archivedBannerTitle: z.string(),
+      archivedBannerDescription: z.string(),
     }),
     coachingSessionCourseBuilder: z.object({
       profileText: z.string(),
@@ -1517,7 +1524,15 @@ export const DictionarySchema = z.object({
       lesson: z.string(),
       viewLesson: z.string(),
       textInput: z.string(),
+      singleChoice: z.string(),
+      multipleChoice: z.string(),
+      oneOutOfThree: z.string(),
+      uploadFiles: z.string(),
       studentReply: z.string(),
+      studentAnswer: z.string(),
+      filesUploaded: z.string(),
+      comment: z.string(),
+      noAnswer: z.string(),
       noInteractionsYet: z.string(),
     }),
     couponGrid: z.object({
@@ -2314,6 +2329,13 @@ export const DictionarySchema = z.object({
       study: z.object({
         save: z.string(),
         saving: z.string(),
+        progressSaved: z.string(),
+        saveFailed: z.string(),
+        validationTextInput: z.string(),
+        validationSingleChoice: z.string(),
+        validationMultiCheck: z.string(),
+        validationOneOutOfThree: z.string(),
+        validationUploadFiles: z.string(),
       }),
       enrolledCoaches: z.object({
         title: z.string(),

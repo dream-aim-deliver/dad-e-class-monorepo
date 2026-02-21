@@ -4,12 +4,14 @@ import {
     TLessonProgress
 } from "@dream-aim-deliver/e-class-cms-rest";
 import {
+    Banner,
     Button,
     FormElement,
+    IconLoaderSpinner,
     IconSave,
     LessonElement,
 } from '@maany_shr/e-class-ui-kit';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getLessonComponentsMap } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
@@ -187,20 +189,27 @@ export default function LessonForm({
     const trpcUtils = trpc.useUtils();
     const courseSlug = useCourseSlug(); // Get courseSlug from context
 
-    const submitProgressMutation = trpc.submitLessonProgresses.useMutation({
-        onSuccess: () => {
-            // Invalidate the lesson components query to refetch with updated progress
-            trpcUtils.listLessonComponents.invalidate({
-                lessonId: lessonId,
-                withProgress: true,
+    const [submittingComponentId, setSubmittingComponentId] = useState<string | null>(null);
+    const [componentFeedback, setComponentFeedback] = useState<
+        Map<string, { style: 'success' | 'error'; message: string }>
+    >(new Map());
+
+    useEffect(() => {
+        const hasSuccess = [...componentFeedback.values()].some(f => f.style === 'success');
+        if (!hasSuccess) return;
+        const timer = setTimeout(() => {
+            setComponentFeedback(prev => {
+                const next = new Map(prev);
+                for (const [id, feedback] of next) {
+                    if (feedback.style === 'success') next.delete(id);
+                }
+                return next;
             });
-            // Invalidate course-level queries to reflect progress changes
-            trpcUtils.getEnrolledCourseDetails.invalidate({ courseSlug });
-            trpcUtils.listUserCourses.invalidate();
-            trpcUtils.getCourseAccess.invalidate({ courseSlug });
-        },
-    });
-    // When implementing student submission, this will be used to track progress
+        }, 3000);
+        return () => clearTimeout(timer);
+    }, [componentFeedback]);
+
+    const submitProgressMutation = trpc.submitLessonProgresses.useMutation();
 
     const isInteractiveType = (type: string) =>
         type in typeToProgressTransformers;
@@ -229,22 +238,36 @@ export default function LessonForm({
             />
         );
 
-        if (enableSubmit && isInteractiveType(formElement.type)) {
+        if (isInteractiveType(formElement.type)) {
             return (
                 <div
                     key={`interactive-wrapper-${component.id}`}
                     className="flex flex-col gap-2 p-4 border border-divider rounded-md"
                 >
                     {rendered}
-                    <Button
-                        variant="primary"
-                        size="small"
-                        text={isSubmitting ? dictionary.pages.course.study.saving : dictionary.pages.course.study.save}
-                        disabled={isSubmitting}
-                        onClick={submitProgress}
-                        hasIconLeft
-                        iconLeft={<IconSave />}
-                    />
+                    {enableSubmit && (
+                        <>
+                            <Button
+                                variant="primary"
+                                size="small"
+                                text={submittingComponentId === component.id
+                                    ? dictionary.pages.course.study.saving
+                                    : dictionary.pages.course.study.save}
+                                disabled={submittingComponentId !== null}
+                                onClick={() => submitComponentProgress(component.id)}
+                                hasIconLeft
+                                iconLeft={submittingComponentId === component.id
+                                    ? <IconLoaderSpinner classNames="animate-spin" />
+                                    : <IconSave />}
+                            />
+                            {componentFeedback.has(component.id) && (
+                                <Banner
+                                    style={componentFeedback.get(component.id)!.style}
+                                    description={componentFeedback.get(component.id)!.message}
+                                />
+                            )}
+                        </>
+                    )}
                 </div>
             );
         }
@@ -252,28 +275,76 @@ export default function LessonForm({
         return rendered;
     };
 
-    const submitProgress = async () => {
-        const progress: TLessonProgress[] = [];
-        for (const [_, element] of elementProgress.current) {
-            try {
-                const transformer = typeToProgressTransformers[element.type];
-                if (!transformer) continue;
-                const elementProgress = transformer(element);
-                if (!elementProgress) continue;
-                progress.push(elementProgress);
-            } catch (error) {
-                // TODO: Set error state
-                return;
-            }
-        }
-
-        submitProgressMutation.mutateAsync({
-            lessonId: lessonId,
-            progress: progress,
-        });
+    const getValidationMessage = (type: string): string => {
+        const v = dictionary.pages.course.study;
+        const messages: Record<string, string> = {
+            textInput: v.validationTextInput,
+            singleChoice: v.validationSingleChoice,
+            multiCheck: v.validationMultiCheck,
+            oneOutOfThree: v.validationOneOutOfThree,
+            uploadFiles: v.validationUploadFiles,
+        };
+        return messages[type] ?? v.saveFailed;
     };
 
-    const isSubmitting = submitProgressMutation.isPending;
+    const submitComponentProgress = async (componentId: string) => {
+        setComponentFeedback(prev => {
+            const next = new Map(prev);
+            next.delete(componentId);
+            return next;
+        });
+
+        const element = elementProgress.current.get(componentId);
+        if (!element) return;
+
+        const transformer = typeToProgressTransformers[element.type];
+        if (!transformer) return;
+
+        let progress: TLessonProgress;
+        try {
+            const result = transformer(element);
+            if (!result) return;
+            progress = result;
+        } catch {
+            setComponentFeedback(prev =>
+                new Map(prev).set(componentId, {
+                    style: 'error',
+                    message: getValidationMessage(element.type),
+                }),
+            );
+            return;
+        }
+
+        setSubmittingComponentId(componentId);
+        try {
+            await submitProgressMutation.mutateAsync({
+                lessonId: lessonId,
+                progress: [progress],
+            });
+            setComponentFeedback(prev =>
+                new Map(prev).set(componentId, {
+                    style: 'success',
+                    message: dictionary.pages.course.study.progressSaved,
+                }),
+            );
+            trpcUtils.listLessonComponents.invalidate({
+                lessonId: lessonId,
+                withProgress: true,
+            });
+            trpcUtils.getEnrolledCourseDetails.invalidate({ courseSlug });
+            trpcUtils.listUserCourses.invalidate();
+            trpcUtils.getCourseAccess.invalidate({ courseSlug });
+        } catch {
+            setComponentFeedback(prev =>
+                new Map(prev).set(componentId, {
+                    style: 'error',
+                    message: dictionary.pages.course.study.saveFailed,
+                }),
+            );
+        } finally {
+            setSubmittingComponentId(null);
+        }
+    };
 
     return (
         <AssignmentViewProvider mode="study" config={{ studentUsername, isArchived }}>

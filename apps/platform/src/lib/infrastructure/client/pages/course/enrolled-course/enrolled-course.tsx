@@ -355,6 +355,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                         studentUsername={props.studentUsername}
                         initialLessonId={props.lesson}
                         isArchived={props.isArchived}
+                        showArchivedBadge={props.showArchivedBadge}
                     />
                 </Tabs.Content>
                 <Tabs.Content value="assignments" className={tabContentClass}>

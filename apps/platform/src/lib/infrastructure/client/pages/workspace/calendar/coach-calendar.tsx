@@ -2,7 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import React, { useState, useEffect } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../../hooks/use-coach-availability-presenter';
@@ -58,6 +58,7 @@ function CalendarContent() {
     const { presenter } = useGetCoachAvailabilityPresenter(
         setCoachAvailabilityViewModel,
     );
+    // @ts-ignore
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
     const handleAvailabilityAdded = () => {
