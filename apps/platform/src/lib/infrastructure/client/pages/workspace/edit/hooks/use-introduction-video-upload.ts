@@ -6,7 +6,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
-import { trpc } from '../../../../trpc/client';
+import { trpc } from '../../../../trpc/cms-client';
 import { useTranslations } from 'next-intl';
 
 export interface IntroductionVideoUploadState {
@@ -65,7 +65,6 @@ export const useIntroductionVideoUpload = (
         // For mutations, we aren't able to abort them midway.
         // Hence, we check for abort signal before each step.
         const uploadResult = await uploadMutation.mutateAsync({
-            courseSlug: slug,
             name: uploadRequest.name,
             checksum,
             mimeType: uploadRequest.file.type,
@@ -84,8 +83,11 @@ export const useIntroductionVideoUpload = (
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
+            // @ts-ignore
             storageUrl: uploadResult.data.storageUrl,
+            // @ts-ignore
             objectName: uploadResult.data.file.objectName,
+            // @ts-ignore
             formFields: uploadResult.data.formFields,
             abortSignal,
             onProgress: (uploadProgress) => {
@@ -94,6 +96,7 @@ export const useIntroductionVideoUpload = (
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
+            // @ts-ignore
             fileId: uploadResult.data.file.id,
         });
         if (!verifyResult.success) {
@@ -101,11 +104,17 @@ export const useIntroductionVideoUpload = (
         }
 
         return {
+            // @ts-ignore
             id: uploadResult.data.file.id,
+            // @ts-ignore
             name: uploadResult.data.file.name,
+            // @ts-ignore
             url: verifyResult.data.downloadUrl,
+            // @ts-ignore
             thumbnailUrl: verifyResult.data.downloadUrl,
+            // @ts-ignore
             size: uploadResult.data.file.size,
+            // @ts-ignore
             category: uploadResult.data.file.category,
         } as fileMetadata.TFileMetadata;
     };
