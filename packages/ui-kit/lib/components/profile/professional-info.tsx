@@ -376,79 +376,72 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
         {hasDualLanguage ? (
           <>
-            {/* Skills (English) */}
-            <div className="flex flex-col py-2 pr-2 pl-4 w-full rounded-medium border border-solid bg-base-neutral-800 border-base-neutral-700 max-md:max-w-full">
-              <div className="flex flex-wrap items-center justify-between w-full">
-                <h2 className="text-lg font-bold text-text-primary">
-                  {dictionary.components.professionalInfo.skillsEn}
-                </h2>
-                <Button
-                  onClick={() => setShowModalEn(true)}
-                  className="md:ml-auto gap-2"
-                  variant="secondary"
-                  size="medium"
-                  text={dictionary.components.professionalInfo.addSkills}
-                  hasIconLeft
-                  disabled={isSaving || !(availableSkillsEn && availableSkillsEn.length > 0)}
-                  iconLeft={<IconPlus />}
-                />
-              </div>
-              {!(availableSkillsEn && availableSkillsEn.length > 0) && (
-                <p className="text-xs text-text-secondary mt-1">
-                  {dictionary.components.professionalInfo.switchLanguageHint}
-                </p>
-              )}
-              <div className="flex flex-wrap gap-4 items-center mt-2 w-full text-sm font-bold leading-none text-button-text-text">
-                {((initialData as any).skillsEn || []).map((skill: TSkill) => (
+            {/* Two-column skills layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+              {/* Skills (English) */}
+              <div className="flex flex-col py-2 pr-2 pl-4 w-full rounded-medium border border-solid bg-base-neutral-800 border-base-neutral-700">
+                <div className="flex flex-wrap items-center justify-between w-full">
+                  <h2 className="text-lg font-bold text-text-primary">
+                    {dictionary.components.professionalInfo.skillsEn}
+                  </h2>
                   <Button
-                    key={skill.id}
-                    variant="text"
-                    text={skill.name}
-                    className="p-0"
-                    hasIconRight
-                    iconRight={<IconClose />}
-                    onClick={() => removeSkillEn(skill.id)}
+                    onClick={() => setShowModalEn(true)}
+                    className="md:ml-auto gap-2"
+                    variant="secondary"
+                    size="medium"
+                    text={dictionary.components.professionalInfo.addSkills}
+                    hasIconLeft
                     disabled={isSaving}
+                    iconLeft={<IconPlus />}
                   />
-                ))}
+                </div>
+                <div className="flex flex-wrap gap-4 items-center mt-2 w-full text-sm font-bold leading-none text-button-text-text">
+                  {((initialData as any).skillsEn || []).map((skill: TSkill) => (
+                    <Button
+                      key={skill.id}
+                      variant="text"
+                      text={skill.name}
+                      className="p-0"
+                      hasIconRight
+                      iconRight={<IconClose />}
+                      onClick={() => removeSkillEn(skill.id)}
+                      disabled={isSaving}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Skills (German) */}
-            <div className="flex flex-col py-2 pr-2 pl-4 w-full rounded-medium border border-solid bg-base-neutral-800 border-base-neutral-700 max-md:max-w-full">
-              <div className="flex flex-wrap items-center justify-between w-full">
-                <h2 className="text-lg font-bold text-text-primary">
-                  {dictionary.components.professionalInfo.skillsDe}
-                </h2>
-                <Button
-                  onClick={() => setShowModalDe(true)}
-                  className="md:ml-auto gap-2"
-                  variant="secondary"
-                  size="medium"
-                  text={dictionary.components.professionalInfo.addSkills}
-                  hasIconLeft
-                  disabled={isSaving || !(availableSkillsDe && availableSkillsDe.length > 0)}
-                  iconLeft={<IconPlus />}
-                />
-              </div>
-              {!(availableSkillsDe && availableSkillsDe.length > 0) && (
-                <p className="text-xs text-text-secondary mt-1">
-                  {dictionary.components.professionalInfo.switchLanguageHint}
-                </p>
-              )}
-              <div className="flex flex-wrap gap-4 items-center mt-2 w-full text-sm font-bold leading-none text-button-text-text">
-                {((initialData as any).skillsDe || []).map((skill: TSkill) => (
+              {/* Skills (German) */}
+              <div className="flex flex-col py-2 pr-2 pl-4 w-full rounded-medium border border-solid bg-base-neutral-800 border-base-neutral-700">
+                <div className="flex flex-wrap items-center justify-between w-full">
+                  <h2 className="text-lg font-bold text-text-primary">
+                    {dictionary.components.professionalInfo.skillsDe}
+                  </h2>
                   <Button
-                    key={skill.id}
-                    variant="text"
-                    text={skill.name}
-                    className="p-0"
-                    hasIconRight
-                    iconRight={<IconClose />}
-                    onClick={() => removeSkillDe(skill.id)}
+                    onClick={() => setShowModalDe(true)}
+                    className="md:ml-auto gap-2"
+                    variant="secondary"
+                    size="medium"
+                    text={dictionary.components.professionalInfo.addSkills}
+                    hasIconLeft
                     disabled={isSaving}
+                    iconLeft={<IconPlus />}
                   />
-                ))}
+                </div>
+                <div className="flex flex-wrap gap-4 items-center mt-2 w-full text-sm font-bold leading-none text-button-text-text">
+                  {((initialData as any).skillsDe || []).map((skill: TSkill) => (
+                    <Button
+                      key={skill.id}
+                      variant="text"
+                      text={skill.name}
+                      className="p-0"
+                      hasIconRight
+                      iconRight={<IconClose />}
+                      onClick={() => removeSkillDe(skill.id)}
+                      disabled={isSaving}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 

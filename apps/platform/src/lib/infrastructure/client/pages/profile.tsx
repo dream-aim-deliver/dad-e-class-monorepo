@@ -120,12 +120,14 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		refetchOnWindowFocus: false,
 		staleTime: 5 * 60 * 1000,
 	});
-	// Topics are locale-dependent - force refetch on mount to get correct language
-	// (React Query cache key doesn't include locale from Accept-Language header)
-	const topicsQuery = trpc.listTopics.useQuery({}, {
+	// Fetch topics for BOTH languages so dual-language skill pickers work
+	const topicsEnQuery = trpc.listTopics.useQuery({ languageCode: 'en' }, {
 		refetchOnWindowFocus: false,
-		staleTime: 0,
-		refetchOnMount: 'always',
+		staleTime: 5 * 60 * 1000,
+	});
+	const topicsDeQuery = trpc.listTopics.useQuery({ languageCode: 'de' }, {
+		refetchOnWindowFocus: false,
+		staleTime: 5 * 60 * 1000,
 	});
 
 
@@ -135,7 +137,10 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const [personalProfileViewModel, setPersonalProfileViewModel] = useState<
 		viewModels.TGetPersonalProfileViewModel | undefined
 	>(undefined);
-	const [topicsViewModel, setTopicsViewModel] = useState<
+	const [topicsEnViewModel, setTopicsEnViewModel] = useState<
+		viewModels.TTopicListViewModel | undefined
+	>(undefined);
+	const [topicsDeViewModel, setTopicsDeViewModel] = useState<
 		viewModels.TTopicListViewModel | undefined
 	>(undefined);
 	const [languagesViewModel, setLanguagesViewModel] = useState<
@@ -152,8 +157,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const { presenter: personalPresenter } = useGetPersonalProfilePresenter(
 		setPersonalProfileViewModel
 	);
-	const { presenter: topicsPresenter } = useListTopicsPresenter(
-		setTopicsViewModel
+	const { presenter: topicsEnPresenter } = useListTopicsPresenter(
+		setTopicsEnViewModel
+	);
+	const { presenter: topicsDePresenter } = useListTopicsPresenter(
+		setTopicsDeViewModel
 	);
 	const { presenter: languagesPresenter } = useListLanguagesPresenter(
 		setLanguagesViewModel
@@ -188,13 +196,20 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		}
 	}, [professionalProfileQuery.data, professionalPresenter, professionalProfileViewModel]);
 
-	// Present topics data only when available
+	// Present topics data only when available (EN and DE separately)
 	useEffect(() => {
-		if (topicsQuery.data) {
+		if (topicsEnQuery.data) {
 			// @ts-ignore - Presenter type compatibility issue
-			topicsPresenter.present(topicsQuery.data, topicsViewModel);
+			topicsEnPresenter.present(topicsEnQuery.data, topicsEnViewModel);
 		}
-	}, [topicsQuery.data, topicsPresenter, topicsViewModel]);
+	}, [topicsEnQuery.data, topicsEnPresenter, topicsEnViewModel]);
+
+	useEffect(() => {
+		if (topicsDeQuery.data) {
+			// @ts-ignore - Presenter type compatibility issue
+			topicsDePresenter.present(topicsDeQuery.data, topicsDeViewModel);
+		}
+	}, [topicsDeQuery.data, topicsDePresenter, topicsDeViewModel]);
 
 
 
@@ -470,8 +485,10 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		}
 	};
 
-	// Get topics data (may be undefined if professional tab hasn't been loaded yet)
-	const allTopics = topicsViewModel?.mode === 'default' ? topicsViewModel.data.topics : [];
+	// Get topics data for both languages (may be undefined if professional tab hasn't been loaded yet)
+	const allTopicsEn = topicsEnViewModel?.mode === 'default' ? topicsEnViewModel.data.topics : [];
+	const allTopicsDe = topicsDeViewModel?.mode === 'default' ? topicsDeViewModel.data.topics : [];
+	const allTopics = [...allTopicsEn, ...allTopicsDe];
 
 	// Create default profiles when they don't exist (for upsert functionality)
 	const defaultPersonalProfile: viewModels.TGetPersonalProfileSuccess['profile'] = {
@@ -698,8 +715,8 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						personalProfile={personalProfileToUse}
 						professionalProfile={professionalProfileToUse}
 						availableSkills={allTopics}
-						availableSkillsEn={locale === 'en' ? allTopics : []}
-						availableSkillsDe={locale === 'de' ? allTopics : []}
+						availableSkillsEn={allTopicsEn}
+						availableSkillsDe={allTopicsDe}
 						availableLanguages={allLanguages}
 						availableInterfaceLanguages={platformLanguages}
 						onSavePersonal={handleSavePersonalProfile}
