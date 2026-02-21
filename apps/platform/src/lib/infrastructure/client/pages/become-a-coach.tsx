@@ -45,10 +45,13 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   // Empty default professional profile data for new users - memoized to prevent re-renders
   const defaultProfessionalProfile = useMemo<viewModels.TGetProfessionalProfileSuccess['profile']>(() => ({
     id: 0,
-    bio: '',
+    bioEn: '',
+    bioDe: '',
     linkedinUrl: null,
     curriculumVitae: null,
     skills: [],
+    skillsEn: [],
+    skillsDe: [],
     private: true,
     portfolioWebsite: null,
     companyName: null,
