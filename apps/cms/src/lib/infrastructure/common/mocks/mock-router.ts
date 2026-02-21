@@ -1,8 +1,6 @@
 import { getPlatform } from './procedures/platform';
 import { t } from './trpc-setup';
 import { getHomePage } from './procedures/home-page';
-import { listTopics } from './procedures/topic';
-import { listTopicsByCategory } from './procedures/topics-by-category';
 import { listCourses } from './procedures/course';
 import { listCoaches } from './procedures/coach';
 import { getCoachingPage } from './procedures/coachings-page';
@@ -41,8 +39,6 @@ import { uploadLessonProgressFile } from './procedures/lesson-progress-file';
 export const mockRouter = t.router({
     getPlatform,
     getHomePage,
-    listTopics,
-    listTopicsByCategory,
     listCourses,
     listCoaches,
     getCoachingPage,
