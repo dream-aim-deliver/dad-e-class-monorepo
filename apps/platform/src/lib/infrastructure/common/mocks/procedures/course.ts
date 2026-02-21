@@ -1,7 +1,7 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
+const coursesMock: useCaseModels.TListCoursesSuccess = {
     courses: [
         {
             id: 1,
@@ -25,7 +25,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'graphic-and-visual-design',
                 'creative-and-art-direction',
             ],
-            language: 'English',
+            language: { name: 'English', code: 'en' },
             coachingSessionCount: 3,
             salesCount: 234,
             fullDuration: 480, // 8 hours in minutes
@@ -55,7 +55,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'motion-design-and-animation',
                 'digital-content-and-social-media-strategy',
             ],
-            language: 'English',
+            language: { name: 'English', code: 'en' },
             coachingSessionCount: null,
             salesCount: 12,
             fullDuration: 360, // 6 hours
@@ -87,7 +87,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'web-design-and-development',
                 'strategy-and-concept-development',
             ],
-            language: 'English',
+            language: { name: 'English', code: 'en' },
             coachingSessionCount: 5,
             salesCount: 156,
             fullDuration: 720, // 12 hours
@@ -117,7 +117,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'photography-and-editing',
                 'graphic-and-visual-design',
             ],
-            language: 'English',
+            language: { name: 'English', code: 'en' },
             coachingSessionCount: 2,
             salesCount: 87,
             fullDuration: 540, // 9 hours
@@ -144,7 +144,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 avatarUrl: null,
             },
             topicSlugs: ['sound-design-and-editing', 'film-and-cinematography'],
-            language: 'English',
+            language: { name: 'English', code: 'en' },
             coachingSessionCount: 4,
             salesCount: 43,
             fullDuration: 600, // 10 hours
@@ -175,7 +175,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'prompting-and-ai-tools',
                 'idea-generation-and-brainstorming',
             ],
-            language: 'Spanish',
+            language: { name: 'Spanish', code: 'es' },
             coachingSessionCount: null,
             salesCount: 8,
             fullDuration: 300, // 5 hours
@@ -207,7 +207,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'graphic-and-visual-design',
                 'packaging-and-print-design',
             ],
-            language: 'English',
+            language: { name: 'English', code: 'en' },
             coachingSessionCount: 3,
             salesCount: 78,
             fullDuration: 420, // 7 hours
@@ -238,7 +238,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'campaign-development',
                 'digital-content-and-social-media-strategy',
             ],
-            language: 'English',
+            language: { name: 'English', code: 'en' },
             coachingSessionCount: null,
             salesCount: 112,
             fullDuration: 480, // 8 hours
@@ -269,7 +269,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'infographics-and-data-visualization',
                 'graphic-and-visual-design',
             ],
-            language: 'German',
+            language: { name: 'German', code: 'de' },
             coachingSessionCount: 2,
             salesCount: 45,
             fullDuration: 390, // 6.5 hours
@@ -299,7 +299,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'business-planning-and-financing',
                 'pitching-and-presentation-skills',
             ],
-            language: 'English',
+            language: { name: 'English', code: 'en' },
             coachingSessionCount: 6,
             salesCount: 67,
             fullDuration: 660, // 11 hours
@@ -330,7 +330,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'copywriting-and-content-creation',
                 'creative-and-art-direction',
             ],
-            language: 'French',
+            language: { name: 'French', code: 'fr' },
             coachingSessionCount: null,
             salesCount: 3,
             fullDuration: 450, // 7.5 hours
@@ -362,7 +362,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
                 'branding-and-identity',
                 'graphic-and-visual-design',
             ],
-            language: 'Spanish',
+            language: { name: 'Spanish', code: 'es' },
             coachingSessionCount: 1,
             salesCount: 29,
             fullDuration: 510, // 8.5 hours
