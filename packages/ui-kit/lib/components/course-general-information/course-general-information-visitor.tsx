@@ -12,6 +12,7 @@ import { IconVideoCamera } from '../icons/icon-video-camera';
 import { IconCoachingSession, IconCourse } from '../icons';
 import { useImageComponent } from '../../contexts/image-component-context';
 import Tooltip from '../tooltip';
+import { formatPrice } from '../../utils/format-utils';
 
 interface Coach {
     name: string;
@@ -463,7 +464,7 @@ export const CourseGeneralInformationVisitor: FC<
                                     <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
                                         {dictionary.components.courseGeneralInformationView.saveLabel}{' '}
                                         {(pricing as any).currency as string}{' '}
-                                        {Math.round((pricing as any).savingsWithCoachings * 100) / 100}
+                                        {formatPrice((pricing as any).savingsWithCoachings)}
                                     </p>
                                     <Tooltip
                                         text=""
@@ -477,7 +478,7 @@ export const CourseGeneralInformationVisitor: FC<
                     {/* Button */}
                     <Button
                         size="huge"
-                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${(pricing as any).currency as string} ${coachingIncluded ? Math.round(((pricing as any).fullPrice as number) * 100) / 100 : Math.round(((pricing as any).partialPrice as number) * 100) / 100})`}
+                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${(pricing as any).currency as string} ${coachingIncluded ? formatPrice((pricing as any).fullPrice as number) : formatPrice((pricing as any).partialPrice as number)})`}
                         onClick={() => onClickBuyCourse(coachingIncluded)}
                         className="w-full text-lg lg:text-2xl"
                     />

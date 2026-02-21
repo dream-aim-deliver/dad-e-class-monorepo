@@ -1,3 +1,7 @@
+export function formatPrice(value: number): string {
+    return value.toFixed(2);
+}
+
 // TODO: possibly support 12-hour format
 export function formatDate(date: Date = new Date()): string {
     const year = date.getFullYear();

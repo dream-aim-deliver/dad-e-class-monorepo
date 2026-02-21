@@ -4,6 +4,7 @@ import { CheckBox } from "../../checkbox";
 import { Button } from "../../button";
 import { TCoursePricing } from "packages/models/src/course";
 import Tooltip from "../../tooltip";
+import { formatPrice } from "../../../utils/format-utils";
 
 export interface PackageCourseSelectorProps extends isLocalAware {
     title: string;
@@ -118,18 +119,18 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
                         {/* Strikethrough original price (what you'd pay buying separately) */}
                         {(pricing as any).fullPrice > (pricing as any).partialPrice && (
                             <span className="text-text-secondary line-through text-md whitespace-nowrap">
-                                {(pricing as any).currency} {Math.round((pricing as any).fullPrice * 100) / 100}
+                                {(pricing as any).currency} {formatPrice((pricing as any).fullPrice)}
                             </span>
                         )}
                         {/* Actual price user pays (discounted) */}
                         <h6 className="text-md font-bold text-text-primary leading-[120%] whitespace-nowrap">
-                            {(pricing as any).currency} {Math.round((pricing as any).partialPrice * 100) / 100}
+                            {(pricing as any).currency} {formatPrice((pricing as any).partialPrice)}
                         </h6>
                         {/* Savings amount with info tooltip */}
                         {(pricing as any).fullPrice > (pricing as any).partialPrice && (
                             <div className="flex items-center gap-1">
                                 <p className="text-sm font-bold text-feedback-success-primary leading-[100%] whitespace-nowrap">
-                                    {dictionary.components.courseCard.saveText} {(pricing as any).currency} {Math.round((pricing as any).savings * 100) / 100}
+                                    {dictionary.components.courseCard.saveText} {(pricing as any).currency} {formatPrice((pricing as any).savings)}
                                 </p>
                                 <Tooltip
                                     text=""

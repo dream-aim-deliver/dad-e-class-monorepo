@@ -9,6 +9,7 @@ import { TEClassPackage } from 'packages/models/src/eclass-package';
 import { useImageComponent } from '../../contexts/image-component-context';
 import RichTextRenderer from '../rich-text-element/renderer';
 import Tooltip from '../tooltip';
+import { formatPrice } from '../../utils/format-utils';
 
 export interface PackageCardProps extends TEClassPackage, isLocalAware {
     courseCount: number;
@@ -208,12 +209,12 @@ export const PackageCard = ({
                                     {/* Strikethrough original price (sum of courses + coaching) when there's a discount */}
                                     {pricing.fullPrice > pricing.partialPrice && (
                                         <span className="text-text-secondary line-through lg:text-md">
-                                            {pricing.currency} {pricing.fullPrice}
+                                            {pricing.currency} {formatPrice(pricing.fullPrice)}
                                         </span>
                                     )}
                                     {/* Actual price user pays */}
                                     <h6 className="text-text-primary lg:text-lg">
-                                        {pricing.currency} {pricing.partialPrice}
+                                        {pricing.currency} {formatPrice(pricing.partialPrice)}
                                     </h6>
                                 </div>
                                 {/* Row 2: Savings amount with info icon - shown below prices when discount exists */}
@@ -221,7 +222,7 @@ export const PackageCard = ({
                                     <div className="flex items-center gap-1">
                                         <p className="text-feedback-success-primary lg:text-md text-sm font-important">
                                             {dictionary.components.packages.saveText}{' '}
-                                            {pricing.currency} {pricing.savingsWithoutCoachings}
+                                            {pricing.currency} {formatPrice(pricing.savingsWithoutCoachings)}
                                         </p>
                                         <Tooltip
                                             text=""

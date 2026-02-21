@@ -9,6 +9,7 @@ import { FC, useState } from 'react';
 import { IconClock } from './icons/icon-clock';
 import { useImageComponent } from '../contexts/image-component-context';
 import Tooltip from './tooltip';
+import { formatPrice } from '../utils/format-utils';
 
 export interface PackageGeneralInformationView
     extends eClassPackage.TEClassPackage,
@@ -142,12 +143,12 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                     {/* Strikethrough original price when there's a discount */}
                     {(pricing as any).fullPrice > (pricing as any).partialPrice && (
                         <span className="text-text-secondary line-through lg:text-md">
-                            {(pricing as any).currency} {Math.round((pricing as any).fullPrice * 100) / 100}
+                            {(pricing as any).currency} {formatPrice((pricing as any).fullPrice)}
                         </span>
                     )}
                     <h6 className="text-text-primary lg:text-lg text-md">
                         {dictionary.fromText} {(pricing as any).currency}{' '}
-                        {Math.round((pricing as any).partialPrice * 100) / 100}
+                        {formatPrice((pricing as any).partialPrice)}
                     </h6>
                     {/* Use backend savings based on coaching toggle */}
                     {(() => {
@@ -157,7 +158,7 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                         return savings != null && savings > 0 ? (
                             <div className="flex items-center gap-1">
                                 <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
-                                    {dictionary.saveText} {(pricing as any).currency} {Math.round(savings * 100) / 100}
+                                    {dictionary.saveText} {(pricing as any).currency} {formatPrice(savings)}
                                 </p>
                                 <Tooltip
                                     text=""
