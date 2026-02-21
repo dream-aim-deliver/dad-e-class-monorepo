@@ -350,6 +350,8 @@ export const EN: TDictionary = {
     professionalInfo: {
       title: 'Professional Information',
       bio: 'Bio (280 char max)',
+      bioEn: 'Bio in English (280 char max)',
+      bioDe: 'Bio in German (280 char max)',
       bioPlaceholder:
         'A compelling bio helps you stand out among other coaches. This will be visible to all students. ',
 
@@ -369,6 +371,9 @@ export const EN: TDictionary = {
       associatedCompanyIndustryPlaceholder: 'e.g. Information Technology',
 
       skills: 'Your skills',
+      skillsEn: 'Skills (English)',
+      skillsDe: 'Skills (German)',
+      switchLanguageHint: 'Switch to the other language to add or edit skills in that language',
       addSkills: 'Add skills',
       selectSkills: 'Select Skills',
       searchSkillsPlaceholder: 'Search Skills',
