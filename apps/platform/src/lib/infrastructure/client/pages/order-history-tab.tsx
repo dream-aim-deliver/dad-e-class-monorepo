@@ -299,7 +299,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
               hour: '2-digit',
               minute: '2-digit'
             })}
-            total={`${transaction.content.unitPrice} ${transaction.currency}`}
+            total={`${Number(transaction.content.unitPrice).toFixed(2)} ${transaction.currency}`}
             courseTitle={course.title}
             courseImageUrl={course.imageUrl || ''}
             coachingSessionCount={course.coachingSessionCount}
@@ -338,7 +338,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
               hour: '2-digit',
               minute: '2-digit'
             })}
-            total={`${totalPrice} ${transaction.currency}`}
+            total={`${totalPrice.toFixed(2)} ${transaction.currency}`}
             sessions={sessions}
             onInvoiceClick={() => handleInvoiceClick(transaction.id)}
             coupon={transaction.coupon}
@@ -370,7 +370,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
               hour: '2-digit',
               minute: '2-digit'
             })}
-            total={`${transaction.content.unitPrice} ${transaction.currency}`}
+            total={`${Number(transaction.content.unitPrice).toFixed(2)} ${transaction.currency}`}
             packageTitle={pkg.title}
             packageImageUrl={pkg.imageUrl || ''}
             coursesIncluded={coursesIncluded}

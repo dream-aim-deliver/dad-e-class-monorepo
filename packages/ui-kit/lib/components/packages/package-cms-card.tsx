@@ -8,6 +8,7 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { eClassPackage } from '@maany_shr/e-class-models';
 import { IconEdit, IconTrashAlt } from '../icons';
 import { useImageComponent } from '../../contexts/image-component-context';
+import { formatPrice } from '../../utils/format-utils';
 
 interface PackageCmsBaseCardProps extends eClassPackage.TEClassPackage, isLocalAware {
     courseCount: number;
@@ -240,19 +241,19 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                             {/* Scratched price (what you'd pay buying separately) */}
                             {pricing.fullPrice > pricing.partialPrice && (
                                 <span className="text-text-secondary line-through lg:text-md">
-                                    {pricing.currency} {pricing.fullPrice}
+                                    {pricing.currency} {formatPrice(pricing.fullPrice)}
                                 </span>
                             )}
                             {/* Actual package price */}
                             <h6 className="text-text-primary lg:text-lg">
-                                {pricing.currency} {pricing.partialPrice}
+                                {pricing.currency} {formatPrice(pricing.partialPrice)}
                             </h6>
                         </div>
                         {/* Savings amount */}
                         {pricing.fullPrice > pricing.partialPrice && (
                             <p className="text-feedback-success-primary lg:text-md text-sm font-important">
                                 {dictionary.saveText} {pricing.currency}{' '}
-                                {Math.round((pricing.fullPrice - pricing.partialPrice) * 100) / 100}
+                                {formatPrice(pricing.fullPrice - pricing.partialPrice)}
                             </p>
                         )}
                         <p className="italic text-text-secondary text-sm">incl. coachings</p>

@@ -7,6 +7,7 @@ import { InputField } from './input-field'
 import { IconPlus } from './icons/icon-plus'
 import { IconMinus } from './icons/icon-minus'
 import Tooltip from './tooltip'
+import { formatPrice } from '../utils/format-utils'
 
 type CoachingOffering = {
     id: string | number;
@@ -109,7 +110,7 @@ function BuyCoachingSession({ offerings, onBuy, locale, currencyType }: BuyCoach
                                 <Tooltip contentClassName='max-w-[200px]' text={offering.title} description={offering.content} />
                             </h6>
                             <div className='flex gap-2 items-center text-text-secondary'>
-                                <p className="text-xs md:text-sm font-important">{offering.price} {currencyType}</p>
+                                <p className="text-xs md:text-sm font-important">{formatPrice(offering.price)} {currencyType}</p>
                                 <p className="text-sm md:text-md">{offering.duration} {dictionary.components.buyCoachingSession.minutes}</p>
                             </div>
                         </div>
@@ -134,7 +135,7 @@ function BuyCoachingSession({ offerings, onBuy, locale, currencyType }: BuyCoach
             </div>
 
             <h6 className='text-right text-text-primary font-normal'>
-                {dictionary.components.buyCoachingSession.total}: {totalCost} {currencyType}
+                {dictionary.components.buyCoachingSession.total}: {formatPrice(totalCost)} {currencyType}
             </h6>
 
             {/* Footer */}

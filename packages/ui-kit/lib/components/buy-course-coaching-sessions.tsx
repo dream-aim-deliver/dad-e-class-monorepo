@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { CheckBox } from './checkbox';
+import { formatPrice } from '../utils/format-utils';
 
 type CoachingSession = {
     status: "purchased" | "not_purchased" | "pending";
@@ -143,7 +144,7 @@ function BuyCourseCoachingSessionsContent({
                                     </h6>
                                     <span className="text-text-secondary">•</span>
                                     <p className="text-xs md:text-sm font-important text-text-secondary">
-                                        {session.price} {session.currency}
+                                        {formatPrice(session.price)} {session.currency}
                                     </p>
                                     <span className="text-text-secondary">•</span>
                                     <p className="text-sm md:text-md text-text-secondary">
@@ -178,7 +179,7 @@ function BuyCourseCoachingSessionsContent({
             {/* Total */}
             {totalCost > 0 && (
                 <h6 className="text-right text-text-primary font-normal flex-shrink-0">
-                    {dictionary.components.buyCourseCoachingSessions.total}: {totalCost}{' '}
+                    {dictionary.components.buyCourseCoachingSessions.total}: {formatPrice(totalCost)}{' '}
                     {currency}
                 </h6>
             )}

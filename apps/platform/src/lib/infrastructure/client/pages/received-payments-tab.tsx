@@ -276,7 +276,7 @@ export default function ReceivedPaymentsTab({ locale }: ReceivedPaymentsTabProps
 
       // Format items for display
       const items = transaction.content.items.map((item: any) =>
-        `${item.quantity}x ${item.description} (${item.unitPrice} ${transaction.currency})`
+        `${item.quantity}x ${item.description} (${Number(item.unitPrice).toFixed(2)} ${transaction.currency})`
       );
 
       // Format date
