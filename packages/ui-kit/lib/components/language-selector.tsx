@@ -132,7 +132,6 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         </label>
         <div className="flex md:gap-6 flex-wrap">
           <Dropdown
-            key={spokenLanguages.map((lang) => lang.code).join(',')}
             type="multiple-choice-and-search"
             options={languageOptions.map((lang) => ({
               label: lang.name as string,

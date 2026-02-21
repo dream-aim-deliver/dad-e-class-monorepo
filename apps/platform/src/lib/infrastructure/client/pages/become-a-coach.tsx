@@ -27,11 +27,27 @@ interface BecomeACoachProps {
 export default function BecomeACoach({ locale }: BecomeACoachProps) {
   const t = useTranslations('pages.becomeACoach');
 
-  // TRPC query for topics
+  // TRPC query for topics (single language-agnostic query for combined skills)
   const [listTopicsResponse] = trpc.listTopics.useSuspenseQuery({});
+
+  // Fetch topics for BOTH languages so dual-language skill pickers work
+  const topicsEnQuery = trpc.listTopics.useQuery({ languageCode: 'en' }, {
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
+  });
+  const topicsDeQuery = trpc.listTopics.useQuery({ languageCode: 'de' }, {
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
+  });
 
   // State management
   const [listTopicsViewModel, setListTopicsViewModel] = useState<
+    viewModels.TTopicListViewModel | undefined
+  >(undefined);
+  const [topicsEnViewModel, setTopicsEnViewModel] = useState<
+    viewModels.TTopicListViewModel | undefined
+  >(undefined);
+  const [topicsDeViewModel, setTopicsDeViewModel] = useState<
     viewModels.TTopicListViewModel | undefined
   >(undefined);
   const [isSaving, setIsSaving] = useState(false);
@@ -41,6 +57,8 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const { presenter: listTopicsPresenter } = useListTopicsPresenter(setListTopicsViewModel);
+  const { presenter: topicsEnPresenter } = useListTopicsPresenter(setTopicsEnViewModel);
+  const { presenter: topicsDePresenter } = useListTopicsPresenter(setTopicsDeViewModel);
 
   // Empty default professional profile data for new users - memoized to prevent re-renders
   const defaultProfessionalProfile = useMemo<viewModels.TGetProfessionalProfileSuccess['profile']>(() => ({
@@ -69,6 +87,21 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     listTopicsPresenter.present(listTopicsResponse, listTopicsViewModel);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listTopicsResponse, listTopicsPresenter]); // listTopicsViewModel excluded - presenter updates it via setListTopicsViewModel
+
+  // Present topics data for EN and DE separately
+  useEffect(() => {
+    if (topicsEnQuery.data) {
+      // @ts-ignore
+      topicsEnPresenter.present(topicsEnQuery.data, topicsEnViewModel);
+    }
+  }, [topicsEnQuery.data, topicsEnPresenter, topicsEnViewModel]);
+
+  useEffect(() => {
+    if (topicsDeQuery.data) {
+      // @ts-ignore
+      topicsDePresenter.present(topicsDeQuery.data, topicsDeViewModel);
+    }
+  }, [topicsDeQuery.data, topicsDePresenter, topicsDeViewModel]);
 
   // Handle form submission and email generation - memoized to prevent recreation
   // TODO: Implement server-side email sending in the future
@@ -210,6 +243,14 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
     slug: topic.slug
   }));
 
+  // Extract EN/DE topics for dual-language skill pickers
+  const availableSkillsEn: TSkill[] = topicsEnViewModel?.mode === 'default'
+    ? topicsEnViewModel.data.topics.map(topic => ({ id: topic.id, name: topic.name, slug: topic.slug }))
+    : [];
+  const availableSkillsDe: TSkill[] = topicsDeViewModel?.mode === 'default'
+    ? topicsDeViewModel.data.topics.map(topic => ({ id: topic.id, name: topic.name, slug: topic.slug }))
+    : [];
+
   return (
     <div className="flex flex-col gap-10 md:flex-row lg:flex-row justify-center px-4 md:px-8 max-w-[1400px] mx-auto">
       <div className='flex flex-col gap-4 md:w-[40%] lg:w-[35%]'>
@@ -222,6 +263,8 @@ export default function BecomeACoach({ locale }: BecomeACoachProps) {
           initialData={professionalForm.value || defaultProfessionalProfile}
           onChange={handleProfessionalChange}
           availableSkills={availableSkills}
+          availableSkillsEn={availableSkillsEn.length > 0 ? availableSkillsEn : undefined}
+          availableSkillsDe={availableSkillsDe.length > 0 ? availableSkillsDe : undefined}
           onSave={handleProfessionalSave}
           onFileUpload={async () => ({} as fileMetadata.TFileMetadata)}
           onUploadComplete={() => { /* No-op: CV upload disabled */ }}
