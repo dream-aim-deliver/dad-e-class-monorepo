@@ -1,7 +1,6 @@
 export * from './get-platform-usecase-models';
 export * from './get-home-page-usecase-models';
 export * from './get-offers-page-outline-usecase-models';
-export * from './list-courses-usecase-models';
 export * from './list-offers-page-packages-usecase-models';
 export * from './list-platforms-usecase-models';
 export * from './list-coaches-usecase-models';

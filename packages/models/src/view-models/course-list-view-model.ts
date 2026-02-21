@@ -8,7 +8,7 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 import {
     ListCoursesSuccessResponseSchema,
-} from '../usecase-models/list-courses-usecase-models';
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 export const CourseListSuccessSchema = ListCoursesSuccessResponseSchema.shape.data;
 
