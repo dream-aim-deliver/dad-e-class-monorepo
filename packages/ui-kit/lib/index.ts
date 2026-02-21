@@ -300,7 +300,6 @@ export { AssignmentOverview } from './components/assignment/assignment-overview'
 export { AssignmentOverviewList } from './components/assignment/assignment-overview-list';
 
 export { ProfessionalInfo } from './components/profile/professional-info';
-export { BecomeACoachForm } from './components/profile/become-a-coach-form';
 
 export { AutoPlayVideoPlayer, type AutoPlayVideoPlayerProps } from './components/auto-play-video-player';
 export { PaginationButton, type PaginationButtonProps } from './components/pagination-button';

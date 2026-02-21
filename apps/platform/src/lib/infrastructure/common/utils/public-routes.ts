@@ -49,7 +49,6 @@ const PURELY_PUBLIC_ROUTES = [
     '/terms-of-use',        // Static legal page
     '/offer-information',   // Static informational page
     '/offers',              // Offers listing - public catalog
-    '/become-a-coach',      // Coach signup info (currently disabled)
     '/cms-example',         // Demo/test page
 ] as const;
 
