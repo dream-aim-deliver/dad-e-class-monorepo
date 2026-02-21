@@ -231,6 +231,8 @@ export const DictionarySchema = z.object({
     professionalInfo: z.object({
       title: z.string(),
       bio: z.string(),
+      bioEn: z.string(),
+      bioDe: z.string(),
       bioPlaceholder: z.string(),
 
       linkedinUrl: z.string(),
@@ -247,6 +249,9 @@ export const DictionarySchema = z.object({
       associatedCompanyIndustry: z.string(),
       associatedCompanyIndustryPlaceholder: z.string(),
       skills: z.string(),
+      skillsEn: z.string(),
+      skillsDe: z.string(),
+      switchLanguageHint: z.string(),
       addSkills: z.string(),
       selectSkills: z.string(),
       searchSkillsPlaceholder: z.string(),

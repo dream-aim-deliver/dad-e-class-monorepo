@@ -45,7 +45,8 @@ const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|s
 
 // Zod schema for professional profile validation
 const professionalProfileValidationSchema = z.object({
-	bio: z.string().min(1, 'Bio is required').max(280, 'Bio must be 280 characters or less'),
+	bioEn: z.string().max(280, 'Bio (English) must be 280 characters or less').optional().nullable(),
+	bioDe: z.string().max(280, 'Bio (German) must be 280 characters or less').optional().nullable(),
 	linkedinUrl: z.union([
 		z.string().refine(
 			(url) => url === '' || linkedInUrlRegex.test(url),
@@ -493,9 +494,13 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
 		id: 0,
 		bio: '',
+		bioEn: '',
+		bioDe: '',
 		linkedinUrl: null,
 		curriculumVitae: null,
 		skills: [],
+		skillsEn: [],
+		skillsDe: [],
 		private: true,
 	};
 
@@ -568,10 +573,12 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const handleSaveProfessionalProfile = async (profile: typeof professionalProfile) => {
 		if (!profile) return;
 
+		const profileAny = profile as any;
 		const validationResult = professionalProfileValidationSchema.safeParse({
-			bio: profile.bio,
+			bioEn: profileAny.bioEn,
+			bioDe: profileAny.bioDe,
 			linkedinUrl: profile.linkedinUrl,
-			portfolioWebsite: profile.portfolioWebsite,
+			portfolioWebsite: profileAny.portfolioWebsite,
 		});
 
 		if (!validationResult.success) {
@@ -581,8 +588,17 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			return; // Return early, don't call mutation
 		}
 
+		// At least one bio must be non-empty
+		if (!profileAny.bioEn?.trim() && !profileAny.bioDe?.trim()) {
+			setErrorMessage('At least one bio (English or German) is required');
+			setSuccessMessage(null);
+			return;
+		}
+
 		const savePayload = {
 			...profile,
+			bioEn: profileAny.bioEn || null,
+			bioDe: profileAny.bioDe || null,
 			skillIds: profile.skills.map(skill => {
 				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
 			}),
@@ -607,10 +623,12 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			return;
 		}
 
+		const profileAny = profile as any;
 		const validationResult = professionalProfileValidationSchema.safeParse({
-			bio: profile.bio,
+			bioEn: profileAny.bioEn,
+			bioDe: profileAny.bioDe,
 			linkedinUrl: profile.linkedinUrl,
-			portfolioWebsite: profile.portfolioWebsite,
+			portfolioWebsite: profileAny.portfolioWebsite,
 		});
 
 		if (!validationResult.success) {
@@ -620,8 +638,17 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			return; // Return early, don't call mutation
 		}
 
+		// At least one bio must be non-empty
+		if (!profileAny.bioEn?.trim() && !profileAny.bioDe?.trim()) {
+			setApplicationModalErrorMessage('At least one bio (English or German) is required');
+			setApplicationModalSuccessMessage(null);
+			return;
+		}
+
 		const savePayload = {
 			...profile,
+			bioEn: profileAny.bioEn || null,
+			bioDe: profileAny.bioDe || null,
 			skillIds: profile.skills.map(skill => {
 				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
 			}),
@@ -671,6 +698,8 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						personalProfile={personalProfileToUse}
 						professionalProfile={professionalProfileToUse}
 						availableSkills={allTopics}
+						availableSkillsEn={locale === 'en' ? allTopics : []}
+						availableSkillsDe={locale === 'de' ? allTopics : []}
 						availableLanguages={allLanguages}
 						availableInterfaceLanguages={platformLanguages}
 						onSavePersonal={handleSavePersonalProfile}

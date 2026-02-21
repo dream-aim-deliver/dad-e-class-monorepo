@@ -353,6 +353,8 @@ export const DE: TDictionary = {
     professionalInfo: {
       title: 'Berufliche Informationen',
       bio: 'Biografie (max. 280 Zeichen)',
+      bioEn: 'Biografie auf Englisch (max. 280 Zeichen)',
+      bioDe: 'Biografie auf Deutsch (max. 280 Zeichen)',
       bioPlaceholder:
         'Eine überzeugende Biografie hilft dir, dich von anderen Coaches abzuheben. Dies wird für alle Studierenden sichtbar sein.',
 
@@ -372,6 +374,9 @@ export const DE: TDictionary = {
       associatedCompanyIndustryPlaceholder: 'z. B. Informationstechnologie',
 
       skills: 'Deine Fähigkeiten',
+      skillsEn: 'Fähigkeiten (Englisch)',
+      skillsDe: 'Fähigkeiten (Deutsch)',
+      switchLanguageHint: 'Wechseln Sie zur anderen Sprache, um Fähigkeiten in dieser Sprache hinzuzufügen oder zu bearbeiten',
       addSkills: 'Fähigkeiten hinzufügen',
       selectSkills: 'Fähigkeiten auswählen',
       searchSkillsPlaceholder: 'Fähigkeiten suchen',
