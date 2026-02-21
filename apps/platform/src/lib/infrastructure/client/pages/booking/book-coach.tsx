@@ -866,38 +866,38 @@ function BookCoachPageContent({
                 <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                     <CoachHeader coachUsername={coachUsername} />
                 </Suspense>
-                {/* Next availability banner — always show when there's a future date, title only when not available today */}
-                {nextAvailableDate && (
-                    <div className="my-3">
-                        <Banner
-                            style="neutral"
-                            icon
-                            title={!isAvailableToday ? coachingT('notAvailableToday.title') : undefined}
-                            description={coachingT('notAvailableToday.description', {
-                                date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
-                            })}
-                            button={{
-                                label: coachingT('notAvailableToday.goToDate', {
-                                    date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
-                                }),
-                                onClick: () => {
-                                    setCurrentDate(nextAvailableDate);
-                                    setScrollToHour(nextAvailableDate.getHours());
-                                    setScrollKey((prev) => prev + 1);
-                                },
-                            }}
-                        />
-                    </div>
-                )}
                 {/* Help text */}
                 <div className="mb-3 px-1">
-                    <p className="text-sm text-text-secondary">
+                    <p className="text-base text-text-secondary">
                         {isFromCourse ? coachingT('bookingHelp.courseDescription') : coachingT('bookingHelp.standaloneDescription')}
                     </p>
                 </div>
                 {/* Desktop Layout: Calendar on left, AvailableCoachings on right */}
                 <div className="flex-1 min-h-0 flex-row hidden md:flex gap-6">
                     <div className="rounded-lg bg-card-fill p-4 flex-1 overflow-hidden flex flex-col">
+                        {nextAvailableDate && (
+                            <div className="mb-3">
+                                <Banner
+                                    style="neutral"
+                                    icon
+                                    title={!isAvailableToday ? coachingT('notAvailableToday.title') : undefined}
+                                    description={coachingT('notAvailableToday.description', {
+                                        date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+                                    })}
+                                    button={{
+                                        label: coachingT('notAvailableToday.goToDate', {
+                                            date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+                                        }),
+                                        onClick: () => {
+                                            setCurrentDate(nextAvailableDate);
+                                            setScrollToHour(nextAvailableDate.getHours());
+                                            setScrollKey((prev) => prev + 1);
+                                        },
+                                    }}
+                                    buttonClassName="px-5 py-2 text-base"
+                                />
+                            </div>
+                        )}
                         <Tabs.Root
                             defaultTab="weekly"
                             onValueChange={(value) => setViewType(value as 'weekly' | 'monthly')}
@@ -958,6 +958,27 @@ function BookCoachPageContent({
                 </div>
                 {/* Mobile Layout: Calendar above, AvailableCoachings below */}
                 <div className="flex flex-col md:hidden gap-4">
+                    {nextAvailableDate && (
+                        <Banner
+                            style="neutral"
+                            icon
+                            title={!isAvailableToday ? coachingT('notAvailableToday.title') : undefined}
+                            description={coachingT('notAvailableToday.description', {
+                                date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+                            })}
+                            button={{
+                                label: coachingT('notAvailableToday.goToDate', {
+                                    date: nextAvailableDate.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+                                }),
+                                onClick: () => {
+                                    setCurrentDate(nextAvailableDate);
+                                    setScrollToHour(nextAvailableDate.getHours());
+                                    setScrollKey((prev) => prev + 1);
+                                },
+                            }}
+                            buttonClassName="px-5 py-2 text-base"
+                        />
+                    )}
                     <MonthlyCoachCalendarWrapper
                         coachAvailabilityViewModel={coachAvailabilityViewModel}
                         currentDate={currentDate}
