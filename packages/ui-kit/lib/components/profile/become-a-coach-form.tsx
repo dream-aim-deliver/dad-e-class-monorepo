@@ -123,8 +123,8 @@ export const BecomeACoachForm: React.FC<BecomeACoachFormProps> = ({
           <TextAreaInput
             className="h-[104px]"
             label={dictionary.components.professionalInfo.bio}
-            value={initialData.bio as string}
-            setValue={(value: string) => handleChange('bio', value)}
+            value={(locale === 'de' ? (initialData.bioDe as string) : (initialData.bioEn as string)) || ''}
+            setValue={(value: string) => handleChange(locale === 'de' ? 'bioDe' : 'bioEn', value)}
             placeholder={dictionary.components.professionalInfo.bioPlaceholder}
           />
         </div>
