@@ -11,6 +11,16 @@ const withNextIntl = createNextIntlPlugin(
  **/
 const nextConfig: NextConfig = {
     images: {
+        localPatterns: [
+            {
+                pathname: '/api/favicon',
+                // search omitted → allows any query string (?domain=...)
+            },
+            {
+                pathname: '/**',
+                search: '',
+            },
+        ],
         dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development',
         formats: ['image/avif', 'image/webp'],
         // Cache optimized images for 10 hours minimum, matching signed URL TTL from MinIO
