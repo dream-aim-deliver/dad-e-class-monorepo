@@ -5,6 +5,7 @@ import {
     uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
+import { TUploadIntroductionVideoSuccessResponse, TGetDownloadUrlSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { useState } from 'react';
 import { trpc } from '../../../../trpc/cms-client';
 import { useTranslations } from 'next-intl';
@@ -74,6 +75,8 @@ export const useIntroductionVideoUpload = (
             throw new Error(uploadCredentialsError);
         }
 
+        const uploadData = uploadResult.data as TUploadIntroductionVideoSuccessResponse['data'];
+
         if (abortSignal?.aborted) {
             throw new AbortError();
         }
@@ -83,12 +86,9 @@ export const useIntroductionVideoUpload = (
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
-            // @ts-ignore
-            storageUrl: uploadResult.data.storageUrl,
-            // @ts-ignore
-            objectName: uploadResult.data.file.objectName,
-            // @ts-ignore
-            formFields: uploadResult.data.formFields,
+            storageUrl: uploadData.storageUrl,
+            objectName: uploadData.file.objectName,
+            formFields: uploadData.formFields,
             abortSignal,
             onProgress: (uploadProgress) => {
                 onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
@@ -96,26 +96,21 @@ export const useIntroductionVideoUpload = (
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
-            // @ts-ignore
-            fileId: uploadResult.data.file.id,
+            fileId: uploadData.file.id,
         });
         if (!verifyResult.success) {
             throw new Error(verifyImageError);
         }
 
+        const verifyData = verifyResult.data as TGetDownloadUrlSuccessResponse['data'];
+
         return {
-            // @ts-ignore
-            id: uploadResult.data.file.id,
-            // @ts-ignore
-            name: uploadResult.data.file.name,
-            // @ts-ignore
-            url: verifyResult.data.downloadUrl,
-            // @ts-ignore
-            thumbnailUrl: verifyResult.data.downloadUrl,
-            // @ts-ignore
-            size: uploadResult.data.file.size,
-            // @ts-ignore
-            category: uploadResult.data.file.category,
+            id: uploadData.file.id,
+            name: uploadData.file.name,
+            url: verifyData.downloadUrl,
+            thumbnailUrl: verifyData.downloadUrl,
+            size: uploadData.file.size,
+            category: uploadData.file.category,
         } as fileMetadata.TFileMetadata;
     };
 
