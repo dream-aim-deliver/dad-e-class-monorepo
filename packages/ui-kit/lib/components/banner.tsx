@@ -16,6 +16,7 @@ interface BannerProps {
     label: string;
     onClick: () => void;
   };
+  buttonClassName?: string;
 }
 
 /**
@@ -81,6 +82,7 @@ const Banner: FC<BannerProps> = ({
   onClose,
   className,
   button,
+  buttonClassName,
 }) => {
   const styleClasses: Record<string, string> = {
     success: 'text-feedback-success-primary border-feedback-success-primary',
@@ -130,7 +132,7 @@ const Banner: FC<BannerProps> = ({
         {button && (
           <button
             onClick={button.onClick}
-            className="px-3 py-1 text-sm font-medium rounded border border-current hover:bg-current hover:bg-current/20 transition-all duration-200 cursor-pointer"
+            className={cn("px-3 py-1 text-sm font-medium rounded border border-current hover:bg-current hover:bg-current/20 transition-all duration-200 cursor-pointer", buttonClassName)}
           >
             {button.label}
           </button>
