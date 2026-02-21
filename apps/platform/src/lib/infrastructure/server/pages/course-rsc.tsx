@@ -245,6 +245,20 @@ async function prefetchIntroductionData(
         }),
     );
 
+    // Prefetch coaches for lesson coaching session components and enrolled coaches tab
+    // Must be server-side to ensure correct Accept-Language header for localized bios
+    prefetch(
+        trpc.listCoaches.queryOptions({
+            courseSlug: slug,
+            sortPreferredFirst: true,
+        }),
+    );
+    prefetch(
+        trpc.listCoaches.queryOptions({
+            courseSlug: slug,
+        }),
+    );
+
     if (currentRole === 'student') {
         prefetch(
             trpc.getStudentProgress.queryOptions({
