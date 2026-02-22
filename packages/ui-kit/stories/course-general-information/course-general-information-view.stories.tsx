@@ -4,7 +4,7 @@ import {
     CourseGeneralInformationViewProps,
 } from '../../lib/components/course-general-information/course-general-information-view';
 
-const studentsExample = [
+const coachesExample = [
     {
         name: 'John Smith',
         avatarUrl:
@@ -46,8 +46,7 @@ const meta: Meta<typeof CourseGeneralInformationView> = {
         imageUrl:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         locale: 'en',
-        students: studentsExample,
-        totalStudentCount: 25,
+        coaches: coachesExample,
         onClickAuthor: () => alert('Author clicked'),
     },
 };

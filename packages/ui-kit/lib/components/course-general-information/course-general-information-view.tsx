@@ -8,11 +8,12 @@ import { ProgressBar } from '../progress-bar';
 import { FC, useState } from 'react';
 import { IconClock } from '../icons/icon-clock';
 import RichTextRenderer from '../rich-text-element/renderer';
-import { IconCheck } from '../icons';
+import { IconCheck, IconStar } from '../icons';
+import { UserAvatar } from '../avatar/user-avatar';
 import { UserAvatarReel } from '../avatar/user-avatar-reel';
 import { useImageComponent } from '../../contexts/image-component-context';
 
-interface Student {
+interface Coach {
     name: string;
     avatarUrl: string;
 }
@@ -21,8 +22,7 @@ export interface CourseGeneralInformationViewBaseProps
         isLocalAware {
     longDescription: string;
     onClickAuthor: () => void;
-    students: Student[];
-    totalStudentCount: number;
+    coaches: Coach[];
 }
 
 export interface WithProgressViewProps
@@ -114,8 +114,7 @@ export const CourseGeneralInformationView: FC<
         onClickAuthor,
         imageUrl,
         showProgress,
-        students,
-        totalStudentCount,
+        coaches,
     } = props;
 
     const dictionary = getDictionary(props.locale);
@@ -241,7 +240,7 @@ export const CourseGeneralInformationView: FC<
                 </div>
 
                 {/* Created by */}
-                {/* {author && (
+                {author?.name?.trim() && (
                     <div className="flex flex-col gap-4">
                         <h5 className="text-text-primary">
                             {
@@ -281,16 +280,21 @@ export const CourseGeneralInformationView: FC<
                             </div>
                         </div>
                     </div>
-                )} */}
+                )}
 
-                {/* Enrolled Students */}
-                <div className="flex items-center">
-                    <UserAvatarReel
-                        users={students}
-                        totalUsersCount={totalStudentCount ?? students.length}
-                        locale={props.locale}
-                    />
-                </div>
+                {/* Taught by */}
+                {coaches.length > 0 && (
+                    <div className="flex flex-col gap-2 items-start">
+                        <h6 className="text-text-primary text-lg">
+                            {dictionary.components.courseGeneralInformationView.taughtBy}
+                        </h6>
+                        <UserAvatarReel
+                            users={coaches}
+                            totalUsersCount={coaches.length}
+                            locale={props.locale}
+                        />
+                    </div>
+                )}
 
                 {/* Show Progress Bar & Resume Button JUST if the user is a student */}
                 {showProgress === true && (

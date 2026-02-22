@@ -18,8 +18,9 @@ import { useRouter } from 'next/navigation';
 import { useTabContext } from 'packages/ui-kit/lib/components/tabs/tab-context';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/cms-client';
-import { Suspense, useState, useEffect, useCallback } from 'react';
+import { Suspense, useState, useEffect, useCallback, useMemo } from 'react';
 import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-included-coaching-sessions-presenter';
+import { useListCoachesPresenter } from '../../../hooks/use-coaches-presenter';
 import { usePrepareCheckoutPresenter } from '../../../hooks/use-prepare-checkout-presenter';
 import { useCheckoutIntent } from '../../../hooks/use-checkout-intent';
 import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../../hooks/use-checkout-errors';
@@ -46,6 +47,28 @@ function EnrolledCourseIntroductionContent(
     const t = useTranslations('pages.enrolledCourse');
     const tabContext = useTabContext();
     const router = useRouter();
+
+    // Fetch coaches (already prefetched by RSC)
+    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
+        courseSlug: props.courseSlug,
+        sortPreferredFirst: true,
+    });
+    const [coachesViewModel, setCoachesViewModel] = useState<
+        viewModels.TCoachListViewModel | undefined
+    >(undefined);
+    const { presenter: coachesPresenter } = useListCoachesPresenter(setCoachesViewModel);
+    // @ts-ignore
+    coachesPresenter.present(coachesResponse, coachesViewModel);
+
+    const coaches = useMemo(() => {
+        if (coachesViewModel?.mode === 'default') {
+            return coachesViewModel.data.coaches.map((c) => ({
+                name: `${c.name} ${c.surname}`.trim(),
+                avatarUrl: c.avatarUrl ?? '',
+            }));
+        }
+        return [];
+    }, [coachesViewModel]);
 
     if (courseViewModel.mode !== 'default' || (progressViewModel && progressViewModel.mode !== 'default')) {
         return (
@@ -87,16 +110,12 @@ function EnrolledCourseIntroductionContent(
                 }}
                 rating={courseViewModel.data.author.averageRating}
                 author={{
-                    name: '',
-                    image: '',
+                    name: `${courseViewModel.data.author.name} ${courseViewModel.data.author.surname}`.trim(),
+                    image: courseViewModel.data.author.avatarUrl ?? '',
                 }}
                 progress={progressViewModel?.data.progressPercent ?? 0}
                 imageUrl={courseViewModel.data.imageFile?.downloadUrl ?? ''}
-                students={(courseViewModel.data.students ?? []).map((student) => ({
-                    name: student.name,
-                    avatarUrl: student.avatarUrl ?? '',
-                }))}
-                totalStudentCount={courseViewModel.data.studentCount}
+                coaches={coaches}
                 onClickAuthor={() => {
                     router.push(
                         `/coaches/${courseViewModel.data.author.username}`,

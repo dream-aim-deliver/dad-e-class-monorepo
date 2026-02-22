@@ -171,11 +171,7 @@ export function EditCourseGeneralPreview({ slug }: { slug: string }) {
                     image: course.author.avatarUrl ?? '',
                 }}
                 imageUrl={course.imageFile?.downloadUrl ?? ''}
-                students={(course.students ?? []).map((student) => ({
-                    name: student.name,
-                    avatarUrl: student.avatarUrl ?? '',
-                }))}
-                totalStudentCount={course.studentCount}
+                coaches={[]}
                 onClickAuthor={() => {
                     // Don't handle author click
                 }}

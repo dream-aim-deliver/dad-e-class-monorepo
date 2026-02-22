@@ -21,6 +21,7 @@ const mockDictionary = {
             beginCourseButton: 'Begin Course',
             reviewCourseButton: 'Review Course',
             courseCompletedBadge: 'Course Completed',
+            taughtBy: 'Taught by',
             and: 'and',
             andLabel: 'and',
             other: 'other',
@@ -43,7 +44,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
     isLocalAware: true,
 }));
 
-const mockStudents = [
+const mockCoaches = [
     { name: 'Alice Smith', avatarUrl: 'https://example.com/avatar1.jpg' },
     { name: 'Bob Johnson', avatarUrl: 'https://example.com/avatar2.jpg' },
     { name: 'Charlie Brown', avatarUrl: 'https://example.com/avatar3.jpg' },
@@ -69,8 +70,7 @@ const basePropsWithProgress = {
     onClickResume: vi.fn(),
     onClickReview: vi.fn(),
     onClickAuthor: vi.fn(),
-    students: mockStudents,
-    totalStudentCount: 10,
+    coaches: mockCoaches,
 };
 
 const basePropsWithoutProgress = {
@@ -90,8 +90,7 @@ const basePropsWithoutProgress = {
     imageUrl: 'https://example.com/course.jpg',
     locale: 'en' as TLocale,
     onClickAuthor: vi.fn(),
-    students: mockStudents,
-    totalStudentCount: 10,
+    coaches: mockCoaches,
 };
 
 describe('CourseGeneralInformationView', () => {
