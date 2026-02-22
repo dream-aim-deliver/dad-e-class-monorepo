@@ -18,27 +18,26 @@ interface FooterProps {
     locale: TLocale;
 }
 
-const FooterLinks = () => {
+const FooterLinks = ({ locale }: { locale: TLocale }) => {
     const t = useTranslations('components.footer');
     const linkClass =
         'hover:text-button-primary-hover-fill cursor-pointer text-button-primary-fill text-sm';
 
-    // TODO: possibly use Link from Next.js
     return (
         <>
-            <Link href="/impressum">
+            <Link href={`/${locale}/impressum`}>
                 <span className={linkClass}>{t('impressum')}</span>
             </Link>
-            <Link href="/privacy-policy">
+            <Link href={`/${locale}/privacy-policy`}>
                 <span className={linkClass}>{t('privacyPolicy')}</span>
             </Link>
-            <Link href="/terms-of-use">
+            <Link href={`/${locale}/terms-of-use`}>
                 <span className={linkClass}>{t('termsOfUse')}</span>
             </Link>
-            <Link href="/rules">
+            <Link href={`/${locale}/rules`}>
                 <span className={linkClass}>{t('rules')}</span>
             </Link>
-            <Link href="/offer-information">
+            <Link href={`/${locale}/offer-information`}>
                 <span className={linkClass}>{t('coursesInformation')}</span>
             </Link>
         </>
@@ -102,7 +101,7 @@ export default function Footer({
                 />
             }
         >
-            <FooterLinks />
+            <FooterLinks locale={locale} />
         </FooterComponent>
     );
 }
