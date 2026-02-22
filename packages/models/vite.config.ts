@@ -6,8 +6,21 @@ import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 // Async config to avoid Node.js ESM race condition (ERR_INTERNAL_ASSERTION)
 // when Nx loads multiple vite configs in parallel during project graph construction
 const config: UserConfigFnPromise = async () => {
-  const { default: dts } = await import('vite-plugin-dts');
-  const { checker } = await import('vite-plugin-checker');
+  let dtsPlugin: any;
+  let checkerPlugin: any;
+  if (!process.env.CI) {
+    const { default: dts } = await import('vite-plugin-dts');
+    const { checker } = await import('vite-plugin-checker');
+    dtsPlugin = dts({
+      entryRoot: 'src',
+      tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
+    });
+    checkerPlugin = checker({
+      typescript: {
+        buildMode: true
+      }
+    });
+  }
 
   return {
     root: __dirname,
@@ -15,15 +28,8 @@ const config: UserConfigFnPromise = async () => {
     plugins: [
       react(),
       nxCopyAssetsPlugin(['*.md']),
-      !process.env.CI ? dts({
-        entryRoot: 'src',
-        tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
-      }) : undefined,
-      !process.env.CI ? checker({
-        typescript: {
-          buildMode: true
-        }
-      }) : undefined,
+      dtsPlugin,
+      checkerPlugin,
     ],
     // Uncomment this if you are using workers.
     // worker: {
