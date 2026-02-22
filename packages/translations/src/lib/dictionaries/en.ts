@@ -380,7 +380,7 @@ export const EN: TDictionary = {
       searchSkillsPlaceholder: 'Search Skills',
       skillsLanguageHint: 'The list below shows only the skills available in the current language',
       privateProfile:
-        'Private profile (only registered users can see your name, surname and bio)',
+        'Private profile — your profile will not appear on public pages. Only logged-in users will be able to find and view your profile.',
       buttontext1: 'Discard',
       buttontext2: 'Save changes',
       sendApplicationButton: 'Send application',
