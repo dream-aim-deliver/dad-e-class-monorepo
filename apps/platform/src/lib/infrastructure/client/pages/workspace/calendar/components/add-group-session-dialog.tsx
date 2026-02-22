@@ -4,10 +4,11 @@ import {
     Dialog,
     DialogContent,
     Button,
+    Banner,
 } from '@maany_shr/e-class-ui-kit';
 import GroupSessionTimeContent from '../../../common/group-session-time-content';
 import { useTranslations } from 'next-intl';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import React from 'react';
 import { trpc } from '../../../../trpc/cms-client';
 import { useSchedulingErrors, getSchedulingErrorKey } from '../../../../hooks/use-scheduling-errors';
@@ -30,7 +31,7 @@ interface CoachingOffering {
 interface AddGroupSessionDialogProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
-    onSuccess: () => void;
+    onSuccess: (startTime: Date) => void;
     initialStartTime?: Date;
     groupId: number;
     coachUsername: string;
@@ -50,8 +51,15 @@ export function AddGroupSessionDialog({
     const [selectedOffering, setSelectedOffering] = useState<CoachingOffering | undefined>(undefined);
     const [error, setError] = useState<string | undefined>(undefined);
     const [conflictWarning, setConflictWarning] = useState<ConflictInfo[] | undefined>(undefined);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const createGroupCoachingSessionMutation = trpc.createGroupCoachingSession.useMutation();
+    const utils = trpc.useUtils();
+    const createGroupCoachingSessionMutation = trpc.createGroupCoachingSession.useMutation({
+        onSuccess: () => {
+            utils.countUnreadNotifications.invalidate();
+        },
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const reset = () => {
@@ -60,18 +68,49 @@ export function AddGroupSessionDialog({
         setError(undefined);
         setConflictWarning(undefined);
         setIsSubmitting(false);
+        setShowSuccess(false);
+        if (successTimerRef.current) {
+            clearTimeout(successTimerRef.current);
+            successTimerRef.current = null;
+        }
     };
 
+    // Clean up timer on unmount
+    useEffect(() => {
+        return () => {
+            if (successTimerRef.current) {
+                clearTimeout(successTimerRef.current);
+            }
+        };
+    }, []);
+
     const handleOpenChange = (open: boolean) => {
+        if (!open && showSuccess) {
+            // User closed during success display — trigger jump immediately
+            if (successTimerRef.current) {
+                clearTimeout(successTimerRef.current);
+                successTimerRef.current = null;
+            }
+            onSuccess(new Date(startTime));
+            return;
+        }
         if (!open) {
             reset();
         }
         onOpenChange(open);
     };
 
+    const showSuccessAndClose = () => {
+        setShowSuccess(true);
+        const sessionStartTime = new Date(startTime);
+        successTimerRef.current = setTimeout(() => {
+            onSuccess(sessionStartTime);
+        }, 5000);
+    };
+
     const validateAndSubmit = async () => {
         setError(undefined);
-        
+
         if (!startTime) {
             setError('Start time is required');
             return;
@@ -109,7 +148,7 @@ export function AddGroupSessionDialog({
                 return;
             }
 
-            onSuccess();
+            showSuccessAndClose();
         } catch (err: unknown) {
             // Extract error type and message from the error response
             let errorType: string | undefined;
@@ -144,7 +183,7 @@ export function AddGroupSessionDialog({
 
     const handleWarningDismiss = () => {
         setConflictWarning(undefined);
-        onSuccess();
+        showSuccessAndClose();
     };
 
     // Update start time when initialStartTime changes
@@ -162,7 +201,14 @@ export function AddGroupSessionDialog({
                 closeOnEscape
                 className="overflow-visible"
             >
-                {conflictWarning ? (
+                {showSuccess ? (
+                    <div className="flex flex-col gap-4 pt-10 p-4">
+                        <Banner
+                            style="success"
+                            title={t('groupSessionCreatedSuccess')}
+                        />
+                    </div>
+                ) : conflictWarning ? (
                     <div className="flex flex-col gap-4 p-4">
                         <h3 className="text-lg font-semibold text-text-primary">
                             {t('studentOverlapWarning.title')}

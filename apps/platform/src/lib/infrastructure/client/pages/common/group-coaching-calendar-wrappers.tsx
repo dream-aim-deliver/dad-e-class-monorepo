@@ -22,6 +22,8 @@ interface WeeklyGroupCoachingCalendarWrapperProps {
     setNewSessionStart?: (startTime: Date) => void;
     selectedDate?: Date;
     setSelectedDate?: (date: Date | undefined) => void;
+    scrollToHour?: number;
+    scrollKey?: number;
 }
 
 export function WeeklyGroupCoachingCalendarWrapper({
@@ -32,6 +34,8 @@ export function WeeklyGroupCoachingCalendarWrapper({
     setNewSessionStart,
     selectedDate: externalSelectedDate,
     setSelectedDate: externalSetSelectedDate,
+    scrollToHour,
+    scrollKey,
 }: WeeklyGroupCoachingCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
 
@@ -87,7 +91,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
                                     locale={locale}
                                     start={startTime}
                                     end={endTime}
-                                    title={`Individual: ${session.coachingOfferingTitle}`}
+                                    title={`${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`}
                                 />
                             ),
                         });
@@ -112,6 +116,8 @@ export function WeeklyGroupCoachingCalendarWrapper({
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
             events={weeklyEvents}
+            scrollToHour={scrollToHour}
+            scrollKey={scrollKey}
         />
     );
 }
@@ -267,8 +273,8 @@ export function MonthlyGroupCoachingCalendarWrapper({
                         allSessions.push({
                             startTime,
                             endTime,
-                            title: `Individual: ${session.coachingOfferingTitle}`,
-                            type: 'individual',
+                            title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`,
+                            type: session.sessionType?.startsWith('group-') ? 'group' : 'individual',
                         });
                     }
                 });

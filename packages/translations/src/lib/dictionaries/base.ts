@@ -3590,6 +3590,7 @@ export const DictionarySchema = z.object({
         description: z.string(),
         acknowledge: z.string(),
       }),
+      groupSessionCreatedSuccess: z.string(),
     }),
     manageLegalTexts: z.object({
       title: z.string(),

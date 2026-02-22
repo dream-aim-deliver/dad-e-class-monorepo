@@ -486,6 +486,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                                     creatorName={`${session.coach.name || ''} ${session.coach.surname || ''}`.trim() || session.coach.username}
                                     creatorImageUrl={session.coach.avatarUrl || ''}
                                     courseName={session.course?.title}
+                                    groupName={session.sessionType === 'group-scheduled' ? session.group.name : undefined}
                                     onClickCreator={() => {
                                         console.log('View coach profile', session.coach.username);
                                     }}

@@ -72,6 +72,8 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
     );
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+    const [scrollToHour, setScrollToHour] = useState<number | undefined>(undefined);
+    const [scrollKey, setScrollKey] = useState(0);
 
     // Fetch group coaching sessions for this specific group
     const [groupCoachingSessionsResponse, { refetch: refetchGroupSessions }] =
@@ -106,11 +108,14 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
             // @ts-ignore - Follow standard pattern used throughout codebase
             coachSessionsPresenter.present(coachCoachingSessionsResponse, coachCoachingSessionsViewModel);
         }
-    }, [coachCoachingSessionsResponse, coachSessionsPresenter, coachCoachingSessionsViewModel]);    const handleGroupSessionAdded = () => {
+    }, [coachCoachingSessionsResponse, coachSessionsPresenter, coachCoachingSessionsViewModel]);    const handleGroupSessionAdded = (sessionStartTime: Date) => {
         refetchGroupSessions();
         refetchCoachSessions();
         setIsAddDialogOpen(false);
         setNewSessionStart(undefined);
+        setCurrentDate(sessionStartTime);
+        setScrollToHour(sessionStartTime.getHours());
+        setScrollKey((prev) => prev + 1);
     };
 
     const handleNewSessionStart = (startTime: Date) => {
@@ -200,6 +205,8 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
                                     selectedDate={selectedDate}
                                     setSelectedDate={setSelectedDate}
                                     setNewSessionStart={handleNewSessionStart}
+                                    scrollToHour={scrollToHour}
+                                    scrollKey={scrollKey}
                                 />
                             </Tabs.Content>
                             <Tabs.Content
