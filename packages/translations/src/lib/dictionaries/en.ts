@@ -2590,6 +2590,8 @@ export const EN: TDictionary = {
       emailRequired: 'Email is required',
       bioRequired: 'Bio is required',
       bioTooLong: 'Bio must be 280 characters or less',
+      linkedinInvalid: 'Please enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)',
+      portfolioInvalid: 'Please enter a valid portfolio website URL',
       applyToBecomeCoach: 'Apply to become a coach',
       coachApplicationTitle: 'Apply to Become a Coach',
       coachApplicationDescription: 'Fill out your professional profile to apply for coach status. A CV is required for your application.',

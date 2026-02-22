@@ -43,35 +43,37 @@ interface ProfileProps {
 // LinkedIn URL validation regex - matches standard LinkedIn profile/company URLs
 const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|showcase)\/[\w-]+\/?$/;
 
-// Zod schema for professional profile validation
-const professionalProfileValidationSchema = z.object({
-	bioEn: z.string().max(280, 'Bio (English) must be 280 characters or less').optional().nullable(),
-	bioDe: z.string().max(280, 'Bio (German) must be 280 characters or less').optional().nullable(),
-	linkedinUrl: z.union([
-		z.string().refine(
-			(url) => url === '' || linkedInUrlRegex.test(url),
-			{ message: 'Please enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)' }
-		),
-		z.null(),
-		z.undefined()
-	]).optional(),
-	portfolioWebsite: z.union([
-		z.string().refine(
-			(url) => {
-				if (!url || url === '') return true;
-				try {
-					new URL(url);
-					return true;
-				} catch {
-					return false;
-				}
-			},
-			{ message: 'Please enter a valid portfolio website URL' }
-		),
-		z.null(),
-		z.undefined()
-	]).optional(),
-});
+// Zod schema factory for professional profile validation (accepts translation function)
+function createProfessionalProfileValidationSchema(t: (key: string) => string) {
+	return z.object({
+		bioEn: z.string().max(280, t('bioTooLong')).optional().nullable(),
+		bioDe: z.string().max(280, t('bioTooLong')).optional().nullable(),
+		linkedinUrl: z.union([
+			z.string().refine(
+				(url) => url === '' || linkedInUrlRegex.test(url),
+				{ message: t('linkedinInvalid') }
+			),
+			z.null(),
+			z.undefined()
+		]).optional(),
+		portfolioWebsite: z.union([
+			z.string().refine(
+				(url) => {
+					if (!url || url === '') return true;
+					try {
+						new URL(url);
+						return true;
+					} catch {
+						return false;
+					}
+				},
+				{ message: t('portfolioInvalid') }
+			),
+			z.null(),
+			z.undefined()
+		]).optional(),
+	});
+}
 
 export default function Profile({ locale: localeStr, userEmail, username, roles }: ProfileProps) {
 	const locale = useLocale() as TLocale;
@@ -590,7 +592,8 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		if (!profile) return;
 
 		const profileAny = profile as any;
-		const validationResult = professionalProfileValidationSchema.safeParse({
+		const validationSchema = createProfessionalProfileValidationSchema(t);
+		const validationResult = validationSchema.safeParse({
 			bioEn: profileAny.bioEn,
 			bioDe: profileAny.bioDe,
 			linkedinUrl: profile.linkedinUrl,
@@ -606,7 +609,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 
 		// At least one bio must be non-empty
 		if (!profileAny.bioEn?.trim() && !profileAny.bioDe?.trim()) {
-			setErrorMessage('At least one bio (English or German) is required');
+			setErrorMessage(t('bioRequired'));
 			setSuccessMessage(null);
 			return;
 		}
@@ -632,15 +635,21 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const handleApplicationSubmit = async (profile: typeof professionalProfile) => {
 		if (!profile) return;
 
-		// CV validation - return early if validation fails, don't call mutation
-		if (!applicationModalCurriculumVitaeUpload.curriculumVitae) {
-			setApplicationModalErrorMessage(t('cvRequiredForApplication'));
-			setApplicationModalSuccessMessage(null);
-			return;
+		const profileAny = profile as any;
+		const errors: string[] = [];
+
+		// Collect all validation errors at once
+		const currentBio = locale === 'de' ? profileAny.bioDe : profileAny.bioEn;
+		if (!currentBio?.trim()) {
+			errors.push(t('bioRequired'));
 		}
 
-		const profileAny = profile as any;
-		const validationResult = professionalProfileValidationSchema.safeParse({
+		if (!applicationModalCurriculumVitaeUpload.curriculumVitae) {
+			errors.push(t('cvRequiredForApplication'));
+		}
+
+		const validationSchema = createProfessionalProfileValidationSchema(t);
+		const validationResult = validationSchema.safeParse({
 			bioEn: profileAny.bioEn,
 			bioDe: profileAny.bioDe,
 			linkedinUrl: profile.linkedinUrl,
@@ -648,15 +657,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		});
 
 		if (!validationResult.success) {
-			const errors = validationResult.error.errors.map(err => err.message);
-			setApplicationModalErrorMessage(errors.join(', '));
-			setApplicationModalSuccessMessage(null);
-			return; // Return early, don't call mutation
+			errors.push(...validationResult.error.errors.map(err => err.message));
 		}
 
-		// At least one bio must be non-empty
-		if (!profileAny.bioEn?.trim() && !profileAny.bioDe?.trim()) {
-			setApplicationModalErrorMessage('At least one bio (English or German) is required');
+		if (errors.length > 0) {
+			setApplicationModalErrorMessage(errors.join(', '));
 			setApplicationModalSuccessMessage(null);
 			return;
 		}
@@ -800,7 +805,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 							<ProfessionalInfo
 								initialData={applicationFormData || defaultProfessionalProfile}
 								onChange={setApplicationFormData}
-								availableSkills={allTopics}
+								availableSkills={locale === 'de' ? allTopicsDe : allTopicsEn}
 								onSave={handleApplicationSubmit}
 								onDiscard={handleDiscardApplicationModal}
 								onFileUpload={applicationModalCurriculumVitaeUpload.handleFileChange}

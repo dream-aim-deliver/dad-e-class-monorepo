@@ -2592,6 +2592,8 @@ export const DE: TDictionary = {
       emailRequired: 'E-Mail ist erforderlich',
       bioRequired: 'Biografie ist erforderlich',
       bioTooLong: 'Biografie darf maximal 280 Zeichen lang sein',
+      linkedinInvalid: 'Bitte geben Sie eine gültige LinkedIn-URL ein (z.B. https://linkedin.com/in/benutzername)',
+      portfolioInvalid: 'Bitte geben Sie eine gültige Portfolio-Website-URL ein',
       applyToBecomeCoach: 'Bewerbung als Coach',
       coachApplicationTitle: 'Bewerbung als Coach',
       coachApplicationDescription: 'Füllen Sie Ihr berufliches Profil aus, um sich als Coach zu bewerben. Ein Lebenslauf ist für Ihre Bewerbung erforderlich.',
