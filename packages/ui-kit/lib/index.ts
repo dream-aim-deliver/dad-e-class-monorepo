@@ -115,6 +115,7 @@ export { CourseGeneralInformationVisitor } from './components/course-general-inf
 export { CourseProgressBar } from './components/course-progress-bar';
 
 export { StarRating } from './components/star-rating';
+export { RatingDisplay } from './components/rating-display';
 export { Dropdown } from './components/dropdown';
 export { CoachingSessionTracker } from './components/coaching-session-tracker/coaching-session-tracker';
 export { CoachingSessionItem } from './components/coaching-session-tracker/coaching-session-item';

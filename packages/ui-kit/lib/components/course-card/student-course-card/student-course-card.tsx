@@ -6,7 +6,7 @@ import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { ProgressBar } from '../../progress-bar';
 import { CourseActions } from './course-actions';
-import { StarRating } from '../../star-rating';
+import { RatingDisplay } from '../../rating-display';
 import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../../rich-text-element/renderer';
@@ -192,15 +192,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               </h6>
               
             </div>
-            <div className="flex gap-1 items-end">
-              <StarRating totalStars={5} rating={rating as number} />
-              <span className="text-xs text-text-primary leading-[100%]">
-                {rating}
-              </span>
-              <span className="text-xs text-text-secondary leading-[100%]">
-                ({reviewCount})
-              </span>
-            </div>
+            <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
 
             <CourseCreator
               creatorName={author?.name as string}

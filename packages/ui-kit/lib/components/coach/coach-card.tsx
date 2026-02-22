@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
 import { cn } from '../../utils/style-utils';
-import { StarRating } from '../star-rating';
+import { RatingDisplay } from '../rating-display';
 import { IconLanguage } from '../icons/icon-language';
 import { IconCoachingSession } from '../icons/icon-coaching-session';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
@@ -97,11 +97,7 @@ const CoachCard: FC<CoachCardProps> = (props) => {
           <UserAvatar fullName={cardDetails.coachName} className="w-10 h-10 rounded-full flex-shrink-0" imageUrl={cardDetails.coachImage} />
           <div className="flex flex-col min-w-0 gap-1">
             <p className="text-color-text-primary text-white text-sm md:text-md leading-4 font-bold truncate">{cardDetails.coachName}</p>
-            <div className="flex w-full gap-1 items-center">
-              <StarRating totalStars={5} size={"4"} rating={cardDetails.rating} />
-              <p className="text-text-primary text-sm leading-3.5">{cardDetails.rating}</p>
-              <p className="text-xs">({cardDetails.totalRatings})</p>
-            </div>
+            <RatingDisplay rating={cardDetails.rating} totalRatings={cardDetails.totalRatings} />
           </div>
         </div>
 

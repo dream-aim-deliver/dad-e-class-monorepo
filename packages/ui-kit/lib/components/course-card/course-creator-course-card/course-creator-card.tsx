@@ -4,7 +4,7 @@ import { Badge } from '../../badge';
 import { Button } from '../../button';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
-import { StarRating } from '../../star-rating';
+import { RatingDisplay } from '../../rating-display';
 import {
     getDictionary,
     isLocalAware,
@@ -198,15 +198,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                         </div>
 
                         {status === 'live' && (
-                            <div className="flex gap-1 items-end">
-                                <StarRating totalStars={5} rating={rating} />
-                                <span className="text-xs text-text-primary leading-[100%]">
-                                    {rating}
-                                </span>
-                                <span className="text-xs text-text-secondary leading-[100%]">
-                                    ({reviewCount})
-                                </span>
-                            </div>
+                            <RatingDisplay rating={rating} totalRatings={reviewCount} />
                         )}
 
                         {author?.name && <CourseCreator
