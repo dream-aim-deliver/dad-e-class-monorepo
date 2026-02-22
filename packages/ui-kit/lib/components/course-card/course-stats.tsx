@@ -90,7 +90,7 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
     },
     {
       icon: <IconSales classNames="text-text-secondary" size="5" />,
-      text: `${sales} ${dictionary.components.courseCard.sales}`,
+      text: `${sales} ${sales === 1 ? dictionary.components.courseCard.sale : dictionary.components.courseCard.sales}`,
     },
   ];
 

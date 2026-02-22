@@ -43,15 +43,8 @@ export const ManageCategoryTopicItem = ({
 }: ManageCategoryTopicItemProps) => {
     const dictionary = getDictionary(locale).components.manageCategoryTopicItem;
 
-    // Determine singular or plural for courses
-    const coursesText = coursesCount === 1
-        ? dictionary.course
-        : dictionary.courses;
-
-    // Determine singular or plural for coaches (if provided)
-    const coachesText = coachesCount === 1
-        ? dictionary.coach
-        : dictionary.coaches;
+    const coursesText = dictionary.courses;
+    const coachesText = dictionary.coaches;
 
     return (
         <div className='flex flex-col w-full'>

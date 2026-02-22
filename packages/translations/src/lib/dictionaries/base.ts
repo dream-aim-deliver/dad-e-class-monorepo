@@ -525,7 +525,6 @@ export const DictionarySchema = z.object({
       groupName: z.string(),
       students: z.string(),
       course: z.string(),
-      coach: z.string(),
       coaches: z.string(),
       you: z.string(),
       createdBy: z.string(),
@@ -652,7 +651,6 @@ export const DictionarySchema = z.object({
     courseGeneralInformationView: z.object({
       durationText: z.string(),
       minutesText: z.string(),
-      hourText: z.string(),
       hoursText: z.string(),
       filmMaterialText: z.string(),
       coachingWithAProfessionalText: z.string(),
@@ -1505,9 +1503,7 @@ export const DictionarySchema = z.object({
       sortBy: z.string(),
     }),
     manageCategoryTopicItem: z.object({
-      course: z.string(),
       courses: z.string(),
-      coach: z.string(),
       coaches: z.string(),
       edit: z.string(),
       delete: z.string(),
