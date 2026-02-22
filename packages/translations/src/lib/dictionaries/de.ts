@@ -383,7 +383,7 @@ export const DE: TDictionary = {
       searchSkillsPlaceholder: 'Fähigkeiten suchen',
       skillsLanguageHint: 'Die folgende Liste zeigt nur die in der aktuellen Sprache verfügbaren Fähigkeiten',
       privateProfile:
-        'Privates Profil (nur registrierte Benutzer können deinen Namen, Nachnamen und deine Biografie sehen)',
+        'Privates Profil — dein Profil wird auf öffentlichen Seiten nicht angezeigt. Nur angemeldete Benutzer können dein Profil finden und ansehen.',
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
       sendApplicationButton: 'Bewerbung senden',
