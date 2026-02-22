@@ -9,8 +9,7 @@ const mockDictionary = {
         courseGeneralInformationView: {
             durationText: 'Total Duration',
             minutesText: 'min',
-            hourText: 'hour',
-            hoursText: 'hours',
+            hoursText: 'hour(s)',
             filmMaterialText: 'Video Material',
             coachingWithAProfessionalText: 'Coaching with a Professional',
             selfStudyMaterialText: 'Self Study Material',
@@ -100,12 +99,12 @@ describe('CourseGeneralInformationView', () => {
         expect(screen.getByText('Total Duration')).toBeInTheDocument();
         expect(screen.getByText('6h 0m')).toBeInTheDocument();
 
-        expect(screen.getByText('2 hours Video Material')).toBeInTheDocument();
+        expect(screen.getByText('2 hour(s) Video Material')).toBeInTheDocument();
         expect(
-            screen.getByText('1 hour Coaching with a Professional'),
+            screen.getByText('1 hour(s) Coaching with a Professional'),
         ).toBeInTheDocument();
         expect(
-            screen.getByText('3 hours Self Study Material'),
+            screen.getByText('3 hour(s) Self Study Material'),
         ).toBeInTheDocument();
 
         // expect(screen.getByText('Created by')).toBeInTheDocument();
