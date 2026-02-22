@@ -32,7 +32,7 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
     props,
 ) => {
     const { data, locale, onClickViewLesson, onDeserializationError } = props;
-    const { modules, moduleCount } = data;
+    const { modules } = data;
     const dictionary = getDictionary(locale);
 
     return (
@@ -129,16 +129,8 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
                                             <div className="flex items-center gap-4 flex-1 justify-between">
                                                 <h5>
                                                     {dictionaryFormat(dictionary.components.courseMaterialsAccordion.lessonLabel, {
-                                                        position: modules
-                                                            .slice(0, moduleIndex)
-                                                            .reduce(
-                                                                (sum, mod) =>
-                                                                    sum +
-                                                                    (mod.lessonCount ?? 0),
-                                                                0,
-                                                            ) +
-                                                            (lessonIndex + 1),
-                                                        total: modules.reduce((sum, mod) => sum + (mod.lessonCount ?? 0), 0)
+                                                        position: lessonIndex + 1,
+                                                        total: module.lessons?.length ?? 0,
                                                     })} - {lesson.title}
                                                 </h5>
                                                 <Button

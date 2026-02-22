@@ -16,7 +16,6 @@ import { LinkPreview } from '../links';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { IconCloudDownload } from '../icons';
 import { IconLink } from '../icons/icon-link';
-import Tooltip from '../tooltip';
 
 /**
  * Props for the CourseMaterialsAccordion component
@@ -40,7 +39,7 @@ export const CourseMaterialsAccordion: React.FC<
     CourseMaterialsAccordionProps
 > = (props) => {
     const { data, locale, expandLessonId, onCopyLessonLink, copiedLessonId } = props;
-    const { modules, moduleCount } = data;
+    const { modules } = data;
     const dictionary = getDictionary(locale);
 
     // Filter modules to only include those with lessons that have materials
@@ -231,23 +230,18 @@ export const CourseMaterialsAccordion: React.FC<
                         }
                     >
                         <div className="flex items-center gap-4 flex-1">
-                            <h3>{module.title}</h3>
-                            <span className="text-text-secondary text-xs md:text-sm flex items-center gap-1">
-                                {dictionaryFormat(dictionary.components.courseMaterialsAccordion.moduleLabel, { position: module.position ?? 0, total: moduleCount ?? 0 })}
-                                <Tooltip
-                                    text=""
-                                    description={dictionary.components.courseMaterialsAccordion.moduleTooltip}
-                                />
-                            </span>
+                            <h4 className="text-base-white md:text-2xl text-xl font-semibold">
+                                {dictionaryFormat(dictionary.components.courseMaterialsAccordion.moduleLabel, { position: moduleIndex + 1, total: modulesWithMaterials?.length ?? 0 })} - {module.title}
+                            </h4>
                         </div>
                     </AccordionTrigger>
 
-                    <AccordionContent value={module.id!} className="pt-4">
+                    <AccordionContent value={module.id!} className="pt-4 w-full">
                         {/* Lessons Accordion within Module */}
-                        <div>
+                        <div className="flex w-full">
                             <Accordion
                                 type="multiple"
-                                className="flex flex-col gap-4"
+                                className="flex flex-col gap-4 w-full"
                                 defaultValue={
                                     targetModuleId === module.id && expandLessonId ? [expandLessonId]
                                     : moduleIndex === 0 && module.lessons?.[0]?.id ? [module.lessons[0].id]
@@ -259,10 +253,11 @@ export const CourseMaterialsAccordion: React.FC<
                                         key={lesson.id}
                                         value={lesson.id!}
                                         id={`lesson-material-${lesson.id}`}
-                                        className="bg-base-neutral-800 p-4 rounded-medium border border-base-neutral-700"
+                                        className="bg-base-neutral-800 p-4 rounded-medium border border-base-neutral-700 w-full"
                                     >
                                         <AccordionTrigger
                                             value={lesson.id!}
+                                            className="w-full"
                                             expandIcon={
                                                 <span
                                                     title={
@@ -272,7 +267,7 @@ export const CourseMaterialsAccordion: React.FC<
                                                     }
                                                     className="text-button-text-text"
                                                 >
-                                                    <IconChevronUp size="6" />
+                                                    <IconChevronUp size="5" />
                                                 </span>
                                             }
                                             collapseIcon={
@@ -284,26 +279,21 @@ export const CourseMaterialsAccordion: React.FC<
                                                     }
                                                     className="text-button-text-text"
                                                 >
-                                                    <IconChevronDown size="6" />
+                                                    <IconChevronDown size="5" />
                                                 </span>
                                             }
                                         >
-                                            <div className="flex items-center gap-4 flex-1">
-                                                <h4>{lesson.title}</h4>
-                                                <span className="text-text-secondary text-xs md:text-sm flex items-center gap-1">
-                                                    {dictionaryFormat(dictionary.components.courseMaterialsAccordion.lessonLabel, { position: lesson.position ?? 0, total: module.lessonCount ?? 0 })}
-                                                    <Tooltip
-                                                        text=""
-                                                        description={dictionary.components.courseMaterialsAccordion.lessonTooltip}
-                                                    />
-                                                </span>
+                                            <div className="flex items-center gap-4 flex-1 justify-between">
+                                                <h5>
+                                                    {dictionaryFormat(dictionary.components.courseMaterialsAccordion.lessonLabel, { position: lessonIndex + 1, total: module.lessons?.length ?? 0 })} - {lesson.title}
+                                                </h5>
                                                 {onCopyLessonLink && (
                                                     <button
                                                         type="button"
                                                         title={copiedLessonId === lesson.id
                                                             ? dictionary.components.courseMaterialsAccordion.linkCopied
                                                             : dictionary.components.courseMaterialsAccordion.copyLink}
-                                                        className="flex items-center gap-1 text-text-secondary hover:text-text-primary text-xs md:text-sm ml-auto flex-shrink-0 cursor-pointer"
+                                                        className="flex items-center gap-1 text-text-secondary hover:text-text-primary text-xs md:text-sm flex-shrink-0 cursor-pointer"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             onCopyLessonLink(lesson.id!);
@@ -319,7 +309,7 @@ export const CourseMaterialsAccordion: React.FC<
                                                 )}
                                             </div>
                                         </AccordionTrigger>
-                                        <AccordionContent value={lesson.id!}>
+                                        <AccordionContent value={lesson.id!} className="w-full">
                                             <hr className="border-divider my-4" />
                                             <div className="flex flex-col gap-4 pb-6">
                                                 {lesson.materials?.map(
