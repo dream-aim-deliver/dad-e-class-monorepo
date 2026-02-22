@@ -16,8 +16,8 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.1
-        version: 3.3.1(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)
+        specifier: 3.3.2
+        version: 3.3.2(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)
       '@mux/mux-player-react':
         specifier: 3.3.0
         version: 3.3.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -383,8 +383,8 @@ importers:
   packages/auth:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.1
-        version: 3.3.1(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)
+        specifier: 3.3.2
+        version: 3.3.2(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -407,8 +407,8 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.1
-        version: 3.3.1(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)
+        specifier: 3.3.2
+        version: 3.3.2(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)
       zod:
         specifier: ^3.24.1
         version: 3.24.1
@@ -422,8 +422,8 @@ importers:
   packages/ui-kit:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.1
-        version: 3.3.1(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)
+        specifier: 3.3.2
+        version: 3.3.2(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -1328,8 +1328,8 @@ packages:
   '@dream-aim-deliver/dad-data-platform-sdk-ts@1.1.2':
     resolution: {integrity: sha512-31dXN/U2oLZRQ4W+a5OWPSGB/R6M6UEYnAOSMT/Ujcnp/OcE+6Yn5okO0EHP/IySeVITnRMfS3FaNbYu3FTPFA==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/1.1.2/dac50d97a3770b589281c7032c72b135ab6a2b63}
 
-  '@dream-aim-deliver/e-class-cms-rest@3.3.1':
-    resolution: {integrity: sha512-HLIFIcza2qt4nDBFkULataSd8DjRYZtlQH7O0XiaRq3TILoHLWL+hC/8TnOZedairlioJbdhAGR7gQfgSdu49A==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.3.1/a12b1efbe45cee4e91ba45765958f52cabc1e1f1}
+  '@dream-aim-deliver/e-class-cms-rest@3.3.2':
+    resolution: {integrity: sha512-UlgbeCeDKyaJ63Vz/9A4LVlMFoLYnwcaxY0xJj1cwvmxYx8o18tY4iFbRDLwRR2YzG5p+jSdOEyK0Q0UFHcxLA==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.3.2/175e78ddbcf251a45c04bf84fc495a7bcbeedaf2}
 
   '@emnapi/core@1.3.1':
     resolution: {integrity: sha512-pVGjBIt1Y6gg3EJN8jTcfpP/+uuRksIo055oE/OBkDNcjZqVbfkWCksG1Jp4yZnj3iKWyWX8fdG/j6UDYPbFog==}
@@ -12865,12 +12865,12 @@ snapshots:
     dependencies:
       '@dream-aim-deliver/dad-cats': 0.13.0(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
       '@mux/mux-node': 12.6.1(encoding@0.1.13)
-      axios: 1.7.9
+      axios: 1.13.5
       dotenv: 17.2.1
       jsonwebtoken: 9.0.2
       pino: 9.7.0
       vitest: 3.0.9(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
-      zod: 3.24.1
+      zod: 3.25.76
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@types/debug'
@@ -12895,12 +12895,12 @@ snapshots:
     dependencies:
       '@dream-aim-deliver/dad-cats': 0.13.0(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
       '@mux/mux-node': 12.6.1(encoding@0.1.13)
-      axios: 1.7.9
+      axios: 1.13.5
       dotenv: 17.2.1
       jsonwebtoken: 9.0.2
       pino: 9.7.0
       vitest: 3.0.9(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
-      zod: 3.24.1
+      zod: 3.25.76
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@types/debug'
@@ -12921,7 +12921,7 @@ snapshots:
       - supports-color
       - terser
 
-  '@dream-aim-deliver/e-class-cms-rest@3.3.1(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)':
+  '@dream-aim-deliver/e-class-cms-rest@3.3.2(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)':
     dependencies:
       '@dream-aim-deliver/dad-cats': 0.13.0(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
       '@dream-aim-deliver/dad-data-platform-sdk-ts': 1.1.2(@types/debug@4.1.12)(@types/node@18.16.9)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
@@ -12951,7 +12951,7 @@ snapshots:
       reflect-metadata: 0.2.2
       superjson: 2.2.2
       uuid: 11.1.0
-      zod: 3.24.1
+      zod: 3.25.76
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@types/debug'
@@ -12973,7 +12973,7 @@ snapshots:
       - terser
       - typescript
 
-  '@dream-aim-deliver/e-class-cms-rest@3.3.1(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)':
+  '@dream-aim-deliver/e-class-cms-rest@3.3.2(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)(typescript@5.9.3)':
     dependencies:
       '@dream-aim-deliver/dad-cats': 0.13.0(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
       '@dream-aim-deliver/dad-data-platform-sdk-ts': 1.1.2(@types/debug@4.1.12)(@types/node@22.17.0)(@vitest/ui@3.2.4)(encoding@0.1.13)(jsdom@26.1.0)(less@4.1.3)(lightningcss@1.28.2)(sass-embedded@1.97.3)(sass@1.97.3)(stylus@0.64.0)(terser@5.37.0)
@@ -13003,7 +13003,7 @@ snapshots:
       reflect-metadata: 0.2.2
       superjson: 2.2.2
       uuid: 11.1.0
-      zod: 3.24.1
+      zod: 3.25.76
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@types/debug'
@@ -13291,7 +13291,7 @@ snapshots:
       '@opentelemetry/core': 2.2.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.207.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.38.0
-      minimatch: 10.1.1
+      minimatch: 10.2.2
     transitivePeerDependencies:
       - supports-color
 
@@ -16756,7 +16756,7 @@ snapshots:
   '@types/node-fetch@2.6.13':
     dependencies:
       '@types/node': 18.16.9
-      form-data: 4.0.4
+      form-data: 4.0.5
 
   '@types/node@18.16.9': {}
 
@@ -17435,6 +17435,10 @@ snapshots:
   acorn-import-attributes@1.9.5(acorn@8.14.0):
     dependencies:
       acorn: 8.14.0
+
+  acorn-import-attributes@1.9.5(acorn@8.16.0):
+    dependencies:
+      acorn: 8.16.0
 
   acorn-import-phases@1.0.4(acorn@8.16.0):
     dependencies:
@@ -19681,7 +19685,7 @@ snapshots:
       process-warning: 4.0.1
       rfdc: 1.4.1
       secure-json-parse: 3.0.2
-      semver: 7.6.3
+      semver: 7.7.4
       toad-cache: 3.7.0
 
   fastq@1.17.1:
@@ -20463,8 +20467,8 @@ snapshots:
 
   import-in-the-middle@2.0.0:
     dependencies:
-      acorn: 8.14.0
-      acorn-import-attributes: 1.9.5(acorn@8.14.0)
+      acorn: 8.16.0
+      acorn-import-attributes: 1.9.5(acorn@8.16.0)
       cjs-module-lexer: 1.4.1
       module-details-from-path: 1.0.4
 
@@ -21656,7 +21660,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.6.3
+      semver: 7.7.4
 
   jspdf@3.0.3:
     dependencies:
@@ -23502,7 +23506,7 @@ snapshots:
 
   require-in-the-middle@8.0.1:
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.3
       module-details-from-path: 1.0.4
     transitivePeerDependencies:
       - supports-color
