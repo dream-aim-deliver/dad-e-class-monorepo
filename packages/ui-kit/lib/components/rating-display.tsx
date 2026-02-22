@@ -15,8 +15,11 @@ export const RatingDisplay = ({
 }: RatingDisplayProps) => (
   <div className="flex items-center gap-1">
     <StarRating totalStars={totalStars} size={starSize} rating={rating} />
-    <span className="text-text-primary text-sm leading-4">
-      {rating} <span className="text-text-secondary text-xs align-middle">({totalRatings})</span>
+    <span className="text-xs text-text-primary leading-none">
+      {rating}
+    </span>
+    <span className="text-xs text-text-secondary leading-none">
+      ({totalRatings})
     </span>
   </div>
 );
