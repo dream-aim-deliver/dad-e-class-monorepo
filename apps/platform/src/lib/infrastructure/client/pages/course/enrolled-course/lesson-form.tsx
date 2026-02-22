@@ -242,7 +242,7 @@ export default function LessonForm({
             return (
                 <div
                     key={`interactive-wrapper-${component.id}`}
-                    className="flex flex-col gap-2 p-4 border border-divider rounded-md"
+                    className={`flex flex-col gap-2 p-4 border border-divider rounded-md${isArchived ? ' pointer-events-none opacity-60' : ''}`}
                 >
                     {rendered}
                     {enableSubmit && (
