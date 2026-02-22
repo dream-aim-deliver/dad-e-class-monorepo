@@ -100,8 +100,12 @@ describe('PackageCard', () => {
     it('displays price and saved price correctly', () => {
         render(<PackageCard {...defaultProps} />);
 
-        expect(screen.getByText('CHF 100')).toBeInTheDocument();
-        expect(screen.getByText('Save CHF 50')).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'SPAN' && element?.textContent?.trim() === 'CHF 100.00';
+        })).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'P' && element?.textContent?.trim() === 'Save CHF 50.00';
+        })).toBeInTheDocument();
     });
 
     it('shows tooltip container when title is truncated', async () => {

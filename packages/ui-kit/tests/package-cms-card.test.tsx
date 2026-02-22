@@ -54,8 +54,12 @@ describe('PackageCmsCard', () => {
         expect(screen.getByText(baseProps.description)).toBeInTheDocument();
         expect(screen.getByText('1h 30m')).toBeInTheDocument();
         expect(screen.getByText('3 courses')).toBeInTheDocument();
-        expect(screen.getByText('$ 200')).toBeInTheDocument();
-        expect(screen.getByText(/Save \$ 50/)).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'SPAN' && element?.textContent?.trim() === '$ 200.00';
+        })).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'P' && !!element?.textContent?.match(/Save\s+\$\s+50\.00/);
+        })).toBeInTheDocument();
 
         const archiveButton = screen.getByRole('button', { name: /archive/i });
         expect(archiveButton).toBeInTheDocument();
@@ -83,8 +87,12 @@ describe('PackageCmsCard', () => {
         expect(screen.getByText(baseProps.description)).toBeInTheDocument();
         expect(screen.getByText('1h 30m')).toBeInTheDocument();
         expect(screen.getByText('3 courses')).toBeInTheDocument();
-        expect(screen.getByText('$ 200')).toBeInTheDocument();
-        expect(screen.getByText(/Save \$ 50/)).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'SPAN' && element?.textContent?.trim() === '$ 200.00';
+        })).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'P' && !!element?.textContent?.match(/Save\s+\$\s+50\.00/);
+        })).toBeInTheDocument();
 
         expect(screen.getByText(/Archived/)).toBeInTheDocument();
 

@@ -93,12 +93,12 @@ describe('PackageGeneralInformation', () => {
 
         // Button and prices
         expect(screen.getByText('Buy Now')).toBeInTheDocument();
-        expect(
-            screen.getByText(`From CHF ${mockProps.pricing.partialPrice}`),
-        ).toBeInTheDocument();
-        expect(
-            screen.getByText(`save CHF ${mockProps.pricing.fullPrice - mockProps.pricing.partialPrice}`),
-        ).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'H6' && element?.textContent?.trim() === `From CHF ${mockProps.pricing.partialPrice.toFixed(2)}`;
+        })).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'P' && element?.textContent?.trim() === `save CHF ${(mockProps.pricing.fullPrice - mockProps.pricing.partialPrice).toFixed(2)}`;
+        })).toBeInTheDocument();
     });
 
     it('calls onClickPurchase when purchase button is clicked', () => {
