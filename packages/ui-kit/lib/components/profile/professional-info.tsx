@@ -264,6 +264,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               value={(locale === 'de' ? (initialData.bioDe as string) : (initialData.bioEn as string)) || ''}
               setValue={(value: string) => handleChange(locale === 'de' ? 'bioDe' : 'bioEn', value)}
               placeholder={dictionary.components.professionalInfo.bioPlaceholder}
+              required={applicationMode}
             />
           </div>
         )}
@@ -632,21 +633,23 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           </>
         )}
 
-        <div className="flex items-start  w-full">
-          <CheckBox
-            label={dictionary.components.professionalInfo.privateProfile}
-            labelClass="text-text-primary text-sm flex items-start  leading-[100%]"
-            name="profile-visibility"
-            value="private-profile"
-            withText={true}
-            checked={initialData.private}
-            onChange={() =>
-              handleChange('private', !initialData.private)
-            }
-          />
-        </div>
+        {!applicationMode && (
+          <div className="flex items-start  w-full">
+            <CheckBox
+              label={dictionary.components.professionalInfo.privateProfile}
+              labelClass="text-text-primary text-sm flex items-start  leading-[100%]"
+              name="profile-visibility"
+              value="private-profile"
+              withText={true}
+              checked={initialData.private}
+              onChange={() =>
+                handleChange('private', !initialData.private)
+              }
+            />
+          </div>
+        )}
 
-        {variant === 'becomeACoach' ? (
+        {applicationMode ? (
           <Button
             variant="primary"
             size="medium"

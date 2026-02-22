@@ -6,6 +6,7 @@ export interface TextAreaInputProps {
   setValue: (value: string) => void;
   placeholder?: string;
   className?: string;
+  required?: boolean;
 }
 
 /**
@@ -32,10 +33,11 @@ export const TextAreaInput: FC<TextAreaInputProps> = ({
   setValue,
   placeholder = '',
   className = '',
+  required = false,
 }) => {
   return (
     <div className="flex flex-col gap-2 items-start w-full">
-      {label && <label className="text-sm text-text-secondary">{label}</label>}
+      {label && <label className="text-sm text-text-secondary">{label}{required && <span className="text-error ml-1">*</span>}</label>}
       <textarea
         className={`w-full px-3 py-[10px] bg-input-fill text-text-primary border border-input-stroke rounded-medium focus:outline-none placeholder:text-text-secondary ${className}`}
         placeholder={placeholder}
