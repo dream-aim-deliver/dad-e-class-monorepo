@@ -38,10 +38,6 @@ export const GetPublicCourseDetailsSuccessResponseSchema = BaseSuccessSchemaFact
         name: z.string(),
         avatarUrl: z.string().nullable()
     })),
-    students: z.array(z.object({
-        name: z.string(),
-        avatarUrl: z.string().nullable()
-    })),
     requirements: z.array(z.object({
         courseName: z.string(),
         courseSlug: z.string()
