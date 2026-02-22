@@ -82,9 +82,11 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
             />
             <div className="flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-5">
                 <CoachingOfferingsPanel />
-                <Suspense fallback={<CoachCardListSkeleton />}>
-                    <CoachingCoachList selectedTopics={selectedTopics} />
-                </Suspense>
+                <div className="flex-1 min-w-0">
+                    <Suspense fallback={<CoachCardListSkeleton />}>
+                        <CoachingCoachList selectedTopics={selectedTopics} />
+                    </Suspense>
+                </div>
             </div>
             {!isLoggedIn && (
                 <div className="flex justify-center w-full">
