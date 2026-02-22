@@ -103,8 +103,8 @@ describe('BuyCourseCoachingSessions Component', () => {
     // Multiple sessions can have the same offering title, so use getAllByText
     expect(screen.getAllByText('Web Development Fundamentals').length).toBeGreaterThan(0);
     expect(screen.getByText('Advanced React Techniques')).toBeInTheDocument();
-    expect(screen.getAllByText('50 CHF').length).toBeGreaterThan(0);
-    expect(screen.getByText('75 CHF')).toBeInTheDocument();
+    expect(screen.getAllByText('50.00 CHF').length).toBeGreaterThan(0);
+    expect(screen.getByText('75.00 CHF')).toBeInTheDocument();
   });
 
   test('filters out purchased sessions', () => {
@@ -175,11 +175,15 @@ describe('BuyCourseCoachingSessions Component', () => {
     
     // Select first session (50 CHF)
     fireEvent.click(checkboxes[0]);
-    expect(screen.getByText(/Total: 50 CHF/)).toBeInTheDocument();
+    expect(screen.getByText((_content, element) => {
+      return element?.tagName === 'H6' && !!element?.textContent?.match(/Total.*50\.00.*CHF/);
+    })).toBeInTheDocument();
 
     // Select second session (50 CHF)
     fireEvent.click(checkboxes[1]);
-    expect(screen.getByText(/Total: 100 CHF/)).toBeInTheDocument();
+    expect(screen.getByText((_content, element) => {
+      return element?.tagName === 'H6' && !!element?.textContent?.match(/Total.*100\.00.*CHF/);
+    })).toBeInTheDocument();
   });
 
   test('disables buy button when no sessions selected', () => {

@@ -30,9 +30,11 @@ describe('BuyCoachingSession Component', () => {
     expect(screen.getByText('Choose your coaching sessions.')).toBeInTheDocument();
     expect(screen.getByText('React Basics')).toBeInTheDocument();
     expect(screen.getByText('Advanced Next.js')).toBeInTheDocument();
-    expect(screen.getByText('50 CHF')).toBeInTheDocument();
-    expect(screen.getByText('100 CHF')).toBeInTheDocument();
-    expect(screen.getByText('Total: 0 CHF')).toBeInTheDocument();
+    expect(screen.getByText('50.00 CHF')).toBeInTheDocument();
+    expect(screen.getByText('100.00 CHF')).toBeInTheDocument();
+    expect(screen.getByText((_content, element) => {
+      return element?.tagName === 'H6' && element?.textContent === 'Total: 0.00 CHF';
+    })).toBeInTheDocument();
   });
 
   test('increments and decrements session count', () => {
@@ -74,6 +76,8 @@ describe('BuyCoachingSession Component', () => {
     fireEvent.click(increaseButton);
     fireEvent.click(increaseButton);
     
-    expect(screen.getByText('Total: 100 CHF')).toBeInTheDocument();
+    expect(screen.getByText((_content, element) => {
+      return element?.tagName === 'H6' && element?.textContent === 'Total: 100.00 CHF';
+    })).toBeInTheDocument();
   });
 });

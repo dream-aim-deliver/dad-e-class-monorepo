@@ -79,8 +79,12 @@ describe('BuyCompletePackageBanner', () => {
         expect(screen.getByText('2h 0m')).toBeInTheDocument(); // Duration badge
         expect(screen.getByText('Coaching included')).toBeInTheDocument();
         expect(screen.getByText('Buy Now')).toBeInTheDocument();
-        expect(screen.getByText('From CHF 200')).toBeInTheDocument();
-        expect(screen.getByText('save CHF 800')).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'H6' && element?.textContent?.trim() === 'From CHF 200.00';
+        })).toBeInTheDocument();
+        expect(screen.getByText((_content, element) => {
+            return element?.tagName === 'P' && element?.textContent?.trim() === 'save CHF 800.00';
+        })).toBeInTheDocument();
     });
 
     it('calls onClickPurchase when button is clicked', () => {
