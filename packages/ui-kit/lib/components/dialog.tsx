@@ -164,28 +164,16 @@ export const DialogContent: React.FC<DialogContentProps> = ({
             }
         };
 
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                closeOnOverlayClick &&
-                contentRef.current &&
-                !contentRef.current.contains(event.target as Node)
-            ) {
-                setIsOpen(false);
-            }
-        };
-
         if (isOpen) {
             document.addEventListener('keydown', handleEscape);
-            document.addEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = 'hidden';
         }
 
         return () => {
             document.removeEventListener('keydown', handleEscape);
-            document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen, closeOnEscape, closeOnOverlayClick, setIsOpen]);
+    }, [isOpen, closeOnEscape, setIsOpen]);
 
     // Show dialog during opening, open state, and closing animation
     if (!isOpen && !isClosing) return null;
@@ -194,6 +182,11 @@ export const DialogContent: React.FC<DialogContentProps> = ({
         <>
             {/* Overlay with fade-in/out */}
             <div
+                onMouseDown={() => {
+                    if (closeOnOverlayClick) {
+                        setIsOpen(false);
+                    }
+                }}
                 className={`fixed inset-0 z-100 bg-neutral-900/60 backdrop-blur-sm transition-all duration-300 ease-out ${isAnimating || isClosing ? 'opacity-0' : 'opacity-100'
                     }`}
             />
