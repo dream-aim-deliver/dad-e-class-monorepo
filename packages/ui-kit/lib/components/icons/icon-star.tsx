@@ -9,7 +9,7 @@ export const IconStar = (props: IconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      viewBox="0 0.75 24 24"
       className={generateClassesForIcon(props)}
       role="img"
       aria-label="star"

@@ -195,7 +195,7 @@ export const CourseGeneralInformationView: FC<
                             iconLeft={<IconClock size="4" />}
                             key={formattedTotalDuration}
                             text={formattedTotalDuration}
-                            className="h-5 text-sm max-w-full leading-none"
+                            className="h-5 text-sm max-w-full"
                         />
                     </div>
 
@@ -261,7 +261,7 @@ export const CourseGeneralInformationView: FC<
                                 <div className="flex gap-2 items-center">
                                     <Badge
                                         hasIconLeft
-                                        iconLeft={<IconStar size="4" classNames="-translate-y-px" />}
+                                        iconLeft={<IconStar size="4" />}
                                         text={`${rating}`}
                                         className="h-5 text-sm max-w-full"
                                     />
