@@ -82,7 +82,7 @@ describe('CoachingSessionCard', () => {
 
     render(<CoachingSessionCard {...props} />);
     expect(
-      screen.getByText(/24 .*hours.*left.*edit/i),
+      screen.getByText(/24 .*hour.*left.*edit/i),
     ).toBeInTheDocument();
   });
 
