@@ -113,9 +113,7 @@ const GroupOverviewCard: FC<GroupOverviewCardProps> = ({
                     <div className="flex items-center gap-2">
                         <IconAccountInformation size="4" className="flex-shrink-0" />
                         <span className="text-text-secondary text-sm">
-                            {cardDetails.coaches.length === 1
-                                ? dictionary.components.groupCard.coach
-                                : dictionary.components.groupCard.coaches}
+                            {dictionary.components.groupCard.coaches}
                         </span>
                     </div>
                     <div className="flex flex-wrap gap-2 ml-6">
