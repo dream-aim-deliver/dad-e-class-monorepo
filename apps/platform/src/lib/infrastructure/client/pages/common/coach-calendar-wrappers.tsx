@@ -253,7 +253,7 @@ export function MonthlyCoachCalendarWrapper({
                     const sessionProps = sessions.map((session) => ({
                         startTime: new Date(session.startTime),
                         endTime: new Date(session.endTime),
-                        title: session.coachingOfferingName,
+                        title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingName}`,
                         onClick: onSessionClick
                             ? () => onSessionClick(session.id)
                             : undefined,

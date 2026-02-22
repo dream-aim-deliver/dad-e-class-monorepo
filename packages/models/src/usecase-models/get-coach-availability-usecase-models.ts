@@ -27,6 +27,12 @@ export type TAvailability = z.infer<typeof AvailabilitySchema>;
 const CoachCoachingSessionSchema = z.object({
   id: z.number(),
   status: CoachingStatusSchema,
+  sessionType: z.enum([
+    'individual-unscheduled', 'individual-requested', 'individual-scheduled',
+    'individual-canceled', 'individual-completed',
+    'group-unscheduled', 'group-requested', 'group-scheduled',
+    'group-canceled', 'group-completed',
+  ]),
   coachingOfferingName: z.string(),
   startTime: z.string().datetime(),
   endTime: z.string().datetime(),

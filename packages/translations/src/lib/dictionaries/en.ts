@@ -3524,6 +3524,7 @@ export const EN: TDictionary = {
         description: 'The session was created, but these students have overlapping sessions:',
         acknowledge: 'OK, Got It',
       },
+      groupSessionCreatedSuccess: 'Group coaching session created successfully!',
     },
     manageLegalTexts: {
       title: 'Manage Legal Texts',

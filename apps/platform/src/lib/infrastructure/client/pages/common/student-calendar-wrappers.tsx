@@ -58,7 +58,7 @@ export function WeeklyStudentCalendarWrapper({
                             locale={locale}
                             start={new Date(segment.startTime)}
                             end={new Date(segment.endTime)}
-                            title={segment.original.coachingOfferingTitle}
+                            title={`${segment.original.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${segment.original.coachingOfferingTitle}`}
                             onClick={() =>
                                 onSessionClick?.(segment.original.id)
                             }
@@ -209,7 +209,7 @@ export function MonthlyStudentCalendarWrapper({
                     coachingSessions={sessionsOnDate.map((session) => ({
                         startTime: new Date(session.startTime),
                         endTime: new Date(session.endTime),
-                        title: session.coachingOfferingTitle,
+                        title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`,
                         onClick:
                             onSessionClick &&
                             (() => onSessionClick?.(session.id)),

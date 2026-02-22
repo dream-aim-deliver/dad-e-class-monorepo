@@ -3526,6 +3526,7 @@ export const DE: TDictionary = {
         description: 'Die Sitzung wurde erstellt, aber folgende Studierende haben überschneidende Sitzungen:',
         acknowledge: 'OK, verstanden',
       },
+      groupSessionCreatedSuccess: 'Gruppen-Coaching-Sitzung erfolgreich erstellt!',
     },
     manageLegalTexts: {
       title: 'Rechtliche Texte verwalten',

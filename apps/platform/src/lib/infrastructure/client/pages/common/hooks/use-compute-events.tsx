@@ -75,7 +75,7 @@ export function useComputeWeeklyEvents({
                             locale={locale}
                             start={new Date(segment.startTime)}
                             end={new Date(segment.endTime)}
-                            title={segment.original.coachingOfferingName}
+                            title={`${segment.original.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${segment.original.coachingOfferingName}`}
                             onClick={() =>
                                 onSessionClick?.(segment.original.id)
                             }
