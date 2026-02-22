@@ -216,6 +216,7 @@ type CoachOngoingCard = BaseCardSharedProps & CoachSessionTypeProps & {
     status: 'ongoing';
     meetingLink?: string;
     onClickJoinMeeting: () => void;
+    onClickCancel?: () => void;
 };
 
 /**
