@@ -1,5 +1,6 @@
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { TListStudentInteractionsSuccess } from 'packages/models/src/view-models';
+import { fileMetadata } from '@maany_shr/e-class-models';
 import {
   Accordion,
   AccordionItem,
@@ -7,9 +8,13 @@ import {
   AccordionContent,
 } from './accordion';
 import { cn } from '../utils/style-utils';
-import { IconChevronDown, IconChevronUp, IconTextInput, IconSingleChoice, IconMultiChoice, IconOneOutOfThree, IconCloudUpload } from './icons';
+import { IconChevronDown, IconChevronUp, IconCloudUpload } from './icons';
 import { Button } from './button';
 import RichTextRenderer from './rich-text-element/renderer';
+import SingleChoicePreview from './single-choice';
+import MultipleChoicePreview from './multiple-check';
+import { OneOutOfThreePreview, type OneOutOfThreeData } from './out-of-three/one-out-of-three';
+import { FilePreview } from './drag-and-drop-uploader/file-preview';
 
 interface CoachStudentInteractionCardProps extends isLocalAware {
   onViewLessonsClick: (moduleId: string, lessonId: string) => void;
@@ -32,278 +37,173 @@ export const  CoachStudentInteractionCard = ({
   const renderTextInput = (interaction: Extract<TInteraction, { type: 'textInput' }>, index: number) => (
     <div
       key={`text-input-${interaction.id}-${index}`}
-      className="w-full p-4 bg-base-neutral-800 rounded-medium border border-base-neutral-700"
+      className="text-text-primary flex flex-col gap-4"
     >
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          hasIconLeft
-          iconLeft={<IconTextInput />}
-          text={dict.textInput}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
-        />
+      <section className="text-sm leading-[21px] text-text-secondary">
         <RichTextRenderer
           content={interaction.helperText ?? ''}
-          className="text-text-secondary"
           onDeserializationError={onDeserializationError}
         />
-      </div>
-      <hr className="my-4 border-t border-divider" />
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          text={dict.studentReply}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
+      </section>
+      {interaction.progress ? (
+        <RichTextRenderer
+          className="p-2 bg-base-neutral-800 rounded-md"
+          content={interaction.progress.answer}
+          onDeserializationError={onDeserializationError}
         />
-        {interaction.progress ? (
-          <RichTextRenderer
-            content={interaction.progress.answer}
-            className="text-text-secondary"
-            onDeserializationError={onDeserializationError}
-          />
-        ) : (
-          <p className="text-text-secondary text-sm">{dict.noAnswer}</p>
-        )}
-      </div>
+      ) : (
+        <p className="text-text-secondary text-sm italic">{dict.noAnswer}</p>
+      )}
     </div>
   );
 
-  const renderSingleChoice = (interaction: Extract<TInteraction, { type: 'singleChoice' }>, index: number) => (
-    <div
-      key={`single-choice-${interaction.id}-${index}`}
-      className="w-full p-4 bg-base-neutral-800 rounded-medium border border-base-neutral-700"
-    >
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          hasIconLeft
-          iconLeft={<IconSingleChoice />}
-          text={dict.singleChoice}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
-        />
-        <p className="text-text-secondary">{interaction.title}</p>
-      </div>
-      <hr className="my-4 border-t border-divider" />
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          text={dict.studentAnswer}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
-        />
-        {interaction.progress ? (
-          <ul className="flex flex-col gap-1 w-full">
-            {interaction.options.map((option) => (
-              <li
-                key={option.id}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-medium text-sm",
-                  interaction.progress?.answerId === option.id
-                    ? "bg-base-neutral-700 text-text-primary font-bold"
-                    : "text-text-secondary"
-                )}
-              >
-                <span
-                  className={cn(
-                    "w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0",
-                    interaction.progress?.answerId === option.id
-                      ? "border-action-primary-default"
-                      : "border-base-neutral-600"
-                  )}
-                >
-                  {interaction.progress?.answerId === option.id && (
-                    <span className="w-2 h-2 rounded-full bg-action-primary-default" />
-                  )}
-                </span>
-                {option.name}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-text-secondary text-sm">{dict.noAnswer}</p>
-        )}
-      </div>
-    </div>
-  );
+  const renderSingleChoice = (interaction: Extract<TInteraction, { type: 'singleChoice' }>, index: number) => {
+    const options = interaction.options.map(opt => ({
+      id: opt.id,
+      name: opt.name,
+      isSelected: interaction.progress?.answerId === opt.id,
+    }));
 
-  const renderMultipleChoice = (interaction: Extract<TInteraction, { type: 'multipleChoice' }>, index: number) => (
-    <div
-      key={`multiple-choice-${interaction.id}-${index}`}
-      className="w-full p-4 bg-base-neutral-800 rounded-medium border border-base-neutral-700"
-    >
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          hasIconLeft
-          iconLeft={<IconMultiChoice />}
-          text={dict.multipleChoice}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
+    return (
+      <div
+        key={`single-choice-${interaction.id}-${index}`}
+        className="text-text-primary flex flex-col gap-2"
+      >
+        <SingleChoicePreview
+          title={interaction.title}
+          options={options}
+          filled={true}
+          required={interaction.required}
         />
-        <p className="text-text-secondary">{interaction.title}</p>
-      </div>
-      <hr className="my-4 border-t border-divider" />
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          text={dict.studentAnswer}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
-        />
-        {interaction.progress ? (
-          <ul className="flex flex-col gap-1 w-full">
-            {interaction.options.map((option) => {
-              const isSelected = interaction.progress?.answerIds?.includes(option.id) ?? false;
-              return (
-                <li
-                  key={option.id}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-medium text-sm",
-                    isSelected
-                      ? "bg-base-neutral-700 text-text-primary font-bold"
-                      : "text-text-secondary"
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "w-4 h-4 rounded-small border-2 flex items-center justify-center flex-shrink-0",
-                      isSelected
-                        ? "border-action-primary-default bg-action-primary-default"
-                        : "border-base-neutral-600"
-                    )}
-                  >
-                    {isSelected && (
-                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    )}
-                  </span>
-                  {option.name}
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p className="text-text-secondary text-sm">{dict.noAnswer}</p>
+        {!interaction.progress && (
+          <p className="text-text-secondary text-sm italic">{dict.noAnswer}</p>
         )}
       </div>
-    </div>
-  );
+    );
+  };
 
-  const renderOneOutOfThree = (interaction: Extract<TInteraction, { type: 'oneOutOfThree' }>, index: number) => (
-    <div
-      key={`one-out-of-three-${interaction.id}-${index}`}
-      className="w-full p-4 bg-base-neutral-800 rounded-medium border border-base-neutral-700"
-    >
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          hasIconLeft
-          iconLeft={<IconOneOutOfThree />}
-          text={dict.oneOutOfThree}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
+  const renderMultipleChoice = (interaction: Extract<TInteraction, { type: 'multipleChoice' }>, index: number) => {
+    const options = interaction.options.map(opt => ({
+      id: opt.id,
+      name: opt.name,
+      isSelected: interaction.progress?.answerIds?.includes(opt.id) ?? false,
+    }));
+
+    return (
+      <div
+        key={`multiple-choice-${interaction.id}-${index}`}
+        className="text-text-primary flex flex-col gap-2"
+      >
+        <MultipleChoicePreview
+          title={interaction.title}
+          options={options}
+          filled={true}
+          required={interaction.required}
         />
-        <p className="text-text-secondary">{interaction.title}</p>
-      </div>
-      <hr className="my-4 border-t border-divider" />
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          text={dict.studentAnswer}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
-        />
-        {interaction.progress ? (
-          <div className="w-full overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr>
-                  <th className="text-left text-text-secondary p-2" />
-                  {interaction.columns.map((col) => (
-                    <th key={col.id} className="text-center text-text-secondary p-2 font-medium">
-                      {col.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {interaction.rows.map((row) => (
-                  <tr key={row.id} className="border-t border-base-neutral-700">
-                    <td className="text-text-secondary p-2">{row.name}</td>
-                    {interaction.columns.map((col) => {
-                      const isSelected = interaction.progress?.answers?.some(
-                        (a) => a.rowId === row.id && a.columnId === col.id
-                      ) ?? false;
-                      return (
-                        <td key={col.id} className="text-center p-2">
-                          <span
-                            className={cn(
-                              "inline-block w-4 h-4 rounded-full border-2",
-                              isSelected
-                                ? "border-action-primary-default bg-action-primary-default"
-                                : "border-base-neutral-600"
-                            )}
-                          />
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-text-secondary text-sm">{dict.noAnswer}</p>
+        {!interaction.progress && (
+          <p className="text-text-secondary text-sm italic">{dict.noAnswer}</p>
         )}
       </div>
-    </div>
-  );
+    );
+  };
+
+  const renderOneOutOfThree = (interaction: Extract<TInteraction, { type: 'oneOutOfThree' }>, index: number) => {
+    const oneOutOfThreeData: OneOutOfThreeData = {
+      tableTitle: interaction.title,
+      columns: interaction.columns.map(col => ({
+        id: col.id,
+        columnTitle: col.name,
+        selected: false,
+      })),
+      rows: interaction.rows.map(row => ({
+        id: row.id,
+        rowTitle: row.name,
+        columns: interaction.columns.map(col => ({
+          id: col.id,
+          columnTitle: col.name,
+          selected: interaction.progress?.answers?.some(
+            a => a.rowId === row.id && a.columnId === col.id
+          ) ?? false,
+        })),
+      })),
+    };
+
+    return (
+      <div
+        key={`one-out-of-three-${interaction.id}-${index}`}
+        className="flex flex-col gap-2"
+      >
+        <OneOutOfThreePreview
+          data={oneOutOfThreeData}
+          displayOnly={true}
+          required={interaction.required}
+        />
+        {!interaction.progress && (
+          <p className="text-text-secondary text-sm italic">{dict.noAnswer}</p>
+        )}
+      </div>
+    );
+  };
 
   const renderUploadFiles = (interaction: Extract<TInteraction, { type: 'uploadFiles' }>, index: number) => (
     <div
       key={`upload-files-${interaction.id}-${index}`}
-      className="w-full p-4 bg-base-neutral-800 rounded-medium border border-base-neutral-700"
+      className="p-4 pt-2 w-full border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700"
     >
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          hasIconLeft
-          iconLeft={<IconCloudUpload />}
-          text={dict.uploadFiles}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
-        />
-        <p className="text-text-secondary">{interaction.description}</p>
+      <div className="flex items-center gap-2 flex-1 text-text-primary py-4 border-b border-divider">
+        <span className="min-w-0 flex-shrink-0">
+          <IconCloudUpload />
+        </span>
+        <p className="text-md font-important leading-[24px]">
+          {dictionary.components.courseBuilder.uploadFilesText}
+        </p>
       </div>
-      <hr className="my-4 border-t border-divider" />
-      <div className="flex flex-col gap-2 items-start">
-        <Button
-          text={dict.filesUploaded}
-          variant="text"
-          className="p-0 text-base-white hover:text-base-white"
-        />
-        {interaction.progress ? (
-          <div className="flex flex-col gap-2 w-full">
-            <ul className="flex flex-col gap-1">
-              {interaction.progress.files.map((file) => (
-                <li key={file.id} className="flex items-center gap-2 text-sm">
-                  <a
-                    href={file.downloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-action-primary-default hover:underline"
-                  >
-                    {file.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            {interaction.progress.comment && (
-              <div className="flex flex-col gap-1 mt-2">
-                <span className="text-text-secondary text-sm font-medium">{dict.comment}:</span>
-                <p className="text-text-secondary text-sm">{interaction.progress.comment}</p>
-              </div>
-            )}
-          </div>
-        ) : (
-          <p className="text-text-secondary text-sm">{dict.noAnswer}</p>
-        )}
-      </div>
+
+      <p className="font-important text-text-primary leading-[150%] text-sm md:text-md">
+        {interaction.description}
+      </p>
+
+      {interaction.progress ? (
+        <>
+          {interaction.progress.files.length > 0 && (
+            <div className="flex flex-col gap-2 w-full">
+              {interaction.progress.files.map((file, fileIndex) => {
+                const fileMeta: fileMetadata.TFileMetadata = {
+                  id: String(file.id),
+                  name: file.name,
+                  size: file.size,
+                  status: 'available',
+                  category: 'generic',
+                  url: file.downloadUrl,
+                };
+                return (
+                  <FilePreview
+                    key={file.id || `file-${fileIndex}`}
+                    uploadResponse={fileMeta}
+                    locale={locale}
+                    readOnly={true}
+                    deletion={{ isAllowed: false }}
+                    onDownload={() => {
+                      window.open(file.downloadUrl, '_blank');
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
+
+          {interaction.progress.comment && (
+            <div className="w-full flex flex-col gap-2">
+              <p className="text-sm md:text-md text-text-secondary flex gap-1 items-center">
+                {dictionary.components.courseBuilder.additionalCommentsTooltip}
+              </p>
+              <p className="text-sm text-text-primary">{interaction.progress.comment}</p>
+            </div>
+          )}
+        </>
+      ) : (
+        <p className="text-text-secondary text-sm italic">{dict.noAnswer}</p>
+      )}
     </div>
   );
 
@@ -366,7 +266,8 @@ export const  CoachStudentInteractionCard = ({
             <h4 className="text-text-primary md:text-xl text-md font-bold">{dict.module} {module.position}: {module.title}</h4>
           </AccordionTrigger>
 
-          <AccordionContent value={`module-${module.id}`} className="pt-4 pb-6">
+          <AccordionContent value={`module-${module.id}`}>
+            <div className="pt-4 pb-6">
             {/* Nested Lessons Accordion */}
             <div className="pb-2">
               <Accordion
@@ -424,11 +325,13 @@ export const  CoachStudentInteractionCard = ({
                       <div className="flex flex-col gap-4 mt-4">
                         <hr className="flex-grow border-t border-divider" />
                         {lesson.interactions?.length > 0 ? (
-                          lesson.interactions.map((interaction, index) =>
-                            renderInteraction(interaction, index)
-                          )
+                          lesson.interactions.map((interaction, index) => (
+                            <div key={`wrapper-${interaction.id}-${index}`} className="flex flex-col gap-2 p-4 border border-divider rounded-md">
+                              {renderInteraction(interaction, index)}
+                            </div>
+                          ))
                         ) : (
-                          <p className="text-text-secondary text-sm">
+                          <p className="text-text-secondary text-sm italic">
                             {dict.noInteractionsYet}
                           </p>
                         )}
@@ -437,6 +340,7 @@ export const  CoachStudentInteractionCard = ({
                   </AccordionItem>
                 ))}
               </Accordion>
+            </div>
             </div>
           </AccordionContent>
         </AccordionItem>
