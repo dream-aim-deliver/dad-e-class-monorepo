@@ -60,28 +60,24 @@ function ScheduledStudentSessionCard({
         const calculateStatus = () => {
             const now = new Date();
             const msUntilSession = startDateTime.getTime() - now.getTime();
+            const tenMinutesMs = 10 * 60 * 1000;
 
-            // Session has started or is within 10 minutes of starting
-            if (msUntilSession <= 10 * 60 * 1000) {
+            // Within 10 minutes of session start (or past) = ongoing
+            if (msUntilSession <= tenMinutesMs) {
                 setStatus({ cardStatus: 'ongoing', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
-            } else if (msUntilSession <= 24 * 60 * 60 * 1000) {
-                // Between 10 minutes and 24 hours before session
+            } else if (groupName) {
+                // Group sessions: students can't cancel/reschedule, so show as locked
                 setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
             } else {
-                // More than 24 hours before session
-                // Group sessions: students can't cancel/reschedule, so show as locked (no "hours left to edit" badge)
-                if (groupName) {
-                    setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
-                } else {
-                    const msUntilLock = msUntilSession - (24 * 60 * 60 * 1000);
-                    const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
-                    const hoursLeft = Math.floor(totalMinutesLeft / 60);
-                    setStatus({
-                        cardStatus: 'upcoming-editable',
-                        hoursLeftToEdit: hoursLeft,
-                        minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined
-                    });
-                }
+                // More than 10 minutes before session = editable (can cancel)
+                const msUntilLock = msUntilSession - tenMinutesMs;
+                const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+                const hoursLeft = Math.floor(totalMinutesLeft / 60);
+                setStatus({
+                    cardStatus: 'upcoming-editable',
+                    hoursLeftToEdit: hoursLeft,
+                    minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined
+                });
             }
         };
 

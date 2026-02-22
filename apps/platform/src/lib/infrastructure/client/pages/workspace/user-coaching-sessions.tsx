@@ -73,13 +73,14 @@ function ScheduledCoachSessionCard({
         const calculateStatus = () => {
             const now = new Date();
             const msUntilSession = startDateTime.getTime() - now.getTime();
+            const tenMinutesMs = 10 * 60 * 1000;
 
-            if (msUntilSession <= 10 * 60 * 1000) {
+            // Within 10 minutes of session start (or past) = ongoing
+            if (msUntilSession <= tenMinutesMs) {
                 setStatus({ cardStatus: 'ongoing', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
-            } else if (msUntilSession <= 24 * 60 * 60 * 1000) {
-                setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
             } else {
-                const msUntilLock = msUntilSession - (24 * 60 * 60 * 1000);
+                // More than 10 minutes before session = editable (can cancel)
+                const msUntilLock = msUntilSession - tenMinutesMs;
                 const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
                 const hoursLeft = Math.floor(totalMinutesLeft / 60);
                 setStatus({
@@ -130,6 +131,7 @@ function ScheduledCoachSessionCard({
                 status="ongoing"
                 meetingLink={session.meetingUrl || undefined}
                 onClickJoinMeeting={onJoinMeeting}
+                onClickCancel={onCancel}
             />
         );
     }

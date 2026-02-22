@@ -102,7 +102,7 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
   switch (props.status) {
     case 'ongoing':
       return (
-        <div className="flex flex-col gap-1 items-start">
+        <div className="flex flex-col gap-1 items-start w-full">
           <Button
             onClick={props.onClickJoinMeeting}
             variant="primary"
@@ -117,6 +117,17 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
               size="small"
               text={dictionary.components.coachingSessionCard.copyLinkText}
               onClick={() => navigator.clipboard.writeText(props.meetingLink!)}
+            />
+          )}
+          {props.onClickCancel && (
+            <Button
+              onClick={props.onClickCancel}
+              variant="secondary"
+              size="small"
+              className="max-w-full"
+              hasIconLeft
+              iconLeft={<IconTrashAlt size="5" />}
+              text={dictionary.components.coachingSessionCard.cancelText}
             />
           )}
         </div>

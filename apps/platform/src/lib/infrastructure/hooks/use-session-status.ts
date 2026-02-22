@@ -15,40 +15,24 @@ export interface SessionStatusResult {
 function calculateSessionStatus(startDateTime: Date): SessionStatusResult {
   const now = new Date();
   const msUntilSession = startDateTime.getTime() - now.getTime();
+  const tenMinutesMs = 10 * 60 * 1000;
 
-  // Within 10 minutes of session start = ongoing (show meeting link)
-  if (msUntilSession <= 10 * 60 * 1000 && msUntilSession > 0) {
+  // Within 10 minutes of session start (or past) = ongoing (show meeting link)
+  if (msUntilSession <= tenMinutesMs) {
     return {
       status: 'ongoing',
       hoursLeftToEdit: 0,
       minutesLeftToEdit: undefined,
     };
   }
-  // Within 24 hours = locked (can't cancel, but can join when ready)
-  if (msUntilSession <= 24 * 60 * 60 * 1000 && msUntilSession > 0) {
-    return {
-      status: 'upcoming-locked',
-      hoursLeftToEdit: 0,
-      minutesLeftToEdit: undefined,
-    };
-  }
-  // More than 24 hours out = editable
-  if (msUntilSession > 24 * 60 * 60 * 1000) {
-    // Calculate hours/minutes left to edit (time until 24h lock)
-    const msUntilLock = msUntilSession - (24 * 60 * 60 * 1000);
-    const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
-    const hoursLeft = Math.floor(totalMinutesLeft / 60);
-    return {
-      status: 'upcoming-editable',
-      hoursLeftToEdit: hoursLeft,
-      minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined,
-    };
-  }
-  // Session has passed or is happening now
+  // More than 10 minutes out = editable (can cancel/reschedule)
+  const msUntilLock = msUntilSession - tenMinutesMs;
+  const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+  const hoursLeft = Math.floor(totalMinutesLeft / 60);
   return {
-    status: 'upcoming-locked',
-    hoursLeftToEdit: 0,
-    minutesLeftToEdit: undefined,
+    status: 'upcoming-editable',
+    hoursLeftToEdit: hoursLeft,
+    minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined,
   };
 }
 
@@ -58,9 +42,8 @@ function calculateSessionStatus(startDateTime: Date): SessionStatusResult {
  * Updates every minute to keep status current.
  *
  * Status logic:
- * - 'ongoing': Within 10 minutes of session start (show meeting link)
- * - 'upcoming-locked': Within 24 hours of session start (can't cancel)
- * - 'upcoming-editable': More than 24 hours before session (can cancel/reschedule)
+ * - 'ongoing': Within 10 minutes of session start or past (show meeting link)
+ * - 'upcoming-editable': More than 10 minutes before session (can cancel/reschedule)
  *
  * @param startDateTime - The session's start time
  * @returns SessionStatusResult with status and time remaining info, or null during SSR
