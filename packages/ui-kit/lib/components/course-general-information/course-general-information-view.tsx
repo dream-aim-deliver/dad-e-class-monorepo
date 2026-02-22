@@ -183,7 +183,7 @@ export const CourseGeneralInformationView: FC<
 
                 {/* Duration */}
                 <div className="flex gap-2 flex-col">
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 items-center">
                         <h5 className="text-text-primary">
                             {
                                 dictionary.components
@@ -195,7 +195,7 @@ export const CourseGeneralInformationView: FC<
                             iconLeft={<IconClock size="4" />}
                             key={formattedTotalDuration}
                             text={formattedTotalDuration}
-                            className="h-5 text-sm py-1 max-w-full"
+                            className="h-5 text-sm max-w-full leading-none"
                         />
                     </div>
 
@@ -261,9 +261,9 @@ export const CourseGeneralInformationView: FC<
                                 <div className="flex gap-2 items-center">
                                     <Badge
                                         hasIconLeft
-                                        iconLeft={<IconStar size="4" />}
+                                        iconLeft={<IconStar size="4" classNames="-translate-y-px" />}
                                         text={`${rating}`}
-                                        className="h-5 py-1 text-sm max-w-full"
+                                        className="h-5 text-sm max-w-full"
                                     />
                                     <Button
                                         size="small"

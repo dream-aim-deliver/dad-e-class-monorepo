@@ -108,8 +108,10 @@ export default async function CourseServerComponent({
         return renderVisitorView(slug, locale);
     }
 
-    const currentRole = role ?? highestRoleParsed;
-    validateRoleAccess(currentRole, roles);
+    const rawRole = role ?? highestRoleParsed;
+    validateRoleAccess(rawRole, roles);
+    // Normalize superadmin→admin for all downstream components (same privileges in UI)
+    const currentRole = rawRole === 'superadmin' ? 'admin' : rawRole;
 
     if (shouldShowAssessment(currentRole, isAssessmentCompleted ?? false)) {
         const courseLanguage = course?.language?.code as TLocale;
@@ -166,9 +168,11 @@ function validateUserRole(highestRole: string | undefined): void {
 }
 
 function validateRoleAccess(currentRole: string, roles: string[]): void {
-    if (!roles.includes(currentRole)) {
-        throw new Error('Access denied for current role');
-    }
+    if (roles.includes(currentRole)) return;
+    // Treat admin and superadmin as equivalent
+    if (currentRole === 'admin' && roles.includes('superadmin')) return;
+    if (currentRole === 'superadmin' && roles.includes('admin')) return;
+    throw new Error('Access denied for current role');
 }
 
 function validateCourseVisibility(

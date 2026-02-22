@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '../../button';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
-import { StarRating } from '../../star-rating';
+import { RatingDisplay } from '../../rating-display';
 import { Badge } from '../../badge';
 import { course } from '@maany_shr/e-class-models';
 import {
@@ -131,15 +131,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
 
             </div>
 
-            <div className="flex gap-1 items-end">
-              <StarRating totalStars={5} rating={rating as number} />
-              <span className="text-xs text-text-primary leading-[100%]">
-                {rating}
-              </span>
-              <span className="text-xs text-text-secondary leading-[100%]">
-                ({reviewCount})
-              </span>
-            </div>
+            <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
 
             <CourseCreator creatorName={(author as any).name as string} imageUrl={(author as any).image as string} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
 
