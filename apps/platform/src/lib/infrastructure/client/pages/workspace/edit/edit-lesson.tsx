@@ -437,20 +437,22 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     return (
         <div className="flex flex-col gap-4 px-15">
             <Breadcrumbs items={breadcrumbItems} />
-            <EditHeader
-                title={`${editLessonsTranslations('editLessonTitle')}: ${lessonTitle}`}
-                courseTitle={courseTitle}
-                onPreview={() => {
-                    setIsPreviewing((prev) => !prev);
-                }}
-                onSave={onSave}
-                disablePreview={false}
-                isSaving={isSaving}
-                isPreviewing={isPreviewing}
-                locale={locale}
-                roles={[]}
-                slug=""
-            />
+            <div className="mb-4">
+                <EditHeader
+                    title={`${editLessonsTranslations('editLessonTitle')}: ${lessonTitle}`}
+                    courseTitle={courseTitle}
+                    onPreview={() => {
+                        setIsPreviewing((prev) => !prev);
+                    }}
+                    onSave={onSave}
+                    disablePreview={false}
+                    isSaving={isSaving}
+                    isPreviewing={isPreviewing}
+                    locale={locale}
+                    roles={[]}
+                    slug=""
+                />
+            </div>
             {errorMessage && (
                 <DefaultError
                     type="simple"
