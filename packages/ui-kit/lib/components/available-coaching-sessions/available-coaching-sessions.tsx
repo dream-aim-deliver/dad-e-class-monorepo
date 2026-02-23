@@ -17,6 +17,7 @@ export interface AvailableCoachingSessionsProps extends isLocalAware {
     onClickBuyMoreSessions: () => void;
     isLoading?: boolean;
     hideButton?: boolean;
+    hideTitle?: boolean;
     isDraggable?: boolean;
 }
 
@@ -58,6 +59,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
     onClickBuyMoreSessions,
     isLoading = false,
     hideButton = false,
+    hideTitle = false,
     isDraggable = false,
 }) => {
     const dictionary = getDictionary(locale);
@@ -68,9 +70,11 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => e.preventDefault()}
         >
-            <p className="text-lg text-text-primary font-bold leading-[120%]">
-                {dictionary?.components?.availableCoachingSessions?.title}
-            </p>
+            {!hideTitle && (
+                <p className="text-lg text-text-primary font-bold leading-[120%]">
+                    {dictionary?.components?.availableCoachingSessions?.title}
+                </p>
+            )}
             {!isLoading &&
             (!availableCoachingSessionsData ||
                 availableCoachingSessionsData?.length === 0) ? (

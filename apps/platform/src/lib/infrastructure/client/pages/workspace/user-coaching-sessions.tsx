@@ -605,6 +605,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                             router.push(`/${locale}/coaching`);
                         }}
                         hideButton={availableCoachingSessionsData.length === 0}
+                        hideTitle
                     />
                 </div>
             )}
