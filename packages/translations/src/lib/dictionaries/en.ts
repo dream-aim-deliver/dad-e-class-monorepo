@@ -3520,6 +3520,9 @@ export const EN: TDictionary = {
         acknowledge: 'OK, Got It',
       },
       groupSessionCreatedSuccess: 'Group coaching session created successfully!',
+      sessionDetailsTitle: 'Session Details',
+      cancelSessionButton: 'Cancel Session',
+      cancelingSession: 'Canceling...',
     },
     manageLegalTexts: {
       title: 'Manage Legal Texts',

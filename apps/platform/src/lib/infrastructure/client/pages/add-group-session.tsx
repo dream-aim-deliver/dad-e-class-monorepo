@@ -22,6 +22,7 @@ import {
     Button,
 } from '@maany_shr/e-class-ui-kit';
 import { AddGroupSessionDialog } from './workspace/calendar/components/add-group-session-dialog';
+import { SessionDetailsDialog } from './workspace/calendar/components/session-details-dialog';
 import {
     MonthlyGroupCoachingCalendarWrapper,
     WeeklyGroupCoachingCalendarWrapper,
@@ -75,6 +76,14 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
     const [scrollToHour, setScrollToHour] = useState<number | undefined>(undefined);
     const [scrollKey, setScrollKey] = useState(0);
 
+    const [isSessionDetailsDialogOpen, setIsSessionDetailsDialogOpen] = useState(false);
+    const [chosenSession, setChosenSession] = useState<{
+        id: number;
+        title: string;
+        startTime: Date;
+        endTime: Date;
+    } | undefined>(undefined);
+
     // Fetch group coaching sessions for this specific group
     const [groupCoachingSessionsResponse, { refetch: refetchGroupSessions }] =
         trpc.listGroupCoachingSessions.useSuspenseQuery({
@@ -123,6 +132,39 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
         setIsAddDialogOpen(true);
     };
 
+    const handleSessionClick = (sessionId: number) => {
+        let found: { id: number; title: string; startTime: string; endTime: string } | undefined;
+
+        if (groupCoachingSessionsViewModel?.mode === 'default') {
+            const session = groupCoachingSessionsViewModel.data.sessions.find(s => s.id === sessionId);
+            if (session) {
+                found = { id: session.id, title: session.course?.title || 'Group Session', startTime: session.startTime, endTime: session.endTime };
+            }
+        }
+        if (!found && coachCoachingSessionsViewModel?.mode === 'default') {
+            const session = coachCoachingSessionsViewModel.data.sessions.find(s => s.id === sessionId);
+            if (session) {
+                found = { id: session.id, title: session.coachingOfferingTitle, startTime: session.startTime, endTime: session.endTime };
+            }
+        }
+        if (!found) return;
+
+        setChosenSession({
+            id: found.id,
+            title: found.title,
+            startTime: new Date(found.startTime),
+            endTime: new Date(found.endTime),
+        });
+        setIsSessionDetailsDialogOpen(true);
+    };
+
+    const handleSessionCancelSuccess = () => {
+        refetchGroupSessions();
+        refetchCoachSessions();
+        setIsSessionDetailsDialogOpen(false);
+        setChosenSession(undefined);
+    };
+
     if (!groupCoachingSessionsViewModel || !coachCoachingSessionsViewModel || !currentDate) {
         return <DefaultLoading locale={locale} />;
     }
@@ -158,6 +200,18 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
                 groupId={parseInt(groupId)}
                 coachUsername={coachUsername}
             />
+
+            {chosenSession && (
+                <SessionDetailsDialog
+                    isOpen={isSessionDetailsDialogOpen}
+                    onOpenChange={setIsSessionDetailsDialogOpen}
+                    sessionId={chosenSession.id}
+                    sessionTitle={chosenSession.title}
+                    startTime={chosenSession.startTime}
+                    endTime={chosenSession.endTime}
+                    onCancelSuccess={handleSessionCancelSuccess}
+                />
+            )}
 
             <Tabs.Root
                 defaultTab="weekly"
@@ -205,6 +259,7 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
                                     selectedDate={selectedDate}
                                     setSelectedDate={setSelectedDate}
                                     setNewSessionStart={handleNewSessionStart}
+                                    onSessionClick={handleSessionClick}
                                     scrollToHour={scrollToHour}
                                     scrollKey={scrollKey}
                                 />
@@ -221,6 +276,7 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
                                     selectedDate={selectedDate}
                                     setSelectedDate={setSelectedDate}
                                     setNewSessionStart={handleNewSessionStart}
+                                    onSessionClick={handleSessionClick}
                                     variant="full"
                                 />
                             </Tabs.Content>
@@ -236,6 +292,7 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
                             selectedDate={selectedDate}
                             setSelectedDate={setSelectedDate}
                             setNewSessionStart={handleNewSessionStart}
+                            onSessionClick={handleSessionClick}
                         />
                     </div>
                 </div>

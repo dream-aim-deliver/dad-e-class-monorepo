@@ -22,6 +22,7 @@ interface WeeklyCoachCalendarWrapperProps {
     setCurrentDate: (date: Date) => void;
     openDialog?: () => void;
     onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
+    onSessionClick?: (sessionId: number) => void;
     scrollToHour?: number;
     scrollKey?: number;
 }
@@ -32,6 +33,7 @@ export function WeeklyCoachCalendarWrapper({
     currentDate,
     setCurrentDate,
     onAvailabilityClick,
+    onSessionClick,
     openDialog,
     scrollToHour,
     scrollKey,
@@ -50,6 +52,7 @@ export function WeeklyCoachCalendarWrapper({
         coachAvailabilityViewModel,
         onNewEvent: getOnNewEventHandler(),
         onAvailabilityClick,
+        onSessionClick,
     });
 
     return (

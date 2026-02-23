@@ -20,6 +20,7 @@ interface WeeklyGroupCoachingCalendarWrapperProps {
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
     setNewSessionStart?: (startTime: Date) => void;
+    onSessionClick?: (sessionId: number) => void;
     selectedDate?: Date;
     setSelectedDate?: (date: Date | undefined) => void;
     scrollToHour?: number;
@@ -32,6 +33,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
     currentDate,
     setCurrentDate,
     setNewSessionStart,
+    onSessionClick,
     selectedDate: externalSelectedDate,
     setSelectedDate: externalSetSelectedDate,
     scrollToHour,
@@ -63,6 +65,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
                                     start={startTime}
                                     end={endTime}
                                     title={`Group: ${session.course?.title || 'Coaching Session'}`}
+                                    onClick={onSessionClick ? () => onSessionClick(session.id) : undefined}
                                 />
                             ),
                         });
@@ -79,7 +82,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
                 if (session.startTime && session.endTime) {
                     const startTime = new Date(session.startTime);
                     const endTime = new Date(session.endTime);
-                    
+
                     // Check that the dates are valid (not NaN)
                     if (!isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
                         events.push({
@@ -92,6 +95,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
                                     start={startTime}
                                     end={endTime}
                                     title={`${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`}
+                                    onClick={onSessionClick ? () => onSessionClick(session.id) : undefined}
                                 />
                             ),
                         });
@@ -132,6 +136,7 @@ interface MonthlyGroupCoachingCalendarWrapperProps {
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
     setNewSessionStart?: (startTime: Date) => void;
+    onSessionClick?: (sessionId: number) => void;
     variant?: 'compact' | 'full';
     selectedDate?: Date;
     setSelectedDate?: (date: Date | undefined) => void;
@@ -143,6 +148,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
     currentDate,
     setCurrentDate,
     setNewSessionStart,
+    onSessionClick,
     variant = 'compact',
     selectedDate: externalSelectedDate,
     setSelectedDate: externalSetSelectedDate,
@@ -222,6 +228,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
         if (!selectedDate) return [];
 
         const allSessions: Array<{
+            id: number;
             startTime: Date;
             endTime: Date;
             title: string;
@@ -245,6 +252,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                     // Double-check that both dates are valid
                     if (!isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
                         allSessions.push({
+                            id: session.id,
                             startTime,
                             endTime,
                             title: `Group: ${session.course?.title || 'Coaching Session'}`,
@@ -271,6 +279,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                     // Double-check that both dates are valid
                     if (!isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
                         allSessions.push({
+                            id: session.id,
                             startTime,
                             endTime,
                             title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`,
@@ -313,6 +322,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                                 startTime: session.startTime,
                                 endTime: session.endTime,
                                 title: session.title,
+                                onClick: onSessionClick ? () => onSessionClick(session.id) : undefined,
                             }]}
                         />
                     ))}

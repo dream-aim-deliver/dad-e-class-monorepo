@@ -3522,6 +3522,9 @@ export const DE: TDictionary = {
         acknowledge: 'OK, verstanden',
       },
       groupSessionCreatedSuccess: 'Gruppen-Coaching-Sitzung erfolgreich erstellt!',
+      sessionDetailsTitle: 'Sitzungsdetails',
+      cancelSessionButton: 'Sitzung absagen',
+      cancelingSession: 'Wird abgesagt...',
     },
     manageLegalTexts: {
       title: 'Rechtliche Texte verwalten',

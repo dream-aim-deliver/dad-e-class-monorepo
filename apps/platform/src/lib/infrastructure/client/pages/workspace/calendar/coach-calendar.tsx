@@ -18,6 +18,7 @@ import { AddAvailabilityDialog } from './components/add-availability-dialog';
 import { AddRecurringAvailabilityDialog } from './components/add-recurring-availability-dialog';
 import { DeleteRecurringAvailabilityDialog } from './components/delete-recurring-availability-dialog';
 import { AvailabilityDetailsDialog } from './components/availability-details-dialog';
+import { SessionDetailsDialog } from './components/session-details-dialog';
 import { useSession } from 'next-auth/react';
 import StudentCalendar from './student-calendar';
 import {
@@ -51,6 +52,14 @@ function CalendarContent() {
         useCaseModels.TAvailability | undefined
     >(undefined);
 
+    const [isSessionDetailsDialogOpen, setIsSessionDetailsDialogOpen] = useState(false);
+    const [chosenSession, setChosenSession] = useState<{
+        id: number;
+        title: string;
+        startTime: Date;
+        endTime: Date;
+    } | undefined>(undefined);
+
     const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
         trpc.getCoachAvailability.useSuspenseQuery({});
     const [coachAvailabilityViewModel, setCoachAvailabilityViewModel] =
@@ -79,6 +88,25 @@ function CalendarContent() {
     const handleAvailabilityDeleted = () => {
         refetchCoachAvailability();
         setIsDetailsDialogOpen(false);
+    };
+
+    const handleSessionClick = (sessionId: number) => {
+        if (!coachAvailabilityViewModel || coachAvailabilityViewModel.mode !== 'default') return;
+        const session = coachAvailabilityViewModel.data.mySessions.find(s => s.id === sessionId);
+        if (!session) return;
+        setChosenSession({
+            id: session.id,
+            title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingName}`,
+            startTime: new Date(session.startTime),
+            endTime: new Date(session.endTime),
+        });
+        setIsSessionDetailsDialogOpen(true);
+    };
+
+    const handleSessionCancelSuccess = () => {
+        refetchCoachAvailability();
+        setIsSessionDetailsDialogOpen(false);
+        setChosenSession(undefined);
     };
 
     if (!coachAvailabilityViewModel || !currentDate) {
@@ -131,6 +159,18 @@ function CalendarContent() {
                 />
             )}
 
+            {chosenSession && (
+                <SessionDetailsDialog
+                    isOpen={isSessionDetailsDialogOpen}
+                    onOpenChange={setIsSessionDetailsDialogOpen}
+                    sessionId={chosenSession.id}
+                    sessionTitle={chosenSession.title}
+                    startTime={chosenSession.startTime}
+                    endTime={chosenSession.endTime}
+                    onCancelSuccess={handleSessionCancelSuccess}
+                />
+            )}
+
             <Tabs.Root
                 defaultTab="weekly"
                 onValueChange={(value) =>
@@ -179,6 +219,7 @@ function CalendarContent() {
                                         setChosenAvailability(availability);
                                         setIsDetailsDialogOpen(true);
                                     }}
+                                    onSessionClick={handleSessionClick}
                                 />
                             </Tabs.Content>
                             <Tabs.Content
@@ -197,6 +238,7 @@ function CalendarContent() {
                                         setChosenAvailability(availability);
                                         setIsDetailsDialogOpen(true);
                                     }}
+                                    onSessionClick={handleSessionClick}
                                     variant="full"
                                 />
                             </Tabs.Content>
@@ -214,6 +256,7 @@ function CalendarContent() {
                                 setChosenAvailability(availability);
                                 setIsDetailsDialogOpen(true);
                             }}
+                            onSessionClick={handleSessionClick}
                         />
                     </div>
                 </div>
