@@ -215,7 +215,7 @@ export default function CoachDashboardStudents() {
                                 }
                                 onStudentDetails={() => {
                                     router.push(
-                                        `/${locale}/workspace/student/${student.id}`,
+                                        `/${locale}/students/${student.username}`,
                                     );
                                 }}
                                 courses={courses}
