@@ -212,7 +212,7 @@ export function MonthlyStudentCalendarWrapper({
                         title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`,
                         onClick:
                             onSessionClick &&
-                            (() => onSessionClick?.(session.id)),
+                            (() => onSessionClick?.(Number(session.id))),
                     }))}
                 />
             )}

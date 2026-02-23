@@ -258,7 +258,7 @@ export function MonthlyCoachCalendarWrapper({
                         endTime: new Date(session.endTime),
                         title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingName}`,
                         onClick: onSessionClick
-                            ? () => onSessionClick(session.id)
+                            ? () => onSessionClick(Number(session.id))
                             : undefined,
                     }));
 
