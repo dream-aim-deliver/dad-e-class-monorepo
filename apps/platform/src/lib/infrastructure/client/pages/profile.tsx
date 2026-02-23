@@ -252,14 +252,14 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			setErrorMessage(null);
 			setSuccessMessage(null);
 		},
-		onSuccess: async (data) => {
+		onSuccess: async (data, variables) => {
 			setSuccessMessage(t('personalProfileSaved'));
 			setErrorMessage(null);
 			await utils.getPersonalProfile.invalidate();
-			// Pass new avatar URL directly to session update (bypasses expired token issues)
+			// Pass new avatar URL and username directly to session update (bypasses expired token issues)
 			const responseData = data as any;
 			const newAvatarUrl = responseData?.data?.profile?.avatarImage?.downloadUrl || null;
-			await updateSession({ image: newAvatarUrl });
+			await updateSession({ image: newAvatarUrl, name: variables.username });
 			router.refresh();
 		},
 		onError: (error) => {

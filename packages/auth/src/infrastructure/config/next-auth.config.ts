@@ -273,15 +273,16 @@ export const generateNextAuthConfig = (config: {
                 // Also refresh if idTokenExpires is missing (timeUntilExpiry < 0)
                 const shouldRefresh = !tokenExpires || timeUntilExpiry < 5 * 60 * 1000;
 
-                // Handle explicit session update (e.g. after profile picture change)
+                // Handle explicit session update (e.g. after profile picture or username change)
                 if (trigger === 'update') {
-                    // If data was passed directly via updateSession({ image: ... }),
+                    // If data was passed directly via updateSession({ image: ..., name: ... }),
                     // use it without making a backend call (avoids expired token issues)
-                    if (session && typeof session === 'object' && 'image' in session) {
+                    if (session && typeof session === 'object' && ('image' in session || 'name' in session)) {
                         if (token.cachedUserDetails) {
                             token.cachedUserDetails = {
                                 ...token.cachedUserDetails,
-                                avatarImage: (session as any).image || undefined,
+                                ...('image' in session && { avatarImage: (session as any).image || undefined }),
+                                ...('name' in session && { username: (session as any).name }),
                             };
                         }
                         return token;
