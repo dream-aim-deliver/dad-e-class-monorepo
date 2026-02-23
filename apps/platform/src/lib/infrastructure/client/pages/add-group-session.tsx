@@ -138,13 +138,13 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
         if (groupCoachingSessionsViewModel?.mode === 'default') {
             const session = groupCoachingSessionsViewModel.data.sessions.find(s => s.id === sessionId);
             if (session) {
-                found = { id: session.id, title: session.course?.title || 'Group Session', startTime: session.startTime, endTime: session.endTime };
+                found = { id: Number(session.id), title: session.course?.title || 'Group Session', startTime: session.startTime, endTime: session.endTime };
             }
         }
         if (!found && coachCoachingSessionsViewModel?.mode === 'default') {
             const session = coachCoachingSessionsViewModel.data.sessions.find(s => s.id === sessionId);
             if (session) {
-                found = { id: session.id, title: session.coachingOfferingTitle, startTime: session.startTime, endTime: session.endTime };
+                found = { id: Number(session.id), title: session.coachingOfferingTitle, startTime: session.startTime, endTime: session.endTime };
             }
         }
         if (!found) return;
