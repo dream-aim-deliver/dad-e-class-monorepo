@@ -82,7 +82,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     }
 
     const handleViewAll = () => {
-        router.push('/coaches');
+        router.push(`/${locale}/coaching`);
     };
 
     return (
@@ -108,13 +108,13 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
                             totalRatings: coach.reviewCount,
                         }}
                         onClickViewProfile={() => {
-                            router.push(`/coaches/${coach.username}`);
+                            router.push(`/${locale}/coaches/${coach.username}`);
                         }}
                         onClickCourse={(courseSlug: string) => {
-                            router.push(`/courses/${courseSlug}`);
+                            router.push(`/${locale}/courses/${courseSlug}`);
                         }}
                         onClickBookSession={() => {
-                            router.push(`/coaches/${coach.username}/book`);
+                            router.push(`/${locale}/coaches/${coach.username}/book`);
                         }}
                     />
                 ))}

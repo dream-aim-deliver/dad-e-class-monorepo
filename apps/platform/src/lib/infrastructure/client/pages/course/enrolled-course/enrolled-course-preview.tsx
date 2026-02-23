@@ -14,7 +14,6 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { Suspense, useState, useEffect, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
 import { useListLessonComponentsPresenter } from '../../../hooks/use-list-lesson-components-presenter';
@@ -30,6 +29,7 @@ interface EnrolledCoursePreviewProps {
     initialLessonId?: string;
     isArchived?: boolean;
     showArchivedBadge?: boolean;
+    onLessonNavigate?: (lessonId: number) => void;
 }
 
 function CoursePreviewLesson(props: {
@@ -94,9 +94,6 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     const lessonNotesT = useTranslations('components.lessonNotes');
     const t = useTranslations('pages.enrolledCourse');
-    const router = useRouter();
-    const searchParams = useSearchParams();
-
     // State for showing/hiding notes panel (only for students with enableSubmit)
     const [showNotes, setShowNotes] = useState(false);
 
@@ -193,18 +190,9 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
         setActiveLessonIndex(lessonIndex);
         setActiveModuleIndex(moduleIndex);
 
-        // Update URL with lesson parameter
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('tab', 'study');
-        params.set('lesson', lessonId.toString());
-        
-        // Preserve role parameter
-        const currentRole = params.get('role');
-        if (currentRole) {
-            params.set('role', currentRole);
+        if (props.onLessonNavigate) {
+            props.onLessonNavigate(lessonId);
         }
-        
-        router.push(`/${locale}/courses/${courseSlug}?${params.toString()}`);
     };
 
     const handlePreviousLesson = () => {
@@ -350,6 +338,7 @@ export default function EnrolledCoursePreview({
     initialLessonId,
     isArchived,
     showArchivedBadge,
+    onLessonNavigate,
 }: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     return (
@@ -363,6 +352,7 @@ export default function EnrolledCoursePreview({
                 initialLessonId={initialLessonId}
                 isArchived={isArchived}
                 showArchivedBadge={showArchivedBadge}
+                onLessonNavigate={onLessonNavigate}
             />
         </Suspense>
     );

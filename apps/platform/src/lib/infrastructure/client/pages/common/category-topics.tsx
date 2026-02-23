@@ -105,7 +105,13 @@ export default function CategoryTopics({
         if (!isMapViewModelValid) return new Map<string, viewModels.TMatrixTopic[]>();
         const map = new Map<string, viewModels.TMatrixTopic[]>();
         for (const category of (topicsByCategoryViewModel.data.categories ?? [])) {
-            map.set(category.name, category.topics ?? []);
+            const seen = new Set<string>();
+            const uniqueTopics = (category.topics ?? []).filter((topic) => {
+                if (seen.has(topic.slug)) return false;
+                seen.add(topic.slug);
+                return true;
+            });
+            map.set(category.name, uniqueTopics);
         }
         return map;
     }, [isMapViewModelValid, topicsByCategoryViewModel]);

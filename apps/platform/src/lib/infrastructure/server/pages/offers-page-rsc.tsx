@@ -21,7 +21,7 @@ export default async function OffersServerComponent(props: OffersProps) {
         skillSlugs: [],  // Default: all coaches (filters applied client-side)
         pagination: { page: 1, pageSize: 6 }
     }));
-    prefetch(trpc.listCourses.queryOptions({}));
+    prefetch(trpc.listCourses.queryOptions({ includeCoachingPrices: true }));
 
     return (
         <>

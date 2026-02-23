@@ -356,6 +356,16 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                         initialLessonId={props.lesson}
                         isArchived={props.isArchived}
                         showArchivedBadge={props.showArchivedBadge}
+                        onLessonNavigate={(lessonId) => {
+                            const params = new URLSearchParams(searchParams.toString());
+                            params.set('tab', 'study');
+                            params.set('lesson', lessonId.toString());
+                            const currentRole = params.get('role');
+                            if (currentRole) {
+                                params.set('role', currentRole);
+                            }
+                            router.push(`/${locale}/courses/${props.courseSlug}?${params.toString()}`);
+                        }}
                     />
                 </Tabs.Content>
                 <Tabs.Content value="assignments" className={tabContentClass}>

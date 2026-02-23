@@ -90,10 +90,10 @@ export default function PackageList() {
                             duration={pkg.duration}
                             locale={locale}
                             onClickDetails={() => {
-                                router.push(`/packages/${pkg.id}`);
+                                router.push(`/${locale}/packages/${pkg.id}`);
                             }}
                             onClickPurchase={() => {
-                                router.push(`/packages/${pkg.id}`);
+                                router.push(`/${locale}/packages/${pkg.id}`);
                             }}
                         />
                     );
