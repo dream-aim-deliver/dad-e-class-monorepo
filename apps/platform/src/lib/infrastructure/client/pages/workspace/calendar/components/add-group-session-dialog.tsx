@@ -75,6 +75,13 @@ export function AddGroupSessionDialog({
         }
     };
 
+    // Reset state when dialog reopens
+    useEffect(() => {
+        if (isOpen) {
+            reset();
+        }
+    }, [isOpen]);
+
     // Clean up timer on unmount
     useEffect(() => {
         return () => {
@@ -91,7 +98,9 @@ export function AddGroupSessionDialog({
                 clearTimeout(successTimerRef.current);
                 successTimerRef.current = null;
             }
-            onSuccess(new Date(startTime));
+            const sessionStartTime = new Date(startTime);
+            reset();
+            onSuccess(sessionStartTime);
             return;
         }
         if (!open) {
@@ -139,6 +148,17 @@ export function AddGroupSessionDialog({
             };
 
             const result = await createGroupCoachingSessionMutation.mutateAsync(sessionData);
+
+            // Check if the API call actually succeeded
+            if (!result.success) {
+                const errorData = result.data as Record<string, unknown> | undefined;
+                const { title, description } = getSchedulingErrorMessage(
+                    undefined,
+                    (errorData?.message as string) || 'Failed to create group coaching session',
+                );
+                setError(`${title}: ${description}`);
+                return;
+            }
 
             // Check for student overlap warnings
             const data = result?.data as Record<string, unknown> | undefined;
