@@ -569,8 +569,8 @@ export const DE: TDictionary = {
       groupText: 'Gruppe',
       joinMeetingText: 'Sitzung beitreten',
       studentText: 'Studierende',
-      hoursLeftToEditText: 'Stunde(n) übrig, um das Ereignis zu bearbeiten',
-      minutesLeftToEditText: 'Minute(n) übrig, um das Ereignis zu bearbeiten',
+      hoursLeftToEditText: 'Stunde(n) übrig, um das Ereignis abzusagen',
+      minutesLeftToEditText: 'Minute(n) übrig, um das Ereignis abzusagen',
       rescheduleText: 'Umbuchen',
       cancelText: 'Stornieren',
       meetingLinkVisibilityInfo:

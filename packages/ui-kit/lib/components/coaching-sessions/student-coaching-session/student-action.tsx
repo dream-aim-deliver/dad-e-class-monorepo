@@ -133,12 +133,14 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
 
             return (
                 <div className="flex flex-col gap-2 w-full">
-                    <Badge
-                        className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
-                        variant="info"
-                        size="big"
-                        text={`${timeValue} ${timeText}`}
-                    />
+                    {(props.onClickCancel || props.onClickReschedule) && (
+                        <Badge
+                            className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
+                            variant="info"
+                            size="big"
+                            text={`${timeValue} ${timeText}`}
+                        />
+                    )}
                     <div className="flex gap-[9px] justify-between">
                         {props.onClickReschedule && (
                             <Button
