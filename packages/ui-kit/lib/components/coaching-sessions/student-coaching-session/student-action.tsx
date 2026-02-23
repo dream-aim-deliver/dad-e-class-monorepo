@@ -103,7 +103,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
     switch (props.status) {
         case 'ongoing':
             return (
-                <div className="flex flex-col gap-1 items-start w-full">
+                <div className="flex flex-col gap-3 w-full">
                     <Button
                         onClick={props.onClickJoinMeeting}
                         variant="primary"
@@ -132,7 +132,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                 : dictionary.components.coachingSessionCard.hoursLeftToEditText;
 
             return (
-                <div className="flex flex-col gap-2 w-full">
+                <div className="flex flex-col gap-3 w-full">
                     {(props.onClickCancel || props.onClickReschedule) && (
                         <Badge
                             className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
@@ -141,12 +141,12 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                             text={`${timeValue} ${timeText}`}
                         />
                     )}
-                    <div className="flex gap-[9px] justify-between">
+                    <div className="flex gap-3 justify-between">
                         {props.onClickReschedule && (
                             <Button
                                 onClick={props.onClickReschedule}
                                 variant="primary"
-                                size="small"
+                                size="medium"
                                 hasIconLeft
                                 className="w-full"
                                 iconLeft={<IconCalendarAlt size="5" />}
@@ -157,7 +157,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                             <Button
                                 onClick={props.onClickCancel}
                                 variant={props.onClickReschedule ? "secondary" : "primary"}
-                                size="small"
+                                size="medium"
                                 className={props.onClickReschedule ? "max-w-full" : "w-full"}
                                 hasIconLeft
                                 iconLeft={<IconTrashAlt size="5" />}
@@ -171,7 +171,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
 
         case 'upcoming-locked':
             return (
-                <div className="flex flex-col gap-1 items-start w-full">
+                <div className="flex flex-col gap-3 w-full">
                     <Button
                         onClick={props.onClickJoinMeeting}
                         variant="primary"
@@ -249,7 +249,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
 
         case 'requested':
             return (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                     <Badge
                         className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
                         variant="info"
@@ -260,7 +260,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                     />
                     {props.onClickCancel && (
                         <Button
-                            className="max-w-full"
+                            className="w-full"
                             onClick={props.onClickCancel}
                             variant="secondary"
                             size="medium"
@@ -274,11 +274,12 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
 
         case 'rescheduled':
             return (
-                <div className="flex flex-col gap-2 items-center w-full">
+                <div className="flex flex-col gap-3 items-center w-full">
                     <div className="flex justify-between gap-3 w-full">
                         <Button
                             text={dictionary.components.coachingSessionCard.declineText}
                             variant="secondary"
+                            size="medium"
                             hasIconLeft
                             className="w-full"
                             iconLeft={<IconClose size="6" />}
@@ -286,6 +287,7 @@ export const StudentAction: React.FC<StudentActionProps> = (props) => {
                         />
                         <Button
                             variant="primary"
+                            size="medium"
                             text={dictionary.components.coachingSessionCard.acceptText}
                             hasIconLeft
                             className="w-full"
