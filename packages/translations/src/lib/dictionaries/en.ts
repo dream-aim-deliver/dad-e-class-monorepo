@@ -566,8 +566,8 @@ export const EN: TDictionary = {
       groupText: 'Group',
       joinMeetingText: 'Join Meeting',
       studentText: 'Student',
-      hoursLeftToEditText: 'hour(s) left to edit event',
-      minutesLeftToEditText: 'minute(s) left to edit event',
+      hoursLeftToEditText: 'hour(s) left to cancel event',
+      minutesLeftToEditText: 'minute(s) left to cancel event',
       rescheduleText: 'Reschedule',
       cancelText: 'Cancel',
       meetingLinkVisibilityInfo:

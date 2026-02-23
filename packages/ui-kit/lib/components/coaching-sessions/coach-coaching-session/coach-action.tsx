@@ -102,7 +102,7 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
   switch (props.status) {
     case 'ongoing':
       return (
-        <div className="flex flex-col gap-1 items-start w-full">
+        <div className="flex flex-col gap-2 w-full">
           <Button
             onClick={props.onClickJoinMeeting}
             variant="primary"
@@ -164,7 +164,7 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
 
     case 'upcoming-locked':
       return (
-        <div className="flex flex-col gap-1 items-start w-full">
+        <div className="flex flex-col gap-2 w-full">
           <Button
             onClick={props.onClickJoinMeeting}
             variant="primary"
