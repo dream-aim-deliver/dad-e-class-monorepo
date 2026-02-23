@@ -485,7 +485,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     };
 
     const handleViewAllCoaches = () => {
-        router.push('/coaches');
+        router.push(`/${locale}/coaching`);
     };
 
     const handleNavigateHome = () => {

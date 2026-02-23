@@ -3586,6 +3586,9 @@ export const DictionarySchema = z.object({
         acknowledge: z.string(),
       }),
       groupSessionCreatedSuccess: z.string(),
+      sessionDetailsTitle: z.string(),
+      cancelSessionButton: z.string(),
+      cancelingSession: z.string(),
     }),
     manageLegalTexts: z.object({
       title: z.string(),
