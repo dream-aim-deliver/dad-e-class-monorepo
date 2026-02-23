@@ -11,6 +11,8 @@ export default async function OffersServerComponent(props: OffersProps) {
     // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
     // React will stream HTML while queries are pending
     prefetch(trpc.getOffersPageOutline.queryOptions({}));
+    prefetch(trpc.listCategories.queryOptions({}));
+    prefetch(trpc.listTopics.queryOptions({}));
     prefetch(trpc.listTopicsByCategory.queryOptions({}));
     prefetch(trpc.listOffersPagePackages.queryOptions({}));
 
