@@ -95,7 +95,7 @@ function CalendarContent() {
         const session = coachAvailabilityViewModel.data.mySessions.find(s => s.id === sessionId);
         if (!session) return;
         setChosenSession({
-            id: session.id,
+            id: Number(session.id),
             title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingName}`,
             startTime: new Date(session.startTime),
             endTime: new Date(session.endTime),

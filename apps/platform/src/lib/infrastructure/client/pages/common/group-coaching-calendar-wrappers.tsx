@@ -65,7 +65,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
                                     start={startTime}
                                     end={endTime}
                                     title={`Group: ${session.course?.title || 'Coaching Session'}`}
-                                    onClick={onSessionClick ? () => onSessionClick(session.id) : undefined}
+                                    onClick={onSessionClick ? () => onSessionClick(Number(session.id)) : undefined}
                                 />
                             ),
                         });
@@ -95,7 +95,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
                                     start={startTime}
                                     end={endTime}
                                     title={`${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`}
-                                    onClick={onSessionClick ? () => onSessionClick(session.id) : undefined}
+                                    onClick={onSessionClick ? () => onSessionClick(Number(session.id)) : undefined}
                                 />
                             ),
                         });
@@ -252,7 +252,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                     // Double-check that both dates are valid
                     if (!isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
                         allSessions.push({
-                            id: session.id,
+                            id: Number(session.id),
                             startTime,
                             endTime,
                             title: `Group: ${session.course?.title || 'Coaching Session'}`,
@@ -279,7 +279,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                     // Double-check that both dates are valid
                     if (!isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
                         allSessions.push({
-                            id: session.id,
+                            id: Number(session.id),
                             startTime,
                             endTime,
                             title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`,
@@ -322,7 +322,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                                 startTime: session.startTime,
                                 endTime: session.endTime,
                                 title: session.title,
-                                onClick: onSessionClick ? () => onSessionClick(session.id) : undefined,
+                                onClick: onSessionClick ? () => onSessionClick(Number(session.id)) : undefined,
                             }]}
                         />
                     ))}
