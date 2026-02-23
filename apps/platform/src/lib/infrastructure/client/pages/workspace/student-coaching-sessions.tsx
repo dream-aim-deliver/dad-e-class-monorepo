@@ -477,11 +477,11 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
 
     // Navigation handlers
     const handleViewCoachProfile = (coachUsername: string) => {
-        router.push(`/coaches/${coachUsername}`);
+        router.push(`/${locale}/coaches/${coachUsername}`);
     };
 
     const handleViewCourse = (courseSlug: string) => {
-        router.push(`/courses/${courseSlug}`);
+        router.push(`/${locale}/courses/${courseSlug}`);
     };
 
     const handleViewAllCoaches = () => {
@@ -489,11 +489,11 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     };
 
     const handleNavigateHome = () => {
-        router.push('/');
+        router.push(`/${locale}`);
     };
 
     const handleNavigateWorkspace = () => {
-        router.push('/workspace');
+        router.push(`/${locale}/workspace`);
     };
 
     const handleNavigateCoachingSessions = () => {

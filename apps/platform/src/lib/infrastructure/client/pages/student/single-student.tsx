@@ -216,7 +216,7 @@ export default function SingleStudent({
                     items={[
                         {
                             label: breadcrumbsTranslations('home'),
-                            onClick: () => router.push('/'),
+                            onClick: () => router.push(`/${locale}`),
                         },
                         {
                             label: breadcrumbsTranslations('workspace'),

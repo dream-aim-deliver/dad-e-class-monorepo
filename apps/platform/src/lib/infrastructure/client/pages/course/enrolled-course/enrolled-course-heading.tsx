@@ -294,7 +294,7 @@ export default function EnrolledCourseHeading({
     const onRoleChange = (role: string | string[] | null) => {
         if (!role && Array.isArray(role)) return;
         if (role === currentRole) return;
-        router.push(`/courses/${courseSlug}?role=${role}`);
+        router.push(`/${locale}/courses/${courseSlug}?role=${role}`);
     };
 
     if (courseViewModel.mode !== 'default') return null;

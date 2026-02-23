@@ -280,12 +280,12 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
     }, [reviewsResponse]);
 
     const handleEditProfile = useCallback(() => {
-        router.push('/workspace/profile');
-    }, [router]);
+        router.push(`/${locale}/workspace/profile`);
+    }, [router, locale]);
 
     const handleViewCalendar = useCallback(() => {
-        router.push('/workspace/calendar');
-    }, [router]);
+        router.push(`/${locale}/workspace/calendar`);
+    }, [router, locale]);
 
     const handleViewAllCourses = useCallback(() => {
         router.push(`/${locale}/workspace/courses`);
@@ -344,7 +344,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         {
                             label: breadcrumbsTranslations('home'),
                             onClick: () => {
-                                router.push('/');
+                                router.push(`/${locale}`);
                             },
                         },
                         {

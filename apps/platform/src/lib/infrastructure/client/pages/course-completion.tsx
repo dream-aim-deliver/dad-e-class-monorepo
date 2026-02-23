@@ -151,7 +151,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     // Authentication check based on discovered patterns
     useEffect(() => {
         if (!isLoggedIn) {
-            router.push('/login');
+            router.push(`/${locale}/login`);
         }
     }, [isLoggedIn, router]);
 

@@ -543,7 +543,7 @@ function CoachingSessionComponent({
                     variant="primary"
                     text="View coaching sessions"
                     onClick={() => {
-                        router.push('/workspace/coaching-sessions');
+                        router.push(`/${locale}/workspace/coaching-sessions`);
                     }}
                 />
             </div>

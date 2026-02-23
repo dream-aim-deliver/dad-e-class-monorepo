@@ -304,7 +304,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
             courseImageUrl={course.imageUrl || ''}
             coachingSessionCount={course.coachingSessionCount}
             onClickCourse={() => {
-              router.push(`/courses/${course.slug}`);
+              router.push(`/${currentLocale}/courses/${course.slug}`);
             }}
             onInvoiceClick={() => handleInvoiceClick(transaction.id)}
             coupon={transaction.coupon}
@@ -353,7 +353,7 @@ export default function OrderHistoryTab({ locale }: OrderHistoryTabProps) {
           title: course.title,
           imageUrl: course.imageUrl || '',
           onClick: () => {
-            router.push(`/courses/${course.slug}`);
+            router.push(`/${currentLocale}/courses/${course.slug}`);
           },
         })) || [];
 
