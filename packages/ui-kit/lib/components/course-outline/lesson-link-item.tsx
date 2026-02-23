@@ -78,8 +78,8 @@ export const LessonLinkItem: FC<LessonLinkItemProps> = ({
             <p
                 title={lessonTitle}
                 className={cn(
-                    'text-sm truncate flex-1',
-                    'break-all', // Force mid-word breaks
+                    'text-sm line-clamp-2 flex-1 min-w-0',
+                    'break-words',
                     isActive ? 'text-action-default font-bold' : 'text-text-primary'
                 )}
             >
