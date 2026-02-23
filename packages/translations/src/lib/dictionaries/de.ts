@@ -738,6 +738,8 @@ export const DE: TDictionary = {
       moduleText: 'Modul',
       showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
       hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
+      copyLinkToLesson: 'Link zur Lektion kopieren',
+      linkCopied: 'Link kopiert!',
     },
     lessonNotes: {
       moduleText: 'Modul',

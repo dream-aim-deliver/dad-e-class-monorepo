@@ -233,6 +233,10 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
             if (props.currentRole !== 'student' && coachTabs.includes(props.tab)) {
                 return props.tab;
             }
+            // Redirect non-students from study tab to preview tab (preserves lesson param)
+            if (props.currentRole !== 'student' && props.tab === StudentCourseTab.STUDY) {
+                return CoachCourseTab.PREVIEW;
+            }
         }
         return props.currentRole === 'student' ? StudentCourseTab.INTRODUCTION : CoachCourseTab.INTRODUCTION;
     }, [props.tab, props.currentRole]);
