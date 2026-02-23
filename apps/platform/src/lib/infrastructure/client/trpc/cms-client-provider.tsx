@@ -69,6 +69,17 @@ export default function CMSTRPCClientProviders({
         prevUserIdRef.current = currentUserId;
     }, [session?.user?.id, queryClient]);
 
+    // Track locale to detect language change and invalidate cache
+    const prevLocaleRef = useRef<string | undefined>(undefined);
+
+    useEffect(() => {
+        if (prevLocaleRef.current !== undefined && prevLocaleRef.current !== locale) {
+            console.log('[TRPC] Invalidating query cache - locale changed');
+            queryClient.invalidateQueries();
+        }
+        prevLocaleRef.current = locale;
+    }, [locale, queryClient]);
+
     // Track if we've already triggered expiration to prevent duplicate triggers
     const hasTriggeredExpirationRef = useRef(false);
 

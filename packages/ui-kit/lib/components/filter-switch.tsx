@@ -60,7 +60,7 @@ const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange, s
       <div className="flex gap-3 flex-wrap items-start">
         {list.map((topic, index) => (
           <Button
-            key={index}
+            key={topic.slug}
             size="medium"
             className='border-1 border-button-secondary-stroke'
             variant={selectedTopics.includes(topic.slug) ? "primary" : "secondary"}

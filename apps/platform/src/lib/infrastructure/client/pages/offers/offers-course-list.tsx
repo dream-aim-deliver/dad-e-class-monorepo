@@ -132,11 +132,11 @@ export function OffersCourseList({
                         <VisitorCourseCard
                             coachingIncluded={coachingIncluded}
                             onDetails={() => {
-                                router.push(`/courses/${course.slug}`);
+                                router.push(`/${locale}/courses/${course.slug}`);
                             }}
                             onClickUser={() => {
                                 router.push(
-                                    `/coaches/${course.author.username}`,
+                                    `/${locale}/coaches/${course.author.username}`,
                                 );
                             }}
                             key={`course-${course.id}`}

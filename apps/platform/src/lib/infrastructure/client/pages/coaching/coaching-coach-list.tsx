@@ -44,13 +44,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
             return [];
         }
 
-        const currentUserUsername = session.data?.user?.name;
-
         return coachesViewModel.data.coaches.filter((coach) => {
-            if (coach.username === currentUserUsername) {
-                return false;
-            }
-
             const matchesTopics =
                 selectedTopics.length === 0 ||
                 coach.skills.some((skill) =>
@@ -124,13 +118,13 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
                             nextAvailableDate: coach.nextAvailableDate ?? undefined,
                         }}
                         onClickViewProfile={() => {
-                            router.push(`/coaches/${coach.username}`);
+                            router.push(`/${locale}/coaches/${coach.username}`);
                         }}
                         onClickCourse={(courseSlug: string) => {
-                            router.push(`/courses/${courseSlug}`);
+                            router.push(`/${locale}/courses/${courseSlug}`);
                         }}
                         onClickBookSession={() => {
-                            router.push(`/coaches/${coach.username}/book`);
+                            router.push(`/${locale}/coaches/${coach.username}/book`);
                         }}
                     />
                 ))}

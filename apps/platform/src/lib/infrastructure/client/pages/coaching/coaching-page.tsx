@@ -92,7 +92,7 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
                 <div className="flex justify-center w-full">
                     <CoachesSkeleton
                         onRegister={() => {
-                            router.push('/signup');
+                            router.push(`/${locale}/signup`);
                         }}
                         locale={locale}
                     />
