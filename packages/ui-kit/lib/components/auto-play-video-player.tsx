@@ -121,7 +121,7 @@ export const AutoPlayVideoPlayer: React.FC<AutoPlayVideoPlayerProps> = ({
                         autoPlay={true}
                         muted={true}
                         loop={true}
-                        poster={thumbnailUrl ?? ''}
+                        poster={thumbnailUrl || undefined}
                         onCanPlay={handlePlayerReady}
                         onError={handleVideoError}
                     />
