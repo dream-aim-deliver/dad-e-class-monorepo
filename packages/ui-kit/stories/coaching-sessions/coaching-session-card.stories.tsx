@@ -188,6 +188,7 @@ export const CoachOngoing: CoachOngoingStory = {
     studentImageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     onClickStudent: () => alert('Student clicked'),
     onClickJoinMeeting: () => alert('Join meeting clicked'),
+    onClickCancel: () => alert('Cancel clicked'),
   },
 };
 
