@@ -158,6 +158,113 @@ function ScheduledCoachSessionCard({
     );
 }
 
+// --- Scheduled student session card with time-based status (for dashboard) ---
+
+interface ScheduledStudentDashboardCardProps {
+    session: TUpcomingStudentCoachingSession;
+    locale: TLocale;
+    onCreatorClick: () => void;
+    onJoinMeeting: () => void;
+    onViewCourse?: () => void;
+}
+
+function ScheduledStudentDashboardCard({
+    session,
+    locale,
+    onCreatorClick,
+    onJoinMeeting,
+    onViewCourse,
+}: ScheduledStudentDashboardCardProps) {
+    const startDateTime = new Date(session.startTime);
+    const coachName = `${session.coach.name || ''} ${session.coach.surname || ''}`.trim() || session.coach.username;
+    const isGroup = session.sessionType === 'group-scheduled';
+    const meetingUrl = session.meetingUrl || undefined;
+
+    const [status, setStatus] = useState<{
+        cardStatus: 'upcoming-editable' | 'upcoming-locked' | 'ongoing';
+        hoursLeftToEdit: number;
+        minutesLeftToEdit: number | undefined;
+    } | null>(null);
+
+    useEffect(() => {
+        const calculateStatus = () => {
+            const now = new Date();
+            const msUntilSession = startDateTime.getTime() - now.getTime();
+            const tenMinutesMs = 10 * 60 * 1000;
+
+            if (msUntilSession <= tenMinutesMs) {
+                setStatus({ cardStatus: 'ongoing', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+            } else if (isGroup) {
+                setStatus({ cardStatus: 'upcoming-locked', hoursLeftToEdit: 0, minutesLeftToEdit: undefined });
+            } else {
+                const msUntilLock = msUntilSession - tenMinutesMs;
+                const totalMinutesLeft = Math.max(0, Math.floor(msUntilLock / (1000 * 60)));
+                const hoursLeft = Math.floor(totalMinutesLeft / 60);
+                setStatus({
+                    cardStatus: 'upcoming-editable',
+                    hoursLeftToEdit: hoursLeft,
+                    minutesLeftToEdit: hoursLeft === 0 ? totalMinutesLeft : undefined,
+                });
+            }
+        };
+
+        calculateStatus();
+        const interval = setInterval(calculateStatus, 60000);
+        return () => clearInterval(interval);
+    }, [session.startTime]);
+
+    if (!status) return null;
+
+    const { cardStatus, hoursLeftToEdit, minutesLeftToEdit } = status;
+
+    const commonProps = {
+        locale,
+        userType: 'student' as const,
+        title: session.coachingOfferingTitle,
+        duration: session.coachingOfferingDuration,
+        date: startDateTime,
+        startTime: formatTime(session.startTime),
+        endTime: formatTime(session.endTime),
+        creatorName: coachName,
+        creatorImageUrl: session.coach.avatarUrl || '',
+        onClickCreator: onCreatorClick,
+        courseName: session.course?.title,
+        onClickCourse: onViewCourse,
+        groupName: isGroup ? session.group.name : undefined,
+    };
+
+    if (cardStatus === 'ongoing') {
+        return (
+            <CoachingSessionCard
+                {...commonProps}
+                status="ongoing"
+                meetingLink={meetingUrl}
+                onClickJoinMeeting={onJoinMeeting}
+            />
+        );
+    }
+
+    if (cardStatus === 'upcoming-locked') {
+        return (
+            <CoachingSessionCard
+                {...commonProps}
+                status="upcoming-locked"
+                meetingLink={meetingUrl}
+                onClickJoinMeeting={onJoinMeeting}
+            />
+        );
+    }
+
+    return (
+        <CoachingSessionCard
+            {...commonProps}
+            status="upcoming-editable"
+            hoursLeftToEdit={hoursLeftToEdit}
+            minutesLeftToEdit={minutesLeftToEdit}
+        />
+    );
+}
+
 // --- Main component ---
 
 export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
@@ -458,49 +565,24 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                     <>
                     {isCoach && <p className="text-sm text-text-secondary mb-2">{t('asStudent')}</p>}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {upcomingSessions.slice(0, 4).map((session) => {
-                            const safeDate = (iso?: string | null) => {
-                                if (!iso) return null;
-                                const d = new Date(iso);
-                                return Number.isNaN(d.getTime()) ? null : d;
-                            };
-
-                            const start = safeDate(session.startTime);
-                            const end = safeDate(session.endTime);
-                            if (!start || !end) return null;
-
-                            const fmtTime = (date: Date) => date.toLocaleTimeString(locale, {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                            });
-
-                            return (
-                                <CoachingSessionCard
-                                    key={session.id}
-                                    locale={locale}
-                                    userType="student"
-                                    status="upcoming-locked"
-                                    title={session.coachingOfferingTitle}
-                                    duration={session.coachingOfferingDuration}
-                                    date={start}
-                                    startTime={fmtTime(start)}
-                                    endTime={fmtTime(end)}
-                                    creatorName={`${session.coach.name || ''} ${session.coach.surname || ''}`.trim() || session.coach.username}
-                                    creatorImageUrl={session.coach.avatarUrl || ''}
-                                    courseName={session.course?.title}
-                                    groupName={session.sessionType === 'group-scheduled' ? session.group.name : undefined}
-                                    onClickCreator={() => {
-                                        console.log('View coach profile', session.coach.username);
-                                    }}
-                                    onClickJoinMeeting={() => {
-                                        console.log('Join meeting for session', session.id);
-                                    }}
-                                    onClickCourse={session.course ? () => {
-                                        router.push(`/${locale}/courses/${session.course?.slug || ''}`);
-                                    } : undefined}
-                                />
-                            );
-                        })}
+                        {upcomingSessions.slice(0, 4).map((session) => (
+                            <ScheduledStudentDashboardCard
+                                key={session.id}
+                                session={session}
+                                locale={locale}
+                                onCreatorClick={() => {
+                                    window.open(`/${locale}/coaches/${session.coach.username}`, '_blank');
+                                }}
+                                onJoinMeeting={() => {
+                                    if (session.meetingUrl) {
+                                        window.open(session.meetingUrl, '_blank');
+                                    }
+                                }}
+                                onViewCourse={session.course ? () => {
+                                    router.push(`/${locale}/courses/${session.course?.slug || ''}`);
+                                } : undefined}
+                            />
+                        ))}
                     </div>
                     </>
                 ) : !hasCoachSessions ? (
