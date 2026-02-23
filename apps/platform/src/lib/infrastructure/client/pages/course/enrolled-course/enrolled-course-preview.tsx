@@ -9,11 +9,13 @@ import {
     Banner,
     IconEyeHide,
     IconEyeShow,
+    IconLink,
     LessonHeader,
     ModulePagination,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { Suspense, useState, useEffect, useRef } from 'react';
+import { useSearchParams, usePathname } from 'next/navigation';
+import { Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
 import { useListLessonComponentsPresenter } from '../../../hooks/use-list-lesson-components-presenter';
@@ -94,8 +96,23 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     const lessonNotesT = useTranslations('components.lessonNotes');
     const t = useTranslations('pages.enrolledCourse');
+    const lessonHeaderT = useTranslations('components.lessonHeader');
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const [copiedLessonId, setCopiedLessonId] = useState<number | null>(null);
     // State for showing/hiding notes panel (only for students with enableSubmit)
     const [showNotes, setShowNotes] = useState(false);
+
+    const handleCopyLessonLink = useCallback((lessonId: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('role');
+        params.set('tab', 'study');
+        params.set('lesson', lessonId.toString());
+        const link = `${window.location.origin}${pathname}?${params.toString()}`;
+        navigator.clipboard.writeText(link);
+        setCopiedLessonId(lessonId);
+        setTimeout(() => setCopiedLessonId(null), 2000);
+    }, [searchParams, pathname]);
 
     const [courseStructureResponse] = trpc.getCourseStructure.useSuspenseQuery({
         courseSlug,
@@ -292,6 +309,21 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                                     }}
                                     locale={locale}
                                 />
+                                <button
+                                    type="button"
+                                    title={copiedLessonId === currentLesson.id
+                                        ? lessonHeaderT('linkCopied')
+                                        : lessonHeaderT('copyLinkToLesson')}
+                                    className="flex items-center gap-1 text-text-secondary hover:text-text-primary text-xs md:text-sm cursor-pointer mt-2"
+                                    onClick={() => handleCopyLessonLink(currentLesson.id)}
+                                >
+                                    <IconLink size="4" />
+                                    <span>
+                                        {copiedLessonId === currentLesson.id
+                                            ? lessonHeaderT('linkCopied')
+                                            : lessonHeaderT('copyLinkToLesson')}
+                                    </span>
+                                </button>
                                 <Divider className="my-6" />
                                 <Suspense
                                     fallback={

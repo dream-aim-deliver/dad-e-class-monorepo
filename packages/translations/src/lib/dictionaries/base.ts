@@ -704,6 +704,8 @@ export const DictionarySchema = z.object({
       moduleText: z.string(),
       showNotesText: z.string(),
       hideNotesText: z.string(),
+      copyLinkToLesson: z.string(),
+      linkCopied: z.string(),
     }),
     lessonNotes: z.object({
       moduleText: z.string(),
