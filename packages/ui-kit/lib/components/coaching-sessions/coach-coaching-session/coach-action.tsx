@@ -124,7 +124,7 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
               onClick={props.onClickCancel}
               variant="secondary"
               size="small"
-              className="max-w-full"
+              className="w-full"
               hasIconLeft
               iconLeft={<IconTrashAlt size="5" />}
               text={dictionary.components.coachingSessionCard.cancelText}
@@ -149,17 +149,15 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
             size="big"
             text={`${timeValue ?? ''} ${timeText}`}
           />
-          <div className="flex gap-[9px] justify-between">
-            <Button
-              onClick={props.onClickCancel}
-              variant="secondary"
-              size="small"
-              className="max-w-full"
-              hasIconLeft
-              iconLeft={<IconTrashAlt size="5" />}
-              text={dictionary.components.coachingSessionCard.cancelText}
-            />
-          </div>
+          <Button
+            onClick={props.onClickCancel}
+            variant="primary"
+            size="small"
+            className="w-full"
+            hasIconLeft
+            iconLeft={<IconTrashAlt size="5" />}
+            text={dictionary.components.coachingSessionCard.cancelText}
+          />
         </div>
       );
     }

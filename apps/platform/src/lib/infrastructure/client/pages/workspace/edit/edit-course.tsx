@@ -286,6 +286,7 @@ function EditCourseContent({
             successMessage={successMessage}
             locale={locale}
             courseDetails={courseDetails}
+            courseTitle={courseViewModel.data.title}
             courseStatus={courseStatus}
             roles={roles}
             slug={slug}
@@ -402,6 +403,7 @@ interface EditCourseLayoutProps {
     successMessage: string | null;
     locale: TLocale;
     courseDetails: CourseDetailsState;
+    courseTitle: string;
     courseStatus?: TCourseStatus;
     roles: string[];
     slug: string;
@@ -425,6 +427,7 @@ function EditCourseLayout({
     successMessage,
     locale,
     courseDetails,
+    courseTitle,
     courseStatus,
     roles,
     slug,
@@ -449,7 +452,7 @@ function EditCourseLayout({
             onClick: () => router.push(`/${locale}/workspace/courses`),
         },
         {
-            label: courseDetails.courseTitle,
+            label: courseTitle,
             onClick: () => router.push(`/${locale}/courses/${slug}`),
         },
         {
