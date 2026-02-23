@@ -20,6 +20,7 @@ import { useCourseImageUpload } from '../common/hooks/use-course-image-upload';
 import { trpc } from '../../trpc/cms-client';
 
 const useCreateCourse = () => {
+    const locale = useLocale() as TLocale;
     const router = useRouter();
     const utils = trpc.useUtils();
     const createMutation = trpc.createCourse.useMutation({
@@ -52,7 +53,7 @@ const useCreateCourse = () => {
     useEffect(() => {
         if (createCourseViewModel?.mode === 'default') {
             // ✅ Navigate immediately - no artificial delay
-            router.push('/workspace/courses');
+            router.push(`/${locale}/workspace/courses`);
         }
     }, [createCourseViewModel]);
 
@@ -178,15 +179,15 @@ function CreateCourseContent(props: CreateCourseContentProps) {
     const breadcrumbItems = [
         {
             label: breadcrumbTranslations('home'),
-            onClick: () => router.push('/'),
+            onClick: () => router.push(`/${locale}`),
         },
         {
             label: breadcrumbTranslations('workspace'),
-            onClick: () => router.push('/workspace'),
+            onClick: () => router.push(`/${locale}/workspace`),
         },
         {
             label: breadcrumbTranslations('courses'),
-            onClick: () => router.push('/workspace/courses'),
+            onClick: () => router.push(`/${locale}/workspace/courses`),
         },
         {
             label: courseTitle || breadcrumbTranslations('newCourse'),

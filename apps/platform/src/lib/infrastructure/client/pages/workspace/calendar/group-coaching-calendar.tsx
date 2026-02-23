@@ -161,13 +161,14 @@ function CalendarContent() {
 }
 
 export default function GroupCoachingCalendar() {
+    const locale = useLocale() as TLocale;
     const session = useSession();
     const router = useRouter();
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const isCoach = session.data?.user?.roles?.includes('coach');
 
     if (!isCoach) {
-        router.push('/workspace/calendar');
+        router.push(`/${locale}/workspace/calendar`);
         return null;
     }
 
@@ -177,15 +178,15 @@ export default function GroupCoachingCalendar() {
                 items={[
                     {
                         label: breadcrumbsTranslations('home'),
-                        onClick: () => router.push('/'),
+                        onClick: () => router.push(`/${locale}`),
                     },
                     {
                         label: breadcrumbsTranslations('dashboard'),
-                        onClick: () => router.push('/workspace/dashboard'),
+                        onClick: () => router.push(`/${locale}/workspace/dashboard`),
                     },
                     {
                         label: breadcrumbsTranslations('calendar'),
-                        onClick: () => router.push('/workspace/calendar'),
+                        onClick: () => router.push(`/${locale}/workspace/calendar`),
                     },
                     {
                         label: breadcrumbsTranslations('groupCoachingCalendar'),

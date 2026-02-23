@@ -286,11 +286,11 @@ export default function CoachCalendar() {
                     items={[
                         {
                             label: breadcrumbsTranslations('home'),
-                            onClick: () => router.push('/'),
+                            onClick: () => router.push(`/${locale}`),
                         },
                         {
                             label: breadcrumbsTranslations('workspace'),
-                            onClick: () => router.push('/workspace/'),
+                            onClick: () => router.push(`/${locale}/workspace/`),
                         },
                         {
                             label: breadcrumbsTranslations('yourCalendar'),
@@ -326,11 +326,11 @@ export default function CoachCalendar() {
                 items={[
                     {
                         label: breadcrumbsTranslations('home'),
-                        onClick: () => router.push('/'),
+                        onClick: () => router.push(`/${locale}`),
                     },
                     {
                         label: breadcrumbsTranslations('dashboard'),
-                        onClick: () => router.push('/workspace/dashboard'),
+                        onClick: () => router.push(`/${locale}/workspace/dashboard`),
                     },
                     {
                         label: breadcrumbsTranslations('yourCalendar'),

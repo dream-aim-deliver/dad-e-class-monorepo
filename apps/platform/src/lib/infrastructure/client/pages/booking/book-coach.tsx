@@ -511,7 +511,7 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
                     onClickBuyMoreSessions={() => { /* noop - loading state */ }}
                 />
             }>
-                <AvailableCoachings onClickBuyMoreSessions={() => router.push('/coaching')} />
+                <AvailableCoachings onClickBuyMoreSessions={() => router.push(`/${locale}/coaching`)} />
             </Suspense>
         );
     }
@@ -753,7 +753,7 @@ function BookCoachPageContent({
 
     useEffect(() => {
         if (coachAvailabilityViewModel?.mode === 'unauthenticated') {
-            router.push('/auth/login');
+            router.push(`/${locale}/auth/login`);
         }
     }, [coachAvailabilityViewModel, router]);
 
@@ -839,7 +839,7 @@ function BookCoachPageContent({
                             }
                         }}
                         onViewSessions={() => {
-                            router.push('/workspace/coaching-sessions');
+                            router.push(`/${locale}/workspace/coaching-sessions`);
                         }}
                         closeDialog={() => {
                             setIsDialogOpen(false);

@@ -66,7 +66,7 @@ function CreateCourseDialogContent() {
                 locale={locale}
                 isLoading={isFetching}
                 onCreateNew={() => {
-                    router.push('/create/course');
+                    router.push(`/${locale}/create/course`);
                     setIsOpen(false);
                 }}
                 onDuplicate={async (course) => {
@@ -118,6 +118,7 @@ function CreateCourseDialog() {
 }
 
 export default function UserCourses(props: UserCoursesProps) {
+    const locale = useLocale() as TLocale;
     const canCreateCourse = props.roles.includes('superadmin') || props.roles.includes('admin') || props.roles.includes('course_creator');
     const isStudent = props.roles.includes('student');
     const router = useRouter();
@@ -131,11 +132,11 @@ export default function UserCourses(props: UserCoursesProps) {
                 items={[
                         {
                             label: breadcrumbsTranslations('home'),
-                            onClick: () => router.push('/'),
+                            onClick: () => router.push(`/${locale}`),
                         },
                         {
                             label: breadcrumbsTranslations('workspace'),
-                            onClick: () => router.push('/workspace'),
+                            onClick: () => router.push(`/${locale}/workspace`),
                         },
                     {
                         label: breadcrumbsTranslations('courses'),

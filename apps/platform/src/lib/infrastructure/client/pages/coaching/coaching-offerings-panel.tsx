@@ -513,7 +513,7 @@ export default function CoachingOfferingsPanel() {
                             hideButton
                             availableCoachingSessionsData={[]}
                             onClickBuyMoreSessions={() => {
-                                router.push('/checkout');
+                                router.push(`/${locale}/checkout`);
                             }}
                         />
                     }

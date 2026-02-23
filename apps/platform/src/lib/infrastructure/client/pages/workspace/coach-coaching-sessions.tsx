@@ -558,11 +558,11 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                     items={[
                         {
                             label: breadcrumbsTranslations('home'),
-                            onClick: () => router.push('/'),
+                            onClick: () => router.push(`/${locale}`),
                         },
                         {
                             label: breadcrumbsTranslations('workspace'),
-                            onClick: () => router.push('/workspace/'),
+                            onClick: () => router.push(`/${locale}/workspace/`),
                         },
                         {
                             label: breadcrumbsTranslations('yourCoachingSessions'),

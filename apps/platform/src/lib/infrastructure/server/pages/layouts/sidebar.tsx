@@ -35,15 +35,15 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     const locale = props.locale || 'en';
 
     const routeMap = {
-        dashboard: '/workspace/dashboard',
-        courses: '/workspace/courses',
-        coachingSessions: '/workspace/coaching-sessions',
-        calendar: '/workspace/calendar',
-        students: '/workspace/students',
-        reviews: '/workspace/your-reviews',
-        notifications: '/workspace/notifications',
-        profile: '/workspace/profile',
-        orderPayments: '/workspace/billing',
+        dashboard: `/${locale}/workspace/dashboard`,
+        courses: `/${locale}/workspace/courses`,
+        coachingSessions: `/${locale}/workspace/coaching-sessions`,
+        calendar: `/${locale}/workspace/calendar`,
+        students: `/${locale}/workspace/students`,
+        reviews: `/${locale}/workspace/your-reviews`,
+        notifications: `/${locale}/workspace/notifications`,
+        profile: `/${locale}/workspace/profile`,
+        orderPayments: `/${locale}/workspace/billing`,
     };
 
     // Create dynamic route mapping based on current locale

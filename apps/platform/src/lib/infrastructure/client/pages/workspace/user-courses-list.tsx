@@ -135,15 +135,15 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     }
 
     const onCourseVisit = (courseSlug: string) => {
-        router.push(`/courses/${courseSlug}`);
+        router.push(`/${locale}/courses/${courseSlug}`);
     };
 
     const onCourseEdit = (courseSlug: string) => {
-        router.push(`/edit/course/${courseSlug}`);
+        router.push(`/${locale}/edit/course/${courseSlug}`);
     };
 
     const onClickUser = (username: string) => {
-        router.push(`/coaches/${username}`);
+        router.push(`/${locale}/coaches/${username}`);
     };
 
     const onReviewCourse = (courseSlug: string, courseTitle: string) => {
