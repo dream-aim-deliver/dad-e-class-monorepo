@@ -7,7 +7,7 @@ import {
   ToolbarItem,
 } from "../../utils/constants"
 
-import { insertLink, isBlockActive, isLinkActive, isMarkActive, removeLink, toggleBlock, toggleMark, insertHorizontalRule } from "./slate"
+import { insertLink, isBlockActive, isLinkActive, isMarkActive, removeLink, toggleBlock, toggleMark, insertHorizontalRule, getLinkUrl } from "./slate"
 import { EditorType, ElementKey, MarkKey } from "./types"
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconMoreHorizontal } from "../icons";
@@ -151,7 +151,8 @@ export default function Toolbar({ locale }: isLocalAware) {
         }
         break;
       case "link": {
-        const url = window.prompt("Enter URL:");
+        const existingUrl = getLinkUrl(editor as EditorType);
+        const url = window.prompt("Enter URL:", existingUrl ?? "");
         if (url) insertLink(editor, url);
         break;
       }

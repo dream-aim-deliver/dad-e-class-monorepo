@@ -123,6 +123,24 @@ export const isLinkActive = (editor: EditorType) => {
 };
 
 /**
+ * Gets the URL of the link at the current selection, if any.
+ * @param {EditorType} editor - The Slate editor instance.
+ * @returns {string | null} - The URL of the active link, or null if no link is active.
+ */
+export const getLinkUrl = (editor: EditorType): string | null => {
+  const [match] = Editor.nodes(editor, {
+    match: (n) => !Editor.isEditor(n) && Element.isElement(n) && n.type === "link",
+  });
+  if (match) {
+    const [node] = match;
+    if (Element.isElement(node) && 'url' in node) {
+      return (node as { url: string }).url;
+    }
+  }
+  return null;
+};
+
+/**
  * Inserts a link at the current selection or wraps the selected text in a link.
  * @param {EditorType} editor - The Slate editor instance.
  * @param {string} url - The URL to insert.
@@ -131,6 +149,16 @@ export const insertLink = (editor: EditorType, url: string) => {
   if (!url) return;
   const { selection } = editor;
   if (!selection) return;
+
+  // If already inside a link, update its URL
+  if (isLinkActive(editor)) {
+    Transforms.setNodes(
+      editor,
+      { url },
+      { match: (n) => !Editor.isEditor(n) && Element.isElement(n) && n.type === "link" }
+    );
+    return;
+  }
 
   const isCollapsed = Range.isCollapsed(selection);
   const link = {
