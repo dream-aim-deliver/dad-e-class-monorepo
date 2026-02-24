@@ -264,7 +264,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                                 style={{ width: `calc(${thumbWidthPercent}% - ${(imageElements.length - 1) * 0.5 / imageElements.length}rem)` }}
                             >
                                 <ImageComponent
-                                    className="w-full h-24 object-cover cursor-pointer rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 border border-base-neutral-600"
+                                    className="w-full h-24 object-cover cursor-pointer rounded-lg shadow-md hover:brightness-125 transition-all duration-200 border border-base-neutral-600"
                                     src={image?.url}
                                     alt={`Image ${index}`}
                                     onClick={() => setCurrentIndex(index)}
