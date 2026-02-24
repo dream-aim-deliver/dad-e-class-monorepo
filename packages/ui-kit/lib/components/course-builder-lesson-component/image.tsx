@@ -174,7 +174,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     const imageFile = elementInstance as ImageElement;
     const [imageError, setImageError] = useState<boolean>(false);
     return (
-        <section className="w-full flex justify-center p-4 rounded-lg">
+        <section className="w-full flex justify-start p-4 rounded-lg">
             <div className="w-full max-w-[976px]">
                 <ImageComponent
                     src={imageFile.file?.url}
