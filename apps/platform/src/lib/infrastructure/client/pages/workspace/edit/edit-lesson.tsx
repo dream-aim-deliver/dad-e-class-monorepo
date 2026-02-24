@@ -44,7 +44,7 @@ import { IconLink } from 'packages/ui-kit/lib/components/icons/icon-link';
 import { IconQuiz } from 'packages/ui-kit/lib/components/icons/icon-quiz';
 import { LessonComponentButton } from './types';
 import LessonComponentsBar from './components/lesson-components-bar';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
@@ -428,6 +428,15 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     >(new Map());
     const [validationMessage, setValidationMessage] = useState<string | null>(null);
 
+    const clearValidationError = useCallback((componentId: string) => {
+        elementValidationErrors((prev) => {
+            const next = new Map(prev);
+            next.delete(componentId);
+            return next;
+        });
+        setValidationMessage(null);
+    }, []);
+
     const onSave = async () => {
         setErrorMessage(null);
         setSuccessMessage(null);
@@ -569,6 +578,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                                 courseVersion={courseVersion}
                                 setCourseVersion={setCourseVersion}
                                 validationErrors={validationErrors}
+                                clearValidationError={clearValidationError}
                                 courseLanguageCode={courseLanguageCode}
                             />
                         </Suspense>

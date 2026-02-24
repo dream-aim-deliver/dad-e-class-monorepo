@@ -1920,6 +1920,7 @@ interface EditLessonComponentsProps {
     courseVersion: number | null;
     setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
     validationErrors: Map<string, string | undefined>;
+    clearValidationError: (componentId: string) => void;
     hasMaterials?: boolean;
     courseLanguageCode?: string;
 }
@@ -1931,6 +1932,7 @@ export default function EditLessonComponents({
     courseVersion,
     setCourseVersion,
     validationErrors,
+    clearValidationError,
     hasMaterials = true,
     courseLanguageCode,
 }: EditLessonComponentsProps) {
@@ -1971,14 +1973,19 @@ export default function EditLessonComponents({
             {components.map((component, index) => {
                 const Component = typeToRendererMap[component.type];
                 if (!Component) return null;
-                // TODO: pass isFirst and isLast
+
+                const setComponentsWithClear: typeof setComponents = (updater) => {
+                    setComponents(updater);
+                    clearValidationError(component.id);
+                };
+
                 return (
                     <Component
                         lessonId={lessonId}
                         key={component.id}
                         elementInstance={component}
                         locale={locale}
-                        setComponents={setComponents}
+                        setComponents={setComponentsWithClear}
                         onUpClick={onUpClick}
                         onDownClick={onDownClick}
                         onDeleteClick={onDeleteClick}
