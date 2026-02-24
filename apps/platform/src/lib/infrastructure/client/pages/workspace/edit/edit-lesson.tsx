@@ -180,7 +180,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         lessonComponentsViewModel?.mode === 'default'
             ? lessonComponentsViewModel.data.courseLanguageCode
             : undefined;
-    console.log('[DEBUG EditLesson] courseLanguageCode:', courseLanguageCode, '| viewModel mode:', lessonComponentsViewModel?.mode, '| full data keys:', lessonComponentsViewModel?.mode === 'default' ? Object.keys(lessonComponentsViewModel.data) : 'N/A');
+
     const { components, setComponents, saveLesson, isSaving } = useSaveLesson({
         lessonId,
         courseVersion,
