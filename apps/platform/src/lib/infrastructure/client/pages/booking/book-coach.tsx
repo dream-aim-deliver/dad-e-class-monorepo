@@ -638,6 +638,17 @@ function BookCoachPageContent({
     // @ts-ignore
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
+    // Check if student has previously booked with this specific coach
+    const { data: studentSessionsResponse } = trpc.listStudentCoachingSessions.useQuery({});
+    const isBriefingRequired = useMemo(() => {
+        if (!studentSessionsResponse?.success || !studentSessionsResponse?.data) return true;
+        const sessions = (studentSessionsResponse.data as { sessions?: Array<{ status: string; coach?: { username?: string } }> }).sessions;
+        if (!sessions) return true;
+        return !sessions.some(
+            (s) => s.coach?.username === coachUsername && s.status !== 'unscheduled'
+        );
+    }, [studentSessionsResponse, coachUsername]);
+
     const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
     const [newSession, setNewSession] = useState<ScheduledOffering | null>(
         defaultSession,
@@ -707,8 +718,8 @@ function BookCoachPageContent({
         if (!newSession.session) return;
         if (!newSession.startTime) return;
 
-        // Check if briefing is provided
-        if (!briefing.trim()) {
+        // Check if briefing is provided (required for first booking with this coach)
+        if (isBriefingRequired && !briefing.trim()) {
             setSubmitError(getSchedulingErrorMessage('briefing_required'));
             return;
         }
@@ -833,6 +844,7 @@ function BookCoachPageContent({
                         bookingSuccess={bookingSuccess}
                         returnTo={returnTo}
                         courseSlug={courseSlug}
+                        isBriefingRequired={isBriefingRequired}
                         onReturnToCourse={() => {
                             if (returnTo) {
                                 router.push(returnTo);

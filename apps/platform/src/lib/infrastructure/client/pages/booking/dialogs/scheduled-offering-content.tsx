@@ -23,6 +23,7 @@ interface ScheduledOfferingContentProps {
     onViewSessions?: () => void;
     closeDialog?: () => void;
     onBuyMoreSessions?: () => void;
+    isBriefingRequired?: boolean;
 }
 
 export default function ScheduledOfferingContent({
@@ -40,6 +41,7 @@ export default function ScheduledOfferingContent({
     onViewSessions,
     closeDialog,
     onBuyMoreSessions,
+    isBriefingRequired = true,
 }: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.coaching');
@@ -100,16 +102,11 @@ export default function ScheduledOfferingContent({
             {session.session && (
                 <div className="flex flex-col gap-3">
                     <h3 className="text-lg font-semibold text-text-primary">
-                        {t('briefingTitle')}
+                        {t(isBriefingRequired ? 'briefingTitle' : 'briefingTitleOptional')}
                     </h3>
                     <p className="text-text-secondary text-sm">
                         {t('briefingDescription')}
                     </p>
-                    <ul className="list-disc list-inside text-text-secondary text-sm space-y-1">
-                        <li>{t('briefingMotivation')}</li>
-                        <li>{t('briefingSkills')}</li>
-                        <li>{t('briefingOutcome')}</li>
-                    </ul>
                     <TextAreaInput
                         className="min-h-[104px]"
                         placeholder={t('briefingPlaceholder')}

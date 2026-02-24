@@ -47,6 +47,9 @@ export default async function BookingServerComponent(
     // Prefetch coaching offerings for the BuyCoachingSession section
     prefetch(trpc.listCoachingOfferings.queryOptions({}));
 
+    // Prefetch student coaching sessions to determine if briefing is required (first booking per coach)
+    prefetch(trpc.listStudentCoachingSessions.queryOptions({}));
+
     // Prefetch student coaching session if sessionId is provided
     if (sessionIdNumber) {
         prefetch(trpc.getStudentCoachingSession.queryOptions({ id: sessionIdNumber }));
