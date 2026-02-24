@@ -207,7 +207,7 @@ export function CourseStudents(
                         assignmentTitle={assignmentTitle!}
                         onViewAssignment={() => {
                             // Navigate to student profile where assignment can be reviewed
-                            window.open(`/${locale}/students/${student.studentUsername}?courseSlug=${courseSlug}`, '_blank');
+                            window.open(`/${locale}/students/${student.studentUsername}?courseSlug=${courseSlug}&tab=assignments`, '_blank');
                         }}
                     />
                 );
