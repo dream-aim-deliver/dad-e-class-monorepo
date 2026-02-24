@@ -2462,6 +2462,7 @@ export const EN: TDictionary = {
         title: "Failed to Upload Component",
         description: "Unable to upload the lesson component. Please try again.",
       },
+      saveSuccess: 'Lesson saved successfully!',
     },
     editCourse: {
       module: 'Module',

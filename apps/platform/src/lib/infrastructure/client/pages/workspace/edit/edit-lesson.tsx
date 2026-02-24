@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Banner,
     Breadcrumbs,
     CourseElementType,
     DefaultLoading,
@@ -144,6 +145,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         setCourseSlug(lessonComponentsViewModel.data.courseSlug);
     }, [lessonComponentsViewModel]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
     const [lessonTitle, setLessonTitle] = useState<string>('');
@@ -395,7 +397,10 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         Map<string, string | undefined>
     >(new Map());
 
-    const onSave = () => {
+    const onSave = async () => {
+        setErrorMessage(null);
+        setSuccessMessage(null);
+
         const newErrors = new Map<string, string | undefined>();
         components.forEach((component) => {
             const validate = validatorPerType[component.type];
@@ -413,7 +418,16 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         if (newErrors.size > 0) {
             return;
         }
-        saveLesson();
+
+        try {
+            const result = await saveLesson();
+            if (result) {
+                setSuccessMessage(editLessonsTranslations('saveSuccess'));
+                setTimeout(() => setSuccessMessage(null), 5000);
+            }
+        } catch {
+            // Error already set by saveLesson() via setErrorMessage
+        }
     };
 
     // As we don't need to track progress, leave this map empty
@@ -453,12 +467,21 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                     slug=""
                 />
             </div>
+            {successMessage && (
+                <Banner
+                    style="success"
+                    title={successMessage}
+                    closeable
+                    onClose={() => setSuccessMessage(null)}
+                />
+            )}
             {errorMessage && (
-                <DefaultError
-                    type="simple"
-                    locale={locale}
+                <Banner
+                    style="error"
                     title={editLessonsTranslations('errorSaving')}
                     description={errorMessage}
+                    closeable
+                    onClose={() => setErrorMessage(null)}
                 />
             )}
             {isPreviewing && (

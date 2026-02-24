@@ -2569,6 +2569,7 @@ export const DictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
       }),
+      saveSuccess: z.string(),
     }),
     editCourse: z.object({
       module: z.string(),
