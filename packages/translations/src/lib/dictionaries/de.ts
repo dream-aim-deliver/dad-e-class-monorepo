@@ -1404,7 +1404,7 @@ export const DE: TDictionary = {
     },
     editHeader: {
       editCourseText: 'Kurs bearbeiten',
-      savingText: 'Sparen...',
+      savingText: 'Sichern...',
       saveDraftText: 'Entwurf speichern',
       saveText: 'Speichern',
       previewText: 'Vorschau',
