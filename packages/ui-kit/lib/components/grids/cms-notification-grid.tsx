@@ -205,7 +205,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     const [selectedRows, setSelectedRows] = useState<NotificationRow[]>([]);
     const [selectedRowIds, setSelectedRowIds] = useState<Set<string>>(new Set());
 
-    const rowData = useMemo(() => [
+    const baseRowData = useMemo(() => [
         ...receivedNotifications.map(n => ({
             ...n,
             type: 'received' as const,
@@ -223,6 +223,21 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             recipients: n.receivers || [],
         })),
     ], [receivedNotifications, sentNotifications]);
+
+    const [rowData, setRowData] = useState(baseRowData);
+
+    useEffect(() => {
+        setRowData(baseRowData);
+    }, [baseRowData]);
+
+    const handleOptimisticRowClicked = useCallback((notification: NotificationRow) => {
+        if (notification.type === 'received' && !notification.isRead && notification.id) {
+            setRowData(prev =>
+                prev.map(n => (n.type === 'received' && n.id === notification.id) ? { ...n, isRead: true } : n)
+            );
+        }
+        if (onRowClicked) onRowClicked(notification);
+    }, [onRowClicked]);
 
     const columnDefs = useMemo(() => [
         {
@@ -247,7 +262,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             filter: 'agTextColumnFilter',
             minWidth: 500,
             onCellClicked: (event: { data: NotificationRow }) => {
-                if (event.data && onRowClicked) onRowClicked(event.data);
+                if (event.data) handleOptimisticRowClicked(event.data);
             },
         },
         {
@@ -255,7 +270,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             headerName: dictionary.type,
             valueFormatter: (params: { value: string }) => params.value === 'received' ? dictionary.received : dictionary.sent,
             onCellClicked: (event: { data: NotificationRow }) => {
-                if (event.data && onRowClicked) onRowClicked(event.data);
+                if (event.data) handleOptimisticRowClicked(event.data);
             },
         },
         {
@@ -264,7 +279,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             cellRenderer: RecipientsRenderer,
             hide: false,
             onCellClicked: (event: { data: NotificationRow }) => {
-                if (event.data && onRowClicked) onRowClicked(event.data);
+                if (event.data) handleOptimisticRowClicked(event.data);
             },
         },
         {
@@ -276,7 +291,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             headerClass: 'ag-header-cell-center',
             cellClass: 'ag-cell-center',
             onCellClicked: (event: { data: NotificationRow }) => {
-                if (event.data && onRowClicked) onRowClicked(event.data);
+                if (event.data) handleOptimisticRowClicked(event.data);
             },
         },
         {
@@ -285,7 +300,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             valueFormatter: (params: { value: string | number | Date; }) => (params.value ? formatDate(new Date(params.value)) : ''),
             filter: 'agDateColumnFilter',
             onCellClicked: (event: { data: NotificationRow }) => {
-                if (event.data && onRowClicked) onRowClicked(event.data);
+                if (event.data) handleOptimisticRowClicked(event.data);
             },
             sort: 'desc' as 'asc' | 'desc' | null
         },
@@ -293,7 +308,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             field: 'platform',
             hide: true,
         },
-    ], [dictionary, receivedNotifications]);
+    ], [dictionary, receivedNotifications, handleOptimisticRowClicked]);
 
     const doesExternalFilterPass = useCallback(
         (node: IRowNode<NotificationRow>) => {
@@ -449,6 +464,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
                     doesExternalFilterPass={doesExternalFilterPass}
                     rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
+                    getRowId={(params) => String(params.data.id)}
                     getRowStyle={(params) => {
                         if (!params.data) return undefined;
                         return params.data.isRead

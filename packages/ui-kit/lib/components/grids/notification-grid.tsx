@@ -145,6 +145,24 @@ export const NotificationGrid = (props: NotificationGridProps) => {
   // Track selected IDs during loading to restore selection after data refresh
   const [selectedIdsBeforeLoading, setSelectedIdsBeforeLoading] = useState<(number | string)[]>([]);
 
+  const handleOptimisticMarkAsRead = useCallback((notification: ExtendedNotification) => {
+    if (!notification.isRead) {
+      setModifiedNotifications(prev =>
+        prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n)
+      );
+    }
+    if (onMarkAsRead) onMarkAsRead(notification);
+  }, [onMarkAsRead]);
+
+  const handleOptimisticNotificationClick = useCallback((notification: ExtendedNotification) => {
+    if (!notification.isRead) {
+      setModifiedNotifications(prev =>
+        prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n)
+      );
+    }
+    onNotificationClick(notification);
+  }, [onNotificationClick]);
+
   const handleClearAllFilters = useCallback(() => {
     setSearchTerm(''); // Clear search input
     setFilters({}); // Reset modal filters
@@ -172,7 +190,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       cellRenderer: NotificationMessageRenderer,
       filter: 'agTextColumnFilter',
       onCellClicked: (event: { data: ExtendedNotification }) => {
-        if (onMarkAsRead) onMarkAsRead(event.data);
+        handleOptimisticMarkAsRead(event.data);
       },
     },
     {
@@ -180,7 +198,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       headerName: dictionary.action,
       cellRenderer: NotificationActionRenderer,
       onCellClicked: (event: { data: ExtendedNotification; }) => {
-        onNotificationClick(event.data);
+        handleOptimisticNotificationClick(event.data);
       },
       sortable: false,
     },
@@ -191,7 +209,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       filter: 'agDateColumnFilter',
       sort: 'desc' as 'asc' | 'desc' | null,
       onCellClicked: (event: { data: ExtendedNotification }) => {
-        if (onMarkAsRead) onMarkAsRead(event.data);
+        handleOptimisticMarkAsRead(event.data);
       },
     },
     {
@@ -202,7 +220,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
         values: platforms,
       },
     },
-  ], [dictionary]);
+  ], [dictionary, handleOptimisticMarkAsRead, handleOptimisticNotificationClick]);
 
   // Get notification counts for each tab
   const notificationCounts = useMemo(() => {
@@ -273,16 +291,15 @@ export const NotificationGrid = (props: NotificationGridProps) => {
     }
   }, [doesExternalFilterPass, gridRef]);
 
-  // Apply filter when search term or notifications change
-  useEffect(() => {
-    refreshGrid();
-  }, [refreshGrid, searchTerm, notifications, selectedTab, filters]);
-
-  // Update modifiedNotifications when props.notifications change
+  // Sync local state when props change (after backend refetch)
   useEffect(() => {
     setModifiedNotifications(notifications);
+  }, [notifications]);
+
+  // Refresh external filter only when filter inputs change
+  useEffect(() => {
     refreshGrid();
-  }, [notifications, refreshGrid]);
+  }, [refreshGrid, searchTerm, selectedTab, filters]);
 
   // Restore selection after loading completes and data refreshes
   // Using useLayoutEffect to run synchronously before browser paint
@@ -363,6 +380,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
           doesExternalFilterPass={doesExternalFilterPass}
           rowSelection={{ mode: 'multiRow' }}
           noRowsMessage={dictionary.noNotifications}
+          getRowId={(params) => String(params.data.id)}
           getRowStyle={(params) => {
             if (!params.data) return undefined;
             return params.data.isRead
