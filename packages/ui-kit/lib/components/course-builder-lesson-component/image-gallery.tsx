@@ -250,7 +250,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                 />
 
                 {/* Carousel */}
-                <div className="relative overflow-hidden w-full">
+                <div className="relative overflow-x-clip w-full px-1 py-2">
                     <div
                         className="flex gap-2 transition-transform duration-500 ease-out min-w-0"
                         style={{
@@ -260,7 +260,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                         {imageElements.map((image, index) => (
                             <div
                                 key={index}
-                                className={cn("flex-shrink-0 p-1 transition-all duration-300 min-w-0", index === currentIndex && "ring-2 ring-button-primary-fill ring-offset-2 ring-offset-base-neutral-900 rounded-lg shadow-lg scale-105")}
+                                className={cn("flex-shrink-0 p-1 transition-all duration-300 min-w-0", index === currentIndex && "ring-2 ring-button-primary-fill rounded-lg shadow-lg")}
                                 style={{ width: `calc(${thumbWidthPercent}% - ${(imageElements.length - 1) * 0.5 / imageElements.length}rem)` }}
                             >
                                 <ImageComponent
