@@ -102,7 +102,7 @@ interface ImageFileEditProps extends DesignerComponentProps {
  * @param maxSize - Maximum file size allowed for upload, in MB
  * @returns JSX.Element | null
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize, uploadProgress }: ImageFileEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize, uploadProgress, validationError }: ImageFileEditProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
     const dictionary = getDictionary(locale);
     const handleImageFile = async (
@@ -128,6 +128,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <Uploader
                 type="single"
