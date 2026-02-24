@@ -151,6 +151,15 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     const [lessonTitle, setLessonTitle] = useState<string>('');
     const [courseTitle, setCourseTitle] = useState<string>('');
     const [courseSlug, setCourseSlug] = useState<string>('');
+
+    // Derive courseLanguageCode directly from viewModel (not via useEffect)
+    // to avoid a timing gap where CoachingSessionComponent would fire its
+    // query with an empty value on the first render.
+    const courseLanguageCode =
+        lessonComponentsViewModel?.mode === 'default'
+            ? lessonComponentsViewModel.data.courseLanguageCode
+            : undefined;
+    console.log('[DEBUG EditLesson] courseLanguageCode:', courseLanguageCode, '| viewModel mode:', lessonComponentsViewModel?.mode, '| full data keys:', lessonComponentsViewModel?.mode === 'default' ? Object.keys(lessonComponentsViewModel.data) : 'N/A');
     const { components, setComponents, saveLesson, isSaving } = useSaveLesson({
         lessonId,
         courseVersion,
@@ -518,6 +527,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                                 courseVersion={courseVersion}
                                 setCourseVersion={setCourseVersion}
                                 validationErrors={validationErrors}
+                                courseLanguageCode={courseLanguageCode}
                             />
                         </Suspense>
                     }

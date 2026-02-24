@@ -174,6 +174,7 @@ interface LessonComponentProps {
     onDeleteClick: (id: string) => void;
     validationError?: string | undefined;
     hasMaterials?: boolean;
+    courseLanguageCode?: string;
 }
 
 function RichTextComponent({
@@ -1618,10 +1619,14 @@ function CoachingSessionComponent({
     onDownClick,
     onDeleteClick,
     validationError,
+    courseLanguageCode,
 }: LessonComponentProps) {
     const editLessonT = useTranslations('pages.editLesson');
+    const queryInput = courseLanguageCode ? { languageCode: courseLanguageCode } : {};
+    console.log('[DEBUG CoachingSession] courseLanguageCode prop:', courseLanguageCode, '| query input:', JSON.stringify(queryInput));
     const [coachingOfferingsResponse] =
-        trpc.listCoachingOfferings.useSuspenseQuery({});
+        trpc.listCoachingOfferings.useSuspenseQuery(queryInput);
+    console.log('[DEBUG CoachingSession] response:', JSON.stringify(coachingOfferingsResponse).slice(0, 500));
     const [coachingOfferingsViewModel, setCoachingOfferingsViewModel] =
         useState<viewModels.TCoachingOfferingListViewModel | undefined>(
             undefined,
@@ -1916,6 +1921,7 @@ interface EditLessonComponentsProps {
     setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
     validationErrors: Map<string, string | undefined>;
     hasMaterials?: boolean;
+    courseLanguageCode?: string;
 }
 
 export default function EditLessonComponents({
@@ -1926,6 +1932,7 @@ export default function EditLessonComponents({
     setCourseVersion,
     validationErrors,
     hasMaterials = true,
+    courseLanguageCode,
 }: EditLessonComponentsProps) {
     const onUpClick = (id: string) => {
         setComponents((prev) => {
@@ -1977,6 +1984,7 @@ export default function EditLessonComponents({
                         onDeleteClick={onDeleteClick}
                         validationError={validationErrors.get(component.id)}
                         hasMaterials={hasMaterials}
+                        courseLanguageCode={courseLanguageCode}
                     />
                 );
             })}
