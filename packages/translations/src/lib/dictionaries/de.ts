@@ -2465,6 +2465,9 @@ export const DE: TDictionary = {
         description: "Die Lektionskomponente konnte nicht hochgeladen werden. Bitte versuche es erneut.",
       },
       saveSuccess: 'Lektion erfolgreich gespeichert!',
+      assignment: 'Aufgabe',
+      validationBannerTitle: 'Speichern nicht möglich — Validierungsfehler gefunden',
+      validationBannerDescription: 'Bitte nach unten scrollen, um die markierten Komponenten zu überprüfen:',
     },
     editCourse: {
       module: 'Modul',

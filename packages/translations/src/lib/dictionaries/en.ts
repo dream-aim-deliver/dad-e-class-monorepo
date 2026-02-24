@@ -2463,6 +2463,9 @@ export const EN: TDictionary = {
         description: "Unable to upload the lesson component. Please try again.",
       },
       saveSuccess: 'Lesson saved successfully!',
+      assignment: 'Assignment',
+      validationBannerTitle: 'Cannot save — validation errors found',
+      validationBannerDescription: 'Please scroll down to review and fix the highlighted components:',
     },
     editCourse: {
       module: 'Module',
