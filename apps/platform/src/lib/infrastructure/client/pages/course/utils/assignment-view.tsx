@@ -8,7 +8,7 @@ import {
 import React, { Suspense } from 'react';
 import AssignmentContent from '../enrolled-course/assignment-content';
 import { useLocale } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 
 export interface AssignmentViewServiceConfig {
     studentUsername?: string;
@@ -45,6 +45,7 @@ export const useStudyAssignmentView = (
     config: AssignmentViewServiceConfig,
 ): AssignmentViewService => {
     const locale = useLocale() as TLocale;
+    const dictionary = getDictionary(locale);
 
     const getComponent = (assignmentId: string): React.ReactNode | null => {
         return (
@@ -56,7 +57,7 @@ export const useStudyAssignmentView = (
                 defaultOpen={false}
             >
                 <DialogTrigger asChild className="w-full">
-                    <Button text="View" variant="secondary" />
+                    <Button text={dictionary.components.assignment.assignmentCard.viewText} variant="secondary" />
                 </DialogTrigger>
                 <DialogContent
                     showCloseButton
