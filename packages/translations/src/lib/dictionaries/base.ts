@@ -2225,10 +2225,8 @@ export const DictionarySchema = z.object({
       filterByTopic: z.string(),
       noCoachesFound: z.string(),
       briefingTitle: z.string(),
+      briefingTitleOptional: z.string(),
       briefingDescription: z.string(),
-      briefingMotivation: z.string(),
-      briefingSkills: z.string(),
-      briefingOutcome: z.string(),
       briefingButtonText: z.string(),
       briefingPlaceholder: z.string(),
       shortNoticeWarning: z.object({
