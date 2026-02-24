@@ -54,7 +54,9 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
         return (
             <EmptyState
                 locale={locale}
-                message={offersTranslations('coachesNotFound.description')}
+                message={offersTranslations(
+                    isLoggedIn ? 'coachesNotFound.description' : 'coachesNotFoundGuest.description'
+                )}
             />
         );
     }
@@ -76,7 +78,9 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
         return (
             <EmptyState
                 locale={locale}
-                message={offersTranslations('coachesNotFound.description')}
+                message={offersTranslations(
+                    isLoggedIn ? 'coachesNotFound.description' : 'coachesNotFoundGuest.description'
+                )}
             />
         );
     }
