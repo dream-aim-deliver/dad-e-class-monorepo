@@ -14,7 +14,11 @@ export const Offers_EN: TDictionary["pages"]["offers"] = {
   },
   coachesNotFound: {
     title: "No coaches found",
-    description: "No coaches matched your criteria. Try different filters – or get in touch and let us know what kind of support you’re looking for.",
+    description: "No coaches found for the selected topics. Try adjusting your filters.",
+  },
+  coachesNotFoundGuest: {
+    title: "No coaches found",
+    description: "Please create an account to browse all available coaches.",
   },
   packagesNotFound: {
     title: "No packages found",

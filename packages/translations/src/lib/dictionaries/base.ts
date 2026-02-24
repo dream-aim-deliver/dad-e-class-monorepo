@@ -2204,6 +2204,10 @@ export const DictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
       }),
+      coachesNotFoundGuest: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
       loadError: z.object({
         title: z.string(),
         description: z.string(),
