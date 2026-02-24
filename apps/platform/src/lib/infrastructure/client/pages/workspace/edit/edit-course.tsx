@@ -481,6 +481,7 @@ function EditCourseLayout({
                 locale={locale}
                 roles={roles}
                 slug={slug}
+                isEdited={isEdited}
             />
             <Tabs.Root defaultTab={TabTypes.General} onValueChange={onTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">

@@ -24,6 +24,7 @@ interface EditHeaderProps {
     roles: string[];
     slug: string;
     isReadOnlyContent?: boolean;
+    isEdited?: boolean;
 }
 
 export default function EditHeader({
@@ -39,6 +40,7 @@ export default function EditHeader({
     roles,
     slug,
     isReadOnlyContent = false,
+    isEdited = false,
 }: EditHeaderProps) {
     const dictionary = getDictionary(locale);
     const router = useRouter();
@@ -77,6 +79,18 @@ export default function EditHeader({
         title: '',
         message: '',
     });
+
+    const handlePublishClick = () => {
+        if (isEdited) {
+            setErrorModal({
+                isOpen: true,
+                title: dictionary.components.editHeader.publishCourse,
+                message: dictionary.components.editHeader.saveBeforePublish,
+            });
+            return;
+        }
+        setPublishConfirmModal(true);
+    };
 
     const handlePublishConfirm = async () => {
         setPublishConfirmModal(false);
@@ -265,7 +279,7 @@ export default function EditHeader({
                         <Button
                             variant="primary"
                             text={dictionary.components.editHeader.publishCourse}
-                            onClick={() => setPublishConfirmModal(true)}
+                            onClick={handlePublishClick}
                             disabled={isSaving || isPreviewing || publishMutation.isPending}
                         />
                     )}

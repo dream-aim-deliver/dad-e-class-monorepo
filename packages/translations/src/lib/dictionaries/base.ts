@@ -1402,6 +1402,7 @@ export const DictionarySchema = z.object({
       publishError: z.string(),
       publishErrorTitle: z.string(),
       publishErrorGeneric: z.string(),
+      saveBeforePublish: z.string(),
       confirmPublish: z.string(),
       archiveCourse: z.string(),
       archiveConfirmation: z.string(),

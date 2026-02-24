@@ -1422,6 +1422,7 @@ export const DE: TDictionary = {
       publishError: 'Fehler beim Veröffentlichen des Kurses',
       publishErrorTitle: 'Veröffentlichung fehlgeschlagen',
       publishErrorGeneric: 'Beim Veröffentlichen des Kurses ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      saveBeforePublish: 'Sie müssen vor dem Veröffentlichen speichern. Bitte speichern Sie zuerst Ihre Änderungen.',
       confirmPublish: 'Veröffentlichen',
       archiveCourse: 'Kurs archivieren',
       archiveConfirmation: 'Sind Sie sicher, dass Sie diesen Kurs archivieren möchten? Studenten können sich nicht mehr anmelden.',

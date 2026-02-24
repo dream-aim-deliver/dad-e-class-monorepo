@@ -1420,6 +1420,7 @@ export const EN: TDictionary = {
       publishError: 'Failed to publish course',
       publishErrorTitle: 'Publish Failed',
       publishErrorGeneric: 'An error occurred while publishing the course. Please try again.',
+      saveBeforePublish: 'You have to save before publishing. Please save your changes first.',
       confirmPublish: 'Publish',
       archiveCourse: 'Archive course',
       archiveConfirmation: 'Are you sure you want to archive this course? Students will no longer be able to enroll.',
