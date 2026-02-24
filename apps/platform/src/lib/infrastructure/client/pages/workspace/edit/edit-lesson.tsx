@@ -61,6 +61,27 @@ import { FileUploadProvider } from '../../course/utils/file-upload';
 import { AssignmentViewProvider } from '../../course/utils/assignment-view';
 import { useSession } from 'next-auth/react';
 
+const componentTypeToTranslationKey: Record<string, string> = {
+    richText: 'richText',
+    singleChoice: 'singleChoice',
+    multiCheck: 'checklist',
+    textInput: 'textInput',
+    headingText: 'heading',
+    oneOutOfThree: 'oneOutOfThree',
+    uploadFiles: 'uploadFiles',
+    coachingSession: 'coachingSession',
+    imageFile: 'image',
+    videoFile: 'video',
+    imageGallery: 'imageCarousel',
+    downloadFiles: 'downloadFile',
+    assignment: 'assignment',
+    quizTypeOne: 'quiz',
+    quizTypeTwo: 'quiz',
+    quizTypeThree: 'quiz',
+    quizTypeFour: 'quiz',
+    links: 'link',
+};
+
 interface EditLessonProps {
     lessonId: number;
 }
@@ -405,10 +426,12 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     const [validationErrors, elementValidationErrors] = useState<
         Map<string, string | undefined>
     >(new Map());
+    const [validationMessage, setValidationMessage] = useState<string | null>(null);
 
     const onSave = async () => {
         setErrorMessage(null);
         setSuccessMessage(null);
+        setValidationMessage(null);
 
         const newErrors = new Map<string, string | undefined>();
         components.forEach((component) => {
@@ -425,6 +448,16 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         });
         elementValidationErrors(newErrors);
         if (newErrors.size > 0) {
+            const errorList = components
+                .map((c, i) => ({ component: c, position: i + 1 }))
+                .filter(({ component }) => newErrors.has(component.id))
+                .map(({ component, position }) => {
+                    const key = componentTypeToTranslationKey[component.type];
+                    const name = key ? editLessonsTranslations(key) : component.type;
+                    return `#${position} ${name}`;
+                })
+                .join(', ');
+            setValidationMessage(errorList);
             return;
         }
 
@@ -491,6 +524,15 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                     description={errorMessage}
                     closeable
                     onClose={() => setErrorMessage(null)}
+                />
+            )}
+            {validationMessage && (
+                <Banner
+                    style="error"
+                    title={editLessonsTranslations('validationBannerTitle')}
+                    description={`${editLessonsTranslations('validationBannerDescription')} ${validationMessage}`}
+                    closeable
+                    onClose={() => setValidationMessage(null)}
                 />
             )}
             {isPreviewing && (
