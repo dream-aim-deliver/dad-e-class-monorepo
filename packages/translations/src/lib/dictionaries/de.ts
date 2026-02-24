@@ -2464,6 +2464,7 @@ export const DE: TDictionary = {
         title: "Komponente konnte nicht hochgeladen werden",
         description: "Die Lektionskomponente konnte nicht hochgeladen werden. Bitte versuche es erneut.",
       },
+      saveSuccess: 'Lektion erfolgreich gespeichert!',
     },
     editCourse: {
       module: 'Modul',
