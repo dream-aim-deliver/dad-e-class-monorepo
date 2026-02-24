@@ -488,8 +488,20 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	};
 
 	// Get topics data for both languages (may be undefined if professional tab hasn't been loaded yet)
-	const allTopicsEn = topicsEnViewModel?.mode === 'default' ? topicsEnViewModel.data.topics : [];
-	const allTopicsDe = topicsDeViewModel?.mode === 'default' ? topicsDeViewModel.data.topics : [];
+	// Deduplicate by ID to prevent duplicate skill entries in the modal
+	// (can happen if the backend has duplicate Topic records for the same language)
+	const dedupeById = <T extends { id: string | number }>(items: T[]): T[] => {
+		const seen = new Set<number>();
+		return items.filter(item => {
+			const numId = typeof item.id === 'string' ? parseInt(item.id, 10) : item.id;
+			if (seen.has(numId)) return false;
+			seen.add(numId);
+			return true;
+		});
+	};
+
+	const allTopicsEn = dedupeById(topicsEnViewModel?.mode === 'default' ? topicsEnViewModel.data.topics : []);
+	const allTopicsDe = dedupeById(topicsDeViewModel?.mode === 'default' ? topicsDeViewModel.data.topics : []);
 	const allTopics = [...allTopicsEn, ...allTopicsDe];
 
 	// Create default profiles when they don't exist (for upsert functionality)
