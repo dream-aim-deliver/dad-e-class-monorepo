@@ -115,6 +115,9 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   // Determine if we have dual language mode (both EN and DE skill lists available)
   const hasDualLanguage = Boolean(availableSkillsEn && availableSkillsDe);
 
+  // Normalize ID comparison to handle string/number mismatches
+  const idMatch = (a: string | number, b: string | number) => Number(a) === Number(b);
+
   const [skillSearchQuery, setSkillSearchQuery] = useState('');
   const [skillSearchQueryEn, setSkillSearchQueryEn] = useState('');
   const [skillSearchQueryDe, setSkillSearchQueryDe] = useState('');
@@ -138,9 +141,9 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   });
 
   const toggleSkill = (skill: TSkill) => {
-    const skillExists = initialData.skills.some(s => s.id === skill.id);
+    const skillExists = initialData.skills.some(s => idMatch(s.id, skill.id));
     const updatedSkills = skillExists
-      ? initialData.skills.filter((s) => s.id !== skill.id)
+      ? initialData.skills.filter((s) => !idMatch(s.id, skill.id))
       : [...initialData.skills, makeSkillEntry(skill)];
 
     const newData = { ...initialData, skills: updatedSkills };
@@ -148,7 +151,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   };
 
   const removeSkill = (skillId: string | number) => {
-    const updatedSkills = initialData.skills.filter((s) => s.id !== skillId);
+    const updatedSkills = initialData.skills.filter((s) => !idMatch(s.id, skillId));
     const newData = { ...initialData, skills: updatedSkills };
     onChange(newData);
   };
@@ -156,40 +159,40 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   // Language-specific skill toggles (for dual mode)
   const toggleSkillEn = (skill: TSkill) => {
     const currentSkillsEn = (initialData as any).skillsEn || [];
-    const skillExists = currentSkillsEn.some((s: TSkill) => s.id === skill.id);
+    const skillExists = currentSkillsEn.some((s: TSkill) => idMatch(s.id, skill.id));
     const updatedSkillsEn = skillExists
-      ? currentSkillsEn.filter((s: TSkill) => s.id !== skill.id)
+      ? currentSkillsEn.filter((s: TSkill) => !idMatch(s.id, skill.id))
       : [...currentSkillsEn, makeSkillEntry(skill)];
     // Also update combined skills list
     const updatedSkills = skillExists
-      ? initialData.skills.filter((s) => s.id !== skill.id)
+      ? initialData.skills.filter((s) => !idMatch(s.id, skill.id))
       : [...initialData.skills, makeSkillEntry(skill)];
     onChange({ ...initialData, skillsEn: updatedSkillsEn, skills: updatedSkills } as any);
   };
 
   const removeSkillEn = (skillId: string | number) => {
     const currentSkillsEn = (initialData as any).skillsEn || [];
-    const updatedSkillsEn = currentSkillsEn.filter((s: TSkill) => s.id !== skillId);
-    const updatedSkills = initialData.skills.filter((s) => s.id !== skillId);
+    const updatedSkillsEn = currentSkillsEn.filter((s: TSkill) => !idMatch(s.id, skillId));
+    const updatedSkills = initialData.skills.filter((s) => !idMatch(s.id, skillId));
     onChange({ ...initialData, skillsEn: updatedSkillsEn, skills: updatedSkills } as any);
   };
 
   const toggleSkillDe = (skill: TSkill) => {
     const currentSkillsDe = (initialData as any).skillsDe || [];
-    const skillExists = currentSkillsDe.some((s: TSkill) => s.id === skill.id);
+    const skillExists = currentSkillsDe.some((s: TSkill) => idMatch(s.id, skill.id));
     const updatedSkillsDe = skillExists
-      ? currentSkillsDe.filter((s: TSkill) => s.id !== skill.id)
+      ? currentSkillsDe.filter((s: TSkill) => !idMatch(s.id, skill.id))
       : [...currentSkillsDe, makeSkillEntry(skill)];
     const updatedSkills = skillExists
-      ? initialData.skills.filter((s) => s.id !== skill.id)
+      ? initialData.skills.filter((s) => !idMatch(s.id, skill.id))
       : [...initialData.skills, makeSkillEntry(skill)];
     onChange({ ...initialData, skillsDe: updatedSkillsDe, skills: updatedSkills } as any);
   };
 
   const removeSkillDe = (skillId: string | number) => {
     const currentSkillsDe = (initialData as any).skillsDe || [];
-    const updatedSkillsDe = currentSkillsDe.filter((s: TSkill) => s.id !== skillId);
-    const updatedSkills = initialData.skills.filter((s) => s.id !== skillId);
+    const updatedSkillsDe = currentSkillsDe.filter((s: TSkill) => !idMatch(s.id, skillId));
+    const updatedSkills = initialData.skills.filter((s) => !idMatch(s.id, skillId));
     onChange({ ...initialData, skillsDe: updatedSkillsDe, skills: updatedSkills } as any);
   };
 
@@ -483,7 +486,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                             name={`skill-en-${skill.id}`}
                             labelClass="text-text-primary text-sm leading-[100%]"
                             value={skill.name}
-                            checked={((initialData as any).skillsEn || []).some((s: TSkill) => s.id === skill.id)}
+                            checked={((initialData as any).skillsEn || []).some((s: TSkill) => idMatch(s.id, skill.id))}
                             withText={true}
                             onChange={() => toggleSkillEn(skill)}
                           />
@@ -531,7 +534,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                             name={`skill-de-${skill.id}`}
                             labelClass="text-text-primary text-sm leading-[100%]"
                             value={skill.name}
-                            checked={((initialData as any).skillsDe || []).some((s: TSkill) => s.id === skill.id)}
+                            checked={((initialData as any).skillsDe || []).some((s: TSkill) => idMatch(s.id, skill.id))}
                             withText={true}
                             onChange={() => toggleSkillDe(skill)}
                           />
@@ -620,7 +623,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                             name={`skill-${skill.id}`}
                             labelClass="text-text-primary text-sm leading-[100%]"
                             value={skill.name}
-                            checked={initialData.skills.some((s) => s.id === skill.id)}
+                            checked={initialData.skills.some((s) => idMatch(s.id, skill.id))}
                             withText={true}
                             onChange={() => toggleSkill(skill)}
                           />
