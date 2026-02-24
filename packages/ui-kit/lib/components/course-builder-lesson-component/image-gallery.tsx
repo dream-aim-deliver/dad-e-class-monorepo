@@ -240,11 +240,11 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         : 0;
 
     return (
-        <section className="w-full flex justify-center p-4 rounded-lg">
+        <section className="w-full flex justify-start p-4 rounded-lg">
             <div className="w-full max-w-[1000px]">
                 {/* Featured image */}
                 <ImageComponent
-                    className="max-w-[700px] object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-neutral-700 mb-6 mx-auto block"
+                    className="max-w-[700px] object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-neutral-700 mb-6"
                     src={imageElements[currentIndex].url}
                     alt={`Image ${currentIndex + 1}`}
                 />
