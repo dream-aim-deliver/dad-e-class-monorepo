@@ -42,6 +42,19 @@ const StatusBadge = ({ status }: { status: CoachingSession['status'] }) => {
 };
 
 const StudentCellRenderer = (props: any) => {
+    const session = props.data;
+
+    // Group session: show "Group students" with tooltip listing usernames
+    if (session?.sessionType === 'group' && session?.students?.length > 0) {
+        const usernames = session.students.map((s: any) => s.username).join(', ');
+        return (
+            <span className="text-sm" title={usernames}>
+                Group students ({session.students.length})
+            </span>
+        );
+    }
+
+    // Individual session: show single student
     const student = props.value;
     if (!student) return <span className="text-neutral-500">-</span>;
 
@@ -60,6 +73,19 @@ const StudentCellRenderer = (props: any) => {
 };
 
 const CoachCellRenderer = (props: any) => {
+    const session = props.data;
+
+    // Group session: show "Group coaches" with tooltip listing usernames
+    if (session?.sessionType === 'group' && session?.coaches?.length > 0) {
+        const usernames = session.coaches.map((c: any) => c.username).join(', ');
+        return (
+            <span className="text-sm" title={usernames}>
+                Group coaches ({session.coaches.length})
+            </span>
+        );
+    }
+
+    // Individual session: show single coach
     const coach = props.value;
     if (!coach) return <span className="text-neutral-500">-</span>;
 
@@ -232,14 +258,32 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
         if (searchTerm) {
             const searchLower = searchTerm.toLowerCase();
             const titleMatch = session.coachingOfferingTitle?.toLowerCase().includes(searchLower);
-            const coachNameMatch = session.coach?.name?.toLowerCase().includes(searchLower) ||
-                session.coach?.surname?.toLowerCase().includes(searchLower) ||
-                session.coach?.username?.toLowerCase().includes(searchLower);
-            const studentNameMatch = session.student?.name?.toLowerCase().includes(searchLower) ||
-                session.student?.surname?.toLowerCase().includes(searchLower) ||
-                session.student?.username?.toLowerCase().includes(searchLower);
             const courseTitleMatch = session.course?.title?.toLowerCase().includes(searchLower);
             const couponNameMatch = session.couponName?.toLowerCase().includes(searchLower);
+
+            // Search in coach/student fields — handle both individual and group sessions
+            let coachNameMatch = false;
+            let studentNameMatch = false;
+
+            if (session.sessionType === 'group') {
+                coachNameMatch = session.coaches?.some((c: any) =>
+                    c.name?.toLowerCase().includes(searchLower) ||
+                    c.surname?.toLowerCase().includes(searchLower) ||
+                    c.username?.toLowerCase().includes(searchLower)
+                ) ?? false;
+                studentNameMatch = session.students?.some((s: any) =>
+                    s.name?.toLowerCase().includes(searchLower) ||
+                    s.surname?.toLowerCase().includes(searchLower) ||
+                    s.username?.toLowerCase().includes(searchLower)
+                ) ?? false;
+            } else {
+                coachNameMatch = !!(session.coach?.name?.toLowerCase().includes(searchLower) ||
+                    session.coach?.surname?.toLowerCase().includes(searchLower) ||
+                    session.coach?.username?.toLowerCase().includes(searchLower));
+                studentNameMatch = !!(session.student?.name?.toLowerCase().includes(searchLower) ||
+                    session.student?.surname?.toLowerCase().includes(searchLower) ||
+                    session.student?.username?.toLowerCase().includes(searchLower));
+            }
 
             if (!(titleMatch || coachNameMatch || studentNameMatch || courseTitleMatch || couponNameMatch)) {
                 return false;

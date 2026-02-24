@@ -154,6 +154,11 @@ export default function CoachingSessions({
 
           // Format coach name
           if (colId === 'coach') {
+            if (data.sessionType === 'group' && data.coaches?.length > 0) {
+              return data.coaches.map((c: any) =>
+                c.name && c.surname ? `${c.name} ${c.surname}` : c.name || c.username
+              ).join(', ');
+            }
             const coach = data.coach;
             if (!coach) return '-';
             return coach.name && coach.surname
@@ -163,6 +168,11 @@ export default function CoachingSessions({
 
           // Format student name
           if (colId === 'student') {
+            if (data.sessionType === 'group' && data.students?.length > 0) {
+              return data.students.map((s: any) =>
+                s.name && s.surname ? `${s.name} ${s.surname}` : s.name || s.username
+              ).join(', ');
+            }
             const student = data.student;
             if (!student) return '-';
             return student.name && student.surname
