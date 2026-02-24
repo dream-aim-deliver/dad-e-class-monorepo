@@ -1160,7 +1160,7 @@ export const DE: TDictionary = {
         studentText: 'Student',
         groupText: 'Gruppe',
         lastActivityText: 'Letzte Aktivität',
-        viewText: 'Ansicht',
+        viewText: 'Ansehen',
       },
       assignmentModal: {
         assignmentText: 'Aufgabe',
