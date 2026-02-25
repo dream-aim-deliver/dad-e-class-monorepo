@@ -58,6 +58,8 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
     const [isImageError, setIsImageError] = useState(false);
     const ImageComponent = useImageComponent();
 
+    if (!pricing) return null;
+
     // Handle image loading errors
     const handleImageError = () => {
         setIsImageError(true);
@@ -141,14 +143,14 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                 />
                 <div className="flex gap-4 mt-4 justify-start items-center flex-wrap">
                     {/* Strikethrough original price when there's a discount */}
-                    {pricing.fullPrice > pricing.partialPrice && (
+                    {(pricing.fullPrice ?? 0) > (pricing.partialPrice ?? 0) && (
                         <span className="text-text-secondary line-through lg:text-md">
-                            {pricing.currency} {formatPrice(pricing.fullPrice)}
+                            {pricing.currency} {formatPrice(pricing.fullPrice ?? 0)}
                         </span>
                     )}
                     <h6 className="text-text-primary lg:text-lg text-md">
                         {dictionary.fromText} {pricing.currency}{' '}
-                        {formatPrice(pricing.partialPrice)}
+                        {formatPrice(pricing.partialPrice ?? 0)}
                     </h6>
                     {/* Use backend savings based on coaching toggle */}
                     {(() => {

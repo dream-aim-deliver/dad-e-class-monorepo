@@ -161,6 +161,8 @@ export const CourseGeneralInformationVisitor: FC<
             setCoachingIncluded(initialCoachingIncluded);
         }, [initialCoachingIncluded]);
 
+        if (!pricing) return null;
+
         const handleImageError = () => {
             setIsImageError(true);
         };
@@ -475,7 +477,7 @@ export const CourseGeneralInformationVisitor: FC<
                     {/* Button */}
                     <Button
                         size="huge"
-                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${pricing.currency} ${coachingIncluded ? formatPrice(pricing.fullPrice) : formatPrice(pricing.partialPrice)})`}
+                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${pricing.currency} ${coachingIncluded ? formatPrice(pricing.fullPrice ?? 0) : formatPrice(pricing.partialPrice ?? 0)})`}
                         onClick={() => onClickBuyCourse(coachingIncluded)}
                         className="w-full text-lg lg:text-2xl"
                     />
