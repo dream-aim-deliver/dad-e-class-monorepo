@@ -1423,6 +1423,13 @@ export const DictionarySchema = z.object({
       deleteErrorGeneric: z.string(),
       confirmDelete: z.string(),
       cancel: z.string(),
+      submitForReview: z.string(),
+      submitForReviewConfirmation: z.string(),
+      submitForReviewConfirmationTitle: z.string(),
+      submitForReviewSuccess: z.string(),
+      submitForReviewError: z.string(),
+      submitForReviewErrorGeneric: z.string(),
+      confirmSubmitForReview: z.string(),
     }),
     lessonComponentBar: z.object({
       simpleText: z.string(),

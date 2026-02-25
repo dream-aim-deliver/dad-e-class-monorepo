@@ -1443,6 +1443,13 @@ export const DE: TDictionary = {
       deleteErrorGeneric: 'Beim Löschen des Kurses ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
       confirmDelete: 'Löschen',
       cancel: 'Abbrechen',
+      submitForReview: 'Zur Prüfung senden',
+      submitForReviewConfirmation: 'Möchten Sie diesen Kurs wirklich zur Prüfung einreichen? Alle Superadmins werden per E-Mail benachrichtigt.',
+      submitForReviewConfirmationTitle: 'Zur Prüfung senden',
+      submitForReviewSuccess: 'Kurs zur Prüfung eingereicht! Superadmins wurden benachrichtigt.',
+      submitForReviewError: 'Fehler beim Einreichen des Kurses zur Prüfung',
+      submitForReviewErrorGeneric: 'Beim Einreichen des Kurses zur Prüfung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      confirmSubmitForReview: 'Senden',
     },
     lessonComponentBar: {
       simpleText: 'Einfach',
