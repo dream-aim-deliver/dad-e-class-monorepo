@@ -456,12 +456,12 @@ export const CourseGeneralInformationVisitor: FC<
                                 labelClass="text-text-secondary text-md"
                                 onChange={handleCheckboxChange}
                             />
-                            {coachingIncluded && (pricing as any).savingsWithCoachings != null && (pricing as any).savingsWithCoachings > 0 && (
+                            {coachingIncluded && pricing.savingsWithCoachings != null && pricing.savingsWithCoachings > 0 && (
                                 <div className="flex items-center gap-1">
                                     <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
                                         {dictionary.components.courseGeneralInformationView.saveLabel}{' '}
-                                        {(pricing as any).currency as string}{' '}
-                                        {formatPrice((pricing as any).savingsWithCoachings)}
+                                        {pricing.currency}{' '}
+                                        {formatPrice(pricing.savingsWithCoachings)}
                                     </p>
                                     <Tooltip
                                         text=""
@@ -475,7 +475,7 @@ export const CourseGeneralInformationVisitor: FC<
                     {/* Button */}
                     <Button
                         size="huge"
-                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${(pricing as any).currency as string} ${coachingIncluded ? formatPrice((pricing as any).fullPrice as number) : formatPrice((pricing as any).partialPrice as number)})`}
+                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${pricing.currency} ${coachingIncluded ? formatPrice(pricing.fullPrice) : formatPrice(pricing.partialPrice)})`}
                         onClick={() => onClickBuyCourse(coachingIncluded)}
                         className="w-full text-lg lg:text-2xl"
                     />

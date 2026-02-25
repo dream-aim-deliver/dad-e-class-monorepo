@@ -51,7 +51,7 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
                     <ProgressBar progress={percentage} type="progress" />
                 </div>
                 <p className="text-sm font-bold text-text-primary">
-                    {Number(percentage.toFixed(2))}%
+                    {Number((percentage ?? 0).toFixed(2))}%
                 </p>
             </div>
             {!hideButton && onClickResume && (

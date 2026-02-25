@@ -83,7 +83,7 @@ const DetailsCellRenderer = (params: { value: TransactionContent; data: Transact
             const totalItems = content.items.length;
             const currency = params.data?.currency || '';
             const itemsBreakdown = content.items.map(item =>
-                `${item.description} - ${item.quantity}x ${item.unitPrice.toFixed(2)} ${currency}`
+                `${item.description} - ${item.quantity}x ${(item.unitPrice ?? 0).toFixed(2)} ${currency}`
             ).join('\n');
             return (
                 <div className="flex flex-col" title={itemsBreakdown}>

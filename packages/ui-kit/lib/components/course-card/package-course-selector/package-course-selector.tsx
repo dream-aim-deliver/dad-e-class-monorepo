@@ -117,20 +117,20 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
                     />
                     <div className="flex items-center gap-2 flex-wrap">
                         {/* Strikethrough original price (what you'd pay buying separately) */}
-                        {(pricing as any).fullPrice > (pricing as any).partialPrice && (
+                        {pricing.fullPrice > pricing.partialPrice && (
                             <span className="text-text-secondary line-through text-md whitespace-nowrap">
-                                {(pricing as any).currency} {formatPrice((pricing as any).fullPrice)}
+                                {pricing.currency} {formatPrice(pricing.fullPrice)}
                             </span>
                         )}
                         {/* Actual price user pays (discounted) */}
                         <h6 className="text-md font-bold text-text-primary leading-[120%] whitespace-nowrap">
-                            {(pricing as any).currency} {formatPrice((pricing as any).partialPrice)}
+                            {pricing.currency} {formatPrice(pricing.partialPrice)}
                         </h6>
                         {/* Savings amount with info tooltip */}
-                        {(pricing as any).fullPrice > (pricing as any).partialPrice && (
+                        {pricing.fullPrice > pricing.partialPrice && pricing.savings != null && pricing.savings > 0 && (
                             <div className="flex items-center gap-1">
                                 <p className="text-sm font-bold text-feedback-success-primary leading-[100%] whitespace-nowrap">
-                                    {dictionary.components.courseCard.saveText} {(pricing as any).currency} {formatPrice((pricing as any).savings)}
+                                    {dictionary.components.courseCard.saveText} {pricing.currency} {formatPrice(pricing.savings)}
                                 </p>
                                 <Tooltip
                                     text=""

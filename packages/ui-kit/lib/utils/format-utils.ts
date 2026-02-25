@@ -1,4 +1,5 @@
 export function formatPrice(value: number): string {
+    if (value == null || isNaN(value)) return '0.00';
     return value.toFixed(2);
 }
 

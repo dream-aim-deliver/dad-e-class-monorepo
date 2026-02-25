@@ -78,9 +78,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     const dictionary = getDictionary(locale);
 
     // Calculate total course duration in minutes and format as "Xh Ym"
-    const totalDurationInMinutes = (((((duration as any).video as number) +
-        (duration as any).coaching) as number) +
-        (duration as any).selfStudy) as number;
+    const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
 
     // Format duration as "Xh Ym" or just "Ym" if less than an hour
     const formatDuration = (minutes: number): string => {
@@ -99,7 +97,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    const pricingLabel = `${dictionary.components.courseCard.fromButton} ${(pricing as any).currency} ${(pricing as any).partialPrice}`;
+    const pricingLabel = `${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice}`;
     return (
         <div className="w-full mx-auto">
             <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-visible transition-transform hover:scale-[1.02]">
