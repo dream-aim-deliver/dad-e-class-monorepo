@@ -77,6 +77,8 @@ export const BuyCompletePackageBanner = ({
         getDictionary(locale).components.buyCompletePackageBanner;
     const titleRef = useRef<HTMLHeadingElement>(null);
 
+    if (!pricing) return null;
+
     const formatDuration = (duration?: number): string => {
         if (!duration || duration <= 0) return '';
         const hours = Math.floor(duration / 60);
@@ -145,14 +147,14 @@ export const BuyCompletePackageBanner = ({
                         </div>
                         <div className="flex flex-col items-end text-right shrink-0">
                             {/* Strikethrough original price when there's a discount */}
-                            {pricing.fullPrice > pricing.partialPrice && (
+                            {(pricing.fullPrice ?? 0) > (pricing.partialPrice ?? 0) && (
                                 <span className="text-text-secondary line-through text-sm">
-                                    {pricing.currency} {formatPrice(pricing.fullPrice)}
+                                    {pricing.currency} {formatPrice(pricing.fullPrice ?? 0)}
                                 </span>
                             )}
                             <h6 className="text-text-primary lg:text-lg text-md">
                                 {dictionary.fromText} {pricing.currency}{' '}
-                                {formatPrice(pricing.partialPrice)}
+                                {formatPrice(pricing.partialPrice ?? 0)}
                             </h6>
                             {/* Use backend savings based on coaching toggle */}
                             {(() => {

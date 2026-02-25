@@ -77,8 +77,10 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     const [isImageError, setIsImageError] = React.useState(false);
     const dictionary = getDictionary(locale);
 
+    if (!pricing || !duration) return null;
+
     // Calculate total course duration in minutes and format as "Xh Ym"
-    const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+    const totalDurationInMinutes = (duration.video ?? 0) + (duration.coaching ?? 0) + (duration.selfStudy ?? 0);
 
     // Format duration as "Xh Ym" or just "Ym" if less than an hour
     const formatDuration = (minutes: number): string => {

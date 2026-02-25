@@ -59,6 +59,8 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
 }) => {
     const dictionary = getDictionary(locale);
 
+    if (!pricing) return null;
+
     return (
         <div className="flex flex-col md:gap-20 gap-12 w-full">
             <div className="flex flex-col gap-10">
@@ -117,17 +119,17 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
                     />
                     <div className="flex items-center gap-2 flex-wrap">
                         {/* Strikethrough original price (what you'd pay buying separately) */}
-                        {pricing.fullPrice > pricing.partialPrice && (
+                        {(pricing.fullPrice ?? 0) > (pricing.partialPrice ?? 0) && (
                             <span className="text-text-secondary line-through text-md whitespace-nowrap">
-                                {pricing.currency} {formatPrice(pricing.fullPrice)}
+                                {pricing.currency} {formatPrice(pricing.fullPrice ?? 0)}
                             </span>
                         )}
                         {/* Actual price user pays (discounted) */}
                         <h6 className="text-md font-bold text-text-primary leading-[120%] whitespace-nowrap">
-                            {pricing.currency} {formatPrice(pricing.partialPrice)}
+                            {pricing.currency} {formatPrice(pricing.partialPrice ?? 0)}
                         </h6>
                         {/* Savings amount with info tooltip */}
-                        {pricing.fullPrice > pricing.partialPrice && pricing.savings != null && pricing.savings > 0 && (
+                        {(pricing.fullPrice ?? 0) > (pricing.partialPrice ?? 0) && pricing.savings != null && pricing.savings > 0 && (
                             <div className="flex items-center gap-1">
                                 <p className="text-sm font-bold text-feedback-success-primary leading-[100%] whitespace-nowrap">
                                     {dictionary.components.courseCard.saveText} {pricing.currency} {formatPrice(pricing.savings)}
