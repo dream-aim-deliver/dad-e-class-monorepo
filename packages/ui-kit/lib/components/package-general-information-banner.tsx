@@ -141,24 +141,24 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                 />
                 <div className="flex gap-4 mt-4 justify-start items-center flex-wrap">
                     {/* Strikethrough original price when there's a discount */}
-                    {(pricing as any).fullPrice > (pricing as any).partialPrice && (
+                    {pricing.fullPrice > pricing.partialPrice && (
                         <span className="text-text-secondary line-through lg:text-md">
-                            {(pricing as any).currency} {formatPrice((pricing as any).fullPrice)}
+                            {pricing.currency} {formatPrice(pricing.fullPrice)}
                         </span>
                     )}
                     <h6 className="text-text-primary lg:text-lg text-md">
-                        {dictionary.fromText} {(pricing as any).currency}{' '}
-                        {formatPrice((pricing as any).partialPrice)}
+                        {dictionary.fromText} {pricing.currency}{' '}
+                        {formatPrice(pricing.partialPrice)}
                     </h6>
                     {/* Use backend savings based on coaching toggle */}
                     {(() => {
                         const savings = coachingIncluded
-                            ? (pricing as any).savingsWithCoachings
-                            : (pricing as any).savingsWithoutCoachings;
+                            ? pricing.savingsWithCoachings
+                            : pricing.savingsWithoutCoachings;
                         return savings != null && savings > 0 ? (
                             <div className="flex items-center gap-1">
                                 <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
-                                    {dictionary.saveText} {(pricing as any).currency} {formatPrice(savings)}
+                                    {dictionary.saveText} {pricing.currency} {formatPrice(savings)}
                                 </p>
                                 <Tooltip
                                     text=""

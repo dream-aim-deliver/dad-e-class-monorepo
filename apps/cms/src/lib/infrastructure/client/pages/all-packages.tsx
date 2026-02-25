@@ -73,10 +73,6 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   // @ts-ignore
   presenter.present(listPackagesResponse, listPackagesViewModel);
 
-  // DEBUG: Log packages data to inspect pricing values from backend
-  console.log('[tRPC: listPackages] API response:', listPackagesResponse);
-  console.log('[tRPC: listPackages] ViewModel:', listPackagesViewModel);
-
   // Client state for show archived filter - default to true to show all packages
   const [showArchived, setShowArchived] = useState(true);
 
