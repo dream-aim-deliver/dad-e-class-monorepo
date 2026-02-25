@@ -1441,6 +1441,13 @@ export const EN: TDictionary = {
       deleteErrorGeneric: 'An error occurred while deleting the course. Please try again.',
       confirmDelete: 'Delete',
       cancel: 'Cancel',
+      submitForReview: 'Submit for Review',
+      submitForReviewConfirmation: 'Are you sure you want to submit this course for review? All superadmins will be notified via email.',
+      submitForReviewConfirmationTitle: 'Submit for Review',
+      submitForReviewSuccess: 'Course submitted for review! Superadmins have been notified.',
+      submitForReviewError: 'Failed to submit course for review',
+      submitForReviewErrorGeneric: 'An error occurred while submitting the course for review. Please try again.',
+      confirmSubmitForReview: 'Submit',
     },
     lessonComponentBar: {
       simpleText: 'Simple',

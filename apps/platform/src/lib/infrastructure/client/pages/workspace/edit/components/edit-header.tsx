@@ -52,12 +52,14 @@ export default function EditHeader({
     const publishMutation = trpc.publishCourse.useMutation();
     const archiveMutation = trpc.archiveCourse.useMutation();
     const deleteMutation = trpc.deleteCourse.useMutation();
+    const submitForReviewMutation = trpc.submitCourseForReview.useMutation();
     const utils = trpc.useUtils();
 
     // Confirmation modal states
     const [publishConfirmModal, setPublishConfirmModal] = useState(false);
     const [archiveConfirmModal, setArchiveConfirmModal] = useState(false);
     const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
+    const [submitForReviewConfirmModal, setSubmitForReviewConfirmModal] = useState(false);
 
     // Success/Error modal states
     const [successModal, setSuccessModal] = useState<{
@@ -202,6 +204,33 @@ export default function EditHeader({
         }
     };
 
+    const handleSubmitForReviewConfirm = async () => {
+        setSubmitForReviewConfirmModal(false);
+        try {
+            const result = await submitForReviewMutation.mutateAsync({ courseSlug: slug });
+            if (result.success) {
+                setSuccessModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.submitForReviewConfirmationTitle,
+                    message: dictionary.components.editHeader.submitForReviewSuccess,
+                });
+            } else {
+                const errorMessage = (result as any).data?.message || dictionary.components.editHeader.submitForReviewErrorGeneric;
+                setErrorModal({
+                    isOpen: true,
+                    title: dictionary.components.editHeader.submitForReviewError,
+                    message: errorMessage,
+                });
+            }
+        } catch (error: any) {
+            setErrorModal({
+                isOpen: true,
+                title: dictionary.components.editHeader.submitForReviewError,
+                message: error.message || dictionary.components.editHeader.submitForReviewErrorGeneric,
+            });
+        }
+    };
+
     const previewButtonText = isPreviewing
         ? dictionary.components.editHeader.hidePreviewText
         : isReadOnlyContent
@@ -300,6 +329,14 @@ export default function EditHeader({
                             className="!bg-red-700 hover:!bg-red-800 active:!bg-red-900"
                         />
                     )}
+                    <Button
+                        variant="secondary"
+                        text={submitForReviewMutation.isPending
+                            ? dictionary.components.editHeader.confirmSubmitForReview + '...'
+                            : dictionary.components.editHeader.submitForReview}
+                        onClick={() => setSubmitForReviewConfirmModal(true)}
+                        disabled={isSaving || isPreviewing || submitForReviewMutation.isPending}
+                    />
                 </div>
             </div>
 
@@ -343,6 +380,22 @@ export default function EditHeader({
                 cancelText="Cancel"
                 locale={locale}
                 isLoading={deleteMutation.isPending}
+            />
+
+            {/* Submit for Review Confirmation Modal */}
+            <ConfirmationModal
+                type="accept"
+                isOpen={submitForReviewConfirmModal}
+                onClose={() => setSubmitForReviewConfirmModal(false)}
+                onConfirm={handleSubmitForReviewConfirm}
+                title={dictionary.components.editHeader.submitForReviewConfirmationTitle}
+                message={dictionary.components.editHeader.submitForReviewConfirmation}
+                confirmText={submitForReviewMutation.isPending
+                    ? dictionary.components.editHeader.confirmSubmitForReview + '...'
+                    : dictionary.components.editHeader.confirmSubmitForReview}
+                cancelText={dictionary.components.editHeader.cancel}
+                locale={locale}
+                isLoading={submitForReviewMutation.isPending}
             />
 
             {/* Success Modal */}
