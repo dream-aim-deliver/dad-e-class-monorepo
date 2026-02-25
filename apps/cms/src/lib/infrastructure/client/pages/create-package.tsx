@@ -139,17 +139,12 @@ export default function CreatePackage() {
     // Courses data from TRPC usecase
     const [coursesResponse] = trpc.listCourses.useSuspenseQuery({ showFilter: "live_all_languages" });
     const allCourses: CourseData[] = (() => {
-        console.log('coursesResponse:', coursesResponse);
         if (!coursesResponse.success) {
-            console.log('coursesResponse.success is false');
             return [];
         }
         const payload: any = coursesResponse.data;
-        console.log('payload:', payload);
         const data = payload?.success ? payload.data : payload;
-        console.log('data:', data);
         const courses: any[] = data?.courses ?? [];
-        console.log('courses array:', courses);
         return courses.map((course) => ({
             id: String(course.id),
             slug: course.slug,
@@ -157,7 +152,7 @@ export default function CreatePackage() {
             description: course.description,
             rating: course.averageRating ?? 0,
             reviewCount: course.reviewCount,
-            language: { code: '', name: course.language },
+            language: { code: course.language?.code ?? '', name: course.language?.name ?? '' },
             sessions: course.coachingSessionCount ?? 0,
             duration: { video: 0, coaching: 0, selfStudy: course.fullDuration },
             sales: course.salesCount,
