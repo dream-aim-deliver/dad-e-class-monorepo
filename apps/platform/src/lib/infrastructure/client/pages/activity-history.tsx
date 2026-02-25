@@ -12,7 +12,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useSession } from 'next-auth/react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useListNotificationsPresenter } from '../hooks/use-list-notifications-presenter';
@@ -25,6 +25,7 @@ import {
   ExtendedNotification,
 } from '@maany_shr/e-class-ui-kit';
 import { useRequiredPlatform } from '../context/platform-context';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 interface ActivityHistoryProps {
   locale: TLocale;
@@ -35,6 +36,15 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
   const currentLocale = useLocale() as TLocale;
   const session = useSession();
   const { platform } = useRequiredPlatform();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const highlightId = searchParams.get('highlight');
+
+  const handleHighlightApplied = useCallback(() => {
+    router.replace(pathname, { scroll: false });
+  }, [router, pathname]);
 
   // Determine user type from session roles
   const getUserType = (): 'student' | 'coach' => {
@@ -191,6 +201,8 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
           gridRef={gridRef}
           variant={userType}
           loading={markNotificationsAsReadMutation.isPending}
+          highlightNotificationId={highlightId}
+          onHighlightApplied={handleHighlightApplied}
         />
       </div>
 

@@ -14,9 +14,11 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
 import { useRequiredPlatform } from '../../context/platform-context';
+import { useRouter } from 'next/navigation';
 
 export default function UserNotifications() {
     const locale = useLocale() as TLocale;
+    const router = useRouter();
     const notificationsT = useTranslations('pages.notifications');
     const sessionDTO = useSession();
     const session = sessionDTO.data;
@@ -72,8 +74,8 @@ export default function UserNotifications() {
                 recipients={1}
                 layout="vertical"
                 locale={locale}
-                onClickActivity={(url: string) => () => {
-                    window.open(url, '_blank', 'noopener,noreferrer');
+                onClickActivity={() => () => {
+                    router.push(`/${locale}/workspace/notifications?highlight=${notification.id}`);
                     if (!notification.isRead) {
                         const numericId = Number(notification.id);
                         if (!Number.isNaN(numericId)) {
