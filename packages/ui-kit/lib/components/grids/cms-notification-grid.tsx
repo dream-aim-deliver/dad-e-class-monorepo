@@ -64,8 +64,20 @@ export interface CMSNotificationGridProps extends isLocalAware {
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const NotificationMessageRenderer = (props: { value: string }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+const NotificationMessageRenderer = (props: {
+    value: string;
+    data?: { id?: string | number };
+    expandedMessagesRef?: { current: Set<string | number> };
+}) => {
+    const notificationId = props.data?.id;
+    const expandedRef = props.expandedMessagesRef;
+
+    const [isExpanded, setIsExpanded] = useState(() => {
+        if (notificationId != null && expandedRef?.current) {
+            return expandedRef.current.has(notificationId);
+        }
+        return false;
+    });
     const [isTruncated, setIsTruncated] = useState(false);
     const spanRef = useRef<HTMLSpanElement>(null);
     const message = props.value || '';
@@ -88,10 +100,22 @@ const NotificationMessageRenderer = (props: { value: string }) => {
         return () => resizeObserver.disconnect();
     }, [message, isExpanded]);
 
+    const handleClick = () => {
+        if (!isTruncated) return;
+        setIsExpanded(prev => {
+            const next = !prev;
+            if (notificationId != null && expandedRef?.current) {
+                if (next) expandedRef.current.add(notificationId);
+                else expandedRef.current.delete(notificationId);
+            }
+            return next;
+        });
+    };
+
     return (
         <div
             className="flex items-center text-sm my-2.5 space-x-2"
-            onClick={() => isTruncated && setIsExpanded(prev => !prev)}
+            onClick={handleClick}
             style={{ cursor: isTruncated ? 'pointer' : 'default' }}
         >
             <span
@@ -205,6 +229,9 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
     const [selectedRows, setSelectedRows] = useState<NotificationRow[]>([]);
     const [selectedRowIds, setSelectedRowIds] = useState<Set<string>>(new Set());
 
+    // Persist expanded message state across AG Grid remounts
+    const expandedMessagesRef = useRef<Set<string | number>>(new Set());
+
     const baseRowData = useMemo(() => [
         ...receivedNotifications.map(n => ({
             ...n,
@@ -235,6 +262,10 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             setRowData(prev =>
                 prev.map(n => (n.type === 'received' && n.id === notification.id) ? { ...n, isRead: true } : n)
             );
+            // Sync selectedRows so getButtonText sees the updated isRead
+            setSelectedRows(prev =>
+                prev.map(r => r.id === notification.id ? { ...r, isRead: true } : r)
+            );
         }
         if (onRowClicked) onRowClicked(notification);
     }, [onRowClicked]);
@@ -259,6 +290,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             wrapText: true,
             autoHeight: true,
             cellRenderer: NotificationMessageRenderer,
+            cellRendererParams: { expandedMessagesRef },
             filter: 'agTextColumnFilter',
             minWidth: 500,
             onCellClicked: (event: { data: NotificationRow }) => {

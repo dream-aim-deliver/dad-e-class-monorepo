@@ -28,6 +28,8 @@ export interface PlatformNotificationGridProps extends isLocalAware {
   gridRef: RefObject<AgGridReact>;
   variant: 'student' | 'coach';
   loading: boolean;
+  highlightNotificationId?: string | null;
+  onHighlightApplied?: () => void;
 }
 
 export interface CMSNotificationGridProps extends isLocalAware {
@@ -39,14 +41,28 @@ export interface CMSNotificationGridProps extends isLocalAware {
   variant: 'cms';
   platforms: string[];
   loading: boolean;
+  highlightNotificationId?: string | null;
+  onHighlightApplied?: () => void;
 }
 
 export type NotificationGridProps = PlatformNotificationGridProps | CMSNotificationGridProps;
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const NotificationMessageRenderer = (props: { value: string }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+const NotificationMessageRenderer = (props: {
+  value: string;
+  data?: { id?: string | number };
+  expandedMessagesRef?: { current: Set<string | number> };
+}) => {
+  const notificationId = props.data?.id;
+  const expandedRef = props.expandedMessagesRef;
+
+  const [isExpanded, setIsExpanded] = useState(() => {
+    if (notificationId != null && expandedRef?.current) {
+      return expandedRef.current.has(notificationId);
+    }
+    return false;
+  });
   const [isTruncated, setIsTruncated] = useState(false);
   const spanRef = useRef<HTMLSpanElement>(null);
   const message = props.value || '';
@@ -69,10 +85,22 @@ const NotificationMessageRenderer = (props: { value: string }) => {
     return () => resizeObserver.disconnect();
   }, [message, isExpanded]);
 
+  const handleClick = () => {
+    if (!isTruncated) return;
+    setIsExpanded(prev => {
+      const next = !prev;
+      if (notificationId != null && expandedRef?.current) {
+        if (next) expandedRef.current.add(notificationId);
+        else expandedRef.current.delete(notificationId);
+      }
+      return next;
+    });
+  };
+
   return (
     <div
       className="flex items-center text-sm my-2.5 space-x-2"
-      onClick={() => isTruncated && setIsExpanded(prev => !prev)}
+      onClick={handleClick}
       style={{ cursor: isTruncated ? 'pointer' : 'default' }}
     >
       <span
@@ -128,9 +156,54 @@ export const NotificationGrid = (props: NotificationGridProps) => {
     variant,
     locale,
     loading,
+    highlightNotificationId,
+    onHighlightApplied,
   } = props;
 
   const platforms = variant === 'cms' ? props.platforms : [];
+
+  const [highlightedRowId, setHighlightedRowId] = useState<string | number | null>(null);
+  const pendingHighlightRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!highlightNotificationId) return;
+    pendingHighlightRef.current = highlightNotificationId;
+
+    const tryApply = () => {
+      const id = pendingHighlightRef.current;
+      if (!id || !gridRef.current?.api) return false;
+
+      const rowNode = gridRef.current.api.getRowNode(id);
+      if (!rowNode) return false;
+
+      pendingHighlightRef.current = null;
+      setHighlightedRowId(id);
+      gridRef.current.api.ensureNodeVisible(rowNode, 'middle');
+      onHighlightApplied?.();
+
+      setTimeout(() => {
+        setHighlightedRowId(null);
+      }, 3000);
+
+      return true;
+    };
+
+    if (tryApply()) return;
+
+    // Grid not ready yet — poll every 200ms, give up after 5s
+    const interval = setInterval(() => {
+      if (tryApply()) clearInterval(interval);
+    }, 200);
+    const safety = setTimeout(() => clearInterval(interval), 5000);
+
+    return () => { clearInterval(interval); clearTimeout(safety); };
+  }, [highlightNotificationId]);
+
+  // Redraw rows after React re-renders with new highlightedRowId so getRowStyle picks it up
+  useEffect(() => {
+    if (!gridRef.current?.api) return;
+    gridRef.current.api.redrawRows();
+  }, [highlightedRowId]);
 
   const dictionary = getDictionary(locale).components.notificationGrid;
 
@@ -144,6 +217,9 @@ export const NotificationGrid = (props: NotificationGridProps) => {
 
   // Track selected IDs during loading to restore selection after data refresh
   const [selectedIdsBeforeLoading, setSelectedIdsBeforeLoading] = useState<(number | string)[]>([]);
+
+  // Persist expanded message state across AG Grid remounts
+  const expandedMessagesRef = useRef<Set<string | number>>(new Set());
 
   const handleOptimisticMarkAsRead = useCallback((notification: ExtendedNotification) => {
     if (!notification.isRead) {
@@ -188,6 +264,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       wrapText: true,
       autoHeight: true,
       cellRenderer: NotificationMessageRenderer,
+      cellRendererParams: { expandedMessagesRef },
       filter: 'agTextColumnFilter',
       onCellClicked: (event: { data: ExtendedNotification }) => {
         handleOptimisticMarkAsRead(event.data);
@@ -383,9 +460,13 @@ export const NotificationGrid = (props: NotificationGridProps) => {
           getRowId={(params) => String(params.data.id)}
           getRowStyle={(params) => {
             if (!params.data) return undefined;
-            return params.data.isRead
+            const base = params.data.isRead
               ? { background: 'inherit' }
               : { background: 'var(--color-base-neutral-800)' };
+            if (String(params.data.id) === String(highlightedRowId)) {
+              return { ...base, border: '2px solid #facc15' };
+            }
+            return base;
           }}
         />
         {showFilterModal && (
