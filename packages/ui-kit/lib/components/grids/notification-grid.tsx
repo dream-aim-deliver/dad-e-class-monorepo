@@ -221,8 +221,12 @@ export const NotificationGrid = (props: NotificationGridProps) => {
   // Persist expanded message state across AG Grid remounts
   const expandedMessagesRef = useRef<Set<string | number>>(new Set());
 
+  // Track IDs optimistically marked as read (cleared once props confirm)
+  const optimisticReadIdsRef = useRef<Set<string | number>>(new Set());
+
   const handleOptimisticMarkAsRead = useCallback((notification: ExtendedNotification) => {
     if (!notification.isRead) {
+      optimisticReadIdsRef.current.add(notification.id);
       setModifiedNotifications(prev =>
         prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n)
       );
@@ -232,6 +236,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
 
   const handleOptimisticNotificationClick = useCallback((notification: ExtendedNotification) => {
     if (!notification.isRead) {
+      optimisticReadIdsRef.current.add(notification.id);
       setModifiedNotifications(prev =>
         prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n)
       );
@@ -368,9 +373,23 @@ export const NotificationGrid = (props: NotificationGridProps) => {
     }
   }, [doesExternalFilterPass, gridRef]);
 
-  // Sync local state when props change (after backend refetch)
+  // Sync local state when props change, but preserve optimistic reads
   useEffect(() => {
-    setModifiedNotifications(notifications);
+    setModifiedNotifications(prev =>
+      notifications.map(n => {
+        if (n.isRead) {
+          // Server confirmed read — clear from optimistic set
+          optimisticReadIdsRef.current.delete(n.id);
+          return n;
+        }
+        if (optimisticReadIdsRef.current.has(n.id)) {
+          // Preserve optimistic read — reuse existing reference to avoid AG Grid remount
+          const existing = prev.find(p => p.id === n.id);
+          return existing ?? { ...n, isRead: true };
+        }
+        return n;
+      })
+    );
   }, [notifications]);
 
   // Refresh external filter only when filter inputs change
