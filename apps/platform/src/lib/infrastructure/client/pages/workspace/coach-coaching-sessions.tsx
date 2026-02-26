@@ -47,6 +47,8 @@ interface ScheduledCoachSessionCardProps {
     onJoinMeeting: () => void;
     onCancel: () => void;
     formatTime: (isoString: string) => string;
+    courseName?: string;
+    onClickCourse?: () => void;
 }
 
 function ScheduledCoachSessionCard({
@@ -57,6 +59,8 @@ function ScheduledCoachSessionCard({
     onJoinMeeting,
     onCancel,
     formatTime,
+    courseName,
+    onClickCourse,
 }: ScheduledCoachSessionCardProps) {
     const startDateTime = new Date(session.startTime);
     const isGroup = isGroupScheduledSession(session);
@@ -122,6 +126,8 @@ function ScheduledCoachSessionCard({
         date: startDateTime,
         startTime: formatTime(session.startTime),
         endTime: formatTime(session.endTime),
+        courseName,
+        onClickCourse,
         ...sessionTypeProps,
     };
 
@@ -272,6 +278,10 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         if (meetingUrl) {
             window.open(meetingUrl, '_blank');
         }
+    };
+
+    const handleViewCourse = (courseSlug: string) => {
+        window.open(`/${locale}/courses/${courseSlug}`, '_blank');
     };
 
     const handleDownloadRecording = (sessionId: number | string) => {
@@ -450,6 +460,11 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             const startDateTime = new Date(session.startTime);
             const isGroup = isGroupSession(session);
 
+            // Build course info props (group sessions always have course, individual may not)
+            const courseName = isGroup ? session.course.title : session.course?.title;
+            const courseSlug = isGroup ? session.course.slug : session.course?.slug;
+            const onClickCourse = courseSlug ? () => handleViewCourse(courseSlug) : undefined;
+
             // Build session type props based on discriminated union
             const sessionTypeProps = isGroup
                 ? {
@@ -477,6 +492,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         date={startDateTime}
                         startTime={formatTime(session.startTime)}
                         endTime={formatTime(session.endTime)}
+                        courseName={courseName}
+                        onClickCourse={onClickCourse}
                         {...sessionTypeProps}
                         onClickAccept={() => handleAcceptClick(parseInt(`${session.id}`))}
                         onClickDecline={() => handleDeclineClick(parseInt(`${session.id}`))}
@@ -497,6 +514,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         onGroupClick={() => isGroupScheduled && handleGroupClick(scheduledSession.course.slug, scheduledSession.group.id)}
                         onJoinMeeting={() => handleJoinMeeting(scheduledSession.meetingUrl)}
                         onCancel={() => handleDeclineClick(parseInt(`${scheduledSession.id}`))}
+                        courseName={courseName}
+                        onClickCourse={onClickCourse}
                     />
                 );
             }
@@ -518,6 +537,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             date={startDateTime}
                             startTime={formatTime(session.startTime)}
                             endTime={formatTime(session.endTime)}
+                            courseName={courseName}
+                            onClickCourse={onClickCourse}
                             {...sessionTypeProps}
                             reviewType="call-quality"
                             callQualityRating={session.review.rating || 0}
@@ -539,6 +560,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             date={startDateTime}
                             startTime={formatTime(session.startTime)}
                             endTime={formatTime(session.endTime)}
+                            courseName={courseName}
+                            onClickCourse={onClickCourse}
                             {...sessionTypeProps}
                             onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}
