@@ -25,6 +25,7 @@ interface EditHeaderProps {
     slug: string;
     isReadOnlyContent?: boolean;
     isEdited?: boolean;
+    showSubmitForReview?: boolean;
 }
 
 export default function EditHeader({
@@ -41,6 +42,7 @@ export default function EditHeader({
     slug,
     isReadOnlyContent = false,
     isEdited = false,
+    showSubmitForReview = false,
 }: EditHeaderProps) {
     const dictionary = getDictionary(locale);
     const router = useRouter();
@@ -329,14 +331,16 @@ export default function EditHeader({
                             className="!bg-red-700 hover:!bg-red-800 active:!bg-red-900"
                         />
                     )}
-                    <Button
-                        variant="secondary"
-                        text={submitForReviewMutation.isPending
-                            ? dictionary.components.editHeader.confirmSubmitForReview + '...'
-                            : dictionary.components.editHeader.submitForReview}
-                        onClick={() => setSubmitForReviewConfirmModal(true)}
-                        disabled={isSaving || isPreviewing || submitForReviewMutation.isPending}
-                    />
+                    {showSubmitForReview && (
+                        <Button
+                            variant="secondary"
+                            text={submitForReviewMutation.isPending
+                                ? dictionary.components.editHeader.confirmSubmitForReview + '...'
+                                : dictionary.components.editHeader.submitForReview}
+                            onClick={() => setSubmitForReviewConfirmModal(true)}
+                            disabled={isSaving || isPreviewing || submitForReviewMutation.isPending}
+                        />
+                    )}
                 </div>
             </div>
 
@@ -383,20 +387,22 @@ export default function EditHeader({
             />
 
             {/* Submit for Review Confirmation Modal */}
-            <ConfirmationModal
-                type="accept"
-                isOpen={submitForReviewConfirmModal}
-                onClose={() => setSubmitForReviewConfirmModal(false)}
-                onConfirm={handleSubmitForReviewConfirm}
-                title={dictionary.components.editHeader.submitForReviewConfirmationTitle}
-                message={dictionary.components.editHeader.submitForReviewConfirmation}
-                confirmText={submitForReviewMutation.isPending
-                    ? dictionary.components.editHeader.confirmSubmitForReview + '...'
-                    : dictionary.components.editHeader.confirmSubmitForReview}
-                cancelText={dictionary.components.editHeader.cancel}
-                locale={locale}
-                isLoading={submitForReviewMutation.isPending}
-            />
+            {showSubmitForReview && (
+                <ConfirmationModal
+                    type="accept"
+                    isOpen={submitForReviewConfirmModal}
+                    onClose={() => setSubmitForReviewConfirmModal(false)}
+                    onConfirm={handleSubmitForReviewConfirm}
+                    title={dictionary.components.editHeader.submitForReviewConfirmationTitle}
+                    message={dictionary.components.editHeader.submitForReviewConfirmation}
+                    confirmText={submitForReviewMutation.isPending
+                        ? dictionary.components.editHeader.confirmSubmitForReview + '...'
+                        : dictionary.components.editHeader.confirmSubmitForReview}
+                    cancelText={dictionary.components.editHeader.cancel}
+                    locale={locale}
+                    isLoading={submitForReviewMutation.isPending}
+                />
+            )}
 
             {/* Success Modal */}
             <ConfirmationModal
