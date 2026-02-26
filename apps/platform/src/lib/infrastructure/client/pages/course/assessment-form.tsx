@@ -65,9 +65,18 @@ export default function AssessmentForm(props: AssessmentFormProps) {
             utils.getEnrolledCourseDetails.invalidate({ courseSlug: props.courseSlug });
             utils.listUserCourses.invalidate();
 
-            // Navigate to course page to re-trigger RSC evaluation
-            // This will show the enrolled course view since assessment is now complete
-            router.push(`/courses/${props.courseSlug}`);
+            // Force RSC re-evaluation on the current route.
+            // router.refresh() is needed instead of router.push() because the student
+            // is already at /courses/{slug} — pushing to the same URL may not trigger
+            // a server component re-render.
+            router.refresh();
+        },
+        onError: () => {
+            // Safety net: if submission fails (e.g., "already completed" from a previous
+            // attempt that succeeded on the backend but whose response was lost), refresh
+            // to let RSC re-evaluate assessment state.
+            utils.getCourseAccess.invalidate({ courseSlug: props.courseSlug });
+            router.refresh();
         },
     });
 
