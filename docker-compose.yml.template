@@ -2,7 +2,7 @@ name: e-class
 
 services:
   cms-fastapi:
-    image: ghcr.io/dream-aim-deliver/e-class-cms-fastapi:3.3.7
+    image: ghcr.io/dream-aim-deliver/e-class-cms-fastapi:3.3.8
     container_name: e-class-cms-fastapi
     command: ["sh", "-c", "pyenv exec poetry run start"]
     depends_on:
@@ -63,7 +63,7 @@ services:
 
 
   cms-rest:
-    image: ghcr.io/dream-aim-deliver/e-class-cms-rest:3.3.7
+    image: ghcr.io/dream-aim-deliver/e-class-cms-rest:3.3.8
     container_name: e-class-cms-rest
     depends_on:
       - cms-fastapi
