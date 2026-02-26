@@ -482,6 +482,7 @@ function EditCourseLayout({
                 roles={roles}
                 slug={slug}
                 isEdited={isEdited}
+                showSubmitForReview={true}
             />
             <Tabs.Root defaultTab={TabTypes.General} onValueChange={onTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
