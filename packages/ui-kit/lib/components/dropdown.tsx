@@ -21,7 +21,7 @@ export interface DropdownOption {
 }
 
 export interface DropdownProps {
-  type: 'simple' | 'choose-color' | 'multiple-choice-and-search' | 'single-choice-and-search-avatars' | 'multiple-choice-and-search-with-action';
+  type: 'simple' | 'choose-color' | 'multiple-choice-and-search' | 'single-choice-and-search' | 'single-choice-and-search-avatars' | 'multiple-choice-and-search-with-action';
   options: DropdownOption[];
   onSelectionChange: (selected: string | string[] | null) => void;
   className?: string;
@@ -103,7 +103,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     buttonText = selectedLabel || text?.colorText;
   } else if (type === 'multiple-choice-and-search' || type === 'multiple-choice-and-search-with-action') {
     buttonText = text?.multiText;
-  } else if (type === 'single-choice-and-search-avatars') {
+  } else if (type === 'single-choice-and-search' || type === 'single-choice-and-search-avatars') {
     buttonText = selectedLabel || text?.simpleText;
   } else {
     buttonText = text?.multiText;
@@ -119,6 +119,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         top: rect.bottom + 8,
         left: rect.left,
         minWidth: rect.width,
+        maxHeight: window.innerHeight - rect.bottom - 16,
         zIndex: 50,
       });
     } else {
@@ -127,6 +128,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         bottom: window.innerHeight - rect.top + 8,
         left: rect.left,
         minWidth: rect.width,
+        maxHeight: rect.top - 16,
         zIndex: 50,
       });
     }
@@ -209,8 +211,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <>
       {/* Simple Dropdown */}
       {type === 'simple' && (
-        <div className="py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-max min-w-full">
-          <ul>
+        <div className="py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-max min-w-full flex flex-col overflow-hidden">
+          <ul className="overflow-y-auto overscroll-contain">
             {options.map((option) => (
               <li
                 key={option.value}
@@ -297,7 +299,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       )}
       {/* MultiSelect Dropdowns */}
       {(type === 'multiple-choice-and-search' || type === 'multiple-choice-and-search-with-action') && (
-        <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">
+        <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <InputField
@@ -323,7 +325,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
               </div>
             )}
           </div>
-          <ul className="flex flex-col gap-2 max-h-70 overflow-y-auto overscroll-contain pr-1">
+          <ul className="flex flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
             {(searchQuery ? filteredOptions : options).map((option) => (
               <li
                 key={option.value}
@@ -366,9 +368,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
           </ul>
         </div>
       )}
-      {/* Single select with avatars and search */}
-      {type === 'single-choice-and-search-avatars' && (
-        <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">
+      {/* Single select with search */}
+      {type === 'single-choice-and-search' && (
+        <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
           <InputField
             value={searchQuery}
             setValue={(value: string) => setSearchQuery(value)}
@@ -376,7 +378,52 @@ export const Dropdown: React.FC<DropdownProps> = ({
             inputText={text?.searchTextPlaceholder || 'Search...'}
             leftContent={<IconSearch />}
           />
-          <ul className="flex flex-col gap-2 max-h-70 overflow-y-auto overscroll-contain pr-1">
+          <ul className="flex flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
+            {(searchQuery ? filteredOptions : options).map((option) => (
+              <li key={option.value} className="group relative">
+                <button
+                  className="w-full text-left p-2 rounded-md hover:bg-base-neutral-700 flex items-center"
+                  onClick={() => handleSelect(option.value, option.label)}
+                >
+                  <div
+                    ref={(el) => {
+                      if (el) {
+                        optionRefs.current.set(option.value, el);
+                      } else {
+                        optionRefs.current.delete(option.value);
+                      }
+                    }}
+                    className="truncate text-sm text-text-primary"
+                  >
+                    {option.label}
+                  </div>
+                </button>
+                {truncatedOptions.has(option.value) && (
+                  <span
+                    className={cn(
+                      'absolute left-0 top-full mt-1 bg-base-neutral-700 text-text-primary text-sm px-2 py-1 rounded-medium whitespace-nowrap z-10',
+                      'hidden group-hover:block',
+                    )}
+                  >
+                    {option.label}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {/* Single select with avatars and search */}
+      {type === 'single-choice-and-search-avatars' && (
+        <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
+          <InputField
+            value={searchQuery}
+            setValue={(value: string) => setSearchQuery(value)}
+            hasLeftContent={true}
+            inputText={text?.searchTextPlaceholder || 'Search...'}
+            leftContent={<IconSearch />}
+          />
+          <ul className="flex flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
             {(searchQuery ? filteredOptions : options).map((option) => (
               <li key={option.value}>
                 <button
@@ -452,7 +499,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
       {/* Dropdown Content — portal for absolute, inline otherwise */}
       {isOpen && absolutePosition && typeof document !== 'undefined' && createPortal(
-        <div ref={portalRef} style={portalStyle}>
+        <div ref={portalRef} style={portalStyle} className="flex flex-col overflow-hidden">
           {dropdownContent}
         </div>,
         (dropdownRef.current?.closest('.theme') as HTMLElement) || document.body

@@ -735,13 +735,14 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                       <div className="flex flex-col gap-2">
                         <h4 className="font-medium">{dictionary.selectCourse}</h4>
                         <Dropdown
-                          type="simple"
+                          type="single-choice-and-search"
+                          position="top"
                           options={coursesQuery.data.data.courses.map((course: any) => ({
                             label: course.title,
                             value: course.id.toString()
                           }))}
                           onSelectionChange={(selected) => setSelectedCourseForCoaching(selected && typeof selected === 'string' ? parseInt(selected) : null)}
-                          text={{ simpleText: dictionary.selectCourse }}
+                          text={{ simpleText: dictionary.selectCourse, searchTextPlaceholder: dictionary.selectCourse }}
                           defaultValue={selectedCourseForCoaching?.toString()}
                           className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
                         />
