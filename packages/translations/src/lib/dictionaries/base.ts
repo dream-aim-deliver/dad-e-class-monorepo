@@ -3989,6 +3989,7 @@ export const DictionarySchema = z.object({
       companyRole: z.string(),
       companyIndustry: z.string(),
       superadminRoleProtected: z.string(),
+      hideAsCoach: z.string(),
       noPersonalProfile: z.string(),
       coachApplication: z.object({
         title: z.string(),
