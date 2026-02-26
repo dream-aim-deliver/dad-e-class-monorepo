@@ -211,6 +211,7 @@ export default function EditHeader({
         try {
             const result = await submitForReviewMutation.mutateAsync({ courseSlug: slug });
             if (result.success) {
+                utils.countUnreadNotifications.invalidate();
                 setSuccessModal({
                     isOpen: true,
                     title: dictionary.components.editHeader.submitForReviewConfirmationTitle,
