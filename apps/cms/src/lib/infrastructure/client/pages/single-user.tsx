@@ -14,6 +14,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale, getDictionary, getLocalizedValue } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
@@ -89,6 +90,17 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
 
   // Mutation for updating user roles
   const updateUserRolesMutation = trpc.updateUserRoles.useMutation();
+
+  // Mutation for toggling hide_as_coach (superadmin only)
+  const setHideAsCoachMutation = trpc.setHideAsCoach.useMutation({
+    onSuccess: async () => {
+      await utils.getProfessionalProfile.invalidate({ username });
+    },
+  });
+
+  // Check if current logged-in user is superadmin
+  const sessionDTO = useSession();
+  const currentUserIsSuperadmin = sessionDTO.data?.user?.roles?.includes('superadmin') ?? false;
 
   // Present responses
   // @ts-ignore
@@ -521,6 +533,28 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                       <p className="text-text-primary">{professionalProfile?.profile?.companyIndustry ?? '-'}</p>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {/* Hide as Coach toggle (superadmin only) */}
+              {currentUserIsSuperadmin && (
+                <div className="flex items-center gap-2 border-t border-card-stroke/50 pt-4">
+                  <input
+                    type="checkbox"
+                    id="hideAsCoach"
+                    checked={professionalProfile?.profile.hideAsCoach ?? false}
+                    onChange={(e) => {
+                      setHideAsCoachMutation.mutate({
+                        username,
+                        hideAsCoach: e.target.checked,
+                      });
+                    }}
+                    disabled={setHideAsCoachMutation.isPending}
+                    className="h-4 w-4 rounded border-card-stroke text-button-primary-fill focus:ring-button-primary-fill"
+                  />
+                  <label htmlFor="hideAsCoach" className="text-sm text-text-primary">
+                    {t('hideAsCoach')}
+                  </label>
                 </div>
               )}
             </div>
