@@ -342,6 +342,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     // Review modal state
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [reviewSessionId, setReviewSessionId] = useState<number | null>(null);
+    const [reviewGroupId, setReviewGroupId] = useState<number | null>(null);
     const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
     // Cancel modal state
@@ -353,9 +354,10 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     const [rescheduleSessionId, setRescheduleSessionId] = useState<number | null>(null);
 
     // Review handlers
-    const handleReviewClick = (sessionId: number | string) => {
+    const handleReviewClick = (sessionId: number | string, groupId?: number | null) => {
         const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
         setReviewSessionId(numericId);
+        setReviewGroupId(groupId ?? null);
         setIsReviewModalOpen(true);
         setReviewSubmitted(false);
         setCreateReviewViewModel(undefined);
@@ -369,6 +371,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
             rating,
             notes: review || null,
             neededMoreTime,
+            groupId: reviewGroupId,  // NEW: passes group id for group session reviews
         });
 
         // @ts-ignore Present the result using the presenter
@@ -392,15 +395,19 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     const handleReviewSkip = () => {
         setIsReviewModalOpen(false);
         setReviewSessionId(null);
+        setReviewGroupId(null);          // NEW
         setReviewSubmitted(false);
         setCreateReviewViewModel(undefined);
+        createReviewMutation.reset();    // NEW: clears stale error/data from previous mutations
     };
 
     const handleReviewClose = () => {
         setIsReviewModalOpen(false);
         setReviewSessionId(null);
+        setReviewGroupId(null);          // NEW
         setReviewSubmitted(false);
         setCreateReviewViewModel(undefined);
+        createReviewMutation.reset();    // NEW
     };
 
     // Cancel handler - just unschedule the session
@@ -752,7 +759,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                             {...commonProps}
                             status="ended"
                             hasReview={false}
-                            onClickReviewCoachingSession={() => handleReviewClick(session.id!)}
+                            onClickReviewCoachingSession={() => handleReviewClick(session.id!, group?.id)}
                             onClickDownloadRecording={() => handleDownloadRecording(session.id!)}
                             isRecordingDownloading={false}
                         />
@@ -814,6 +821,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
 
             {/* Review Modal */}
             <ReviewDialog
+                key={reviewSessionId ?? 0}
                 locale={locale}
                 modalType="coaching"
                 onClose={handleReviewClose}
