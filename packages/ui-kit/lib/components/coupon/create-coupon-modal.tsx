@@ -9,7 +9,7 @@ import { TextInput } from '../text-input';
 import { DateInput } from '../date-input';
 import { RadioButton } from '../radio-button';
 import { CheckBox } from '../checkbox';
-import { Dropdown } from '../dropdown';
+import { CouponSearchDropdown } from './coupon-search-dropdown';
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { COUPON_NAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 
@@ -144,9 +144,6 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
   const [selectedGroupPackage, setSelectedGroupPackage] = useState<number | null>(null);
   const [groupPackageName, setGroupPackageName] = useState('');
   const [groupPackageWithCoaching, setGroupPackageWithCoaching] = useState(false);
-
-  // Search state
-  const [courseSearchQuery, setCourseSearchQuery] = useState('');
 
   // Validation state
   const [showValidationErrors, setShowValidationErrors] = useState<boolean>(false);
@@ -363,17 +360,20 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
     // TODO: Show toast notification
   };
 
-  const handleCourseToggle = (courseId: number, courseTitle: string, courseSlug: string) => {
-    setSelectedCourses(prev => {
-      const exists = prev.find(c => c.id === courseId);
-      if (exists) {
-        // Remove course
-        return prev.filter(c => c.id !== courseId);
-      } else {
-        // Add course
-        return [...prev, { id: courseId, title: courseTitle, withCoaching: false }];
-      }
+  const handleCourseSelection = (courseIds: string[]) => {
+    if (!coursesQuery?.data?.data?.courses) return;
+    const courses = coursesQuery.data.data.courses.filter((course: any) =>
+      courseIds.includes(course.id.toString())
+    );
+    const newSelectedCourses = courses.map((course: any) => {
+      const existing = selectedCourses.find(sc => sc.id === course.id);
+      return {
+        id: course.id,
+        title: course.title,
+        withCoaching: existing?.withCoaching ?? false,
+      };
     });
+    setSelectedCourses(newSelectedCourses);
   };
 
   const handlePackageSelection = (packageIds: string[]) => {
@@ -574,46 +574,21 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                     <p className="text-sm text-gray-600">Loading courses...</p>
                   </div>
                 ) : coursesQuery?.data?.data?.courses ? (
-                  <div className="flex flex-col gap-3">
-                    {/* Search Input */}
-                    <TextInput
-                      label=""
-                      inputField={{
-                        value: courseSearchQuery,
-                        setValue: setCourseSearchQuery,
-                        inputText: "Search courses...",
-                      }}
+                  <>
+                    <CouponSearchDropdown
+                      mode="multiple"
+                      options={coursesQuery.data.data.courses
+                        .sort((a: any, b: any) => a.title.localeCompare(b.title))
+                        .map((course: any) => ({
+                          label: `${course.title} (${course.slug})`,
+                          value: course.id.toString()
+                        }))}
+                      onSelectionChange={(selected) => handleCourseSelection(selected as string[])}
+                      placeholder={dictionary.selectCourse}
+                      searchPlaceholder="Search courses..."
+                      defaultValue={selectedCourses.map(c => c.id.toString())}
                     />
 
-                    {/* Course Selection List */}
-                    <div className="flex flex-col gap-2 max-h-64 overflow-y-auto border border-divider rounded-md p-2">
-                      {coursesQuery.data.data.courses
-                        .filter((course: any) => {
-                          const searchLower = courseSearchQuery.toLowerCase();
-                          return (
-                            course.title.toLowerCase().includes(searchLower) ||
-                            course.slug.toLowerCase().includes(searchLower)
-                          );
-                        })
-                        .sort((a: any, b: any) => a.title.localeCompare(b.title))
-                        .map((course: any) => {
-                          const isSelected = selectedCourses.some(c => c.id === course.id);
-                          return (
-                            <div key={course.id} className="flex flex-col gap-2">
-                              <CheckBox
-                                name={`course-select-${course.id}`}
-                                value={`course-select-${course.id}`}
-                                label={`${course.title} (${course.slug})`}
-                                checked={isSelected}
-                                onChange={() => handleCourseToggle(course.id, course.title, course.slug)}
-                                withText
-                              />
-                            </div>
-                          );
-                        })}
-                    </div>
-
-                    {/* Selected Courses with Coaching Toggles */}
                     {selectedCourses.length > 0 && (
                       <div className="flex flex-col gap-2">
                         <h5 className="font-medium text-sm">{dictionary.withCoaching}</h5>
@@ -630,7 +605,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                         ))}
                       </div>
                     )}
-                  </div>
+                  </>
                 ) : (
                   <div className="p-4 bg-red-50 rounded-md">
                     <p className="text-sm text-red-600">Failed to load courses</p>
@@ -649,16 +624,16 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                   </div>
                 ) : packagesQuery?.data?.data?.packages ? (
                   <>
-                    <Dropdown
-                      type="multiple-choice-and-search"
+                    <CouponSearchDropdown
+                      mode="multiple"
                       options={packagesQuery.data.data.packages.map((pkg: any) => ({
                         label: pkg.title,
                         value: pkg.id.toString()
                       }))}
                       onSelectionChange={(selected) => handlePackageSelection(selected as string[])}
-                      text={{ multiText: dictionary.selectPackages }}
+                      placeholder={dictionary.selectPackages}
+                      searchPlaceholder={dictionary.selectPackages}
                       defaultValue={selectedPackages.map(p => p.id.toString())}
-                      className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
                     />
                     
                     {/* Selected Packages with Coaching Checkboxes */}
@@ -697,8 +672,8 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                 ) : coachingQuery?.data?.data?.coachingOfferings ? (
                   <>
                     <h4 className="font-medium">{dictionary.selectCoachingOffering}</h4>
-                    <Dropdown
-                      type="simple"
+                    <CouponSearchDropdown
+                      mode="single"
                       options={coachingQuery.data.data.coachingOfferings.map((offering: any) => ({
                         label: `${offering.title} (${offering.duration} ${dictionary.minutes})`,
                         value: offering.id.toString()
@@ -717,9 +692,9 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                           setCoachingDuration(null);
                         }
                       }}
-                      text={{ simpleText: dictionary.selectCoachingOffering }}
+                      placeholder={dictionary.selectCoachingOffering}
+                      searchPlaceholder={dictionary.selectCoachingOffering}
                       defaultValue={selectedCoachingOffering?.toString()}
-                      className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
                     />
 
                     <CheckBox
@@ -734,17 +709,16 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                     {isCoachingPartOfCourse && coursesQuery?.data?.data?.courses && (
                       <div className="flex flex-col gap-2">
                         <h4 className="font-medium">{dictionary.selectCourse}</h4>
-                        <Dropdown
-                          type="single-choice-and-search"
-                          position="top"
+                        <CouponSearchDropdown
+                          mode="single"
                           options={coursesQuery.data.data.courses.map((course: any) => ({
                             label: course.title,
                             value: course.id.toString()
                           }))}
                           onSelectionChange={(selected) => setSelectedCourseForCoaching(selected && typeof selected === 'string' ? parseInt(selected) : null)}
-                          text={{ simpleText: dictionary.selectCourse, searchTextPlaceholder: dictionary.selectCourse }}
+                          placeholder={dictionary.selectCourse}
+                          searchPlaceholder={dictionary.selectCourse}
                           defaultValue={selectedCourseForCoaching?.toString()}
-                          className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
                         />
                       </div>
                     )}
@@ -780,16 +754,16 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                 {coursesQuery?.data?.data?.courses && (
                   <div className="flex flex-col gap-2">
                     <h4 className="font-medium">{dictionary.selectCourse}</h4>
-                    <Dropdown
-                      type="simple"
+                    <CouponSearchDropdown
+                      mode="single"
                       options={coursesQuery.data.data.courses.map((course: any) => ({
                         label: course.title,
                         value: course.id.toString()
                       }))}
                       onSelectionChange={(selected) => setSelectedGroupCourse(selected && typeof selected === 'string' ? parseInt(selected) : null)}
-                      text={{ simpleText: dictionary.selectCourse }}
+                      placeholder={dictionary.selectCourse}
+                      searchPlaceholder={dictionary.selectCourse}
                       defaultValue={selectedGroupCourse?.toString()}
-                      className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
                     />
                   </div>
                 )}
@@ -821,16 +795,16 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                 {packagesQuery?.data?.data?.packages && (
                   <div className="flex flex-col gap-2">
                     <h4 className="font-medium">{dictionary.selectPackage}</h4>
-                    <Dropdown
-                      type="simple"
+                    <CouponSearchDropdown
+                      mode="single"
                       options={packagesQuery.data.data.packages.map((pkg: any) => ({
                         label: pkg.title,
                         value: pkg.id.toString()
                       }))}
                       onSelectionChange={(selected) => setSelectedGroupPackage(selected && typeof selected === 'string' ? parseInt(selected) : null)}
-                      text={{ simpleText: dictionary.selectPackage }}
+                      placeholder={dictionary.selectPackage}
+                      searchPlaceholder={dictionary.selectPackage}
                       defaultValue={selectedGroupPackage?.toString()}
-                      className="[&_div.truncate]:max-w-none [&_div.truncate]:whitespace-normal"
                     />
                   </div>
                 )}
