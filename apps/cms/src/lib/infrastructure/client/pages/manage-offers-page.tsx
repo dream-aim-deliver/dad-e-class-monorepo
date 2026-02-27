@@ -117,7 +117,9 @@ export default function ManageOffersPage({
     const packagesShortData = packagesShortViewModel?.mode === 'default' ? packagesShortViewModel.data : null;
 
     const allPackages = useMemo(() =>
-        (packagesData?.packages || []).map(pkg => ({ ...pkg, id: String(pkg.id) }))
+        (packagesData?.packages || [])
+            .filter(pkg => pkg.status !== 'archived')
+            .map(pkg => ({ ...pkg, id: String(pkg.id) }))
         , [packagesData?.packages]);
 
     const linkedPackageIds = useMemo(() =>
