@@ -171,9 +171,9 @@ export default function EndedGroupCoachingSessions({
         return sessions.sort((a, b) => {
             switch (sortBy) {
                 case 'sessionDate':
-                    return new Date(b.publicationDate).getTime() - new Date(a.publicationDate).getTime();
+                    return new Date(b.startTime).getTime() - new Date(a.startTime).getTime();
                 case 'sessionDateOldest':
-                    return new Date(a.publicationDate).getTime() - new Date(b.publicationDate).getTime();
+                    return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
                 case 'courseName':
                     return a.course.title.localeCompare(b.course.title);
                 case 'courseNameDesc':
