@@ -77,8 +77,8 @@ export const RecentActivity: FC<RecentActivityProps> = ({
   return (
     <div className={`flex flex-col gap-2 items-center ${className || ''}`}>
       {variation === 'Feed' && (
-        <div className="flex w-full items-start justify-between gap-2 sm:items-center">
-          <p className="text-xl text-base-white font-bold text-left min-w-0 flex-1">
+        <div className="flex flex-wrap w-full items-center justify-between gap-x-2 gap-y-2">
+          <p className="text-xl text-base-white font-bold text-left min-w-0">
             {dictionary?.components?.recentActivity?.recentActivity}
           </p>
           {onClickMarkAllAsRead && (
