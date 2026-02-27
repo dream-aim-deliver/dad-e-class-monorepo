@@ -43,7 +43,7 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearchLoading, setIsSearchLoading] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<Course[]>([]);
-  const [sortOrder, setSortOrder] = useState('desc');
+  const [sortOrder, setSortOrder] = useState('date-desc');
   const [coachingFilter, setCoachingFilter] = useState<'all' | 'with-coaching'>('all');
 
 
@@ -98,9 +98,11 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
   // Memoized sorted filtered courses
   const sortedFilteredCourses = useMemo(() => {
     return [...filteredCourses].sort((a, b) => {
+      if (sortOrder === 'date-desc') return b.id - a.id;
+      if (sortOrder === 'date-asc') return a.id - b.id;
       const aVal = a.rating || 0;
       const bVal = b.rating || 0;
-      return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+      return sortOrder === 'rating-asc' ? aVal - bVal : bVal - aVal;
     });
   }, [filteredCourses, sortOrder]);
 
@@ -110,9 +112,11 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
       return [];
     }
     return [...searchResults].sort((a, b) => {
+      if (sortOrder === 'date-desc') return b.id - a.id;
+      if (sortOrder === 'date-asc') return a.id - b.id;
       const aVal = a.rating || 0;
       const bVal = b.rating || 0;
-      return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+      return sortOrder === 'rating-asc' ? aVal - bVal : bVal - aVal;
     });
   }, [searchResults, sortOrder, searchQuery]);
 
@@ -220,29 +224,19 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
               />
             </div>
             <div className="flex gap-2 items-center">
-              <label className="text-sm md:text-md text-base-white">
-                Sort by:
-              </label>
               <Dropdown
                 type="simple"
                 options={[
-                  {
-                    label: 'Rating: High to Low',
-                    value: 'rating-desc',
-                  },
-                  {
-                    label: 'Rating: Low to High',
-                    value: 'rating-asc',
-                  },
+                  { label: 'Date: Newest First', value: 'date-desc' },
+                  { label: 'Date: Oldest First', value: 'date-asc' },
+                  { label: 'Rating: High to Low', value: 'rating-desc' },
+                  { label: 'Rating: Low to High', value: 'rating-asc' },
                 ]}
-                defaultValue={`rating-${sortOrder}`}
+                defaultValue={sortOrder}
                 onSelectionChange={(selected) => {
-                  if (typeof selected === 'string') {
-                    const order = selected.split('-')[1];
-                    setSortOrder(order);
-                  }
+                  if (typeof selected === 'string') setSortOrder(selected);
                 }}
-                text={{ simpleText: 'Sort by Rating' }}
+                text={{ simpleText: 'Sort by' }}
               />
             </div>
           </div>
