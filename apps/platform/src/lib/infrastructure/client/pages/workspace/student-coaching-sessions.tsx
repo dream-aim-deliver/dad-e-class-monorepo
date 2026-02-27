@@ -274,7 +274,9 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     }, [scheduledSessions]);
 
     const endedSessions = useMemo(() => {
-        return scheduledSessions.filter(session => session.status === 'completed');
+        return scheduledSessions
+            .filter(session => session.status === 'completed')
+            .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
     }, [scheduledSessions]);
 
     // Filter unscheduled sessions for Available tab
