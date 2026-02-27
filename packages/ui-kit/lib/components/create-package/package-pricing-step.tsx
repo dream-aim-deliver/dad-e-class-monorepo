@@ -86,6 +86,10 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
             <div className="flex flex-col space-y-6">
                 <h3 className="text-lg font-semibold text-text-primary">{dictionary.components.packagePricingStep.completePackageTitle}</h3>
 
+                <p className="text-text-secondary">
+                    {dictionary.components.packagePricingStep.completePackageDescription}
+                </p>
+
                 <div className="flex flex-col space-y-4">
                     {/* With Coaching */}
                     <div className="flex flex-col space-y-2">
@@ -119,6 +123,10 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
 
                 <p className="text-text-secondary">
                     {dictionary.components.packagePricingStep.partialDiscountsDescription}
+                </p>
+
+                <p className="text-text-secondary">
+                    {dictionary.components.packagePricingStep.partialDiscountsVisibilityNote}
                 </p>
 
                 {/* Discount Grid */}
