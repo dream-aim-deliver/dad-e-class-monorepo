@@ -43,6 +43,7 @@ export function WeeklyCoachCalendarWrapper({
     const getOnNewEventHandler = () => {
         if (!setNewSessionStart) return;
         return (startTime: Date) => {
+            if (startTime <= new Date()) return;
             setNewSessionStart?.(startTime);
             openDialog?.();
         };
@@ -222,6 +223,7 @@ export function MonthlyCoachCalendarWrapper({
         availability: useCaseModels.TAvailability,
     ) => {
         if (!setNewSessionStart) return;
+        if (new Date(availability.endTime) <= new Date()) return undefined;
         return () => {
             setNewSessionStart?.(new Date(availability.startTime));
             openDialog?.();
