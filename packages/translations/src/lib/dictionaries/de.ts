@@ -2697,7 +2697,7 @@ export const DE: TDictionary = {
       },
     },
     studentCoachingSessions: {
-      yourCoachingSessions: 'Ihre Coaching-Sitzungen',
+      yourCoachingSessions: 'Geplante Coaching-Sitzungen',
       upcoming: 'Demnächst',
       ended: 'Beendet',
       available: 'Verfügbar',
@@ -3035,8 +3035,8 @@ export const DE: TDictionary = {
       },
     },
     userCoachingSessions: {
-      title: "Deine Coaching-Sitzungen",
-      loadingTitle: "Deine Coaching-Sitzungen",
+      title: "Geplante Coaching-Sitzungen",
+      loadingTitle: "Geplante Coaching-Sitzungen",
       tabUpcoming: "Anstehend",
       tabEnded: "Beendet",
       tabAvailable: "Verfügbar",
