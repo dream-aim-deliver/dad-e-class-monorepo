@@ -3924,6 +3924,7 @@ export const EN: TDictionary = {
       companyIndustry: 'Industry',
       superadminRoleProtected: 'Superadmin roles cannot be changed',
       hideAsCoach: 'Hide user as coach (hidden from all coach listings)',
+      doNotSendEmails: "Don't send emails to this user",
       noPersonalProfile: 'This user has not created a personal profile yet.',
       coachApplication: {
         title: 'Coach Application',
