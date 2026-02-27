@@ -1982,7 +1982,7 @@ export const DE: TDictionary = {
       },
       insufficientAdvanceNotice: {
         title: 'Zu kurzfristig',
-        description: 'Sitzungen müssen mindestens 3 Stunden im Voraus geplant werden.',
+        description: 'Sitzungen müssen mindestens 10 Minuten im Voraus geplant werden.',
       },
       coachNotFound: {
         title: 'Coach nicht gefunden',

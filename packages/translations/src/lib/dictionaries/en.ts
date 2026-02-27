@@ -1980,7 +1980,7 @@ export const EN: TDictionary = {
       },
       insufficientAdvanceNotice: {
         title: 'Too Short Notice',
-        description: 'Sessions must be scheduled at least 3 hours in advance.',
+        description: 'Sessions must be scheduled at least 10 minutes in advance.',
       },
       coachNotFound: {
         title: 'Coach Not Found',
