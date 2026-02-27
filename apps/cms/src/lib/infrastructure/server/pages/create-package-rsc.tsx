@@ -31,7 +31,7 @@ export default async function CreatePackageServerComponent(
     // Streaming pattern: Fire prefetches without awaiting (TSK-PERF-007)
     // React will stream HTML while queries are pending
     prefetch(trpc.getPlatformLanguage.queryOptions({}));
-    prefetch(trpc.listCourses.queryOptions({ showFilter: "live" }));
+    prefetch(trpc.listCourses.queryOptions({ showFilter: "live_all_languages" }));
 
     return (
         <HydrateClient>
