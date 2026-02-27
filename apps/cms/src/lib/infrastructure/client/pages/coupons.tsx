@@ -109,7 +109,7 @@ function CreateCouponModalContent({
   const utils = trpc.useUtils();
 
   // background queries for modal
-  const coursesQuery = trpc.listPlatformCoursesShort.useQuery({});
+  const coursesQuery = trpc.listPlatformCoursesShort.useQuery({ status: 'live' });
   const packagesQuery = trpc.listPackagesShort.useQuery({});
   const coachingQuery = trpc.listPlatformCoachingOfferings.useQuery({});
 
