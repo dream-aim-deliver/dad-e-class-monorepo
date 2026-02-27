@@ -360,12 +360,12 @@ export const DE: TDictionary = {
         'Eine überzeugende Biografie hilft dir, dich von anderen Coaches abzuheben. Dies wird für alle Studierenden sichtbar sein.',
 
       linkedinUrl: 'LinkedIn-URL',
-      linkedinPlaceholder: 'https://www.linkedin.com/in/company/bewerbeagentur/',
+      linkedinPlaceholder: 'z. B. https://www.linkedin.com/in/ihrprofil',
 
       curriculumVitae: 'Lebenslauf (CV)',
       cvRequired: 'Lebenslauf ist erforderlich',
       portfolioWebsite: 'Portfolio-Webseite-URL (optional)',
-      portfolioWebsitePlaceholder: 'https://wimlanz.ch/',
+      portfolioWebsitePlaceholder: 'z. B. https://www.ihrportfolio.com',
 
       associatedCompanyName: 'Firmenname (optional)',
       associatedCompanyPlaceholder: 'z. B. Tech GmbH',
@@ -973,7 +973,7 @@ export const DE: TDictionary = {
       urlRequired: 'URL ist erforderlich',
       paste: 'einfügen',
       titlePlaceholder: 'Z.B. Mein neues Video-Projekt',
-      urlPlaceholder: 'Z.B. https://website.com/dies/ist/die/url',
+      urlPlaceholder: 'Z.B. https://example.com/dies/ist/die/url',
       recommendedSize: "Empfohlene Symbolgröße: Quadrate mit 24 × 24 Pixeln.",
     },
     courseBuilder: {
@@ -1690,7 +1690,7 @@ export const DE: TDictionary = {
       unitPriceLabel: 'Einzelpreis',
       quantityLabel: 'Menge',
       invoiceUrlLabel: 'Rechnungs-URL',
-      invoiceUrlPlaceholder: 'z.B. https://bexio.com/dashboard/?invoice=12345',
+      invoiceUrlPlaceholder: 'z.B. https://example.com/invoices/?id=12345',
       tagsLabel: 'Tags',
       tagsPlaceholder: 'Transaktion-Tags auswählen',
       addTag: 'Tag hinzufügen',
