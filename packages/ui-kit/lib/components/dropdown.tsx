@@ -299,7 +299,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       )}
       {/* MultiSelect Dropdowns */}
       {(type === 'multiple-choice-and-search' || type === 'multiple-choice-and-search-with-action') && (
-        <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
+        <div className="flex flex-1 min-h-0 flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <InputField
@@ -325,7 +325,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
               </div>
             )}
           </div>
-          <ul className="flex flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
+          <ul className="flex flex-1 min-h-0 flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
             {(searchQuery ? filteredOptions : options).map((option) => (
               <li
                 key={option.value}
@@ -344,7 +344,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                           optionRefs.current.delete(option.value);
                         }
                       }}
-                      className="truncate max-w-[180px] cursor-pointer"
+                      className="truncate cursor-pointer"
                     >
                       {option.label}
                     </div>
@@ -370,7 +370,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       )}
       {/* Single select with search */}
       {type === 'single-choice-and-search' && (
-        <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
+        <div className="flex flex-1 min-h-0 flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
           <InputField
             value={searchQuery}
             setValue={(value: string) => setSearchQuery(value)}
@@ -378,7 +378,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
             inputText={text?.searchTextPlaceholder || 'Search...'}
             leftContent={<IconSearch />}
           />
-          <ul className="flex flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
+          <ul className="flex flex-1 min-h-0 flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
             {(searchQuery ? filteredOptions : options).map((option) => (
               <li key={option.value} className="group relative">
                 <button
@@ -415,7 +415,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       )}
       {/* Single select with avatars and search */}
       {type === 'single-choice-and-search-avatars' && (
-        <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
+        <div className="flex flex-1 min-h-0 flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full overflow-hidden">
           <InputField
             value={searchQuery}
             setValue={(value: string) => setSearchQuery(value)}
@@ -423,7 +423,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
             inputText={text?.searchTextPlaceholder || 'Search...'}
             leftContent={<IconSearch />}
           />
-          <ul className="flex flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
+          <ul className="flex flex-1 min-h-0 flex-col gap-2 overflow-y-auto overscroll-contain pr-1">
             {(searchQuery ? filteredOptions : options).map((option) => (
               <li key={option.value}>
                 <button
