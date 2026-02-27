@@ -26,6 +26,7 @@ interface ScheduledStudentSessionCardProps {
     onJoinMeeting: () => void;
     onCancel?: () => void;
     onViewCourse?: () => void;
+    onClickGroup?: () => void;
     courseName?: string;
     groupName?: string;
 }
@@ -42,6 +43,7 @@ function ScheduledStudentSessionCard({
     onJoinMeeting,
     onCancel,
     onViewCourse,
+    onClickGroup,
     courseName,
     groupName,
 }: ScheduledStudentSessionCardProps) {
@@ -107,6 +109,7 @@ function ScheduledStudentSessionCard({
         courseName,
         onClickCourse: onViewCourse,
         groupName,
+        onClickGroup,
     };
 
     if (cardStatus === 'ongoing') {
@@ -493,6 +496,10 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         router.push(`/${locale}/courses/${courseSlug}`);
     };
 
+    const handleGroupClick = (courseSlug: string) => {
+        router.push(`/${locale}/courses/${courseSlug}/group`);
+    };
+
     const handleViewAllCoaches = () => {
         router.push(`/${locale}/coaching`);
     };
@@ -706,6 +713,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                 courseName: course?.title,
                 onClickCourse: course?.slug ? () => handleViewCourse(course.slug || '') : undefined,
                 groupName: group?.name,
+                onClickGroup: course?.slug && group ? () => handleGroupClick(course.slug!) : undefined,
             };
 
             if (session.status === 'requested') {
@@ -732,6 +740,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         onJoinMeeting={() => handleJoinMeeting(meetingUrl)}
                         onCancel={group ? undefined : () => handleOpenCancelModal(session.id!)}
                         onViewCourse={course?.slug ? () => handleViewCourse(course.slug || '') : undefined}
+                        onClickGroup={course?.slug && group ? () => handleGroupClick(course.slug!) : undefined}
                         courseName={course?.title}
                         groupName={group?.name}
                     />
