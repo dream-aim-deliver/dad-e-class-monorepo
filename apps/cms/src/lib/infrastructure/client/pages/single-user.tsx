@@ -536,28 +536,29 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                 </div>
               )}
 
-              {/* Hide as Coach toggle (superadmin only) */}
-              {currentUserIsSuperadmin && (
-                <div className="flex items-center gap-2 border-t border-card-stroke/50 pt-4">
-                  <input
-                    type="checkbox"
-                    id="hideAsCoach"
-                    checked={professionalProfile?.profile.hideAsCoach ?? false}
-                    onChange={(e) => {
-                      setHideAsCoachMutation.mutate({
-                        username,
-                        hideAsCoach: e.target.checked,
-                      });
-                    }}
-                    disabled={setHideAsCoachMutation.isPending}
-                    className="h-4 w-4 rounded border-card-stroke text-button-primary-fill focus:ring-button-primary-fill"
-                  />
-                  <label htmlFor="hideAsCoach" className="text-sm text-text-primary">
-                    {t('hideAsCoach')}
-                  </label>
-                </div>
-              )}
             </div>
+          </div>
+        )}
+
+        {/* Hide as Coach toggle (superadmin only) */}
+        {currentUserIsSuperadmin && (
+          <div className="flex items-center gap-2 border-t border-card-stroke pt-4">
+            <input
+              type="checkbox"
+              id="hideAsCoach"
+              checked={professionalProfile?.profile.hideAsCoach ?? false}
+              onChange={(e) => {
+                setHideAsCoachMutation.mutate({
+                  username,
+                  hideAsCoach: e.target.checked,
+                });
+              }}
+              disabled={setHideAsCoachMutation.isPending}
+              className="h-4 w-4 rounded border-card-stroke text-button-primary-fill focus:ring-button-primary-fill"
+            />
+            <label htmlFor="hideAsCoach" className="text-sm text-text-primary">
+              {t('hideAsCoach')}
+            </label>
           </div>
         )}
 
