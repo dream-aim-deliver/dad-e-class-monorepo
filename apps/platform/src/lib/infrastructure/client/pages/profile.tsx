@@ -533,6 +533,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		skillsDe: [],
 		private: true,
 		hideAsCoach: false,
+		doNotSendEmails: false,
 	};
 
 	// Use actual profiles if they exist, otherwise use defaults
