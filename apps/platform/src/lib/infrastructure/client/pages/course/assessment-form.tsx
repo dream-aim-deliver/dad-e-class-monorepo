@@ -80,13 +80,6 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         },
     });
 
-    const getIsFormDisabled = () => {
-        return (
-            componentsViewModel?.mode === 'default' &&
-            componentsViewModel.data.components.length === 0
-        );
-    };
-
     // Present components data
     useEffect(() => {
         if (componentsResponse) {
@@ -96,15 +89,6 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     }, [componentsResponse, assessmentsPresenter, componentsViewModel]);
 
     useEffect(() => {
-        if (getIsFormDisabled()) {
-            submitMutation.mutate({
-                progress: [],
-                courseSlug: props.courseSlug,
-            });
-        }
-    }, [componentsViewModel]);
-
-    useEffect(() => {
         if (submitMutation.isSuccess) {
             // @ts-ignore
             submitPresenter.present(submitMutation.data, submitAssessmentViewModel);
@@ -112,7 +96,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     }, [submitMutation.isSuccess, submitPresenter, submitAssessmentViewModel]);
 
 
-    if (!componentsViewModel || getIsFormDisabled()) {
+    if (!componentsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 

@@ -70,10 +70,7 @@ async function handlePCALocaleRedirect(locale: TLocale, slug: string): Promise<v
 
     if (courseAccessViewModel?.mode === 'default') {
         const { highestRole, isAssessmentCompleted, course } = courseAccessViewModel.data;
-        const shouldShowAssessment =
-            highestRole === 'student' &&
-            isAssessmentCompleted !== null &&
-            !isAssessmentCompleted;
+        const shouldShowAssessment = isAssessmentCompleted === false;
 
         if (shouldShowAssessment) {
             const courseLanguage = course?.language?.code as TLocale;
