@@ -1,7 +1,8 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/cms-client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useListCoachesPresenter } from '../../hooks/use-coaches-presenter';
+import useClientSidePagination from '../../utils/use-client-side-pagination';
 import {
     Button,
     CardListLayout,
@@ -9,6 +10,7 @@ import {
     DefaultError,
     DefaultLoading,
     EmptyState,
+    matchesTopicFilter,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -19,16 +21,8 @@ interface CoachListProps {
     selectedTopics: string[];
 }
 
-const COACHES_PER_PAGE = 6;
-
 export default function OffersCoachList({ selectedTopics }: CoachListProps) {
-    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
-        skillSlugs: selectedTopics,
-        pagination: {
-            page: 1,
-            pageSize: COACHES_PER_PAGE,
-        },
-    });
+    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({});
     const [coachesViewModel, setCoachesViewModel] = useState<
         viewModels.TCoachListViewModel | undefined
     >(undefined);
@@ -45,6 +39,24 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const router = useRouter();
     const { data: session } = useSession();
     const isLoggedIn = !!session;
+
+    const coaches = useMemo(() => {
+        if (!coachesViewModel || coachesViewModel.mode !== 'default') {
+            return [];
+        }
+        return coachesViewModel.data.coaches.filter((coach) =>
+            matchesTopicFilter(
+                selectedTopics,
+                coach.skills.map((skill) => skill.slug),
+            ),
+        );
+    }, [coachesViewModel, selectedTopics]);
+
+    const {
+        displayedItems: displayedCoaches,
+        hasMoreItems: hasMoreCoaches,
+        handleLoadMore,
+    } = useClientSidePagination({ items: coaches });
 
     if (!coachesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -72,9 +84,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
         );
     }
 
-    const coaches = coachesViewModel.data.coaches;
-
-    if (coaches.length === 0) {
+    if (displayedCoaches.length === 0) {
         return (
             <EmptyState
                 locale={locale}
@@ -92,7 +102,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     return (
         <div className="flex flex-col space-y-5">
             <CardListLayout>
-                {coaches.map((coach) => (
+                {displayedCoaches.map((coach) => (
                     <CoachCard
                         key={`coach-${coach.username}`}
                         locale={locale}
@@ -123,13 +133,19 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
                     />
                 ))}
             </CardListLayout>
-            {isLoggedIn && (
+            {hasMoreCoaches ? (
+                <Button
+                    variant="text"
+                    text={paginationTranslations('loadMore')}
+                    onClick={handleLoadMore}
+                />
+            ) : isLoggedIn ? (
                 <Button
                     variant="text"
                     text={paginationTranslations('viewAll')}
                     onClick={handleViewAll}
                 />
-            )}
+            ) : null}
         </div>
     );
 }

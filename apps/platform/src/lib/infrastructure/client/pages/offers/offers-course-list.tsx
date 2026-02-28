@@ -6,6 +6,7 @@ import {
     DefaultLoading,
     EmptyState,
     VisitorCourseCard,
+    matchesTopicFilter,
 } from '@maany_shr/e-class-ui-kit';
 import { useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
@@ -76,16 +77,10 @@ export function OffersCourseList({
         }
 
         return coursesViewModel.data.courses.filter((course) => {
-            const matchesTopics =
-                selectedTopics.length === 0 ||
-                course.topicSlugs.some((topic) =>
-                    selectedTopics.includes(topic),
-                );
-
             const matchesCoaching =
                 !coachingIncluded || course.coachingSessionCount;
 
-            return matchesTopics && matchesCoaching;
+            return matchesTopicFilter(selectedTopics, course.topicSlugs) && matchesCoaching;
         });
     }, [coursesViewModel, selectedTopics, coachingIncluded]);
 
