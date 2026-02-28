@@ -113,7 +113,7 @@ export default async function CourseServerComponent({
     // Normalize superadmin→admin for all downstream components (same privileges in UI)
     const currentRole = rawRole === 'superadmin' ? 'admin' : rawRole;
 
-    if (shouldShowAssessment(currentRole, isAssessmentCompleted ?? false)) {
+    if (shouldShowAssessment(isAssessmentCompleted)) {
         const courseLanguage = course?.language?.code as TLocale;
         return renderAssessmentForm(slug, courseLanguage);
     }
@@ -188,15 +188,8 @@ function validateCourseVisibility(
     }
 }
 
-function shouldShowAssessment(
-    currentRole: string,
-    isAssessmentCompleted: boolean | null,
-): boolean {
-    return (
-        currentRole === 'student' &&
-        isAssessmentCompleted !== null &&
-        !isAssessmentCompleted
-    );
+function shouldShowAssessment(isAssessmentCompleted: boolean | null | undefined): boolean {
+    return isAssessmentCompleted === false;
 }
 
 async function renderAssessmentForm(slug: string, courseLanguage?: TLocale) {
