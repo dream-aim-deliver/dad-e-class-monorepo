@@ -142,6 +142,7 @@ export { CheckoutModal, type CheckoutModalProps, type TransactionDraft, type Cou
 export { CourseForm, useCourseForm, type CourseDetailsState } from './components/course-form';
 export * from './utils/file-utils';
 export { formatPrice } from './utils/format-utils';
+export { matchesTopicFilter } from './utils/filter-by-topics';
 export { generateCertificatePDF, type CertificateData } from './utils/course-certificate-generator';
 export { CourseCertificate, type CourseCertificateProps } from './components/course-certificate';
 export { PaginatedCertificate, type PaginatedCertificateHandle } from './components/paginated-certificate';
@@ -267,6 +268,7 @@ export { CouponGrid, type CouponRow, type CouponGridProps } from './components/g
 export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterModalProps } from './components/grids/coupon-grid-filter-modal';
 export { RevokeCouponModal, type RevokeCouponModalProps } from './components/coupon/revoke-coupon-modal';
 export { CreateCouponModal, type CreateCouponModalProps } from './components/coupon/create-coupon-modal';
+export { CouponSearchDropdown, type CouponSearchDropdownProps } from './components/coupon/coupon-search-dropdown';
 export { CoachingSessionGroupOverviewList, CoachingSessionFilterModal, type CoachingSessionFilterModel } from './components/coaching-session-group-overview';
 export { CoachingSessionGroupOverviewCard } from './components/coaching-session-group-overview/coaching-session-group-overview-card';
 export { CoachReviewFilterModal, type CoachReviewFilterModel } from './components/review/coach-review-filter-modal';

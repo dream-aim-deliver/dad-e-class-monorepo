@@ -10,6 +10,7 @@ import {
     DefaultError,
     DefaultLoading,
     EmptyState,
+    matchesTopicFilter,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -44,15 +45,12 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
             return [];
         }
 
-        return coachesViewModel.data.coaches.filter((coach) => {
-            const matchesTopics =
-                selectedTopics.length === 0 ||
-                coach.skills.some((skill) =>
-                    selectedTopics.includes(skill.slug),
-                );
-
-            return matchesTopics;
-        });
+        return coachesViewModel.data.coaches.filter((coach) =>
+            matchesTopicFilter(
+                selectedTopics,
+                coach.skills.map((skill) => skill.slug),
+            ),
+        );
     }, [coachesViewModel, selectedTopics]);
 
     const {
