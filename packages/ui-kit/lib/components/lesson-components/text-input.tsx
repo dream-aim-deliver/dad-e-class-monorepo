@@ -13,7 +13,7 @@ import {
 } from '../pre-assessment/types';
 import { default as TextInputRenderer } from '../rich-text-element/renderer';
 import { Descendant, Node } from 'slate';
-import { serialize, deserialize } from '../rich-text-element/serializer';
+import { serialize, deserialize, slateToPlainText } from '../rich-text-element/serializer';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import DesignerLayout from '../designer-layout';
 import { IconTextInput } from '../icons/icon-text-input';
@@ -28,10 +28,8 @@ export const getValidationError: ElementValidator = (props) => {
 
     // Student validation: Always check if user has entered content (actual form submission)
     if (context === 'student') {
-        if (
-            !elementInstance.content ||
-            elementInstance.content.trim() === ''
-        ) {
+        const plainText = slateToPlainText(elementInstance.content ?? '').trim();
+        if (!plainText) {
             return dictionary.components.formRenderer.fieldRequired;
         }
         return undefined; // Student validation passed
