@@ -98,6 +98,13 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
     },
   });
 
+  // Mutation for toggling do_not_send_emails (superadmin only)
+  const setDoNotSendEmailsMutation = trpc.setDoNotSendEmails.useMutation({
+    onSuccess: async () => {
+      await utils.getProfessionalProfile.invalidate({ username });
+    },
+  });
+
   // Check if current logged-in user is superadmin
   const sessionDTO = useSession();
   const currentUserIsSuperadmin = sessionDTO.data?.user?.roles?.includes('superadmin') ?? false;
@@ -558,6 +565,28 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
             />
             <label htmlFor="hideAsCoach" className="text-sm text-text-primary">
               {t('hideAsCoach')}
+            </label>
+          </div>
+        )}
+
+        {/* Do Not Send Emails toggle (superadmin only) */}
+        {currentUserIsSuperadmin && (
+          <div className="flex items-center gap-2 border-t border-card-stroke pt-4">
+            <input
+              type="checkbox"
+              id="doNotSendEmails"
+              checked={professionalProfile?.profile.doNotSendEmails ?? false}
+              onChange={(e) => {
+                setDoNotSendEmailsMutation.mutate({
+                  username,
+                  doNotSendEmails: e.target.checked,
+                });
+              }}
+              disabled={setDoNotSendEmailsMutation.isPending}
+              className="h-4 w-4 rounded border-card-stroke text-button-primary-fill focus:ring-button-primary-fill"
+            />
+            <label htmlFor="doNotSendEmails" className="text-sm text-text-primary">
+              {t('doNotSendEmails')}
             </label>
           </div>
         )}
