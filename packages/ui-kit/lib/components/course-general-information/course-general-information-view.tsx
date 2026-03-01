@@ -2,6 +2,7 @@
 
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TCourseMetadata } from 'packages/models/src/course';
+import { videoSecondsToMinutes, formatVideoDuration } from '../../utils/video-duration';
 import { Button } from '../button';
 import { Badge } from '../badge';
 import { ProgressBar } from '../progress-bar';
@@ -141,30 +142,14 @@ export const CourseGeneralInformationView: FC<
 
     // Calculate total duration
     const totalDurationInMinutes =
-        (duration?.video || 0) +
+        videoSecondsToMinutes(duration?.video) +
         (duration?.coaching || 0) +
         (duration?.selfStudy || 0);
     const formattedTotalDuration = formatDuration(totalDurationInMinutes);
 
-    // Helper function to format single duration segment
-    const formatSingleDurationSegment = (
-        durationInMinutes: number,
-        dictionary: ReturnType<typeof getDictionary>,
-    ): string => {
-        if (durationInMinutes < 60) {
-            return `${durationInMinutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
-        }
-
-        const hours = Math.floor(durationInMinutes / 60);
-        const minutes = durationInMinutes % 60;
-
-        let result = `${hours} ${dictionary.components.courseGeneralInformationView.hoursText}`;
-
-        if (minutes > 0) {
-            result += ` ${minutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
-        }
-
-        return result;
+    const durationLabels = {
+        hours: dictionary.components.courseGeneralInformationView.hoursText,
+        minutes: dictionary.components.courseGeneralInformationView.minutesText,
     };
 
     return (
@@ -198,9 +183,9 @@ export const CourseGeneralInformationView: FC<
                     {/* Duration details */}
                     <div className="flex flex-col">
                         <p className="text-text-secondary text-sm">
-                            {formatSingleDurationSegment(
-                                duration?.video || 0,
-                                dictionary,
+                            {formatVideoDuration(
+                                videoSecondsToMinutes(duration?.video),
+                                durationLabels,
                             )}{' '}
                             {
                                 dictionary.components
@@ -210,9 +195,9 @@ export const CourseGeneralInformationView: FC<
                         </p>
 
                         <p className="text-text-secondary text-sm">
-                            {formatSingleDurationSegment(
+                            {formatVideoDuration(
                                 duration?.coaching || 0,
-                                dictionary,
+                                durationLabels,
                             )}{' '}
                             {
                                 dictionary.components
@@ -222,9 +207,9 @@ export const CourseGeneralInformationView: FC<
                         </p>
 
                         <p className="text-text-secondary text-sm">
-                            {formatSingleDurationSegment(
+                            {formatVideoDuration(
                                 duration?.selfStudy || 0,
-                                dictionary,
+                                durationLabels,
                             )}{' '}
                             {
                                 dictionary.components

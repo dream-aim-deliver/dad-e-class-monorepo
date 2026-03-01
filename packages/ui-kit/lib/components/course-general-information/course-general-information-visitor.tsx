@@ -2,6 +2,7 @@
 
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TCourseMetadata } from 'packages/models/src/course';
+import { videoSecondsToMinutes, formatVideoDuration } from '../../utils/video-duration';
 import { UserAvatar } from '../avatar/user-avatar';
 import { Button } from '../button';
 import { FC, useState, useEffect } from 'react';
@@ -180,29 +181,14 @@ export const CourseGeneralInformationVisitor: FC<
         };
 
         const totalDurationInMinutes =
-            (duration?.video || 0) +
+            videoSecondsToMinutes(duration?.video) +
             (duration?.coaching || 0) +
             (duration?.selfStudy || 0);
         const formattedTotalDuration = formatDuration(totalDurationInMinutes);
 
-        const formatSingleDurationSegment = (
-            durationInMinutes: number,
-            dictionary: ReturnType<typeof getDictionary>,
-        ): string => {
-            if (durationInMinutes < 60) {
-                return `${durationInMinutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
-            }
-
-            const hours = Math.floor(durationInMinutes / 60);
-            const minutes = durationInMinutes % 60;
-
-            let result = `${hours} ${dictionary.components.courseGeneralInformationView.hoursText}`;
-
-            if (minutes > 0) {
-                result += ` ${minutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
-            }
-
-            return result;
+        const durationLabels = {
+            hours: dictionary.components.courseGeneralInformationView.hoursText,
+            minutes: dictionary.components.courseGeneralInformationView.minutesText,
         };
 
         const handleCheckboxChange = () => {
@@ -274,9 +260,9 @@ export const CourseGeneralInformationVisitor: FC<
                                     size="4"
                                 />
                                 <p className="text-text-secondary text-sm">
-                                    {formatSingleDurationSegment(
-                                        (duration as any).video as number,
-                                        dictionary,
+                                    {formatVideoDuration(
+                                        videoSecondsToMinutes((duration as any).video as number),
+                                        durationLabels,
                                     )}{' '}
                                     {
                                         dictionary.components
@@ -293,9 +279,9 @@ export const CourseGeneralInformationVisitor: FC<
                                 />
                                 <p className="text-text-secondary text-sm">
                                     {coachingIncluded
-                                        ? `${formatSingleDurationSegment(
+                                        ? `${formatVideoDuration(
                                               (duration as any).coaching as number,
-                                              dictionary,
+                                              durationLabels,
                                           )} ${dictionary.components.courseGeneralInformationView.coachingWithAProfessionalText}`
                                         : dictionary.components.courseGeneralInformationView.feedbackFromExpertsText
                                     }
@@ -308,9 +294,9 @@ export const CourseGeneralInformationVisitor: FC<
                                     size="4"
                                 />
                                 <p className="text-text-secondary text-sm">
-                                    {formatSingleDurationSegment(
+                                    {formatVideoDuration(
                                         (duration as any).selfStudy as number,
-                                        dictionary,
+                                        durationLabels,
                                     )}{' '}
                                     {
                                         dictionary.components

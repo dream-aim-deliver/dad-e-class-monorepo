@@ -12,6 +12,7 @@ import {
     Button,
     type TransactionDraft,
     type CouponValidationResult,
+    videoSecondsToMinutes,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -104,7 +105,7 @@ function EnrolledCourseIntroductionContent(
                 locale={locale}
                 longDescription={courseViewModel.data.description}
                 duration={{
-                    video: courseViewModel.data.duration.video ?? 0,
+                    video: videoSecondsToMinutes(courseViewModel.data.duration.video),
                     coaching: courseViewModel.data.duration.coaching ?? 0,
                     selfStudy: courseViewModel.data.duration.selfStudy ?? 0,
                 }}
