@@ -12,6 +12,7 @@ import {
     DefaultError,
     DefaultLoading,
     Dropdown,
+    videoSecondsToMinutes,
 } from '@maany_shr/e-class-ui-kit';
 import React, { Suspense, useEffect, useState, useMemo } from 'react';
 import { useCourseDetails } from './hooks/edit-details-hooks';
@@ -161,7 +162,7 @@ export function EditCourseGeneralPreview({ slug }: { slug: string }) {
                 locale={locale}
                 longDescription={course.description}
                 duration={{
-                    video: course.duration.video ?? 0,
+                    video: videoSecondsToMinutes(course.duration.video),
                     coaching: course.duration.coaching ?? 0,
                     selfStudy: course.duration.selfStudy ?? 0,
                 }}

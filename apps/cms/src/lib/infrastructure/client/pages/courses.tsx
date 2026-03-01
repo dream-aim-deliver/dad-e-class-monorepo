@@ -10,7 +10,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
-import { Tabs, CourseCard, CourseCardList, DefaultError, DefaultLoading, SearchInput, CourseCardListSkeleton, Dropdown, Button } from '@maany_shr/e-class-ui-kit';
+import { Tabs, CourseCard, CourseCardList, DefaultError, DefaultLoading, SearchInput, CourseCardListSkeleton, Dropdown, Button, videoSecondsToMinutes } from '@maany_shr/e-class-ui-kit';
 import { useState, useMemo, useEffect } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCmsCoursesPresenter } from '../hooks/use-list-cms-courses-presenter';
@@ -271,7 +271,7 @@ export default function Courses({ locale, platformSlug, platformLocale }: Course
                         rating: course.rating || 0,
                         language: course.language,
                         duration: {
-                          video: course.duration.video ?? 0,
+                          video: videoSecondsToMinutes(course.duration.video),
                           coaching: course.duration.coaching ?? 0,
                           selfStudy: course.duration.selfStudy ?? 0,
                         },

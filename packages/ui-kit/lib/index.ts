@@ -142,6 +142,7 @@ export { CheckoutModal, type CheckoutModalProps, type TransactionDraft, type Cou
 export { CourseForm, useCourseForm, type CourseDetailsState } from './components/course-form';
 export * from './utils/file-utils';
 export { formatPrice } from './utils/format-utils';
+export { videoSecondsToMinutes, formatVideoDuration } from './utils/video-duration';
 export { matchesTopicFilter } from './utils/filter-by-topics';
 export { generateCertificatePDF, type CertificateData } from './utils/course-certificate-generator';
 export { CourseCertificate, type CourseCertificateProps } from './components/course-certificate';

@@ -53,7 +53,7 @@ const basePropsWithProgress = {
     title: 'Advanced React Development',
     longDescription: 'This is a sample course description for testing.',
     duration: {
-        video: 120,
+        video: 7200, // 7200 seconds = 120 minutes (API sends seconds)
         coaching: 60,
         selfStudy: 180,
     },
@@ -76,7 +76,7 @@ const basePropsWithoutProgress = {
     title: 'Advanced React Development',
     longDescription: 'This is a sample course description for testing.',
     duration: {
-        video: 120,
+        video: 7200, // 7200 seconds = 120 minutes (API sends seconds)
         coaching: 60,
         selfStudy: 180,
     },
@@ -187,7 +187,7 @@ describe('CourseGeneralInformationView', () => {
         render(
             <CourseGeneralInformationView
                 {...basePropsWithProgress}
-                duration={{ video: 15, coaching: 0, selfStudy: 30 }}
+                duration={{ video: 900, coaching: 0, selfStudy: 30 }} // 900 seconds = 15 minutes
             />,
         );
         expect(screen.getByText('45m')).toBeInTheDocument();

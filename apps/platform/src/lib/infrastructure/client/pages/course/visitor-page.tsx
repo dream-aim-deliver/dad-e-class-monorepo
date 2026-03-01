@@ -19,6 +19,7 @@ import {
     Banner,
     type TransactionDraft,
     type CouponValidationResult,
+    videoSecondsToMinutes,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
@@ -408,7 +409,7 @@ function VisitorPageContent({
                         language={{ code: 'en', name: 'English' }}
                         description={''}
                         duration={{
-                            video: courseData.data.duration?.video || 0,
+                            video: videoSecondsToMinutes(courseData.data.duration?.video),
                             coaching: courseData.data.duration?.coaching || 0,
                             selfStudy: courseData.data.duration?.selfStudy || 0,
                         }}
