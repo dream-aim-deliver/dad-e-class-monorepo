@@ -10,6 +10,7 @@ import { useImageComponent } from '../../contexts/image-component-context';
 import RichTextRenderer from '../rich-text-element/renderer';
 import Tooltip from '../tooltip';
 import { formatPrice } from '../../utils/format-utils';
+import { formatCompactDuration } from '../../utils/video-duration';
 
 export interface PackageCardProps extends TEClassPackage, isLocalAware {
     courseCount: number;
@@ -73,17 +74,6 @@ export const PackageCard = ({
     const titleRef = useRef<HTMLHeadingElement>(null);
     const [isTruncated, setIsTruncated] = useState(false);
     const [isImageError, setIsImageError] = useState(false);
-
-    // Helper function to format duration in hours and minutes
-    const formatDuration = (duration?: number): string => {
-        if (!duration || duration <= 0) return '0m';
-        if (duration > 59) {
-            const hours = Math.floor(duration / 60);
-            const minutes = duration % 60;
-            return `${hours}h ${minutes}m`;
-        }
-        return `${duration}m`;
-    };
 
     // Handle image error and set error state
     const handleImageError = () => {
@@ -154,7 +144,7 @@ export const PackageCard = ({
                                 hasIconLeft
                                 iconLeft={<IconClock size="5" />}
                                 key={duration}
-                                text={formatDuration(duration)}
+                                text={formatCompactDuration(duration ?? 0)}
                                 className="h-6 py-1 text-base max-w-full"
                             />
                         )}

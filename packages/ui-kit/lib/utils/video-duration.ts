@@ -9,22 +9,38 @@ export function videoSecondsToMinutes(seconds: number | null | undefined): numbe
 
 /**
  * Formats a duration given in minutes into a human-readable string.
- * Uses the provided labels for "hours" and "minutes".
- * - < 60 min → "X MINUTES"
- * - >= 60 min → "X HOURS Y MINUTES" (omits minutes if 0)
+ * Uses the provided labels for singular and plural "hour(s)" and "minute(s)".
+ * - < 60 min → "X minute(s)"
+ * - >= 60 min → "X hour(s) Y minute(s)" (omits minutes if 0)
  */
 export function formatVideoDuration(
     durationInMinutes: number,
-    labels: { hours: string; minutes: string },
+    labels: { hour: string; hours: string; minute: string; minutes: string },
 ): string {
     if (durationInMinutes < 60) {
-        return `${durationInMinutes} ${labels.minutes}`;
+        return `${durationInMinutes} ${durationInMinutes === 1 ? labels.minute : labels.minutes}`;
     }
     const hours = Math.floor(durationInMinutes / 60);
     const mins = durationInMinutes % 60;
-    let result = `${hours} ${labels.hours}`;
+    let result = `${hours} ${hours === 1 ? labels.hour : labels.hours}`;
     if (mins > 0) {
-        result += ` ${mins} ${labels.minutes}`;
+        result += ` ${mins} ${mins === 1 ? labels.minute : labels.minutes}`;
     }
     return result;
+}
+
+/**
+ * Formats a duration given in minutes into a compact string like "1h 30m" or "45m".
+ * - 0 or negative → "0m"
+ * - < 60 min → "Xm"
+ * - exactly N hours → "Nh"
+ * - otherwise → "Nh Mm"
+ */
+export function formatCompactDuration(durationInMinutes: number): string {
+    if (durationInMinutes <= 0) return '0m';
+    const hours = Math.floor(durationInMinutes / 60);
+    const mins = durationInMinutes % 60;
+    if (hours === 0) return `${mins}m`;
+    if (mins === 0) return `${hours}h`;
+    return `${hours}h ${mins}m`;
 }

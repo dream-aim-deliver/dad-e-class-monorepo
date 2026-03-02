@@ -650,7 +650,9 @@ export const DictionarySchema = z.object({
     }),
     courseGeneralInformationView: z.object({
       durationText: z.string(),
+      minuteText: z.string(),
       minutesText: z.string(),
+      hourText: z.string(),
       hoursText: z.string(),
       filmMaterialText: z.string(),
       coachingWithAProfessionalText: z.string(),

@@ -654,8 +654,10 @@ export const EN: TDictionary = {
     },
     courseGeneralInformationView: {
       durationText: 'Duration',
-      minutesText: 'minute(s)',
-      hoursText: 'hour(s)',
+      minuteText: 'minute',
+      minutesText: 'minutes',
+      hourText: 'hour',
+      hoursText: 'hours',
       filmMaterialText: 'of film material',
       coachingWithAProfessionalText: 'of 1-to-1 coaching with an industry expert',
       feedbackFromExpertsText: 'With feedback from Industry Experts',

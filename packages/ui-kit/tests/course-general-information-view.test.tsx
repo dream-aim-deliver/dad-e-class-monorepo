@@ -8,8 +8,10 @@ const mockDictionary = {
     components: {
         courseGeneralInformationView: {
             durationText: 'Total Duration',
-            minutesText: 'min',
-            hoursText: 'hour(s)',
+            minuteText: 'minute',
+            minutesText: 'minutes',
+            hourText: 'hour',
+            hoursText: 'hours',
             filmMaterialText: 'Video Material',
             coachingWithAProfessionalText: 'Coaching with a Professional',
             selfStudyMaterialText: 'Self Study Material',
@@ -97,14 +99,14 @@ describe('CourseGeneralInformationView', () => {
         render(<CourseGeneralInformationView {...basePropsWithProgress} />);
 
         expect(screen.getByText('Total Duration')).toBeInTheDocument();
-        expect(screen.getByText('6h 0m')).toBeInTheDocument();
+        expect(screen.getByText('6h')).toBeInTheDocument();
 
-        expect(screen.getByText('2 hour(s) Video Material')).toBeInTheDocument();
+        expect(screen.getByText('2 hours Video Material')).toBeInTheDocument();
         expect(
-            screen.getByText('1 hour(s) Coaching with a Professional'),
+            screen.getByText('1 hour Coaching with a Professional'),
         ).toBeInTheDocument();
         expect(
-            screen.getByText('3 hour(s) Self Study Material'),
+            screen.getByText('3 hours Self Study Material'),
         ).toBeInTheDocument();
 
         // expect(screen.getByText('Created by')).toBeInTheDocument();
@@ -191,12 +193,12 @@ describe('CourseGeneralInformationView', () => {
             />,
         );
         expect(screen.getByText('45m')).toBeInTheDocument();
-        expect(screen.getByText('15 min Video Material')).toBeInTheDocument();
+        expect(screen.getByText('15 minutes Video Material')).toBeInTheDocument();
         expect(
-            screen.getByText('0 min Coaching with a Professional'),
+            screen.getByText('0 minutes Coaching with a Professional'),
         ).toBeInTheDocument();
         expect(
-            screen.getByText('30 min Self Study Material'),
+            screen.getByText('30 minutes Self Study Material'),
         ).toBeInTheDocument();
     });
 

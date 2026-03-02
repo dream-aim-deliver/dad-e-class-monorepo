@@ -9,6 +9,7 @@ import { eClassPackage } from '@maany_shr/e-class-models';
 import { IconEdit, IconTrashAlt } from '../icons';
 import { useImageComponent } from '../../contexts/image-component-context';
 import { formatPrice } from '../../utils/format-utils';
+import { formatCompactDuration } from '../../utils/video-duration';
 
 interface PackageCmsBaseCardProps extends eClassPackage.TEClassPackage, isLocalAware {
     courseCount: number;
@@ -114,17 +115,6 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
     const [isTruncated, setIsTruncated] = useState(false);
     const ImageComponent = useImageComponent();
 
-    // Helper function to format duration in hours and minutes
-    const formatDuration = (duration: number | undefined): string => {
-        if (!duration || duration <= 0) return '0m';
-        if (duration > 59) {
-            const hours = Math.floor(duration / 60);
-            const minutes = duration % 60;
-            return `${hours}h ${minutes}m`;
-        }
-        return `${duration}m`;
-    };
-
     // Handle image error and set error state
     const handleImageError = () => {
         setIsImageError(true);
@@ -213,7 +203,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                                 hasIconLeft
                                 iconLeft={<IconClock size="4" />}
                                 key={duration}
-                                text={formatDuration(duration)}
+                                text={formatCompactDuration(duration ?? 0)}
                                 className="h-6"
                                 size="big"
                             />
