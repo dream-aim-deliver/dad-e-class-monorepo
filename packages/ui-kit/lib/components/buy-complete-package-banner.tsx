@@ -10,6 +10,7 @@ import { UserAvatar } from './avatar/user-avatar';
 import { CheckBox } from './checkbox';
 import Tooltip from './tooltip';
 import { formatPrice } from '../utils/format-utils';
+import { formatCompactDuration } from '../utils/video-duration';
 
 export interface BuyCompletePackageBannerProps
     extends TEClassPackage,
@@ -79,13 +80,6 @@ export const BuyCompletePackageBanner = ({
 
     if (!pricing) return null;
 
-    const formatDuration = (duration?: number): string => {
-        if (!duration || duration <= 0) return '';
-        const hours = Math.floor(duration / 60);
-        const minutes = duration % 60;
-        return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-    };
-
     return (
         <div className="flex flex-col xl:flex-row w-full bg-background text-text-primary gap-2 lg:items-center justify-between">
             <div className="flex flex-col max-w-120 w-full">
@@ -112,7 +106,7 @@ export const BuyCompletePackageBanner = ({
                                 <Badge
                                     hasIconLeft
                                     iconLeft={<IconClock size="4" />}
-                                    text={formatDuration(duration)}
+                                    text={formatCompactDuration(duration ?? 0)}
                                     className="text-sm"
                                 />
                             )}

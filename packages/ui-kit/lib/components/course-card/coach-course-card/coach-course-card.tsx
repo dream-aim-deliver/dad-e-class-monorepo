@@ -12,6 +12,7 @@ import {
   getDictionary,
 } from '@maany_shr/e-class-translations';
 import { useImageComponent } from '../../../contexts/image-component-context';
+import { formatCompactDuration } from '../../../utils/video-duration';
 
 export interface CoachCourseCardProps extends Omit<course.TCourseMetadata, 'description' | 'pricing'> {
   reviewCount: number;
@@ -84,17 +85,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
 
   // Calculate total course duration in minutes and format as "Xh Ym"
   const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
-  
-  // Format duration as "Xh Ym" or just "Ym" if less than an hour
-  const formatDuration = (minutes: number): string => {
-    if (minutes <= 0) return '0m';
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours === 0) return `${mins}m`;
-    if (mins === 0) return `${hours}h`;
-    return `${hours}h ${mins}m`;
-  };
-  const formattedDuration = formatDuration(totalDurationInMinutes);
+  const formattedDuration = formatCompactDuration(totalDurationInMinutes);
 
   return (
     <div className="w-full mx-auto">

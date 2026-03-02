@@ -2,7 +2,7 @@
 
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TCourseMetadata } from 'packages/models/src/course';
-import { videoSecondsToMinutes, formatVideoDuration } from '../../utils/video-duration';
+import { videoSecondsToMinutes, formatVideoDuration, formatCompactDuration } from '../../utils/video-duration';
 import { UserAvatar } from '../avatar/user-avatar';
 import { Button } from '../button';
 import { FC, useState, useEffect } from 'react';
@@ -170,24 +170,16 @@ export const CourseGeneralInformationVisitor: FC<
 
         const shouldShowPlaceholder = !imageUrl || isImageError;
 
-        const formatDuration = (durationInMinutes?: number): string => {
-            if (!durationInMinutes || durationInMinutes <= 0) return '0m';
-            if (durationInMinutes > 59) {
-                const hours = Math.floor(durationInMinutes / 60);
-                const minutes = durationInMinutes % 60;
-                return `${hours}h ${minutes}m`;
-            }
-            return `${durationInMinutes}m`;
-        };
-
         const totalDurationInMinutes =
             videoSecondsToMinutes(duration?.video) +
             (duration?.coaching || 0) +
             (duration?.selfStudy || 0);
-        const formattedTotalDuration = formatDuration(totalDurationInMinutes);
+        const formattedTotalDuration = formatCompactDuration(totalDurationInMinutes);
 
         const durationLabels = {
+            hour: dictionary.components.courseGeneralInformationView.hourText,
             hours: dictionary.components.courseGeneralInformationView.hoursText,
+            minute: dictionary.components.courseGeneralInformationView.minuteText,
             minutes: dictionary.components.courseGeneralInformationView.minutesText,
         };
 
@@ -261,7 +253,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 />
                                 <p className="text-text-secondary text-sm">
                                     {formatVideoDuration(
-                                        videoSecondsToMinutes((duration as any).video as number),
+                                        videoSecondsToMinutes(duration.video),
                                         durationLabels,
                                     )}{' '}
                                     {
@@ -280,7 +272,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 <p className="text-text-secondary text-sm">
                                     {coachingIncluded
                                         ? `${formatVideoDuration(
-                                              (duration as any).coaching as number,
+                                              duration.coaching,
                                               durationLabels,
                                           )} ${dictionary.components.courseGeneralInformationView.coachingWithAProfessionalText}`
                                         : dictionary.components.courseGeneralInformationView.feedbackFromExpertsText
@@ -295,7 +287,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 />
                                 <p className="text-text-secondary text-sm">
                                     {formatVideoDuration(
-                                        (duration as any).selfStudy as number,
+                                        duration.selfStudy,
                                         durationLabels,
                                     )}{' '}
                                     {

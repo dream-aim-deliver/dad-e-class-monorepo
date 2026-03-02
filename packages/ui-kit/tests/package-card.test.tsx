@@ -35,13 +35,9 @@ vi.mock('../icons/icon-clock', () => ({
     ),
 }));
 
-vi.mock('../tooltip', async (importOriginal) => {
-    const actual = await importOriginal();
-    return {
-        ...actual,
-        default: () => null,
-    };
-});
+vi.mock('../tooltip', () => ({
+    default: () => null,
+}));
 
 describe('PackageCard', () => {
     const defaultProps = {
@@ -66,7 +62,7 @@ describe('PackageCard', () => {
 
         expect(screen.getByText('Package Title')).toBeInTheDocument();
         expect(screen.getByText('Package Description')).toBeInTheDocument();
-        expect(screen.getByText('3h 0m')).toBeInTheDocument();
+        expect(screen.getByText('3h')).toBeInTheDocument();
         expect(screen.getByText('5 Courses')).toBeInTheDocument();
     });
 

@@ -76,7 +76,7 @@ describe('BuyCompletePackageBanner', () => {
         expect(
             screen.getByText('Includes all courses and features'),
         ).toBeInTheDocument();
-        expect(screen.getByText('2h 0m')).toBeInTheDocument(); // Duration badge
+        expect(screen.getByText('2h')).toBeInTheDocument(); // Duration badge
         expect(screen.getByText('Coaching included')).toBeInTheDocument();
         expect(screen.getByText('Buy Now')).toBeInTheDocument();
         expect(screen.getByText((_content, element) => {

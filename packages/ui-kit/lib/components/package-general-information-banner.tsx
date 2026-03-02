@@ -10,6 +10,7 @@ import { IconClock } from './icons/icon-clock';
 import { useImageComponent } from '../contexts/image-component-context';
 import Tooltip from './tooltip';
 import { formatPrice } from '../utils/format-utils';
+import { formatCompactDuration } from '../utils/video-duration';
 
 export interface PackageGeneralInformationView
     extends eClassPackage.TEClassPackage,
@@ -67,17 +68,6 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    // Helper function to format duration in hours and minutes
-    const formatDuration = (durationInMinutes?: number): string => {
-        if (!durationInMinutes || durationInMinutes <= 0) return '0m';
-        if (durationInMinutes > 59) {
-            const hours = Math.floor(durationInMinutes / 60);
-            const minutes = durationInMinutes % 60;
-            return `${hours}h ${minutes}m`;
-        }
-        return `${durationInMinutes}m`;
-    };
-
     return (
         <div className="flex w-full md:gap-15 gap-3 md:p-10 flex-col md:flex-row">
             <div className="flex flex-col basis-full md:basis-1/2">
@@ -89,7 +79,7 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                     <Badge
                         hasIconLeft
                         iconLeft={<IconClock size="4" />}
-                        text={formatDuration(duration)}
+                        text={formatCompactDuration(duration ?? 0)}
                         className="text-sm"
                     />
                 </div>

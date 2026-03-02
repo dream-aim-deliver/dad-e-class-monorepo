@@ -2,7 +2,7 @@
 
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TCourseMetadata } from 'packages/models/src/course';
-import { videoSecondsToMinutes, formatVideoDuration } from '../../utils/video-duration';
+import { videoSecondsToMinutes, formatVideoDuration, formatCompactDuration } from '../../utils/video-duration';
 import { Button } from '../button';
 import { Badge } from '../badge';
 import { ProgressBar } from '../progress-bar';
@@ -129,26 +129,17 @@ export const CourseGeneralInformationView: FC<
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    // Helper function to format duration in hours and minutes
-    const formatDuration = (durationInMinutes?: number): string => {
-        if (!durationInMinutes || durationInMinutes <= 0) return '0m';
-        if (durationInMinutes > 59) {
-            const hours = Math.floor(durationInMinutes / 60);
-            const minutes = durationInMinutes % 60;
-            return `${hours}h ${minutes}m`;
-        }
-        return `${durationInMinutes}m`;
-    };
-
     // Calculate total duration
     const totalDurationInMinutes =
         videoSecondsToMinutes(duration?.video) +
         (duration?.coaching || 0) +
         (duration?.selfStudy || 0);
-    const formattedTotalDuration = formatDuration(totalDurationInMinutes);
+    const formattedTotalDuration = formatCompactDuration(totalDurationInMinutes);
 
     const durationLabels = {
+        hour: dictionary.components.courseGeneralInformationView.hourText,
         hours: dictionary.components.courseGeneralInformationView.hoursText,
+        minute: dictionary.components.courseGeneralInformationView.minuteText,
         minutes: dictionary.components.courseGeneralInformationView.minutesText,
     };
 

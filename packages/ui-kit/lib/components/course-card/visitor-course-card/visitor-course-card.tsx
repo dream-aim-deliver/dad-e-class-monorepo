@@ -8,7 +8,7 @@ import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../../rich-text-element/renderer';
 import { useImageComponent } from '../../../contexts/image-component-context';
-import { videoSecondsToMinutes } from '../../../utils/video-duration';
+import { videoSecondsToMinutes, formatCompactDuration } from '../../../utils/video-duration';
 
 // Extend the existing type with the properties we need that aren't in TCourseMetadata
 export interface VisitorCourseCardProps extends course.TCourseMetadata {
@@ -82,17 +82,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
 
     // Calculate total course duration in minutes and format as "Xh Ym"
     const totalDurationInMinutes = videoSecondsToMinutes(duration.video) + (duration.coaching ?? 0) + (duration.selfStudy ?? 0);
-
-    // Format duration as "Xh Ym" or just "Ym" if less than an hour
-    const formatDuration = (minutes: number): string => {
-        if (minutes <= 0) return '0m';
-        const hours = Math.floor(minutes / 60);
-        const mins = minutes % 60;
-        if (hours === 0) return `${mins}m`;
-        if (mins === 0) return `${hours}h`;
-        return `${hours}h ${mins}m`;
-    };
-    const formattedDuration = formatDuration(totalDurationInMinutes);
+    const formattedDuration = formatCompactDuration(totalDurationInMinutes);
 
     const handleImageError = () => {
         setIsImageError(true);
