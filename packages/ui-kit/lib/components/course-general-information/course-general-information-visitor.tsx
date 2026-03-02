@@ -253,7 +253,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 />
                                 <p className="text-text-secondary text-sm">
                                     {formatVideoDuration(
-                                        videoSecondsToMinutes(duration.video),
+                                        videoSecondsToMinutes(duration?.video),
                                         durationLabels,
                                     )}{' '}
                                     {
@@ -272,7 +272,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 <p className="text-text-secondary text-sm">
                                     {coachingIncluded
                                         ? `${formatVideoDuration(
-                                              duration.coaching,
+                                              duration?.coaching ?? 0,
                                               durationLabels,
                                           )} ${dictionary.components.courseGeneralInformationView.coachingWithAProfessionalText}`
                                         : dictionary.components.courseGeneralInformationView.feedbackFromExpertsText
@@ -287,7 +287,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 />
                                 <p className="text-text-secondary text-sm">
                                     {formatVideoDuration(
-                                        duration.selfStudy,
+                                        duration?.selfStudy ?? 0,
                                         durationLabels,
                                     )}{' '}
                                     {
