@@ -293,7 +293,7 @@ export default function EditPackage({
                 partialDiscounts: partialDiscountsPayload,
                 showAccordionNumbers: packageDetailsFormData.showListItemNumbers,
                 accordionItems: accordionItemsPayload,
-                featuredImageId: null,
+                featuredImageId: packageDetailsFormData.featuredImage?.id ? idToNumber(packageDetailsFormData.featuredImage.id) : null,
             };
             
             await updatePackageMutation.mutateAsync(payload);
