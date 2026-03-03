@@ -189,7 +189,7 @@ describe('CourseGeneralInformationView', () => {
         render(
             <CourseGeneralInformationView
                 {...basePropsWithProgress}
-                duration={{ video: 900, coaching: 0, selfStudy: 30 }} // 900 seconds = 15 minutes
+                duration={{ video: 900, coaching: 0, selfStudy: 30 }} // 900 seconds = 15 minutes (API sends seconds)
             />,
         );
         expect(screen.getByText('45m')).toBeInTheDocument();
@@ -200,6 +200,18 @@ describe('CourseGeneralInformationView', () => {
         expect(
             screen.getByText('30 minutes Self Study Material'),
         ).toBeInTheDocument();
+    });
+
+    it('does not double-convert duration.video — component converts seconds once (regression)', () => {
+        // 5400 seconds = 90 minutes. If double-converted: round(90/60) = 2 min → "2 minutes Video Material"
+        render(
+            <CourseGeneralInformationView
+                {...basePropsWithProgress}
+                duration={{ video: 5400, coaching: 0, selfStudy: 0 }}
+            />,
+        );
+        expect(screen.getByText('1h 30m')).toBeInTheDocument();
+        expect(screen.getByText('1 hour 30 minutes Video Material')).toBeInTheDocument();
     });
 
     it('renders anonymous author correctly', () => {

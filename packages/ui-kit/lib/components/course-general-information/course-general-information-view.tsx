@@ -129,7 +129,7 @@ export const CourseGeneralInformationView: FC<
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    // Calculate total duration
+    // duration.video is in seconds
     const totalDurationInMinutes =
         videoSecondsToMinutes(duration?.video) +
         (duration?.coaching || 0) +
