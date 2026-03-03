@@ -299,6 +299,7 @@ export function PackagePreviewStep({
                             }}
                             sales={course.sales}
                                 reviewCount={course.reviewCount}
+                            coachingSessionCount={course.sessions}
                             courseIncluded={courseIncluded}
                             onClickUser={() => onCourseAuthorClick(course.id)}
                             onClickDetails={() => onCourseDetails(course.id)}
