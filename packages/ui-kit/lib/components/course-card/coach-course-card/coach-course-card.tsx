@@ -84,7 +84,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
   const shouldShowPlaceholder = !imageUrl || isImageError;
 
   // Calculate total course duration in minutes and format as "Xh Ym"
-  const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
+  const totalDurationInMinutes = (duration?.video ?? 0) + (duration?.coaching ?? 0) + (duration?.selfStudy ?? 0);
   const formattedDuration = formatCompactDuration(totalDurationInMinutes);
 
   return (
