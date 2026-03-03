@@ -754,7 +754,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                       selfStudy: 0
                     },
                     language: course.language,
-                    imageUrl: course.image?.downloadUrl || 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg'
+                    imageUrl: course.image?.downloadUrl || ''
                   }}
                   progress={progress}
                   sales={course.salesCount}
@@ -825,7 +825,7 @@ export default function SingleUser({ locale, platformSlug, platformLocale, usern
                         selfStudy: 0
                       },
                       language: course.language,
-                      imageUrl: course.image?.downloadUrl || 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg'
+                      imageUrl: course.image?.downloadUrl || ''
                     }}
                     sessions={course.coachingSessionCount}
                     sales={course.salesCount || 0}
