@@ -70,6 +70,7 @@ function RedeemCouponDialogContent() {
             void utils.listUpcomingStudentCoachingSessions.invalidate();
             void utils.listStudentCoachingSessions.invalidate();
             void utils.listNotifications.invalidate();
+            void utils.listAvailableCoachings.invalidate();
         }
     });
 
@@ -145,6 +146,7 @@ function RedeemCouponDialogContent() {
                 void utils.listUpcomingStudentCoachingSessions.invalidate();
                 void utils.listStudentCoachingSessions.invalidate();
                 void utils.listNotifications.invalidate();
+                void utils.listAvailableCoachings.invalidate();
 
                 return {
                     valid: true,
