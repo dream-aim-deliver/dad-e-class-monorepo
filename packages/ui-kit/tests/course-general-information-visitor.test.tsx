@@ -13,8 +13,10 @@ vi.mock('@maany_shr/e-class-translations', () => ({
                 requirementsDetails: 'Requirements details text',
                 noRequirements: 'No requirements',
                 durationText: 'Duration',
+                minuteText: 'minute',
                 minutesText: 'minutes',
-                hoursText: 'hour(s)',
+                hourText: 'hour',
+                hoursText: 'hours',
                 filmMaterialText: 'Video material',
                 coachingWithAProfessionalText: 'Coaching sessions',
                 selfStudyMaterialText: 'Self-study material',
@@ -150,5 +152,22 @@ describe('CourseGeneralInformationVisitor', () => {
         const button2 = screen.getByRole('button', { name: /Req Course 2/i });
         fireEvent.click(button2);
         expect(mockOnClickCourse).toHaveBeenCalledWith('req-course-2');
+    });
+
+    it('does not double-convert duration.video — component converts seconds once (regression)', async () => {
+        // 5400 seconds = 90 minutes. If double-converted: round(90/60) = 2 min → total would be wrong
+        // 5400s video (90min) + 1800s coaching (30min) = 120 min total = 2h
+        render(
+            <CourseGeneralInformationVisitor
+                {...baseProps}
+                duration={{ video: 5400, coaching: 30, selfStudy: 0 }}
+            />,
+        );
+        await waitFor(() => {
+            // Total: "Duration: 2h" rendered in a heading
+            expect(screen.getByText(/Duration.*2h/)).toBeInTheDocument();
+            // Individual video segment
+            expect(screen.getByText(/1 hour 30 minutes/i)).toBeInTheDocument();
+        });
     });
 });

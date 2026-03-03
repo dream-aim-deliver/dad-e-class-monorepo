@@ -170,6 +170,7 @@ export const CourseGeneralInformationVisitor: FC<
 
         const shouldShowPlaceholder = !imageUrl || isImageError;
 
+        // duration.video is in seconds
         const totalDurationInMinutes =
             videoSecondsToMinutes(duration?.video) +
             (duration?.coaching || 0) +
