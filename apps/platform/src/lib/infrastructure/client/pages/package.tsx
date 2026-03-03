@@ -705,6 +705,7 @@ export default function Package({ locale, packageId }: PackageProps) {
                 }}
                 sales={course.salesCount}
                 reviewCount={course.ratingCount}
+                coachingSessionCount={0}
                 courseIncluded={courseIncluded}
                 onClickUser={() => handleCourseAuthorClick(course.id.toString())}
                 onClickDetails={() => handleCourseDetails(course.id.toString())}

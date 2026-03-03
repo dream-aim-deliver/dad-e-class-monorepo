@@ -19,6 +19,7 @@ export interface PackageCourseCardProps extends course.TCourseMetadata {
     sales: number;
     courseIncluded: boolean;
     reviewCount: number;
+    coachingSessionCount?: number;
     onClickUser: () => void;
     onClickDetails: () => void;
     onClickIncludeExclude: () => void;
@@ -78,6 +79,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
     author,
     language,
     locale,
+    coachingSessionCount,
     onClickUser,
     onClickDetails,
     onClickIncludeExclude,
@@ -143,7 +145,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
                     <CourseStats
                         locale={locale as TLocale}
                         language={language?.code?.toUpperCase() ?? ''}
-                        sessions={10}
+                        sessions={coachingSessionCount ?? 0}
                         duration={formattedDuration}
                         sales={sales}
                     />
