@@ -128,8 +128,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
 
     return (
         <AssessmentFileUploadProvider config={{ courseSlug: props.courseSlug }}>
-            <div className="flex justify-center">
-                <PreAssessmentForm locale={locale}>
+            <PreAssessmentForm locale={locale}>
                     <AssessmentFormContent
                         formElements={formElements}
                         locale={locale}
@@ -139,7 +138,6 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                         courseSlug={props.courseSlug}
                     />
                 </PreAssessmentForm>
-            </div>
         </AssessmentFileUploadProvider>
     );
 }
