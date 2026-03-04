@@ -1,6 +1,6 @@
 import { i18nConfig, TLocale } from '@maany_shr/e-class-translations';
 import '../global.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
@@ -35,6 +35,10 @@ type MetadataProps = {
 };
 
 const FALLBACK_OG_IMAGE = 'https://i.imgur.com/6CGQTz1.png';
+
+export const viewport: Viewport = {
+    width: 1024,
+};
 
 export async function generateMetadata({ params }: MetadataProps): Promise<Metadata> {
     const { locale } = await params;
@@ -224,6 +228,9 @@ export default async function RootLayout({
 
     return (
         <html lang={locale}>
+            <head>
+                <meta name="viewport" content="width=1024" />
+            </head>
             <body
                 className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
