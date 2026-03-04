@@ -619,7 +619,7 @@ export const DE: TDictionary = {
     assessmentSubmissionConfirmationModal: {
       goBackText: 'Zurück',
       submitText: 'Einreichen',
-      title: 'Bewertung einreichen?',
+      title: 'Vortest abschicken?',
       message: 'Sie können Ihre Antworten nach der Einreichung nicht mehr ändern. Möchten Sie wirklich einreichen?',
     },
     sessionExpirationModal: {
@@ -709,7 +709,7 @@ export const DE: TDictionary = {
       },
     },
     formRenderer: {
-      title: 'Bedarfsanalyse',
+      title: 'Vortest',
       alertText: 'Sobald du deine Antwort abgeschickt hast, kannst du keine Änderungen mehr vornehmen. Bitte überprüfe sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
       submitText: 'Antwort senden',
       requiredText: 'Erforderlich',
@@ -1263,7 +1263,7 @@ export const DE: TDictionary = {
       yourProfile: 'Ihr Profil',
       legalTexts: 'Rechtliche Texte',
       yourCoachingSessions: 'Deine Coaching-Sitzungen',
-      preCourseAssessmentForm: "Vorkurs-Bewertungsformular",
+      preCourseAssessmentForm: "Vortest",
       yourCalendar: "Ihr Kalender",
       calendar: "Kalender",
       groupCoachingCalendar: "Gruppen-Coaching-Kalender",
@@ -2156,8 +2156,8 @@ export const DE: TDictionary = {
     assessmentForm: {
       defaultFormError: 'Fehler beim Laden des Formulars. Bitte versuche es erneut.',
       error: {
-        title: 'Bewertungsformular konnte nicht geladen werden',
-        description: 'Das Bewertungsformular konnte nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
+        title: 'Vortest konnte nicht geladen werden',
+        description: 'Der Vortest konnte nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
       },
     },
     auth: {
@@ -2199,7 +2199,7 @@ export const DE: TDictionary = {
         assignments: "Aufgaben",
         notes: "Deine Notizen", // Guidelines: informal 'Du' instead of formal 'Sie/Ihre'
         material: "Material",
-        assessment: "Vorkurs-Formular",
+        assessment: "Vortest",
         preview: "Kurs-Vorschau",
         students: "Studierende", // Guidelines: gender-neutral wording
         coaches: "Coach",
@@ -2332,7 +2332,7 @@ export const DE: TDictionary = {
       error: {
         title: 'Fehler',
         description: 'Beim Laden des Kursinhalts ist ein Fehler aufgetreten. Bitte versuche es erneut.',
-        assessmentComponentsLoadFailed: 'Die Bewertungskomponenten konnten nicht geladen werden. Bitte aktualisiere die Seite.',
+        assessmentComponentsLoadFailed: 'Der Vortest konnte nicht geladen werden. Bitte aktualisiere die Seite.',
         courseEmpty: 'Dieser Kurs hat noch keine Inhalte.',
         notFound: {
           title: 'Kursinhalt nicht gefunden',
@@ -3774,7 +3774,7 @@ export const DE: TDictionary = {
       },
     },
     preCourseAssessmentForm: {
-      title: "Vorkurs-Bewertungsformular",
+      title: "Vortest",
       description: "Dieses Formular wird automatisch zu Beginn jedes Kurses angezeigt.",
       formBuilderTab: "Formular-Editor",
       previewTab: "Vorschau",
@@ -3787,13 +3787,13 @@ export const DE: TDictionary = {
       disabling: "Wird deaktiviert...",
       toggleError: "Beim Umschalten des Formulars ist ein Fehler aufgetreten.",
       saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
-      saveSuccess: "Vorkurs-Bewertungskomponenten erfolgreich gespeichert!",
+      saveSuccess: "Vortest erfolgreich gespeichert!",
       error: {
-        title: 'Bewertungsformular konnte nicht geladen werden',
-        description: 'Das Vorkurs-Bewertungsformular konnte nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        title: 'Vortest konnte nicht geladen werden',
+        description: 'Der Vortest konnte nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
         notFound: {
-          title: 'Bewertungsformular nicht gefunden',
-          description: 'Das angeforderte Bewertungsformular konnte nicht gefunden werden.',
+          title: 'Vortest nicht gefunden',
+          description: 'Der angeforderte Vortest konnte nicht gefunden werden.',
         },
       },
     },

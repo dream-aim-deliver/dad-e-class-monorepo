@@ -708,7 +708,7 @@ export const EN: TDictionary = {
     formRenderer: {
       title: 'Pre-Assessment',
       alertText: 'Once you submit your response, you won\'t be able to make changes, so please review it carefully. Complete this form to begin your course.', // Guidelines: friendlier, more direct tone
-      submitText: 'send reply',
+      submitText: 'Submit',
       requiredText: 'required',
       fieldRequired: 'This field is required',
       selectOption: 'Please select an option',
@@ -2154,8 +2154,8 @@ export const EN: TDictionary = {
     assessmentForm: {
       defaultFormError: 'A critical error occurred while submitting the form. Please try again.',
       error: {
-        title: 'Failed to Load Assessment Form',
-        description: 'Unable to load assessment form. Please refresh the page or try again later.',
+        title: 'Failed to Load Pre-Assessment',
+        description: 'Unable to load the pre-assessment. Please refresh the page or try again later.',
       },
     },
     auth: {
@@ -2197,7 +2197,7 @@ export const EN: TDictionary = {
         assignments: "Assignments",
         notes: "Your notes",
         material: "Material",
-        assessment: "Pre-Course Form",
+        assessment: "Pre-Assessment",
         preview: "Preview course",
         students: "Students",
         coaches: "Coaches",
@@ -2330,7 +2330,7 @@ export const EN: TDictionary = {
       error: {
         title: 'Error',
         description: 'An error occurred while loading course content. Please try again.',
-        assessmentComponentsLoadFailed: 'Failed to load assessment components. Please try refreshing the page.',
+        assessmentComponentsLoadFailed: 'Failed to load the pre-assessment. Please try refreshing the page.',
         courseEmpty: 'This course has no content yet.',
         notFound: {
           title: 'Course Content Not Found',
@@ -2414,7 +2414,7 @@ export const EN: TDictionary = {
       packages: "Packages",
       categories: "Categories",
       topics: "Topics",
-      preCourseAssessmentForm: "Pre-Course Assessment form",
+      preCourseAssessmentForm: "Pre-Course Assessment Form",
       legalTexts: "Legal Texts",
       coachingOffering: "Coaching offering",
       coachingSessions: "Coaching sessions",
@@ -3785,13 +3785,13 @@ export const EN: TDictionary = {
       disabling: "Disabling...",
       toggleError: "An error occurred while toggling the form.",
       saveError: "Failed to save components. Please try again.",
-      saveSuccess: "Pre-course assessment components saved successfully!",
+      saveSuccess: "Pre-course assessment saved successfully!",
       error: {
-        title: 'Failed to Load Assessment Form',
+        title: 'Failed to Load Pre-Assessment Form',
         description: 'Unable to load the pre-course assessment form. Please refresh the page or contact support.',
         notFound: {
-          title: 'Assessment Form Not Found',
-          description: 'The requested assessment form could not be found.',
+          title: 'Pre-Assessment Form Not Found',
+          description: 'The requested pre-assessment form could not be found.',
         },
       },
     },
