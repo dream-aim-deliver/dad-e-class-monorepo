@@ -83,7 +83,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
                     locale={locale}
                     session={session}
                 />
-                <main className="flex-grow w-full mx-auto py-25 justify-center items-center">
+                <main className="flex-grow w-full mx-auto pb-25 justify-center items-center">
                     <div ref={contentRef} className="page-content-entrance w-full">
                         {children}
                     </div>

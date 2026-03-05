@@ -73,7 +73,7 @@ export default function Layout({
                     locale={locale}
                     session={session}
                 />
-                <main className="flex-grow w-full mx-auto pt-25 pb-35 justify-center items-center">
+                <main className="flex-grow w-full mx-auto pb-35 justify-center items-center">
                     {showSidebar && platformName && platformSlug && platformLocale ? (
                         <div className="flex flex-row lg:gap-3 w-full">
                             <div
