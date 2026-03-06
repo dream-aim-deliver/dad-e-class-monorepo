@@ -642,6 +642,7 @@ export const DE: TDictionary = {
       resumeText: 'Wieder aufnehmen',
       progressText: 'Fortschritt',
       beginText: 'Kurs starten',
+      assignmentsOnlyTooltip: 'Nur Aufgaben zählen zur Fertigstellung dieses Kurses.',
     },
     milestone: {
       milestoneText: 'Meilenstein',
@@ -911,6 +912,7 @@ export const DE: TDictionary = {
       searchFailedDescription: 'Beim Suchen nach Kursen ist ein Fehler aufgetreten.',
       createCourseLanguageAlertTitle: 'Du arbeitest in der deutschen Oberfläche.',
       createCourseLanguageAlertMessage: 'Erstelle hier einen deutschen Kurs oder wechsle die Sprache, um einen Kurs in einer anderen Sprache zu erstellen.',
+      duplicateCourseLanguageAlertMessage: 'Der duplizierte Kurs wird auf Deutsch angelegt. Wechsle zuerst die Sprache, wenn du ihn in einer anderen Sprache duplizieren möchtest.',
       continueButton: 'Weiterfahren',
       cancelButton: 'Abbrechen',
     },

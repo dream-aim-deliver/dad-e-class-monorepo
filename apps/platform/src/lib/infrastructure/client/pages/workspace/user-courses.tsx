@@ -115,7 +115,11 @@ function CreateCourseDialogContent() {
                 onClose={handleLanguageAlertCancel}
                 onConfirm={handleLanguageAlertConfirm}
                 title={modalTranslations('createCourseLanguageAlertTitle')}
-                message={modalTranslations('createCourseLanguageAlertMessage')}
+                message={modalTranslations(
+                    pendingDuplicateCourse
+                        ? 'duplicateCourseLanguageAlertMessage'
+                        : 'createCourseLanguageAlertMessage'
+                )}
                 confirmText={modalTranslations('continueButton')}
                 cancelText={modalTranslations('cancelButton')}
                 locale={locale}
