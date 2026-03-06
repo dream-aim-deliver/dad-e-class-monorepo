@@ -1184,6 +1184,7 @@ export const DE: TDictionary = {
         confirmPassMessage: 'Sind Sie sicher, dass Sie diese Aufgabe als bestanden markieren möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
         cancelButton: 'Abbrechen',
         confirmButton: 'Bestätigen',
+        orText: 'oder',
       },
       assignmentBuilder: {
         assignmentText: 'Aufgabe',

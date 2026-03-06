@@ -1169,6 +1169,7 @@ export const DictionarySchema = z.object({
         confirmPassMessage: z.string(),
         cancelButton: z.string(),
         confirmButton: z.string(),
+        orText: z.string(),
       }),
       assignmentBuilder: z.object({
         assignmentText: z.string(),

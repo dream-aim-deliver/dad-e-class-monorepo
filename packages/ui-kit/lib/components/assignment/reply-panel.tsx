@@ -139,17 +139,6 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                             {dictionary.components.assignment.replyPanel.replyText}
                         </p>
                     </div>
-                    {role === 'coach' && (
-                        <Button
-                            variant="text"
-                            size="small"
-                            iconLeft={<IconAssignmentPassed />}
-                            hasIconLeft
-                            text={dictionary.components.assignment.replyPanel.markAsPassedText}
-                            onClick={() => setShowConfirmDialog(true)}
-                            disabled={isSending}
-                        />
-                    )}
                 </div>
                 <Uploader
                     type="multiple"
@@ -227,13 +216,39 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                         />
                     </div>
                 </div>
-                <Button
-                    size='medium'
-                    variant="primary"
-                    text={isSending ? dictionary.components.assignment.replyPanel.sendingMessageText : dictionary.components.assignment.replyPanel.sendMessageText}
-                    onClick={onClickSendMessage}
-                    disabled={isFormInvalid || isSending}
-                />
+                {role === 'coach' ? (
+                    <div className="flex items-center w-full gap-2">
+                        <Button
+                            size="medium"
+                            variant="primary"
+                            className="flex-1 justify-center"
+                            text={isSending ? dictionary.components.assignment.replyPanel.sendingMessageText : dictionary.components.assignment.replyPanel.sendMessageText}
+                            onClick={onClickSendMessage}
+                            disabled={isFormInvalid || isSending}
+                        />
+                        <span className="text-text-secondary text-sm shrink-0">
+                            {dictionary.components.assignment.replyPanel.orText}
+                        </span>
+                        <Button
+                            size="medium"
+                            variant="secondary"
+                            className="flex-1 justify-center"
+                            iconLeft={<IconAssignmentPassed />}
+                            hasIconLeft
+                            text={dictionary.components.assignment.replyPanel.markAsPassedText}
+                            onClick={() => setShowConfirmDialog(true)}
+                            disabled={isSending}
+                        />
+                    </div>
+                ) : (
+                    <Button
+                        size="medium"
+                        variant="primary"
+                        text={isSending ? dictionary.components.assignment.replyPanel.sendingMessageText : dictionary.components.assignment.replyPanel.sendMessageText}
+                        onClick={onClickSendMessage}
+                        disabled={isFormInvalid || isSending}
+                    />
+                )}
             </div>
 
             <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog} defaultOpen={false}>
