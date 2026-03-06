@@ -146,7 +146,7 @@ export default function UserCourses(props: UserCoursesProps) {
                     },
                 ]}
             />
-            <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
+            <div className="flex flex-row justify-between items-center">
                 <h1> {pageTranslations('yourCourses')} </h1>
                 {canCreateCourse && <CreateCourseDialog />}
                 {!canCreateCourse && !isStudent && (
