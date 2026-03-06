@@ -13,7 +13,7 @@ import {
 import { IconCheck } from '../../icons/icon-check';
 import { IconEdit } from '../../icons/icon-edit';
 import { useImageComponent } from '../../../contexts/image-component-context';
-import { formatCompactDuration } from '../../../utils/video-duration';
+import { computeTotalDurationMinutes, formatCompactDuration } from '../../../utils/video-duration';
 
 export type CourseStatus = 'live' | 'draft' | 'archived';
 
@@ -139,8 +139,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     const ImageComponent = useImageComponent();
     const [isImageError, setIsImageError] = React.useState(false);
     // Calculate total course duration in minutes and format as "Xh Ym"
-    const { video = 0, coaching = 0, selfStudy = 0 } = duration;
-    const totalDurationInMinutes = video + coaching + selfStudy;
+    const totalDurationInMinutes = computeTotalDurationMinutes(duration);
     const formattedDuration = formatCompactDuration(totalDurationInMinutes);
 
     const dictionary = getDictionary(locale);

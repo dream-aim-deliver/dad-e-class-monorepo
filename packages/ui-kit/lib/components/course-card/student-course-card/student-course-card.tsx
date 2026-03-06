@@ -11,7 +11,7 @@ import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../../rich-text-element/renderer';
 import { useImageComponent } from '../../../contexts/image-component-context';
-import { formatCompactDuration } from '../../../utils/video-duration';
+import { computeTotalDurationMinutes, formatCompactDuration } from '../../../utils/video-duration';
 import { Badge } from '../../badge';
 
 export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
@@ -131,7 +131,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   };
 
   // Calculate total course duration in minutes and format as "Xh Ym"
-  const totalDurationInMinutes = (duration?.video ?? 0) + (duration?.coaching ?? 0) + (duration?.selfStudy ?? 0);
+  const totalDurationInMinutes = computeTotalDurationMinutes(duration ?? {});
   const formattedDuration = formatCompactDuration(totalDurationInMinutes);
 
   const dictionary = getDictionary(locale);

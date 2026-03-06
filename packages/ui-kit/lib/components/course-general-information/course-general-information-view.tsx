@@ -2,7 +2,7 @@
 
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TCourseMetadata } from 'packages/models/src/course';
-import { videoSecondsToMinutes, formatVideoDuration, formatCompactDuration } from '../../utils/video-duration';
+import { videoSecondsToMinutes, formatVideoDuration, formatCompactDuration, computeTotalDurationMinutes } from '../../utils/video-duration';
 import { Button } from '../button';
 import { Badge } from '../badge';
 import { ProgressBar } from '../progress-bar';
@@ -129,11 +129,8 @@ export const CourseGeneralInformationView: FC<
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    // duration.video is in seconds
-    const totalDurationInMinutes =
-        videoSecondsToMinutes(duration?.video) +
-        (duration?.coaching || 0) +
-        (duration?.selfStudy || 0);
+    // duration.video is in seconds; coaching and selfStudy are in minutes
+    const totalDurationInMinutes = computeTotalDurationMinutes(duration ?? {});
     const formattedTotalDuration = formatCompactDuration(totalDurationInMinutes);
 
     const durationLabels = {

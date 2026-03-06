@@ -44,3 +44,18 @@ export function formatCompactDuration(durationInMinutes: number): string {
     if (mins === 0) return `${hours}h`;
     return `${hours}h ${mins}m`;
 }
+
+/**
+ * Computes the total course duration in whole minutes from a duration object
+ * where video is in seconds and coaching/selfStudy are in minutes.
+ * Keeps full precision through the computation, rounds only at the end.
+ */
+export function computeTotalDurationMinutes(duration: {
+    video?: number | null;
+    coaching?: number | null;
+    selfStudy?: number | null;
+}): number {
+    const videoMinutes = (duration.video ?? 0) / 60;
+    const totalMinutes = videoMinutes + (duration.coaching ?? 0) + (duration.selfStudy ?? 0);
+    return Math.round(totalMinutes);
+}
