@@ -2234,8 +2234,8 @@ export const DE: TDictionary = {
         },
       },
       study: {
-        save: 'Speichern',
-        saving: 'Wird gespeichert...',
+        save: 'Senden',
+        saving: 'Wird gesendet...',
         progressSaved: 'Fortschritt erfolgreich gespeichert!',
         saveFailed: 'Fortschritt konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.',
         validationTextInput: 'Bitte füllen Sie das Textfeld aus, bevor Sie speichern.',
