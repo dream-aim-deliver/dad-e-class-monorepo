@@ -134,9 +134,32 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             const cardX = leftColumnX;
             const cardWidth = leftColumnWidth;
             const cardPadding = 15;
+            const badgeSize = 28;
 
-            // Draw card background with fill and border
-            const cardHeight = 140;
+            // Pre-measure text wrapping to calculate dynamic card height
+            pdf.setFontSize(9);
+            const certifyThatLines = pdf.splitTextToSize(t.certifyThat, cardWidth - 2 * cardPadding);
+            const hasCompletedLines = pdf.splitTextToSize(t.hasCompleted, cardWidth - 2 * cardPadding);
+            pdf.setFontSize(18);
+            const studentNameLines = pdf.splitTextToSize(data.studentName, cardWidth - 2 * cardPadding);
+            pdf.setFontSize(11);
+            const courseTitleLines = pdf.splitTextToSize(`"${data.courseTitle}"`, cardWidth - 2 * cardPadding);
+
+            const logoHeight = data.platformLogoUrl ? 20 : 0;
+            const cardHeight = Math.max(
+                140,
+                cardPadding
+                    + logoHeight
+                    + 12                                       // certificateTitle
+                    + certifyThatLines.length * 4.5 + 10      // certifyThat
+                    + studentNameLines.length * 7 + 8         // studentName
+                    + hasCompletedLines.length * 4.5 + 10     // hasCompleted
+                    + courseTitleLines.length * 5 + 5         // courseTitle
+                    + badgeSize + 7                            // badge
+                    + 14                                       // cert ID / date row
+                    + cardPadding,
+            );
+
             const cardY = startY;
 
             // Card background - card-fill (#1C1917)
@@ -178,8 +201,8 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             // "This is to certify that" text
             pdf.setFontSize(9);
             pdf.setFont('Nunito', 'normal');
-            pdf.text(t.certifyThat, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
-            cardCurrentY += 10;
+            pdf.text(certifyThatLines, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
+            cardCurrentY += certifyThatLines.length * 4.5 + 5;
 
             // Student name
             pdf.setFontSize(18);
@@ -189,7 +212,6 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
                 // Fallback to Times italic for script-like appearance
                 pdf.setFont('times', 'italic');
             }
-            const studentNameLines = pdf.splitTextToSize(data.studentName, cardWidth - 2 * cardPadding);
             pdf.text(studentNameLines, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
             cardCurrentY += studentNameLines.length * 7 + 8;
 
@@ -199,18 +221,16 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             // "for successfully completing the course"
             pdf.setFontSize(9);
             pdf.setFont('Nunito', 'normal');
-            pdf.text(t.hasCompleted, cardX + cardWidth / 2, cardCurrentY, { align: 'center', maxWidth: cardWidth - 2 * cardPadding });
-            cardCurrentY += 10;
+            pdf.text(hasCompletedLines, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
+            cardCurrentY += hasCompletedLines.length * 4.5 + 5;
 
             // Course title in quotes
             pdf.setFontSize(11);
             pdf.setFont('Nunito', 'bold');
-            const courseTitleLines = pdf.splitTextToSize(`"${data.courseTitle}"`, cardWidth - 2 * cardPadding);
             pdf.text(courseTitleLines, cardX + cardWidth / 2, cardCurrentY, { align: 'center' });
             cardCurrentY += courseTitleLines.length * 5 + 5;
 
             // Awarded badge/seal - Draw a gold star/seal badge
-            const badgeSize = 28;
             const badgeCenterX = cardX + cardWidth / 2;
             const badgeCenterY = cardCurrentY + badgeSize / 2;
 
@@ -234,11 +254,11 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             pdf.circle(badgeCenterX, badgeCenterY, (badgeSize / 2) - 1.5, 'S');
             pdf.circle(badgeCenterX, badgeCenterY, (badgeSize / 2) - 3, 'S');
 
-            // "AWARDED" text
+            // Awarded prefix text (locale-aware)
             pdf.setTextColor(197, 147, 44); // Dark gold text
-            pdf.setFontSize(6);
+            pdf.setFontSize(5);
             pdf.setFont('Nunito', 'bold');
-            pdf.text('AWARDED', badgeCenterX, badgeCenterY - 3, { align: 'center' });
+            pdf.text(t.awardedPrefix, badgeCenterX, badgeCenterY - 3, { align: 'center' });
 
             // Year text
             const currentYear = new Date().getFullYear();
@@ -265,7 +285,7 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             // Awarded date (right aligned within card)
             pdf.setFont('Nunito', 'normal');
             const formattedDate = formatCertificateDate(data.completionDate, locale);
-            const awardedText = `${t.completedOn}`;
+            const awardedText = `${t.awardedOn}`;
             pdf.text(awardedText, cardX + cardWidth - cardPadding, cardCurrentY, { align: 'right' });
             pdf.setFont('Nunito', 'bold');
             pdf.text(formattedDate, cardX + cardWidth - cardPadding, cardCurrentY + 4, { align: 'right' });
@@ -285,9 +305,10 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             return cardY + cardHeight;
         };
 
-        // Calculate vertical center for certificate card
-        const totalContentHeight = 140; // Approximate card height
-        const certificateStartY = (pageHeight - totalContentHeight) / 2;
+        // Calculate vertical start for certificate card
+        // Use a generous estimate for dynamic height to keep card within page bounds
+        const estimatedCardHeight = 170;
+        const certificateStartY = Math.max(margin, (pageHeight - estimatedCardHeight) / 2);
 
         // Draw certificate card on left
         await drawCertificateCard(certificateStartY);
@@ -299,7 +320,7 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
         // Course description header
         pdf.setFontSize(11);
         pdf.setFont('Nunito', 'bold');
-        pdf.text('Course description', rightColumnX, rightCurrentY);
+        pdf.text(t.courseStructure, rightColumnX, rightCurrentY);
         rightCurrentY += 7;
 
         // Course description content

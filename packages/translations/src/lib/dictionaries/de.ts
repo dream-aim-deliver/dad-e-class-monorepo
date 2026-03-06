@@ -858,14 +858,14 @@ export const DE: TDictionary = {
     certificateGenerator: {
       certificatePrefix: 'Zertifikat',
       certificateTitle: 'Abschlusszertifikat',
-      certifyThat: 'dieses Zertifikat wird verliehen an',
+      certifyThat: 'Dieses Zertifikat erhält',
       hasCompleted: 'für den erfolgreichen Abschluss des Kurses',
       completedOn: 'Abgeschlossen am',
       certificateId: 'Zertifikats-ID',
       courseStructure: 'Kursstruktur',
       module: 'Modul',
-      awardedOn: 'Verliehen am',
-      awardedPrefix: 'VERLIEHEN',
+      awardedOn: 'Erhalten am',
+      awardedPrefix: 'ERHALTEN',
     },
     coachesSkeleton: {
       title: 'Viele andere Coaches warten auf dich...',
