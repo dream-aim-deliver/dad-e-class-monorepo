@@ -33,7 +33,7 @@ const baseProps: CourseCardAddToPackageProps = {
     language: { code: 'ENG', name: 'English' },
     sessions: 12,
     author: { name: 'Jane Smith', image: 'https://example.com/author.jpg' },
-    duration: { video: 120, coaching: 30, selfStudy: 60 }, // 210 mins = 3h 30m
+    duration: { video: 120, coaching: 30, selfStudy: 60 }, // video=120s→2m + 30m + 60m = 92m = 1h 32m
     sales: 100,
     imageUrl: 'https://example.com/course.jpg',
     onClickUser: vi.fn(),
@@ -62,11 +62,11 @@ describe('CourseCardAddToPackage', () => {
             screen.getByText((text) => text.includes('12')),
         ).toBeInTheDocument();
 
-        // Duration - 210 mins = 3h 30m
+        // Duration - video=120s→2m + 30m + 60m = 92m = 1h 32m
         expect(
             screen.getByText(
                 (text) =>
-                    text.includes('3h 30m'),
+                    text.includes('1h 32m'),
             ),
         ).toBeInTheDocument();
 
@@ -85,14 +85,14 @@ describe('CourseCardAddToPackage', () => {
         render(
             <CourseCardAddToPackage
                 {...baseProps}
-                duration={{ video: 60, coaching: 60, selfStudy: 60 }} // 180 mins = 3h
+                duration={{ video: 60, coaching: 60, selfStudy: 60 }} // video=60s→1m + 60m + 60m = 121m = 2h 1m
             />,
         );
 
         expect(
             screen.getByText(
                 (text) =>
-                    text.includes('3h'),
+                    text.includes('2h 1m'),
             ),
         ).toBeInTheDocument();
     });
