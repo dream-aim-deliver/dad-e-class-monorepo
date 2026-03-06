@@ -353,6 +353,7 @@ export const DictionarySchema = z.object({
       createdBy: z.string(),
       you: z.string(),
       group: z.string(),
+      single: z.string(),
       manageButton: z.string(),
       editCourseButton: z.string(),
       goToOfferButton: z.string(),
