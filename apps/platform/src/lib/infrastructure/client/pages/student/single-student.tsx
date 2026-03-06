@@ -208,6 +208,7 @@ export default function SingleStudent({
 
     const courses = viewModel.data.courses;
     const profile = studentDetailsViewModel.data;
+    const isCoachOrHigher = roles.some(r => ['coach', 'course_creator', 'admin', 'superadmin'].includes(r));
 
     return (
         <div className="flex flex-col space-y-4">
@@ -261,6 +262,11 @@ export default function SingleStudent({
                                     </p>
                                 );
                             })()}
+                            {isCoachOrHigher && profile.email && (
+                                <p className="text-text-secondary text-sm">
+                                    {profile.email}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className='flex items-center gap-4'>
