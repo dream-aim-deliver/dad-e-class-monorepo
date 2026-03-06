@@ -9,7 +9,7 @@ import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useImageComponent } from '../../../contexts/image-component-context';
-import { formatCompactDuration } from '../../../utils/video-duration';
+import { computeTotalDurationMinutes, formatCompactDuration } from '../../../utils/video-duration';
 
 export interface CourseCardAddToPackageProps extends course.TCourseMetadata {
     reviewCount: number;
@@ -99,8 +99,7 @@ export const CourseCardAddToPackage: React.FC<CourseCardAddToPackageProps> = ({
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
     // Calculate total course duration in minutes and format as "Xh Ym"
-    const totalDurationInMinutes =
-        (duration as any).video + (duration as any).coaching + (duration as any).selfStudy;
+    const totalDurationInMinutes = computeTotalDurationMinutes(duration ?? {});
     const formattedDuration = formatCompactDuration(totalDurationInMinutes);
 
     return (

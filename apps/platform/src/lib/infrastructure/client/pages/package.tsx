@@ -18,7 +18,7 @@ import {
   Banner,
   type TransactionDraft,
   type CouponValidationResult,
-  videoSecondsToMinutes,
+  computeTotalDurationMinutes,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -480,10 +480,7 @@ export default function Package({ locale, packageId }: PackageProps) {
   const calculatePackageDuration = (): number => {
     return packageData.courses.reduce((totalMinutes, course) => {
       if (!course.duration) return totalMinutes;
-      const courseDuration = videoSecondsToMinutes(course.duration.video) +
-                            (course.duration.coaching || 0) +
-                            (course.duration.selfStudy || 0);
-      return totalMinutes + courseDuration;
+      return totalMinutes + computeTotalDurationMinutes(course.duration);
     }, 0);
   };
 
@@ -694,7 +691,7 @@ export default function Package({ locale, packageId }: PackageProps) {
                 }}
                 language={language}
                 duration={{
-                    video: videoSecondsToMinutes(course.duration.video),
+                    video: course.duration.video ?? 0,
                     coaching: course.duration.coaching || 0,
                     selfStudy: course.duration.selfStudy || 0
                 }}
