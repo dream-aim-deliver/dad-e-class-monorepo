@@ -2,12 +2,6 @@
 @import "../../../../../packages/ui-kit/lib/assets/css/tailwind.css";
 @source "../../../../../packages/ui-kit/lib/components";
 
-@theme {
-    --breakpoint-sm: 9999rem;
-    --breakpoint-md: 0rem;
-    --breakpoint-lg: 0rem;
-}
-
 html {
     min-width: 1280px;
 }
