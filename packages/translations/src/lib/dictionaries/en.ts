@@ -1181,6 +1181,7 @@ export const EN: TDictionary = {
         confirmPassMessage: 'Are you sure you want to mark this assignment as passed? This action cannot be undone.',
         cancelButton: 'Cancel',
         confirmButton: 'Confirm',
+        orText: 'or',
       },
       assignmentBuilder: {
         assignmentText: 'Assignment',
