@@ -234,6 +234,7 @@ export const EN: TDictionary = {
       createdBy: 'Created by',
       you: 'You',
       group: 'Group',
+      single: 'Single',
       manageButton: 'Manage',
       editCourseButton: 'Edit offer',
       goToOfferButton: 'Go to offer',

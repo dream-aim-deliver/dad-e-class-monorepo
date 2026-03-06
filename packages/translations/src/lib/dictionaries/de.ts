@@ -234,6 +234,7 @@ export const DE: TDictionary = {
       createdBy: 'Erstellt von',
       you: 'Du',
       group: 'Gruppe',
+      single: 'Einzeln',
       manageButton: 'Verwalten',
       editCourseButton: 'Kurs bearbeiten',
       goToOfferButton: 'Zum Angebot',

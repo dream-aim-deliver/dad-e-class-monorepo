@@ -6,6 +6,8 @@ import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { RatingDisplay } from '../../rating-display';
 import { Badge } from '../../badge';
+import { IconGroup } from '../../icons/icon-group';
+import { IconPerson } from '../../icons/icon-person';
 import { course } from '@maany_shr/e-class-models';
 import {
   TLocale,
@@ -89,7 +91,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
 
   return (
     <div className="w-full mx-auto">
-      <div className="flex flex-col flex-1 pb-2 w-auto h-fit rounded-medium border border-card-stroke bg-card-fill overflow-visible transition-transform hover:scale-[1.02]">
+      <div className="relative flex flex-col flex-1 pb-2 w-auto h-fit rounded-medium border border-card-stroke bg-card-fill overflow-visible transition-transform hover:scale-[1.02]">
         <div className="relative overflow-hidden rounded-t-medium">
           {shouldShowPlaceholder ? (
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
@@ -106,6 +108,26 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
               height={200}
               className="w-full h-[200px] object-cover"
               onError={handleImageError}
+            />
+          )}
+        </div>
+
+        <div className="absolute top-4 right-4">
+          {groupName ? (
+            <Badge
+              variant="info"
+              size="big"
+              hasIconLeft
+              iconLeft={<IconGroup size="5" />}
+              text={dictionary.components.courseCard.group}
+            />
+          ) : (
+            <Badge
+              variant="info"
+              size="big"
+              hasIconLeft
+              iconLeft={<IconPerson size="5" />}
+              text={dictionary.components.courseCard.single}
             />
           )}
         </div>
@@ -134,14 +156,6 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
               sales={sales}
             />
           </div>
-          {groupName && (
-            <Badge
-              className="px-3 py-1 gap-2 self-start"
-              variant="info"
-              size="big"
-              text={dictionary.components.courseCard.group}
-            />
-          )}
           <Button
             onClick={onManage}
             className="w-full"
