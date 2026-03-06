@@ -217,22 +217,22 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                     </div>
                 </div>
                 {role === 'coach' ? (
-                    <div className="flex items-center w-full gap-2">
+                    <div className="flex flex-col items-stretch gap-2 w-full">
                         <Button
                             size="medium"
                             variant="primary"
-                            className="flex-1 justify-center"
+                            className="w-full justify-center"
                             text={isSending ? dictionary.components.assignment.replyPanel.sendingMessageText : dictionary.components.assignment.replyPanel.sendMessageText}
                             onClick={onClickSendMessage}
                             disabled={isFormInvalid || isSending}
                         />
-                        <span className="text-text-secondary text-sm shrink-0">
+                        <span className="text-text-secondary text-sm text-center">
                             {dictionary.components.assignment.replyPanel.orText}
                         </span>
                         <Button
                             size="medium"
                             variant="secondary"
-                            className="flex-1 justify-center"
+                            className="w-full justify-center"
                             iconLeft={<IconAssignmentPassed />}
                             hasIconLeft
                             text={dictionary.components.assignment.replyPanel.markAsPassedText}
