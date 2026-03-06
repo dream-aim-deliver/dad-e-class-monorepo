@@ -367,36 +367,36 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
                 pdf.text(moduleLines, rightColumnX, rightCurrentY);
                 rightCurrentY += moduleLines.length * 3.5 + 4;
 
-                // Lesson titles
+                // Lesson titles as a single joined line
                 pdf.setFontSize(8);
                 pdf.setFont('Nunito', 'normal');
-                for (const lessonTitle of module.lessonTitles) {
-                    if (rightCurrentY > maxYBeforeFooter - 10) {
-                        // Add footer to current page
-                        const currentPage = pdf.getCurrentPageInfo().pageNumber;
-                        pdf.setFontSize(8);
-                        pdf.setFont('Nunito', 'normal');
-                        pdf.text(`Pag. ${currentPage}/${pdf.getNumberOfPages() + 1}`, pageWidth / 2, pageHeight - 15, { align: 'center' });
+                const lessonText = `${t.lessons}: ${module.lessonTitles.join(' · ')}`;
+                const lessonLines = pdf.splitTextToSize(lessonText, rightColumnWidth - 5);
 
-                        // Add new page
-                        pdf.addPage();
-                        setupPage();
+                if (rightCurrentY + lessonLines.length * 3.5 > maxYBeforeFooter - 10) {
+                    // Add footer to current page
+                    const currentPage = pdf.getCurrentPageInfo().pageNumber;
+                    pdf.setFontSize(8);
+                    pdf.setFont('Nunito', 'normal');
+                    pdf.text(`Pag. ${currentPage}/${pdf.getNumberOfPages() + 1}`, pageWidth / 2, pageHeight - 15, { align: 'center' });
 
-                        // Redraw certificate card on left
-                        await drawCertificateCard(certificateStartY);
+                    // Add new page
+                    pdf.addPage();
+                    setupPage();
 
-                        // Reset right column position
-                        rightCurrentY = rightStartY;
+                    // Redraw certificate card on left
+                    await drawCertificateCard(certificateStartY);
 
-                        // Reset font after page break
-                        pdf.setFontSize(8);
-                        pdf.setFont('Nunito', 'normal');
-                    }
+                    // Reset right column position
+                    rightCurrentY = rightStartY;
 
-                    const lessonLines = pdf.splitTextToSize(lessonTitle, rightColumnWidth - 5);
-                    pdf.text(lessonLines, rightColumnX, rightCurrentY);
-                    rightCurrentY += lessonLines.length * 3.5;
+                    // Reset font after page break
+                    pdf.setFontSize(8);
+                    pdf.setFont('Nunito', 'normal');
                 }
+
+                pdf.text(lessonLines, rightColumnX, rightCurrentY);
+                rightCurrentY += lessonLines.length * 3.5;
 
                 // Add divider line after module (except if we're near the bottom)
                 if (rightCurrentY < maxYBeforeFooter - 15) {

@@ -860,6 +860,7 @@ export const DictionarySchema = z.object({
       module: z.string(),
       awardedOn: z.string(),
       awardedPrefix: z.string(),
+      lessons: z.string(),
     }),
     coachesSkeleton: z.object({
       title: z.string(),
