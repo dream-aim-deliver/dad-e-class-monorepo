@@ -74,8 +74,12 @@ export default function UserNotifications() {
                 recipients={1}
                 layout="vertical"
                 locale={locale}
-                onClickActivity={() => () => {
-                    router.push(`/${locale}/workspace/notifications?highlight=${notification.id}`);
+                onClickActivity={(url: string) => () => {
+                    if (url.startsWith('mailto:')) {
+                        window.open(url);
+                    } else {
+                        router.push(`/${locale}/workspace/notifications?highlight=${notification.id}`);
+                    }
                     if (!notification.isRead) {
                         const numericId = Number(notification.id);
                         if (!Number.isNaN(numericId)) {
