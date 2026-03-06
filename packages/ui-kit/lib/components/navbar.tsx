@@ -239,11 +239,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         </a>
       </div>
 
-      {/* Desktop Menu (Large Screens) */}
-      <div className="hidden lg:flex items-center space-x-6 ml-auto">{children}</div>
+      {/* Desktop Menu */}
+      <div className="flex items-center space-x-6 ml-auto">{children}</div>
 
       {/* Right Section (Profile+Workspace, Chat, Language Dropdown) */}
-      <div className="hidden lg:flex items-center space-x-3 ml-3">
+      <div className="flex items-center space-x-3 ml-3">
         {isLoggedIn ? (
           <>
             {userProfile || defaultUserProfile}
@@ -304,8 +304,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         }
       </div>
 
-      {/* Mobile Menu Button (Small Screens) */}
-      <div className="lg:hidden">
+      {/* Mobile Menu Button (disabled — desktop-only layout) */}
+      <div className="hidden">
         <div className="relative flex items-center space-x-4">
           {isLoggedIn && (
             <div className="flex items-center space-x-4">
@@ -360,7 +360,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div
-          className="fixed top-0 left-0 w-full h-screen bg-button-primary-text text-white flex flex-col items-center justify-start pt-20 overflow-y-auto lg:hidden z-9999"
+          className="fixed top-0 left-0 w-full h-screen bg-button-primary-text text-white flex flex-col items-center justify-start pt-20 overflow-y-auto hidden z-9999"
         >
           <div className="absolute top-3 left-0 right-0 flex justify-between items-center px-4 w-full">
             <a href="/" className="block h-12">
