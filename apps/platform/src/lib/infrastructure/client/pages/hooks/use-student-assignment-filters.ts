@@ -46,7 +46,7 @@ export function useStudentAssignmentFilters({
     initialFilters = {},
 }: UseStudentAssignmentFiltersProps) {
     const [filters, setFilters] = useState<AssignmentFilters>(initialFilters);
-    const [sortBy, setSortBy] = useState<SortByOption>('title');
+    const [sortBy, setSortBy] = useState<SortByOption>('status');
     const [showFilterModal, setShowFilterModal] = useState(false);
 
     // ViewModel state
@@ -158,18 +158,22 @@ export function useStudentAssignmentFilters({
                     return (a.title || '').localeCompare(b.title || '');
                 case 'status': {
                     const statusOrder = {
-                        'waiting-feedback': 1,
-                        'long-wait': 2,
+                        'long-wait': 1,
+                        'waiting-feedback': 2,
                         'passed': 3,
                     };
-                    return (
-                        (statusOrder[
-                            a.status as keyof typeof statusOrder
-                        ] || 999) -
-                        (statusOrder[
-                            b.status as keyof typeof statusOrder
-                        ] || 999)
-                    );
+                    const aOrder = statusOrder[a.status as keyof typeof statusOrder] ?? 999;
+                    const bOrder = statusOrder[b.status as keyof typeof statusOrder] ?? 999;
+                    if (aOrder !== bOrder) return aOrder - bOrder;
+
+                    // Secondary: by last reply date, newest first
+                    const getReplyDate = (lastReply: typeof a.lastReply) => {
+                        if (!lastReply) return 0;
+                        if (lastReply.replyType === 'reply') return lastReply.sentAt ?? 0;
+                        if (lastReply.replyType === 'passed') return lastReply.passedAt ?? 0;
+                        return 0;
+                    };
+                    return getReplyDate(b.lastReply) - getReplyDate(a.lastReply);
                 }
                 case 'date': {
                     const getReplyDate = (lastReply: any) => {
