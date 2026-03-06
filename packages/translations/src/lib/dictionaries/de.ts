@@ -866,6 +866,7 @@ export const DE: TDictionary = {
       module: 'Modul',
       awardedOn: 'Erhalten am',
       awardedPrefix: 'ERHALTEN',
+      lessons: 'Lektionen',
     },
     coachesSkeleton: {
       title: 'Viele andere Coaches warten auf dich...',

@@ -221,7 +221,7 @@ export const CourseCertificate: FC<CourseCertificateProps> = ({
                                         {module.moduleTitle}
                                     </h6>
                                     <p className="text-xs text-text-secondary" style={{ color: '#A8A29E' }}>
-                                        {module.lessonTitles.join(' . ')}
+                                        {dictionary.lessons}: {module.lessonTitles.join(' · ')}
                                     </p>
                                     {index < courseSummary.length - 1 && (
                                         <hr className="mt-2 border-base-neutral-700" style={{ borderColor: '#44403C' }} />
