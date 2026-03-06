@@ -639,6 +639,7 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       progressText: 'Progress',
       beginText: 'Start offer',
+      assignmentsOnlyTooltip: 'Only assignments count towards the completion of this course.',
     },
     milestone: {
       milestoneText: 'Milestone',
@@ -908,6 +909,7 @@ export const EN: TDictionary = {
       searchFailedDescription: 'An error occurred while searching for courses.',
       createCourseLanguageAlertTitle: 'You are working in the English interface.',
       createCourseLanguageAlertMessage: 'Create an English course here, or switch the language to create a course in another language.',
+      duplicateCourseLanguageAlertMessage: 'The duplicated course will be set up in English. Switch the language first if you want to duplicate it in another language.',
       continueButton: 'Continue',
       cancelButton: 'Cancel',
     },

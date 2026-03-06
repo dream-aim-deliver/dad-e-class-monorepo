@@ -635,6 +635,7 @@ export const DictionarySchema = z.object({
       resumeText: z.string(),
       progressText: z.string(),
       beginText: z.string(),
+      assignmentsOnlyTooltip: z.string(),
     }),
     milestone: z.object({
       milestoneText: z.string(),
@@ -891,6 +892,7 @@ export const DictionarySchema = z.object({
       searchFailedDescription: z.string(),
       createCourseLanguageAlertTitle: z.string(),
       createCourseLanguageAlertMessage: z.string(),
+      duplicateCourseLanguageAlertMessage: z.string(),
       continueButton: z.string(),
       cancelButton: z.string(),
     }),
