@@ -20,7 +20,7 @@
  * - Filter options: availableStatuses, availableCourses, availableModules, availableLessons
  * - Handlers: handleApplyFilters, handleSortChange, handleOpenFilterModal, handleCloseFilterModal, resetFilters
  */
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListGroupAssignmentsPresenter } from '../../hooks/use-list-group-assignments-presenter';
 import { trpc } from '../../trpc/cms-client';
@@ -77,26 +77,11 @@ export function useAssignmentFilters({
     const { presenter: assignmentsPresenter } =
         useListGroupAssignmentsPresenter(setAssignmentsViewModel);
 
-    // Present the data
-    useEffect(() => {
-        console.log('[useAssignmentFilters] assignmentsResponse:', assignmentsResponse);
-        if (assignmentsResponse) {
-            console.log('[useAssignmentFilters] Calling presenter.present');
-            assignmentsPresenter.present(
-                // @ts-ignore
-                assignmentsResponse,
-                assignmentsViewModel,
-            );
-        }
-    }, [assignmentsResponse]);
-
-    // Debug: Log view model state
-    useEffect(() => {
-        console.log('[useAssignmentFilters] assignmentsViewModel:', assignmentsViewModel);
-        if (assignmentsViewModel?.mode === 'default') {
-            console.log('[useAssignmentFilters] assignments data:', assignmentsViewModel.data);
-        }
-    }, [assignmentsViewModel]);
+    // Present the data synchronously (Variant A pattern)
+    if (assignmentsResponse) {
+        // @ts-ignore
+        assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
+    }
 
     // Extract assignments from ViewModel
     const assignments = useMemo(() => {

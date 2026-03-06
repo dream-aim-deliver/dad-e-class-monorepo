@@ -18,7 +18,7 @@
  * - Filter options: availableStatuses, availableModules, availableLessons
  * - Handlers: handleApplyFilters, handleSortChange, handleOpenFilterModal, handleCloseFilterModal, resetFilters
  */
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListStudentAssignmentsPresenter } from '../../hooks/use-list-student-assignments-presenter';
 import { trpc } from '../../trpc/cms-client';
@@ -76,16 +76,11 @@ export function useStudentAssignmentFilters({
     const { presenter: assignmentsPresenter } =
         useListStudentAssignmentsPresenter(setAssignmentsViewModel);
 
-    // Present the data
-    useEffect(() => {
-        if (assignmentsResponse) {
-            assignmentsPresenter.present(
-                // @ts-ignore
-                assignmentsResponse,
-                assignmentsViewModel,
-            );
-        }
-    }, [assignmentsResponse]);
+    // Present the data synchronously (Variant A pattern)
+    if (assignmentsResponse) {
+        // @ts-ignore
+        assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
+    }
 
     // Extract assignments from ViewModel
     const assignments = useMemo(() => {
