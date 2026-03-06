@@ -16,7 +16,7 @@ type MetadataProps = {
 const OG_IMAGE = 'https://i.imgur.com/6CGQTz1.png';
 
 export const viewport: Viewport = {
-    width: 1024,
+    width: 1280,
 };
 
 export async function generateMetadata({ params }: MetadataProps): Promise<Metadata> {
@@ -105,7 +105,7 @@ export default async function PublicLayout({
     return (
         <html lang={locale}>
             <head>
-                <meta name="viewport" content="width=1024" />
+                <meta name="viewport" content="width=1280" />
             </head>
             <body
                 className={`theme theme-${THEME} ${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}

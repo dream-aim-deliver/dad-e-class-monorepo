@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 export const viewport = {
-    width: 1024,
+    width: 1280,
 };
 
 const nunito = Nunito({
@@ -48,7 +48,7 @@ export default async function RootLayout({
     return (
         <html lang={locale}>
             <head>
-                <meta name="viewport" content="width=1024" />
+                <meta name="viewport" content="width=1280" />
             </head>
             <body
                 className={`theme theme-cms ${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
