@@ -2,10 +2,37 @@
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { DayPicker } from 'react-day-picker';
+import { de as deLocale, enUS } from 'react-day-picker/locale';
 import 'react-day-picker/style.css';
 import { IconButton } from './icon-button';
-import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { IconCalendarAlt } from './icons/icon-calendar-alt';
+
+function getIntlLocale(locale: TLocale): string {
+  switch (locale) {
+    case 'en':
+      return 'en-GB';
+    case 'de':
+      return 'de-DE';
+    default: {
+      const _exhaustive: never = locale;
+      throw new Error(`No Intl locale registered for: ${_exhaustive}`);
+    }
+  }
+}
+
+function getRdpLocale(locale: TLocale): typeof enUS {
+  switch (locale) {
+    case 'en':
+      return enUS;
+    case 'de':
+      return deLocale;
+    default: {
+      const _exhaustive: never = locale;
+      throw new Error(`No date-fns locale registered for: ${_exhaustive}`);
+    }
+  }
+}
 
 export interface DateInputProps extends isLocalAware {
   label?: string;
@@ -74,8 +101,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   // Sync text value with the prop value
   useEffect(() => {
     if (selectedDate) {
-      const localeStr = locale === 'de' ? 'de-DE' : 'en-GB';
-      setTextValue(selectedDate.toLocaleDateString(localeStr));
+      setTextValue(selectedDate.toLocaleDateString(getIntlLocale(locale)));
     } else {
       setTextValue('');
     }
@@ -188,7 +214,7 @@ export const DateInput: React.FC<DateInputProps> = ({
 
       {isOpen && (
         <div
-          className="absolute top-full left-0 z-50 mt-1 bg-base-neutral-800 border border-base-neutral-700 rounded-medium shadow-lg"
+          className="absolute top-full left-0 z-50 mt-1 bg-base-neutral-800 border border-base-neutral-700 rounded-medium shadow-lg [&_.rdp-dropdowns]:flex-row-reverse"
           data-testid="date-input-calendar"
           style={{
             '--rdp-accent-color': 'var(--color-base-brand-400)',
@@ -207,12 +233,14 @@ export const DateInput: React.FC<DateInputProps> = ({
         >
           <DayPicker
             mode="single"
+            locale={getRdpLocale(locale)}
             captionLayout="dropdown"
             selected={selectedDate}
             onSelect={handleDaySelect}
             defaultMonth={selectedDate || new Date()}
             startMonth={new Date(1920, 0)}
-            endMonth={new Date()}
+            endMonth={new Date(new Date().getFullYear(), 11)}
+            disabled={{ after: new Date() }}
             classNames={{
               root: 'p-3 text-text-primary',
               month_caption: 'text-text-primary mb-2 font-bold text-lg',
