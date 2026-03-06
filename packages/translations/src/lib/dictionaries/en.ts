@@ -2232,8 +2232,8 @@ export const EN: TDictionary = {
         },
       },
       study: {
-        save: 'Save',
-        saving: 'Saving...',
+        save: 'Send',
+        saving: 'Sending...',
         progressSaved: 'Progress saved successfully!',
         saveFailed: 'Failed to save progress. Please try again.',
         validationTextInput: 'Please fill in the text field before saving.',
