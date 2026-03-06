@@ -20,7 +20,7 @@ export const PaginatedCertificate = forwardRef<
   const { courseSummary, courseDescription, ...rest } = props;
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-  const pages = paginateModules(courseSummary, 4); // 4 modules per page
+  const pages = paginateModules(courseSummary);
   const totalPages = pages.length || 1;
 
   // Expose DOM reference to parent
