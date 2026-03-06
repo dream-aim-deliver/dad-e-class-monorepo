@@ -285,7 +285,7 @@ export default function EditHeader({
                         />
                     )}
                 </div>
-                <div className="flex sm:flex-row flex-col sm:items-center gap-3">
+                <div className="flex flex-row items-center gap-3">
                     <Button
                         variant="text"
                         iconLeft={isPreviewing ? <IconEyeHide /> : <IconEyeShow />}
