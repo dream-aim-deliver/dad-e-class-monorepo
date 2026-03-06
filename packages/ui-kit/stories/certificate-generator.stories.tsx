@@ -1,166 +1,81 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
-import { generateCertificatePDF, type CertificateData } from '../lib/utils/course-certificate-generator';
+import { useState, useRef } from 'react';
+import { PaginatedCertificate, PaginatedCertificateHandle } from '../lib/components/paginated-certificate';
+import type { CourseCertificateProps } from '../lib/components/course-certificate';
 import { Button } from '../lib/components/button';
-import { InputField } from '../lib/components/input-field';
 import type { TLocale } from '@maany_shr/e-class-translations';
 
-// Create a wrapper component for the story
-const CertificateGeneratorDemo = ({ locale }: { locale: TLocale }) => {
-    const [certificateData, setCertificateData] = useState<CertificateData>({
-        studentUsername: 'john-doe',
-        studentName: 'John Doe',
-        courseTitle: 'React Fundamentals',
-        courseSlug: 'react-fundamentals',
-        courseDescription: 'A comprehensive introduction to building modern web applications with React',
-        completionDate: '2024-01-15',
-        platformName: 'Learning Platform',
-        platformFooterContent: 'This certificate verifies completion of all course modules and assessments',
-        courseSummary: [
-            {
-                moduleNumber: 1,
-                moduleTitle: 'Introduction to React',
-                lessonTitles: ['What is React?', 'Setting up your development environment', 'Your first React component']
-            },
-            {
-                moduleNumber: 2,
-                moduleTitle: 'React Components',
-                lessonTitles: ['Functional Components', 'Class Components', 'Props and State', 'Component Lifecycle']
-            },
-            {
-                moduleNumber: 3,
-                moduleTitle: 'Hooks and State Management',
-                lessonTitles: ['useState Hook', 'useEffect Hook', 'Custom Hooks', 'Context API']
-            }
-        ],
-        locale: locale,
-    });
+type CertificateDemoData = Omit<CourseCertificateProps, 'className' | 'showBadge'>;
+
+const CertificateGeneratorDemo = ({ locale, data }: { locale: TLocale; data: CertificateDemoData }) => {
+    const certificateRef = useRef<PaginatedCertificateHandle>(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [message, setMessage] = useState<string>('');
 
-    const handleInputChange = (field: keyof CertificateData, value: string) => {
-        setCertificateData(prev => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
-
-    const handleGenerateCertificate = async () => {
+    const handleGeneratePDF = async () => {
         try {
             setIsGenerating(true);
             setMessage('Generating certificate...');
 
-            await generateCertificatePDF({ ...certificateData, locale });
+            const element = certificateRef.current?.getElement();
+            if (!element) {
+                setMessage('Certificate element not found');
+                return;
+            }
 
-            setMessage('✅ Certificate generated successfully! Check your Downloads folder.');
+            const html2pdf = (await import('html2pdf.js')).default;
+
+            const options = {
+                margin: 0,
+                filename: `Certificate_test.pdf`,
+                image: { type: 'jpeg' as const, quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#0C0A09',
+                },
+                jsPDF: {
+                    unit: 'mm' as const,
+                    format: 'a4' as const,
+                    orientation: 'landscape' as const,
+                },
+                pagebreak: { mode: ['css', 'legacy'] as const },
+            };
+
+            await html2pdf().set(options).from(element).save();
+
+            setMessage('Certificate generated successfully! Check your Downloads folder.');
         } catch (error) {
-            setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            setMessage(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         } finally {
             setIsGenerating(false);
         }
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-            <h2 style={{ marginBottom: '20px' }}>Certificate Generator Test</h2>
-
-            <div style={{
-                marginBottom: '20px',
-                padding: '10px',
-                backgroundColor: '#f0f9ff',
-                borderRadius: '4px',
-                fontSize: '14px'
-            }}>
-                <strong>Current Locale:</strong> {locale === 'en' ? '🇬🇧 English' : '🇩🇪 Deutsch'}
-                <br />
-                <em>Use the "locale" control in the panel below to switch languages</em>
-            </div>
-
-            <div style={{ marginBottom: '20px' }}>
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                        Student Name:
-                    </label>
-                    <InputField
-                        value={certificateData.studentName}
-                        onChange={(e) => handleInputChange('studentName', e.target.value)}
-                        placeholder="Enter student name"
-                    />
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                        Course Title:
-                    </label>
-                    <InputField
-                        value={certificateData.courseTitle}
-                        onChange={(e) => handleInputChange('courseTitle', e.target.value)}
-                        placeholder="Enter course title"
-                    />
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                        Completion Date:
-                    </label>
-                    <InputField
-                        value={certificateData.completionDate}
-                        onChange={(e) => handleInputChange('completionDate', e.target.value)}
-                        placeholder="YYYY-MM-DD"
-                        type="date"
-                    />
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                        Platform Name (Optional):
-                    </label>
-                    <InputField
-                        value={certificateData.platformName || ''}
-                        onChange={(e) => handleInputChange('platformName', e.target.value)}
-                        placeholder="Enter platform name"
-                    />
-                </div>
-            </div>
-
-            <div style={{ marginBottom: '20px' }}>
+        <div>
+            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <Button
                     variant="primary"
-                    text={isGenerating ? "Generating..." : "Generate Certificate"}
-                    onClick={handleGenerateCertificate}
+                    text={isGenerating ? 'Generating...' : 'Download Certificate PDF'}
+                    onClick={handleGeneratePDF}
                     disabled={isGenerating}
                 />
+                {message && (
+                    <span style={{ fontSize: '14px', color: message.includes('Error') ? '#dc2626' : '#16a34a' }}>
+                        {message}
+                    </span>
+                )}
             </div>
-
-            {message && (
-                <div style={{
-                    padding: '10px',
-                    borderRadius: '4px',
-                    backgroundColor: message.includes('✅') ? '#d4edda' : '#f8d7da',
-                    border: `1px solid ${message.includes('✅') ? '#c3e6cb' : '#f5c6cb'}`,
-                    color: message.includes('✅') ? '#155724' : '#721c24',
-                }}>
-                    {message}
-                </div>
-            )}
-
-            <div style={{ marginTop: '30px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                <h3>Instructions:</h3>
-                <ol>
-                    <li>Fill in the certificate details above</li>
-                    <li>Click "Generate Certificate" button</li>
-                    <li>The PDF will be automatically downloaded to your Downloads folder</li>
-                    <li>Check your browser's download bar or Downloads folder</li>
-                </ol>
-
-                <h4 style={{ marginTop: '15px' }}>Test Cases:</h4>
-                <ul>
-                    <li><strong>Default:</strong> Uses sample data (John Doe, React Fundamentals)</li>
-                    <li><strong>Special Characters:</strong> Try "José María-González" and "Advanced C++ & Data Structures"</li>
-                    <li><strong>Long Names:</strong> Try very long student names and course titles</li>
-                    <li><strong>Unicode:</strong> Try "张三李四" and "Programación Avanzada"</li>
-                    <li><strong>No Platform:</strong> Clear the platform name field</li>
-                </ul>
+            <div style={{ border: '1px solid #333', borderRadius: '8px', overflow: 'hidden' }}>
+                <PaginatedCertificate
+                    ref={certificateRef}
+                    {...data}
+                    showBadge={true}
+                    className=""
+                    locale={locale}
+                />
             </div>
         </div>
     );
@@ -170,10 +85,11 @@ const meta: Meta<typeof CertificateGeneratorDemo> = {
     title: 'Utils/Certificate Generator',
     component: CertificateGeneratorDemo,
     parameters: {
-        layout: 'centered',
+        layout: 'fullscreen',
         docs: {
             description: {
-                component: 'Interactive demo for testing PDF certificate generation. This story allows you to test the certificate generator with different inputs and actually download PDFs.',
+                component:
+                    'Interactive demo for testing PDF certificate generation using the same PaginatedCertificate + html2pdf approach as the production app.',
             },
         },
     },
@@ -182,11 +98,7 @@ const meta: Meta<typeof CertificateGeneratorDemo> = {
         locale: {
             control: 'select',
             options: ['en', 'de'],
-            description: 'Language for certificate text and filename prefix',
-            table: {
-                type: { summary: 'TLocale' },
-                defaultValue: { summary: 'en' },
-            },
+            description: 'Language for certificate text',
         },
     },
     args: {
@@ -197,219 +109,287 @@ const meta: Meta<typeof CertificateGeneratorDemo> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Interactive: Story = {
-    render: (args) => <CertificateGeneratorDemo {...args} />,
+const defaultData: CertificateDemoData = {
+    studentName: 'John Doe',
+    courseTitle: 'React Fundamentals',
+    completionDate: 'January 15, 2025',
+    certificateId: 'CER-john-doe-react',
+    platformName: 'Learning Platform',
+    awardedYear: '2025',
+    courseDescription:
+        'A comprehensive introduction to building modern web applications with React',
+    courseSummary: [
+        {
+            moduleNumber: 1,
+            moduleTitle: 'Introduction to React',
+            lessonTitles: [
+                'What is React?',
+                'Setting up your development environment',
+                'Your first React component',
+            ],
+        },
+        {
+            moduleNumber: 2,
+            moduleTitle: 'React Components',
+            lessonTitles: [
+                'Functional Components',
+                'Class Components',
+                'Props and State',
+                'Component Lifecycle',
+            ],
+        },
+        {
+            moduleNumber: 3,
+            moduleTitle: 'Hooks and State Management',
+            lessonTitles: ['useState Hook', 'useEffect Hook', 'Custom Hooks', 'Context API'],
+        },
+    ],
+    locale: 'en',
 };
 
-export const WithSampleData: Story = {
-    render: (args) => <CertificateGeneratorDemo {...args} />,
+export const Interactive: Story = {
+    render: (args) => <CertificateGeneratorDemo locale={args.locale} data={{ ...defaultData, locale: args.locale }} />,
+};
+
+export const ManyModules: Story = {
+    render: (args) => (
+        <CertificateGeneratorDemo
+            locale={args.locale}
+            data={{
+                studentName: 'Maria Schneider',
+                courseTitle: 'Full Stack Web Development Bootcamp',
+                completionDate: 'November 13, 2025',
+                certificateId: 'CER-FULLSTACK-2025-42',
+                platformName: 'Tech Academy',
+                awardedYear: '2025',
+                courseDescription:
+                    'An intensive full-stack web development bootcamp covering frontend and backend technologies.',
+                courseSummary: [
+                    {
+                        moduleNumber: 1,
+                        moduleTitle: 'Frontend Fundamentals',
+                        lessonTitles: [
+                            'HTML5 Structure and Semantics',
+                            'CSS3 Styling and Layouts',
+                            'Responsive Design with Flexbox and Grid',
+                            'JavaScript ES6+ Fundamentals',
+                            'DOM Manipulation and Events',
+                        ],
+                    },
+                    {
+                        moduleNumber: 2,
+                        moduleTitle: 'Advanced JavaScript',
+                        lessonTitles: [
+                            'Asynchronous JavaScript and Promises',
+                            'Async/Await Patterns',
+                            'Fetch API and HTTP Requests',
+                            'Error Handling Best Practices',
+                            'Modern JavaScript Tooling',
+                        ],
+                    },
+                    {
+                        moduleNumber: 3,
+                        moduleTitle: 'React Development',
+                        lessonTitles: [
+                            'React Components and JSX',
+                            'State Management with Hooks',
+                            'React Router for Navigation',
+                            'Context API and Global State',
+                            'Performance Optimization',
+                        ],
+                    },
+                    {
+                        moduleNumber: 4,
+                        moduleTitle: 'Backend with Node.js',
+                        lessonTitles: [
+                            'Node.js Fundamentals',
+                            'Express.js Server Setup',
+                            'RESTful API Design',
+                            'Middleware and Authentication',
+                            'JWT and Session Management',
+                        ],
+                    },
+                    {
+                        moduleNumber: 5,
+                        moduleTitle: 'Databases',
+                        lessonTitles: [
+                            'SQL Database Design',
+                            'PostgreSQL and Queries',
+                            'MongoDB and NoSQL',
+                            'Database Relationships',
+                            'Data Modeling Best Practices',
+                        ],
+                    },
+                    {
+                        moduleNumber: 6,
+                        moduleTitle: 'Deployment and DevOps',
+                        lessonTitles: [
+                            'Git Version Control',
+                            'CI/CD Pipelines',
+                            'Docker Containerization',
+                            'Cloud Deployment (AWS/Heroku)',
+                            'Monitoring and Logging',
+                        ],
+                    },
+                ],
+                locale: args.locale,
+            }}
+        />
+    ),
     parameters: {
         docs: {
             description: {
-                story: 'Default story with sample certificate data pre-filled. Click "Generate Certificate" to download a test PDF.',
+                story: 'Tests multi-page pagination with 6 modules of 5 lessons each.',
             },
         },
     },
 };
 
-export const WithSpecialCharacters: Story = {
-    render: (args) => {
-        const SpecialCharDemo = ({ locale }: { locale: TLocale }) => {
-            const [isGenerating, setIsGenerating] = useState(false);
-            const [message, setMessage] = useState<string>('');
-
-            const specialCharData: CertificateData = {
-                studentName: 'José María-González',
-                studentUsername: 'jose-maria-gonzalez',
-                courseTitle: 'Advanced C++ & Data Structures',
-                courseSlug: 'advanced-cpp-data-structures',
-                courseDescription: 'Master advanced programming concepts with C++ and complex data structures',
-                completionDate: '2024-03-10',
-                platformName: 'Plataforma de Aprendizaje',
-                platformFooterContent: 'Certificado válido. Contacto: info@plataforma.com',
+export const LongLessonLists: Story = {
+    render: (args) => (
+        <CertificateGeneratorDemo
+            locale={args.locale}
+            data={{
+                studentName: 'Alexandra Konstantinidou',
+                courseTitle: 'Comprehensive Marketing Masterclass',
+                completionDate: 'March 6, 2026',
+                certificateId: 'CER-MARKETING-2026-99',
+                platformName: 'Business Academy',
+                awardedYear: '2026',
+                courseDescription:
+                    'A deep-dive masterclass covering every aspect of modern marketing from strategy to execution.',
                 courseSummary: [
                     {
                         moduleNumber: 1,
-                        moduleTitle: 'Punteros y Gestión de Memoria',
-                        lessonTitles: ['Introducción a punteros', 'Memoria dinámica', 'Referencias y punteros inteligentes']
+                        moduleTitle: 'Konzeption und Strategie',
+                        lessonTitles: [
+                            'Kampagnen-Strategie und Konzeption',
+                            'Marketingmix und Kreatives Texten',
+                            'Kreieren von Ideen und Grundlagen der Werbung',
+                            'Zielgruppenanalyse und Marktsegmentierung',
+                            'Wettbewerbsanalyse und Positionierung',
+                            'Markenidentität und Corporate Design',
+                            'Content-Marketing-Strategie entwickeln',
+                            'Social-Media-Marketing Grundlagen',
+                            'Suchmaschinenoptimierung (SEO) Basics',
+                            'E-Mail-Marketing und Automatisierung',
+                            'Influencer-Marketing Strategien',
+                            'Affiliate-Marketing Programme',
+                            'Performance Marketing und KPIs',
+                            'Marketing-Budget Planung und ROI',
+                            'Krisenmanagement in der Kommunikation',
+                        ],
                     },
                     {
                         moduleNumber: 2,
-                        moduleTitle: 'Estructuras de Datos Avanzadas',
-                        lessonTitles: ['Árboles binarios', 'Grafos', 'Hash tables', 'Árboles AVL']
-                    }
+                        moduleTitle: 'Umsetzung und Produktion',
+                        lessonTitles: [
+                            'Visuelle Grundlagen und Personal Branding',
+                            'Layouten für Print und Web',
+                            'Einführung Affinity Publisher',
+                            'Affinity Photo Grundlagen',
+                            'Wix Website Builder',
+                            'Video-Produktion und Schnitt',
+                            'Fotografie für Marketing',
+                            'Grafikdesign mit Canva',
+                            'Infografiken erstellen',
+                            'Podcast-Produktion',
+                            'Webinar-Planung und Durchführung',
+                            'Landing Page Optimierung',
+                            'A/B Testing Methoden',
+                            'Analytics und Reporting',
+                            'Marketing-Automation Tools',
+                            'CRM-Integration und Lead Management',
+                            'Conversion Rate Optimierung',
+                            'User Experience Design Basics',
+                        ],
+                    },
+                    {
+                        moduleNumber: 3,
+                        moduleTitle: 'Finalisierung und Karriere',
+                        lessonTitles: [
+                            'Bewerbungsgespräch und Interviewtraining',
+                            'Auftritts- und Präsentationstraining',
+                            'Portfolio-Erstellung',
+                            'Networking und LinkedIn-Strategie',
+                            'Freelancing im Marketing',
+                        ],
+                    },
                 ],
-                locale: locale,
-            };
-
-            const handleGenerate = async () => {
-                try {
-                    setIsGenerating(true);
-                    setMessage('Generating certificate with special characters...');
-
-                    await generateCertificatePDF(specialCharData);
-
-                    setMessage('✅ Certificate with special characters generated successfully!');
-                } catch (error) {
-                    setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-                } finally {
-                    setIsGenerating(false);
-                }
-            };
-
-            return (
-                <div style={{ maxWidth: '400px', padding: '20px' }}>
-                    <h3>Special Characters Test</h3>
-                    <div style={{ marginBottom: '15px', fontSize: '14px' }}>
-                        <strong>Student:</strong> {specialCharData.studentName}<br />
-                        <strong>Course:</strong> {specialCharData.courseTitle}<br />
-                        <strong>Date:</strong> {specialCharData.completionDate}<br />
-                        <strong>Platform:</strong> {specialCharData.platformName}
-                    </div>
-
-                    <Button
-                        variant="primary"
-                        text={isGenerating ? "Generating..." : "Generate Certificate"}
-                        onClick={handleGenerate}
-                        disabled={isGenerating}
-                    />
-
-                    {message && (
-                        <div style={{
-                            marginTop: '15px',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            backgroundColor: message.includes('✅') ? '#d4edda' : '#f8d7da',
-                            border: `1px solid ${message.includes('✅') ? '#c3e6cb' : '#f5c6cb'}`,
-                            color: message.includes('✅') ? '#155724' : '#721c24',
-                        }}>
-                            {message}
-                        </div>
-                    )}
-                </div>
-            );
-        };
-
-        return <SpecialCharDemo locale={args.locale} />;
-    },
+                locale: args.locale,
+            }}
+        />
+    ),
     parameters: {
         docs: {
             description: {
-                story: 'Tests certificate generation with special characters and accents to ensure proper filename sanitization.',
+                story:
+                    'Stress test: modules with 15-18 lessons each. Tests content-aware pagination that splits long lesson lists across pages.',
             },
         },
     },
 };
 
 export const GermanExample: Story = {
-    render: (args) => {
-        const GermanDemo = ({ locale }: { locale: TLocale }) => {
-            const [isGenerating, setIsGenerating] = useState(false);
-            const [message, setMessage] = useState<string>('');
-
-            const germanData: CertificateData = {
+    render: (args) => (
+        <CertificateGeneratorDemo
+            locale={args.locale}
+            data={{
                 studentName: 'Maximilian Müller',
-                studentUsername: 'maximilian-mueller',
                 courseTitle: 'Fortgeschrittene Webentwicklung mit React',
-                courseSlug: 'fortgeschrittene-webentwicklung-react',
-                courseDescription: 'Ein umfassender Kurs über moderne Webanwendungen mit React und TypeScript',
-                completionDate: '2024-01-15',
+                completionDate: '15. Januar 2025',
+                certificateId: 'CER-max-mueller-web',
                 platformName: 'Lernplattform',
-                platformFooterContent: 'Dieses Zertifikat bestätigt den erfolgreichen Abschluss aller Kursmodule und Prüfungen',
+                awardedYear: '2025',
+                courseDescription:
+                    'Ein umfassender Kurs über moderne Webanwendungen mit React und TypeScript',
                 courseSummary: [
                     {
                         moduleNumber: 1,
                         moduleTitle: 'Einführung in React',
-                        lessonTitles: ['Was ist React?', 'Entwicklungsumgebung einrichten', 'Ihre erste React-Komponente']
+                        lessonTitles: [
+                            'Was ist React?',
+                            'Entwicklungsumgebung einrichten',
+                            'Ihre erste React-Komponente',
+                        ],
                     },
                     {
                         moduleNumber: 2,
                         moduleTitle: 'React-Komponenten',
-                        lessonTitles: ['Funktionale Komponenten', 'Klassenkomponenten', 'Props und State', 'Komponenten-Lebenszyklus']
+                        lessonTitles: [
+                            'Funktionale Komponenten',
+                            'Klassenkomponenten',
+                            'Props und State',
+                            'Komponenten-Lebenszyklus',
+                        ],
                     },
                     {
                         moduleNumber: 3,
                         moduleTitle: 'Hooks und Zustandsverwaltung',
-                        lessonTitles: ['useState Hook', 'useEffect Hook', 'Eigene Hooks', 'Context API']
+                        lessonTitles: ['useState Hook', 'useEffect Hook', 'Eigene Hooks', 'Context API'],
                     },
                     {
                         moduleNumber: 4,
                         moduleTitle: 'Fortgeschrittene Themen',
-                        lessonTitles: ['TypeScript mit React', 'Performance-Optimierung', 'Server-seitiges Rendering', 'Testing']
-                    }
+                        lessonTitles: [
+                            'TypeScript mit React',
+                            'Performance-Optimierung',
+                            'Server-seitiges Rendering',
+                            'Testing',
+                        ],
+                    },
                 ],
-                locale: locale,
-            };
-
-            const handleGenerate = async () => {
-                try {
-                    setIsGenerating(true);
-                    setMessage('Zertifikat wird generiert...');
-
-                    await generateCertificatePDF(germanData);
-
-                    setMessage('✅ Zertifikat erfolgreich generiert! Überprüfen Sie Ihren Downloads-Ordner.');
-                } catch (error) {
-                    setMessage(`❌ Fehler: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
-                } finally {
-                    setIsGenerating(false);
-                }
-            };
-
-            return (
-                <div style={{ maxWidth: '400px', padding: '20px' }}>
-                    <h3>Deutsches Zertifikat-Beispiel</h3>
-                    <div style={{ marginBottom: '15px', fontSize: '14px' }}>
-                        <strong>Student:</strong> {germanData.studentName}<br />
-                        <strong>Kurs:</strong> {germanData.courseTitle}<br />
-                        <strong>Datum:</strong> {germanData.completionDate}<br />
-                        <strong>Plattform:</strong> {germanData.platformName}<br />
-                        <strong>Sprache:</strong> Deutsch (de)<br />
-                        <strong>Dateiname:</strong> <code>zertifikat_maximilian-mueller_fortgeschrittene-webentwicklung-react.pdf</code>
-                    </div>
-
-                    <Button
-                        variant="primary"
-                        text={isGenerating ? "Generiert..." : "Zertifikat generieren"}
-                        onClick={handleGenerate}
-                        disabled={isGenerating}
-                    />
-
-                    {message && (
-                        <div style={{
-                            marginTop: '15px',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            backgroundColor: message.includes('✅') ? '#d4edda' : '#f8d7da',
-                            border: `1px solid ${message.includes('✅') ? '#c3e6cb' : '#f5c6cb'}`,
-                            color: message.includes('✅') ? '#155724' : '#721c24',
-                        }}>
-                            {message}
-                        </div>
-                    )}
-
-                    <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                        <h4>Hinweise:</h4>
-                        <ul style={{ fontSize: '13px', marginTop: '10px' }}>
-                            <li>Dateiname wird mit "zertifikat_" anstatt "certificate_" präfixiert</li>
-                            <li>Deutsche Umlaute (ä, ö, ü, ß) werden korrekt dargestellt</li>
-                            <li>Vollständige Kursstruktur mit 4 Modulen</li>
-                            <li>Mehrseitige PDF mit Seitenzahlen</li>
-                        </ul>
-                    </div>
-                </div>
-            );
-        };
-
-        return <GermanDemo locale={args.locale} />;
-    },
+                locale: args.locale,
+            }}
+        />
+    ),
     args: {
         locale: 'de',
     },
     parameters: {
         docs: {
             description: {
-                story: 'German language certificate example with umlauts (ä, ö, ü, ß). Use the locale control to switch between German (de) and English (en) to see the translation differences.',
+                story: 'German language certificate with umlauts. Uses the same html2pdf approach as production.',
             },
         },
     },
