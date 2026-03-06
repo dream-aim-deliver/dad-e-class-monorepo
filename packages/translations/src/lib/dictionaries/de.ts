@@ -909,6 +909,10 @@ export const DE: TDictionary = {
       goBack: "Nein, geh zurück",
       searchFailedTitle: 'Suche fehlgeschlagen',
       searchFailedDescription: 'Beim Suchen nach Kursen ist ein Fehler aufgetreten.',
+      createCourseLanguageAlertTitle: 'Du arbeitest in der deutschen Oberfläche.',
+      createCourseLanguageAlertMessage: 'Erstelle hier einen deutschen Kurs oder wechsle die Sprache, um einen Kurs in einer anderen Sprache zu erstellen.',
+      continueButton: 'Weiterfahren',
+      cancelButton: 'Abbrechen',
     },
     editCategoryTopicModal: {
       categoryName: 'Kategoriename',
