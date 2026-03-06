@@ -217,6 +217,7 @@ function AssignmentInteraction({
                         utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
                         utils.listGroupAssignments.invalidate(),
                         utils.listGroupMembers.invalidate(),
+                        utils.listCoachStudents.invalidate(),
                     ]);
                 },
                 onError: (error) => {
@@ -246,6 +247,7 @@ function AssignmentInteraction({
                         utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
                         utils.listGroupAssignments.invalidate(),
                         utils.listGroupMembers.invalidate(),
+                        utils.listCoachStudents.invalidate(),
                     ]);
                 },
                 onError: (error) => {
