@@ -889,6 +889,10 @@ export const DictionarySchema = z.object({
       goBack: z.string(),
       searchFailedTitle: z.string(),
       searchFailedDescription: z.string(),
+      createCourseLanguageAlertTitle: z.string(),
+      createCourseLanguageAlertMessage: z.string(),
+      continueButton: z.string(),
+      cancelButton: z.string(),
     }),
     editCategoryTopicModal: z.object({
       categoryName: z.string(),

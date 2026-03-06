@@ -3,6 +3,7 @@
 import {
     Breadcrumbs,
     Button,
+    ConfirmationModal,
     CreateCourseModal,
     Dialog,
     DialogContent,
@@ -41,7 +42,10 @@ function CreateCourseDialogContent() {
     const router = useRouter();
 
     const { setIsOpen } = useDialog();
+    const modalTranslations = useTranslations('components.createContentModal');
 
+    const [showLanguageAlert, setShowLanguageAlert] = useState(false);
+    const [pendingDuplicateCourse, setPendingDuplicateCourse] = useState<{ slug: string } | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
@@ -60,23 +64,36 @@ function CreateCourseDialogContent() {
     const utils = trpc.useUtils();
     const duplicateCourseMutation = trpc.duplicateCourse.useMutation();
 
+    const handleLanguageAlertConfirm = async () => {
+        setShowLanguageAlert(false);
+        if (pendingDuplicateCourse) {
+            await duplicateCourseMutation.mutateAsync({ sourceCourseSlug: pendingDuplicateCourse.slug });
+            setIsOpen(false);
+            utils.listUserCourses.invalidate();
+            utils.listPlatformCoursesShort.invalidate();
+            setPendingDuplicateCourse(null);
+        } else {
+            router.push(`/${locale}/create/course`);
+            setIsOpen(false);
+        }
+    };
+
+    const handleLanguageAlertCancel = () => {
+        setShowLanguageAlert(false);
+        setPendingDuplicateCourse(null);
+    };
+
     return (
         <div className="p-6">
             <CreateCourseModal
                 locale={locale}
                 isLoading={isFetching}
                 onCreateNew={() => {
-                    router.push(`/${locale}/create/course`);
-                    setIsOpen(false);
+                    setShowLanguageAlert(true);
                 }}
                 onDuplicate={async (course) => {
-                    await duplicateCourseMutation.mutateAsync({
-                        sourceCourseSlug: course.slug,
-                    });
-                    setIsOpen(false);
-                    // Invalidate the user courses list to refetch and show the new duplicated course
-                    utils.listUserCourses.invalidate();
-                    utils.listPlatformCoursesShort.invalidate();
+                    setPendingDuplicateCourse({ slug: course.slug });
+                    setShowLanguageAlert(true);
                 }}
                 onQueryChange={(query) => setSearchQuery(query)}
                 courses={courses.map((course: any) => ({
@@ -91,6 +108,17 @@ function CreateCourseDialogContent() {
                 }))}
                 onClose={() => setIsOpen(false)}
                 hasSearchError={!!error || (coursesResponse?.success === false)}
+            />
+            <ConfirmationModal
+                type="accept"
+                isOpen={showLanguageAlert}
+                onClose={handleLanguageAlertCancel}
+                onConfirm={handleLanguageAlertConfirm}
+                title={modalTranslations('createCourseLanguageAlertTitle')}
+                message={modalTranslations('createCourseLanguageAlertMessage')}
+                confirmText={modalTranslations('continueButton')}
+                cancelText={modalTranslations('cancelButton')}
+                locale={locale}
             />
         </div>
     );
