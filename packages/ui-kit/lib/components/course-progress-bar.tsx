@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { ProgressBar } from './progress-bar';
+import Tooltip from './tooltip';
 
 export interface CourseProgressBarProps extends isLocalAware {
     percentage: number;
@@ -45,9 +46,16 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
         <div className="flex p-2 gap-4 items-center justify-between w-fit h-fit bg-card-fill border-1 border-card-stroke rounded-medium">
             <div className="flex gap-2 items-center w-full">
                 <div className="flex flex-col gap-3 min-w-[97px] w-full">
-                    <p className="text-xs text-text-secondary font-bold leading-[100%]">
-                        {dictionary.components.courseProgressBar.progressText}
-                    </p>
+                    <div className="flex items-center gap-1">
+                        <p className="text-xs text-text-secondary font-bold leading-[100%]">
+                            {dictionary.components.courseProgressBar.progressText}
+                        </p>
+                        <Tooltip
+                            text=""
+                            description={dictionary.components.courseProgressBar.assignmentsOnlyTooltip}
+                            tipPosition="bottom"
+                        />
+                    </div>
                     <ProgressBar progress={percentage} type="progress" />
                 </div>
                 <p className="text-sm font-bold text-text-primary">
