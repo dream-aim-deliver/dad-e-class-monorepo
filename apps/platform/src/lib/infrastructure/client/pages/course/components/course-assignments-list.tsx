@@ -137,6 +137,7 @@ function CourseAssignmentsListContent({
         { value: 'status', label: t('assignments.sortOptions.status') },
         { value: 'date', label: t('assignments.sortOptions.date') },
         { value: 'position', label: t('assignments.sortOptions.position') },
+        { value: 'position-desc', label: t('assignments.sortOptions.positionDesc') },
     ];
 
     // State for assignment modal

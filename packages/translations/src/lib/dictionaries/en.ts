@@ -3124,6 +3124,7 @@ export const EN: TDictionary = {
           date: 'Date (Latest)',
           student: 'Student Name',
           position: 'Course Position',
+          positionDesc: 'Course Position (Reverse)',
         },
       },
       nextCoachingSession: {
@@ -3179,6 +3180,7 @@ export const EN: TDictionary = {
           date: 'Date (Latest)',
           student: 'Student (A-Z)',
           position: 'Course Position',
+          positionDesc: 'Course Position (Reverse)',
         },
       },
       nextCoachingSession: {
