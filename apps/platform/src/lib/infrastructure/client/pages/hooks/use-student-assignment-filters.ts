@@ -37,7 +37,7 @@ interface UseStudentAssignmentFiltersProps {
     initialFilters?: AssignmentFilters;
 }
 
-type SortByOption = 'title' | 'status' | 'date' | 'position';
+type SortByOption = 'title' | 'status' | 'date' | 'position' | 'position-desc';
 
 export function useStudentAssignmentFilters({
     courseSlug,
@@ -200,6 +200,11 @@ export function useStudentAssignmentFilters({
                     const moduleDiff = (a.module ?? 0) - (b.module ?? 0);
                     if (moduleDiff !== 0) return moduleDiff;
                     return (a.lesson ?? 0) - (b.lesson ?? 0);
+                }
+                case 'position-desc': {
+                    const moduleDiff = (b.module ?? 0) - (a.module ?? 0);
+                    if (moduleDiff !== 0) return moduleDiff;
+                    return (b.lesson ?? 0) - (a.lesson ?? 0);
                 }
                 default:
                     return 0;

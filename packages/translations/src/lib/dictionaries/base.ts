@@ -3192,6 +3192,7 @@ export const DictionarySchema = z.object({
           date: z.string(),
           student: z.string(),
           position: z.string(),
+          positionDesc: z.string(),
         }),
       }),
       nextCoachingSession: z.object({
@@ -3247,6 +3248,7 @@ export const DictionarySchema = z.object({
           date: z.string(),
           student: z.string(),
           position: z.string(),
+          positionDesc: z.string(),
         }),
       }),
       nextCoachingSession: z.object({
