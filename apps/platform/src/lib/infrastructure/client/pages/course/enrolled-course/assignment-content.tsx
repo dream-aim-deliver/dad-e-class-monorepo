@@ -25,12 +25,14 @@ interface AssignmentContentProps {
     assignmentId: string;
     studentUsername?: string;
     isArchived?: boolean;
+    onPassSuccess?: () => void;
 }
 
 export default function AssignmentContent({
     assignmentId,
     studentUsername,
     isArchived,
+    onPassSuccess,
 }: AssignmentContentProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.enrolledCourse');
@@ -83,6 +85,7 @@ export default function AssignmentContent({
                 assignment={assignment}
                 refetchAssignment={refetchAssignment}
                 isArchived={isArchived}
+                onPassSuccess={onPassSuccess}
             />
         </div>
     );
@@ -94,6 +97,7 @@ interface AssignmentInteractionProps {
     assignment: viewModels.TAssignmentSuccess;
     refetchAssignment: () => void;
     isArchived?: boolean;
+    onPassSuccess?: () => void;
 }
 
 function AssignmentInteraction({
@@ -102,14 +106,38 @@ function AssignmentInteraction({
     assignment,
     refetchAssignment,
     isArchived,
+    onPassSuccess,
 }: AssignmentInteractionProps) {
     const locale = useLocale() as TLocale;
     const session = useSession();
 
     const utils = trpc.useUtils();
 
-    const sendReplyMutation = trpc.sendAssignmentReply.useMutation();
-    const passAssignmentMutation = trpc.passAssignment.useMutation();
+    // Cache-scoped onSuccess: fires even if this component unmounts (e.g., modal closes)
+    const sendReplyMutation = trpc.sendAssignmentReply.useMutation({
+        onSuccess: async () => {
+            await Promise.all([
+                utils.getAssignment.invalidate(),
+                utils.listStudentAssignments.invalidate(),
+                utils.listLessonComponents.invalidate(),
+                utils.listGroupAssignments.invalidate(),
+                utils.listGroupMembers.invalidate(),
+                utils.listCoachStudents.invalidate(),
+            ]);
+        },
+    });
+    const passAssignmentMutation = trpc.passAssignment.useMutation({
+        onSuccess: async (_data, variables) => {
+            await Promise.all([
+                utils.getAssignment.invalidate({ assignmentId: variables.assignmentId, studentUsername: variables.studentUsername }),
+                utils.listStudentAssignments.invalidate(),
+                utils.listLessonComponents.invalidate(),
+                utils.listGroupAssignments.invalidate(),
+                utils.listGroupMembers.invalidate(),
+                utils.listCoachStudents.invalidate(),
+            ]);
+        },
+    });
 
     const [comment, setComment] = useState<string>('');
     const [files, setFiles] = useState<fileMetadata.TFileMetadata[]>([]);
@@ -199,26 +227,15 @@ function AssignmentInteraction({
                 })),
             },
             {
-                onSuccess: async () => {
-                    // Reset the form state
+                // Component-scoped: UI concerns only (won't fire if unmounted, but that's fine for UI)
+                onSuccess: () => {
                     setComment('');
                     setFiles([]);
                     setLinks([]);
-                    // Show success banner
                     setShowSuccessBanner(true);
-                    // Auto-dismiss success banner after 5 seconds
                     setTimeout(() => {
                         setShowSuccessBanner(false);
                     }, 5000);
-                    // Invalidate all affected queries to refetch fresh data
-                    await Promise.all([
-                        utils.getAssignment.invalidate({ assignmentId, studentUsername }),
-                        utils.listStudentAssignments.invalidate(),
-                        utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
-                        utils.listGroupAssignments.invalidate(),
-                        utils.listGroupMembers.invalidate(),
-                        utils.listCoachStudents.invalidate(),
-                    ]);
                 },
                 onError: (error) => {
                     // TODO: set error state and display to the user
@@ -239,16 +256,9 @@ function AssignmentInteraction({
                 studentUsername,
             },
             {
-                onSuccess: async () => {
-                    // Invalidate all affected queries to refetch fresh data
-                    await Promise.all([
-                        utils.getAssignment.invalidate({ assignmentId, studentUsername }),
-                        utils.listStudentAssignments.invalidate(),
-                        utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
-                        utils.listGroupAssignments.invalidate(),
-                        utils.listGroupMembers.invalidate(),
-                        utils.listCoachStudents.invalidate(),
-                    ]);
+                // Component-scoped: close dialog on success (invalidation is in useMutation options above)
+                onSuccess: () => {
+                    onPassSuccess?.();
                 },
                 onError: (error) => {
                     // TODO: set error state and display to the user

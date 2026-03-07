@@ -3125,6 +3125,7 @@ export const DE: TDictionary = {
           status: 'Status',
           date: 'Datum (Neueste)',
           student: 'Schülername',
+          position: 'Kursreihenfolge',
         },
       },
       nextCoachingSession: {
@@ -3179,6 +3180,7 @@ export const DE: TDictionary = {
           status: 'Status',
           date: 'Datum (Neueste)',
           student: 'Schüler (A-Z)',
+          position: 'Kursreihenfolge',
         },
       },
       nextCoachingSession: {
