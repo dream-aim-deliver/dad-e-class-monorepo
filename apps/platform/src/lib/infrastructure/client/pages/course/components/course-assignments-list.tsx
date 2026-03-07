@@ -136,6 +136,7 @@ function CourseAssignmentsListContent({
         { value: 'title', label: t('assignments.sortOptions.title') },
         { value: 'status', label: t('assignments.sortOptions.status') },
         { value: 'date', label: t('assignments.sortOptions.date') },
+        { value: 'position', label: t('assignments.sortOptions.position') },
     ];
 
     // State for assignment modal
@@ -316,6 +317,7 @@ function CourseAssignmentsListContent({
                                 assignmentId={selectedAssignment.id}
                                 studentUsername={selectedAssignment.studentUsername}
                                 isArchived={isArchived}
+                                onPassSuccess={() => setSelectedAssignment(null)}
                             />
                         </Suspense>
                     </DialogContent>

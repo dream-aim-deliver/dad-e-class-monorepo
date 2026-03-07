@@ -37,7 +37,7 @@ interface UseStudentAssignmentFiltersProps {
     initialFilters?: AssignmentFilters;
 }
 
-type SortByOption = 'title' | 'status' | 'date';
+type SortByOption = 'title' | 'status' | 'date' | 'position';
 
 export function useStudentAssignmentFilters({
     courseSlug,
@@ -194,6 +194,12 @@ export function useStudentAssignmentFilters({
                         new Date(bDate).getTime() -
                         new Date(aDate).getTime()
                     );
+                }
+                case 'position': {
+                    // Sort by module first, then by lesson within each module
+                    const moduleDiff = (a.module ?? 0) - (b.module ?? 0);
+                    if (moduleDiff !== 0) return moduleDiff;
+                    return (a.lesson ?? 0) - (b.lesson ?? 0);
                 }
                 default:
                     return 0;
