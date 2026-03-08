@@ -103,7 +103,7 @@ export const Badge: FC<BadgeProps> = ({
           {iconLeft}
         </span>
       )}
-      <span className="truncate leading-none">{text}</span>
+      <span className="truncate leading-tight">{text}</span>
       {hasIconRight && iconRight && (
         <span
           className={cn(
