@@ -77,17 +77,6 @@ export function useStudentAssignmentFilters({
         useListStudentAssignmentsPresenter(setAssignmentsViewModel);
 
     // Present the data synchronously (Variant A pattern)
-    // [DIAG] Temporary diagnostic logging — remove after debugging
-    console.log('[DIAG:Filters] render', {
-        responseSuccess: assignmentsResponse?.success,
-        assignmentCount: assignmentsResponse?.success === true
-            ? (assignmentsResponse as any).data?.assignments?.length
-            : 'N/A',
-        vmMode: assignmentsViewModel?.mode,
-        vmAssignmentCount: assignmentsViewModel?.mode === 'default'
-            ? assignmentsViewModel.data?.assignments?.length
-            : 'N/A',
-    });
     if (assignmentsResponse) {
         // @ts-ignore
         assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
