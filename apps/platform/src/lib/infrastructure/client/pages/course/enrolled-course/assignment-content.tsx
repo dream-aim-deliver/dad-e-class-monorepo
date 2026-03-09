@@ -25,14 +25,12 @@ interface AssignmentContentProps {
     assignmentId: string;
     studentUsername?: string;
     isArchived?: boolean;
-    onPassSuccess?: () => void;
 }
 
 export default function AssignmentContent({
     assignmentId,
     studentUsername,
     isArchived,
-    onPassSuccess,
 }: AssignmentContentProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.enrolledCourse');
@@ -85,7 +83,6 @@ export default function AssignmentContent({
                 assignment={assignment}
                 refetchAssignment={refetchAssignment}
                 isArchived={isArchived}
-                onPassSuccess={onPassSuccess}
             />
         </div>
     );
@@ -97,7 +94,6 @@ interface AssignmentInteractionProps {
     assignment: viewModels.TAssignmentSuccess;
     refetchAssignment: () => void;
     isArchived?: boolean;
-    onPassSuccess?: () => void;
 }
 
 function AssignmentInteraction({
@@ -106,7 +102,6 @@ function AssignmentInteraction({
     assignment,
     refetchAssignment,
     isArchived,
-    onPassSuccess,
 }: AssignmentInteractionProps) {
     const locale = useLocale() as TLocale;
     const session = useSession();
@@ -191,8 +186,10 @@ function AssignmentInteraction({
             return;
         }
 
-        try {
-            await sendReplyMutation.mutateAsync({
+        // [DIAG] Temporary diagnostic logging — remove after debugging
+        console.log('[DIAG:SendReply] mutation starting', { assignmentId, studentUsername });
+        sendReplyMutation.mutate(
+            {
                 assignmentId,
                 studentUsername,
                 comment: comment,
@@ -202,28 +199,38 @@ function AssignmentInteraction({
                     url: l.url,
                     iconFileId: l.customIcon?.id ? Number(l.customIcon.id) : undefined,
                 })),
-            });
-            // mutateAsync Promise resolves from MutationCache, independent of component lifecycle.
-            // Invalidation runs even if the modal was closed during the mutation.
-            await Promise.all([
-                utils.getAssignment.invalidate({ assignmentId, studentUsername }),
-                utils.listStudentAssignments.invalidate(),
-                utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
-                utils.listGroupAssignments.invalidate(),
-                utils.listGroupMembers.invalidate(),
-                utils.listCoachStudents.invalidate(),
-            ]);
-            // UI updates (safe no-ops if component already unmounted)
-            setComment('');
-            setFiles([]);
-            setLinks([]);
-            setShowSuccessBanner(true);
-            setTimeout(() => {
-                setShowSuccessBanner(false);
-            }, 5000);
-        } catch (error) {
-            // TODO: set error state and display to the user
-        }
+            },
+            {
+                onSuccess: async () => {
+                    console.log('[DIAG:SendReply] onSuccess fired — component still mounted');
+                    // Reset the form state
+                    setComment('');
+                    setFiles([]);
+                    setLinks([]);
+                    // Show success banner
+                    setShowSuccessBanner(true);
+                    // Auto-dismiss success banner after 5 seconds
+                    setTimeout(() => {
+                        setShowSuccessBanner(false);
+                    }, 5000);
+                    // Invalidate all affected queries to refetch fresh data
+                    console.log('[DIAG:SendReply] starting invalidation');
+                    await Promise.all([
+                        utils.getAssignment.invalidate({ assignmentId, studentUsername }),
+                        utils.listStudentAssignments.invalidate(),
+                        utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
+                        utils.listGroupAssignments.invalidate(),
+                        utils.listGroupMembers.invalidate(),
+                        utils.listCoachStudents.invalidate(),
+                    ]);
+                    console.log('[DIAG:SendReply] invalidation complete');
+                },
+                onError: (error) => {
+                    console.log('[DIAG:SendReply] onError fired', error);
+                    // TODO: set error state and display to the user
+                },
+            },
+        );
     };
 
     const onClickMarkAsPassed = async () => {
@@ -232,24 +239,34 @@ function AssignmentInteraction({
             return;
         }
 
-        try {
-            await passAssignmentMutation.mutateAsync({
+        // [DIAG] Temporary diagnostic logging — remove after debugging
+        console.log('[DIAG:PassAssignment] mutation starting', { assignmentId, studentUsername });
+        passAssignmentMutation.mutate(
+            {
                 assignmentId,
                 studentUsername,
-            });
-            // Invalidation runs even if modal closed during mutation
-            await Promise.all([
-                utils.getAssignment.invalidate({ assignmentId, studentUsername }),
-                utils.listStudentAssignments.invalidate(),
-                utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
-                utils.listGroupAssignments.invalidate(),
-                utils.listGroupMembers.invalidate(),
-                utils.listCoachStudents.invalidate(),
-            ]);
-            onPassSuccess?.();
-        } catch (error) {
-            // TODO: set error state and display to the user
-        }
+            },
+            {
+                onSuccess: async () => {
+                    console.log('[DIAG:PassAssignment] onSuccess fired — component still mounted');
+                    // Invalidate all affected queries to refetch fresh data
+                    console.log('[DIAG:PassAssignment] starting invalidation');
+                    await Promise.all([
+                        utils.getAssignment.invalidate({ assignmentId, studentUsername }),
+                        utils.listStudentAssignments.invalidate(),
+                        utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
+                        utils.listGroupAssignments.invalidate(),
+                        utils.listGroupMembers.invalidate(),
+                        utils.listCoachStudents.invalidate(),
+                    ]);
+                    console.log('[DIAG:PassAssignment] invalidation complete');
+                },
+                onError: (error) => {
+                    console.log('[DIAG:PassAssignment] onError fired', error);
+                    // TODO: set error state and display to the user
+                },
+            },
+        );
     };
 
     const isSending =
