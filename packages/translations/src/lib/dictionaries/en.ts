@@ -1183,6 +1183,7 @@ export const EN: TDictionary = {
         sendMessageText: 'Send message',
         sendingMessageText: 'Sending message...',
         messageSentSuccessText: 'Message sent successfully!',
+        messageSentErrorText: 'An error occurred. Please try again.',
         replyPlaceholderText: 'Write any additional comment here',
         addLinkText: 'Add link',
         confirmPassTitle: 'Confirm Mark as Passed',

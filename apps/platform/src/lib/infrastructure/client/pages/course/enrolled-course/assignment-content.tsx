@@ -141,6 +141,7 @@ function AssignmentInteraction({
 
     const [linkEditIndex, setLinkEditIndex] = useState<number | null>(null);
     const [showSuccessBanner, setShowSuccessBanner] = useState<boolean>(false);
+    const [showErrorBanner, setShowErrorBanner] = useState<boolean>(false);
 
     const { uploadFile, uploadError } = useRealProgressUpload({
         lessonId: assignment.lesson.id,
@@ -210,6 +211,7 @@ function AssignmentInteraction({
             return;
         }
 
+        setShowErrorBanner(false);
         sendReplyMutation.mutate(
             {
                 assignmentId,
@@ -233,8 +235,8 @@ function AssignmentInteraction({
                         setShowSuccessBanner(false);
                     }, 5000);
                 },
-                onError: (error) => {
-                    // TODO: set error state and display to the user
+                onError: () => {
+                    setShowErrorBanner(true);
                 },
             },
         );
@@ -246,14 +248,15 @@ function AssignmentInteraction({
             return;
         }
 
+        setShowErrorBanner(false);
         passAssignmentMutation.mutate(
             {
                 assignmentId,
                 studentUsername,
             },
             {
-                onError: (error) => {
-                    // TODO: set error state and display to the user
+                onError: () => {
+                    setShowErrorBanner(true);
                 },
             },
         );
@@ -276,7 +279,6 @@ function AssignmentInteraction({
         return null;
     }
 
-    // TODO: display uploadError somewhere in the UI
     return (
         <ReplyPanel
             role={isAssignmentOwner ? 'student' : 'coach'}
@@ -302,6 +304,8 @@ function AssignmentInteraction({
             isSending={isSending}
             showSuccessBanner={showSuccessBanner}
             onCloseSuccessBanner={() => setShowSuccessBanner(false)}
+            showErrorBanner={showErrorBanner || !!uploadError}
+            onCloseErrorBanner={() => setShowErrorBanner(false)}
         />
     );
 }

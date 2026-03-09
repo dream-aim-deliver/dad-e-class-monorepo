@@ -37,6 +37,8 @@ export interface ReplyPanelProps extends isLocalAware {
     isSending?: boolean;
     showSuccessBanner?: boolean;
     onCloseSuccessBanner?: () => void;
+    showErrorBanner?: boolean;
+    onCloseErrorBanner?: () => void;
 };
 
 /**
@@ -115,6 +117,8 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
     isSending,
     showSuccessBanner,
     onCloseSuccessBanner,
+    showErrorBanner,
+    onCloseErrorBanner,
 }) => {
     const dictionary = getDictionary(locale);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -129,6 +133,14 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                     style="success"
                     closeable={true}
                     onClose={onCloseSuccessBanner}
+                />
+            )}
+            {showErrorBanner && (
+                <Banner
+                    title={dictionary.components.assignment.replyPanel.messageSentErrorText}
+                    style="error"
+                    closeable={true}
+                    onClose={onCloseErrorBanner}
                 />
             )}
             <div className="flex flex-col gap-4">
