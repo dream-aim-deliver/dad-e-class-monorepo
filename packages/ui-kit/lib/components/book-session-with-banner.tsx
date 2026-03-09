@@ -54,33 +54,46 @@ export const BookSessionWith = ({
     const dictionary = getDictionary(locale).components.bookSessionWithBanner;
 
     return (
-        <div className="flex flex-col w-full p-3 items-start gap-4">
-            <UserAvatar
-                fullName={coachName}
-                size="medium"
-                imageUrl={coachAvatarUrl}
-            />
-            <h1 className="text-text-primary"> {coachName} </h1>
-            <div className="flex flex-row w-full gap-2 items-center">
-                <StarRating totalStars={5} size={'4'} rating={coachRating} />
-                <p className="text-sm font-important text-text-primary">
-                    {coachRating} ({totalRatings})
-                </p>
-                {/* Show coach badge and, if applicable, course creator badge */}{' '}
-                <Badge
-                    variant="info"
-                    size="medium"
-                    text={dictionary.coachBadge}
-                    className="w-fit text-sm"
-                />
-                {isCourseCreator && (
-                    <Badge
-                        variant="info"
-                        size="medium"
-                        text={dictionary.courseCreatorBadge}
-                        className="w-fit text-sm"
+        <div className="flex flex-col w-full items-start gap-4">
+            <div className="flex flex-col md:flex-row w-full gap-5">
+                <div>
+                    <UserAvatar
+                        fullName={coachName}
+                        size="xLarge"
+                        imageUrl={coachAvatarUrl}
                     />
-                )}
+                </div>
+                <div className="flex flex-col w-full gap-2">
+                    <h1 className="text-text-primary"> {coachName} </h1>
+                    <div className="flex flex-row w-full gap-2 items-center">
+                        <StarRating totalStars={5} size={'4'} rating={coachRating} />
+                        <p className="text-sm font-important text-text-primary">
+                            {coachRating} ({totalRatings})
+                        </p>
+                        {/* Show coach badge and, if applicable, course creator badge */}{' '}
+                        <Badge
+                            variant="info"
+                            size="medium"
+                            text={dictionary.coachBadge}
+                            className="w-fit text-sm"
+                        />
+                        {isCourseCreator && (
+                            <Badge
+                                variant="info"
+                                size="medium"
+                                text={dictionary.courseCreatorBadge}
+                                className="w-fit text-sm"
+                            />
+                        )}
+                    </div>
+                </div>
+                <Button
+                    variant="primary"
+                    size="medium"
+                    onClick={onBookSessionWith}
+                    text={`${dictionary.bookSessionButton} ${coachName}`}
+                    className="sm:w-fit w-full"
+                />
             </div>
             <p className="text-text-secondary"> {description} </p>
             {languages && languages.length > 0 && (
@@ -95,12 +108,6 @@ export const BookSessionWith = ({
                 </p>
                 <SkillBadges locale={locale} skills={skills} />
             </div>
-            <Button
-                variant="primary"
-                size="medium"
-                onClick={onBookSessionWith}
-                text={`${dictionary.bookSessionButton} ${coachName}`}
-            />
         </div>
     );
 };
