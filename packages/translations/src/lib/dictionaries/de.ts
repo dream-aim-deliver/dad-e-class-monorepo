@@ -1186,6 +1186,7 @@ export const DE: TDictionary = {
         sendMessageText: 'Nachricht senden',
         sendingMessageText: 'Nachricht wird gesendet...',
         messageSentSuccessText: 'Nachricht erfolgreich gesendet!',
+        messageSentErrorText: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
         replyPlaceholderText: 'Gebe hier weitere Kommentare ein.',
         addLinkText: 'Link hinzufügen',
         confirmPassTitle: 'Bestätigung: Als bestanden markieren',
