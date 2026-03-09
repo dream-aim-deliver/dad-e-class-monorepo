@@ -1124,6 +1124,7 @@ export const DE: TDictionary = {
       bookSessionButton: 'Buche eine Sitzung mit',
       coachBadge: 'Coach',
       courseCreatorBadge: 'Kurs-Creator',
+      skillsLabel: 'Fähigkeiten',
     },
     coachNotes: {
       usefulLinks: 'Nützliche Links',

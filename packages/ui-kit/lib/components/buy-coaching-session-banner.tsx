@@ -49,8 +49,8 @@ export const BuyCoachingSessionBanner = ({
     totalRatings,
     onBookSessionWith,
     locale,
-    skills,
     isCourseCreator = false,
+    skills,
     languages,
 }: BuyCoachingSessionBannerProps) => {
     const dictionary =
@@ -111,11 +111,9 @@ export const BuyCoachingSessionBanner = ({
                 </p>
             )}
 
-            {/* Skills section*/}
-            <div className="flex flex-row gap-2 h-16 flex-shrink-0">
+            <div className="flex flex-row gap-2 flex-shrink-0">
                 <p className="text-text-primary font-important">
-                    {' '}
-                    {dictionary.skillsLabel}{' '}
+                    {dictionary.skillsLabel}
                 </p>
                 <SkillBadges locale={locale} skills={skills} />
             </div>
