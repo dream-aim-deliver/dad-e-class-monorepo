@@ -1137,6 +1137,7 @@ export const DictionarySchema = z.object({
       bookSessionButton: z.string(),
       coachBadge: z.string(),
       courseCreatorBadge: z.string(),
+      skillsLabel: z.string(),
     }),
     buyCoachingSessionBanner: z.object({
       coachBadge: z.string(),

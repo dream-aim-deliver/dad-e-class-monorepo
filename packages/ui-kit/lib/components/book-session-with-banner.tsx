@@ -3,6 +3,7 @@ import { Button } from './button';
 import { UserAvatar } from './avatar/user-avatar';
 import { Badge } from './badge';
 import { StarRating } from './star-rating';
+import SkillBadges from './skill-badges';
 import { IconLanguage } from './icons/icon-language';
 
 export interface BookSessionWithProps extends isLocalAware {
@@ -13,6 +14,7 @@ export interface BookSessionWithProps extends isLocalAware {
     totalRatings: number;
     onBookSessionWith: () => void;
     isCourseCreator?: boolean;
+    skills: string[];
     languages?: string[];
 }
 
@@ -46,12 +48,13 @@ export const BookSessionWith = ({
     onBookSessionWith,
     locale,
     isCourseCreator = false,
+    skills,
     languages,
 }: BookSessionWithProps) => {
     const dictionary = getDictionary(locale).components.bookSessionWithBanner;
 
     return (
-        <div className="flex flex-col w-full p-3 items-start gap-2">
+        <div className="flex flex-col w-full p-3 items-start gap-4">
             <UserAvatar
                 fullName={coachName}
                 size="medium"
@@ -79,13 +82,19 @@ export const BookSessionWith = ({
                     />
                 )}
             </div>
+            <p className="text-text-secondary"> {description} </p>
             {languages && languages.length > 0 && (
                 <p className="flex items-center gap-1 text-text-secondary">
                     <IconLanguage classNames="flex-shrink-0" size="4" />
                     <span className="truncate">{languages.join(', ')}</span>
                 </p>
             )}
-            <p className="text-text-secondary"> {description} </p>
+            <div className="flex flex-row gap-2 flex-shrink-0">
+                <p className="text-text-primary font-important">
+                    {dictionary.skillsLabel}
+                </p>
+                <SkillBadges locale={locale} skills={skills} />
+            </div>
             <Button
                 variant="primary"
                 size="medium"

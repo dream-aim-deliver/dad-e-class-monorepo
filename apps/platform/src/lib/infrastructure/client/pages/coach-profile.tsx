@@ -425,7 +425,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	};
 
 	return (
-		<div className="flex flex-col space-y-5 px-30">
+		<div className="flex flex-col space-y-16 px-30">
 			{/* Profile Header Section */}
 			{isLoggedIn && (
 				<div className="flex flex-col gap-4 justify-start">
@@ -466,6 +466,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 							window.open(`/${locale}/coaches/${username}/book`, '_blank');
 						}}
 						isCourseCreator={coachIntroduction.isCourseCreator}
+						skills={coachIntroduction.skills.map(skill => skill.name)}
 						languages={translatedLanguages}
 						locale={locale}
 					/>
@@ -622,16 +623,6 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 				)}
 			</div>
 
-			{/* Coach Review Filter Modal */}
-			{showFilterModal && (
-				<CoachReviewFilterModal
-					onApplyFilters={(f) => setFilters(f)}
-					onClose={() => setShowFilterModal(false)}
-					initialFilters={filters}
-					locale={locale}
-				/>
-			)}
-
 			{/* Enrolled Courses Section for students */}
 			{isLoggedIn && (
 				<div className='flex flex-col gap-4'>
@@ -672,6 +663,16 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						</>
 					)}
 				</div>
+			)}
+
+			{/* Coach Review Filter Modal */}
+			{showFilterModal && (
+				<CoachReviewFilterModal
+					onApplyFilters={(f) => setFilters(f)}
+					onClose={() => setShowFilterModal(false)}
+					initialFilters={filters}
+					locale={locale}
+				/>
 			)}
 
 			{/* Review Modal */}
