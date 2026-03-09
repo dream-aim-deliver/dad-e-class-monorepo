@@ -146,6 +146,14 @@ function CourseAssignmentsListContent({
         studentUsername?: string;
     } | null>(null);
 
+    // [DIAG] Temporary diagnostic logging — remove after debugging
+    console.log('[DIAG:List] render', {
+        vmMode: assignmentsViewModel?.mode,
+        assignmentCount: assignments.length,
+        selectedAssignment: selectedAssignment?.id ?? null,
+        isLoading,
+    });
+
     // Loading state
     if (isLoading) {
         return <DefaultLoading locale={locale} />;
@@ -303,6 +311,7 @@ function CourseAssignmentsListContent({
                     open={!!selectedAssignment}
                     defaultOpen={false}
                     onOpenChange={(open) => {
+                        console.log('[DIAG:List] dialog onOpenChange', { open });
                         if (!open) {
                             setSelectedAssignment(null);
                         }
@@ -318,7 +327,6 @@ function CourseAssignmentsListContent({
                                 assignmentId={selectedAssignment.id}
                                 studentUsername={selectedAssignment.studentUsername}
                                 isArchived={isArchived}
-                                onPassSuccess={() => setSelectedAssignment(null)}
                             />
                         </Suspense>
                     </DialogContent>

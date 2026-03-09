@@ -77,12 +77,18 @@ export function useStudentAssignmentFilters({
         useListStudentAssignmentsPresenter(setAssignmentsViewModel);
 
     // Present the data synchronously (Variant A pattern)
-    // Guard: if we already have valid data and the refetch returned an error response,
-    // keep the current valid data instead of replacing it with an error viewModel.
-    // This prevents a race condition where invalidation refetch returns { success: false }
-    // (e.g., backend eventual consistency after a mutation) and wipes out the valid list.
-    const isRefetchError = assignmentsResponse && assignmentsResponse.success === false && assignmentsViewModel?.mode === 'default';
-    if (assignmentsResponse && !isRefetchError) {
+    // [DIAG] Temporary diagnostic logging — remove after debugging
+    console.log('[DIAG:Filters] render', {
+        responseSuccess: assignmentsResponse?.success,
+        assignmentCount: assignmentsResponse?.success === true
+            ? (assignmentsResponse as any).data?.assignments?.length
+            : 'N/A',
+        vmMode: assignmentsViewModel?.mode,
+        vmAssignmentCount: assignmentsViewModel?.mode === 'default'
+            ? assignmentsViewModel.data?.assignments?.length
+            : 'N/A',
+    });
+    if (assignmentsResponse) {
         // @ts-ignore
         assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
     }
