@@ -108,8 +108,32 @@ function AssignmentInteraction({
 
     const utils = trpc.useUtils();
 
-    const sendReplyMutation = trpc.sendAssignmentReply.useMutation();
-    const passAssignmentMutation = trpc.passAssignment.useMutation();
+    const sendReplyMutation = trpc.sendAssignmentReply.useMutation({
+        onSuccess: async (_data, variables) => {
+            // Cache-scoped: always fires even if component unmounts (dialog closed)
+            await Promise.all([
+                utils.getAssignment.invalidate({ assignmentId: variables.assignmentId, studentUsername: variables.studentUsername }),
+                utils.listStudentAssignments.invalidate(),
+                utils.listLessonComponents.invalidate(),
+                utils.listGroupAssignments.invalidate(),
+                utils.listGroupMembers.invalidate(),
+                utils.listCoachStudents.invalidate(),
+            ]);
+        },
+    });
+    const passAssignmentMutation = trpc.passAssignment.useMutation({
+        onSuccess: async (_data, variables) => {
+            // Cache-scoped: always fires even if component unmounts (dialog closed)
+            await Promise.all([
+                utils.getAssignment.invalidate({ assignmentId: variables.assignmentId, studentUsername: variables.studentUsername }),
+                utils.listStudentAssignments.invalidate(),
+                utils.listLessonComponents.invalidate(),
+                utils.listGroupAssignments.invalidate(),
+                utils.listGroupMembers.invalidate(),
+                utils.listCoachStudents.invalidate(),
+            ]);
+        },
+    });
 
     const [comment, setComment] = useState<string>('');
     const [files, setFiles] = useState<fileMetadata.TFileMetadata[]>([]);
@@ -186,8 +210,6 @@ function AssignmentInteraction({
             return;
         }
 
-        // [DIAG] Temporary diagnostic logging — remove after debugging
-        console.log('[DIAG:SendReply] mutation starting', { assignmentId, studentUsername });
         sendReplyMutation.mutate(
             {
                 assignmentId,
@@ -201,32 +223,17 @@ function AssignmentInteraction({
                 })),
             },
             {
-                onSuccess: async () => {
-                    console.log('[DIAG:SendReply] onSuccess fired — component still mounted');
-                    // Reset the form state
+                onSuccess: () => {
+                    // Component-scoped: only fires if still mounted (UI state updates)
                     setComment('');
                     setFiles([]);
                     setLinks([]);
-                    // Show success banner
                     setShowSuccessBanner(true);
-                    // Auto-dismiss success banner after 5 seconds
                     setTimeout(() => {
                         setShowSuccessBanner(false);
                     }, 5000);
-                    // Invalidate all affected queries to refetch fresh data
-                    console.log('[DIAG:SendReply] starting invalidation');
-                    await Promise.all([
-                        utils.getAssignment.invalidate({ assignmentId, studentUsername }),
-                        utils.listStudentAssignments.invalidate(),
-                        utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
-                        utils.listGroupAssignments.invalidate(),
-                        utils.listGroupMembers.invalidate(),
-                        utils.listCoachStudents.invalidate(),
-                    ]);
-                    console.log('[DIAG:SendReply] invalidation complete');
                 },
                 onError: (error) => {
-                    console.log('[DIAG:SendReply] onError fired', error);
                     // TODO: set error state and display to the user
                 },
             },
@@ -239,30 +246,13 @@ function AssignmentInteraction({
             return;
         }
 
-        // [DIAG] Temporary diagnostic logging — remove after debugging
-        console.log('[DIAG:PassAssignment] mutation starting', { assignmentId, studentUsername });
         passAssignmentMutation.mutate(
             {
                 assignmentId,
                 studentUsername,
             },
             {
-                onSuccess: async () => {
-                    console.log('[DIAG:PassAssignment] onSuccess fired — component still mounted');
-                    // Invalidate all affected queries to refetch fresh data
-                    console.log('[DIAG:PassAssignment] starting invalidation');
-                    await Promise.all([
-                        utils.getAssignment.invalidate({ assignmentId, studentUsername }),
-                        utils.listStudentAssignments.invalidate(),
-                        utils.listLessonComponents.invalidate({ lessonId: assignment.lesson.id, withProgress: true }),
-                        utils.listGroupAssignments.invalidate(),
-                        utils.listGroupMembers.invalidate(),
-                        utils.listCoachStudents.invalidate(),
-                    ]);
-                    console.log('[DIAG:PassAssignment] invalidation complete');
-                },
                 onError: (error) => {
-                    console.log('[DIAG:PassAssignment] onError fired', error);
                     // TODO: set error state and display to the user
                 },
             },

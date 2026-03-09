@@ -34,6 +34,7 @@ import {
 import { useStudentAssignmentFilters } from '../../hooks/use-student-assignment-filters';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import AssignmentContent from '../enrolled-course/assignment-content';
+import { trpc } from '../../../trpc/cms-client';
 
 interface CourseAssignmentsListProps {
     courseSlug: string;
@@ -91,6 +92,7 @@ function CourseAssignmentsListContent({
 }: CourseAssignmentsListProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
+    const utils = trpc.useUtils();
     const tCoach = useTranslations('pages.groupWorkspaceCoach');
     const tStudent = useTranslations('pages.groupWorkspaceStudent');
     const t = role === 'coach' ? tCoach : tStudent;
@@ -145,14 +147,6 @@ function CourseAssignmentsListContent({
         id: string;
         studentUsername?: string;
     } | null>(null);
-
-    // [DIAG] Temporary diagnostic logging — remove after debugging
-    console.log('[DIAG:List] render', {
-        vmMode: assignmentsViewModel?.mode,
-        assignmentCount: assignments.length,
-        selectedAssignment: selectedAssignment?.id ?? null,
-        isLoading,
-    });
 
     // Loading state
     if (isLoading) {
@@ -311,9 +305,11 @@ function CourseAssignmentsListContent({
                     open={!!selectedAssignment}
                     defaultOpen={false}
                     onOpenChange={(open) => {
-                        console.log('[DIAG:List] dialog onOpenChange', { open });
                         if (!open) {
                             setSelectedAssignment(null);
+                            // Safety net: refetch assignment lists when dialog closes
+                            utils.listStudentAssignments.invalidate();
+                            utils.listGroupAssignments.invalidate();
                         }
                     }}
                 >
