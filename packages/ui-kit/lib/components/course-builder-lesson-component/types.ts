@@ -137,6 +137,17 @@ export interface AssignmentElement extends BaseCourseFormElement {
     }
 }
 
+export interface FeedbackElement extends BaseCourseFormElement {
+    type: CourseElementType.Feedback;
+    title: string;
+    description: string;
+    files: fileMetadata.TFileMetadata[] | null;
+    links: shared.TLink[];
+    progress?: {
+        hasReplies: boolean;
+    }
+}
+
 export type CoachingElement = CoachingSessionElement;
 
 export interface ImageElement extends BaseCourseFormElement {

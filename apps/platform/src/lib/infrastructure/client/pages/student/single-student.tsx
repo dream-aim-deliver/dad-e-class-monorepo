@@ -31,6 +31,7 @@ interface SingleStudentProps {
     initialTab?: string;
     roles: string[];
     courseSlug: string;
+    lessonId?: string;
 }
 
 enum StudentTab {
@@ -77,6 +78,7 @@ export default function SingleStudent({
     initialTab,
     roles,
     courseSlug,
+    lessonId,
 }: SingleStudentProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -362,6 +364,7 @@ export default function SingleStudent({
                                 courseSlug={selectedCourse}
                                 courseImageUrl={currentSelectedCourseData?.image?.downloadUrl || ""}
                                 courseTitle={currentSelectedCourseData?.title || ""}
+                                expandedLessonId={lessonId}
                             />
                         </Suspense>
                     ) : (

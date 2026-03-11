@@ -29,6 +29,8 @@ import {
     VideoFormComponent,
     AssignmentFormComponent,
     AssignmentElement,
+    FeedbackFormComponent,
+    FeedbackElement,
     CourseElementType,
     downloadFile,
     Button,
@@ -44,6 +46,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useFileUploadContext } from '../course/utils/file-upload';
 import { useAssignmentView } from '../course/utils/assignment-view';
+import { useFeedbackView } from '../course/utils/feedback-view';
 import { trpc } from '../../trpc/cms-client';
 import { useListCoachesPresenter } from '../../hooks/use-coaches-presenter';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
@@ -581,6 +584,27 @@ function AssignmentComponent({
     );
 }
 
+function FeedbackComponent({
+    formElement,
+    keyString: key,
+    locale,
+}: ComponentRendererProps) {
+    const element = formElement as FeedbackElement;
+    const viewService = useFeedbackView();
+
+    return (
+        <FeedbackFormComponent
+            key={key}
+            onFileDownload={(file) => {
+                downloadFile(file.url, file.name);
+            }}
+            viewButton={viewService.getComponent(element.id)}
+            elementInstance={formElement as FeedbackElement}
+            locale={locale}
+        />
+    );
+}
+
 export const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
@@ -603,4 +627,5 @@ export const typeToRendererMap: Record<
     links: LinksComponent,
     coachingSession: CoachingSessionComponent,
     assignment: AssignmentComponent,
+    feedback: FeedbackComponent,
 };

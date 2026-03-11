@@ -18,6 +18,7 @@ export default async function Page({
         const { studentUsername } = params;
         let tab = searchParams.tab;
         let courseSlug = searchParams.courseSlug;
+        let lessonId = searchParams.lessonId;
 
         if (tab && Array.isArray(tab)) {
             tab = undefined;
@@ -27,8 +28,12 @@ export default async function Page({
             courseSlug = undefined;
         }
 
+        if (lessonId && Array.isArray(lessonId)) {
+            lessonId = undefined;
+        }
+
         const courseSlugStr = courseSlug || '';
 
-        return <SingleStudentServerComponent studentUsername={studentUsername} locale={locale} tab={tab} courseSlug={courseSlugStr} />;
+        return <SingleStudentServerComponent studentUsername={studentUsername} locale={locale} tab={tab} courseSlug={courseSlugStr} lessonId={lessonId} />;
     }
     

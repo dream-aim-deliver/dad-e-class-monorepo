@@ -1,51 +1,41 @@
+import React from 'react';
 import { fileMetadata, shared } from '@maany_shr/e-class-models';
-import { AssignmentStatus } from '../course-builder-lesson-component/types';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { IconAssignment } from '../icons/icon-assignment';
 import { Badge } from '../badge';
 import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
-import { IconGroup } from '../icons/icon-group';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { LinkPreview } from '../links';
+import { IconChat } from '../icons/icon-chat';
 
-interface AssignmentHeaderProps extends isLocalAware {
+interface FeedbackHeaderProps extends isLocalAware {
     title: string;
     course: {
         title: string;
         imageUrl?: string;
     };
     onClickCourse: () => void;
-    group?: {
-        name: string;
-    };
-    onClickGroup: () => void;
     student?: {
         name: string;
         username: string;
         avatarUrl?: string;
-        isYou: boolean;
     };
     onClickUser: () => void;
     modulePosition: number;
     lessonPosition: number;
-    status: AssignmentStatus;
     description: string;
 }
 
-export function AssignmentHeader({
+function FeedbackHeader({
     title,
     course,
-    group,
     student,
     modulePosition,
     lessonPosition,
-    status,
     locale,
     onClickCourse,
     onClickUser,
-    onClickGroup,
-}: AssignmentHeaderProps) {
+}: FeedbackHeaderProps) {
     const dictionary = getDictionary(locale);
 
     return (
@@ -61,39 +51,6 @@ export function AssignmentHeader({
                     {title}
                 </h4>
             </div>
-            {status === AssignmentStatus.AwaitingReview && (
-                <Badge
-                    text={
-                        dictionary.components.assignment.assignmentCard
-                            .awaitingReviewText
-                    }
-                    variant="warningprimary"
-                    size="medium"
-                    className="w-fit"
-                />
-            )}
-            {status === AssignmentStatus.Passed && (
-                <Badge
-                    text={
-                        dictionary.components.assignment.assignmentCard
-                            .passedText
-                    }
-                    variant="successprimary"
-                    size="medium"
-                    className="w-fit"
-                />
-            )}
-            {status === AssignmentStatus.AwaitingReviewLongTime && (
-                <Badge
-                    text={
-                        dictionary.components.assignment.assignmentCard
-                            .longWaitText
-                    }
-                    variant="errorprimary"
-                    size="medium"
-                    className="w-fit"
-                />
-            )}
             <div className="flex flex-wrap gap-x-6 items-center">
                 {course && (
                     <div className="flex gap-[13px] items-center w-full">
@@ -122,7 +79,7 @@ export function AssignmentHeader({
                         />
                     </div>
                 )}
-                {student && !student.isYou && (
+                {student && (
                     <div className="flex gap-[13px] items-center w-full">
                         <p className="text-sm text-text-secondary leading-[100%]">
                             {
@@ -149,47 +106,26 @@ export function AssignmentHeader({
                         />
                     </div>
                 )}
-                {group && (
-                    <div className="flex items-center gap-1 w-full">
-                        <div className="flex items-center gap-1 text-sm text-text-secondary">
-                            <IconGroup size="4" data-testid="briefcase-icon" />
-                            <p className="text-sm text-text-secondary">
-                                {
-                                    dictionary.components.assignment
-                                        .assignmentCard.groupText
-                                }
-                            </p>
-                        </div>
-                        <Button
-                            size="small"
-                            variant="text"
-                            className="p-0 max-w-full truncate"
-                            title={group.name}
-                            text={group.name}
-                            onClick={onClickGroup}
-                        />
-                    </div>
-                )}
             </div>
         </div>
     );
 }
 
-interface AssignmentModalContentProps
+interface FeedbackModalContentProps
     extends isLocalAware,
-        AssignmentHeaderProps {
+        FeedbackHeaderProps {
     resources: fileMetadata.TFileMetadata[];
     links: shared.TLink[];
     onFileDownload: (fileMetadata: fileMetadata.TFileMetadata) => void;
 }
 
-export function AssignmentModalContent({
+export function FeedbackModalContent({
     resources,
     links,
     locale,
     onFileDownload,
     ...props
-}: AssignmentModalContentProps) {
+}: FeedbackModalContentProps) {
     const dictionary = getDictionary(locale);
 
     return (
@@ -197,18 +133,16 @@ export function AssignmentModalContent({
             {/* Icon & Label */}
             <div className="flex items-center gap-2">
                 <span className="p-1 bg-base-neutral-700 rounded-small">
-                    <IconAssignment size="4" classNames="text-text-primary" />
+                    <IconChat size="4" classNames="text-text-primary" />
                 </span>
                 <p className="text-sm font-bold text-text-primary leading-[150%]">
-                    {dictionary.components.assignment.assignmentModal
-                        .assignmentText
-                    }
+                    {dictionary.components.feedback.feedbackBuilder.feedbackText}
                 </p>
             </div>
 
             <div className="w-full h-[1px] bg-divider" />
 
-            <AssignmentHeader {...props} locale={locale} />
+            <FeedbackHeader {...props} locale={locale} />
 
             {resources.map((file, index) => (
                 <FilePreview
@@ -220,7 +154,7 @@ export function AssignmentModalContent({
                     onDownload={() => onFileDownload(file)}
                 />
             ))}
-            
+
             {links.map((link, index) => (
                 <div
                     className="flex flex-col w-full"

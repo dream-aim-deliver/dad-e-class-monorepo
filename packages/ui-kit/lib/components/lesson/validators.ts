@@ -14,6 +14,7 @@ import { getValidationError as getDownloadFilesValidationError } from "../course
 import { getValidationError as getQuizValidationError } from "../course-builder-lesson-component/quiz";
 import { getValidationError as getCoachingSessionValidationError } from '../course-builder-lesson-component/coaching-session';
 import { getValidationError as getAssignmentValidationError } from '../course-builder-lesson-component/assignment';
+import { getValidationError as getFeedbackValidationError } from '../course-builder-lesson-component/feedback';
 import { FormElementType } from "../pre-assessment/types";
 import { ElementValidator } from "./types";
 
@@ -25,6 +26,7 @@ export const validatorPerType: Record<CourseElementType | FormElementType, Eleme
     [CourseElementType.DownloadFiles]: getDownloadFilesValidationError,
     [CourseElementType.UploadFiles]: getUploadFilesFormValidationError,
     [CourseElementType.Assignment]: getAssignmentValidationError,
+    [CourseElementType.Feedback]: getFeedbackValidationError,
     [CourseElementType.QuizTypeOne]: getQuizValidationError,
     [CourseElementType.QuizTypeTwo]: getQuizValidationError,
     [CourseElementType.QuizTypeThree]: getQuizValidationError,

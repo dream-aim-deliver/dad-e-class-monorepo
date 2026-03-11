@@ -33,6 +33,8 @@ import {
     DefaultLoading,
     AssignmentDesignerComponent,
     AssignmentElement,
+    FeedbackDesignerComponent,
+    FeedbackElement,
     uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -1891,6 +1893,199 @@ function AssignmentComponent({
     );
 }
 
+function FeedbackComponent({
+    lessonId,
+    elementInstance,
+    setComponents,
+    locale,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    validationError,
+}: LessonComponentProps) {
+    const onChange = (newFeedback: FeedbackElement): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Feedback) {
+                    return component;
+                }
+                return { ...component, ...newFeedback };
+            }),
+        );
+    };
+
+    const handleUploadComplete = (file: fileMetadata.TFileMetadata): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Feedback) {
+                    return component;
+                }
+                const currentFiles = component.files ?? [];
+                return { ...component, files: [...currentFiles, file] };
+            }),
+        );
+    };
+
+    const handleFileDelete = (fileId: string): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Feedback) {
+                    return component;
+                }
+                const currentFiles = component.files ?? [];
+                return {
+                    ...component,
+                    files: currentFiles.filter((file) => file.id !== fileId),
+                };
+            }),
+        );
+    };
+
+    const handleFileDownload = (id: string): void => {
+        if (elementInstance.type !== CourseElementType.Feedback) return;
+        const file = elementInstance.files?.find((file) => file.id === id);
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
+    const handleAddLink = () => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Feedback) {
+                    return component;
+                }
+                const currentLinks = component.links ?? [];
+                return {
+                    ...component,
+                    links: [...currentLinks, getExampleLink()],
+                };
+            }),
+        );
+    };
+
+    const handleDeleteLink = (index: number): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Feedback) {
+                    return component;
+                }
+                const currentLinks = component.links ?? [];
+                return {
+                    ...component,
+                    links: currentLinks.filter((_, i) => i !== index),
+                };
+            }),
+        );
+    };
+
+    const handleEditLink = (link: shared.TLink, index: number): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Feedback) {
+                    return component;
+                }
+                const currentLinks = component.links ?? [];
+                return {
+                    ...component,
+                    links: currentLinks.map((l, i) => (i === index ? link : l)),
+                };
+            }),
+        );
+    };
+
+    const handleDeleteLinkIcon = (index: number) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Feedback) {
+                    return component;
+                }
+                const currentLinks = component.links ?? [];
+                return {
+                    ...component,
+                    links: currentLinks.map((link, i) => {
+                        if (i === index) {
+                            return {
+                                ...link,
+                                icon: null,
+                            };
+                        }
+                        return link;
+                    }),
+                };
+            }),
+        );
+    };
+
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+    const { handleFileChange: handleResourceFileChange } = useFileUpload({
+        lessonId,
+        componentType: 'feedbackResource',
+        onProgressUpdate: setUploadProgress,
+    });
+
+    const { handleFileChange: handleIconChange } = useFileUpload({
+        lessonId,
+        componentType: 'links',
+    });
+
+    const [linkEditIndex, setLinkEditIndex] = useState<number | null>(null);
+
+    return (
+        <FeedbackDesignerComponent
+            key={elementInstance.id}
+            elementInstance={elementInstance as FeedbackElement}
+            locale={locale}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            validationError={validationError}
+            onChange={onChange}
+            onFilesChange={handleResourceFileChange}
+            onImageChange={handleIconChange}
+            onDeleteIcon={handleDeleteLinkIcon}
+            onUploadComplete={handleUploadComplete}
+            onFileDelete={handleFileDelete}
+            onFileDownload={handleFileDownload}
+            onLinkDelete={handleDeleteLink}
+            onLinkEdit={(link, index) => {
+                handleEditLink(link, index);
+                setLinkEditIndex(null);
+            }}
+            linkEditIndex={linkEditIndex}
+            onClickEditLink={(index) => {
+                setLinkEditIndex(index);
+            }}
+            onClickAddLink={handleAddLink}
+            onLinkDiscard={() => {
+                setLinkEditIndex(null);
+            }}
+            uploadProgress={uploadProgress}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -1910,6 +2105,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.Links]: LinksComponent,
     [CourseElementType.CoachingSession]: CoachingSessionComponent,
     [CourseElementType.Assignment]: AssignmentComponent,
+    [CourseElementType.Feedback]: FeedbackComponent,
     // Add other mappings as needed
 };
 

@@ -14,6 +14,7 @@ interface SingleStudentServerComponentProps {
     tab?: string;
     locale: TLocale;
     courseSlug: string;
+    lessonId?: string;
 }
 
 export default async function SingleStudentServerComponent({
@@ -21,6 +22,7 @@ export default async function SingleStudentServerComponent({
     tab,
     locale,
     courseSlug,
+    lessonId,
 }: SingleStudentServerComponentProps) {
     const session = await getSession();
 
@@ -47,7 +49,7 @@ export default async function SingleStudentServerComponent({
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <SingleStudent studentUsername={studentUsername} initialTab={tab} roles={roles} courseSlug={courseSlug} />
+                    <SingleStudent studentUsername={studentUsername} initialTab={tab} roles={roles} courseSlug={courseSlug} lessonId={lessonId} />
                 </Suspense>
             </HydrateClient>
         </>

@@ -1,6 +1,6 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
-import { CoachingElement, ImageElement, ImageGallery, VideoElement, DownloadFilesElement, UploadFilesElement, QuizTypeOneElement, QuizTypeTwoElement, QuizTypeThreeElement, QuizTypeFourElement, LinksElement, CoachingSessionElement, AssignmentElement } from "../course-builder-lesson-component/types";
+import { CoachingElement, ImageElement, ImageGallery, VideoElement, DownloadFilesElement, UploadFilesElement, QuizTypeOneElement, QuizTypeTwoElement, QuizTypeThreeElement, QuizTypeFourElement, LinksElement, CoachingSessionElement, AssignmentElement, FeedbackElement } from "../course-builder-lesson-component/types";
 import { DownloadFilesFormProps } from "../course-builder-lesson-component/download-files-lesson";
 /**
  * Enum defining the types of course elements available in the course builder.
@@ -21,6 +21,9 @@ export enum CourseElementType {
 
     /** Represents an assignment element*/
     Assignment = "assignment",
+
+    /** Represents a feedback element */
+    Feedback = "feedback",
 
     QuizTypeOne = "quizTypeOne",
     QuizTypeTwo = "quizTypeTwo",
@@ -48,6 +51,7 @@ export type CourseElement = CoachingElement |
     VideoElement |
     ImageGallery |
     AssignmentElement |
+    FeedbackElement |
     CoachingSessionElement;
 
 /**

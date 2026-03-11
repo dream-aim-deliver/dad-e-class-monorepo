@@ -734,6 +734,7 @@ export const EN: TDictionary = {
       typeValidationText: 'Wrong element type',
       elementValidationText: 'Element is invalid',
       choiceInput: 'Enter your choice',
+      feedback: 'Feedback',
     },
     lessonHeader: {
       moduleText: 'Module',
@@ -1202,6 +1203,16 @@ export const EN: TDictionary = {
         addResourcesText: 'Add resources',
       },
     },
+    feedback: {
+      feedbackBuilder: {
+        feedbackText: 'Feedback',
+        feedbackTitleText: 'Feedback Title',
+        titlePlaceholderText: 'Add a title for this feedback',
+        feedbackDescriptionText: 'Feedback description',
+        descriptionPlaceholderText: 'Describe what you expect from the coach conversation',
+        addResourcesText: 'Add resources',
+      },
+    },
     assignmentGridFilterModal: {
       title: 'Filter Assignments',
       titleSection: 'Title',
@@ -1505,6 +1516,10 @@ export const EN: TDictionary = {
       titleValidationText: 'Please enter a title',
       descriptionValidationText: 'Please enter a description',
     },
+    feedbackLesson: {
+      titleValidationText: 'Please enter a title',
+      descriptionValidationText: 'Please enter a description',
+    },
     coachingSessionLesson: {
       coachingSessionCountValidationText: 'Please select a coaching session',
     },
@@ -1570,6 +1585,7 @@ export const EN: TDictionary = {
       comment: 'Comment',
       noAnswer: 'No answer yet',
       noInteractionsYet: 'No interactions yet',
+      viewFeedback: 'View Feedback',
     },
     couponGrid: {
       nameColumn: 'Name',
@@ -2487,6 +2503,7 @@ export const EN: TDictionary = {
       },
       saveSuccess: 'Lesson saved successfully!',
       assignment: 'Assignment',
+      feedback: 'Feedback',
       validationBannerTitle: 'Cannot save — validation errors found',
       validationBannerDescription: 'Please scroll down to review and fix the highlighted components:',
     },

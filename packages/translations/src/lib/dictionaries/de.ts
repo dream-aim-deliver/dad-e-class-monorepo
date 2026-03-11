@@ -737,6 +737,7 @@ export const DE: TDictionary = {
       typeValidationText: 'Falscher Elementtyp',
       elementValidationText: 'Element ist ungültig',
       choiceInput: 'Geben Sie Ihre Auswahl ein',
+      feedback: 'Feedback',
     },
     lessonHeader: {
       moduleText: 'Modul',
@@ -1205,6 +1206,16 @@ export const DE: TDictionary = {
         addResourcesText: 'Ressourcen hinzufügen',
       },
     },
+    feedback: {
+      feedbackBuilder: {
+        feedbackText: 'Feedback',
+        feedbackTitleText: 'Feedback-Titel',
+        titlePlaceholderText: 'Titel für dieses Feedback eingeben',
+        feedbackDescriptionText: 'Feedback-Beschreibung',
+        descriptionPlaceholderText: 'Beschreibe, was du vom Coach-Gespräch erwartest',
+        addResourcesText: 'Ressourcen hinzufügen',
+      },
+    },
     assignmentGridFilterModal: {
       title: 'Aufgabe filtern',
       titleSection: 'Titel',
@@ -1507,6 +1518,10 @@ export const DE: TDictionary = {
       titleValidationText: 'Bitte geben einen Titel ein',
       descriptionValidationText: 'Bitte gebe eine Beschreibung ein',
     },
+    feedbackLesson: {
+      titleValidationText: 'Bitte gib einen Titel ein',
+      descriptionValidationText: 'Bitte gib eine Beschreibung ein',
+    },
     coachingSessionLesson: {
       coachingSessionCountValidationText: 'Bitte wähle eine Coaching-Sitzung',
     },
@@ -1572,6 +1587,7 @@ export const DE: TDictionary = {
       comment: 'Kommentar',
       noAnswer: 'Noch keine Antwort',
       noInteractionsYet: 'Noch keine Interaktionen',
+      viewFeedback: 'Feedback anzeigen',
     },
     couponGrid: {
       nameColumn: 'Name',
@@ -2489,6 +2505,7 @@ export const DE: TDictionary = {
       },
       saveSuccess: 'Lektion erfolgreich gespeichert!',
       assignment: 'Aufgabe',
+      feedback: 'Feedback',
       validationBannerTitle: 'Speichern nicht möglich — Validierungsfehler gefunden',
       validationBannerDescription: 'Bitte nach unten scrollen, um die markierten Komponenten zu überprüfen:',
     },

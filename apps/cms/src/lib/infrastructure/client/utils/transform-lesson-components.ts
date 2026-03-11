@@ -22,6 +22,7 @@ import {
     CoachingSessionElement,
     CourseElementType,
     AssignmentElement,
+    FeedbackElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TPreCourseAssessmentProgress } from 'packages/models/src/usecase-models';
 
@@ -402,6 +403,37 @@ function transformAssignment(
     };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function transformFeedback(component: any): FeedbackElement {
+    return {
+        type: LessonElementType.Feedback,
+        id: component.id,
+        title: component.title,
+        description: component.description,
+        files: (component.resources ?? []).map((file: { id: string; name: string; size: number; downloadUrl: string; thumbnailUrl?: string | null }) => ({
+            id: file.id,
+            name: file.name,
+            size: file.size,
+            status: 'available' as const,
+            category: 'generic' as const,
+            url: file.downloadUrl,
+            thumbnailUrl: file.thumbnailUrl ?? file.downloadUrl,
+        })),
+        links: (component.links ?? []).map((link: { title: string; url: string; iconFile?: { id: string; name: string; size: number; downloadUrl: string } | null }) => ({
+            title: link.title,
+            url: link.url,
+            customIcon: link.iconFile
+                ? {
+                    ...link.iconFile,
+                    status: 'available' as const,
+                    url: link.iconFile.downloadUrl,
+                    thumbnailUrl: link.iconFile.downloadUrl,
+                }
+                : undefined,
+        })),
+    };
+}
+
 const transformers = {
     richText: transformRichText,
     heading: transformHeading,
@@ -421,6 +453,7 @@ const transformers = {
     links: transformLinks,
     coachingSession: transformCoachingSession,
     assignment: transformAssignment,
+    feedback: transformFeedback,
 } as const;
 
 export function getLessonComponentsMap(
@@ -529,6 +562,7 @@ const progressAppliers: Record<
     [CourseElementType.Links]: undefined,
     [CourseElementType.CoachingSession]: undefined,
     [CourseElementType.Assignment]: undefined,
+    [CourseElementType.Feedback]: undefined,
 } as const;
 
 export function applyProgressToElements(

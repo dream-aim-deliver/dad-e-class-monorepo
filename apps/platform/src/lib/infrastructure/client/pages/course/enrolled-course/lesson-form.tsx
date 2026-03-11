@@ -23,6 +23,7 @@ import { trpc } from '../../../trpc/cms-client';
 import { FileUploadProvider } from '../utils/file-upload';
 import { idToNumber } from '../../workspace/edit/utils/id-to-number';
 import { AssignmentViewProvider } from '../utils/assignment-view';
+import { FeedbackViewProvider } from '../utils/feedback-view';
 import { useCourseSlug } from '../utils/course-slug-context';
 
 interface LessonFormProps {
@@ -348,14 +349,16 @@ export default function LessonForm({
 
     return (
         <AssignmentViewProvider mode="study" config={{ studentUsername, isArchived }}>
-            <FileUploadProvider
-                mode={enableSubmit ? 'real' : 'mock'}
-                config={{ lessonId: lessonId }}
-            >
-                <div className="flex flex-col gap-4 w-full">
-                    {components.map(renderComponent)}
-                </div>
-            </FileUploadProvider>
+            <FeedbackViewProvider mode="study" config={{ studentUsername, isArchived }}>
+                <FileUploadProvider
+                    mode={enableSubmit ? 'real' : 'mock'}
+                    config={{ lessonId: lessonId }}
+                >
+                    <div className="flex flex-col gap-4 w-full">
+                        {components.map(renderComponent)}
+                    </div>
+                </FileUploadProvider>
+            </FeedbackViewProvider>
         </AssignmentViewProvider>
     );
 }

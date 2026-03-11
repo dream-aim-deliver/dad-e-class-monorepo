@@ -759,6 +759,7 @@ export const DictionarySchema = z.object({
       typeValidationText: z.string(),
       elementValidationText: z.string(),
       choiceInput: z.string(),
+      feedback: z.string(),
     }),
     dateInput: z.object({
       placeholder: z.string(),
@@ -1190,6 +1191,16 @@ export const DictionarySchema = z.object({
         addResourcesText: z.string(),
       }),
     }),
+    feedback: z.object({
+      feedbackBuilder: z.object({
+        feedbackText: z.string(),
+        feedbackTitleText: z.string(),
+        titlePlaceholderText: z.string(),
+        feedbackDescriptionText: z.string(),
+        descriptionPlaceholderText: z.string(),
+        addResourcesText: z.string(),
+      }),
+    }),
     assignmentGridFilterModal: z.object({
       title: z.string(),
       titleSection: z.string(),
@@ -1487,6 +1498,10 @@ export const DictionarySchema = z.object({
       titleValidationText: z.string(),
       descriptionValidationText: z.string(),
     }),
+    feedbackLesson: z.object({
+      titleValidationText: z.string(),
+      descriptionValidationText: z.string(),
+    }),
     coachingSessionLesson: z.object({
       coachingSessionCountValidationText: z.string(),
     }),
@@ -1552,6 +1567,7 @@ export const DictionarySchema = z.object({
       comment: z.string(),
       noAnswer: z.string(),
       noInteractionsYet: z.string(),
+      viewFeedback: z.string(),
     }),
     couponGrid: z.object({
       nameColumn: z.string(),
@@ -2596,6 +2612,7 @@ export const DictionarySchema = z.object({
       }),
       saveSuccess: z.string(),
       assignment: z.string(),
+      feedback: z.string(),
       validationBannerTitle: z.string(),
       validationBannerDescription: z.string(),
     }),
