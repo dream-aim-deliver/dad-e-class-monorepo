@@ -36,10 +36,10 @@ export default function FeedbackContent({
     const session = useSession();
 
     const [feedbackResponse] =
-        trpc.getFeedback.useSuspenseQuery({
-            feedbackId,
-            studentUsername,
-        });
+        trpc.getFeedback.useSuspenseQuery(
+            { feedbackId, studentUsername },
+            { staleTime: 0 },
+        );
     const [feedbackViewModel, setFeedbackViewModel] = useState<
         viewModels.TFeedbackViewModel | undefined
     >(undefined);
