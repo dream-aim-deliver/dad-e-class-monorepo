@@ -168,7 +168,7 @@ export const MessageCard: FC<MessageCardProps> = (props) => {
                 <p className="text-xs text-text-primary font-bold leading-[100%]">
                     {props.reply.sender.isCurrentUser
                         ? dictionary.components.assignment.message.youText
-                        : `${props.reply.sender.name} ${props.reply.sender.surname}`}
+                        : props.reply.sender.username}
                 </p>
                 {formattedDateTime && (
                     <p className="text-2xs text-text-secondary font-bold leading-[100%]">
@@ -242,7 +242,7 @@ export const MessageCard: FC<MessageCardProps> = (props) => {
                         <UserAvatar
                             imageUrl={props.reply.sender.avatarUrl || undefined}
                             size="xSmall"
-                            fullName={`${props.reply.sender.name} ${props.reply.sender.surname}`}
+                            fullName={props.reply.sender.username}
                         />
                     </div>
                 </div>
@@ -252,7 +252,7 @@ export const MessageCard: FC<MessageCardProps> = (props) => {
                         <UserAvatar
                             imageUrl={props.reply.sender.avatarUrl || undefined}
                             size="xSmall"
-                            fullName={`${props.reply.sender.name} ${props.reply.sender.surname}`}
+                            fullName={props.reply.sender.username}
                         />
                     </div>
                     {messageBubble}

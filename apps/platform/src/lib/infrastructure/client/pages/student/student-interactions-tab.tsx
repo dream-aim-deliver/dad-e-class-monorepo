@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useLocale, useTranslations , } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { DefaultError, DefaultLoading, CoachStudentInteractionCard, UserAvatar, EmptyState } from '@maany_shr/e-class-ui-kit';
+import { DefaultError, DefaultLoading, CoachStudentInteractionCard, UserAvatar, EmptyState, Dialog, DialogContent } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListStudentInteractionsPresenter } from '../../hooks/use-list-student-interactions-presenter';
+import FeedbackContent from '../course/enrolled-course/feedback-content';
 
 interface StudentInteractionsTabProps {
     studentUsername: string;
@@ -26,6 +27,8 @@ export default function StudentInteractionsTab({
     const locale = useLocale() as TLocale;
 
     const t = useTranslations('pages.student');
+
+    const [selectedFeedbackId, setSelectedFeedbackId] = useState<string | null>(null);
 
     const [viewModel, setViewModel] = useState<
         viewModels.TListStudentInteractionsViewModel | undefined
@@ -94,38 +97,60 @@ export default function StudentInteractionsTab({
     }
 
     return (
-        <div className="flex flex-col gap-4">
-            <h2 className="md:text-3xl text-xl text-text-primary font-bold">
-                {t('studentInteractions')}
-            </h2>
-            <hr className="flex-grow border-t border-divider" />
-            <div className="flex flex-col gap-4 px-4 py-6 rounded-medium">
-                <div className='flex items-center gap-2'>
-                    <UserAvatar
-                        fullName={courseTitle}
-                        size="medium"
-                        imageUrl={courseImageUrl}
-                        className='rounded-medium'
+        <>
+            <div className="flex flex-col gap-4">
+                <h2 className="md:text-3xl text-xl text-text-primary font-bold">
+                    {t('studentInteractions')}
+                </h2>
+                <hr className="flex-grow border-t border-divider" />
+                <div className="flex flex-col gap-4 px-4 py-6 rounded-medium">
+                    <div className='flex items-center gap-2'>
+                        <UserAvatar
+                            fullName={courseTitle}
+                            size="medium"
+                            imageUrl={courseImageUrl}
+                            className='rounded-medium'
+                        />
+                        <h3 className='text-text-primary md:text-2xl text-lg font-bold'>
+                            {courseTitle}
+                        </h3>
+                    </div>
+                    <CoachStudentInteractionCard
+                        modules={modulesWithInteractions}
+                        locale={locale}
+                        expandedLessonId={expandedLessonId}
+                        onViewLessonsClick={(_moduleId: string, lessonId: string) => {
+                            window.open(`/${locale}/courses/${courseSlug}?role=coach&tab=preview&lesson=${lessonId}`, '_blank');
+                        }}
+                        onFeedbackClick={(feedbackId: string) => {
+                            setSelectedFeedbackId(feedbackId);
+                        }}
+                        onDeserializationError={(message: string, error: Error) => {
+                            console.error(message, error);
+                        }}
                     />
-                    <h3 className='text-text-primary md:text-2xl text-lg font-bold'>
-                        {courseTitle}
-                    </h3>
                 </div>
-                <CoachStudentInteractionCard
-                    modules={modulesWithInteractions}
-                    locale={locale}
-                    expandedLessonId={expandedLessonId}
-                    onViewLessonsClick={(_moduleId: string, lessonId: string) => {
-                        window.open(`/${locale}/courses/${courseSlug}?role=coach&tab=preview&lesson=${lessonId}`, '_blank');
-                    }}
-                    onFeedbackClick={(feedbackId: string) => {
-                        window.open(`/${locale}/courses/${courseSlug}?role=coach&tab=feedback&feedbackId=${feedbackId}&studentUsername=${studentUsername}`, '_blank');
-                    }}
-                    onDeserializationError={(message: string, error: Error) => {
-                        console.error(message, error);
-                    }}
-                />
             </div>
-        </div>
+            {selectedFeedbackId && (
+                <Dialog
+                    open={!!selectedFeedbackId}
+                    defaultOpen={false}
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            setSelectedFeedbackId(null);
+                        }
+                    }}
+                >
+                    <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
+                        <Suspense fallback={<DefaultLoading locale={locale} />}>
+                            <FeedbackContent
+                                feedbackId={selectedFeedbackId}
+                                studentUsername={studentUsername}
+                            />
+                        </Suspense>
+                    </DialogContent>
+                </Dialog>
+            )}
+        </>
     );
 }

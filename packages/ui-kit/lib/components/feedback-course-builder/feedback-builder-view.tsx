@@ -6,6 +6,7 @@ import {
 import { IconChat } from '../icons/icon-chat';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { LinkPreview } from '../links';
+import { Message } from '../assignment/message';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
 interface FeedbackStudentView extends isLocalAware {
@@ -59,6 +60,21 @@ export const FeedbackBuilderView: FC<FeedbackStudentView> = ({
                         </div>
                     ))}
                 </div>
+                {elementInstance.progress?.lastReply && (
+                    <div className="flex flex-col gap-2">
+                        <h6 className="text-md text-text-primary font-bold leading-[120%]">
+                            {
+                                dictionary.components.assignment.assignmentCard
+                                    .lastActivityText
+                            }
+                        </h6>
+                        <Message
+                            reply={elementInstance.progress.lastReply}
+                            onFileDownload={onFileDownload}
+                            locale={locale}
+                        />
+                    </div>
+                )}
             </div>
             {viewButton}
         </div>

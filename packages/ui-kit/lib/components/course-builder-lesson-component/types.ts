@@ -145,6 +145,7 @@ export interface FeedbackElement extends BaseCourseFormElement {
     links: shared.TLink[];
     progress?: {
         hasReplies: boolean;
+        lastReply?: AssignmentReply;
     }
 }
 
