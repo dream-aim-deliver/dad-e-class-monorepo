@@ -491,7 +491,31 @@ function transformFeedback(component: any): FeedbackElement {
                 : undefined,
         })),
         progress: component.progress
-            ? { hasReplies: Array.isArray(component.progress.replies) && component.progress.replies.length > 0 }
+            ? {
+                hasReplies: !!component.progress.lastActivity,
+                lastReply: component.progress.lastActivity ? {
+                    replyType: 'reply' as const,
+                    sentAt: component.progress.lastActivity.sentAt,
+                    comment: component.progress.lastActivity.comment,
+                    files: component.progress.lastActivity.files.map((file: { id: string; name: string; size: number; downloadUrl: string; thumbnailUrl?: string | null }) => ({
+                        ...file,
+                        status: 'available',
+                        category: 'generic',
+                        url: file.downloadUrl,
+                        thumbnailUrl: file.downloadUrl,
+                    })),
+                    links: component.progress.lastActivity.links,
+                    sender: {
+                        id: component.progress.lastActivity.sender.id,
+                        username: component.progress.lastActivity.sender.username,
+                        name: component.progress.lastActivity.sender.name ?? undefined,
+                        surname: component.progress.lastActivity.sender.surname ?? undefined,
+                        avatarUrl: component.progress.lastActivity.sender.avatarUrl ?? undefined,
+                        role: component.progress.lastActivity.sender.role,
+                        isCurrentUser: component.progress.lastActivity.sender.isCurrentUser,
+                    },
+                } : undefined,
+            }
             : undefined,
     };
 }

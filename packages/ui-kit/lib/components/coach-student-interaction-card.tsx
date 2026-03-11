@@ -15,6 +15,7 @@ import SingleChoicePreview from './single-choice';
 import MultipleChoicePreview from './multiple-check';
 import { OneOutOfThreePreview, type OneOutOfThreeData } from './out-of-three/one-out-of-three';
 import { FilePreview } from './drag-and-drop-uploader/file-preview';
+import { MessageCard } from './assignment/message-card';
 
 interface CoachStudentInteractionCardProps extends isLocalAware {
   onViewLessonsClick: (moduleId: string, lessonId: string) => void;
@@ -212,28 +213,46 @@ export const  CoachStudentInteractionCard = ({
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderFeedback = (interaction: any, index: number) => (
-    <div
-      key={`feedback-${interaction.id}-${index}`}
-      className="flex flex-col gap-3"
-    >
-      <p className="text-md font-important text-text-primary leading-[150%]">
-        {interaction.title}
-      </p>
-      {interaction.description && (
-        <p className="text-sm text-text-secondary leading-[150%]">
-          {interaction.description}
+  const renderFeedback = (interaction: any, index: number) => {
+    const lastReply = interaction.progress?.replies?.length > 0
+      ? interaction.progress.replies[interaction.progress.replies.length - 1]
+      : undefined;
+
+    return (
+      <div
+        key={`feedback-${interaction.id}-${index}`}
+        className="flex flex-col gap-3"
+      >
+        <p className="text-md font-important text-text-primary leading-[150%]">
+          {interaction.title}
         </p>
-      )}
-      {onFeedbackClick && (
-        <Button
-          variant="text"
-          text={dict.viewFeedback ?? 'View Feedback'}
-          onClick={() => onFeedbackClick(interaction.id)}
-        />
-      )}
-    </div>
-  );
+        {interaction.description && (
+          <p className="text-sm text-text-secondary leading-[150%]">
+            {interaction.description}
+          </p>
+        )}
+        {lastReply && (
+          <div className="flex flex-col gap-2">
+            <h6 className="text-md text-text-primary font-bold leading-[120%]">
+              {dict.lastActivity}
+            </h6>
+            <MessageCard
+              reply={lastReply}
+              onFileDownload={(url) => window.open(url, '_blank')}
+              locale={locale}
+            />
+          </div>
+        )}
+        {onFeedbackClick && (
+          <Button
+            variant="text"
+            text={dict.viewFeedback ?? 'View Feedback'}
+            onClick={() => onFeedbackClick(interaction.id)}
+          />
+        )}
+      </div>
+    );
+  };
 
   const renderInteraction = (interaction: TInteraction, index: number) => {
     switch (interaction.type) {

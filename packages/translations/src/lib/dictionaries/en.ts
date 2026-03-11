@@ -1586,6 +1586,7 @@ export const EN: TDictionary = {
       noAnswer: 'No answer yet',
       noInteractionsYet: 'No interactions yet',
       viewFeedback: 'View Feedback',
+      lastActivity: 'Last Activity',
     },
     couponGrid: {
       nameColumn: 'Name',

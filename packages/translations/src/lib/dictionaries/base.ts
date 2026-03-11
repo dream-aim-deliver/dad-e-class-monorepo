@@ -1568,6 +1568,7 @@ export const DictionarySchema = z.object({
       noAnswer: z.string(),
       noInteractionsYet: z.string(),
       viewFeedback: z.string(),
+      lastActivity: z.string(),
     }),
     couponGrid: z.object({
       nameColumn: z.string(),
