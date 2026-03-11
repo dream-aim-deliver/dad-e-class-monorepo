@@ -37,10 +37,10 @@ export default function AssignmentContent({
     const session = useSession();
 
     const [assignmentResponse, { refetch: refetchAssignment }] =
-        trpc.getAssignment.useSuspenseQuery({
-            assignmentId,
-            studentUsername,
-        });
+        trpc.getAssignment.useSuspenseQuery(
+            { assignmentId, studentUsername },
+            { staleTime: 0 },
+        );
     const [assignmentViewModel, setAssignmentViewModel] = useState<
         viewModels.TAssignmentViewModel | undefined
     >(undefined);
