@@ -18,9 +18,11 @@ import { FilePreview } from './drag-and-drop-uploader/file-preview';
 
 interface CoachStudentInteractionCardProps extends isLocalAware {
   onViewLessonsClick: (moduleId: string, lessonId: string) => void;
+  onFeedbackClick?: (feedbackId: string) => void;
   locale: TLocale;
   modules: TListStudentInteractionsSuccess['modules'];
   onDeserializationError: (message: string, error: Error) => void;
+  expandedLessonId?: string;
 }
 
 type TInteraction = TListStudentInteractionsSuccess['modules'][number]['lessons'][number]['interactions'][number];
@@ -29,7 +31,9 @@ export const  CoachStudentInteractionCard = ({
   modules,
   locale,
   onViewLessonsClick,
+  onFeedbackClick,
   onDeserializationError,
+  expandedLessonId,
 }: CoachStudentInteractionCardProps) => {
   const dictionary = getDictionary(locale);
   const dict = dictionary.components.coachStudentInteractionCard;
@@ -207,6 +211,30 @@ export const  CoachStudentInteractionCard = ({
     </div>
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderFeedback = (interaction: any, index: number) => (
+    <div
+      key={`feedback-${interaction.id}-${index}`}
+      className="flex flex-col gap-3"
+    >
+      <p className="text-md font-important text-text-primary leading-[150%]">
+        {interaction.title}
+      </p>
+      {interaction.description && (
+        <p className="text-sm text-text-secondary leading-[150%]">
+          {interaction.description}
+        </p>
+      )}
+      {onFeedbackClick && (
+        <Button
+          variant="text"
+          text={dict.viewFeedback ?? 'View Feedback'}
+          onClick={() => onFeedbackClick(interaction.id)}
+        />
+      )}
+    </div>
+  );
+
   const renderInteraction = (interaction: TInteraction, index: number) => {
     switch (interaction.type) {
       case 'textInput':
@@ -219,16 +247,29 @@ export const  CoachStudentInteractionCard = ({
         return renderOneOutOfThree(interaction, index);
       case 'uploadFiles':
         return renderUploadFiles(interaction, index);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      case ('feedback' as any):
+        return renderFeedback(interaction, index);
       default:
         return null;
     }
   };
 
+  // Find which module contains the target lesson for auto-expansion
+  const targetModuleId = expandedLessonId
+    ? modules.find(m => m.lessons?.some(l => String(l.id) === String(expandedLessonId)))?.id
+    : undefined;
+
+  const moduleDefaults = [
+    ...(modules.length > 0 ? [`module-${modules[0].id}`] : []),
+    ...(targetModuleId && String(targetModuleId) !== String(modules[0]?.id) ? [`module-${targetModuleId}`] : []),
+  ];
+
   return (
     <Accordion
       className={cn("flex flex-col gap-4")}
       type="multiple"
-      defaultValue={modules.length > 0 ? [`module-${modules[0].id}`] : []}
+      defaultValue={moduleDefaults}
     >
       {/* Map through all modules */}
       {modules.map((module) => (
@@ -273,6 +314,11 @@ export const  CoachStudentInteractionCard = ({
               <Accordion
                 type="multiple"
                 className="flex flex-col gap-4"
+                defaultValue={
+                  expandedLessonId && module.lessons?.some(l => String(l.id) === String(expandedLessonId))
+                    ? [`lesson-${expandedLessonId}`]
+                    : []
+                }
               >
                 {module.lessons?.map((lesson) => (
                   <AccordionItem

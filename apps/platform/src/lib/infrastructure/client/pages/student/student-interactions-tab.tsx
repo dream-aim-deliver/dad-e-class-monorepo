@@ -13,6 +13,7 @@ interface StudentInteractionsTabProps {
     courseSlug: string;
     courseImageUrl: string;
     courseTitle: string;
+    expandedLessonId?: string;
 }
 
 export default function StudentInteractionsTab({
@@ -20,6 +21,7 @@ export default function StudentInteractionsTab({
     courseSlug,
     courseImageUrl,
     courseTitle,
+    expandedLessonId,
 }: StudentInteractionsTabProps) {
     const locale = useLocale() as TLocale;
 
@@ -112,8 +114,12 @@ export default function StudentInteractionsTab({
                 <CoachStudentInteractionCard
                     modules={modulesWithInteractions}
                     locale={locale}
+                    expandedLessonId={expandedLessonId}
                     onViewLessonsClick={(_moduleId: string, lessonId: string) => {
                         window.open(`/${locale}/courses/${courseSlug}?role=coach&tab=preview&lesson=${lessonId}`, '_blank');
+                    }}
+                    onFeedbackClick={(feedbackId: string) => {
+                        window.open(`/${locale}/courses/${courseSlug}?role=coach&tab=feedback&feedbackId=${feedbackId}&studentUsername=${studentUsername}`, '_blank');
                     }}
                     onDeserializationError={(message: string, error: Error) => {
                         console.error(message, error);

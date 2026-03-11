@@ -67,6 +67,7 @@ export * from './request-coaching-session-view-model';
 export * from './unschedule-coaching-session-view-model';
 export * from './create-notification-view-model';
 export * from './assignment-view-model';
+export * from './feedback-view-model';
 
 export * from './request-file-upload-view-model';
 export * from './list-coach-reviews-view-model';

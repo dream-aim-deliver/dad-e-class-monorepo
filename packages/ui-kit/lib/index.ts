@@ -7,6 +7,7 @@ import { Badge } from './components/badge';
 export { Button, type ButtonProps } from './components/button';
 export { DummySkills, type DummySkillsProps } from './components/dummy-skills';
 export { IconButton, type IconButtonProps } from './components/icon-button';
+export { IconChat } from './components/icons/icon-chat';
 export { CheckBox, type CheckBoxProps } from './components/checkbox';
 export { RadioButton, type RadioButtonProps } from './components/radio-button';
 export { InputField, type InputFieldProps } from './components/input-field';
@@ -174,6 +175,10 @@ export { default as QuizTypeFourStudentView } from './components/quiz/quiz-type-
 
 export { FormComponent as LinksFormComponent } from './components/course-builder-lesson-component/links';
 export { FormComponent as AssignmentFormComponent } from './components/course-builder-lesson-component/assignment';
+export { FormComponent as FeedbackFormComponent } from './components/course-builder-lesson-component/feedback';
+
+export { CreateFeedbackBuilderView, type CreateFeedbackProps } from './components/feedback-course-builder/create-feedback-builder-view';
+export { FeedbackBuilderView } from './components/feedback-course-builder/feedback-builder-view';
 
 export { CoachingSessionStudentView } from './components/coaching-session-course-builder/coaching-session-student-view';
 export { LessonCoachComponent } from './components/coaching-session-course-builder/lesson-coach-component';
@@ -201,6 +206,7 @@ export { DesignerComponent as QuizDesignerComponent } from './components/course-
 export { DesignerComponent as LinksDesignerComponent } from './components/course-builder-lesson-component/links';
 export { DesignerComponent as CoachingSessionDesignerComponent } from './components/course-builder-lesson-component/coaching-session';
 export { DesignerComponent as AssignmentDesignerComponent } from './components/course-builder-lesson-component/assignment';
+export { DesignerComponent as FeedbackDesignerComponent } from './components/course-builder-lesson-component/feedback';
 
 export { IntroductionForm, useCourseIntroductionForm, type CourseIntroductionForm } from './components/introduction-form';
 export { AccordionBuilder, type AccordionBuilderItem } from './components/accordion-builder';
@@ -248,6 +254,9 @@ export { ReceivedPaymentsCardList, type ReceivedPaymentsCardListProps } from './
 export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
 export { Message } from './components/assignment/message';
 export { ReplyPanel } from './components/assignment/reply-panel';
+
+export { FeedbackModalContent } from './components/feedback/feedback-modal-content';
+export { FeedbackReplyPanel } from './components/feedback/feedback-reply-panel';
 
 export { SideMenuCMS } from './components/sidemenu/sidemenu-cms';
 export { SideMenuSection } from './components/sidemenu/sidemenu-section';

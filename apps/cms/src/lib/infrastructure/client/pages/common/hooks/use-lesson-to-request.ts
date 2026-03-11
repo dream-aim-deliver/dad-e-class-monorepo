@@ -1,6 +1,7 @@
 import { TSaveLessonComponentsRequest } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     CourseElementType,
+    FeedbackElement,
     FormElementType,
     LessonElement,
 } from '@maany_shr/e-class-ui-kit';
@@ -398,6 +399,39 @@ export function useLessonToRequest() {
         };
     }
 
+    function transformFeedback(
+        component: LessonElement,
+        order: number,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): any {
+        if (component.type !== CourseElementType.Feedback) {
+            throw new Error('Invalid component type');
+        }
+        const feedbackComponent = component as FeedbackElement;
+
+        const fileIds = [];
+        for (const file of feedbackComponent.files ?? []) {
+            const id = idToNumber(file.id);
+            if (!id) continue;
+            fileIds.push(id);
+        }
+
+        return {
+            id: extractId(feedbackComponent.id),
+            type: 'feedback',
+            position: order,
+            title: feedbackComponent.title,
+            description: feedbackComponent.description,
+            fileIds: fileIds,
+            links:
+                feedbackComponent.links?.map((link) => ({
+                    title: link.title,
+                    url: link.url,
+                    iconFileId: idToNumber(link.customIcon?.id),
+                })) ?? [],
+        };
+    }
+
     const transformerPerType: Record<
         CourseElementType | FormElementType,
         (
@@ -412,6 +446,8 @@ export function useLessonToRequest() {
         [CourseElementType.DownloadFiles]: transformDownloadFiles,
         [CourseElementType.UploadFiles]: transformUploadFiles,
         [CourseElementType.Assignment]: transformAssignment,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [CourseElementType.Feedback]: transformFeedback as any,
         [CourseElementType.QuizTypeOne]: transformQuizTypeOne,
         [CourseElementType.QuizTypeTwo]: transformQuizTypeTwo,
         [CourseElementType.QuizTypeThree]: transformQuizTypeThree,

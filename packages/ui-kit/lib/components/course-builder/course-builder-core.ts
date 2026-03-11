@@ -8,6 +8,7 @@ import downloadFilesElement from "../course-builder-lesson-component/download-fi
 import uploadFilesElement from "../course-builder-lesson-component/upload-files-lesson";
 import { CourseElementRegistry, CourseElementType } from "./types";
 import linksElement from "../course-builder-lesson-component/links";
+import feedbackElement from "../course-builder-lesson-component/feedback";
 
 
 /**
@@ -22,6 +23,7 @@ export const courseElements: CourseElementRegistry = {
     [CourseElementType.UploadFiles]: uploadFilesElement,
     [CourseElementType.DownloadFiles]: downloadFilesElement,
     [CourseElementType.Assignment]: assignmentElement,
+    [CourseElementType.Feedback]: feedbackElement,
     // Temporary elements for specific quiz types
     [CourseElementType.QuizTypeOne]: quizElement,
     [CourseElementType.QuizTypeTwo]: quizElement,

@@ -35,6 +35,8 @@ import {
     CoachingSessionElement,
     IconAssignment,
     AssignmentElement,
+    IconChat,
+    FeedbackElement,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -59,6 +61,7 @@ import { transformLessonComponents } from '../../../utils/transform-lesson-compo
 import { useSaveLesson } from './hooks/save-hooks';
 import { FileUploadProvider } from '../../course/utils/file-upload';
 import { AssignmentViewProvider } from '../../course/utils/assignment-view';
+import { FeedbackViewProvider } from '../../course/utils/feedback-view';
 import { useSession } from 'next-auth/react';
 
 const componentTypeToTranslationKey: Record<string, string> = {
@@ -135,11 +138,13 @@ function PreviewRenderer({
 
     return (
         <AssignmentViewProvider mode="study" config={{ studentUsername: undefined }}>
-            <FileUploadProvider mode="mock" config={{ lessonId: 0 }}>
-                <div className="flex flex-col gap-4">
-                    {components.map(renderComponent)}
-                </div>
-            </FileUploadProvider>
+            <FeedbackViewProvider mode="study" config={{ studentUsername: undefined }}>
+                <FileUploadProvider mode="mock" config={{ lessonId: 0 }}>
+                    <div className="flex flex-col gap-4">
+                        {components.map(renderComponent)}
+                    </div>
+                </FileUploadProvider>
+            </FeedbackViewProvider>
         </AssignmentViewProvider>
     );
 }
@@ -413,6 +418,21 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                 const newComponent: AssignmentElement = {
                     id: generateTempId(),
                     type: CourseElementType.Assignment,
+                    title: '',
+                    description: '',
+                    files: [],
+                    links: [],
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+        {
+            icon: <IconChat />,
+            label: 'Feedback',
+            onClick: () => {
+                const newComponent: FeedbackElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.Feedback,
                     title: '',
                     description: '',
                     files: [],
