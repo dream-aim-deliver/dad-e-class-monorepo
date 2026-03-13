@@ -5,6 +5,7 @@ import { Badge } from './badge';
 import { StarRating } from './star-rating';
 import SkillBadges from './skill-badges';
 import { IconLanguage } from './icons/icon-language';
+import { IconLink } from './icons/icon-link';
 
 export interface BuyCoachingSessionBannerProps extends isLocalAware {
     coachName: string;
@@ -16,6 +17,8 @@ export interface BuyCoachingSessionBannerProps extends isLocalAware {
     isCourseCreator?: boolean;
     skills: string[];
     languages?: string[];
+    linkedinUrl?: string | null;
+    portfolioWebsite?: string | null;
 }
 
 /**
@@ -52,6 +55,8 @@ export const BuyCoachingSessionBanner = ({
     isCourseCreator = false,
     skills,
     languages,
+    linkedinUrl,
+    portfolioWebsite,
 }: BuyCoachingSessionBannerProps) => {
     const dictionary =
         getDictionary(locale).components.buyCoachingSessionBanner;
@@ -111,6 +116,34 @@ export const BuyCoachingSessionBanner = ({
                 </p>
             )}
 
+            {(linkedinUrl || portfolioWebsite) && (
+                <div className="flex flex-row gap-3 items-center">
+                    {linkedinUrl && (
+                        <a
+                            href={linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-sm text-button-primary-fill hover:underline"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                            LinkedIn
+                        </a>
+                    )}
+                    {portfolioWebsite && (
+                        <a
+                            href={portfolioWebsite}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-sm text-button-primary-fill hover:underline"
+                        >
+                            <IconLink size="4" />
+                            Portfolio
+                        </a>
+                    )}
+                </div>
+            )}
             <div className="flex flex-row gap-2 flex-shrink-0">
                 <p className="text-text-primary font-important">
                     {dictionary.skillsLabel}

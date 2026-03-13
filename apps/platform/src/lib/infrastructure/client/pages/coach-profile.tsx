@@ -468,6 +468,8 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						isCourseCreator={coachIntroduction.isCourseCreator}
 						skills={coachIntroduction.skills.map(skill => skill.name)}
 						languages={translatedLanguages}
+						linkedinUrl={coachIntroduction.linkedinUrl}
+						portfolioWebsite={coachIntroduction.portfolioWebsite}
 						locale={locale}
 					/>
 				) : (
@@ -483,6 +485,8 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						isCourseCreator={coachIntroduction.isCourseCreator}
 						skills={coachIntroduction.skills.map(skill => skill.name)}
 						languages={translatedLanguages}
+						linkedinUrl={coachIntroduction.linkedinUrl}
+						portfolioWebsite={coachIntroduction.portfolioWebsite}
 						locale={locale}
 					/>
 				)
