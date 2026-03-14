@@ -68,10 +68,13 @@ export function useStudentAssignmentFilters({
     }, [requestType, studentUsername]);
 
     // Fetch student assignments from listStudentAssignments usecase
-    const [assignmentsResponse] = trpc.listStudentAssignments.useSuspenseQuery({
-        courseSlug: courseSlug,
-        additionalParams,
-    });
+    const [assignmentsResponse] = trpc.listStudentAssignments.useSuspenseQuery(
+        {
+            courseSlug: courseSlug,
+            additionalParams,
+        },
+        { staleTime: 0 },
+    );
 
     const { presenter: assignmentsPresenter } =
         useListStudentAssignmentsPresenter(setAssignmentsViewModel);

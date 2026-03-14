@@ -307,7 +307,8 @@ function CourseAssignmentsListContent({
                     onOpenChange={(open) => {
                         if (!open) {
                             setSelectedAssignment(null);
-                            // Safety net: refetch assignment lists when dialog closes
+                            // Safety net: refetch assignment lists and detail when dialog closes
+                            utils.getAssignment.invalidate();
                             utils.listStudentAssignments.invalidate();
                             utils.listGroupAssignments.invalidate();
                         }
