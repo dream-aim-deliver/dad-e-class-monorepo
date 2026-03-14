@@ -180,8 +180,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
         if (childrenArray.length === 0) return null;
 
         return (
-            <div className={`px-4 md:px-6 lg:px-8 ${className}`}>
-                <div className="max-w-7xl mx-auto">
+            <div className={className}>
                     <div className="relative">
                         {/* Previous Button */}
                         {itemGroups.length > 1 && (
@@ -252,7 +251,6 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
                             ))}
                         </div>
                     )}
-                </div>
             </div>
         );
     },
