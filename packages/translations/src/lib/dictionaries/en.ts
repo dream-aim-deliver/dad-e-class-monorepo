@@ -1151,12 +1151,16 @@ export const EN: TDictionary = {
       coachBadge: 'Coach',
       courseCreatorBadge: 'Course Creator',
       skillsLabel: 'Skills',
+      linkedinLabel: 'LinkedIn',
+      portfolioLabel: 'Portfolio',
     },
     buyCoachingSessionBanner: {
       coachBadge: 'Coach',
       courseCreatorBadge: 'Course Creator',
       skillsLabel: 'Skills',
       buyButton: 'Buy coaching sessions',
+      linkedinLabel: 'LinkedIn',
+      portfolioLabel: 'Portfolio',
     },
     assignment: {
       assignmentCard: {

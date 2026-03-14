@@ -1139,12 +1139,16 @@ export const DictionarySchema = z.object({
       coachBadge: z.string(),
       courseCreatorBadge: z.string(),
       skillsLabel: z.string(),
+      linkedinLabel: z.string(),
+      portfolioLabel: z.string(),
     }),
     buyCoachingSessionBanner: z.object({
       coachBadge: z.string(),
       courseCreatorBadge: z.string(),
       skillsLabel: z.string(),
       buyButton: z.string(),
+      linkedinLabel: z.string(),
+      portfolioLabel: z.string(),
     }),
     assignment: z.object({
       assignmentCard: z.object({

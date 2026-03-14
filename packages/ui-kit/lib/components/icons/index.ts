@@ -37,6 +37,7 @@ export { IconInfoCircle } from './icon-infocircle';
 export { IconLanguage } from './icon-language';
 export { IconLesson } from './icon-lesson';
 export { IconLink } from './icon-link';
+export { IconLinkedin } from './icon-linkedin';
 export { IconLoaderSpinner } from './icon-loader-spinner';
 export { IconLogOut } from './icon-log-out';
 export { IconMilestone } from './icon-milestone';

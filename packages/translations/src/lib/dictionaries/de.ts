@@ -1126,6 +1126,8 @@ export const DE: TDictionary = {
       coachBadge: 'Coach',
       courseCreatorBadge: 'Kurs-Creator',
       skillsLabel: 'Fähigkeiten',
+      linkedinLabel: 'LinkedIn',
+      portfolioLabel: 'Portfolio',
     },
     coachNotes: {
       usefulLinks: 'Nützliche Links',
@@ -1160,6 +1162,8 @@ export const DE: TDictionary = {
       courseCreatorBadge: 'Kurs-Creator',
       skillsLabel: 'Fähigkeiten',
       buyButton: 'Coaching-Sitzungen kaufen',
+      linkedinLabel: 'LinkedIn',
+      portfolioLabel: 'Portfolio',
     },
     assignment: {
       assignmentCard: {
