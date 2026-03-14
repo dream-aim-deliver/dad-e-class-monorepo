@@ -69,10 +69,13 @@ export function useAssignmentFilters({
     }, [requestType, groupId]);
 
     // Fetch group assignments from listGroupAssignments usecase
-    const [assignmentsResponse] = trpc.listGroupAssignments.useSuspenseQuery({
-        courseSlug: courseSlug,
-        additionalParams,
-    });
+    const [assignmentsResponse] = trpc.listGroupAssignments.useSuspenseQuery(
+        {
+            courseSlug: courseSlug,
+            additionalParams,
+        },
+        { staleTime: 0 },
+    );
 
     const { presenter: assignmentsPresenter } =
         useListGroupAssignmentsPresenter(setAssignmentsViewModel);
