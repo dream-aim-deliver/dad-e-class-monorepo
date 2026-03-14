@@ -34,24 +34,22 @@ export const Hero: React.FC<HeroProps> = ({
     const hasMedia = Boolean(videoId);
 
     return (
-        <div className="max-w-7xl mx-auto">
-            <div className="flex md:flex-row flex-col gap-[4.1875rem] items-center w-full">
-                <Outline
-                    title={title as string}
-                    description={description as string}
-                    className={`${hasMedia ? 'md:w-1/2' : 'w-full'} gap-[2.5625rem]`}
-                />
-                {hasMedia && (
-                    <div className="flex-1 w-full aspect-video md:min-h-[200px]">
-                        <AutoPlayVideoPlayer
-                            videoId={videoId}
-                            thumbnailUrl={thumbnailUrl}
-                            locale={locale}
-                            className="w-full h-full"
-                        />
-                    </div>
-                )}
-            </div>
+        <div className="flex md:flex-row flex-col gap-[4.1875rem] items-center w-full">
+            <Outline
+                title={title as string}
+                description={description as string}
+                className={`${hasMedia ? 'md:w-1/2' : 'w-full'} gap-[2.5625rem]`}
+            />
+            {hasMedia && (
+                <div className="flex-1 w-full aspect-video md:min-h-[200px]">
+                    <AutoPlayVideoPlayer
+                        videoId={videoId}
+                        thumbnailUrl={thumbnailUrl}
+                        locale={locale}
+                        className="w-full h-full"
+                    />
+                </div>
+            )}
         </div>
     );
 };

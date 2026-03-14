@@ -107,91 +107,96 @@ export default function HomePage() {
 
     return (
         <div className="flex flex-col items-center">
-            <div className="gap-4 px-30 mb-15">
-                <Hero
-                    locale={locale}
-                    title={homePage.banner.title}
-                    description={homePage.banner.description}
-                    thumbnailUrl={homePage.banner.thumbnailImage?.downloadUrl || undefined}
-                    videoId={homePage.banner.video?.playbackId ?? undefined}
-                />
-                <Divider />
-                <Carousel locale={locale}>
-                    {homePage.carousel.map((item) => {
-                        const onClick = () => {
-                            router.push(item.buttonUrl);
-                        };
-                        return (
-                            <GeneralCard
-                                key={item.title}
-                                locale={locale}
-                                onButtonClick={onClick}
-                                {...item}
-                                badge={item.badge ?? undefined}
-                                imageUrl={item.image?.downloadUrl ?? ''}
-                            />
-                        );
-                    })}
-                </Carousel>
-                <Divider />
-                <Topics />
+            <div className="w-full px-30 mb-15">
+                <div className="max-w-7xl mx-auto">
+                    <Hero
+                        locale={locale}
+                        title={homePage.banner.title}
+                        description={homePage.banner.description}
+                        thumbnailUrl={homePage.banner.thumbnailImage?.downloadUrl || undefined}
+                        videoId={homePage.banner.video?.playbackId ?? undefined}
+                    />
+                    <Divider />
+                    <Carousel locale={locale}>
+                        {homePage.carousel.map((item) => {
+                            const onClick = () => {
+                                router.push(item.buttonUrl);
+                            };
+                            return (
+                                <GeneralCard
+                                    key={item.title}
+                                    locale={locale}
+                                    onButtonClick={onClick}
+                                    {...item}
+                                    badge={item.badge ?? undefined}
+                                    imageUrl={item.image?.downloadUrl ?? ''}
+                                />
+                            );
+                        })}
+                    </Carousel>
+                    <Divider />
+                    <Topics />
+                </div>
             </div>
-            {/* Breakpoints might be adjusted here */}
-            <div className="px-30 py-10 mb-15">
-                <CoachingOnDemandBanner
-                    title={homePage.coachingOnDemand.title}
-                    description={homePage.coachingOnDemand.description}
-                    images={
-                        <>
-                            {homePage.coachingOnDemand.mobileImage?.downloadUrl && (
-                                <Image
-                                    src={
-                                        homePage.coachingOnDemand.mobileImage.downloadUrl
-                                    }
-                                    alt="Coaching on Demand"
-                                    width={640}
-                                    height={640}
-                                    className="w-full h-auto sm:hidden"
-                                />
-                            )}
-                            {homePage.coachingOnDemand.tabletImage?.downloadUrl && (
-                                <Image
-                                    src={
-                                        homePage.coachingOnDemand.tabletImage.downloadUrl
-                                    }
-                                    alt="Coaching on Demand"
-                                    width={1024}
-                                    height={1024}
-                                    className="w-full h-auto max-sm:hidden lg:hidden"
-                                    sizes="(min-width: 768px) and (max-width: 1023px) 100vw, 0px"
-                                />
-                            )}
-                            {homePage.coachingOnDemand.desktopImage?.downloadUrl && (
-                                <Image
-                                    src={
-                                        homePage.coachingOnDemand
-                                            .desktopImage.downloadUrl
-                                    }
-                                    alt="Coaching on Demand"
-                                    width={1920}
-                                    height={1080}
-                                    className="w-full h-auto hidden lg:block"
-                                    sizes="(min-width: 1024px) 100vw, 0px"
-                                />
-                            )}
-                        </>
-                    }
-                />
+            <div className="w-full px-30 py-10 mb-15">
+                <div className="max-w-7xl mx-auto">
+                    <CoachingOnDemandBanner
+                        title={homePage.coachingOnDemand.title}
+                        description={homePage.coachingOnDemand.description}
+                        images={
+                            <>
+                                {homePage.coachingOnDemand.mobileImage?.downloadUrl && (
+                                    <Image
+                                        src={
+                                            homePage.coachingOnDemand.mobileImage.downloadUrl
+                                        }
+                                        alt="Coaching on Demand"
+                                        width={640}
+                                        height={640}
+                                        className="w-full h-auto sm:hidden"
+                                    />
+                                )}
+                                {homePage.coachingOnDemand.tabletImage?.downloadUrl && (
+                                    <Image
+                                        src={
+                                            homePage.coachingOnDemand.tabletImage.downloadUrl
+                                        }
+                                        alt="Coaching on Demand"
+                                        width={1024}
+                                        height={1024}
+                                        className="w-full h-auto max-sm:hidden lg:hidden"
+                                        sizes="(min-width: 768px) and (max-width: 1023px) 100vw, 0px"
+                                    />
+                                )}
+                                {homePage.coachingOnDemand.desktopImage?.downloadUrl && (
+                                    <Image
+                                        src={
+                                            homePage.coachingOnDemand
+                                                .desktopImage.downloadUrl
+                                        }
+                                        alt="Coaching on Demand"
+                                        width={1920}
+                                        height={1080}
+                                        className="w-full h-auto hidden lg:block"
+                                        sizes="(min-width: 1024px) 100vw, 0px"
+                                    />
+                                )}
+                            </>
+                        }
+                    />
+                </div>
             </div>
             <div className="w-full px-30">
-                <HomeAccordion
-                    title={homePage.accordion.title}
-                    showNumbers={homePage.accordion.showNumbers}
-                    items={homePage.accordion.items.map((item) => ({
-                        ...item,
-                        iconImageUrl: item.iconImage?.downloadUrl ?? '',
-                    }))}
-                />
+                <div className="max-w-7xl mx-auto">
+                    <HomeAccordion
+                        title={homePage.accordion.title}
+                        showNumbers={homePage.accordion.showNumbers}
+                        items={homePage.accordion.items.map((item) => ({
+                            ...item,
+                            iconImageUrl: item.iconImage?.downloadUrl ?? '',
+                        }))}
+                    />
+                </div>
             </div>
         </div>
     );
