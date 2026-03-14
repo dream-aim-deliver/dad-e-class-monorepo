@@ -66,6 +66,10 @@ function Topics() {
 
     const topics = topicsViewModel.data.topics;
 
+    if (topics.length === 0) {
+        return null;
+    }
+
     return <TopicList list={topics} title={t('topicsTitle')} />;
 }
 
