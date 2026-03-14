@@ -1,4 +1,4 @@
-import { HomePageSchema, THomePage, HomeBannerSchema, THomeBanner, GeneralCardSchema, TGeneralCard, CoachingOnDemandSchema, TCoachingOnDemand, AccordionListSchema, TAccordionList } from '../src/home-page';
+import { HomePageSchema, THomePage, HomeBannerSchema, GeneralCardSchema, TGeneralCard, CoachingOnDemandSchema, TCoachingOnDemand, AccordionListSchema, TAccordionList } from '../src/home-page';
 import { describe, it, expect } from 'vitest';
 
 
@@ -60,10 +60,10 @@ describe('HomePage Schema Validation', () => {
 
 
     it('should invalidate a home banner object with missing required fields', () => {
-        const invalidHomeBanner: THomeBanner = {
-            title: 'Platform\'s Title, short and powerful',
+        const invalidHomeBanner = {
+            // Missing 'title'
             description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            // Missing 'videoId'
+            videoId: '12345',
             thumbnailUrl: 'https://example.com/banner.jpg',
         };
         expect(HomeBannerSchema.safeParse(invalidHomeBanner).success).toBe(false);
