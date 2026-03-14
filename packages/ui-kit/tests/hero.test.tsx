@@ -30,4 +30,15 @@ describe('Hero Component', () => {
     render(<Hero {...mockProps} />);
     expect(screen.getByTestId('mock-video-player')).toBeInTheDocument();
   });
+
+  it('does not render the AutoPlayVideoPlayer when videoId is undefined', () => {
+    const { videoId, ...propsWithoutVideo } = mockProps;
+    render(<Hero {...propsWithoutVideo} />);
+    expect(screen.queryByTestId('mock-video-player')).not.toBeInTheDocument();
+  });
+
+  it('does not render the AutoPlayVideoPlayer when videoId is empty string', () => {
+    render(<Hero {...mockProps} videoId="" />);
+    expect(screen.queryByTestId('mock-video-player')).not.toBeInTheDocument();
+  });
 });

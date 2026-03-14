@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const HomeBannerSchema = z.object({
     title: z.string(),
     description: z.string(),
-    videoId: z.string(),
+    videoId: z.string().optional(),
     thumbnailUrl: z.string().optional(),
 });
 /**

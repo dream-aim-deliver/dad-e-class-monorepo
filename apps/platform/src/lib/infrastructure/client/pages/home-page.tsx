@@ -113,7 +113,7 @@ export default function HomePage() {
                     title={homePage.banner.title}
                     description={homePage.banner.description}
                     thumbnailUrl={homePage.banner.thumbnailImage?.downloadUrl || undefined}
-                    videoId={homePage.banner.video?.playbackId ?? ''}
+                    videoId={homePage.banner.video?.playbackId ?? undefined}
                 />
                 <Divider />
                 <Carousel locale={locale}>
@@ -137,7 +137,7 @@ export default function HomePage() {
                 <Topics />
             </div>
             {/* Breakpoints might be adjusted here */}
-            <div className="bg-base-neutral-950 px-30 py-10 mb-15">
+            <div className="px-30 py-10 mb-15">
                 <CoachingOnDemandBanner
                     title={homePage.coachingOnDemand.title}
                     description={homePage.coachingOnDemand.description}
