@@ -41,7 +41,7 @@ RUN jq '.plugins = [.plugins[] | select(.plugin != "@nx/eslint/plugin")]' nx.jso
 
 # Build the CMS app during Docker image creation
 # This improves startup time from ~2-3 minutes to ~1 second
-RUN pnpm nx build cms
+RUN pnpm nx build cms --no-cloud --skipNxCache
 
 EXPOSE 443
 EXPOSE 80
