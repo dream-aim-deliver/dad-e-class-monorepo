@@ -85,7 +85,8 @@ export function useStudentAssignmentFilters({
             // @ts-ignore
             assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
         }
-    }, [assignmentsResponse, assignmentsPresenter, assignmentsViewModel]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [assignmentsResponse, assignmentsPresenter]);
 
     // Extract assignments from ViewModel
     const assignments = useMemo(() => {
