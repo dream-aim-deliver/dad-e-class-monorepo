@@ -79,8 +79,8 @@ export function useStudentAssignmentFilters({
     const { presenter: assignmentsPresenter } =
         useListStudentAssignmentsPresenter(setAssignmentsViewModel);
 
-    // @ts-ignore
     if (assignmentsResponse) {
+        // @ts-ignore
         assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
     }
 
