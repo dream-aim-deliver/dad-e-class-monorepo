@@ -28,6 +28,7 @@ export default function StudentInteractionsTab({
 
     const t = useTranslations('pages.student');
 
+    const utils = trpc.useUtils();
     const [selectedFeedbackId, setSelectedFeedbackId] = useState<string | null>(null);
 
     const [viewModel, setViewModel] = useState<
@@ -138,6 +139,9 @@ export default function StudentInteractionsTab({
                     onOpenChange={(open) => {
                         if (!open) {
                             setSelectedFeedbackId(null);
+                            // Safety net: refetch feedback data when dialog closes
+                            utils.getFeedback.invalidate();
+                            utils.listStudentInteractions.invalidate();
                         }
                     }}
                 >
