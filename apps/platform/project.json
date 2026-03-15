@@ -13,6 +13,12 @@
         "cwd": "apps/platform",
         "command": "eslint ."
       }
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "options": {
+        "configFile": "apps/platform/vitest.config.ts"
+      }
     }
   }
 }
