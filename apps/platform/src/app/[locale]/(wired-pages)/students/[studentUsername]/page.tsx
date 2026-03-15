@@ -3,6 +3,7 @@
 
 import SingleStudentServerComponent from '../../../../../lib/infrastructure/server/pages/single-student-rsc';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { connection } from 'next/server';
 
 export default async function Page({
     params: paramsPromise,
@@ -11,6 +12,7 @@ export default async function Page({
         params: Promise<{ locale: string; studentUsername: string }>;
         searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
     }) {
+        await connection();
         const params = await paramsPromise;
         const searchParams = await searchParamsPromise;
 

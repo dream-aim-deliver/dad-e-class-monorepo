@@ -20,7 +20,7 @@
  * - Filter options: availableStatuses, availableCourses, availableModules, availableLessons
  * - Handlers: handleApplyFilters, handleSortChange, handleOpenFilterModal, handleCloseFilterModal, resetFilters
  */
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListGroupAssignmentsPresenter } from '../../hooks/use-list-group-assignments-presenter';
 import { trpc } from '../../trpc/cms-client';
@@ -80,13 +80,10 @@ export function useAssignmentFilters({
     const { presenter: assignmentsPresenter } =
         useListGroupAssignmentsPresenter(setAssignmentsViewModel);
 
-    // Present the data via useEffect (Variant B — matches dashboard pattern)
-    useEffect(() => {
-        if (assignmentsResponse && assignmentsPresenter) {
-            // @ts-ignore
-            assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
-        }
-    }, [assignmentsResponse, assignmentsPresenter]);
+    if (assignmentsResponse) {
+        // @ts-ignore
+        assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
+    }
 
     // Extract assignments from ViewModel
     const assignments = useMemo(() => {
@@ -293,7 +290,7 @@ export function useAssignmentFilters({
         () => [
             ...new Set(
                 assignments
-                    .filter((a): a is typeof a & { course: { title: string } } => 
+                    .filter((a): a is typeof a & { course: { title: string } } =>
                         a.course !== undefined && a.course.title !== undefined
                     )
                     .map((a) => a.course.title)
