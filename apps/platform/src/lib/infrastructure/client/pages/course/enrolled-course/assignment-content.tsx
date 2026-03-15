@@ -114,29 +114,25 @@ function AssignmentInteraction({
     const utils = trpc.useUtils();
 
     const sendReplyMutation = trpc.sendAssignmentReply.useMutation({
-        onSuccess: async (_data, variables) => {
-            // Cache-scoped: always fires even if component unmounts (dialog closed)
-            await Promise.all([
-                utils.getAssignment.invalidate({ assignmentId: variables.assignmentId, studentUsername: variables.studentUsername }),
-                utils.listStudentAssignments.invalidate(),
-                utils.listLessonComponents.invalidate(),
-                utils.listGroupAssignments.invalidate(),
-                utils.listGroupMembers.invalidate(),
-                utils.listCoachStudents.invalidate(),
-            ]);
+        onSuccess: (_data, variables) => {
+            // Fire-and-forget invalidation (matches dashboard pattern)
+            void utils.getAssignment.invalidate({ assignmentId: variables.assignmentId, studentUsername: variables.studentUsername });
+            void utils.listStudentAssignments.invalidate();
+            void utils.listLessonComponents.invalidate();
+            void utils.listGroupAssignments.invalidate();
+            void utils.listGroupMembers.invalidate();
+            void utils.listCoachStudents.invalidate();
         },
     });
     const passAssignmentMutation = trpc.passAssignment.useMutation({
-        onSuccess: async (_data, variables) => {
-            // Cache-scoped: always fires even if component unmounts (dialog closed)
-            await Promise.all([
-                utils.getAssignment.invalidate({ assignmentId: variables.assignmentId, studentUsername: variables.studentUsername }),
-                utils.listStudentAssignments.invalidate(),
-                utils.listLessonComponents.invalidate(),
-                utils.listGroupAssignments.invalidate(),
-                utils.listGroupMembers.invalidate(),
-                utils.listCoachStudents.invalidate(),
-            ]);
+        onSuccess: (_data, variables) => {
+            // Fire-and-forget invalidation (matches dashboard pattern)
+            void utils.getAssignment.invalidate({ assignmentId: variables.assignmentId, studentUsername: variables.studentUsername });
+            void utils.listStudentAssignments.invalidate();
+            void utils.listLessonComponents.invalidate();
+            void utils.listGroupAssignments.invalidate();
+            void utils.listGroupMembers.invalidate();
+            void utils.listCoachStudents.invalidate();
         },
     });
 
