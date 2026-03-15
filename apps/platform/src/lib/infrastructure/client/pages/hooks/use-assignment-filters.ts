@@ -80,13 +80,12 @@ export function useAssignmentFilters({
     const { presenter: assignmentsPresenter } =
         useListGroupAssignmentsPresenter(setAssignmentsViewModel);
 
-    // Present the data via useEffect (Variant B pattern — required for pages with mutations)
+    // Present the data via useEffect (Variant B — matches dashboard pattern)
     useEffect(() => {
-        if (assignmentsResponse) {
+        if (assignmentsResponse && assignmentsPresenter) {
             // @ts-ignore
             assignmentsPresenter.present(assignmentsResponse, assignmentsViewModel);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [assignmentsResponse, assignmentsPresenter]);
 
     // Extract assignments from ViewModel
