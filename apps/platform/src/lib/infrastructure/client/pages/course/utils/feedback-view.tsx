@@ -9,6 +9,7 @@ import React, { Suspense } from 'react';
 import FeedbackContent from '../enrolled-course/feedback-content';
 import { useLocale } from 'next-intl';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import { trpc } from '../../../trpc/cms-client';
 
 export interface FeedbackViewServiceConfig {
     studentUsername?: string;
@@ -46,13 +47,18 @@ export const useStudyFeedbackView = (
 ): FeedbackViewService => {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
+    const utils = trpc.useUtils();
 
     const getComponent = (feedbackId: string): React.ReactNode | null => {
         return (
             <Dialog
                 open={undefined}
-                onOpenChange={() => {
-                    // This function is called when the dialog is opened or closed
+                onOpenChange={(open) => {
+                    if (!open) {
+                        // Safety net: refetch feedback data when dialog closes
+                        utils.getFeedback.invalidate();
+                        utils.listLessonComponents.invalidate();
+                    }
                 }}
                 defaultOpen={false}
             >
