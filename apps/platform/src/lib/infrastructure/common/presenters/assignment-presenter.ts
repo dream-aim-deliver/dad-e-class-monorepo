@@ -11,34 +11,34 @@ import {
 } from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TAssignmentPresenterUtilities = {};
+export type TGetAssignmentPresenterUtilities = {};
 
 export const GetAssignmentResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         TGetAssignmentUseCaseResponse,
-        viewModels.TAssignmentViewModel,
-        TAssignmentPresenterUtilities
+        viewModels.TGetAssignmentViewModel,
+        TGetAssignmentPresenterUtilities
     >;
 
 type TGetAssignmentResponseMiddleware =
     typeof GetAssignmentResponseMiddleware;
 
-export default class AssignmentPresenter extends BasePresenter<
+export default class GetAssignmentPresenter extends BasePresenter<
     TGetAssignmentUseCaseResponse,
-    viewModels.TAssignmentViewModel,
-    TAssignmentPresenterUtilities,
+    viewModels.TGetAssignmentViewModel,
+    TGetAssignmentPresenterUtilities,
     TGetAssignmentResponseMiddleware
 > {
     constructor(
         setViewModel: (
-            viewModel: viewModels.TAssignmentViewModel,
+            viewModel: viewModels.TGetAssignmentViewModel,
         ) => void,
-        viewUtilities: TAssignmentPresenterUtilities,
+        viewUtilities: TGetAssignmentPresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel: GetAssignmentUseCaseResponseSchema,
-                viewModel: viewModels.AssignmentViewModelSchema,
+                viewModel: viewModels.GetAssignmentViewModelSchema,
             },
             middleware: GetAssignmentResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -51,7 +51,7 @@ export default class AssignmentPresenter extends BasePresenter<
             TGetAssignmentUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TAssignmentViewModel {
+    ): viewModels.TGetAssignmentViewModel {
         return {
             mode: 'default',
             data: {
@@ -65,7 +65,17 @@ export default class AssignmentPresenter extends BasePresenter<
             TGetAssignmentUseCaseErrorResponse,
             TGetAssignmentResponseMiddleware
         >,
-    ): viewModels.TAssignmentViewModel {
+    ): viewModels.TGetAssignmentViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {
@@ -76,3 +86,5 @@ export default class AssignmentPresenter extends BasePresenter<
         };
     }
 }
+
+export { GetAssignmentPresenter as AssignmentPresenter };

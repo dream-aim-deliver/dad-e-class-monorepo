@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useGetAssignmentPresenter } from '../../../hooks/use-assignment-presenter';
+import { useGetAssignmentPresenter } from '../../../hooks/use-get-assignment-presenter';
 import { trpc } from '../../../trpc/cms-client';
 import {
     fileMetadata,
@@ -13,6 +13,7 @@ import {
     AssignmentStatus,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     downloadFile,
     Message,
     ReplyPanel,
@@ -53,7 +54,7 @@ export default function AssignmentContent({
         return <DefaultLoading locale={locale} />;
     }
 
-    if (assignmentViewModel.mode !== 'default') {
+    if (assignmentViewModel.mode === 'kaboom') {
         return (
             <DefaultError
                 type="simple"
@@ -62,6 +63,10 @@ export default function AssignmentContent({
                 description={t('error.description')}
             />
         );
+    }
+
+    if (assignmentViewModel.mode === 'not-found') {
+        return <DefaultNotFound locale={locale} />;
     }
 
     const assignment = assignmentViewModel.data;
