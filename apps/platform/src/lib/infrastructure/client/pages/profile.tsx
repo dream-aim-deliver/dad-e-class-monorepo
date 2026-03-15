@@ -636,6 +636,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			...profile,
 			bioEn: profileAny.bioEn || null,
 			bioDe: profileAny.bioDe || null,
+			linkedinUrl: profile.linkedinUrl || null,
+			portfolioWebsite: profileAny.portfolioWebsite || null,
+			companyName: profileAny.companyName || null,
+			companyRole: profileAny.companyRole || null,
+			companyIndustry: profileAny.companyIndustry || null,
 			skillIds: profile.skills.map(skill => {
 				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
 			}),
@@ -688,6 +693,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			...profile,
 			bioEn: profileAny.bioEn || null,
 			bioDe: profileAny.bioDe || null,
+			linkedinUrl: profile.linkedinUrl || null,
+			portfolioWebsite: profileAny.portfolioWebsite || null,
+			companyName: profileAny.companyName || null,
+			companyRole: profileAny.companyRole || null,
+			companyIndustry: profileAny.companyIndustry || null,
 			skillIds: profile.skills.map(skill => {
 				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
 			}),
