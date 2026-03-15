@@ -318,6 +318,8 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 				setApplicationModalErrorMessage(null);
 				// Invalidate and refetch the professional profile to sync with server state
 				await utils.getProfessionalProfile.invalidate();
+				await utils.getCoachIntroduction.invalidate();
+				await utils.getCoachProfileAccess.invalidate();
 
 				// Close modal after delay - keep buttons disabled during this time
 				setTimeout(() => {
@@ -335,6 +337,8 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 				setErrorMessage(null);
 				// Invalidate and refetch the professional profile to sync with server state
 				await utils.getProfessionalProfile.invalidate();
+				await utils.getCoachIntroduction.invalidate();
+				await utils.getCoachProfileAccess.invalidate();
 			}
 		},
 		onError: (error: any, variables) => {
