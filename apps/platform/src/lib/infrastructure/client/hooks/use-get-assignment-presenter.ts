@@ -1,17 +1,17 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import AssignmentPresenter, {
-    TAssignmentPresenterUtilities,
+import GetAssignmentPresenter, {
+    TGetAssignmentPresenterUtilities,
 } from '../../common/presenters/assignment-presenter';
 
 export function useGetAssignmentPresenter(
     setViewModel: (
-        viewModel: viewModels.TAssignmentViewModel,
+        viewModel: viewModels.TGetAssignmentViewModel,
     ) => void,
 ) {
-    const presenterUtilities: TAssignmentPresenterUtilities = {};
+    const presenterUtilities: TGetAssignmentPresenterUtilities = {};
     const presenter = useMemo(
-        () => new AssignmentPresenter(setViewModel, presenterUtilities),
+        () => new GetAssignmentPresenter(setViewModel, presenterUtilities),
         [setViewModel],
     );
     return { presenter };
