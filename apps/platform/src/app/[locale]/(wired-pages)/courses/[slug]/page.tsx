@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation';
 import { getQueryClient, trpc } from '../../../../../lib/infrastructure/server/config/trpc/cms-server';
 import { createGetCourseAccessPresenter } from '../../../../../lib/infrastructure/server/presenter/get-course-access-presenter';
 import { viewModels } from '@maany_shr/e-class-models';
-import { connection } from 'next/server';
 
 export default async function Page({
     params: paramsPromise,
@@ -14,7 +13,6 @@ export default async function Page({
     params: Promise<{ locale: string; slug: string }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    await connection();
     const params = await paramsPromise;
     const searchParams = await searchParamsPromise;
 
