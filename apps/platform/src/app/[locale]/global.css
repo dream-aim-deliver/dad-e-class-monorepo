@@ -3,5 +3,7 @@
 @source "../../../../../packages/ui-kit/lib/components";
 
 html {
+    /* MOBILE-HACK: Forces desktop width. Per-page override via MobileReadyStyle component.
+       Remove when all pages have proper mobile views. Search "MOBILE-HACK" for all instances. */
     min-width: 1280px;
 }
