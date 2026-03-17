@@ -36,6 +36,9 @@ type MetadataProps = {
 
 const FALLBACK_OG_IMAGE = 'https://i.imgur.com/6CGQTz1.png';
 
+// MOBILE-HACK: Default 1280px desktop viewport for pages without proper mobile views.
+// Individual page.tsx files override this with responsive viewport when mobile-ready.
+// Search "MOBILE-HACK" to find all overrides.
 export const viewport: Viewport = {
     width: 1280,
 };
@@ -228,9 +231,8 @@ export default async function RootLayout({
 
     return (
         <html lang={locale}>
-            <head>
-                <meta name="viewport" content="width=1280" />
-            </head>
+            <head />
+
             <body
                 className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >

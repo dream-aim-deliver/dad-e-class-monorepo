@@ -32,6 +32,8 @@ import { createGetCourseAccessPresenter } from '../presenter/get-course-access-p
 import CMSTRPCClientProviders from '../../client/trpc/cms-client-provider';
 import { TLocale } from '@maany_shr/e-class-translations';
 import nextAuth from '../config/auth/next-auth.config';
+import { MobileReadyStyle } from '../../../mobile-hack';
+import { MobileReadyViewport } from '../../../mobile-hack-client';
 
 
 interface CourseServerComponentProps {
@@ -328,16 +330,24 @@ async function renderVisitorView(slug: string, locale: TLocale) {
     prefetchVisitorCourseData(slug);
 
     return (
-        <HydrateClient>
-            <CMSTRPCClientProviders>
-                <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <VisitorPage
-                        courseSlug={slug}
-                        locale={locale}
-                    />
-                </Suspense>
-            </CMSTRPCClientProviders>
-        </HydrateClient>
+        <>
+            {/* MOBILE-HACK: Enable responsive mobile layout for visitor view only.
+                MobileReadyStyle overrides CSS min-width (server-rendered, no flash).
+                MobileReadyViewport corrects viewport meta tag for authenticated visitors
+                whose generateViewport returned 1280 because a session exists. */}
+            <MobileReadyStyle />
+            <HydrateClient>
+                <CMSTRPCClientProviders>
+                    <Suspense fallback={<DefaultLoadingWrapper />}>
+                        <MobileReadyViewport />
+                        <VisitorPage
+                            courseSlug={slug}
+                            locale={locale}
+                        />
+                    </Suspense>
+                </CMSTRPCClientProviders>
+            </HydrateClient>
+        </>
     );
 }
 // ✅ NEW: Only prefetch data - no presenters on server

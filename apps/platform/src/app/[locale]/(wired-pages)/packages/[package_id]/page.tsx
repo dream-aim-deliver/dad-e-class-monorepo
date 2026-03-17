@@ -3,8 +3,13 @@
 // Usecases: getPackageWithCourses, listPackageRelatedPackages
 // Features: Display package details with courses, Show related packages, Login prompt for unregistered users
 
+import type { Viewport } from 'next';
 import PackageServerComponent from '../../../../../lib/infrastructure/server/pages/package-rsc';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { MobileReadyStyle } from '../../../../../lib/mobile-hack';
+
+// MOBILE-HACK: Override layout's 1280px viewport with responsive mobile viewport
+export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
 export default async function PackagePage({
   searchParams: searchParamsPromise,
@@ -16,5 +21,10 @@ export default async function PackagePage({
   const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
 
-  return <PackageServerComponent locale={params.locale as TLocale} packageId={params.package_id} />;
+  return (
+    <>
+      <MobileReadyStyle />
+      <PackageServerComponent locale={params.locale as TLocale} packageId={params.package_id} />
+    </>
+  );
 }

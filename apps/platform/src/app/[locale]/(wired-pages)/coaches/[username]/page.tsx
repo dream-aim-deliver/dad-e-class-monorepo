@@ -2,8 +2,13 @@
 // Notion: https://www.notion.so/Coach-profile-student-view-book-coaching-outside-courses-4417f760c1a24df8986566bb342a5270
 // Features: listCoachReviews, createCourseReview, getCoachIntroduction, getCoachProfileAccess, listCoachCourses
 
+import type { Viewport } from 'next';
 import CoachProfileServerComponent from '../../../../../lib/infrastructure/server/pages/coach-profile-rsc';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { MobileReadyStyle } from '../../../../../lib/mobile-hack';
+
+// MOBILE-HACK: Override layout's 1280px viewport with responsive mobile viewport
+export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
 export default async function Page({
 	params: paramsPromise,
@@ -18,5 +23,10 @@ export default async function Page({
 	const locale = params.locale as TLocale;
 	const { username } = params;
 
-	return <CoachProfileServerComponent locale={locale} username={username} />;
+	return (
+		<>
+			<MobileReadyStyle />
+			<CoachProfileServerComponent locale={locale} username={username} />
+		</>
+	);
 }
