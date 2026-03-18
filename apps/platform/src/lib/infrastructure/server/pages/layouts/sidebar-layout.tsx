@@ -13,11 +13,11 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
     const session = await nextAuth.auth();
     const isLoggedIn = session !== null;
     return (
-        <div className="flex flex-row lg:gap-3 p-5 overflow-y-auto">
+        <div className="flex flex-row lg:gap-0 p-5 overflow-y-auto">
             {isLoggedIn && (
                 <div
                     id="sidebar"
-                    className="sticky top-25 h-screen flex-shrink-0 z-[1000]"
+                    className="sticky top-0 h-screen flex-shrink-0 z-[1000]"
                 >
                     <WorkspaceSidebar
                         isCollapsed={true}

@@ -31,10 +31,28 @@ const mockMessagesDe = {
   },
 };
 
+const getNavbarCopy = (locale: TLocale) =>
+  locale === 'en' ? mockMessages.components.navbar : mockMessagesDe.components.navbar;
+
+const getDropdownOptions = (locale: TLocale) => {
+  if (locale === 'en') {
+    return [
+      { label: 'Courses', value: 'courses' },
+      { label: 'Profile', value: 'profile' },
+      { label: 'Logout', value: 'logout' },
+    ];
+  }
+
+  return [
+    { label: 'Kurse', value: 'courses' },
+    { label: 'Profil', value: 'profile' },
+    { label: 'Abmelden', value: 'logout' },
+  ];
+};
+
 // Navigation links using the dictionary
 const NavLinks = ({ locale }: { locale: TLocale }) => {
-  const messages = locale === 'en' ? mockMessages : mockMessagesDe;
-  const t = messages.components.navbar;
+  const t = getNavbarCopy(locale);
 
   const linkClass = 'hover:text-button-primary-hover-fill cursor-pointer text-md';
 
@@ -69,6 +87,8 @@ const NavbarWrapper = (args: any) => {
     setLocale(newLocale as TLocale);
   };
 
+  const navbarCopy = getNavbarCopy(locale);
+
   return (
     <NextIntlClientProvider
       locale={locale}
@@ -78,6 +98,8 @@ const NavbarWrapper = (args: any) => {
         {...args}
         locale={locale}
         onChangeLanguage={handleLocaleChange}
+        dropdownTriggerText={args.dropdownTriggerText ?? navbarCopy.workspace}
+        dropdownOptions={args.dropdownOptions ?? getDropdownOptions(locale)}
         children={<NavLinks locale={locale} />}
       />
     </NextIntlClientProvider>
@@ -90,12 +112,16 @@ const meta: Meta<typeof Navbar> = {
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
+    docs: {
+      story: {
+        inline: true,
+      },
+    },
   },
   decorators: [
     (Story) => (
-      <div className="min-h-screen flex flex-col">
+      <div style={{ minHeight: '400px' }}>
         <Story />
-        <div className="flex-grow" />
       </div>
     ),
   ],
@@ -139,6 +165,14 @@ const meta: Meta<typeof Navbar> = {
       control: false, // Disable control since it's optional and custom
       description: 'Custom user profile component to override the default.',
     },
+    dropdownTriggerText: {
+      control: 'text',
+      description: 'Text shown next to the user avatar dropdown trigger.',
+    },
+    dropdownOptions: {
+      control: 'object',
+      description: 'Options shown in the workspace dropdown.',
+    },
     onChangeLanguage: {
       action: 'changed', // Log action in Storybook's Actions panel
       description: 'Callback function triggered when the language is changed.',
@@ -181,6 +215,8 @@ export const LoggedInWithNotifications: StoryObj<typeof Navbar> = {
     locale: 'en',
     showNotifications: true,
     notificationCount: 200,
+    dropdownTriggerText: 'Workspace',
+    dropdownOptions: getDropdownOptions('en'),
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
@@ -203,6 +239,8 @@ export const MobileView: StoryObj<typeof Navbar> = {
     locale: 'en',
     showNotifications: true,
     notificationCount: 2,
+    dropdownTriggerText: 'Workspace',
+    dropdownOptions: getDropdownOptions('en'),
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
@@ -221,12 +259,39 @@ export const MobileView: StoryObj<typeof Navbar> = {
   },
 };
 
+export const MobileGuestView: StoryObj<typeof Navbar> = {
+  ...Template,
+  args: {
+    isLoggedIn: false,
+    locale: 'en',
+    showNotifications: false,
+    notificationCount: 0,
+    userProfileImageSrc:
+      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userName: 'John Doe',
+    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    availableLocales: ['en', 'de'],
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    docs: {
+      description: {
+        story: 'Navbar in mobile view with English locale and logged-out state.',
+      },
+    },
+  },
+};
+
 export const NoLogo: StoryObj<typeof Navbar> = {
   ...Template,
   args: {
     isLoggedIn: true,
     locale: 'en',
     notificationCount: 0,
+    dropdownTriggerText: 'Workspace',
+    dropdownOptions: getDropdownOptions('en'),
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
@@ -248,6 +313,8 @@ export const LocalizedNavbar: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'de',
     notificationCount: 0,
+    dropdownTriggerText: 'Arbeitsbereich',
+    dropdownOptions: getDropdownOptions('de'),
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',

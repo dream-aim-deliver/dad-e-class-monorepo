@@ -2,6 +2,16 @@ import '../lib/assets/css/index.css';
 import { withThemeByClassName } from '@storybook/addon-themes';
 import '../../ui-kit/lib/assets/css/index.css';
 
+export const parameters = {
+  options: {
+    storySort: {
+      method: 'alphabetical',
+      order: ['Components', 'Utils'],
+      locales: 'en-US',
+    },
+  },
+};
+
 export const decorators = [
   withThemeByClassName({
     themes: {
