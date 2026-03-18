@@ -31,6 +31,7 @@ interface NavbarProps extends isLocalAware {
   onDropdownSelection?: (selected: string) => void;
   dropdownTriggerText?: string;
   onNotificationClick?: () => void;
+  onMobileWorkspaceTriggerClick?: () => void;
 }
 
 interface NavBarDropdownProps {
@@ -176,6 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onDropdownSelection,
   dropdownTriggerText = '',
   onNotificationClick,
+  onMobileWorkspaceTriggerClick,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dictionary = getDictionary(locale);
@@ -307,6 +309,52 @@ export const Navbar: React.FC<NavbarProps> = ({
     );
   };
 
+  const renderMobileWorkspaceTrigger = () => {
+    if (!isLoggedIn) {
+      return null;
+    }
+
+    const avatarContent = userProfile ? (
+      <div className="scale-75 origin-left">{userProfile}</div>
+    ) : (
+      <UserAvatar
+        imageUrl={userProfileImageSrc}
+        size="small"
+        fullName={userName}
+        className="ml-1"
+      />
+    );
+
+    if (onMobileWorkspaceTriggerClick) {
+      return (
+        <div
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={onMobileWorkspaceTriggerClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && onMobileWorkspaceTriggerClick()}
+        >
+          {avatarContent}
+          {dropdownTriggerText && (
+            <span className="text-md text-text-primary">{dropdownTriggerText}</span>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex items-center space-x-2">
+        {avatarContent}
+        <NavBarDropdown
+          options={dropdownOptions}
+          onSelectionChange={handleDropdownSelection}
+          triggerText={dropdownTriggerText}
+          isMobile={true}
+        />
+      </div>
+    );
+  };
+
   return (
     <nav className="bg-neutral-950/50 backdrop-blur-md text-text-primary py-3 px-4 lg:px-14 flex items-center justify-between w-full sticky top-0 z-1000">
       {/* Logo */}
@@ -350,24 +398,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="relative flex items-center space-x-4">
           {isLoggedIn && (
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                {userProfile ? (
-                  <div className="scale-75 origin-left">{userProfile}</div>
-                ) : (
-                  <UserAvatar
-                    imageUrl={userProfileImageSrc}
-                    size="small"
-                    fullName={userName}
-                    className="ml-1"
-                  />
-                )}
-                <NavBarDropdown
-                  options={dropdownOptions}
-                  onSelectionChange={handleDropdownSelection}
-                  triggerText={dropdownTriggerText}
-                  isMobile={true}
-                />
-              </div>
+              {renderMobileWorkspaceTrigger()}
               {showNotifications && (
                 <div
                   className="relative flex items-center"

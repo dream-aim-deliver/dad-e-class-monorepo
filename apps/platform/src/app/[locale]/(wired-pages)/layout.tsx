@@ -29,6 +29,7 @@ import { OTelBrowserProvider } from '../../../lib/infrastructure/client/telemetr
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import env from '../../../lib/infrastructure/server/config/env';
 import SidebarLayout from '../../../lib/infrastructure/server/pages/layouts/sidebar-layout';
+import { MobileReadyStyle } from '../../../lib/mobile-hack';
 
 type MetadataProps = {
     params: Promise<{ locale: string }>;
@@ -36,11 +37,11 @@ type MetadataProps = {
 
 const FALLBACK_OG_IMAGE = 'https://i.imgur.com/6CGQTz1.png';
 
-// MOBILE-HACK: Default 1280px desktop viewport for pages without proper mobile views.
-// Individual page.tsx files override this with responsive viewport when mobile-ready.
-// Search "MOBILE-HACK" to find all overrides.
+// MOBILE-HACK: The wired-pages route group now needs a real responsive viewport so
+// the shared Navbar and workspace sidebar can switch correctly below `lg`.
 export const viewport: Viewport = {
-    width: 1280,
+    width: 'device-width',
+    initialScale: 1,
 };
 
 export async function generateMetadata({ params }: MetadataProps): Promise<Metadata> {
@@ -231,7 +232,9 @@ export default async function RootLayout({
 
     return (
         <html lang={locale}>
-            <head />
+            <head>
+                <MobileReadyStyle />
+            </head>
 
             <body
                 className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
