@@ -4,12 +4,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { Dropdown } from './dropdown';
-import { IconClose } from './icons/icon-close';
 import { IconHamburgerMenu } from './icons/icon-hamburger-menu';
 import { IconChat } from './icons/icon-chat';
 import { IconChevronDown } from './icons/icon-chevron-down';
 import { UserAvatar } from './avatar/user-avatar';
 import DefaultLoading from './default-loading';
+import { MobileMenuExpanded } from './mobile-menu-expanded';
 import { useImageComponent } from '../contexts/image-component-context';
 
 interface NavbarProps extends isLocalAware {
@@ -225,25 +225,100 @@ export const Navbar: React.FC<NavbarProps> = ({
     return count.toString();
   };
 
+  const renderLogoLink = () => (
+    <a href="/" className="block h-12">
+      {logo}
+      {logoSrc && <ImageComponent
+        src={logoSrc}
+        alt="Logo"
+        className="h-full w-auto"
+      />}
+    </a>
+  );
+
+  const renderLanguageDropdown = (closeOnSelection = false) => {
+    if (!availableLocales || availableLocales.length <= 1) {
+      return null;
+    }
+
+    return (
+      <div className="relative">
+        <Dropdown
+          type="simple"
+          options={languageOptions}
+          onSelectionChange={(selected) => {
+            if (
+              typeof selected === 'string' &&
+              availableLocales.includes(selected as TLocale)
+            ) {
+              handleLocaleChange(selected as TLocale);
+              if (closeOnSelection) {
+                setIsMenuOpen(false);
+              }
+            }
+          }}
+          text={{ simpleText: '' }}
+          defaultValue={locale}
+        />
+      </div>
+    );
+  };
+
+  const renderLoginButton = (closeOnClick = false) => {
+    if (isLoggedIn) {
+      return null;
+    }
+
+    const buttonClassName = closeOnClick ? '' : 'ml-3';
+
+    if (onLogin) {
+      return (
+        <Button
+          text={dictionary.components.navbar.login}
+          variant="primary"
+          size="medium"
+          className={buttonClassName}
+          onClick={() => {
+            if (closeOnClick) {
+              setIsMenuOpen(false);
+            }
+            onLogin();
+          }}
+        />
+      );
+    }
+
+    return (
+      <a
+        href="/auth/login"
+        onClick={() => {
+          if (closeOnClick) {
+            setIsMenuOpen(false);
+          }
+        }}
+      >
+        <Button
+          text={dictionary.components.navbar.login}
+          variant="primary"
+          size="medium"
+          className={buttonClassName}
+        />
+      </a>
+    );
+  };
+
   return (
-    <nav className="bg-neutral-950/50 backdrop-blur-md text-text-primary py-3 px-14 flex items-center justify-between w-full sticky top-0 z-1000">
+    <nav className="bg-neutral-950/50 backdrop-blur-md text-text-primary py-3 px-4 lg:px-14 flex items-center justify-between w-full sticky top-0 z-1000">
       {/* Logo */}
       <div className="flex items-center">
-        <a href="/" className="block h-12">
-          {logo}
-          {logoSrc && <ImageComponent
-            src={logoSrc}
-            alt="Logo"
-            className="h-full w-auto"
-          />}
-        </a>
+        {renderLogoLink()}
       </div>
 
       {/* Desktop Menu */}
-      <div className="flex items-center space-x-6 ml-auto">{children}</div>
+      <div className="hidden lg:flex items-center space-x-6 ml-auto">{children}</div>
 
       {/* Right Section (Profile+Workspace, Chat, Language Dropdown) */}
-      <div className="flex items-center space-x-3 ml-3">
+      <div className="hidden lg:flex items-center space-x-3 ml-3">
         {isLoggedIn ? (
           <>
             {userProfile || defaultUserProfile}
@@ -265,47 +340,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </>
         ) : (
-          onLogin ? (
-            <Button
-              text={dictionary.components.navbar.login}
-              variant="primary"
-              size="medium"
-              className="ml-3"
-              onClick={onLogin}
-            />
-          ) : (
-            <a href="/auth/login">
-              <Button
-                text={dictionary.components.navbar.login}
-                variant="primary"
-                size="medium"
-                className="ml-3"
-              />
-            </a>
-          )
+          renderLoginButton()
         )}
-        {availableLocales && availableLocales.length > 1 && 
-          <div className="relative">
-            <Dropdown
-              type="simple"
-              options={languageOptions}
-              onSelectionChange={(selected) => {
-                if (
-                  typeof selected === 'string' &&
-                  availableLocales.includes(selected as TLocale)
-                ) {
-                  handleLocaleChange(selected as TLocale);
-                }
-              }}
-              text={{ simpleText: '' }}
-              defaultValue={locale}
-            />
-          </div>
-        }
+        {renderLanguageDropdown()}
       </div>
 
       {/* Mobile Menu Button (disabled — desktop-only layout) */}
-      <div className="hidden">
+      <div className="flex lg:hidden">
         <div className="relative flex items-center space-x-4">
           {isLoggedIn && (
             <div className="flex items-center space-x-4">
@@ -359,65 +400,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div
-          className="fixed top-0 left-0 w-full h-screen bg-button-primary-text text-white flex flex-col items-center justify-start pt-20 overflow-y-auto hidden z-9999"
+        <MobileMenuExpanded
+          onClose={() => setIsMenuOpen(false)}
+          logoContent={renderLogoLink()}
+          languageSelector={renderLanguageDropdown(true)}
+          loginButton={renderLoginButton(true)}
         >
-          <div className="absolute top-3 left-0 right-0 flex justify-between items-center px-4 w-full">
-            <a href="/" className="block h-12">
-              {logo}
-              {logoSrc && <ImageComponent
-                src={logoSrc}
-                alt="Logo"
-                className="h-full w-auto"
-              />}
-            </a>
-
-            <Button
-              onClick={toggleMenu}
-              iconRight={<IconClose classNames="w-8 h-8" />}
-              hasIconRight
-              variant="text"
-              size="big"
-              className="focus:outline-none p-0"
-            />
-          </div>
-
-          <div className="flex flex-col items-center space-y-6 py-4">
-            {children}
-            <Dropdown
-              type="simple"
-              options={languageOptions}
-              onSelectionChange={(selected) => {
-                if (
-                  typeof selected === 'string' &&
-                  availableLocales.includes(selected as TLocale)
-                ) {
-                  handleLocaleChange(selected as TLocale);
-                }
-              }}
-              text={{ simpleText: '' }}
-              defaultValue={locale}
-            />
-            {!isLoggedIn && (
-              onLogin ? (
-                <Button
-                  text={dictionary.components.navbar.login}
-                  variant="primary"
-                  size="medium"
-                  onClick={onLogin}
-                />
-              ) : (
-                <a href="/auth/login">
-                  <Button
-                    text={dictionary.components.navbar.login}
-                    variant="primary"
-                    size="medium"
-                  />
-                </a>
-              )
-            )}
-          </div>
-        </div>
+          {children}
+        </MobileMenuExpanded>
       )}
       
       {/* Logout Loading Overlay */}
