@@ -18,6 +18,7 @@ interface HeaderProps {
     locale: TLocale;
     // TODO: implement session context
     session: auth.TSession | null;
+    onMobileWorkspaceTriggerClick?: () => void;
 }
 
 const NavLinks = ({
@@ -76,6 +77,7 @@ export default function Header({
     availableLocales,
     locale,
     session,
+    onMobileWorkspaceTriggerClick,
 }: HeaderProps) {
     const pathname = usePathname();
     const router = useRouter();
@@ -192,6 +194,7 @@ export default function Header({
             onDropdownSelection={handleDropdownSelection}
             dropdownTriggerText={t('workspace')}
             onNotificationClick={handleNotificationClick}
+            onMobileWorkspaceTriggerClick={onMobileWorkspaceTriggerClick}
             showNotifications={true}
             notificationCount={
                 unreadCountViewModel?.mode === 'default'

@@ -2,7 +2,7 @@
 
 import Header from './header';
 import Footer from './footer';
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef, useState } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
@@ -10,6 +10,7 @@ import { usePathname } from 'next/navigation';
 import { useRequiredPlatform } from '../context/platform-context';
 import { ImageProvider } from '@maany_shr/e-class-ui-kit';
 import { OptimizedImage } from '../components/optimized-image';
+import { PlatformWorkspaceSidebarPanel } from './layouts/platform-workspace-sidebar-panel';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -21,6 +22,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
     const sessionDTO = useSession();
     const session = sessionDTO.data;
     const pathname = usePathname();
+    const [isMobileWorkspaceSidebarOpen, setIsMobileWorkspaceSidebarOpen] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
     const isInitialMount = useRef(true);
 
@@ -41,6 +43,30 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
             contentRef.current.classList.add('page-content-entrance');
         }
     }, [pathname]);
+
+    useEffect(() => {
+        setIsMobileWorkspaceSidebarOpen(false);
+    }, [pathname]);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(min-width: 1024px)');
+
+        const handleMediaQueryChange = (event: MediaQueryListEvent) => {
+            if (event.matches) {
+                setIsMobileWorkspaceSidebarOpen(false);
+            }
+        };
+
+        if (mediaQuery.matches) {
+            setIsMobileWorkspaceSidebarOpen(false);
+        }
+
+        mediaQuery.addEventListener('change', handleMediaQueryChange);
+
+        return () => {
+            mediaQuery.removeEventListener('change', handleMediaQueryChange);
+        };
+    }, []);
 
     // Get platform data from context (already fetched server-side with 15-minute cache)
     const { platform } = useRequiredPlatform();
@@ -65,6 +91,26 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
         data: platform,
     }), [platform]);
 
+    const platformWorkspaceUserRole = useMemo(() => {
+        if (session?.user.roles?.includes('admin')) {
+            return 'admin' as const;
+        }
+
+        if (session?.user.roles?.includes('courseCreator')) {
+            return 'courseCreator' as const;
+        }
+
+        if (session?.user.roles?.includes('coach')) {
+            return 'coach' as const;
+        }
+
+        if (session?.user.roles?.includes('student')) {
+            return 'student' as const;
+        }
+
+        return 'student' as const;
+    }, [session?.user.roles]);
+
     return (
         <ImageProvider value={OptimizedImage}>
             <div
@@ -82,7 +128,21 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
                     availableLocales={availableLocales}
                     locale={locale}
                     session={session}
+                    onMobileWorkspaceTriggerClick={
+                        session ? () => setIsMobileWorkspaceSidebarOpen(true) : undefined
+                    }
                 />
+                {session && isMobileWorkspaceSidebarOpen && (
+                    <PlatformWorkspaceSidebarPanel
+                        mode="mobileOverlay"
+                        locale={locale}
+                        userName={session.user.name || 'Your Majesty'}
+                        userRole={platformWorkspaceUserRole}
+                        profileImageUrl={session.user.image}
+                        rating={{ score: 4.5, count: 10 }}
+                        onClose={() => setIsMobileWorkspaceSidebarOpen(false)}
+                    />
+                )}
                 <main className="flex-grow w-full mx-auto pb-25 justify-center items-center">
                     <div ref={contentRef} className="page-content-entrance w-full">
                         {children}

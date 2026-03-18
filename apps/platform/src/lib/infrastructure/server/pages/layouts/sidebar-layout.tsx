@@ -17,7 +17,7 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
             {isLoggedIn && (
                 <div
                     id="sidebar"
-                    className="sticky top-0 h-screen flex-shrink-0 z-[1000]"
+                    className="hidden lg:block sticky top-0 h-screen flex-shrink-0 z-[1000]"
                 >
                     <WorkspaceSidebar
                         isCollapsed={true}
@@ -25,6 +25,8 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                         userRole={
                             session.user.roles?.includes('admin')
                                 ? 'admin'
+                                : session.user.roles?.includes('courseCreator')
+                                  ? 'courseCreator'
                                 : session.user.roles?.includes('coach')
                                   ? 'coach'
                                   : session.user.roles?.includes('student')
@@ -35,12 +37,10 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                         profileImageUrl={session.user.image}
                         // TODO: Replace with actual rating logic
                         rating={{ score: 4.5, count: 10 }}
-                    >
-                        {props.children}
-                    </WorkspaceSidebar>
+                    />
                 </div>
             )}
-            <div id="content" className="w-full min-w-0 px-5">
+            <div id="content" className="w-full min-w-0 px-0 lg:px-5">
                 {props.children}
             </div>
         </div>

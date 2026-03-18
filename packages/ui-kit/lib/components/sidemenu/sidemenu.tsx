@@ -1,10 +1,11 @@
 'use client';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Badge } from '../badge';
 import { UserAvatar } from '../avatar/user-avatar';
 import { IconButton } from '../icon-button';
 import { IconChevronRight } from '../icons/icon-chevron-right';
 import { IconChevronLeft } from '../icons/icon-chevron-left';
+import { IconClose } from '../icons/icon-close';
 import { StarRating } from '../star-rating';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TRole } from 'packages/models/src/role';
@@ -19,6 +20,8 @@ export interface SideMenuProps extends isLocalAware {
     className?: string;
     isCollapsed?: boolean;
     onClickToggle?: (isCollapsed: boolean) => void;
+    mode?: 'desktop' | 'mobileOverlay';
+    onClose?: () => void;
 }
 
 /**
@@ -60,81 +63,136 @@ export const SideMenu: FC<SideMenuProps> = ({
     children,
     onClickToggle,
     locale,
+    mode = 'desktop',
+    onClose,
 }) => {
     const dictionary = getDictionary(locale);
+    const isMobileOverlay = mode === 'mobileOverlay';
+    const resolvedIsCollapsed = isMobileOverlay ? false : isCollapsed;
+
+    useEffect(() => {
+        if (!isMobileOverlay) {
+            return;
+        }
+
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = originalOverflow;
+        };
+    }, [isMobileOverlay]);
+
+    const profileSection = (
+        <div className="flex w-full gap-4 h-auto">
+            <div className="flex items-center">
+                <UserAvatar
+                    imageUrl={profileImageUrl}
+                    size={resolvedIsCollapsed ? 'small' : 'large'}
+                    className="rounded-full"
+                    fullName={userName}
+                />
+            </div>
+            {!resolvedIsCollapsed && (
+                <div className="flex flex-col items-start gap-2 justify-center min-w-0 flex-1">
+                    <p className="text-text-primary text-md font-bold leading-[100%] truncate w-full">
+                        {userName}
+                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                        {userRole === 'student' && (
+                            <Badge
+                                data-testid="badge"
+                                text={
+                                    dictionary.components.sideMenu.studentText
+                                }
+                            />
+                        )}
+                        {(userRole === 'coach' ||
+                            userRole === 'courseCreator') && (
+                            <Badge
+                                text={dictionary.components.sideMenu.coachText}
+                            />
+                        )}
+                        {userRole === 'courseCreator' && (
+                            <Badge
+                                text={
+                                    dictionary.components.sideMenu
+                                        .courseCreatorText
+                                }
+                            />
+                        )}
+                    </div>
+                    {userRole !== 'student' && rating && (
+                        <div className="flex gap-[0.25rem] items-end">
+                            <StarRating rating={rating.score} totalStars={5} />
+                            <p className="text-text-primary text-xs font-bold leading-[100%]">
+                                {rating.score}
+                            </p>
+                            <p className="text-text-secondary text-2xs font-bold leading-[100%]">
+                                ({rating.count})
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+
+    const menuContent = (
+        <div
+            className={cn(
+                'flex flex-col self-stretch',
+                isMobileOverlay ? 'gap-2' : 'items-end gap-2 mb-[1.5rem]',
+            )}
+        >
+            {children}
+        </div>
+    );
+
+    if (isMobileOverlay) {
+        return (
+            <div
+                className={cn(
+                    'fixed inset-0 z-[1200] h-screen w-screen overflow-hidden bg-card-fill border-0 rounded-none text-text-primary lg:hidden',
+                    className,
+                )}
+                data-testid="menu-container"
+            >
+                <div className="h-full overflow-y-auto">
+                    <div className="sticky top-0 z-10 flex justify-end bg-card-fill px-4 py-4">
+                        <IconButton
+                            icon={<IconClose classNames="w-8 h-8 text-button-primary-fill" />}
+                            styles="text"
+                            size="big"
+                            onClick={onClose}
+                            aria-label="Close workspace sidebar"
+                            className="rounded-none"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-4 px-6 pb-6">
+                        {profileSection}
+                        <div className="h-[1px] bg-divider" />
+                        {menuContent}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div
             className={cn(
                 'bg-card-fill rounded-medium border-[1px] border-card-stroke flex flex-col gap-4 py-6 items-center relative overflow-hidden transition-all duration-500 ease-in-out',
-                isCollapsed ? 'w-[4rem] px-4 gap-3' : `w-[18rem] px-6`,
+                resolvedIsCollapsed ? 'w-[4rem] px-4 gap-3' : `w-[18rem] px-6`,
                 className,
             )}
             data-testid="menu-container"
         >
-            {/* User Profile Section */}
-            <div className={cn('flex w-full gap-4 h-auto')}>
-                <div className={cn('flex items-center')}>
-                    <UserAvatar
-                        imageUrl={profileImageUrl}
-                        size={isCollapsed ? 'small' : 'large'}
-                        className="rounded-full"
-                        fullName={userName}
-                    />
-                </div>
-                {!isCollapsed && (
-                    <div className="flex flex-col items-start gap-2 justify-center min-w-0 flex-1">
-                        <p className="text-text-primary text-md font-bold leading-[100%] truncate w-full">
-                            {userName}
-                        </p>
-                        <div className="flex gap-2">
-                            {userRole === 'student' && (
-                                <Badge
-                                    data-testid="badge"
-                                    text={
-                                        dictionary.components.sideMenu
-                                            .studentText
-                                    }
-                                />
-                            )}
-                            {(userRole === 'coach' ||
-                                userRole === 'courseCreator') && (
-                                <Badge
-                                    text={
-                                        dictionary.components.sideMenu.coachText
-                                    }
-                                />
-                            )}
-                            {userRole === 'courseCreator' && (
-                                <Badge
-                                    text={
-                                        dictionary.components.sideMenu
-                                            .courseCreatorText
-                                    }
-                                />
-                            )}
-                        </div>
-                        {userRole !== 'student' && rating && (
-                            <div className="flex gap-[0.25rem] items-end">
-                                <StarRating
-                                    rating={rating.score}
-                                    totalStars={5}
-                                />
-                                <p className="text-text-primary text-xs font-bold leading-[100%]">
-                                    {rating.score}
-                                </p>
-                                <p className="text-text-secondary text-2xs font-bold leading-[100%]">
-                                    ({rating.count})
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+            {profileSection}
 
             {/* Menu Groups */}
-            <div className="flex flex-col items-end gap-2 self-stretch mb-[1.5rem]">
-                {children}
-            </div>
+            {menuContent}
 
             {/* Collapse Button */}
             <div
@@ -145,11 +203,13 @@ export const SideMenu: FC<SideMenuProps> = ({
             >
                 <IconButton
                     icon={
-                        isCollapsed ? <IconChevronRight /> : <IconChevronLeft />
+                        resolvedIsCollapsed ? <IconChevronRight /> : <IconChevronLeft />
                     }
                     styles="text"
                     size="small"
-                    onClick={() => onClickToggle && onClickToggle(isCollapsed)}
+                    onClick={() =>
+                        onClickToggle && onClickToggle(resolvedIsCollapsed)
+                    }
                 />
             </div>
         </div>
