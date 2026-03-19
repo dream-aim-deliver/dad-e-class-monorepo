@@ -47,6 +47,7 @@ const COVERAGE_EXCLUDE_PATTERNS = [
 // when Nx loads multiple vite configs in parallel during project graph construction
 const config: UserConfigFnPromise = async () => {
   let dtsPlugin: any;
+  const checkerRoot = path.relative(process.cwd(), __dirname) || '.';
   // vite-plugin-dts generates .d.ts files — only needed for publishing, not in CI
   if (!process.env.CI) {
     const { default: dts } = await import('vite-plugin-dts');
@@ -61,7 +62,10 @@ const config: UserConfigFnPromise = async () => {
   const checkerPlugin = checker({
     typescript: {
       buildMode: true,
-      tsconfigPath: path.join(__dirname, 'tsconfig.lib.json')
+      // vite-plugin-checker shells out to `tsc` during build, so keep this path relative
+      // to avoid breaking on workspace directories that contain spaces.
+      root: checkerRoot,
+      tsconfigPath: 'tsconfig.lib.json'
     }
   });
 
