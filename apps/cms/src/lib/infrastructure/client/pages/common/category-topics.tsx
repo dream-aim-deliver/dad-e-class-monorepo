@@ -16,7 +16,8 @@ const CONTENT_CLASS_NAME = 'mt-8';
 
 interface CategoryTopicsProps {
     selectedTopics: string[];
-    setSelectedTopics: (selectedTopics: string[]) => void;
+    // eslint-disable-next-line no-unused-vars
+    setSelectedTopics: (_selectedTopics: string[]) => void;
     filterText: string;
     chooseCategoryText: string;
 }
@@ -172,6 +173,7 @@ export default function CategoryTopics({
                 className={CONTENT_CLASS_NAME}
             >
                 <FilterSwitch
+                    locale={locale}
                     selectedTopics={selectedTopics}
                     setSelectedTopics={setSelectedTopics}
                     title={filterText}
@@ -198,6 +200,7 @@ export default function CategoryTopics({
 
                 <Tabs.Content value="all" className={CONTENT_CLASS_NAME}>
                     <FilterSwitch
+                        locale={locale}
                         selectedTopics={selectedTopics}
                         setSelectedTopics={setSelectedTopics}
                         title={filterText}
