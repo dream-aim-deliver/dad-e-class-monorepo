@@ -170,7 +170,7 @@ const FilterSwitch: React.FC<TopicListProps> = ({
             </h5>
 
             <div className="relative w-full">
-                <div className="flex flex-wrap items-start gap-3">
+                <div className="flex flex-wrap items-start gap-2">
                     {visibleTopics.map((topic) => (
                         <Button
                             key={topic.slug}
@@ -211,7 +211,7 @@ const FilterSwitch: React.FC<TopicListProps> = ({
                 <div
                     ref={measurementContainerRef}
                     aria-hidden="true"
-                    className="pointer-events-none invisible absolute inset-0 -z-10 flex flex-wrap items-start gap-3"
+                    className="pointer-events-none invisible absolute inset-0 -z-10 flex flex-wrap items-start gap-2"
                 >
                     {list.map((topic) => (
                         <div key={`measure-${topic.slug}`} data-measure-topic>
