@@ -3,8 +3,27 @@ import { describe, it, expect, vi } from 'vitest';
 import FilterSwitch from '../lib/components/filter-switch';
 
 vi.mock('../lib/components/button', () => ({
-    Button: ({ text, onClick, variant }: { text: string; onClick?: () => void; variant?: string }) => (
-        <button onClick={onClick} data-variant={variant}>{text}</button>
+    Button: ({
+        text,
+        onClick,
+        variant,
+        hasIconLeft,
+        hasIconRight,
+    }: {
+        text: string;
+        onClick?: () => void;
+        variant?: string;
+        hasIconLeft?: boolean;
+        hasIconRight?: boolean;
+    }) => (
+        <button
+            onClick={onClick}
+            data-variant={variant}
+            data-icon-left={hasIconLeft ? 'true' : 'false'}
+            data-icon-right={hasIconRight ? 'true' : 'false'}
+        >
+            {text}
+        </button>
     ),
 }));
 
@@ -18,6 +37,7 @@ describe('FilterSwitch', () => {
     it('renders the title', () => {
         render(
             <FilterSwitch
+                locale="en"
                 title="Filter by Topic"
                 list={topics}
                 selectedTopics={[]}
@@ -30,28 +50,36 @@ describe('FilterSwitch', () => {
     it('renders all topic buttons', () => {
         render(
             <FilterSwitch
+                locale="en"
                 title="Topics"
                 list={topics}
                 selectedTopics={[]}
                 setSelectedTopics={vi.fn()}
             />,
         );
-        expect(screen.getByText('React')).toBeInTheDocument();
-        expect(screen.getByText('Next.js')).toBeInTheDocument();
-        expect(screen.getByText('Vue')).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'React' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Next.js' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Vue' }),
+        ).toBeInTheDocument();
     });
 
     it('calls setSelectedTopics with slug added when clicking unselected topic', () => {
         const setSelectedTopics = vi.fn();
         render(
             <FilterSwitch
+                locale="en"
                 title="Topics"
                 list={topics}
                 selectedTopics={[]}
                 setSelectedTopics={setSelectedTopics}
             />,
         );
-        fireEvent.click(screen.getByText('React'));
+        fireEvent.click(screen.getByRole('button', { name: 'React' }));
         expect(setSelectedTopics).toHaveBeenCalledWith(['react']);
     });
 
@@ -59,13 +87,14 @@ describe('FilterSwitch', () => {
         const setSelectedTopics = vi.fn();
         render(
             <FilterSwitch
+                locale="en"
                 title="Topics"
                 list={topics}
                 selectedTopics={['react', 'vue']}
                 setSelectedTopics={setSelectedTopics}
             />,
         );
-        fireEvent.click(screen.getByText('React'));
+        fireEvent.click(screen.getByRole('button', { name: 'React' }));
         expect(setSelectedTopics).toHaveBeenCalledWith(['vue']);
     });
 
@@ -73,13 +102,14 @@ describe('FilterSwitch', () => {
         const setSelectedTopics = vi.fn();
         render(
             <FilterSwitch
+                locale="en"
                 title="Topics"
                 list={topics}
                 selectedTopics={['react']}
                 setSelectedTopics={setSelectedTopics}
             />,
         );
-        fireEvent.click(screen.getByText('React'));
+        fireEvent.click(screen.getByRole('button', { name: 'React' }));
         expect(setSelectedTopics).toHaveBeenCalledWith([]);
     });
 
@@ -88,6 +118,7 @@ describe('FilterSwitch', () => {
         const setSelectedTopics = vi.fn();
         render(
             <FilterSwitch
+                locale="en"
                 title="Topics"
                 list={topics}
                 selectedTopics={[]}
@@ -95,13 +126,14 @@ describe('FilterSwitch', () => {
                 onFilterChange={onFilterChange}
             />,
         );
-        fireEvent.click(screen.getByText('Next.js'));
+        fireEvent.click(screen.getByRole('button', { name: 'Next.js' }));
         expect(onFilterChange).toHaveBeenCalledWith(['nextjs']);
     });
 
     it('renders only the title when list is empty', () => {
         render(
             <FilterSwitch
+                locale="en"
                 title="Topics"
                 list={[]}
                 selectedTopics={[]}
@@ -115,14 +147,23 @@ describe('FilterSwitch', () => {
     it('uses primary variant for selected topics and secondary for unselected', () => {
         render(
             <FilterSwitch
+                locale="en"
                 title="Topics"
                 list={topics}
                 selectedTopics={['react']}
                 setSelectedTopics={vi.fn()}
             />,
         );
-        expect(screen.getByText('React')).toHaveAttribute('data-variant', 'primary');
-        expect(screen.getByText('Next.js')).toHaveAttribute('data-variant', 'secondary');
-        expect(screen.getByText('Vue')).toHaveAttribute('data-variant', 'secondary');
+        expect(screen.getByRole('button', { name: 'React' })).toHaveAttribute(
+            'data-variant',
+            'primary',
+        );
+        expect(
+            screen.getByRole('button', { name: 'Next.js' }),
+        ).toHaveAttribute('data-variant', 'secondary');
+        expect(screen.getByRole('button', { name: 'Vue' })).toHaveAttribute(
+            'data-variant',
+            'secondary',
+        );
     });
 });
