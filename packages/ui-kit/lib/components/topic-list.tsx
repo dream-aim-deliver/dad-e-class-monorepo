@@ -116,7 +116,7 @@ const TopicList: React.FC<TopicListProps> = ({ title, list, locale }) => {
             <h3 className="text-text-primary lg:text-mega text-2xl">{title}</h3>
 
             <div className="relative w-full">
-                <div className="flex gap-3 flex-wrap items-center justify-center">
+                <div className="flex gap-2 flex-wrap items-center justify-center">
                     {visibleTopics.map((topicItem) => (
                         <a href={topicItem.url} key={topicItem.slug}>
                             <Button
@@ -152,7 +152,7 @@ const TopicList: React.FC<TopicListProps> = ({ title, list, locale }) => {
                 <div
                     ref={measurementContainerRef}
                     aria-hidden="true"
-                    className="pointer-events-none invisible absolute inset-0 -z-10 flex flex-wrap items-center justify-center gap-3"
+                    className="pointer-events-none invisible absolute inset-0 -z-10 flex flex-wrap items-center justify-center gap-2"
                 >
                     {list.map((topicItem) => (
                         <a
