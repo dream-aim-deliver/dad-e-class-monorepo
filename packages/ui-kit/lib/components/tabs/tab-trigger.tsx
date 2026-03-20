@@ -26,12 +26,12 @@ export function TabTrigger({
     const isActive = activeTab === value;
 
     const baseStyles =
-        'w-fit px-4 py-2 font-important transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden';
+        'relative flex w-fit self-stretch items-stretch overflow-hidden px-4 py-2 font-important transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
     const variantStyles = {
         default: cn(
             'cursor-pointer transform transition-transform hover:scale-95',
             isActive
-                ? 'flex items-center justify-center bg-button-primary-fill rounded-medium text-button-primary-text'
+                ? 'bg-button-primary-fill rounded-medium text-button-primary-text'
                 : 'border-transparent text-text-primary',
             disabled && 'opacity-50 cursor-not-allowed',
         ),
@@ -39,7 +39,7 @@ export function TabTrigger({
 
     return (
         <div className={cn(
-            "flex flex-row w-full items-center justify-center pr-1",
+            "flex w-full self-stretch items-stretch justify-center pr-1",
             isLast ? "" : "border-r-1 border-divider" // Las tab without divider
         )}>
             <button
@@ -52,7 +52,8 @@ export function TabTrigger({
                 className={cn(baseStyles, variantStyles[variant], 'w-full', className)}
                 {...props}
             >
-                <div className="flex items-center justify-center gap-2 w-full transform transition-transform hover:scale-95">
+                {/* min-h-[3.5rem] */}
+                <div className="flex h-full w-full items-center justify-center gap-2 text-center transform transition-transform hover:scale-95">
                     {icon && (
                         <span
                             className={cn(
@@ -62,7 +63,7 @@ export function TabTrigger({
                             {icon}
                         </span>
                     )}
-                    <span>{children}</span>
+                    <span className="leading-[120%]">{children}</span>
                 </div>
             </button>
         </div>
