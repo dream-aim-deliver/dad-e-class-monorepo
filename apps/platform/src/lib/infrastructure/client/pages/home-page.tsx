@@ -70,7 +70,7 @@ function Topics() {
         return null;
     }
 
-    return <TopicList list={topics} title={t('topicsTitle')} />;
+    return <TopicList locale={locale} list={topics} title={t('topicsTitle')} />;
 }
 
 export default function HomePage() {

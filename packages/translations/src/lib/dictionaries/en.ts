@@ -12,6 +12,7 @@ export const EN: TDictionary = {
     paginationButton: {
       loadMore: 'Load more...',
       viewAll: 'View all',
+      showLess: 'Show less',
       previous: 'Previous',
       next: 'Next',
       page: 'Page',
