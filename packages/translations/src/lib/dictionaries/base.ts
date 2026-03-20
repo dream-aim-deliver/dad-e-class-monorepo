@@ -6,6 +6,7 @@ export const DictionarySchema = z.object({
     paginationButton: z.object({
       loadMore: z.string(),
       viewAll: z.string(),
+      showLess: z.string(),
       previous: z.string(),
       next: z.string(),
       page: z.string(),
