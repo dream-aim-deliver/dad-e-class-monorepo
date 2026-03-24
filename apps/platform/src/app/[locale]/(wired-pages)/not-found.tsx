@@ -9,13 +9,12 @@ export default function NotFound() {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
     const router = useRouter();
+
     return (
-        <div className="w-full px-30 mb-15">
         <DefaultNotFound
             locale={locale}
             onGoBack={() => router.push(`/${locale}`)}
             buttonLabel={dictionary.components.defaultNotFound.goBack}
         />
-        </div>
     );
 }

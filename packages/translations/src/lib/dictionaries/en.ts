@@ -28,7 +28,7 @@ export const EN: TDictionary = {
       contactSupportLine: 'Please contact us at {supportEmailAddress}.',
     },
     defaultNotFound: {
-      title: 'Not found',
+      title: 'Page not found',
       description: "Sorry, the page you are looking for doesn't exist or may have been moved.",
       retry: 'Retry',
       goBack: 'Go to Homepage',
