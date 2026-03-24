@@ -30,9 +30,12 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(({ ch
                 ref={ref}
                 className="grid w-full transition-all duration-100 ease-in-out"
                 style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+                aria-hidden={!isOpen}
             >
-                <div className={cn(isOpen ? "overflow-visible" : "overflow-hidden", className)}>
-                    {children}
+                <div className={cn("min-h-0", isOpen ? "overflow-visible" : "overflow-hidden")}>
+                    <div className={className}>
+                        {children}
+                    </div>
                 </div>
             </div>
         )
