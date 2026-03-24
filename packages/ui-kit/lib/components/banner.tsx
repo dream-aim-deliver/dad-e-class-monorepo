@@ -94,7 +94,7 @@ const Banner: FC<BannerProps> = ({
   const colorClass = styleClasses[style];
 
   const containerClasses = cn(
-    'flex items-start justify-between px-4 py-3',
+    'flex flex-col items-start gap-3 px-4 py-3 sm:flex-row sm:justify-between',
     'transition-all duration-200 rounded-small',
     'bg-transparent',
     'border border-[1px]',
@@ -114,7 +114,7 @@ const Banner: FC<BannerProps> = ({
         <div className="flex flex-col min-w-0">
           {title && (
             <div className="flex items-center gap-2">
-              <span className="font-bold truncate" title={title}>
+              <span className="font-bold leading-tight break-words sm:truncate" title={title}>
                 {title}
               </span>
             </div>
@@ -128,7 +128,7 @@ const Banner: FC<BannerProps> = ({
         </div>
       </div>
 
-      <div className="flex items-start gap-2 flex-shrink-0">
+      <div className="flex w-full items-start gap-2 sm:w-auto sm:flex-shrink-0">
         {button && (
           <button
             onClick={button.onClick}
