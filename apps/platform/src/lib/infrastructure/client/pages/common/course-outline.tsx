@@ -6,7 +6,6 @@ import {
     DefaultAccordion,
     DefaultError,
     DefaultLoading,
-    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { useGetCourseOutlinePresenter } from '../../hooks/use-course-outline-presenter';
 import { trpc } from '../../trpc/cms-client';
@@ -59,7 +58,7 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
 
     return (
         <DefaultAccordion
-            className="px-6 py-4 bg-card-fill border border-card-stroke rounded-md"
+            className="px-6 bg-card-fill border border-card-stroke rounded-md"
             showNumbers={true}
             items={outline.items.map((item) => ({
                 title: item.title,

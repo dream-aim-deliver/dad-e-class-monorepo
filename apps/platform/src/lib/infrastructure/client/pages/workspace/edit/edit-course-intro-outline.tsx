@@ -12,7 +12,7 @@ import {
     SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 import { useCourseIntroduction } from './hooks/edit-introduction-hooks';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
@@ -81,7 +81,7 @@ export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
                 <h2>Course Content</h2>
                 {(outline.items ?? []).length > 0 ? (
                     <DefaultAccordion
-                        className="px-6 py-4 bg-card-fill border border-card-stroke rounded-md"
+                        className="px-6 bg-card-fill border border-card-stroke rounded-md"
                         showNumbers={true}
                         items={(outline.items ?? []).map((item) => ({
                             title: item.title,
