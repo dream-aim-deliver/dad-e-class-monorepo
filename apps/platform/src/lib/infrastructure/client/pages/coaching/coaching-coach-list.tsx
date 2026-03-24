@@ -93,8 +93,8 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
     }
 
     return (
-        <div className="flex flex-col space-y-5">
-            <CardListLayout className="md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 w-full">
+        <div className="flex flex-col space-y-5 @container">
+            <CardListLayout className="md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 @sm:grid-cols-1 @xl:grid-cols-2 w-full ">
                 {displayedCoaches.map((coach) => (
                     <CoachCard
                         key={`coach-${coach.username}`}

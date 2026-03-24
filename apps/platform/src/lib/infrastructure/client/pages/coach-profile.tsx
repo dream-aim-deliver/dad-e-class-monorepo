@@ -10,7 +10,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useMemo, useState } from 'react';
-import { DefaultLoading, DefaultError, DefaultNotFound, Button, Breadcrumbs, IconChevronLeft, BookSessionWith, BuyCoachingSessionBanner, CourseCardList, CourseCard, Dropdown, CoachReviewCardList, CoachReviewCard, IconFilter, CoachReviewFilterModel, CoachReviewFilterModal, ReviewModal, ReviewDisplay, ReviewDialog } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, Button, Breadcrumbs, IconChevronLeft, BookSessionWith, BuyCoachingSessionBanner, CourseCardList, CourseCard, Dropdown, CoachReviewCardList, CoachReviewCard, IconFilter, CoachReviewFilterModel, CoachReviewFilterModal, ReviewModal, ReviewDisplay } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useGetCoachIntroductionPresenter } from '../hooks/use-get-coach-introduction-presenter';
@@ -300,10 +300,10 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						// Keep modal open so user can retry
 					}
 				},
-				onError: (error) => {
-					// Error occurred during API call (network error, exception, etc.)
-					setReviewError(true);
-					setReviewSubmitted(false);
+					onError: () => {
+						// Error occurred during API call (network error, exception, etc.)
+						setReviewError(true);
+						setReviewSubmitted(false);
 					// Keep modal open so user can retry
 				}
 			}
@@ -425,7 +425,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	};
 
 	return (
-		<div className="flex flex-col space-y-16 px-30">
+		<div className="flex flex-col space-y-16 ">
 			{/* Profile Header Section */}
 			{isLoggedIn && (
 				<div className="flex flex-col gap-4 justify-start">
@@ -536,11 +536,11 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 
 			{/* Coach Reviews Section */}
 			<div className='flex flex-col gap-4'>
-				<div className='flex justify-between items-center'>
+				<div className='flex flex-wrap justify-between gap-y-4 items-center'>
 					<h3 className='md:text-2xl text-lg font-bold text-text-primary leading-[110%]'>
 						{coachProfileTranslations('coachReviews')}
 					</h3>
-					<div className="flex items-center gap-2">
+					<div className="flex flex-wrap items-center gap-2">
 						<div className="flex items-center gap-2">
 							<p className="text-sm text-text-primary">
 								{coachProfileTranslations('sortBy')}
