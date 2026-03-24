@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Accordion,
@@ -92,9 +92,15 @@ const CourseMaterialsAccordion: React.FC<{
   };
   className?: string;
 }> = ({ courseMaterials, className }) => {
+  type StoryLink = { title: string; url: string };
+  type StoryFile = { id?: string; name: string; downloadUrl: string; size?: number };
+  type StoryMaterial =
+    | { id: string; type: 'richText'; text?: string }
+    | { id: string; type: 'links'; links?: StoryLink[] }
+    | { id: string; type: 'downloadFiles'; files?: StoryFile[] };
 
 
-  const renderMaterial = (material: any) => {
+  const renderMaterial = (material: StoryMaterial) => {
     switch (material.type) {
       case 'richText':
         return (
@@ -113,7 +119,7 @@ const CourseMaterialsAccordion: React.FC<{
           <div key={material.id }>
             <p className="font-important md:text-md text-sm text-text-primary">Useful Links:</p>
             <div className="p-4 border border-card-stroke rounded-medium">
-              {material.links?.map((link: any, idx: number) => (
+              {material.links?.map((link: StoryLink, idx: number) => (
                 <LinkPreview
                   key={idx}
                   title={link.title}
@@ -129,7 +135,7 @@ const CourseMaterialsAccordion: React.FC<{
           <div key={material.id}>
            <span className="flex items-center gap-2"><IconCloudDownload classNames='text-text-primary'/> <p className="font-important md:text-md text-sm text-text-primary">Download Files:</p></span>
             <div className="p-4 border border-card-stroke rounded-medium">
-              {material.files?.map((file: any, idx: number) => (
+              {material.files?.map((file: StoryFile, idx: number) => (
                 <FilePreview
                   key={idx}
                   uploadResponse={{
@@ -456,7 +462,7 @@ export const ManyItems: Story = {
         content: 'Access detailed analytics and reporting tools to track your progress, measure performance, and generate insights. Create custom reports and dashboards to visualize your data.',
       },
     ],
-    className: 'max-w-3xl',
+    className: 'max-w-8xl',
   },
   parameters: {
     docs: {

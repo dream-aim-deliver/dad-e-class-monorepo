@@ -11,7 +11,7 @@ const meta: Meta<typeof Activity> = {
   decorators: [
     (Story) => (
       <NextIntlClientProvider locale="en" messages={mockMessages}>
-        <div className="w-full max-w-3xl">
+        <div className="w-full max-w-8xl">
           <Story />
         </div>
       </NextIntlClientProvider>

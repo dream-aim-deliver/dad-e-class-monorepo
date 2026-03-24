@@ -37,7 +37,7 @@ const languageSelector = (
       { label: 'ENG', value: 'en' },
       { label: 'DE', value: 'de' },
     ]}
-    onSelectionChange={() => {}}
+    onSelectionChange={() => undefined}
     text={{ simpleText: '' }}
     defaultValue="en"
   />
@@ -74,7 +74,7 @@ type Story = StoryObj<typeof MobileMenuExpanded>;
 
 export const LoggedOut: Story = {
   args: {
-    onClose: () => {},
+    onClose: () => undefined,
     logoContent,
     children: menuLinks,
     languageSelector,
@@ -90,7 +90,7 @@ export const LoggedOut: Story = {
 
 export const LoggedIn: Story = {
   args: {
-    onClose: () => {},
+    onClose: () => undefined,
     logoContent,
     children: menuLinks,
     languageSelector,
