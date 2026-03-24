@@ -25,7 +25,7 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                         userRole={
                             session.user.roles?.includes('admin')
                                 ? 'admin'
-                                : session.user.roles?.includes('courseCreator')
+                                : session.user.roles?.includes('course_creator')
                                   ? 'courseCreator'
                                 : session.user.roles?.includes('coach')
                                   ? 'coach'

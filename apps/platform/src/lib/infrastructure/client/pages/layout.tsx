@@ -96,7 +96,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
             return 'admin' as const;
         }
 
-        if (session?.user.roles?.includes('courseCreator')) {
+        if (session?.user.roles?.includes('course_creator')) {
             return 'courseCreator' as const;
         }
 

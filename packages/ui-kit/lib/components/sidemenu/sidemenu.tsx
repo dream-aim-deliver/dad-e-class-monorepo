@@ -115,10 +115,12 @@ export const SideMenu: FC<SideMenuProps> = ({
                         )}
                         {userRole === 'courseCreator' && (
                             <Badge
-                                text={
-                                    dictionary.components.sideMenu
-                                        .courseCreatorText
-                                }
+                                text={dictionary.components.sideMenu.courseCreatorText}
+                            />
+                        )}
+                        {userRole === 'admin' && (
+                            <Badge
+                                text={dictionary.components.sideMenu.adminText}
                             />
                         )}
                     </div>

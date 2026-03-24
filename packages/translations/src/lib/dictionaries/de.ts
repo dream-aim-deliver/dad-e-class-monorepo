@@ -527,6 +527,7 @@ export const DE: TDictionary = {
       studentText: 'Studierende',
       coachText: 'Coach',
       courseCreatorText: 'Kurs-Creator',
+      adminText: 'Admin',
     },
     groupCard: {
       groupName: 'Gruppenname',

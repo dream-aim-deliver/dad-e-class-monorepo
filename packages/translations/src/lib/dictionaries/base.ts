@@ -522,6 +522,7 @@ export const DictionarySchema = z.object({
       studentText: z.string(),
       coachText: z.string(),
       courseCreatorText: z.string(),
+      adminText: z.string(),
     }),
     groupCard: z.object({
       groupName: z.string(),
