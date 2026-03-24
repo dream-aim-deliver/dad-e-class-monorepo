@@ -46,6 +46,8 @@ interface AvailableCoachingsProps {
     onClickBuyMoreSessions: () => void;
 }
 
+type CheckoutAggregationData = viewModels.TPrepareCheckoutSuccess;
+
 function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps) {
     const locale = useLocale() as TLocale;
     const coachingT = useTranslations('pages.coaching');
@@ -326,7 +328,7 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
 
                 responses.forEach((response) => {
                     if (response.success && response.data) {
-                        const data = response.data as any;
+                        const data = response.data as CheckoutAggregationData;
                         if (data.lineItems) {
                             allLineItems.push(...data.lineItems);
                             totalPrice += data.finalPrice || 0;
@@ -356,7 +358,7 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
         }
     };
 
-    const handlePaymentComplete = (sessionId: string) => {
+    const handlePaymentComplete = () => {
         setIsCheckoutOpen(false);
         setTransactionDraft(null);
         setCheckoutViewModel(undefined);
@@ -407,7 +409,7 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
 
                 responses.forEach((response) => {
                     if (response.success && response.data) {
-                        const data = response.data as any;
+                        const data = response.data as CheckoutAggregationData;
                         if (data.lineItems) {
                             allLineItems.push(...data.lineItems);
                             totalPrice += data.finalPrice || 0;
@@ -426,7 +428,7 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
                         couponCode,
                     }
                 };
-            } catch (error) {
+            } catch {
                 return {
                     success: false,
                     errorMessage: getCheckoutErrorDescription('kaboom')
@@ -474,7 +476,7 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
                 success: false,
                 errorMessage: getCheckoutErrorDescription('kaboom')
             };
-        } catch (error) {
+        } catch {
             return {
                 success: false,
                 errorMessage: getCheckoutErrorDescription('kaboom')

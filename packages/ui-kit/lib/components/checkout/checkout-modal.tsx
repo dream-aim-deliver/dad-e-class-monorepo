@@ -52,6 +52,7 @@ export interface CheckoutModalProps extends isLocalAware {
         packageId?: number;
         selectedCourseIds?: number[]; // For packages - which courses were selected
         coachingOfferingId?: number;
+        offerings?: string; // For multiple coaching offerings
         quantity?: number;
         withCoaching?: boolean; // For courses and packages - was coaching included
         lessonComponentIds?: string[]; // For StudentCourseCoachingSessionPurchase
@@ -99,9 +100,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const [isLoadingPayment, setIsLoadingPayment] = useState(false);
     // Track current transaction draft (updated when coupon is applied)
     const [currentTransactionDraft, setCurrentTransactionDraft] = useState<TransactionDraft>(transactionDraft);
-    // Coaching upsell: only shown when purchaseIdentifier.withCoaching === false
+    // Keep the upsell toggle visible after the user enables coaching,
+    // otherwise they cannot switch it off again during the same session.
     const [addCoachingChecked, setAddCoachingChecked] = useState(false);
     const [isTogglingCoaching, setIsTogglingCoaching] = useState(false);
+    const showCoachingUpsell = Boolean(
+        onToggleCoaching && (purchaseIdentifier.withCoaching === false || addCoachingChecked),
+    );
 
     const stripePromise = useMemo(
         () => loadStripe(stripePublishableKey),
@@ -153,7 +158,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 // This should never happen - all usages provide onApplyCoupon
                 throw new Error('Coupon validation callback not provided');
             }
-        } catch (error) {
+        } catch {
             setCouponError(dictionary.components.checkoutModal.couponError);
         } finally {
             setIsValidatingCoupon(false);
@@ -224,8 +229,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 params.append('quantity', purchaseIdentifier.quantity.toString());
             }
             // Handle multiple offerings (format: "1:3,2:2")
-            if ((purchaseIdentifier as any).offerings) {
-                params.append('offerings', (purchaseIdentifier as any).offerings);
+            if (purchaseIdentifier.offerings) {
+                params.append('offerings', purchaseIdentifier.offerings);
             }
             if (purchaseIdentifier.withCoaching !== undefined) {
                 const effectiveWithCoaching = purchaseIdentifier.withCoaching || addCoachingChecked;
@@ -293,11 +298,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     !isLoadingPayment && modalState === 'summary'
                 }
                 closeOnEscape={!isLoadingPayment}
-                className={modalState === 'summary' ? 'max-w-2xl' : 'max-w-4xl'}
+                className={modalState === 'summary' ? 'max-w-2xl' : 'max-w-4xl bg-white'}
             >
-                <DialogBody>
+                <DialogBody className={modalState === 'payment' ? 'p-0' : ''}>
                     {modalState === 'summary' ? (
-                        <div className="flex flex-col gap-4 p-6">
+                        <div className="flex flex-col gap-4">
                             {/* Header */}
                             <div className="flex items-center gap-3">
                                 <span className="p-2 bg-base-neutral-700 rounded-small">
@@ -325,7 +330,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                     (item, index) => (
                                         <div
                                             key={index}
-                                            className="flex justify-between items-start p-3 border border-card-stroke rounded-md hover:bg-card-fill transition-colors"
+                                            className="flex justify-between items-start p-3 border bg-neutral-800 border-neutral-700 rounded-md"
                                         >
                                             <div className="flex flex-col gap-1">
                                                 <span className="text-text-primary font-medium">
@@ -343,7 +348,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                                     )}
                                                 </span>
                                             </div>
-                                            <span className="text-text-primary font-semibold">
+                                            <span className="text-text-primary font-semibold whitespace-nowrap shrink-0">
                                                 {formatPrice(item.totalPrice)}
                                             </span>
                                         </div>
@@ -352,8 +357,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             </div>
 
                             {/* Coaching upsell checkbox */}
-                            {purchaseIdentifier.withCoaching === false && onToggleCoaching && (
-                                <div className="flex flex-col gap-2 p-3 border border-card-stroke rounded-md">
+                            {showCoachingUpsell && (
+                                <div className="flex flex-col gap-2">
                                     <div className="flex flex-row items-center gap-2">
                                         <CheckBox
                                             name="addCoaching"
@@ -364,7 +369,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                             label={dictionary.components.checkoutModal.withCoachingSession}
                                             labelClass="text-text-primary text-md font-medium"
                                             onChange={handleToggleCoaching}
-                                            disabled={isTogglingCoaching || addCoachingChecked || !!appliedCoupon}
+                                            disabled={isTogglingCoaching || !!appliedCoupon}
                                         />
                                     </div>
                                     <p className="text-text-secondary text-sm">
@@ -373,8 +378,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                 </div>
                             )}
 
+                            <div className="w-full h-[1px] bg-divider" />
+
                             {/* Subtotal */}
-                            <div className="flex justify-between items-center p-2">
+                            <div className="flex justify-between items-center">
                                 <span className="text-text-secondary">
                                     {
                                         dictionary.components.checkoutModal
@@ -386,10 +393,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                 </span>
                             </div>
 
-                            <div className="w-full h-[1px] bg-divider" />
 
                             {/* Coupon Section */}
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-3 border bg-neutral-800 border-neutral-700 rounded-md p-4">
                                 {!appliedCoupon ? (
                                     <>
                                         <InputField
@@ -490,9 +496,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                     <div className="w-full h-[1px] bg-divider" />
                                 </>
                             )}
+                            
+                            <div className="w-full h-[1px] bg-divider" />
 
                             {/* Total */}
-                            <div className="flex justify-between items-center p-4 bg-card-stroke rounded-md">
+                            <div className="flex justify-between items-center">
                                 <span className="text-text-primary text-lg font-bold">
                                     {dictionary.components.checkoutModal.total}
                                 </span>
@@ -515,24 +523,26 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             />
                         </div>
                     ) : (
-                        <div className="flex flex-col gap-4 p-6">
+                        <div className="flex w-full min-h-full flex-col justify-center gap-4 pb-6">
                             {/* Back Button */}
                             <Button
                                 variant="text"
                                 size="small"
                                 text="← Back to Summary"
                                 onClick={handleBack}
-                                className="self-start"
+                                className="self-start mt-4 ml-2"
                             />
 
                             {/* Stripe Embedded Checkout */}
                             {clientSecret && (
-                                <EmbeddedCheckoutProvider
-                                    stripe={stripePromise}
-                                    options={{ clientSecret }}
-                                >
-                                    <EmbeddedCheckout />
-                                </EmbeddedCheckoutProvider>
+                                <div className="w-full">
+                                    <EmbeddedCheckoutProvider
+                                        stripe={stripePromise}
+                                        options={{ clientSecret }}
+                                    >
+                                        <EmbeddedCheckout />
+                                    </EmbeddedCheckoutProvider>
+                                </div>
                             )}
 
                             {!clientSecret && (

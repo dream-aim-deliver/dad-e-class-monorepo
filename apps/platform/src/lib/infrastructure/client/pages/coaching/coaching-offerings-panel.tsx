@@ -24,6 +24,8 @@ import { useCheckoutIntent } from '../../hooks/use-checkout-intent';
 import { useCheckoutErrors, createCheckoutErrorViewModel, getCheckoutErrorMode } from '../../hooks/use-checkout-errors';
 import env from '../../config/env';
 
+type CheckoutAggregationData = viewModels.TPrepareCheckoutSuccess;
+
 function AvailableCoachings() {
     const router = useRouter();
     const coachingT = useTranslations('pages.coaching');
@@ -298,7 +300,7 @@ export default function CoachingOfferingsPanel() {
 
                 responses.forEach((response) => {
                     if (response.success && response.data) {
-                        const data = response.data as any;
+                        const data = response.data as CheckoutAggregationData;
                         if (data.lineItems) {
                             allLineItems.push(...data.lineItems);
                             totalPrice += data.finalPrice || 0;
@@ -333,8 +335,7 @@ export default function CoachingOfferingsPanel() {
         }
     };
 
-    const handlePaymentComplete = (sessionId: string) => {
-        console.log('Payment completed with session ID:', sessionId);
+    const handlePaymentComplete = () => {
         setIsCheckoutOpen(false);
         setTransactionDraft(null);
         setCheckoutViewModel(undefined);
@@ -386,7 +387,7 @@ export default function CoachingOfferingsPanel() {
 
                 responses.forEach((response) => {
                     if (response.success && response.data) {
-                        const data = response.data as any;
+                        const data = response.data as CheckoutAggregationData;
                         if (data.lineItems) {
                             allLineItems.push(...data.lineItems);
                             totalPrice += data.finalPrice || 0;
@@ -405,7 +406,7 @@ export default function CoachingOfferingsPanel() {
                         couponCode,
                     }
                 };
-            } catch (error) {
+            } catch {
                 return {
                     success: false,
                     errorMessage: getCheckoutErrorDescription('kaboom')
@@ -453,7 +454,7 @@ export default function CoachingOfferingsPanel() {
                 success: false,
                 errorMessage: getCheckoutErrorDescription('kaboom')
             };
-        } catch (error) {
+        } catch {
             return {
                 success: false,
                 errorMessage: getCheckoutErrorDescription('kaboom')

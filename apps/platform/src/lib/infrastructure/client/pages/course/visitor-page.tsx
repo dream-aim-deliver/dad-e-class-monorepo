@@ -250,7 +250,7 @@ function VisitorPageContent({
         executeCheckout(request);
     };
 
-    const handlePaymentComplete = (sessionId: string) => {
+    const handlePaymentComplete = () => {
         setIsCheckoutOpen(false);
         setTransactionDraft(null);
         setCheckoutViewModel(undefined);
@@ -299,7 +299,7 @@ function VisitorPageContent({
                 success: false,
                 errorMessage: getCheckoutErrorDescription('kaboom')
             };
-        } catch (error) {
+        } catch {
             return {
                 success: false,
                 errorMessage: getCheckoutErrorDescription('kaboom')
