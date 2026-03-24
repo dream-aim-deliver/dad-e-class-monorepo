@@ -14,26 +14,26 @@ export default function DefaultNotFound(props: DefaultNotFoundProps) {
     const dictionary = getDictionary(props.locale);
 
     return (
-        <div className="flex flex-col items-center justify-center text-center gap-2 py-16 px-6">
-                <IconWarning 
-                    classNames="w-24 h-24 fill-base-brand-500"
-                />
+        <div className="flex w-full flex-col m-auto items-center justify-center rounded-medium border border-card-stroke bg-card-fill px-8 py-12 text-center md:px-14 md:py-16">
+            <IconWarning
+                classNames="w-24 h-24 fill-base-brand-500 mb-4"
+            />
             <h1>404</h1>
-            <h2>
+            <h2 className="mb-4">
                 {props.title || dictionary.components.defaultNotFound.title}
             </h2>
-            
-            <p className="text-text-secondary text-lg mb-8 max-w-md leading-relaxed">
+
+            <p className="mb-8 max-w-md text-lg leading-relaxed text-text-secondary text-balance">
                 {props.description || dictionary.components.defaultNotFound.description}
             </p>
-            
+
             {props.onGoBack && (
                 <Button
                     variant="secondary"
                     size="medium"
                     text={props.buttonLabel || dictionary.components.defaultNotFound.goBack}
                     onClick={props.onGoBack}
-                    className='w-fit'
+                    className="w-fit"
                 />
             )}
         </div>
