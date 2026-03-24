@@ -11,17 +11,18 @@ import {
   PackageCourseSelector,
   BuyCompletePackageBanner,
   PackageCourseCard,
-  PackageCardList,
   PackageCard,
   Breadcrumbs,
   CheckoutModal,
   Banner,
+  CarouselSkeleton,
   type TransactionDraft,
   type CouponValidationResult,
   computeTotalDurationMinutes,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -39,7 +40,18 @@ interface PackageProps {
   packageId: number;
 }
 
-export default function Package({ locale, packageId }: PackageProps) {
+const Carousel = dynamic(
+  () =>
+    import('../wrappers/carousel-wrapper').then(
+      (mod) => mod.CarouselWrapper,
+    ),
+  {
+    ssr: false,
+    loading: () => <CarouselSkeleton />,
+  },
+);
+
+export default function Package({ packageId }: PackageProps) {
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();
   const t = useTranslations('pages.packagePage');
@@ -593,7 +605,7 @@ export default function Package({ locale, packageId }: PackageProps) {
   ];
 
   return (
-    <div className="flex flex-col space-y-5 px-30">
+    <div className="flex flex-col  gap-10">
       {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} />
 
@@ -612,177 +624,176 @@ export default function Package({ locale, packageId }: PackageProps) {
         />
       )}
 
-      <div className="flex flex-col gap-8 bg-card-fill p-5 border border-card-stroke rounded-medium">
-        {/* Top hero section - PackageGeneralInformation */}
-        <PackageGeneralInformation
-          title={packageData.title}
-          subTitle={''}
-          imageUrl={packageData.image?.downloadUrl || ''}
-          description={packageData.description}
-          duration={packageDuration}
-          pricing={{
-            currency: platform.currency,
-            fullPrice: packagePricing.fullPrice,
-            partialPrice: packagePricing.partialPrice,
-            // Use backend savings directly based on coaching toggle
-            savingsWithoutCoachings: packagePricing.savings,
-            savingsWithCoachings: packagePricing.savings,
-          }}
-          locale={currentLocale}
-          onClickPurchase={handlePurchase}
-          coachingIncluded={coachingIncluded}
-          onToggleCoaching={handleToggleCoaching}
-        />
+      {/* Top hero section - PackageGeneralInformation */}
+      <PackageGeneralInformation
+        title={packageData.title}
+        subTitle={''}
+        imageUrl={packageData.image?.downloadUrl || ''}
+        description={packageData.description}
+        duration={packageDuration}
+        pricing={{
+          currency: platform.currency,
+          fullPrice: packagePricing.fullPrice,
+          partialPrice: packagePricing.partialPrice,
+          // Use backend savings directly based on coaching toggle
+          savingsWithoutCoachings: packagePricing.savings,
+          savingsWithCoachings: packagePricing.savings,
+        }}
+        locale={currentLocale}
+        onClickPurchase={handlePurchase}
+        coachingIncluded={coachingIncluded}
+        onToggleCoaching={handleToggleCoaching}
+      />
 
-        <div className="border-t border-card-stroke" />
+      <div className="border-t border-card-stroke" />
 
-        {/* Accordion Section */}
-        {packageData.accordionItems.length > 0 && (
-          <div className="flex flex-col gap-4">
-            <h3 className="text-bg font-semibold text-text-primary">
-              {t('packageDetails')}
-            </h3>
-            <DefaultAccordion
-              showNumbers={packageData.showAccordionNumbers}
-              items={packageData.accordionItems.map((item, index) => ({
-                title: item.title,
-                iconImageUrl: item.icon?.downloadUrl,
-                content: item.description,
-                position: item.position,
-              }))}
-            />
-          </div>
-        )}
+      {/* Accordion Section */}
+      {packageData.accordionItems.length > 0 && (
+        <div className="flex flex-col gap-4">
+          <h3 className="text-bg font-semibold text-text-primary">
+            {t('packageDetails')}
+          </h3>
+          <DefaultAccordion
+            className="rounded-medium border border-card-stroke bg-card-fill px-6 md:px-8"
+            showNumbers={packageData.showAccordionNumbers}
+            items={packageData.accordionItems.map((item) => ({
+              title: item.title,
+              iconImageUrl: item.icon?.downloadUrl,
+              content: item.description,
+              position: item.position,
+            }))}
+          />
+        </div>
+      )}
 
-        <div className="border-t border-card-stroke" />
+      <div className="border-t border-card-stroke" />
 
-        {/* Flexible Section - PackageCourseSelector */}
-        <PackageCourseSelector
-          title={packageData.title}
-          description={packageData.description}
-          coachingIncluded={coachingIncluded}
-          pricing={{
-            currency: platform.currency,
-            fullPrice: pricing.fullPrice,
-            partialPrice: pricing.partialPrice,
-            savings: pricing.savings,
-          }}
-          onClickCheckbox={handleToggleCoaching}
-          onClickPurchase={handlePurchase}
-          locale={currentLocale}
-        >
-          {allCourses.map((course) => {
-            const courseIncluded = selectedCourseIds.includes(course.id);
-            // Convert language string to object format if needed
-            const language = typeof course.language === 'string'
-              ? { code: '', name: course.language }
-              : course.language;
-            return (
-              <PackageCourseCard
-                key={course.id}
-                courseId={course.id.toString()}
-                title={course.title}
-                description={course.description}
-                imageUrl={course.imageUrl || ''}
-                rating={course.averageRating}
-                author={{
-                    name: course.creator.name,
-                    image: course.creator.avatarUrl || ''
-                }}
-                language={language}
-                duration={{
-                    video: course.duration.video ?? 0,
-                    coaching: course.duration.coaching || 0,
-                    selfStudy: course.duration.selfStudy || 0
-                }}
-                pricing={{
-                  fullPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
-                  partialPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
-                    currency: platform.currency
-                }}
-                sales={course.salesCount}
-                reviewCount={course.ratingCount}
-                coachingSessionCount={0}
-                courseIncluded={courseIncluded}
-                onClickUser={() => handleCourseAuthorClick(course.id.toString())}
-                onClickDetails={() => handleCourseDetails(course.id.toString())}
-                onClickIncludeExclude={() => handleIncludeExclude(course.id.toString())}
-                locale={currentLocale}
-                  />
-            );
-          })}
-        </PackageCourseSelector>
-
-        <div className="border-t border-card-stroke" />
-
-        {/* Bottom banner - BuyCompletePackageBanner */}
-        <BuyCompletePackageBanner
-          titleBanner={t('buyCompletePackageTitle')}
-          descriptionBanner={t('buyCompletePackageDescription')}
-          imageUrl={packageData.image?.downloadUrl || ''}
-          title={packageData.title}
-          description={packageData.description}
-          duration={packageDuration}
-          pricing={{
-            currency: platform.currency,
-            fullPrice: packagePricing.fullPrice,
-            partialPrice: packagePricing.partialPrice,
-            // Use backend savings directly based on coaching toggle
-            savingsWithoutCoachings: packagePricing.savings,
-            savingsWithCoachings: packagePricing.savings,
-          }}
-          locale={currentLocale}
-          onClickPurchase={handlePurchase}
-          coachingIncluded={coachingIncluded}
-          onToggleCoaching={handleToggleCoaching}
-        />
-
-        {/* Related Packages Section */}
-        <div className="border-t border-card-stroke" />
-        {relatedPackagesData.length > 0 && (
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-2xl font-bold text-text-primary">
-                {t('relatedPackages.title')}
-              </h2>
-              <p className="text-text-secondary">
-                {t('relatedPackages.subtitle').split(t('relatedPackages.findAllOffers'))[0]}
-                <button
-                  className="text-primary hover:underline"
-                  onClick={() => router.push(`/${currentLocale}/packages`)}
-                >
-                  {t('relatedPackages.findAllOffers')}
-                </button>
-                {t('relatedPackages.subtitle').split(t('relatedPackages.findAllOffers'))[1]}
-              </p>
-            </div>
-
-            <PackageCardList locale={currentLocale}>
-              {relatedPackagesData.map((relatedPackage) => (
-                <PackageCard
-                  key={relatedPackage.id}
-                  imageUrl={relatedPackage.image?.downloadUrl || ''}
-                  title={relatedPackage.title}
-                  description={relatedPackage.description}
-                  duration={relatedPackage.duration}
-                  courseCount={relatedPackage.courseCount}
-                  pricing={{
-                    currency: platform.currency,
-                    // Always show with coachings amounts for related packages
-                    fullPrice: relatedPackage.coursesPriceWithCoachings ?? relatedPackage.priceWithCoachings,
-                    partialPrice: relatedPackage.priceWithCoachings,
-                    savingsWithoutCoachings: relatedPackage.savingsWithCoachings,
-                    savingsWithCoachings: relatedPackage.savingsWithCoachings,
-                  }}
-                  locale={currentLocale}
-                  onClickPurchase={() => handleRelatedPackageDetails(relatedPackage.id)}
-                  onClickDetails={() => handleRelatedPackageDetails(relatedPackage.id)}
+      {/* Flexible Section - PackageCourseSelector */}
+      <PackageCourseSelector
+        title={packageData.title}
+        description={packageData.description}
+        coachingIncluded={coachingIncluded}
+        pricing={{
+          currency: platform.currency,
+          fullPrice: pricing.fullPrice,
+          partialPrice: pricing.partialPrice,
+          savings: pricing.savings,
+        }}
+        onClickCheckbox={handleToggleCoaching}
+        onClickPurchase={handlePurchase}
+        locale={currentLocale}
+      >
+        {allCourses.map((course) => {
+          const courseIncluded = selectedCourseIds.includes(course.id);
+          // Convert language string to object format if needed
+          const language = typeof course.language === 'string'
+            ? { code: '', name: course.language }
+            : course.language;
+          return (
+            <PackageCourseCard
+              key={course.id}
+              courseId={course.id.toString()}
+              title={course.title}
+              description={course.description}
+              imageUrl={course.imageUrl || ''}
+              rating={course.averageRating}
+              author={{
+                  name: course.creator.name,
+                  image: course.creator.avatarUrl || ''
+              }}
+              language={language}
+              duration={{
+                  video: course.duration.video ?? 0,
+                  coaching: course.duration.coaching || 0,
+                  selfStudy: course.duration.selfStudy || 0
+              }}
+              pricing={{
+                fullPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
+                partialPrice: coachingIncluded ? course.priceIncludingCoachings : course.basePrice,
+                  currency: platform.currency
+              }}
+              sales={course.salesCount}
+              reviewCount={course.ratingCount}
+              coachingSessionCount={0}
+              courseIncluded={courseIncluded}
+              onClickUser={() => handleCourseAuthorClick(course.id.toString())}
+              onClickDetails={() => handleCourseDetails(course.id.toString())}
+              onClickIncludeExclude={() => handleIncludeExclude(course.id.toString())}
+              locale={currentLocale}
                 />
-              ))}
-            </PackageCardList>
+          );
+        })}
+      </PackageCourseSelector>
+
+      <div className="border-t border-card-stroke" />
+
+      {/* Bottom banner - BuyCompletePackageBanner */}
+      <BuyCompletePackageBanner
+        titleBanner={t('buyCompletePackageTitle')}
+        descriptionBanner={t('buyCompletePackageDescription')}
+        imageUrl={packageData.image?.downloadUrl || ''}
+        title={packageData.title}
+        description={packageData.description}
+        duration={packageDuration}
+        pricing={{
+          currency: platform.currency,
+          fullPrice: packagePricing.fullPrice,
+          partialPrice: packagePricing.partialPrice,
+          // Use backend savings directly based on coaching toggle
+          savingsWithoutCoachings: packagePricing.savings,
+          savingsWithCoachings: packagePricing.savings,
+        }}
+        locale={currentLocale}
+        onClickPurchase={handlePurchase}
+        coachingIncluded={coachingIncluded}
+        onToggleCoaching={handleToggleCoaching}
+      />
+
+      {/* Related Packages Section */}
+      <div className="border-t border-card-stroke" />
+      {relatedPackagesData.length > 0 && (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl font-bold text-text-primary">
+              {t('relatedPackages.title')}
+            </h2>
+            <p className="text-text-secondary">
+              {t('relatedPackages.subtitle').split(t('relatedPackages.findAllOffers'))[0]}
+              <button
+                className="text-primary hover:underline"
+                onClick={() => router.push(`/${currentLocale}/packages`)}
+              >
+                {t('relatedPackages.findAllOffers')}
+              </button>
+              {t('relatedPackages.subtitle').split(t('relatedPackages.findAllOffers'))[1]}
+            </p>
           </div>
-        )}
-      </div>
+
+          <Carousel locale={currentLocale}>
+            {relatedPackagesData.map((relatedPackage) => (
+              <PackageCard
+                key={relatedPackage.id}
+                imageUrl={relatedPackage.image?.downloadUrl || ''}
+                title={relatedPackage.title}
+                description={relatedPackage.description}
+                duration={relatedPackage.duration}
+                courseCount={relatedPackage.courseCount}
+                pricing={{
+                  currency: platform.currency,
+                  // Always show with coachings amounts for related packages
+                  fullPrice: relatedPackage.coursesPriceWithCoachings ?? relatedPackage.priceWithCoachings,
+                  partialPrice: relatedPackage.priceWithCoachings,
+                  savingsWithoutCoachings: relatedPackage.savingsWithCoachings,
+                  savingsWithCoachings: relatedPackage.savingsWithCoachings,
+                }}
+                locale={currentLocale}
+                onClickPurchase={() => handleRelatedPackageDetails(relatedPackage.id)}
+                onClickDetails={() => handleRelatedPackageDetails(relatedPackage.id)}
+              />
+            ))}
+          </Carousel>
+        </div>
+      )}
 
       {transactionDraft && currentRequest && (
         (currentRequest.purchaseType === 'StudentPackagePurchase' ||
