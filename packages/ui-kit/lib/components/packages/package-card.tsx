@@ -97,7 +97,7 @@ export const PackageCard = ({
     }, [stableCheckTruncation]);
 
     return (
-        <div className="flex flex-col rounded-medium border border-card-stroke bg-card-fill w-full max-w-[24rem]">
+        <div className="flex flex-col rounded-medium border border-card-stroke bg-card-fill w-full">
             {/* Image Section */}
             {shouldShowPlaceholder ? (
                 <div className="rounded-t-lg w-full h-[12rem] bg-base-neutral-700 flex items-center justify-center">
@@ -111,8 +111,6 @@ export const PackageCard = ({
                         loading="lazy"
                         src={imageUrl}
                         alt={title}
-                        width={400}
-                        height={192}
                         onError={handleImageError}
                         className="object-cover w-full h-[12rem] rounded-t-medium border-bottom-0"
                     />
@@ -138,7 +136,7 @@ export const PackageCard = ({
                     </div>
 
                     {/* Duration & Courses Badges */}
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                         {typeof duration === 'number' && duration > 0 && (
                             <Badge
                                 hasIconLeft
@@ -172,7 +170,7 @@ export const PackageCard = ({
                 )}
 
                 <div className="flex flex-col md:pt-4 gap-4">
-                    <div className="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4 items-stretch">
+                    <div className="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4 items-stretch md:items-center">
                         <Button
                             variant="primary"
                             size="big"
@@ -193,7 +191,7 @@ export const PackageCard = ({
 
                         {/* Prices */}
                         {pricing && pricing.fullPrice != null && pricing.partialPrice != null && (
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1 self-center justify-center">
                                 {/* Row 1: Strikethrough price + Actual price on same line */}
                                 <div className="flex gap-2 items-center flex-wrap">
                                     {/* Strikethrough original price (sum of courses + coaching) when there's a discount */}

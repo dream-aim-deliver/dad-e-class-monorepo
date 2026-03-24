@@ -62,7 +62,7 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
     if (!pricing) return null;
 
     return (
-        <div className="flex flex-col md:gap-20 gap-12 w-full">
+        <div className="flex flex-col gap-10 w-full">
             <div className="flex flex-col gap-10">
                 <h2 className="text-text-primary text-3xl font-bold leading-[100%]">
                     {dictionary.components.courseCard.packageCourseSelectorTitle}

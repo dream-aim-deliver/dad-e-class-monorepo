@@ -69,7 +69,7 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
     return (
-        <div className="flex w-full md:gap-15 gap-3 md:p-10 flex-col md:flex-row">
+        <div className="flex w-full md:gap-15 gap-3 flex-col md:flex-row">
             <div className="flex flex-col basis-full md:basis-1/2">
                 {/* Title and duration badge */}
                 <h1 className="text-text-primary text-3xl mb-5 md:text-4xl">

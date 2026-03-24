@@ -81,15 +81,15 @@ export const BuyCompletePackageBanner = ({
     if (!pricing) return null;
 
     return (
-        <div className="flex flex-col xl:flex-row w-full bg-background text-text-primary gap-2 lg:items-center justify-between">
-            <div className="flex flex-col max-w-120 w-full">
+        <div className="flex flex-col xl:flex-row w-full bg-background text-text-primary gap-6 lg:items-center justify-between">
+            <div className="flex flex-col w-full">
                 <h3 className="text-text-primary mb-4">{titleBanner}</h3>
                 <p className="text-md text-text-secondary">
                     {descriptionBanner}
                 </p>
             </div>
 
-            <div className="flex flex-col px-6 py-4 gap-3 rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 max-w-120 w-full">
+            <div className="flex flex-col px-6 py-6 gap-3 rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 w-full">
                 <div className="flex gap-4 items-center">
                     <UserAvatar
                         size="medium"
@@ -129,8 +129,8 @@ export const BuyCompletePackageBanner = ({
                         labelClass="text-text-secondary text-md"
                     />
 
-                    <div className="flex flex-row gap-4 items-center w-full justify-between">
-                        <div className="flex-grow">
+                    <div className="flex flex-row flex-wrap gap-4 items-center w-full justify-center lg:justify-between">
+                        <div className="flex-grow w-full lg:w-auto">
                             <Button
                                 className="w-full"
                                 variant="primary"
@@ -139,7 +139,7 @@ export const BuyCompletePackageBanner = ({
                                 onClick={onClickPurchase}
                             />
                         </div>
-                        <div className="flex flex-col items-end text-right shrink-0">
+                        <div className="flex flex-col items-center text-center w-full lg:w-auto lg:items-end lg:text-right shrink-0">
                             {/* Strikethrough original price when there's a discount */}
                             {(pricing.fullPrice ?? 0) > (pricing.partialPrice ?? 0) && (
                                 <span className="text-text-secondary line-through text-sm">
@@ -156,7 +156,7 @@ export const BuyCompletePackageBanner = ({
                                     ? pricing.savingsWithCoachings
                                     : pricing.savingsWithoutCoachings;
                                 return savings != null && savings > 0 ? (
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center justify-center lg:justify-end gap-1 w-full">
                                         <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
                                             {dictionary.saveText} {pricing.currency} {formatPrice(savings)}
                                         </p>
