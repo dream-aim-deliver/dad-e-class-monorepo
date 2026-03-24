@@ -69,7 +69,7 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
     const coachingPage = coachingPageViewModel.data;
 
     return (
-        <div className="flex flex-col space-y-5 px-30">
+        <div className="flex flex-col space-y-5 gap-10">
             <Outline
                 title={coachingPage.title}
                 description={coachingPage.description}
@@ -80,7 +80,7 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
                 chooseCategoryText={t('chooseCategory')}
                 filterText={t('filterByTopic')}
             />
-            <div className="flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-5">
+            <div className="flex flex-col lg:flex-row lg:items-stretch space-y-5 lg:space-y-0 lg:space-x-5">
                 <CoachingOfferingsPanel />
                 <div className="flex-1 min-w-0">
                     <Suspense fallback={<CoachCardListSkeleton />}>

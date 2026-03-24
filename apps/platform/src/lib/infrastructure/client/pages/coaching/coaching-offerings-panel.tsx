@@ -27,7 +27,6 @@ import env from '../../config/env';
 type CheckoutAggregationData = viewModels.TPrepareCheckoutSuccess;
 
 function AvailableCoachings() {
-    const router = useRouter();
     const coachingT = useTranslations('pages.coaching');
     const [availableCoachingsResponse] =
         trpc.listAvailableCoachings.useSuspenseQuery({});
@@ -81,7 +80,10 @@ function AvailableCoachings() {
             locale={locale}
             availableCoachingSessionsData={groupedOfferings}
             onClickBuyMoreSessions={() => {
-                document.getElementById('buy-coaching-sessions')?.scrollIntoView({ behavior: 'smooth' });
+                const buyCoachingsPanel =
+                    document.getElementById('buy-coaching-sessions-desktop') ??
+                    document.getElementById('buy-coaching-sessions');
+                buyCoachingsPanel?.scrollIntoView({ behavior: 'smooth' });
             }}
         />
     );
@@ -236,7 +238,7 @@ export default function CoachingOfferingsPanel() {
     ) => {
         // Collect all offerings with quantity > 0
         const selectedOfferings = Object.entries(sessionsPerOffering)
-            .filter(([_, quantity]) => quantity > 0)
+            .filter(([, quantity]) => quantity > 0)
             .map(([id, quantity]) => ({
                 offeringId: Number(id),
                 quantity: quantity,
@@ -487,9 +489,45 @@ export default function CoachingOfferingsPanel() {
         return;
     }
 
+    const availableCoachingsPanel = isLoggedIn ? (
+        <div className="w-full min-w-0">
+            <Suspense
+                fallback={
+                    <AvailableCoachingSessions
+                        locale={locale}
+                        isLoading
+                        hideButton
+                        availableCoachingSessionsData={[]}
+                        onClickBuyMoreSessions={() => {
+                            router.push(`/${locale}/checkout`);
+                        }}
+                    />
+                }
+            >
+                <AvailableCoachings />
+            </Suspense>
+        </div>
+    ) : null;
+
+    const buyCoachingsPanel = (
+        <BuyCoachingSession
+            offerings={coachingOfferings.map((offering) => ({
+                id: offering.id,
+                title: offering.name,
+                content: offering.description,
+                price: offering.price,
+                currency: offering.currency,
+                duration: offering.duration,
+            }))}
+            onBuy={handleBuyCoachingSessions}
+            currencyType={currency ?? ''}
+            locale={locale}
+        />
+    );
+
     return (
         <div
-            className={`flex flex-col space-y-5 lg:min-w-[400px] lg:w-[400px]`}
+            className={`flex flex-col space-y-5 lg:min-w-[400px] lg:w-[400px] lg:self-stretch`}
         >
             {/* Checkout Error Banner */}
             {checkoutError && checkoutError.mode !== 'default' && (
@@ -505,37 +543,26 @@ export default function CoachingOfferingsPanel() {
                     }}
                 />
             )}
-            {isLoggedIn && (
-                <Suspense
-                    fallback={
-                        <AvailableCoachingSessions
-                            locale={locale}
-                            isLoading
-                            hideButton
-                            availableCoachingSessionsData={[]}
-                            onClickBuyMoreSessions={() => {
-                                router.push(`/${locale}/checkout`);
-                            }}
-                        />
-                    }
+            <div
+                className="grid w-full min-w-0 items-start gap-5 lg:hidden"
+                style={{
+                    gridTemplateColumns:
+                        'repeat(auto-fit, minmax(min(100%, 22rem), 1fr))',
+                }}
+            >
+                {availableCoachingsPanel}
+                <div id="buy-coaching-sessions" className="w-full min-w-0">
+                    {buyCoachingsPanel}
+                </div>
+            </div>
+            <div className="hidden w-full min-w-0 lg:flex lg:flex-1 lg:flex-col lg:gap-5">
+                {availableCoachingsPanel}
+                <div
+                    id="buy-coaching-sessions-desktop"
+                    className="w-full min-w-0 sticky top-22 self-start"
                 >
-                    <AvailableCoachings />
-                </Suspense>
-            )}
-            <div id="buy-coaching-sessions">
-                <BuyCoachingSession
-                    offerings={coachingOfferings.map((offering) => ({
-                        id: offering.id,
-                        title: offering.name,
-                        content: offering.description,
-                        price: offering.price,
-                        currency: offering.currency,
-                        duration: offering.duration,
-                    }))}
-                    onBuy={handleBuyCoachingSessions}
-                    currencyType={currency ?? ''}
-                    locale={locale}
-                />
+                    {buyCoachingsPanel}
+                </div>
             </div>
 
             {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCoachingSessionPurchase' && (

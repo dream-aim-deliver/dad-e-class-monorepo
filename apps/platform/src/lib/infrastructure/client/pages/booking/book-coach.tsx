@@ -276,7 +276,7 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
 
     const handleBuyCoachingSessions = async (sessionsPerOffering: Record<string | number, number>) => {
         const selectedOfferings = Object.entries(sessionsPerOffering)
-            .filter(([_, quantity]) => quantity > 0)
+            .filter(([, quantity]) => quantity > 0)
             .map(([id, quantity]) => ({
                 offeringId: Number(id),
                 quantity: quantity,
@@ -522,7 +522,7 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
     const coachingOfferings = coachingOfferingsViewModel.data.offerings;
 
     return (
-        <div className="flex flex-col space-y-5">
+        <div className="flex flex-col gap-5 @container">
             {/* Checkout Error Banner */}
             {checkoutError && checkoutError.mode !== 'default' && (
                 <Banner
@@ -538,37 +538,43 @@ function CoachingOfferingsPanel({ coachUsername, isFromCourse, externalVisible, 
                 />
             )}
 
-            {/* Available Coaching Sessions - only show when not booking from a course */}
-            {!isFromCourse && (
-                <Suspense fallback={
-                    <AvailableCoachingSessions
-                        locale={locale}
-                        isLoading
-                        hideButton
-                        availableCoachingSessionsData={[]}
-                        onClickBuyMoreSessions={() => { /* noop - loading state */ }}
-                    />
-                }>
-                    <AvailableCoachings onClickBuyMoreSessions={() => setIsBuySectionVisible((prev) => !prev)} />
-                </Suspense>
-            )}
+            <div className="flex flex-col gap-5 @3xl:flex-row @5xl:flex-col">
+                {/* Available Coaching Sessions - only show when not booking from a course */}
+                {!isFromCourse && (
+                    <div className="min-w-0 @3xl:flex-1 @5xl:flex-none">
+                        <Suspense fallback={
+                            <AvailableCoachingSessions
+                                locale={locale}
+                                isLoading
+                                hideButton
+                                availableCoachingSessionsData={[]}
+                                onClickBuyMoreSessions={() => { /* noop - loading state */ }}
+                            />
+                        }>
+                            <AvailableCoachings onClickBuyMoreSessions={() => setIsBuySectionVisible((prev) => !prev)} />
+                        </Suspense>
+                    </div>
+                )}
 
-            {/* Buy Coaching Sessions - toggleable */}
-            {isBuySectionVisible && coachingOfferings.length > 0 && (
-                <BuyCoachingSession
-                    offerings={coachingOfferings.map((offering) => ({
-                        id: offering.id,
-                        title: offering.name,
-                        content: offering.description,
-                        price: offering.price,
-                        currency: offering.currency,
-                        duration: offering.duration,
-                    }))}
-                    onBuy={handleBuyCoachingSessions}
-                    currencyType={currency ?? ''}
-                    locale={locale}
-                />
-            )}
+                {/* Buy Coaching Sessions - toggleable */}
+                {isBuySectionVisible && coachingOfferings.length > 0 && (
+                    <div className="min-w-0 @3xl:flex-1 @5xl:flex-none">
+                        <BuyCoachingSession
+                            offerings={coachingOfferings.map((offering) => ({
+                                id: offering.id,
+                                title: offering.name,
+                                content: offering.description,
+                                price: offering.price,
+                                currency: offering.currency,
+                                duration: offering.duration,
+                            }))}
+                            onBuy={handleBuyCoachingSessions}
+                            currencyType={currency ?? ''}
+                            locale={locale}
+                        />
+                    </div>
+                )}
+            </div>
 
             {/* Checkout Modal */}
             {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCoachingSessionPurchase' && (
@@ -626,7 +632,7 @@ function BookCoachPageContent({
     // Determine if we're booking from a course context
     const isFromCourse = Boolean(lessonComponentId || courseSlug);
 
-    const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
+    const [coachAvailabilityResponse] =
         trpc.getCoachAvailability.useSuspenseQuery({ coachUsername }, {
             staleTime: 0,
             refetchOnMount: 'always',
@@ -813,8 +819,6 @@ function BookCoachPageContent({
         );
     }
 
-    const coachAvailability = coachAvailabilityViewModel.data;
-
     return (
         <>
             <Dialog
@@ -869,7 +873,7 @@ function BookCoachPageContent({
                     </DialogBody>
                 </DialogContent>
             </Dialog>
-            <div className="flex flex-col h-[calc(100dvh-100px)] p-4 md:p-6">
+            <div className="flex flex-col @container">
                 {returnTo && (
                     <div className="mb-4">
                         <Button
@@ -889,9 +893,9 @@ function BookCoachPageContent({
                         {isFromCourse ? coachingT('bookingHelp.courseDescription') : coachingT('bookingHelp.standaloneDescription')}
                     </p>
                 </div>
-                {/* Desktop Layout: Calendar on left, AvailableCoachings on right */}
-                <div className="flex-1 min-h-0 flex-row hidden md:flex gap-6">
-                    <div className="rounded-lg bg-card-fill p-4 flex-1 overflow-hidden flex flex-col">
+                {/* Container-driven layout: stack under 5xl container width, split at 5xl */}
+                <div className="hidden min-h-0 gap-6 md:flex md:flex-col @5xl:flex-row">
+                    <div className="max-h-[calc(100dvh-18rem)] rounded-lg bg-card-fill p-4 flex flex-col overflow-hidden @5xl:flex-1">
                         {nextAvailableDate && (
                             <div className="mb-3">
                                 <Banner
@@ -962,7 +966,7 @@ function BookCoachPageContent({
                         </div>
                     </div>
                     {!isFromCourse && (
-                        <div className="w-[400px] shrink-0">
+                        <div className="@5xl:w-90 @5xl:min-w-90 @5xl:shrink-0">
                             <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                                 <CoachingOfferingsPanel
                                     coachUsername={coachUsername}
@@ -974,7 +978,7 @@ function BookCoachPageContent({
                     )}
                 </div>
                 {/* Mobile Layout: Calendar above, AvailableCoachings below */}
-                <div className="flex flex-col md:hidden gap-4">
+                <div className="flex flex-col gap-4 md:hidden">
                     {nextAvailableDate && (
                         <Banner
                             style="neutral"
