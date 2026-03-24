@@ -1,4 +1,3 @@
-import type { Viewport } from 'next';
 import { TLocale } from '@maany_shr/e-class-translations';
 import CourseServerComponent from '../../../../../lib/infrastructure/server/pages/course-rsc';
 import getSession from '../../../../../lib/infrastructure/server/config/auth/get-session';
@@ -6,15 +5,6 @@ import { redirect } from 'next/navigation';
 import { getQueryClient, trpc } from '../../../../../lib/infrastructure/server/config/trpc/cms-server';
 import { createGetCourseAccessPresenter } from '../../../../../lib/infrastructure/server/presenter/get-course-access-presenter';
 import { viewModels } from '@maany_shr/e-class-models';
-
-// MOBILE-HACK: Responsive viewport for unauthenticated visitors (always visitor view).
-// Authenticated users keep 1280px (may be enrolled). The RSC's renderVisitorView includes
-// a client-side MobileReadyViewport component to handle the authenticated-visitor edge case.
-export async function generateViewport(): Promise<Viewport> {
-    const session = await getSession();
-    if (!session) return { width: 'device-width', initialScale: 1 };
-    return { width: 1280 };
-}
 
 export default async function Page({
     params: paramsPromise,
@@ -79,7 +69,7 @@ async function handlePCALocaleRedirect(locale: TLocale, slug: string): Promise<v
     await presenter.present(courseAccessResponse, courseAccessViewModel);
 
     if (courseAccessViewModel?.mode === 'default') {
-        const { highestRole, isAssessmentCompleted, course } = courseAccessViewModel.data;
+        const { isAssessmentCompleted, course } = courseAccessViewModel.data;
         const shouldShowAssessment = isAssessmentCompleted === false;
 
         if (shouldShowAssessment) {
