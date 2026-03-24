@@ -12,9 +12,26 @@ import {
     IconLoaderSpinner,
 } from '@maany_shr/e-class-ui-kit';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../../../../lib/infrastructure/client/trpc/cms-client';
 
 type PageState = 'loading' | 'success' | 'error';
+type RedirectPurchaseIdentifier = {
+    courseSlug?: string;
+};
+type CheckoutTransactionReceipt = {
+    id: string | number;
+    amount: number;
+    currency: string;
+};
+type CheckoutReturnTransaction = Partial<viewModels.TPrepareCheckoutSuccess> & {
+    success?: boolean;
+    alreadyProcessed?: boolean;
+    customerEmail?: string;
+    purchaseType?: string;
+    purchaseIdentifier?: RedirectPurchaseIdentifier;
+    transaction?: CheckoutTransactionReceipt;
+};
 
 export default function CheckoutReturnPage() {
     const router = useRouter();
@@ -25,7 +42,7 @@ export default function CheckoutReturnPage() {
     const utils = trpc.useUtils();
 
     const [state, setState] = useState<PageState>('loading');
-    const [transaction, setTransaction] = useState<any>(null);
+    const [transaction, setTransaction] = useState<CheckoutReturnTransaction | null>(null);
     const [error, setError] = useState<string>('');
     const [errorTimestamp, setErrorTimestamp] = useState<string>('');
     const [stripeDetails, setStripeDetails] = useState<{
@@ -108,15 +125,19 @@ export default function CheckoutReturnPage() {
                 setState('error');
                 setError('Payment verification failed');
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('[CheckoutReturnPage] Error:', err);
             setState('error');
-            setError(err.message || 'An error occurred processing your payment');
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'An error occurred processing your payment',
+            );
             setErrorTimestamp(new Date().toLocaleString());
         }
     };
 
-    const startCountdown = (result: any) => {
+    const startCountdown = (result: CheckoutReturnTransaction) => {
         const interval = setInterval(() => {
             setCountdown((prev) => {
                 if (prev <= 1) {
@@ -129,9 +150,9 @@ export default function CheckoutReturnPage() {
         }, 1000);
     };
 
-    const redirectToDestination = (result: any) => {
+    const redirectToDestination = (result: CheckoutReturnTransaction) => {
         const path = getRedirectPath(
-            result.purchaseType,
+            result.purchaseType ?? '',
             result.purchaseIdentifier,
             locale,
         );
@@ -140,16 +161,16 @@ export default function CheckoutReturnPage() {
 
     const getRedirectPath = (
         purchaseType: string,
-        identifier: any,
+        identifier: RedirectPurchaseIdentifier | undefined,
         locale: string,
     ) => {
         switch (purchaseType) {
             case 'StudentCoursePurchase':
             case 'StudentCoursePurchaseWithCoaching':
-                return `/${locale}/courses/${identifier.courseSlug}`;
+                return `/${locale}/courses/${identifier?.courseSlug}`;
             case 'StudentCourseCoachingSessionPurchase':
                 // Redirect back to the enrolled course page
-                return identifier.courseSlug 
+                return identifier?.courseSlug
                     ? `/${locale}/courses/${identifier.courseSlug}`
                     : `/${locale}/workspace/courses`;
             case 'StudentPackagePurchase':
@@ -162,7 +183,7 @@ export default function CheckoutReturnPage() {
         }
     };
 
-    const getButtonText = (purchaseType: string, purchaseIdentifier?: any): string => {
+    const getButtonText = (purchaseType?: string): string => {
         switch (purchaseType) {
             case 'StudentCoursePurchase':
             case 'StudentCoursePurchaseWithCoaching':
@@ -175,12 +196,12 @@ export default function CheckoutReturnPage() {
             default:
                 return dictionary.pages.checkoutReturn.actions.continue;
         }
-    }
+    };
 
     if (state === 'loading') {
         return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/10 px-4 backdrop-blur-sm">
+                <div className="flex flex-col items-center justify-center gap-4 text-center">
                     <IconLoaderSpinner
                         size="8"
                         classNames="text-button-primary-fill animate-spin"
@@ -415,7 +436,7 @@ export default function CheckoutReturnPage() {
                             <Button
                                 variant="primary"
                                 size="big"
-                                text={getButtonText(transaction.purchaseType, transaction.purchaseIdentifier)}
+                                text={getButtonText(transaction.purchaseType)}
                                 onClick={() => redirectToDestination(transaction)}
                                 className="w-full"
                             />

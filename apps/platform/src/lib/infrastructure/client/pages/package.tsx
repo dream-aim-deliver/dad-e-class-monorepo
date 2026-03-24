@@ -201,7 +201,7 @@ export default function Package({ locale, packageId }: PackageProps) {
         success: false,
         errorMessage: getCheckoutErrorDescription('kaboom')
       };
-    } catch (error) {
+    } catch {
       return {
         success: false,
         errorMessage: getCheckoutErrorDescription('kaboom')
@@ -572,7 +572,7 @@ export default function Package({ locale, packageId }: PackageProps) {
     router.push(`/${currentLocale}/packages/${packageId}`);
   };
 
-  const handlePaymentComplete = (sessionId: string) => {
+  const handlePaymentComplete = () => {
     setIsCheckoutOpen(false);
     setTransactionDraft(null);
     setCheckoutViewModel(undefined);
