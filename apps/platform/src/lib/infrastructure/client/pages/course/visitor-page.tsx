@@ -48,6 +48,8 @@ interface VisitorPageProps {
     locale: TLocale;
 }
 
+type CourseReview = viewModels.TListCourseReviewsSuccess['reviews'][number];
+
 /**
  * Wrapper component that ensures session is ready before rendering content.
  * This prevents auth race condition where tRPC queries run before the token is available.
@@ -368,7 +370,7 @@ function VisitorPageContent({
         window.open(`/${locale}/courses/${slug}`, '_blank');
     };
 
-    const handleErrorCallback = (message: string, error: any) => {
+    const handleErrorCallback = (message: string, error: Event | Error) => {
         console.error('Video error:', message, error);
     };
 
@@ -500,7 +502,7 @@ function VisitorPageContent({
                 return <DefaultNotFound locale={locale} />;
             case 'default':
                 return (
-                    <div className="p-6 bg-card-fill border border-card-stroke rounded-medium">
+                    <div className="px-6 bg-card-fill border border-card-stroke rounded-medium">
                         <DefaultAccordion
                             items={(outlineData.data.items ?? []).map((item) => ({
                                 title: item.title,
@@ -547,14 +549,14 @@ function VisitorPageContent({
                 return (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {reviews
-                            .sort((a: any, b: any) =>
+                            .sort((a: CourseReview, b: CourseReview) =>
                                 sortOrder === 'newest'
                                     ? new Date(b.createdAt).getTime() -
                                     new Date(a.createdAt).getTime()
                                     : new Date(a.createdAt).getTime() -
                                     new Date(b.createdAt).getTime(),
                             )
-                            .map((review: any) => (
+                            .map((review: CourseReview) => (
                                 <ReviewSnippet
                                     key={review.id}
                                     reviewText={review.comment}
@@ -662,8 +664,8 @@ function VisitorPageContent({
     };
 
     return (
-        <div className="w-full flex flex-col gap-6 px-15">
-            <div className="w-full pl-4">
+        <div className="w-full flex flex-col gap-6">
+            <div className="w-full">
                 <Breadcrumbs
                     items={[
                         {

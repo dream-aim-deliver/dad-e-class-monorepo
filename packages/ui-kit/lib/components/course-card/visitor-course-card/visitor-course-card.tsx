@@ -93,11 +93,11 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     const pricingLabel = `${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice}`;
     return (
         <div className="w-full mx-auto">
-            <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-visible transition-transform hover:scale-[1.02]">
+            <div className="flex flex-col w-auto h-[37.5rem] rounded-medium border border-card-stroke bg-card-fill overflow-visible transition-transform hover:scale-[1.02]">
                 <div className="relative flex-shrink-0 overflow-hidden rounded-t-medium">
                     {shouldShowPlaceholder ? (
                         // Placeholder for broken image (matching CoachBanner styling)
-                        <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
+                        <div className="w-full h-[12.5rem] bg-base-neutral-700 flex items-center justify-center">
                             <span className="text-text-secondary text-md">
                                 {
                                     dictionary.components.coachBanner
@@ -110,8 +110,6 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             loading="lazy"
                             src={imageUrl}
                             alt={title}
-                            width={430}
-                            height={200}
                             className="w-full h-[200px] object-cover"
                             onError={handleImageError}
                         />

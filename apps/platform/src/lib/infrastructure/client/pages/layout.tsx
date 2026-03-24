@@ -120,7 +120,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
                     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImage?.downloadUrl ?? ''})`,
                     backgroundSize: '100% auto',
                     // TODO: have a fallback color
-                    backgroundColor: '#141414',
+                    backgroundColor: 'var(--color-base-neutral-950, #141414)',
                 }}
             >
                 <Header

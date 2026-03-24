@@ -356,7 +356,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <nav className="bg-neutral-950/50 backdrop-blur-md text-text-primary py-3 px-4 lg:px-14 flex items-center justify-between w-full sticky top-0 z-1000">
+    <nav className="bg-neutral-950/50 backdrop-blur-md text-text-primary py-3 px-[max(16px,4vw)] flex items-center justify-between w-full sticky top-0 z-1000">
       {/* Logo */}
       <div className="flex items-center">
         {renderLogoLink()}

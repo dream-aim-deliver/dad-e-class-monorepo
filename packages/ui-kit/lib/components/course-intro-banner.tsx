@@ -7,7 +7,7 @@ export interface CourseIntroBannerProps extends isLocalAware {
     description: string;
     videoId: string;
     thumbnailUrl?: string;
-    onErrorCallback: (message: string, error: any) => void;
+    onErrorCallback: (message: string, error: Event | Error) => void;
 }
 
 /**
@@ -43,7 +43,7 @@ export const CourseIntroBanner: FC<CourseIntroBannerProps> = ({
     const dictionary = getDictionary(locale).components.courseIntroBanner;
 
     return (
-        <div className="flex items-center md:flex-row flex-col w-full gap-7 bg-card-fill rounded-medium border-[1px] border-card-stroke p-13">
+        <div className="flex items-start md:flex-row flex-col w-full bg-card-fill rounded-medium border-[1px] border-card-stroke gap-6 md:gap-8 lg:gap-10 p-6 md:p-8 lg:p-10">
             {/* VideoPlayer */}
             <div className="flex aspect-video w-full md:flex-1 md:basis-[50%]">
                 <VideoPlayer

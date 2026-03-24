@@ -69,7 +69,7 @@ export default function OffersPage(props: OffersPageProps) {
     const outline = outlineViewModel.data;
 
     return (
-        <div className="flex flex-col space-y-5 px-30">
+        <div className="flex flex-col  gap-y-10">
             <Outline title={outline.title} description={outline.description} />
             <OffersFilters
                 selectedTopics={selectedTopics}
