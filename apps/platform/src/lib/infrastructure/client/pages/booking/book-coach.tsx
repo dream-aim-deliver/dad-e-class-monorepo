@@ -18,6 +18,7 @@ import {
     DefaultError,
     DefaultLoading,
     Dialog,
+    DialogBody,
     DialogContent,
     CalendarNavigationHeader,
     Button,
@@ -832,36 +833,38 @@ function BookCoachPageContent({
                     closeOnOverlayClick
                     closeOnEscape
                 >
-                    <ScheduledOfferingContent
-                        key={dialogKey}
-                        offering={newSession}
-                        setOffering={setNewSession}
-                        briefing={briefing}
-                        setBriefing={setBriefing}
-                        onSubmit={onSubmit}
-                        isSubmitting={requestSessionMutation.isPending}
-                        submitError={submitError}
-                        bookingSuccess={bookingSuccess}
-                        returnTo={returnTo}
-                        courseSlug={courseSlug}
-                        isBriefingRequired={isBriefingRequired}
-                        onReturnToCourse={() => {
-                            if (returnTo) {
-                                router.push(returnTo);
-                            }
-                        }}
-                        onViewSessions={() => {
-                            router.push(`/${locale}/workspace/coaching-sessions`);
-                        }}
-                        closeDialog={() => {
-                            setIsDialogOpen(false);
-                            setNewSession(defaultSession);
-                            setSubmitError(undefined);
-                            setBookingSuccess(false);
-                            setBriefing('');
-                        }}
-                        onBuyMoreSessions={handleBuyMoreSessionsFromDialog}
-                    />
+                    <DialogBody>
+                        <ScheduledOfferingContent
+                            key={dialogKey}
+                            offering={newSession}
+                            setOffering={setNewSession}
+                            briefing={briefing}
+                            setBriefing={setBriefing}
+                            onSubmit={onSubmit}
+                            isSubmitting={requestSessionMutation.isPending}
+                            submitError={submitError}
+                            bookingSuccess={bookingSuccess}
+                            returnTo={returnTo}
+                            courseSlug={courseSlug}
+                            isBriefingRequired={isBriefingRequired}
+                            onReturnToCourse={() => {
+                                if (returnTo) {
+                                    router.push(returnTo);
+                                }
+                            }}
+                            onViewSessions={() => {
+                                router.push(`/${locale}/workspace/coaching-sessions`);
+                            }}
+                            closeDialog={() => {
+                                setIsDialogOpen(false);
+                                setNewSession(defaultSession);
+                                setSubmitError(undefined);
+                                setBookingSuccess(false);
+                                setBriefing('');
+                            }}
+                            onBuyMoreSessions={handleBuyMoreSessionsFromDialog}
+                        />
+                    </DialogBody>
                 </DialogContent>
             </Dialog>
             <div className="flex flex-col h-[calc(100dvh-100px)] p-4 md:p-6">
