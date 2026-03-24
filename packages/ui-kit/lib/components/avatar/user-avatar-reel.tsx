@@ -114,7 +114,7 @@ export const UserAvatarReel = ({
     };
 
     return (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+        <div className="flex flex-row flex-wrap items-center gap-2 gap-y-2">
             <div className="flex -space-x-3">
                 {visibleUsers.map((user, index) => (
                     <UserAvatar
@@ -133,7 +133,7 @@ export const UserAvatarReel = ({
                     </div>
                 )}
             </div>
-            <p className="text-text-primary">
+            <p className="text-text-primary min-w-40">
                 {formatUserNamesText(normalizedUsers, totalUsersCount)}
             </p>
         </div>

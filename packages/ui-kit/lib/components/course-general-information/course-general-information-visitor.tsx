@@ -188,8 +188,8 @@ export const CourseGeneralInformationVisitor: FC<
         };
 
         return (
-            <div className="flex w-full max-w-full overflow-hidden md:gap-15 gap-4 px-4  flex-col md:flex-row flex-wrap min-w-0">
-                <div className="flex flex-col basis-full md:flex-1 gap-4 md:gap-6 md:pt-9 items-start order-1 md:order-2 min-w-0">
+            <div className="flex w-full max-w-full overflow-hidden md:overflow-visible md:gap-15 gap-4 flex-col md:flex-row flex-wrap min-w-0">
+                <div className="flex flex-col basis-full md:flex-1 gap-4 md:gap-6 items-start order-1 md:order-2 min-w-0">
                     {/* Title & rating */}
                     <h1 className="text-text-primary"> {title} </h1>
                     <div className="flex flex-row items-center gap-2">
@@ -206,7 +206,7 @@ export const CourseGeneralInformationVisitor: FC<
                     </div>
 
                     {/* IMAGE for mobile */}
-                    <div className="relative w-full max-w-full max-h-[400px] bg-base-neutral-700 rounded-medium overflow-hidden block md:hidden">
+                    <div className="relative w-full max-w-full max-h-[400px] bg-base-neutral-700 rounded-medium overflow-hidden block md:hidden sticky">
                         {shouldShowPlaceholder ? (
                             <div className="flex items-center justify-center h-full min-h-[200px]">
                                 <span className="text-text-secondary text-md">
@@ -333,7 +333,7 @@ export const CourseGeneralInformationVisitor: FC<
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 items-center lg:grid-cols-2 gap-6 w-full">
+                    <div className="flex flex-row flex-wrap items-start gap-6 w-full">
                         {/* Created by */}
                         {author?.name?.trim() && (
                             <div className="flex flex-col gap-2 items-start">
@@ -343,15 +343,15 @@ export const CourseGeneralInformationVisitor: FC<
                                             .courseGeneralInformationView.createdByText
                                     }
                                 </h6>
-                                <div className="flex items-center gap-3 min-w-0">
+                                <div className="flex flex-row items-center gap-2 min-w-0">
                                     <UserAvatar
                                         size="medium"
-                                        fullName={(author as any).name as string}
-                                        imageUrl={(author as any).image as string}
+                                        fullName={author.name}
+                                        imageUrl={author.image}
                                     />
                                     <div className="flex flex-col min-w-0">
                                         <p className="text-md text-text-primary font-important truncate">
-                                            {(author as any).name as string}
+                                            {author.name}
                                         </p>
                                     </div>
                                     {onClickBook && (
@@ -455,12 +455,12 @@ export const CourseGeneralInformationVisitor: FC<
                         size="huge"
                         text={`${dictionary.components.courseGeneralInformationView.buyButton} (${pricing.currency} ${coachingIncluded ? formatPrice(pricing.fullPrice ?? 0) : formatPrice(pricing.partialPrice ?? 0)})`}
                         onClick={() => onClickBuyCourse(coachingIncluded)}
-                        className="w-full text-lg lg:text-2xl"
+                        className="w-full text-lg"
                     />
                 </div>
 
                 {/* Image desktop */}
-                <div className="relative basis-1/2 h-full order-1 md:order-2 hidden md:block">
+                <div className="relative basis-1/2 order-1 md:order-2 hidden md:block md:sticky md:top-[5.5rem] self-start h-fit">
                     {shouldShowPlaceholder ? (
                         <div className="w-full h-[400px] bg-base-neutral-700 flex items-center justify-center rounded-medium">
                             <span className="text-text-secondary text-md">

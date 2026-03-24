@@ -13,14 +13,13 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
     const session = await nextAuth.auth();
     const isLoggedIn = session !== null;
     return (
-        <div className="flex flex-row lg:gap-0 p-5 overflow-y-auto">
+        <div className="flex flex-row items-start gap-0 px-[max(16px,4vw)] py-5 lg:gap-[max(16px,4vw)]">
             {isLoggedIn && (
                 <div
                     id="sidebar"
-                    className="hidden lg:block sticky top-0 h-screen flex-shrink-0 z-[1000]"
+                    className="hidden lg:block sticky top-22 self-start h-[calc(100vh-5.5rem)] flex-shrink-0 z-[1000]"
                 >
                     <WorkspaceSidebar
-                        isCollapsed={true}
                         userName={session.user.name || 'Your Majesty'}
                         userRole={
                             session.user.roles?.includes('admin')
@@ -40,7 +39,7 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                     />
                 </div>
             )}
-            <div id="content" className="w-full min-w-0 px-0 lg:px-5">
+            <div id="content" className="w-full min-w-0 max-w-[100rem] mx-auto px-0">
                 {props.children}
             </div>
         </div>

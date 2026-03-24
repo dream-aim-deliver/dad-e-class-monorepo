@@ -7,3 +7,7 @@ html {
        Remove when all pages have proper mobile views. Search "MOBILE-HACK" for all instances. */
     min-width: 1280px;
 }
+
+body {
+    background-color: var(--color-base-neutral-950, #141414);
+}
