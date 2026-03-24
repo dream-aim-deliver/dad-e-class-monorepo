@@ -19,20 +19,17 @@ interface CarouselProps extends isLocalAware {
 // Content renderer that won't re-render on state changes
 export const CarouselContent: React.FC<{
     items: React.ReactNode[];
-    itemsPerView: number;
-}> = React.memo(({ items, itemsPerView }) => {
+}> = React.memo(({ items }) => {
     return (
-        <div className="flex w-full justify-center flex-shrink-0 transition-opacity duration-300 opacity-100">
+        <div
+            className="flex w-full flex-shrink-0 gap-4 transition-opacity duration-300 opacity-100"
+            role="list"
+        >
             {items.map((item, index) => (
                 <div
                     key={index}
-                    className={`flex-shrink-0 justify-items-center px-2 transition-all duration-300 ${
-                        itemsPerView === 1 || items.length === 1
-                            ? 'w-full max-w-[90%] mx-auto'
-                            : itemsPerView === 2
-                              ? 'w-1/2 max-w-[45%]'
-                              : 'w-1/3 max-w-[30%]'
-                    }`}
+                    role="listitem"
+                    className="min-w-0 flex-1 transition-all duration-300 [&>*]:w-full [&>*]:max-w-none"
                 >
                     {item}
                 </div>
@@ -178,79 +175,85 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
         );
 
         if (childrenArray.length === 0) return null;
+        const hasMultiplePages = itemGroups.length > 1;
 
         return (
             <div className={className}>
-                    <div className="relative">
-                        {/* Previous Button */}
-                        {itemGroups.length > 1 && (
-                            <button
-                                onClick={goPrev}
-                                disabled={currentPage === 0}
-                                className={`absolute left-[-10px] sm:left-[-20px] md:-left-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${
-                                    currentPage === 0
-                                        ? 'opacity-50 cursor-not-allowed'
-                                        : 'cursor-pointer'
-                                }`}
-                                aria-label="Previous slide"
-                            >
-                                <IconChevronLeft classNames="text-button-primary-fill w-5 h-5 sm:w-6 sm:h-6" />
-                            </button>
-                        )}
-
-                        {/* Carousel Content Wrapper */}
-                        <div
-                            ref={carouselRef}
-                            className="overflow-hidden transition-all duration-500"
-                            onTouchStart={handleTouchStart}
-                            onTouchMove={handleTouchMove}
-                            role="region"
-                            aria-label="Carousel"
+                <div
+                    className={
+                        hasMultiplePages
+                            ? 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-0'
+                            : ''
+                    }
+                >
+                    {/* Previous Button */}
+                    {hasMultiplePages && (
+                        <button
+                            onClick={goPrev}
+                            disabled={currentPage === 0}
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors sm:h-10 sm:w-10 relative right-2${
+                                currentPage === 0
+                                    ? 'opacity-50 cursor-not-allowed'
+                                    : 'cursor-pointer'
+                            }`}
+                            aria-label="Previous slide"
                         >
-                            <div className="relative flex ease-in-out w-full justify-center">
-                                {itemGroups[currentPage] && (
-                                    <CarouselContent
-                                        items={itemGroups[currentPage]}
-                                        itemsPerView={itemsPerView}
-                                    />
-                                )}
-                            </div>
-                        </div>
+                            <IconChevronLeft classNames="text-button-primary-fill w-5 h-5 sm:w-6 sm:h-6" />
+                        </button>
+                    )}
 
-                        {/* Next Button */}
-                        {itemGroups.length > 1 && (
-                            <button
-                                onClick={goNext}
-                                disabled={currentPage === itemGroups.length - 1}
-                                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${
-                                    currentPage === itemGroups.length - 1
-                                        ? 'opacity-50 cursor-not-allowed'
-                                        : 'cursor-pointer'
-                                }`}
-                                aria-label="Next slide"
-                            >
-                                <IconChevronRight classNames="text-button-primary-fill w-5 h-5 sm:w-6 sm:h-6" />
-                            </button>
-                        )}
+                    {/* Carousel Content Wrapper */}
+                    <div
+                        ref={carouselRef}
+                        className="overflow-hidden transition-all duration-500"
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        role="region"
+                        aria-label="Carousel"
+                    >
+                        <div className="relative flex ease-in-out w-full justify-center">
+                            {itemGroups[currentPage] && (
+                                <CarouselContent
+                                    items={itemGroups[currentPage]}
+                                />
+                            )}
+                        </div>
                     </div>
 
-                    {/* Pagination */}
-                    {itemGroups.length > 1 && (
-                        <div className="flex justify-center space-x-2 mt-6">
-                            {itemGroups.map((_, index) => (
-                                <button
-                                    key={`page-${index}`}
-                                    onClick={() => goToPage(index)}
-                                    className={`w-3 h-3 rounded-full transition-colors duration-200 cursor-pointer ${
-                                        index === currentPage
-                                            ? 'bg-button-primary-fill'
-                                            : 'border border-button-primary-fill hover:bg-text-primary/20'
-                                    }`}
-                                    aria-label={`Go to page ${index + 1}`}
-                                />
-                            ))}
-                        </div>
+                    {/* Next Button */}
+                    {hasMultiplePages && (
+                        <button
+                            onClick={goNext}
+                            disabled={currentPage === itemGroups.length - 1}
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors sm:h-10 sm:w-10 relative left-2 ${
+                                currentPage === itemGroups.length - 1
+                                    ? 'opacity-50 cursor-not-allowed'
+                                    : 'cursor-pointer'
+                            }`}
+                            aria-label="Next slide"
+                        >
+                            <IconChevronRight classNames="text-button-primary-fill w-5 h-5 sm:w-6 sm:h-6" />
+                        </button>
                     )}
+                </div>
+
+                {/* Pagination */}
+                {hasMultiplePages && (
+                    <div className="flex justify-center space-x-2 mt-6">
+                        {itemGroups.map((_, index) => (
+                            <button
+                                key={`page-${index}`}
+                                onClick={() => goToPage(index)}
+                                className={`w-3 h-3 rounded-full transition-colors duration-200 cursor-pointer ${
+                                    index === currentPage
+                                        ? 'bg-button-primary-fill'
+                                        : 'border border-button-primary-fill hover:bg-text-primary/20'
+                                }`}
+                                aria-label={`Go to page ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         );
     },

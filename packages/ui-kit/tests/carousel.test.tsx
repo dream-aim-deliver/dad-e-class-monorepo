@@ -17,7 +17,17 @@ vi.mock('@maany_shr/e-class-translations', () => ({
 }));
 
 vi.mock('../lib/components/carousel/general-card', () => ({
-    GeneralCard: ({ title, description, buttonText, buttonUrl }: any) => (
+    GeneralCard: ({
+        title,
+        description,
+        buttonText,
+        buttonUrl,
+    }: {
+        title: string;
+        description: string;
+        buttonText: string;
+        buttonUrl: string;
+    }) => (
         <div data-testid="general-card">
             <h3>{title}</h3>
             <p>{description}</p>
@@ -149,6 +159,22 @@ describe('Carousel', () => {
         render(<Carousel {...defaultProps} />);
         const dots = screen.getAllByLabelText(/Go to page/);
         expect(dots).toHaveLength(2); // 4 items, 3 per view = 2 pages
+    });
+
+    it('does not render navigation controls when all items fit on one page', async () => {
+        render(
+            <Carousel
+                children={defaultCards.slice(0, 3)}
+                locale="en"
+                className="test-carousel"
+            />,
+        );
+
+        await vi.waitFor(() => {
+            expect(screen.queryByLabelText('Next slide')).not.toBeInTheDocument();
+            expect(screen.queryByLabelText('Previous slide')).not.toBeInTheDocument();
+            expect(screen.queryByLabelText('Go to page 1')).not.toBeInTheDocument();
+        });
     });
 
     it('navigates to specific page when pagination dot is clicked', async () => {
