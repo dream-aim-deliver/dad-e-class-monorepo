@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, useState, createContext, useContext, useMemo } from 'react';
+import React, { ReactNode, useState, createContext, useContext, useMemo, useEffect } from 'react';
 
 type ThemeContextProps = {
   theme: string;
@@ -18,6 +18,24 @@ const ThemeProvider = ({ children, defaultTheme = "just-do-ad" }: ThemeProviderP
 
   // Memoize context value to prevent unnecessary re-renders of consumers
   const value = useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
+
+  // Keep the body theme classes aligned with the active theme context value.
+  useEffect(() => {
+    const body = document.body;
+    const themeClasses = Array.from(body.classList).filter((className) =>
+      className === 'theme' || className.startsWith('theme-')
+    );
+
+    if (themeClasses.length > 0) {
+      body.classList.remove(...themeClasses);
+    }
+
+    body.classList.add('theme', `theme-${theme}`);
+
+    return () => {
+      body.classList.remove('theme', `theme-${theme}`);
+    };
+  }, [theme]);
 
   return (
     <ThemeContext.Provider value={value}>

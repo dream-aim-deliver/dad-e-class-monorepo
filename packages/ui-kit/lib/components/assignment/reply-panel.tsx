@@ -274,7 +274,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                 {dictionary.components.assignment.replyPanel.confirmPassMessage}
                             </p>
                             <div className="flex gap-2 justify-end items-center">
-                                <DialogClose asChild={false}>
+                                <DialogClose asChild>
                                     <Button variant="secondary" size="medium" text={dictionary.components.assignment.replyPanel.cancelButton} />
                                 </DialogClose>
                                 <Button
