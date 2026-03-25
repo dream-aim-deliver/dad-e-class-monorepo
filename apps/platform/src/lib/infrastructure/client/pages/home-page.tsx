@@ -110,7 +110,7 @@ export default function HomePage() {
     const homePage = homePageViewModel.data;
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center @container/home-page">
             <div className="w-full mb-15">
                 <Hero
                     locale={locale}

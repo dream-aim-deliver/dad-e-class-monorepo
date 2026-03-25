@@ -34,14 +34,14 @@ export const Hero: React.FC<HeroProps> = ({
     const hasMedia = Boolean(videoId);
 
     return (
-        <div className="flex md:flex-row flex-col gap-[4.1875rem] items-center w-full">
+        <div className="flex flex-col @3xl:flex-row gap-10 items-start @3xl:items-center w-full">
             <Outline
                 title={title as string}
                 description={description as string}
-                className={`${hasMedia ? 'md:w-1/2' : 'w-full'} gap-[2.5625rem]`}
+                className={`${hasMedia ? '@3xl:flex-[1_1_50%] @3xl:max-w-[50%]' : 'w-full'} gap-6`}
             />
             {hasMedia && (
-                <div className="flex-1 w-full aspect-video md:min-h-[200px]">
+                <div className="w-full aspect-video @3xl:flex-[1_1_50%] @3xl:max-w-[50%] @3xl:min-h-[200px] @3xl:min-w-0">
                     <AutoPlayVideoPlayer
                         videoId={videoId}
                         thumbnailUrl={thumbnailUrl}
