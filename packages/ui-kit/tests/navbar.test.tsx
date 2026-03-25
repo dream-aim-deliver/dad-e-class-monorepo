@@ -221,7 +221,13 @@ describe('Navbar Component', () => {
     );
 
     const desktopMenu = screen.getByText('Home').closest('div');
-    expect(desktopMenu).toHaveClass('flex', 'items-center', 'space-x-6', 'ml-auto');
+    expect(desktopMenu).toHaveClass(
+      'hidden',
+      'lg:flex',
+      'items-center',
+      'space-x-6',
+      'ml-auto'
+    );
     expect(
       screen.getByTestId('mock-button').querySelector('[data-testid="icon-right"]')
     ).toBeInTheDocument();
