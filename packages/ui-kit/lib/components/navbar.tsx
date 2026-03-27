@@ -261,6 +261,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }}
           text={{ simpleText: '' }}
           defaultValue={locale}
+          absolutePosition={!closeOnSelection}
         />
       </div>
     );

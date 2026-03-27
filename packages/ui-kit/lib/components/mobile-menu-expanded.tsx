@@ -44,7 +44,7 @@ export const MobileMenuExpanded: React.FC<MobileMenuExpandedProps> = ({
         </div>
 
         <div className="flex flex-1 flex-col items-center justify-center gap-8 text-center bg-base-neutral-950">
-          <div className="flex flex-col items-center gap-8 [&>a]:no-underline [&>a>span]:text-2xl [&>a>span]:font-normal [&>a>span]:leading-none">
+          <div className="flex flex-col items-center gap-8 [&>a]:no-underline [&>a>span]:text-2xl [&>a>span]:font-normal [&>a>span]:leading-none" onClick={onClose}>
             {children}
           </div>
 
