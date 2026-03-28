@@ -139,7 +139,6 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
                         userName={session.user.name || 'Your Majesty'}
                         userRole={platformWorkspaceUserRole}
                         profileImageUrl={session.user.image}
-                        rating={{ score: 4.5, count: 10 }}
                         onClose={() => setIsMobileWorkspaceSidebarOpen(false)}
                     />
                 )}
