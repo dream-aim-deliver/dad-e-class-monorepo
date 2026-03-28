@@ -104,6 +104,7 @@ export default function Package({ packageId }: PackageProps) {
   const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
+  const [conflictingCourseNames, setConflictingCourseNames] = useState<string[]>([]);
 
   // Get tRPC utils for fetching checkout data (prepareCheckout is a query in cms-rest)
   const utils = trpc.useUtils();
@@ -120,7 +121,6 @@ export default function Package({ packageId }: PackageProps) {
       setCheckoutError(null); // Clear any previous error
       // @ts-ignore - TBaseResult structure is compatible with use case response at runtime
       const response = await utils.prepareCheckout.fetch(request);
-      console.log('prepareCheckout response', response);
       // Unwrap TBaseResult if needed
       if (response && typeof response === 'object' && 'success' in response) {
         if (response.success === true && response.data) {
@@ -130,6 +130,11 @@ export default function Package({ packageId }: PackageProps) {
           const errorData = 'data' in response.data ? response.data.data : response.data;
           const errorViewModel = createCheckoutErrorViewModel(errorData as { message?: string; errorType?: string; operation?: string; context?: unknown });
           setCheckoutError(errorViewModel);
+          // Extract conflicting course names from context.operationDetails
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const opDetails = (errorData as { context?: any }).context?.operationDetails;
+          const names = (opDetails?.conflicting_course_names ?? opDetails?.conflictingCourseNames) as string[] | undefined;
+          setConflictingCourseNames(names || []);
           // Scroll to top so user can see the error banner
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -616,10 +621,15 @@ export default function Package({ packageId }: PackageProps) {
           icon
           closeable
           title={getCheckoutErrorTitle(checkoutError.mode)}
-          description={getCheckoutErrorDescription(checkoutError.mode)}
+          description={
+            conflictingCourseNames.length > 0
+              ? `${getCheckoutErrorDescription(checkoutError.mode)} (${conflictingCourseNames.join(', ')})`
+              : getCheckoutErrorDescription(checkoutError.mode)
+          }
           onClose={() => {
             setCheckoutError(null);
             setCheckoutViewModel(undefined);
+            setConflictingCourseNames([]);
           }}
         />
       )}
