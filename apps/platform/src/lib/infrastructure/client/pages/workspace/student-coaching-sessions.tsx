@@ -804,11 +804,11 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
             )}
             <Tabs.Root defaultTab={currentTab} onValueChange={onTabChange}>
                 <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
-                    <div className="w-full flex gap-4 items-center justify-between" >
+                    <div className="w-full flex gap-4 items-center justify-between flex-wrap" >
                         <h1>
                             {coachingSessionTranslations('yourCoachingSessions')}
                         </h1>
-                        <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
+                        <Tabs.List className="flex rounded-medium gap-2 w-fit">
                             <Tabs.Trigger value="upcoming" isLast={false}>
                                 {coachingSessionTranslations('upcomingAndAvailable')}
                             </Tabs.Trigger>
