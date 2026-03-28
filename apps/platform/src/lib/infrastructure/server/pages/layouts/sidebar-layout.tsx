@@ -34,8 +34,6 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                         }
                         locale={props.params.locale}
                         profileImageUrl={session.user.image}
-                        // TODO: Replace with actual rating logic
-                        rating={{ score: 4.5, count: 10 }}
                     />
                 </div>
             )}

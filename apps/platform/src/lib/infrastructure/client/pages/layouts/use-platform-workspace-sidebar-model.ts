@@ -5,8 +5,11 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import type { TLocale } from '@maany_shr/e-class-translations';
+import { viewModels } from '@maany_shr/e-class-models';
 import type { TRole } from 'packages/models/src/role';
 import type { MenuItem } from 'packages/ui-kit/lib/components/sidemenu/sidemenu-item';
+import { trpc } from '../../trpc/cms-client';
+import { useGetCoachIntroductionPresenter } from '../../hooks/use-get-coach-introduction-presenter';
 import {
   IconAccountInformation,
   IconCalendarAlt,
@@ -27,6 +30,7 @@ export type PlatformWorkspaceSidebarUserRole =
 interface UsePlatformWorkspaceSidebarModelProps {
   locale: TLocale;
   userRole: PlatformWorkspaceSidebarUserRole;
+  username: string;
 }
 
 export interface PlatformWorkspaceSidebarModel {
@@ -34,17 +38,45 @@ export interface PlatformWorkspaceSidebarModel {
   activeItem: string;
   isLoggingOut: boolean;
   handleItemClick: (item: MenuItem) => void;
+  rating: { score: number; count: number } | undefined;
 }
 
 export const usePlatformWorkspaceSidebarModel = ({
   locale,
   userRole,
+  username,
 }: UsePlatformWorkspaceSidebarModelProps): PlatformWorkspaceSidebarModel => {
   const sidebarTranslations = useTranslations('pages.sidebarLayout');
   const router = useRouter();
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [activeItem, setActiveItem] = useState('');
+
+  const isCoach = userRole !== 'student';
+  const { data: coachIntroResponse } = trpc.getCoachIntroduction.useQuery(
+    { coachUsername: username },
+    { enabled: isCoach },
+  );
+
+  const [coachIntroViewModel, setCoachIntroViewModel] = useState<
+    viewModels.TGetCoachIntroductionViewModel | undefined
+  >(undefined);
+  const { presenter: coachIntroPresenter } = useGetCoachIntroductionPresenter(setCoachIntroViewModel);
+
+  useEffect(() => {
+    if (coachIntroResponse) {
+      // @ts-ignore
+      coachIntroPresenter.present(coachIntroResponse, coachIntroViewModel);
+    }
+  }, [coachIntroResponse, coachIntroPresenter, coachIntroViewModel]);
+
+  const rating = useMemo(() => {
+    if (coachIntroViewModel?.mode !== 'default') {
+      return undefined;
+    }
+    const coach = coachIntroViewModel.data.coach;
+    return { score: coach.rating, count: coach.ratingCount };
+  }, [coachIntroViewModel]);
 
   const routeMap = useMemo(
     () => ({
@@ -193,5 +225,6 @@ export const usePlatformWorkspaceSidebarModel = ({
     activeItem,
     isLoggingOut,
     handleItemClick,
+    rating,
   };
 };

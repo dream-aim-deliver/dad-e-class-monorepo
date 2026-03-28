@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type ComponentProps } from 'react';
+import { useEffect, useState } from 'react';
 import { DefaultLoading, SideMenu } from '@maany_shr/e-class-ui-kit';
 import { useSession } from 'next-auth/react';
 import type { TLocale } from '@maany_shr/e-class-translations';
@@ -16,7 +16,6 @@ export interface PlatformWorkspaceSidebarPanelProps {
   userName: string;
   userRole: PlatformWorkspaceSidebarUserRole;
   profileImageUrl?: string;
-  rating?: ComponentProps<typeof SideMenu>['rating'];
   mode?: 'desktop' | 'mobileOverlay';
   defaultCollapsed?: boolean;
   className?: string;
@@ -28,7 +27,6 @@ export const PlatformWorkspaceSidebarPanel = ({
   userName,
   userRole,
   profileImageUrl,
-  rating,
   mode = 'desktop',
   defaultCollapsed = false,
   className,
@@ -39,10 +37,11 @@ export const PlatformWorkspaceSidebarPanel = ({
   const [isCollapsed, setIsCollapsed] = useState(
     mode === 'desktop' ? defaultCollapsed : false,
   );
-  const { menuGroups, activeItem, isLoggingOut, handleItemClick } =
+  const { menuGroups, activeItem, isLoggingOut, handleItemClick, rating } =
     usePlatformWorkspaceSidebarModel({
       locale,
       userRole,
+      username: userName,
     });
 
   useEffect(() => {
