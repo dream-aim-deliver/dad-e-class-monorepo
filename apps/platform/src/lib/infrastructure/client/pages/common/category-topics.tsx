@@ -183,8 +183,17 @@ export default function CategoryTopics({
     // Empty state is handled in the UI when arrays are empty
 
     // Event handlers
-    const handleTabChange = () => {
-        setSelectedTopics([]);
+    const handleTabChange = (tab: string) => {
+        if (tab === 'all') {
+            setSelectedTopics([]);
+        } else {
+            const topics = categoryToTopicsMap.get(tab);
+            if (topics) {
+                setSelectedTopics(topics.map((t) => t.slug));
+            } else {
+                setSelectedTopics([]);
+            }
+        }
     };
 
     // Render helpers
