@@ -16,6 +16,7 @@ import {
     DefaultNotFound,
     RichTextRenderer,
     CheckoutModal,
+    PurchaseAuthModal,
     Banner,
     type TransactionDraft,
     type CouponValidationResult,
@@ -80,6 +81,8 @@ function VisitorPageContent({
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
     const [coachingIncluded, setCoachingIncluded] = useState(false);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [isPurchaseAuthOpen, setIsPurchaseAuthOpen] = useState(false);
+    const [pendingPurchaseRequest, setPendingPurchaseRequest] = useState<TPrepareCheckoutRequest | null>(null);
     const sessionDTO = useSession();
     const isLoggedIn = !!sessionDTO.data;
     const { platform } = useRequiredPlatform();
@@ -239,17 +242,30 @@ function VisitorPageContent({
             courseSlug,
         };
 
-        // If user is not logged in, save intent and redirect to login
+        // If user is not logged in, show auth modal
         if (!isLoggedIn) {
-            saveIntent(request, window.location.pathname);
-            router.push(
-                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-            );
+            setPendingPurchaseRequest(request);
+            setIsPurchaseAuthOpen(true);
             return;
         }
 
         // User is logged in, execute checkout
         executeCheckout(request);
+    };
+
+    const handlePurchaseAuthLogin = () => {
+        if (pendingPurchaseRequest) {
+            saveIntent(pendingPurchaseRequest, window.location.pathname);
+        }
+        setIsPurchaseAuthOpen(false);
+        router.push(
+            `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+        );
+    };
+
+    const handlePurchaseAuthCancel = () => {
+        setIsPurchaseAuthOpen(false);
+        setPendingPurchaseRequest(null);
     };
 
     const handlePaymentComplete = () => {
@@ -795,6 +811,13 @@ function VisitorPageContent({
                         })()
                     )}
             </div>
+
+            <PurchaseAuthModal
+                isOpen={isPurchaseAuthOpen}
+                onLogin={handlePurchaseAuthLogin}
+                onCancel={handlePurchaseAuthCancel}
+                locale={locale}
+            />
 
             {transactionDraft && currentRequest && (currentRequest.purchaseType === 'StudentCoursePurchase' || currentRequest.purchaseType === 'StudentCoursePurchaseWithCoaching') && (
                 <CheckoutModal

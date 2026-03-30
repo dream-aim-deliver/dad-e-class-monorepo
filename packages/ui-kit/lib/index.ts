@@ -26,6 +26,7 @@ export { ThemeProvider, useTheme, UnsavedChangesProvider, useUnsavedChanges, Ima
 export type { ImageComponentProps, ImageComponentType } from './contexts';
 export { useFormDirtyTracking } from './hooks/use-form-dirty-tracking';
 export { SessionExpirationModal, type SessionExpirationModalProps } from './components/session-expiration-modal';
+export { PurchaseAuthModal, type PurchaseAuthModalProps } from './components/purchase-auth-modal';
 export { VisitorCourseCard } from './components/course-card/visitor-course-card/visitor-course-card';
 export { CoachCourseCard } from './components/course-card/coach-course-card/coach-course-card';
 export { StudentCourseCard } from './components/course-card/student-course-card/student-course-card';

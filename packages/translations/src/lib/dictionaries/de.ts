@@ -625,6 +625,12 @@ export const DE: TDictionary = {
       title: 'Vortest abschicken?',
       message: 'Sie können Ihre Antworten nach der Einreichung nicht mehr ändern. Möchten Sie wirklich einreichen?',
     },
+    purchaseAuthModal: {
+      title: 'Konto erstellen oder einloggen',
+      message: 'Um ein Angebot zu kaufen, benötigst du ein Konto. Erstelle in wenigen Sekunden eines oder logge dich ein, wenn du bereits registriert bist.',
+      loginButtonText: 'Einloggen / Konto erstellen',
+      cancelButtonText: 'Abbrechen',
+    },
     sessionExpirationModal: {
       title: 'Sitzung abgelaufen',
       message: 'Ihre Sitzung ist aufgrund von Inaktivität abgelaufen. Bitte melden Sie sich erneut an, um fortzufahren.',
