@@ -7,6 +7,7 @@ import {
     AvailableCoachingSessions,
     BuyCoachingSession,
     CheckoutModal,
+    PurchaseAuthModal,
     DefaultError,
     DefaultLoading,
     Banner,
@@ -112,6 +113,8 @@ export default function CoachingOfferingsPanel() {
 
     // Checkout modal state
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [isPurchaseAuthOpen, setIsPurchaseAuthOpen] = useState(false);
+    const [pendingPurchaseRequest, setPendingPurchaseRequest] = useState<TPrepareCheckoutRequest | null>(null);
     const [transactionDraft, setTransactionDraft] =
         useState<TransactionDraft | null>(null);
     const [currentRequest, setCurrentRequest] =
@@ -255,6 +258,18 @@ export default function CoachingOfferingsPanel() {
             setMultipleOfferings(null);
         }
 
+        // If user is not logged in, show auth modal
+        if (!isLoggedIn) {
+            const request: TPrepareCheckoutRequest = {
+                purchaseType: 'StudentCoachingSessionPurchase',
+                coachingOfferingId: selectedOfferings[0].offeringId,
+                quantity: selectedOfferings[0].quantity,
+            };
+            setPendingPurchaseRequest(request);
+            setIsPurchaseAuthOpen(true);
+            return;
+        }
+
         // If multiple offerings selected, we need to combine them
         if (selectedOfferings.length === 1) {
             // Single offering - use existing flow
@@ -263,15 +278,6 @@ export default function CoachingOfferingsPanel() {
                 coachingOfferingId: selectedOfferings[0].offeringId,
                 quantity: selectedOfferings[0].quantity,
             };
-
-            // If user is not logged in, save intent and redirect to login
-            if (!isLoggedIn) {
-                saveIntent(request, window.location.pathname);
-                router.push(
-                    `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-                );
-                return;
-            }
 
             // User is logged in, execute checkout
             executeCheckout(request);
@@ -335,6 +341,21 @@ export default function CoachingOfferingsPanel() {
                 console.error('Failed to prepare checkout for multiple offerings:', err);
             }
         }
+    };
+
+    const handlePurchaseAuthLogin = () => {
+        if (pendingPurchaseRequest) {
+            saveIntent(pendingPurchaseRequest, window.location.pathname);
+        }
+        setIsPurchaseAuthOpen(false);
+        router.push(
+            `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+        );
+    };
+
+    const handlePurchaseAuthCancel = () => {
+        setIsPurchaseAuthOpen(false);
+        setPendingPurchaseRequest(null);
     };
 
     const handlePaymentComplete = () => {
@@ -564,6 +585,13 @@ export default function CoachingOfferingsPanel() {
                     {buyCoachingsPanel}
                 </div>
             </div>
+
+            <PurchaseAuthModal
+                isOpen={isPurchaseAuthOpen}
+                onLogin={handlePurchaseAuthLogin}
+                onCancel={handlePurchaseAuthCancel}
+                locale={locale}
+            />
 
             {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCoachingSessionPurchase' && (
                 <CheckoutModal

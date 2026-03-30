@@ -14,6 +14,7 @@ import {
   PackageCard,
   Breadcrumbs,
   CheckoutModal,
+  PurchaseAuthModal,
   Banner,
   CarouselSkeleton,
   type TransactionDraft,
@@ -103,6 +104,8 @@ export default function Package({ packageId }: PackageProps) {
   const [currentRequest, setCurrentRequest] = useState<TPrepareCheckoutRequest | null>(null);
   const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isPurchaseAuthOpen, setIsPurchaseAuthOpen] = useState(false);
+  const [pendingPurchaseRequest, setPendingPurchaseRequest] = useState<TPrepareCheckoutRequest | null>(null);
   const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
   const [conflictingCourseNames, setConflictingCourseNames] = useState<string[]>([]);
 
@@ -572,17 +575,30 @@ export default function Package({ packageId }: PackageProps) {
         : selectedCourseIds, // Only include if partial selection
     };
 
-    // If user is not logged in, save intent and redirect to login
+    // If user is not logged in, show auth modal
     if (!isLoggedIn) {
-      saveIntent(request, window.location.pathname);
-      router.push(
-        `/${currentLocale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-      );
+      setPendingPurchaseRequest(request);
+      setIsPurchaseAuthOpen(true);
       return;
     }
 
     // User is logged in, execute checkout
     executeCheckout(request);
+  };
+
+  const handlePurchaseAuthLogin = () => {
+    if (pendingPurchaseRequest) {
+      saveIntent(pendingPurchaseRequest, window.location.pathname);
+    }
+    setIsPurchaseAuthOpen(false);
+    router.push(
+      `/${currentLocale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+    );
+  };
+
+  const handlePurchaseAuthCancel = () => {
+    setIsPurchaseAuthOpen(false);
+    setPendingPurchaseRequest(null);
   };
 
   const handleRelatedPackageDetails = (packageId: string | number) => {
@@ -804,6 +820,13 @@ export default function Package({ packageId }: PackageProps) {
           </Carousel>
         </div>
       )}
+
+      <PurchaseAuthModal
+        isOpen={isPurchaseAuthOpen}
+        onLogin={handlePurchaseAuthLogin}
+        onCancel={handlePurchaseAuthCancel}
+        locale={currentLocale}
+      />
 
       {transactionDraft && currentRequest && (
         (currentRequest.purchaseType === 'StudentPackagePurchase' ||

@@ -618,6 +618,12 @@ export const DictionarySchema = z.object({
       title: z.string(),
       message: z.string(),
     }),
+    purchaseAuthModal: z.object({
+      title: z.string(),
+      message: z.string(),
+      loginButtonText: z.string(),
+      cancelButtonText: z.string(),
+    }),
     sessionExpirationModal: z.object({
       title: z.string(),
       message: z.string(),

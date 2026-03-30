@@ -8,6 +8,7 @@ import {
     DefaultError,
     DefaultLoading,
     CheckoutModal,
+    PurchaseAuthModal,
     Banner,
     Button,
     type TransactionDraft,
@@ -278,6 +279,8 @@ function StudentEnrolledCourseIntroduction(
     const [checkoutViewModel, setCheckoutViewModel] = useState<viewModels.TPrepareCheckoutViewModel | undefined>(undefined);
     const [checkoutError, setCheckoutError] = useState<viewModels.TPrepareCheckoutViewModel | null>(null);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [isPurchaseAuthOpen, setIsPurchaseAuthOpen] = useState(false);
+    const [pendingPurchaseRequest, setPendingPurchaseRequest] = useState<TPrepareCheckoutRequest | null>(null);
     const [isBuySessionsModalOpen, setIsBuySessionsModalOpen] = useState(false);
 
     // Get tRPC utils for fetching checkout data
@@ -372,12 +375,10 @@ function StudentEnrolledCourseIntroduction(
             lessonComponentIds: lessonComponentIds,
         };
 
-        // If user is not logged in, save intent and redirect to login
+        // If user is not logged in, show auth modal
         if (!isLoggedIn) {
-            saveIntent(request, window.location.pathname);
-            router.push(
-                `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
-            );
+            setPendingPurchaseRequest(request);
+            setIsPurchaseAuthOpen(true);
             return;
         }
 
@@ -386,7 +387,22 @@ function StudentEnrolledCourseIntroduction(
 
         // User is logged in, execute checkout
         executeCheckout(request);
-    }, [props.courseSlug, isLoggedIn, saveIntent, router, locale, executeCheckout]);
+    }, [props.courseSlug, isLoggedIn, executeCheckout]);
+
+    const handlePurchaseAuthLogin = useCallback(() => {
+        if (pendingPurchaseRequest) {
+            saveIntent(pendingPurchaseRequest, window.location.pathname);
+        }
+        setIsPurchaseAuthOpen(false);
+        router.push(
+            `/${locale}/auth/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`,
+        );
+    }, [pendingPurchaseRequest, saveIntent, router, locale]);
+
+    const handlePurchaseAuthCancel = useCallback(() => {
+        setIsPurchaseAuthOpen(false);
+        setPendingPurchaseRequest(null);
+    }, []);
 
     const handlePaymentComplete = (sessionId: string) => {
         setIsCheckoutOpen(false);
@@ -488,6 +504,13 @@ function StudentEnrolledCourseIntroduction(
                     onPurchase={handlePurchaseComponentCoaching}
                 />
             )}
+
+            <PurchaseAuthModal
+                isOpen={isPurchaseAuthOpen}
+                onLogin={handlePurchaseAuthLogin}
+                onCancel={handlePurchaseAuthCancel}
+                locale={locale}
+            />
 
             {transactionDraft && currentRequest && currentRequest.purchaseType === 'StudentCourseCoachingSessionPurchase' && (
                 <CheckoutModal

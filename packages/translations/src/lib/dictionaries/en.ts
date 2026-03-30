@@ -622,6 +622,12 @@ export const EN: TDictionary = {
       title: 'Submit Assessment?',
       message: 'You cannot change your answers after submission. Are you sure you want to submit?',
     },
+    purchaseAuthModal: {
+      title: 'Create an account or log in',
+      message: 'To purchase an offer, you need an account. Create one in just a few seconds or log in if you already have one.',
+      loginButtonText: 'Log in / Create account',
+      cancelButtonText: 'Cancel',
+    },
     sessionExpirationModal: {
       title: 'Session Expired',
       message: 'Your session has expired due to inactivity. Please log in again to continue.',
