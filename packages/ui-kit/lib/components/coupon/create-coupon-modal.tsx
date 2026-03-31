@@ -494,6 +494,8 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
                 setExpirationDate(value || null);
               }}
               locale={locale}
+              endMonth={new Date(new Date().getFullYear() + 10, 11)}
+              disabled={{ before: new Date() }}
             />
             {expirationDateTouched && validateExpirationDate() && (
               <p className="text-red-600 text-sm">{validateExpirationDate()}</p>
