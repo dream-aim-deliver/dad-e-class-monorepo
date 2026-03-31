@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { createPortal } from 'react-dom';
 import DefaultLoading from '../lib/components/default-loading';
 
@@ -171,39 +171,25 @@ describe('<DefaultLoading />', () => {
     });
 
     describe('Overlay variant', () => {
-        it('does not render immediately (waits for mount)', async () => {
+        it('renders overlay synchronously with portal', () => {
             const { container } = render(
                 <DefaultLoading locale="en" variant="overlay" />,
             );
 
-            // Initially should not render anything in the container since it uses portal
-            // The portal mock will still render content, but not in the test container
+            // Portal renders outside the container, so container itself is empty
             expect(container.firstChild).toBeNull();
 
-            // But createPortal should be called after mounting
-            await waitFor(() => {
-                expect(createPortal).toHaveBeenCalled();
-            });
+            // createPortal should be called immediately (no useEffect delay)
+            expect(createPortal).toHaveBeenCalled();
         });
 
-        it('renders overlay after mounting with portal', async () => {
+        it('calls createPortal with correct parameters', () => {
             render(<DefaultLoading locale="en" variant="overlay" />);
 
-            // Wait for useEffect to set mounted state
-            await waitFor(() => {
-                expect(createPortal).toHaveBeenCalled();
-            });
-        });
-
-        it('calls createPortal with correct parameters', async () => {
-            render(<DefaultLoading locale="en" variant="overlay" />);
-
-            await waitFor(() => {
-                expect(createPortal).toHaveBeenCalledWith(
-                    expect.any(Object), // The JSX content
-                    document.body,
-                );
-            });
+            expect(createPortal).toHaveBeenCalledWith(
+                expect.any(Object), // The JSX content
+                document.body,
+            );
         });
 
         describe('Internationalization', () => {
@@ -234,12 +220,10 @@ describe('<DefaultLoading />', () => {
                     });
                 });
 
-                it('overlay variant uses createPortal', async () => {
+                it('overlay variant uses createPortal', () => {
                     render(<DefaultLoading locale="en" variant="overlay" />);
 
-                    await waitFor(() => {
-                        expect(createPortal).toHaveBeenCalled();
-                    });
+                    expect(createPortal).toHaveBeenCalled();
                 });
 
                 it('shows loading text for minimal and card variants', () => {

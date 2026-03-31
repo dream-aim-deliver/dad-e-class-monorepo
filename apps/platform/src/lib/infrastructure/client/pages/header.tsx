@@ -1,7 +1,7 @@
 'use client';
 
 import { auth, viewModels } from '@maany_shr/e-class-models';
-import { DefaultError, Navbar } from '@maany_shr/e-class-ui-kit';
+import { DefaultError, DefaultLoading, Navbar } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -82,10 +82,12 @@ export default function Header({
     const pathname = usePathname();
     const router = useRouter();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [isLocaleChanging, setIsLocaleChanging] = useState(false);
     const t = useTranslations('components.navbar');
 
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
+        setIsLocaleChanging(true);
         router.push(newUrl);
     };
 
@@ -162,6 +164,8 @@ export default function Header({
     }
 
     return (
+        <>
+        {isLocaleChanging && <DefaultLoading locale={locale} variant="overlay" />}
         <Navbar
             isLoggedIn={!!session}
             availableLocales={availableLocales}
@@ -204,5 +208,6 @@ export default function Header({
         >
             <NavLinks locale={locale} pathname={pathname} />
         </Navbar>
+        </>
     );
 }

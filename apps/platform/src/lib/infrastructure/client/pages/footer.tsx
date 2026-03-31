@@ -3,12 +3,14 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import {
     DefaultError,
+    DefaultLoading,
     Footer as FooterComponent,
     RichTextRenderer,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -53,8 +55,11 @@ export default function Footer({
     const router = useRouter();
     const t = useTranslations('components.footer');
 
+    const [isLocaleChanging, setIsLocaleChanging] = useState(false);
+
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
+        setIsLocaleChanging(true);
         router.push(newUrl);
     };
 
@@ -70,6 +75,8 @@ export default function Footer({
     }
 
     return (
+        <>
+        {isLocaleChanging && <DefaultLoading locale={locale} variant="overlay" />}
         <FooterComponent
             availableLocales={availableLocales}
             locale={locale}
@@ -103,5 +110,6 @@ export default function Footer({
         >
             <FooterLinks locale={locale} />
         </FooterComponent>
+        </>
     );
 }

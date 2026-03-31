@@ -1,7 +1,7 @@
 'use client';
 
 import { auth, viewModels } from '@maany_shr/e-class-models';
-import { ConfirmationModal, Navbar } from '@maany_shr/e-class-ui-kit';
+import { ConfirmationModal, DefaultLoading, Navbar } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -73,8 +73,11 @@ export default function Header({
     const tPlatformNavbar = useTranslations('components.navbar');
     const tLogoutConfirmation = useTranslations('components.logoutConfirmation');
     const isSuperAdmin = session?.user?.roles?.includes('superadmin') ?? false;
+    const [isLocaleChanging, setIsLocaleChanging] = useState(false);
+
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
+        setIsLocaleChanging(true);
         router.push(newUrl);
     };
 
@@ -124,6 +127,7 @@ export default function Header({
 
     return (
         <>
+            {isLocaleChanging && <DefaultLoading locale={locale} variant="overlay" />}
             <Navbar
                 isLoggedIn={!!session}
                 availableLocales={availableLocales}

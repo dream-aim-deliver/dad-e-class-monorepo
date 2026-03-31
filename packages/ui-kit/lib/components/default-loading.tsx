@@ -2,7 +2,6 @@
 import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
 import { IconLoaderSpinner } from "./icons/icon-loader-spinner";
 import { createPortal } from 'react-dom';
-import { useEffect, useState } from 'react';
 
 interface DefaultLoadingProps {
     locale: TLocale;
@@ -62,19 +61,12 @@ export default function DefaultLoading({
     logo
 }: DefaultLoadingProps) {
     const dictionary = getDictionary(locale).components.defaultLoading;
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     if (variant === 'overlay') {
-        if (!mounted) return null;
-        
         const overlayContent = (
             <div className="fixed top-0 left-0 w-full h-full backdrop-blur-sm bg-transparent flex items-center justify-center z-[9999]">
                 <div className="flex items-center gap-3 bg-black/90 px-6 py-4 rounded-lg shadow-lg">
-                    <IconLoaderSpinner 
+                    <IconLoaderSpinner
                         size="8"
                         classNames="text-white animate-spin"
                     />
@@ -85,7 +77,10 @@ export default function DefaultLoading({
             </div>
         );
 
-        return createPortal(overlayContent, document.body);
+        if (typeof document !== 'undefined') {
+            return createPortal(overlayContent, document.body);
+        }
+        return null;
     }
 
     if (variant === 'card') {
