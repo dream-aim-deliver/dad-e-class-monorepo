@@ -60,7 +60,7 @@ export default function Footer({
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
         setIsLocaleChanging(true);
-        router.push(newUrl);
+        window.location.href = newUrl;
     };
 
     if (platformViewModel.mode !== 'default') {
