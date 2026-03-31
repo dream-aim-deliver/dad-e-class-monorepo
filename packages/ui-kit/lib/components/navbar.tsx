@@ -230,11 +230,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const renderLogoLink = () => (
     <a href="/" className="block h-12">
       {logo}
-      {logoSrc && <ImageComponent
-        src={logoSrc}
-        alt="Logo"
-        className="h-full w-auto"
-      />}
+      {logoSrc && (
+        <img
+          src={logoSrc}
+          alt="Logo"
+          className="h-full w-auto"
+        />
+      )}
     </a>
   );
 

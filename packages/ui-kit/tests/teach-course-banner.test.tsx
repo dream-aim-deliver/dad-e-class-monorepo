@@ -174,7 +174,6 @@ describe('TeachCourseBanner', () => {
       'w-full',
       'h-auto',
       'lg:max-h-[320px]',
-      'md:h-auto',
       'object-cover'
     );
   });

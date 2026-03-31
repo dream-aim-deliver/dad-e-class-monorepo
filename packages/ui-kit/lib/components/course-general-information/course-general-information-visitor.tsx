@@ -11,7 +11,6 @@ import { CheckBox } from '../checkbox';
 import { StarRating } from '../star-rating';
 import { IconVideoCamera } from '../icons/icon-video-camera';
 import { IconCoachingSession, IconCourse } from '../icons';
-import { useImageComponent } from '../../contexts/image-component-context';
 import Tooltip from '../tooltip';
 import { formatPrice } from '../../utils/format-utils';
 
@@ -148,8 +147,6 @@ export const CourseGeneralInformationVisitor: FC<
         const [coachingIncluded, setCoachingIncluded] = useState(
             initialCoachingIncluded,
         );
-        const ImageComponent = useImageComponent();
-
         const safeRequiredCourses = requiredCourses ?? [];
         const safeCoaches = coaches ?? [];
         const finalRequirementsDetails = requirementsDetails ||
@@ -217,7 +214,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 </span>
                             </div>
                         ) : (
-                            <ImageComponent
+                            <img
                                 loading="lazy"
                                 src={imageUrl}
                                 className="w-full h-auto max-h-[400px] object-cover rounded-medium"
@@ -468,7 +465,7 @@ export const CourseGeneralInformationVisitor: FC<
                             </span>
                         </div>
                     ) : (
-                        <ImageComponent
+                        <img
                             loading="lazy"
                             src={imageUrl}
                             className="w-full h-auto object-cover rounded-medium"
