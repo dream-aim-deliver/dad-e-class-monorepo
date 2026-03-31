@@ -7,7 +7,6 @@ import { CheckBox } from './checkbox';
 import { Button } from './button';
 import { FC, useState } from 'react';
 import { IconClock } from './icons/icon-clock';
-import { useImageComponent } from '../contexts/image-component-context';
 import Tooltip from './tooltip';
 import { formatPrice } from '../utils/format-utils';
 import { formatCompactDuration } from '../utils/video-duration';
@@ -57,7 +56,6 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
     const dictionary =
         getDictionary(locale).components.packageGeneralInformation;
     const [isImageError, setIsImageError] = useState(false);
-    const ImageComponent = useImageComponent();
 
     if (!pricing) return null;
 
@@ -93,7 +91,7 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                             </span>
                         </div>
                     ) : (
-                        <ImageComponent
+                        <img
                             loading="lazy"
                             src={imageUrl}
                             className="w-full h-full object-cover rounded-medium"
@@ -171,7 +169,7 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                         </span>
                     </div>
                 ) : (
-                    <ImageComponent
+                    <img
                         loading="lazy"
                         src={imageUrl}
                         className="w-full h-full object-cover rounded-medium"

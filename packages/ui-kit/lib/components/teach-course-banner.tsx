@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Button } from './button';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { useImageComponent } from '../contexts/image-component-context';
 
 interface TeachCourseBannerProps {
     imageUrl: string;
@@ -38,7 +37,6 @@ export const TeachCourseBanner: React.FC<
 > = ({ locale, imageUrl, title, description, onClick, buttonText }) => {
     const dictionary = getDictionary(locale).components.teachCourseBanner;
     const [isImageError, setIsImageError] = useState(false);
-    const ImageComponent = useImageComponent();
 
     const handleImageError = () => {
         setIsImageError(true);
@@ -56,10 +54,10 @@ export const TeachCourseBanner: React.FC<
                         </span>
                     </div>
                 ) : (
-                    <ImageComponent
+                    <img
                         src={imageUrl}
                         alt="Banner image"
-                        className="rounded-xl w-full h-auto lg:max-h-[320px] md:h-auto object-cover"
+                        className="rounded-xl w-full h-auto lg:max-h-[320px] object-cover"
                         onError={handleImageError}
                         loading="lazy"
                     />

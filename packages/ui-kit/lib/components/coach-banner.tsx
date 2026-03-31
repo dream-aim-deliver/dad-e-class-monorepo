@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Button } from "./button";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
-import { useImageComponent } from "../contexts/image-component-context";
 
 interface CoachBannerProps {
   title: string;
@@ -43,7 +42,6 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
   buttonText,
   onClick
 }) => {
-  const ImageComponent = useImageComponent();
   const dictionary = getDictionary(locale);
   const [isImageError, setIsImageError] = useState(false);
 
@@ -71,15 +69,14 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
             />
           )}
         </div>
-
         <div className="order-1 md:order-2 h-full p-0 md:ml-10">
           {shouldShowPlaceholder ? (
             // Placeholder for broken image
-            <div className="rounded-xl w-full h-[500px] lg:max-h-[320px]  bg-base-neutral-700 flex items-center justify-center mb-4 md:mb-0">
+            <div className="rounded-xl w-full h-[500px] lg:max-h-[320px] bg-base-neutral-700 flex items-center justify-center mb-4 md:mb-0">
               <span className="text-text-secondary text-md"> {dictionary.components.coachBanner.placeHolderText} </span>
             </div>
           ) : (
-            <ImageComponent
+            <img
               src={imageUrl}
               alt="Banner image"
               className="rounded-xl w-full h-auto lg:max-h-[320px] md:h-auto object-cover mb-4 md:mb-0"

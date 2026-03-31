@@ -10,7 +10,6 @@ import { FC, useEffect, useState, useMemo } from "react";
 import { QuizTypeFourElement } from "../../course-builder-lesson-component/types";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
-import { useImageComponent } from "../../../contexts/image-component-context";
 
 /**
  * A student view component for a matching quiz question, allowing users to match images with corresponding labels.
@@ -60,7 +59,6 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
   locale,
 }) => {
   const dictionary = getDictionary(locale);
-  const ImageComponent = useImageComponent();
 
   // Deterministic shuffle function based on quiz ID for consistent randomization
   const shuffleArray = (array: number[], seed: string): number[] => {
@@ -205,7 +203,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
                       </span>
                     </div>
                   ) : (
-                    <ImageComponent
+                    <img
                       src={image.imageFile?.thumbnailUrl ?? undefined}
                       alt={`Quiz Illustration ${imageIndex + 1}`}
                       className="rounded w-full max-h-[25rem] object-cover"

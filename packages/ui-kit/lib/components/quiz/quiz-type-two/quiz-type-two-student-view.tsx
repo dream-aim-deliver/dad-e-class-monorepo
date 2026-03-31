@@ -12,7 +12,6 @@ import {
 } from '../../course-builder-lesson-component/types';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconError, IconSuccess } from '../../icons';
-import { useImageComponent } from '../../../contexts/image-component-context';
 
 export interface GroupOption {
     optionText: string;
@@ -84,7 +83,6 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
     locale,
 }) => {
     const dictionary = getDictionary(locale);
-    const ImageComponent = useImageComponent();
 
     // State to manage the quiz groups and their options
     const [groups, setGroups] = useState<QuizGroup[]>([]);
@@ -184,7 +182,7 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
                             </span>
                         </div>
                     ) : (
-                        <ImageComponent
+                        <img
                             loading="lazy"
                             src={thumbnailUrl}
                             alt={elementInstance.title}
