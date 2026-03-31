@@ -135,6 +135,178 @@ describe('<DateInput />', () => {
     expect(screen.queryByTestId('date-input-calendar')).not.toBeInTheDocument();
   });
 
+  it('renders with default props blocking future dates', () => {
+    const currentYear = new Date().getFullYear();
+
+    render(
+      <DateInput
+        label="Birth Date"
+        value=""
+        onChange={mockOnChange}
+        locale="en"
+      />,
+    );
+
+    // Open calendar
+    const wrapper = screen.getByTestId('date-input-wrapper');
+    fireEvent.click(wrapper);
+
+    expect(screen.getByTestId('date-input-calendar')).toBeInTheDocument();
+
+    // The year dropdown should not contain years beyond the current year
+    const calendarContainer = screen.getByTestId('date-input-calendar');
+    const selects = calendarContainer.querySelectorAll('select');
+    // Find the year dropdown (the one whose options contain 4-digit year values)
+    let yearSelect: HTMLSelectElement | null = null;
+    selects.forEach((sel) => {
+      const options = Array.from(sel.options);
+      if (options.some((opt) => /^\d{4}$/.test(opt.value))) {
+        yearSelect = sel;
+      }
+    });
+
+    expect(yearSelect).not.toBeNull();
+    const yearOptions = Array.from(yearSelect!.options).map((opt) =>
+      parseInt(opt.value, 10),
+    );
+    const maxYear = Math.max(...yearOptions);
+    expect(maxYear).toBe(currentYear);
+  });
+
+  it('allows configuring endMonth for future dates', () => {
+    const currentYear = new Date().getFullYear();
+    const futureYear = currentYear + 10;
+
+    render(
+      <DateInput
+        label="Expiration Date"
+        value=""
+        onChange={mockOnChange}
+        locale="en"
+        endMonth={new Date(futureYear, 11)}
+        disabled={{ before: new Date() }}
+      />,
+    );
+
+    // Open calendar
+    const wrapper = screen.getByTestId('date-input-wrapper');
+    fireEvent.click(wrapper);
+
+    const calendarContainer = screen.getByTestId('date-input-calendar');
+    const selects = calendarContainer.querySelectorAll('select');
+    let yearSelect: HTMLSelectElement | null = null;
+    selects.forEach((sel) => {
+      const options = Array.from(sel.options);
+      if (options.some((opt) => /^\d{4}$/.test(opt.value))) {
+        yearSelect = sel;
+      }
+    });
+
+    expect(yearSelect).not.toBeNull();
+    const yearOptions = Array.from(yearSelect!.options).map((opt) =>
+      parseInt(opt.value, 10),
+    );
+    expect(yearOptions).toContain(futureYear);
+    expect(Math.max(...yearOptions)).toBe(futureYear);
+  });
+
+  it('allows selecting a future date when configured', () => {
+    const currentYear = new Date().getFullYear();
+    const futureYear = currentYear + 2;
+    const targetMonth = 5; // June (0-indexed)
+    const targetDay = 15;
+
+    render(
+      <DateInput
+        label="Expiration Date"
+        value=""
+        onChange={mockOnChange}
+        locale="en"
+        endMonth={new Date(futureYear, 11)}
+        disabled={{ before: new Date() }}
+      />,
+    );
+
+    // Open calendar
+    const wrapper = screen.getByTestId('date-input-wrapper');
+    fireEvent.click(wrapper);
+
+    const calendarContainer = screen.getByTestId('date-input-calendar');
+    const selects = calendarContainer.querySelectorAll('select');
+
+    // Find and change the year dropdown
+    let yearSelect: HTMLSelectElement | null = null;
+    let monthSelect: HTMLSelectElement | null = null;
+    selects.forEach((sel) => {
+      const options = Array.from(sel.options);
+      if (options.some((opt) => /^\d{4}$/.test(opt.value))) {
+        yearSelect = sel;
+      } else {
+        monthSelect = sel;
+      }
+    });
+
+    expect(yearSelect).not.toBeNull();
+    expect(monthSelect).not.toBeNull();
+
+    // Navigate to the future year and month
+    fireEvent.change(yearSelect!, { target: { value: String(futureYear) } });
+    fireEvent.change(monthSelect!, { target: { value: String(targetMonth) } });
+
+    // Find the target day cell via data-day attribute and click the button inside
+    const expectedMonth = String(targetMonth + 1).padStart(2, '0');
+    const expectedDate = `${futureYear}-${expectedMonth}-${targetDay}`;
+    const dayCell = calendarContainer.querySelector(
+      `[data-day="${expectedDate}"]`,
+    );
+    expect(dayCell).not.toBeNull();
+    const targetButton = dayCell!.querySelector('button');
+    expect(targetButton).not.toBeNull();
+    fireEvent.click(targetButton!);
+
+    // onChange should have been called with ISO date string
+    expect(mockOnChange).toHaveBeenCalledWith(expectedDate);
+  });
+
+  it.each([2, 3, 5, 10])(
+    'supports expiration dates %i years in the future',
+    (yearsAhead) => {
+      const currentYear = new Date().getFullYear();
+      const futureYear = currentYear + yearsAhead;
+
+      render(
+        <DateInput
+          label="Expiration Date"
+          value=""
+          onChange={mockOnChange}
+          locale="en"
+          endMonth={new Date(futureYear, 11)}
+          disabled={{ before: new Date() }}
+        />,
+      );
+
+      // Open calendar
+      const wrapper = screen.getByTestId('date-input-wrapper');
+      fireEvent.click(wrapper);
+
+      const calendarContainer = screen.getByTestId('date-input-calendar');
+      const selects = calendarContainer.querySelectorAll('select');
+      let yearSelect: HTMLSelectElement | null = null;
+      selects.forEach((sel) => {
+        const options = Array.from(sel.options);
+        if (options.some((opt) => /^\d{4}$/.test(opt.value))) {
+          yearSelect = sel;
+        }
+      });
+
+      expect(yearSelect).not.toBeNull();
+      const yearOptions = Array.from(yearSelect!.options).map((opt) =>
+        parseInt(opt.value, 10),
+      );
+      expect(yearOptions).toContain(futureYear);
+    },
+  );
+
   it('displays placeholder text when no value is provided', () => {
     render(
       <DateInput

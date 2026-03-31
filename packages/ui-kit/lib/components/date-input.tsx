@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { DayPicker } from 'react-day-picker';
+import { DayPicker, type Matcher } from 'react-day-picker';
 import { de as deLocale, enUS } from 'react-day-picker/locale';
 import 'react-day-picker/style.css';
 import { IconButton } from './icon-button';
@@ -38,6 +38,9 @@ export interface DateInputProps extends isLocalAware {
   label?: string;
   value: string;
   onChange: (value: string) => void;
+  startMonth?: Date;
+  endMonth?: Date;
+  disabled?: Matcher | Matcher[];
 }
 
 /**
@@ -87,7 +90,10 @@ export const DateInput: React.FC<DateInputProps> = ({
   value,
   onChange,
   label,
-  locale
+  locale,
+  startMonth: startMonthProp = new Date(1920, 0),
+  endMonth: endMonthProp = new Date(new Date().getFullYear(), 11),
+  disabled: disabledProp = { after: new Date() },
 }) => {
   const dictionary = getDictionary(locale).components.dateInput;
 
@@ -238,9 +244,9 @@ export const DateInput: React.FC<DateInputProps> = ({
             selected={selectedDate}
             onSelect={handleDaySelect}
             defaultMonth={selectedDate || new Date()}
-            startMonth={new Date(1920, 0)}
-            endMonth={new Date(new Date().getFullYear(), 11)}
-            disabled={{ after: new Date() }}
+            startMonth={startMonthProp}
+            endMonth={endMonthProp}
+            disabled={disabledProp}
             classNames={{
               root: 'p-3 text-text-primary',
               month_caption: 'text-text-primary mb-2 font-bold text-lg',
