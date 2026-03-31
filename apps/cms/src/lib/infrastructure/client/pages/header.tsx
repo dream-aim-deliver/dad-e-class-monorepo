@@ -78,7 +78,7 @@ export default function Header({
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
         setIsLocaleChanging(true);
-        router.push(newUrl);
+        window.location.href = newUrl;
     };
 
     const handleLogout = () => {
