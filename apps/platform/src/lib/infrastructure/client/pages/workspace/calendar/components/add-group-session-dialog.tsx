@@ -219,7 +219,6 @@ export function AddGroupSessionDialog({
                 showCloseButton
                 closeOnOverlayClick
                 closeOnEscape
-                className="overflow-visible"
             >
                 {showSuccess ? (
                     <div className="flex flex-col gap-4 pt-10 p-4">
@@ -229,7 +228,7 @@ export function AddGroupSessionDialog({
                         />
                     </div>
                 ) : conflictWarning ? (
-                    <div className="flex flex-col gap-4 p-4">
+                    <div className="flex flex-col gap-4 pt-10 p-4">
                         <h3 className="text-lg font-semibold text-text-primary">
                             {t('studentOverlapWarning.title')}
                         </h3>

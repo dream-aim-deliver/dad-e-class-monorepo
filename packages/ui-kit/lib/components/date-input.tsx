@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { DayPicker, type Matcher } from 'react-day-picker';
 import { de as deLocale, enUS } from 'react-day-picker/locale';
 import 'react-day-picker/style.css';
@@ -98,9 +99,12 @@ export const DateInput: React.FC<DateInputProps> = ({
   const dictionary = getDictionary(locale).components.dateInput;
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [textValue, setTextValue] = useState('');
+  const [calendarStyle, setCalendarStyle] = useState<React.CSSProperties>({});
 
   const selectedDate = parseISODate(value);
 
@@ -113,10 +117,37 @@ export const DateInput: React.FC<DateInputProps> = ({
     }
   }, [value, locale]);
 
+  // Compute calendar portal position from wrapper bounding rect
+  const updateCalendarPosition = useCallback(() => {
+    if (!wrapperRef.current) return;
+    const rect = wrapperRef.current.getBoundingClientRect();
+    setCalendarStyle({
+      position: 'fixed',
+      top: rect.bottom + 4,
+      left: rect.left,
+      zIndex: 10000,
+    });
+  }, []);
+
+  // Reposition calendar on scroll/resize while open
+  useEffect(() => {
+    if (!isOpen) return;
+    updateCalendarPosition();
+    window.addEventListener('scroll', updateCalendarPosition, true);
+    window.addEventListener('resize', updateCalendarPosition);
+    return () => {
+      window.removeEventListener('scroll', updateCalendarPosition, true);
+      window.removeEventListener('resize', updateCalendarPosition);
+    };
+  }, [isOpen, updateCalendarPosition]);
+
   // Close popover on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const inContainer = containerRef.current?.contains(target);
+      const inCalendar = calendarRef.current?.contains(target);
+      if (!inContainer && !inCalendar) {
         setIsOpen(false);
       }
     }
@@ -184,6 +215,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         </label>
       )}
       <div
+        ref={wrapperRef}
         className="relative flex justify-between items-center px-3 py-2 w-full rounded-medium border border-solid bg-input-fill border-input-stroke min-h-[40px] max-md:max-w-full hover:border-base-neutral-400 cursor-pointer"
         data-testid="date-input-wrapper"
         onClick={handleInputClick}
@@ -218,11 +250,13 @@ export const DateInput: React.FC<DateInputProps> = ({
         />
       </div>
 
-      {isOpen && (
+      {isOpen && typeof document !== 'undefined' && createPortal(
         <div
-          className="absolute top-full left-0 z-50 mt-1 bg-base-neutral-800 border border-base-neutral-700 rounded-medium shadow-lg [&_.rdp-dropdowns]:flex-row-reverse"
+          ref={calendarRef}
+          className="bg-base-neutral-800 border border-base-neutral-700 rounded-medium shadow-lg [&_.rdp-dropdowns]:flex-row-reverse"
           data-testid="date-input-calendar"
           style={{
+            ...calendarStyle,
             '--rdp-accent-color': 'var(--color-base-brand-400)',
             '--rdp-accent-background-color': 'rgba(251, 146, 60, 0.15)',
             '--rdp-day-height': '36px',
@@ -261,7 +295,8 @@ export const DateInput: React.FC<DateInputProps> = ({
               disabled: 'opacity-30 cursor-not-allowed',
             }}
           />
-        </div>
+        </div>,
+        (containerRef.current?.closest('.theme') as HTMLElement) ?? document.body,
       )}
     </div>
   );

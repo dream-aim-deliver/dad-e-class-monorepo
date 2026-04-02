@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Dropdown } from '../lib/components/dropdown';
+import { Dialog, DialogContent } from '../lib/components/dialog';
 
 describe('<Dropdown />', () => {
   const mockOnSelectionChange = vi.fn();
@@ -151,5 +152,53 @@ describe('<Dropdown />', () => {
     listItems = screen.queryAllByRole('listitem');
 
     expect(listItems).toHaveLength(0);
+  });
+
+  it('dropdown portal z-index is higher than dialog overlay and content z-index', () => {
+    render(
+      <Dialog defaultOpen={false} open={true} onOpenChange={() => {}}>
+        <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
+          <Dropdown
+            type="simple"
+            options={options}
+            onSelectionChange={mockOnSelectionChange}
+            text={{ simpleText: 'Select an option' }}
+          />
+        </DialogContent>
+      </Dialog>,
+    );
+
+    // Open the dropdown — multiple buttons exist (close button + dropdown button)
+    const buttons = screen.getAllByRole('button');
+    const dropdownButton = buttons.find(
+      (btn) => btn.textContent?.includes('Select an option'),
+    )!;
+    fireEvent.click(dropdownButton);
+
+    // Find the dialog panel (role="dialog") and get its z-index
+    const dialogPanel = screen.getByRole('dialog');
+    const dialogZ = parseInt(dialogPanel.style.zIndex || '0', 10);
+
+    // Find the overlay (fixed inset-0)
+    const overlay = document.querySelector('.fixed.inset-0') as HTMLElement;
+    const overlayClassMatch = overlay?.className.match(/z-\[(\d+)\]/);
+    const overlayZ = overlayClassMatch ? parseInt(overlayClassMatch[1], 10) : 0;
+
+    // Find the dropdown portal container — it's positioned fixed with a zIndex style
+    const allFixedDivs = document.querySelectorAll('div[style]');
+    let dropdownPortal: HTMLElement | null = null;
+    allFixedDivs.forEach((div) => {
+      const el = div as HTMLElement;
+      if (el.style.position === 'fixed' && el.style.zIndex && el.querySelector('ul')) {
+        dropdownPortal = el;
+      }
+    });
+
+    expect(dropdownPortal).not.toBeNull();
+    const dropdownZ = parseInt(dropdownPortal!.style.zIndex, 10);
+
+    // Dropdown must render ABOVE both dialog overlay and dialog content
+    expect(dropdownZ).toBeGreaterThan(dialogZ);
+    expect(dropdownZ).toBeGreaterThan(overlayZ);
   });
 });

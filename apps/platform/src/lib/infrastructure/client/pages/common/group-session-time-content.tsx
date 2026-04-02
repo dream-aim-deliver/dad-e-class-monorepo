@@ -60,7 +60,6 @@ export default function GroupSessionTimeContent({
         return getTimeValue(startTime);
     });
     const [hasTimeError, setHasTimeError] = useState(false);
-    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     const parseTimeString = (
         timeStr: string,
@@ -185,13 +184,12 @@ export default function GroupSessionTimeContent({
     }
 
     return (
-        <div className={`flex flex-col gap-3 transition-all duration-300 ${isCalendarOpen ? 'min-h-[550px]' : 'min-h-0'}`}>
+        <div className="flex flex-col gap-3">
             <div className="relative">
                 <span className="text-sm text-text-secondary">{t('dateLabel')}</span>
                 <DatePicker
                     selectedDate={startTime}
                     onDateSelect={handleDateChange}
-                    onCalendarOpenChange={setIsCalendarOpen}
                 />
             </div>
 

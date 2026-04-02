@@ -120,7 +120,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         left: rect.left,
         minWidth: rect.width,
         maxHeight: window.innerHeight - rect.bottom - 16,
-        zIndex: 50,
+        zIndex: 10000,
       });
     } else {
       setPortalStyle({
@@ -129,7 +129,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         left: rect.left,
         minWidth: rect.width,
         maxHeight: rect.top - 16,
-        zIndex: 50,
+        zIndex: 10000,
       });
     }
   }, [position]);

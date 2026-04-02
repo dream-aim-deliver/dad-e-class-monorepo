@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { IconCalendar, InputField } from '@maany_shr/e-class-ui-kit';
 import MonthlyCalendarPicker from './monthly-calendar-picker';
 import { useTranslations } from 'next-intl';
@@ -8,29 +9,46 @@ import { useTranslations } from 'next-intl';
 interface DatePickerProps {
     selectedDate?: Date;
     onDateSelect: (date: Date) => void;
-    onCalendarOpenChange?: (isOpen: boolean) => void;
 }
 
 export default function DatePicker({
     selectedDate,
     onDateSelect,
-    onCalendarOpenChange,
 }: DatePickerProps) {
     const t = useTranslations('pages.calendarPage');
     const [datePickerOpen, setDatePickerOpen] = useState(false);
-    const datePickerRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLDivElement>(null);
+    const calendarRef = useRef<HTMLDivElement>(null);
+    const [calendarStyle, setCalendarStyle] = useState<React.CSSProperties>({});
 
-    // Notify parent when calendar open state changes
+    const updateCalendarPosition = useCallback(() => {
+        if (!triggerRef.current) return;
+        const rect = triggerRef.current.getBoundingClientRect();
+        setCalendarStyle({
+            position: 'fixed',
+            top: rect.bottom + 8,
+            left: rect.left,
+            zIndex: 10000,
+        });
+    }, []);
+
     useEffect(() => {
-        onCalendarOpenChange?.(datePickerOpen);
-    }, [datePickerOpen, onCalendarOpenChange]);
+        if (!datePickerOpen) return;
+        updateCalendarPosition();
+        window.addEventListener('scroll', updateCalendarPosition, true);
+        window.addEventListener('resize', updateCalendarPosition);
+        return () => {
+            window.removeEventListener('scroll', updateCalendarPosition, true);
+            window.removeEventListener('resize', updateCalendarPosition);
+        };
+    }, [datePickerOpen, updateCalendarPosition]);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (
-                datePickerRef.current &&
-                !datePickerRef.current.contains(event.target as Node)
-            ) {
+            const target = event.target as Node;
+            const inTrigger = triggerRef.current?.contains(target);
+            const inCalendar = calendarRef.current?.contains(target);
+            if (!inTrigger && !inCalendar) {
                 setDatePickerOpen(false);
             }
         }
@@ -50,7 +68,7 @@ export default function DatePicker({
     };
 
     return (
-        <div ref={datePickerRef} className="relative">
+        <div ref={triggerRef} className="relative">
             <InputField
                 inputText={t('dateLabel')}
                 value={getCurrentDateValue()}
@@ -69,8 +87,8 @@ export default function DatePicker({
                     </span>
                 }
             />
-            {datePickerOpen && (
-                <div className="absolute top-full left-0 mt-2 z-40">
+            {datePickerOpen && typeof document !== 'undefined' && createPortal(
+                <div ref={calendarRef} style={calendarStyle}>
                     <MonthlyCalendarPicker
                         onDateClick={(date) => {
                             onDateSelect(date);
@@ -78,7 +96,8 @@ export default function DatePicker({
                         }}
                         selectedDate={selectedDate}
                     />
-                </div>
+                </div>,
+                (triggerRef.current?.closest('.theme') as HTMLElement) ?? document.body,
             )}
         </div>
     );
