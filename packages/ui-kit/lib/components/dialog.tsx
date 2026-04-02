@@ -309,7 +309,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
             <div
                 ref={panelRef}
                 className={cn(
-                    `fixed top-1/2 left-1/2 flex max-h-screen w-full max-w-lg flex-col overflow-hidden
+                    `fixed top-1/2 left-1/2 flex max-h-screen w-full max-w-lg flex-col
                     bg-card-fill shadow-[0_4px_12px_0var(base-neutral-950)] max-[27rem]:border-0
                     max-[27rem]:rounded-none max-[27rem]:top-auto max-[27rem]:bottom-0
                     max-[27rem]:left-0 max-[27rem]:translate-x-0 max-[27rem]:translate-y-0

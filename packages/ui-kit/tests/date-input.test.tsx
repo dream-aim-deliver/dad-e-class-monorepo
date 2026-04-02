@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { DateInput } from '../lib/components/date-input';
+import { Dialog, DialogContent } from '../lib/components/dialog';
 
 describe('<DateInput />', () => {
   const mockOnChange = vi.fn();
@@ -320,5 +321,71 @@ describe('<DateInput />', () => {
     const input = screen.getByTestId('date-input-field') as HTMLInputElement;
     expect(input.value).toBe('');
     expect(input.placeholder).toBeTruthy();
+  });
+
+  it('calendar portal z-index is higher than dialog z-index when used inside a dialog', () => {
+    render(
+      <Dialog defaultOpen={false} open={true} onOpenChange={() => {}}>
+        <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
+          <DateInput
+            label="Select Date"
+            value="2025-02-18"
+            onChange={mockOnChange}
+            locale="en"
+            endMonth={new Date(2030, 11)}
+            disabled={{ before: new Date(2020, 0) }}
+          />
+        </DialogContent>
+      </Dialog>,
+    );
+
+    // Open calendar
+    const wrapper = screen.getByTestId('date-input-wrapper');
+    fireEvent.click(wrapper);
+
+    const calendar = screen.getByTestId('date-input-calendar');
+    expect(calendar).toBeInTheDocument();
+
+    // Get z-index values
+    const dialogPanel = screen.getByRole('dialog');
+    const dialogZ = parseInt(dialogPanel.style.zIndex || '0', 10);
+
+    const overlay = document.querySelector('.fixed.inset-0') as HTMLElement;
+    const overlayClassMatch = overlay?.className.match(/z-\[(\d+)\]/);
+    const overlayZ = overlayClassMatch ? parseInt(overlayClassMatch[1], 10) : 0;
+
+    const calendarZ = parseInt(calendar.style.zIndex || '0', 10);
+
+    // Calendar must render ABOVE both dialog panel and overlay
+    expect(calendarZ).toBeGreaterThan(dialogZ);
+    expect(calendarZ).toBeGreaterThan(overlayZ);
+  });
+
+  it('calendar is rendered as a portal (not inside the dialog panel DOM)', () => {
+    render(
+      <Dialog defaultOpen={false} open={true} onOpenChange={() => {}}>
+        <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
+          <DateInput
+            label="Select Date"
+            value="2025-02-18"
+            onChange={mockOnChange}
+            locale="en"
+            endMonth={new Date(2030, 11)}
+            disabled={{ before: new Date(2020, 0) }}
+          />
+        </DialogContent>
+      </Dialog>,
+    );
+
+    // Open calendar
+    const wrapper = screen.getByTestId('date-input-wrapper');
+    fireEvent.click(wrapper);
+
+    const calendar = screen.getByTestId('date-input-calendar');
+    const dialogPanel = screen.getByRole('dialog');
+
+    // Calendar should NOT be a descendant of the dialog panel
+    // (it's portaled out so it's not clipped by overflow)
+    expect(dialogPanel.contains(calendar)).toBe(false);
   });
 });
