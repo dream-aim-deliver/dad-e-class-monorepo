@@ -10,7 +10,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useMemo, useState } from 'react';
-import { DefaultLoading, DefaultError, DefaultNotFound, Button, Breadcrumbs, IconChevronLeft, BookSessionWith, BuyCoachingSessionBanner, CourseCardList, CourseCard, Dropdown, CoachReviewCardList, CoachReviewCard, IconFilter, CoachReviewFilterModel, CoachReviewFilterModal, ReviewModal, ReviewDisplay } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, Button, Breadcrumbs, IconChevronLeft, BookSessionWith, BuyCoachingSessionBanner, CourseCardList, CourseCard, Dropdown, CoachReviewCardList, CoachReviewCard, IconFilter, CoachReviewFilterModel, CoachReviewFilterModal, ReviewModal, ReviewDisplay, PurchaseAuthModal } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useGetCoachIntroductionPresenter } from '../hooks/use-get-coach-introduction-presenter';
@@ -78,6 +78,22 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	const [coachProfileAccessViewModel, setCoachProfileAccessViewModel] = useState<
 		viewModels.TGetCoachProfileAccessViewModel | undefined
 	>(undefined);
+
+	// Purchase auth modal state (for visitors)
+	const [isPurchaseAuthOpen, setIsPurchaseAuthOpen] = useState(false);
+	const [pendingRedirectUrl, setPendingRedirectUrl] = useState<string | null>(null);
+
+	const handlePurchaseAuthLogin = () => {
+		setIsPurchaseAuthOpen(false);
+		route.push(
+			`/${locale}/auth/login?callbackUrl=${encodeURIComponent(pendingRedirectUrl ?? window.location.pathname)}`,
+		);
+	};
+
+	const handlePurchaseAuthCancel = () => {
+		setIsPurchaseAuthOpen(false);
+		setPendingRedirectUrl(null);
+	};
 
 	// Sort and Filter states
 	const [sortBy, setSortBy] = useState<string>('mostRecent');
@@ -416,6 +432,11 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 							route.push(`/${locale}/courses/${course.slug}`);
 						}}
 						onBuy={() => {
+							if (!isLoggedIn) {
+								setPendingRedirectUrl(`/${locale}/courses/${course.slug}`);
+								setIsPurchaseAuthOpen(true);
+								return;
+							}
 							route.push(`/${locale}/courses/${course.slug}`);
 						}}
 					/>
@@ -480,7 +501,8 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						coachRating={coachIntroduction.rating}
 						totalRatings={coachIntroduction.ratingCount}
 						onBookSessionWith={() => {
-							window.open(`/${locale}/coaches/${username}/book`, '_blank');
+							setPendingRedirectUrl(`/${locale}/coaches/${username}/book`);
+							setIsPurchaseAuthOpen(true);
 						}}
 						isCourseCreator={coachIntroduction.isCourseCreator}
 						skills={coachIntroduction.skills.map(skill => skill.name)}
@@ -706,6 +728,13 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 					/>
 				</div>
 			)}
+
+			<PurchaseAuthModal
+				isOpen={isPurchaseAuthOpen}
+				onLogin={handlePurchaseAuthLogin}
+				onCancel={handlePurchaseAuthCancel}
+				locale={locale}
+			/>
 		</div>
 	);
 }
