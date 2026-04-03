@@ -124,6 +124,7 @@ export const EN: TDictionary = {
       coursesBoughtColumn: 'Purchased Offers',
       coursesCreatedColumn: 'Created Offers',
       lastAccessColumn: 'Last access',
+      createdAtColumn: 'Created at',
       sendNotificationNoUsersError: 'Error: no users selected to send notification',
       sendingNotifications: 'Sending notifications to %{count} selected users',
       searchPlaceholder: 'Search',

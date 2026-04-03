@@ -80,6 +80,7 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
       coursesBought: user.coursesBought ?? undefined,
       coursesCreated: user.coursesCreated ?? undefined,
       lastAccess: user.lastAccess,
+      createdAt: user.createdAt,
       username: user.username,
       interfaceLanguage: { code: 'en', name: 'English' }, // Default values since not provided by backend
       receiveNewsletter: false,
