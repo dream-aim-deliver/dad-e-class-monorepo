@@ -260,7 +260,10 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			const responseData = data as any;
 			const newAvatarUrl = responseData?.data?.profile?.avatarImage?.downloadUrl || null;
 			await updateSession({ image: newAvatarUrl, name: variables.username });
-			router.refresh();
+			// Full page reload forces the layout to re-render with a fresh session.
+			// router.refresh() only refreshes server components on the current page —
+			// the layout's SessionProvider keeps the stale session prop on client-side navigation.
+			window.location.reload();
 		},
 		onError: (error) => {
 			setErrorMessage(error.message || t('failedToSavePersonal'));
