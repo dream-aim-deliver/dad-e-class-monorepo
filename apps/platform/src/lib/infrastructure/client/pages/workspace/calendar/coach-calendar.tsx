@@ -58,6 +58,9 @@ function CalendarContent() {
         title: string;
         startTime: Date;
         endTime: Date;
+        studentUsername?: string | null;
+        groupName?: string | null;
+        courseName?: string | null;
     } | undefined>(undefined);
 
     const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
@@ -99,6 +102,9 @@ function CalendarContent() {
             title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingName}`,
             startTime: new Date(session.startTime),
             endTime: new Date(session.endTime),
+            studentUsername: session.studentUsername || null,
+            groupName: session.groupName || null,
+            courseName: session.courseTitle || null,
         });
         setIsSessionDetailsDialogOpen(true);
     };
@@ -167,6 +173,9 @@ function CalendarContent() {
                     sessionTitle={chosenSession.title}
                     startTime={chosenSession.startTime}
                     endTime={chosenSession.endTime}
+                    studentUsername={chosenSession.studentUsername}
+                    groupName={chosenSession.groupName}
+                    courseName={chosenSession.courseName}
                     onCancelSuccess={handleSessionCancelSuccess}
                 />
             )}

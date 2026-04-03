@@ -6,6 +6,9 @@ import {
     Dialog,
     DialogContent,
     IconCalendar,
+    IconCourse,
+    IconGroup,
+    IconPerson,
     IconTrashAlt,
 } from '@maany_shr/e-class-ui-kit';
 import { useCancelCoachingSession } from '../hooks/use-cancel-coaching-session';
@@ -20,6 +23,9 @@ interface SessionDetailsDialogProps {
     sessionTitle: string;
     startTime: Date;
     endTime: Date;
+    studentUsername?: string | null;
+    groupName?: string | null;
+    courseName?: string | null;
     onCancelSuccess: () => void;
 }
 
@@ -34,6 +40,9 @@ export function SessionDetailsDialog({
     sessionTitle,
     startTime,
     endTime,
+    studentUsername,
+    groupName,
+    courseName,
     onCancelSuccess,
 }: SessionDetailsDialogProps) {
     const locale = useLocale() as TLocale;
@@ -83,6 +92,33 @@ export function SessionDetailsDialog({
                                 <span>{t('timeSlotLabel')}</span>
                             </div>
                             <span>{timeRange}</span>
+                            {studentUsername && (
+                                <>
+                                    <div className="flex flex-row gap-2 text-text-secondary">
+                                        <IconPerson />
+                                        <span>{t('studentLabel')}</span>
+                                    </div>
+                                    <span>{studentUsername}</span>
+                                </>
+                            )}
+                            {groupName && (
+                                <>
+                                    <div className="flex flex-row gap-2 text-text-secondary">
+                                        <IconGroup />
+                                        <span>{t('groupLabel')}</span>
+                                    </div>
+                                    <span>{groupName}</span>
+                                </>
+                            )}
+                            {courseName && (
+                                <>
+                                    <div className="flex flex-row gap-2 text-text-secondary">
+                                        <IconCourse />
+                                        <span>{t('courseLabel')}</span>
+                                    </div>
+                                    <span>{courseName}</span>
+                                </>
+                            )}
                         </div>
                         <Button
                             text={t('cancelSessionButton')}
