@@ -10,6 +10,7 @@ import {
     DefaultError,
     DefaultLoading,
     EmptyState,
+    PurchaseAuthModal,
     matchesTopicFilter,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -39,6 +40,21 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const router = useRouter();
     const { data: session } = useSession();
     const isLoggedIn = !!session;
+
+    const [isPurchaseAuthOpen, setIsPurchaseAuthOpen] = useState(false);
+    const [pendingRedirectUrl, setPendingRedirectUrl] = useState<string | null>(null);
+
+    const handlePurchaseAuthLogin = () => {
+        setIsPurchaseAuthOpen(false);
+        router.push(
+            `/${locale}/auth/login?callbackUrl=${encodeURIComponent(pendingRedirectUrl ?? window.location.pathname)}`,
+        );
+    };
+
+    const handlePurchaseAuthCancel = () => {
+        setIsPurchaseAuthOpen(false);
+        setPendingRedirectUrl(null);
+    };
 
     const coaches = useMemo(() => {
         if (!coachesViewModel || coachesViewModel.mode !== 'default') {
@@ -128,6 +144,11 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
                             router.push(`/${locale}/courses/${courseSlug}`);
                         }}
                         onClickBookSession={() => {
+                            if (!isLoggedIn) {
+                                setPendingRedirectUrl(`/${locale}/coaches/${coach.username}/book`);
+                                setIsPurchaseAuthOpen(true);
+                                return;
+                            }
                             router.push(`/${locale}/coaches/${coach.username}/book`);
                         }}
                     />
@@ -146,6 +167,13 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
                     onClick={handleViewAll}
                 />
             ) : null}
+
+            <PurchaseAuthModal
+                isOpen={isPurchaseAuthOpen}
+                onLogin={handlePurchaseAuthLogin}
+                onCancel={handlePurchaseAuthCancel}
+                locale={locale}
+            />
         </div>
     );
 }

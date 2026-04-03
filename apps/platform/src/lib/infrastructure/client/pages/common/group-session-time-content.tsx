@@ -184,7 +184,7 @@ export default function GroupSessionTimeContent({
     }
 
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 pt-10 px-4 pb-4">
             <div className="relative">
                 <span className="text-sm text-text-secondary">{t('dateLabel')}</span>
                 <DatePicker

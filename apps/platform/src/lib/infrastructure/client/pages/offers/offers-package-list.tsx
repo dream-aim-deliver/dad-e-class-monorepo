@@ -4,6 +4,7 @@ import {
     DefaultLoading,
     EmptyState,
     PackageCard,
+    PurchaseAuthModal,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListOffersPagePackagesPresenter } from '../../hooks/use-list-offers-page-packages-presenter';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useRequiredPlatform } from '../../context/platform-context';
 
 export default function PackageList() {
@@ -29,6 +31,23 @@ export default function PackageList() {
     presenter.present(packagesResponse, packagesViewModel);
 
     const router = useRouter();
+    const { data: session } = useSession();
+    const isLoggedIn = !!session;
+
+    const [isPurchaseAuthOpen, setIsPurchaseAuthOpen] = useState(false);
+    const [pendingRedirectUrl, setPendingRedirectUrl] = useState<string | null>(null);
+
+    const handlePurchaseAuthLogin = () => {
+        setIsPurchaseAuthOpen(false);
+        router.push(
+            `/${locale}/auth/login?callbackUrl=${encodeURIComponent(pendingRedirectUrl ?? window.location.pathname)}`,
+        );
+    };
+
+    const handlePurchaseAuthCancel = () => {
+        setIsPurchaseAuthOpen(false);
+        setPendingRedirectUrl(null);
+    };
 
     if (!packagesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -93,12 +112,24 @@ export default function PackageList() {
                                 router.push(`/${locale}/packages/${pkg.id}`);
                             }}
                             onClickPurchase={() => {
+                                if (!isLoggedIn) {
+                                    setPendingRedirectUrl(`/${locale}/packages/${pkg.id}`);
+                                    setIsPurchaseAuthOpen(true);
+                                    return;
+                                }
                                 router.push(`/${locale}/packages/${pkg.id}`);
                             }}
                         />
                     );
                 })}
             </CardListLayout>
+
+            <PurchaseAuthModal
+                isOpen={isPurchaseAuthOpen}
+                onLogin={handlePurchaseAuthLogin}
+                onCancel={handlePurchaseAuthCancel}
+                locale={locale}
+            />
         </div>
     );
 }
