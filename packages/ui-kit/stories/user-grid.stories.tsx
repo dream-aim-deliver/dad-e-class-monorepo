@@ -86,7 +86,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 24,
         coursesBought: 5,
         coursesCreated: 2,
-        lastAccess: 1714022400000 // April 24, 2024
+        lastAccess: 1714022400000, // April 24, 2024
+        createdAt: 1697059200000, // Oct 12, 2023
     },
     {
         id: 1002,
@@ -100,7 +101,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 38,
         coursesBought: 12,
         coursesCreated: 0,
-        lastAccess: 1713936000000 // April 23, 2024
+        lastAccess: 1713936000000, // April 23, 2024
+        createdAt: 1694380800000, // Sep 11, 2023
     },
     {
         id: 1003,
@@ -114,7 +116,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 7,
         coursesBought: 3,
         coursesCreated: 0,
-        lastAccess: 1713418800000 // April 17, 2024
+        lastAccess: 1713418800000, // April 17, 2024
+        createdAt: 1688169600000, // Jul 1, 2023
     },
     {
         id: 1004,
@@ -131,7 +134,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 52,
         coursesBought: 0,
         coursesCreated: 6,
-        lastAccess: 1713849600000 // April 22, 2024
+        lastAccess: 1713849600000, // April 22, 2024
+        createdAt: 1685491200000, // May 31, 2023
     },
     {
         id: 1005,
@@ -148,7 +152,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: undefined,
         coursesBought: 7,
         coursesCreated: 1,
-        lastAccess: 1714022400000 // April 24, 2024
+        lastAccess: 1714022400000, // April 24, 2024
+        createdAt: 1690848000000, // Aug 1, 2023
     },
     {
         id: 1006,
@@ -162,7 +167,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 31,
         coursesBought: undefined,
         coursesCreated: 3,
-        lastAccess: 1713504000000 // April 18, 2024
+        lastAccess: 1713504000000, // April 18, 2024
+        createdAt: 1693526400000, // Sep 1, 2023
     },
     {
         id: 1007,
@@ -176,7 +182,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 9,
         coursesBought: 2,
         coursesCreated: 0,
-        lastAccess: 1712812800000 // April 10, 2024
+        lastAccess: 1712812800000, // April 10, 2024
+        createdAt: 1682899200000, // May 1, 2023
     },
     {
         id: 1008,
@@ -193,7 +200,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 45,
         coursesBought: 9,
         coursesCreated: 5,
-        lastAccess: 1713763200000 // April 21, 2024
+        lastAccess: 1713763200000, // April 21, 2024
+        createdAt: 1696118400000, // Oct 1, 2023
     },
     {
         id: 1009,
@@ -210,7 +218,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 18,
         coursesBought: 6,
         coursesCreated: 0,
-        lastAccess: 1713676800000 // April 20, 2024
+        lastAccess: 1713676800000, // April 20, 2024
+        createdAt: 1691712000000, // Aug 11, 2023
     },
     {
         id: 1010,
@@ -227,7 +236,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 27,
         coursesBought: 3,
         coursesCreated: 1,
-        lastAccess: 1713936000000 // April 23, 2024
+        lastAccess: 1713936000000, // April 23, 2024
+        createdAt: 1698268800000, // Oct 26, 2023
     },
     {
         id: 1011,
@@ -245,7 +255,8 @@ const mockUsers: UserRow[] = [
         coachingSessionsCount: 9939999,
         coursesBought: 88888888,
         coursesCreated: 7777777,
-        lastAccess: 9999999999999 // Far future date to test timestamp overflow
+        lastAccess: 9999999999999, // Far future date to test timestamp overflow
+        createdAt: 9999999999999, // Far future date to test timestamp overflow
     }
 ];
 

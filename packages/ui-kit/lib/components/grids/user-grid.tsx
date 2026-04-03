@@ -37,6 +37,7 @@ export interface UserRow extends profile.TBasePersonalProfile {
     coursesBought?: number;
     coursesCreated?: number;
     lastAccess: number; // timestamp
+    createdAt: number; // timestamp
 }
 
 export interface UserGridProps extends isLocalAware {
@@ -287,7 +288,17 @@ export const UserGrid = (props: UserGridProps) => {
                 return formatDate(date);
             },
             filter: 'agDateColumnFilter'
-        }
+        },
+        {
+            field: 'createdAt',
+            headerName: dictionary.createdAtColumn,
+            valueFormatter: (params: any) => {
+                const date = new Date(params.value);
+                return formatDate(date);
+            },
+            filter: 'agDateColumnFilter',
+            sort: 'desc' as const,
+        },
     ], [dictionary, props.emailTooltip, props.showDetailsColumn, props.onUserDetailsClick, props.variant]);
 
     // For filter modal

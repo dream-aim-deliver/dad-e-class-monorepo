@@ -123,6 +123,7 @@ export const DictionarySchema = z.object({
       coursesBoughtColumn: z.string(),
       coursesCreatedColumn: z.string(),
       lastAccessColumn: z.string(),
+      createdAtColumn: z.string(),
       sendNotificationNoUsersError: z.string(),
       sendingNotifications: z.string(),
       searchPlaceholder: z.string(),
