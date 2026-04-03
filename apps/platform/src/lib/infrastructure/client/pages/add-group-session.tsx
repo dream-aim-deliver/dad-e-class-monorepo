@@ -82,6 +82,9 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
         title: string;
         startTime: Date;
         endTime: Date;
+        studentUsername?: string | null;
+        groupName?: string | null;
+        courseName?: string | null;
     } | undefined>(undefined);
 
     // Fetch group coaching sessions for this specific group
@@ -133,18 +136,22 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
     };
 
     const handleSessionClick = (sessionId: number) => {
-        let found: { id: number; title: string; startTime: string; endTime: string } | undefined;
+        let found: { id: number; title: string; startTime: string; endTime: string; studentUsername?: string | null; groupName?: string | null; courseName?: string | null } | undefined;
 
         if (groupCoachingSessionsViewModel?.mode === 'default') {
             const session = groupCoachingSessionsViewModel.data.sessions.find(s => s.id === sessionId);
             if (session) {
-                found = { id: Number(session.id), title: session.course?.title || 'Group Session', startTime: session.startTime, endTime: session.endTime };
+                found = { id: Number(session.id), title: session.course?.title || 'Group Session', startTime: session.startTime, endTime: session.endTime, groupName: session.group?.name ?? null, courseName: session.course?.title ?? null };
             }
         }
         if (!found && coachCoachingSessionsViewModel?.mode === 'default') {
             const session = coachCoachingSessionsViewModel.data.sessions.find(s => s.id === sessionId);
             if (session) {
-                found = { id: Number(session.id), title: session.coachingOfferingTitle, startTime: session.startTime, endTime: session.endTime };
+                const sessionAny = session as Record<string, any>;
+                const student = sessionAny.student ?? null;
+                const group = sessionAny.group ?? null;
+                const course = sessionAny.course ?? null;
+                found = { id: Number(session.id), title: session.coachingOfferingTitle, startTime: session.startTime, endTime: session.endTime, studentUsername: student?.username ?? null, groupName: group?.name ?? null, courseName: course?.title ?? null };
             }
         }
         if (!found) return;
@@ -154,6 +161,9 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
             title: found.title,
             startTime: new Date(found.startTime),
             endTime: new Date(found.endTime),
+            studentUsername: found.studentUsername,
+            groupName: found.groupName,
+            courseName: found.courseName,
         });
         setIsSessionDetailsDialogOpen(true);
     };
@@ -209,6 +219,9 @@ function CalendarContent({ courseSlug, groupId, coachUsername }: { courseSlug: s
                     sessionTitle={chosenSession.title}
                     startTime={chosenSession.startTime}
                     endTime={chosenSession.endTime}
+                    studentUsername={chosenSession.studentUsername}
+                    groupName={chosenSession.groupName}
+                    courseName={chosenSession.courseName}
                     onCancelSuccess={handleSessionCancelSuccess}
                 />
             )}
