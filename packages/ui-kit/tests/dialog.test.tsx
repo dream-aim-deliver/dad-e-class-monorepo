@@ -9,7 +9,7 @@ describe('<Dialog /> z-index and positioning', () => {
 
   function renderOpenDialog(props: { className?: string } = {}) {
     return render(
-      <Dialog defaultOpen={false} open={true} onOpenChange={() => {}}>
+      <Dialog defaultOpen={false} open={true} onOpenChange={() => { /* noop */ }}>
         <DialogContent
           showCloseButton
           closeOnOverlayClick

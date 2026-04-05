@@ -156,7 +156,7 @@ describe('<Dropdown />', () => {
 
   it('dropdown portal z-index is higher than dialog overlay and content z-index', () => {
     render(
-      <Dialog defaultOpen={false} open={true} onOpenChange={() => {}}>
+      <Dialog defaultOpen={false} open={true} onOpenChange={() => { /* noop */ }}>
         <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
           <Dropdown
             type="simple"
