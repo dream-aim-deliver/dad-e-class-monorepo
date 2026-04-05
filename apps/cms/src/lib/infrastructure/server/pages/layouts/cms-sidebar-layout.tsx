@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import CMSSidebar from './cms-sidebar';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { Z_INDEX } from '@maany_shr/e-class-ui-kit';
 
 export interface CMSSidebarLayoutProps {
     children: React.ReactNode;
@@ -26,7 +27,8 @@ export default function CMSSidebarLayout({
         <div className="flex flex-row lg:gap-3">
             <div
                 id="cms-sidebar"
-                className="sticky top-25 h-screen flex-shrink-0 z-[1000]"
+                className="sticky top-25 h-screen flex-shrink-0"
+                style={{ zIndex: Z_INDEX.SIDEBAR }}
             >
                 <CMSSidebar
                     platformName={platformName}

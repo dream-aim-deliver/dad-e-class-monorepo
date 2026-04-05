@@ -2,6 +2,7 @@
 import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
 import { IconLoaderSpinner } from "./icons/icon-loader-spinner";
 import { createPortal } from 'react-dom';
+import { Z_INDEX } from '../utils/z-index';
 
 interface DefaultLoadingProps {
     locale: TLocale;
@@ -64,7 +65,7 @@ export default function DefaultLoading({
 
     if (variant === 'overlay') {
         const overlayContent = (
-            <div className="fixed top-0 left-0 w-full h-full backdrop-blur-sm bg-transparent flex items-center justify-center z-[9999]">
+            <div className="fixed top-0 left-0 w-full h-full backdrop-blur-sm bg-transparent flex items-center justify-center" style={{ zIndex: Z_INDEX.DIALOG }}>
                 <div className="flex items-center gap-3 bg-black/90 px-6 py-4 rounded-lg shadow-lg">
                     <IconLoaderSpinner
                         size="8"

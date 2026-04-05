@@ -10,6 +10,7 @@ import {
     IconSuccess,
     IconError,
     IconLoaderSpinner,
+    Z_INDEX,
 } from '@maany_shr/e-class-ui-kit';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -200,7 +201,7 @@ export default function CheckoutReturnPage() {
 
     if (state === 'loading') {
         return (
-            <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/10 px-4 backdrop-blur-sm">
+            <div className="fixed inset-0 flex items-center justify-center bg-black/10 px-4 backdrop-blur-sm" style={{ zIndex: Z_INDEX.MODAL_BACKDROP }}>
                 <div className="flex flex-col items-center justify-center gap-4 text-center">
                     <IconLoaderSpinner
                         size="8"

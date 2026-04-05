@@ -10,6 +10,7 @@ import {
   AddTransactionModal,
   Button,
   ConfirmationModal
+  Z_INDEX,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -433,7 +434,7 @@ export default function Transactions(_props: TransactionsProps) {
 
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-[1100]" onClick={handleCancelDelete}>
+        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center" style={{ zIndex: Z_INDEX.MODAL_BACKDROP }} onClick={handleCancelDelete}>
           <div className="flex flex-col gap-4 p-6 bg-card-fill border border-card-stroke text-text-primary w-full max-w-[500px] rounded-md mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex flex-col gap-2">
               <h2 className="text-xl font-bold">{t('deleteModal.title')}</h2>

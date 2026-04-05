@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '../../utils/style-utils';
 import { InputField } from '../input-field';
 import { IconSearch } from '../icons/icon-search';
+import { Z_INDEX } from '../../utils/z-index';
 import { IconChevronUp } from '../icons/icon-chevron-up';
 import { IconChevronDown } from '../icons/icon-chevron-down';
 import { CheckBox } from '../checkbox';
@@ -68,7 +69,7 @@ export const CouponSearchDropdown: React.FC<CouponSearchDropdownProps> = ({
         left: rect.left,
         minWidth: rect.width,
         maxHeight: spaceBelow - 16,
-        zIndex: 9999,
+        zIndex: Z_INDEX.DIALOG,
       });
     } else {
       setPortalStyle({
@@ -77,7 +78,7 @@ export const CouponSearchDropdown: React.FC<CouponSearchDropdownProps> = ({
         left: rect.left,
         minWidth: rect.width,
         maxHeight: spaceAbove - 16,
-        zIndex: 9999,
+        zIndex: Z_INDEX.DIALOG,
       });
     }
   }, []);

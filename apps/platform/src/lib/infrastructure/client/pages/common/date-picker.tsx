@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { IconCalendar, InputField } from '@maany_shr/e-class-ui-kit';
+import { IconCalendar, InputField, Z_INDEX } from '@maany_shr/e-class-ui-kit';
 import MonthlyCalendarPicker from './monthly-calendar-picker';
 import { useTranslations } from 'next-intl';
 
@@ -28,7 +28,7 @@ export default function DatePicker({
             position: 'fixed',
             top: rect.bottom + 8,
             left: rect.left,
-            zIndex: 10000,
+            zIndex: Z_INDEX.POPOVER,
         });
     }, []);
 

@@ -6,6 +6,7 @@ import { Button } from '../button';
 import { TextAreaInput } from '../text-areaInput';
 import { InputField } from '../input-field';
 import { Activity } from './activity';
+import { Z_INDEX } from '../../utils/z-index';
 import { BaseGrid } from '../grids/base-grid';
 import { Badge } from '../badge';
 import { FeedBackMessage } from '../feedback-message';
@@ -408,7 +409,8 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-[1100]"
+      className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center"
+      style={{ zIndex: Z_INDEX.MODAL_BACKDROP }}
       onClick={onClose}
     >
       <div

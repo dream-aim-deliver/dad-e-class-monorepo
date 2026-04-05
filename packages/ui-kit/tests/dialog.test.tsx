@@ -80,6 +80,7 @@ describe('<Dialog /> z-index and positioning', () => {
     expect(panelZ).toBeGreaterThan(overlayZ);
   });
 
+
   it('close button z-index is higher than the scroll fade z-index', () => {
     renderOpenDialog();
 

@@ -6,6 +6,7 @@ import { IconButton } from '../icon-button';
 import { IconChevronRight } from '../icons/icon-chevron-right';
 import { IconChevronLeft } from '../icons/icon-chevron-left';
 import { IconClose } from '../icons/icon-close';
+import { Z_INDEX } from '../../utils/z-index';
 import { StarRating } from '../star-rating';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TRole } from 'packages/models/src/role';
@@ -155,9 +156,10 @@ export const SideMenu: FC<SideMenuProps> = ({
         return (
             <div
                 className={cn(
-                    'fixed inset-0 z-[1200] h-screen w-screen overflow-hidden bg-card-fill border-0 rounded-none text-text-primary lg:hidden',
+                    'fixed inset-0 h-screen w-screen overflow-hidden bg-card-fill border-0 rounded-none text-text-primary lg:hidden',
                     className,
                 )}
+                style={{ zIndex: Z_INDEX.SIDEMENU }}
                 data-testid="menu-container"
             >
                 <div className="h-full overflow-y-auto">
