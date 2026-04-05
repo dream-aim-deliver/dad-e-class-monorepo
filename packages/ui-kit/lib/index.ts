@@ -40,6 +40,7 @@ export { default as BuyCoachingSession, type BuyCoachingSessionProps } from './c
 export { BuyCourseCoachingSessions, type BuyCourseCoachingSessionsProps } from './components/buy-course-coaching-sessions';
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/accordion';
 export * as contexts from './contexts';
+export { Z_INDEX } from './utils/z-index';
 export { Navbar } from './components/navbar';
 export { Footer } from './components/footer';
 
