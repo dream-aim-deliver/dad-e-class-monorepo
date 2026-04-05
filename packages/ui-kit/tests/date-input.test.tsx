@@ -325,7 +325,7 @@ describe('<DateInput />', () => {
 
   it('calendar portal z-index is higher than dialog z-index when used inside a dialog', () => {
     render(
-      <Dialog defaultOpen={false} open={true} onOpenChange={() => {}}>
+      <Dialog defaultOpen={false} open={true} onOpenChange={() => { /* noop */ }}>
         <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
           <DateInput
             label="Select Date"
@@ -363,7 +363,7 @@ describe('<DateInput />', () => {
 
   it('calendar is rendered as a portal (not inside the dialog panel DOM)', () => {
     render(
-      <Dialog defaultOpen={false} open={true} onOpenChange={() => {}}>
+      <Dialog defaultOpen={false} open={true} onOpenChange={() => { /* noop */ }}>
         <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
           <DateInput
             label="Select Date"
