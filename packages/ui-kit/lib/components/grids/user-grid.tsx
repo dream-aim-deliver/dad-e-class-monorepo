@@ -398,8 +398,8 @@ export const UserGrid = (props: UserGridProps) => {
         }
     }, [props.gridRef, props.enableSelection]);
 
-    // Client-side filtering logic
-    const doesExternalFilterPass = useCallback((node: IRowNode<UserRow>) => {
+    // Client-side filtering logic (memoized to avoid recreating on every render)
+    const doesExternalFilterPass = useMemo(() => (node: IRowNode<UserRow>) => {
         if (!node.data) {
             return false;
         }
