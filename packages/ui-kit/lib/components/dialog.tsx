@@ -13,6 +13,7 @@ import { createPortal } from 'react-dom';
 import { IconClose } from './icons';
 import { IconButton } from './icon-button';
 import { cn } from '../utils/style-utils';
+import { Z_INDEX } from '../utils/z-index';
 
 interface DialogContextType {
     isOpen: boolean;
@@ -301,8 +302,9 @@ export const DialogContent: React.FC<DialogContentProps> = ({
                         setIsOpen(false);
                     }
                 }}
-                className={`fixed inset-0 z-[9998] bg-neutral-900/60 backdrop-blur-sm transition-all duration-300 ease-out ${isAnimating || isClosing ? 'opacity-0' : 'opacity-100'
+                className={`fixed inset-0 bg-neutral-900/60 backdrop-blur-sm transition-all duration-300 ease-out ${isAnimating || isClosing ? 'opacity-0' : 'opacity-100'
                     }`}
+                style={{ zIndex: Z_INDEX.OVERLAY }}
             />
 
             {/* Content with scale + fade animation */}
@@ -321,7 +323,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
                         : 'opacity-100 scale-100',
                     className,
                 )}
-                style={{ zIndex: 9999 }}
+                style={{ zIndex: Z_INDEX.DIALOG }}
                 role="dialog"
                 aria-modal="true"
             >
