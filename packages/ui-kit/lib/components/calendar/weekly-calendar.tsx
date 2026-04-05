@@ -230,8 +230,15 @@ export function WeeklyCalendar({
     return (
         <div
             ref={scrollContainerRef}
-            className="flex flex-col h-full w-full bg-base-neutral-900 overflow-y-scroll overflow-x-auto"
+            className="flex flex-col h-full w-full bg-base-neutral-900 overflow-y-scroll overflow-x-auto calendar-scroll"
         >
+            <style>{`
+                .calendar-scroll::-webkit-scrollbar { width: 8px; }
+                .calendar-scroll::-webkit-scrollbar-track { background: var(--color-base-neutral-800); }
+                .calendar-scroll::-webkit-scrollbar-thumb { background: var(--color-base-neutral-400); border-radius: 4px; }
+                .calendar-scroll::-webkit-scrollbar-thumb:hover { background: var(--color-base-neutral-500); }
+                .calendar-scroll { scrollbar-width: thin; }
+            `}</style>
             {isLoading && <LoadingOverlay className="fixed z-60" />}
 
             {/* Header row */}
