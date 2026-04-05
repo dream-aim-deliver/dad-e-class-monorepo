@@ -65,7 +65,7 @@ describe('z-index DOM regression: stacking relationships', () => {
 
   it('dialog panel renders above its own overlay', () => {
     render(
-      <Dialog defaultOpen={false} open onOpenChange={() => {}}>
+      <Dialog defaultOpen={false} open onOpenChange={() => { /* noop */ }}>
         <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
           <div>body</div>
         </DialogContent>
@@ -82,7 +82,7 @@ describe('z-index DOM regression: stacking relationships', () => {
 
   it('tooltip renders above a dialog', () => {
     render(
-      <Dialog defaultOpen={false} open onOpenChange={() => {}}>
+      <Dialog defaultOpen={false} open onOpenChange={() => { /* noop */ }}>
         <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
           <Tooltip
             text="help"
@@ -116,8 +116,8 @@ describe('z-index DOM regression: stacking relationships', () => {
         <div data-testid="backdrop-level" className="fixed inset-0" style={{ zIndex: 1100 }} />
         <PurchaseAuthModal
           isOpen
-          onLogin={() => {}}
-          onCancel={() => {}}
+          onLogin={() => { /* noop */ }}
+          onCancel={() => { /* noop */ }}
           locale="en"
         />
       </>,
@@ -143,7 +143,7 @@ describe('z-index DOM regression: stacking relationships', () => {
         <SessionExpirationModal
           isOpen
           hasUnsavedChanges={false}
-          onConfirm={() => {}}
+          onConfirm={() => { /* noop */ }}
           locale="en"
         />
       </>,
@@ -170,7 +170,7 @@ describe('z-index DOM regression: stacking relationships', () => {
           userRole="student"
           locale="en"
           mode="mobileOverlay"
-          onClickToggle={() => {}}
+          onClickToggle={() => { /* noop */ }}
         >
           <div>menu items</div>
         </SideMenu>
@@ -192,7 +192,7 @@ describe('z-index DOM regression: stacking relationships', () => {
         <CouponSearchDropdown
           mode="single"
           options={[{ label: 'A', value: 'a' }]}
-          onSelectionChange={() => {}}
+          onSelectionChange={() => { /* noop */ }}
           placeholder="Pick"
         />
       </>,
@@ -220,7 +220,7 @@ describe('z-index DOM regression: stacking relationships', () => {
     render(
       <>
         <div data-testid="sidebar-level" className="sticky" style={{ zIndex: 1000 }} />
-        <Dialog defaultOpen={false} open onOpenChange={() => {}}>
+        <Dialog defaultOpen={false} open onOpenChange={() => { /* noop */ }}>
           <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
             <div>content</div>
           </DialogContent>
@@ -240,7 +240,7 @@ describe('z-index DOM regression: stacking relationships', () => {
     render(
       <>
         <div data-testid="backdrop-level" style={{ zIndex: 1100 }} />
-        <Dialog defaultOpen={false} open onOpenChange={() => {}}>
+        <Dialog defaultOpen={false} open onOpenChange={() => { /* noop */ }}>
           <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
             <div>content</div>
           </DialogContent>

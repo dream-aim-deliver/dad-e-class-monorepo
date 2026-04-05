@@ -9,7 +9,7 @@ import {
   TransactionsGrid,
   AddTransactionModal,
   Button,
-  ConfirmationModal
+  ConfirmationModal,
   Z_INDEX,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
