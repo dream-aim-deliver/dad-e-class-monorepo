@@ -351,8 +351,7 @@ describe('<DateInput />', () => {
     const dialogZ = parseInt(dialogPanel.style.zIndex || '0', 10);
 
     const overlay = document.querySelector('.fixed.inset-0') as HTMLElement;
-    const overlayClassMatch = overlay?.className.match(/z-\[(\d+)\]/);
-    const overlayZ = overlayClassMatch ? parseInt(overlayClassMatch[1], 10) : 0;
+    const overlayZ = parseInt(overlay?.style.zIndex || '0', 10);
 
     const calendarZ = parseInt(calendar.style.zIndex || '0', 10);
 
