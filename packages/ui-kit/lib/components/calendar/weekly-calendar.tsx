@@ -215,9 +215,8 @@ export function WeeklyCalendar({
     useEffect(() => {
      if (scrollContainerRef.current) {
        const container = scrollContainerRef.current;
-       // Scroll to 6am (6 hours * 96px per hour slot = 576px)
-       const sixAmPosition = 6 * 96;
-       container.scrollTop = sixAmPosition;
+       const defaultPosition = 9 * 96;
+       container.scrollTop = defaultPosition;
      }
    }, [scrollContainerRef]);
 
@@ -231,7 +230,7 @@ export function WeeklyCalendar({
     return (
         <div
             ref={scrollContainerRef}
-            className="flex flex-col h-full w-full bg-base-neutral-900 overflow-auto"
+            className="flex flex-col h-full w-full bg-base-neutral-900 overflow-y-scroll overflow-x-auto"
         >
             {isLoading && <LoadingOverlay className="fixed z-60" />}
 
