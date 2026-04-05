@@ -179,15 +179,26 @@ export const DateInput: React.FC<DateInputProps> = ({
   }, []);
 
   const handleTextBlur = useCallback(() => {
-    // Try to parse the typed text as a date
-    const parsed = new Date(textValue);
-    if (!isNaN(parsed.getTime())) {
-      onChange(toISODateString(parsed));
-    } else if (textValue === '') {
+    const trimmed = textValue.trim();
+    if (trimmed === '') {
       onChange('');
+      return;
     }
-    // If invalid, revert to previous value display on next render via useEffect
-  }, [textValue, onChange]);
+    // Accept DD/MM/YYYY, DD.MM.YYYY, DD-MM-YYYY (with 1- or 2-digit day/month)
+    const match = trimmed.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/);
+    if (!match) return; // Invalid format — revert via useEffect
+    const [, dayStr, monthStr, yearStr] = match;
+    const day = parseInt(dayStr, 10);
+    const month = parseInt(monthStr, 10) - 1;
+    const year = parseInt(yearStr, 10);
+    const parsed = new Date(year, month, day);
+    if (isNaN(parsed.getTime())) return;
+    // Verify the date didn't roll over (e.g. 31/02 → 03/03)
+    if (parsed.getDate() !== day || parsed.getMonth() !== month || parsed.getFullYear() !== year) return;
+    // Validate within allowed range
+    if (parsed < startMonthProp || parsed > endMonthProp) return;
+    onChange(toISODateString(parsed));
+  }, [textValue, onChange, startMonthProp, endMonthProp]);
 
   const handleTextKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
