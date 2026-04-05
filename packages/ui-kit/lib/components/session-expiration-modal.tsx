@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { Button } from './button';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { Z_INDEX } from '../utils/z-index';
 
 export interface SessionExpirationModalProps extends isLocalAware {
     isOpen: boolean;
@@ -63,7 +64,7 @@ export const SessionExpirationModal: React.FC<SessionExpirationModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: Z_INDEX.DIALOG }}>
             {/* Backdrop overlay */}
             <div className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" />
 

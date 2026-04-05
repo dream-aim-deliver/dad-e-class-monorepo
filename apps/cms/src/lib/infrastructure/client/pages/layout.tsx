@@ -2,7 +2,7 @@
 
 import Header from './header';
 import { useEffect, useRef } from 'react';
-import { DefaultError, DefaultLoading, ImageProvider } from '@maany_shr/e-class-ui-kit';
+import { DefaultError, DefaultLoading, ImageProvider, Z_INDEX } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
@@ -78,7 +78,8 @@ export default function Layout({
                         <div className="flex flex-row lg:gap-3 w-full">
                             <div
                                 id="cms-sidebar"
-                                className="sticky top-25 h-screen flex-shrink-0 z-[1000]"
+                                className="sticky top-25 h-screen flex-shrink-0"
+                                style={{ zIndex: Z_INDEX.SIDEBAR }}
                             >
                                 <CMSSidebar
                                     platformName={platformName}

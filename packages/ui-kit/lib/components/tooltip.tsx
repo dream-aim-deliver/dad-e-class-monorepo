@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IconInfoCircle } from './icons/icon-infocircle';
 import { cn } from '../utils/style-utils';
+import { Z_INDEX } from '../utils/z-index';
 
 interface TooltipProps {
   text: string;
@@ -123,12 +124,13 @@ function Tooltip({
       id="tooltip-content"
       ref={tooltipRef}
       className={cn(
-        'absolute z-[9999] p-4 w-64 max-w-xs text-xs shadow-lg rounded-md',
+        `absolute p-4 w-64 max-w-xs text-xs shadow-lg rounded-md`,
         'bg-base-neutral-700',
         'transition-opacity duration-200',
         tipPosition !== 'auto' ? positionClasses[tipPosition] : positionClasses[position],
         contentClassName
       )}
+      style={{ zIndex: Z_INDEX.TOOLTIP }}
       role="tooltip"
     >
       {title && <span className="block font-important text-sm text-text-primary mb-1">{title}</span>}
@@ -147,7 +149,8 @@ function Tooltip({
     return (
       <div
         ref={triggerRef}
-        className={cn("relative flex", isVisible && "z-[9999]")}
+        className={cn("relative flex")}
+        style={isVisible ? { zIndex: Z_INDEX.TOOLTIP } : undefined}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -160,7 +163,8 @@ function Tooltip({
   return (
     <div
       ref={containerRef}
-      className={cn("relative inline-block", isVisible && "z-[9999]")}
+      className={cn("relative inline-block")}
+      style={isVisible ? { zIndex: Z_INDEX.TOOLTIP } : undefined}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

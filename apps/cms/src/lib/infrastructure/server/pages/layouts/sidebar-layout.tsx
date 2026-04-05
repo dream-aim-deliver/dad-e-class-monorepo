@@ -1,6 +1,7 @@
 import WorkspaceSidebar from './sidebar';
 import nextAuth from '../../config/auth/next-auth.config';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { Z_INDEX } from '@maany_shr/e-class-ui-kit';
 
 export interface SidebarLayoutProps {
     children: React.ReactNode;
@@ -17,7 +18,8 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
             {isLoggedIn && (
                 <div
                     id="sidebar"
-                    className="sticky top-25 h-screen flex-shrink-0 z-[1000]"
+                    className="sticky top-25 h-screen flex-shrink-0"
+                    style={{ zIndex: Z_INDEX.SIDEBAR }}
                 >
                     <WorkspaceSidebar
                         isCollapsed={true}

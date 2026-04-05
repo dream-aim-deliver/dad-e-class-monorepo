@@ -8,6 +8,7 @@ import 'react-day-picker/style.css';
 import { IconButton } from './icon-button';
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { IconCalendarAlt } from './icons/icon-calendar-alt';
+import { Z_INDEX } from '../utils/z-index';
 
 function getIntlLocale(locale: TLocale): string {
   switch (locale) {
@@ -125,7 +126,7 @@ export const DateInput: React.FC<DateInputProps> = ({
       position: 'fixed',
       top: rect.bottom + 4,
       left: rect.left,
-      zIndex: 10000,
+      zIndex: Z_INDEX.POPOVER,
     });
   }, []);
 

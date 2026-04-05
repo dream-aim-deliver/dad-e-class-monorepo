@@ -6,6 +6,7 @@ import { IconClose } from '../icons/icon-close';
 import { TextInput } from '../text-input';
 import { TextAreaInput } from '../text-areaInput';
 import { DateInput } from '../date-input';
+import { Z_INDEX } from '../../utils/z-index';
 import { Dropdown } from '../dropdown';
 import { InputField } from '../input-field';
 import { IconSearch } from '../icons/icon-search';
@@ -347,7 +348,7 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   );
 
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-[1100]" onClick={onClose}>
+    <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center" style={{ zIndex: Z_INDEX.MODAL_BACKDROP }} onClick={onClose}>
       <div className="flex flex-col gap-4 p-6 bg-card-fill border border-card-stroke text-text-primary w-full max-w-[600px] max-h-[80vh] overflow-y-auto rounded-md mx-4 my-8" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex justify-between items-center">

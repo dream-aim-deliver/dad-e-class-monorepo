@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { RadioButton } from './radio-button';
 import { CheckBox } from './checkbox';
 import { IconChevronUp } from './icons/icon-chevron-up';
+import { Z_INDEX } from '../utils/z-index';
 import { IconChevronDown } from './icons/icon-chevron-down';
 import { InputField } from './input-field';
 import { IconSearch } from './icons/icon-search';
@@ -120,7 +121,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         left: rect.left,
         minWidth: rect.width,
         maxHeight: window.innerHeight - rect.bottom - 16,
-        zIndex: 10000,
+        zIndex: Z_INDEX.POPOVER,
       });
     } else {
       setPortalStyle({
@@ -129,7 +130,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         left: rect.left,
         minWidth: rect.width,
         maxHeight: rect.top - 16,
-        zIndex: 10000,
+        zIndex: Z_INDEX.POPOVER,
       });
     }
   }, [position]);
