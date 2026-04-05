@@ -926,7 +926,7 @@ function BookCoachPageContent({
                 </div>
                 {/* Container-driven layout: stack under 5xl container width, split at 5xl */}
                 <div className="hidden min-h-0 gap-6 md:flex md:flex-col @5xl:flex-row">
-                    <div className="max-h-[calc(100dvh-18rem)] rounded-lg bg-card-fill p-4 flex flex-col overflow-hidden @5xl:flex-1">
+                    <div className="h-[calc(100dvh-18rem)] rounded-lg bg-card-fill p-4 flex flex-col overflow-hidden @5xl:flex-1">
                         {nextAvailableDate && (
                             <div className="mb-3">
                                 <Banner
@@ -971,7 +971,7 @@ function BookCoachPageContent({
                                 }
                             />
                         </Tabs.Root>
-                        <div className="flex-1 min-h-0 overflow-auto">
+                        <div className="flex-1 min-h-0">
                             {viewType === 'weekly' ? (
                                 <WeeklyCoachCalendarWrapper
                                     coachAvailabilityViewModel={
