@@ -28,7 +28,7 @@ export const MobileMenuExpanded: React.FC<MobileMenuExpandedProps> = ({
 
   return (
     <div className="fixed inset-0 z-9999 text-text-primary lg:hidden">
-      <div className="flex min-h-screen flex-col px-4 pb-10 pt-6 bg-base-neutral-950">
+      <div className="flex h-screen overflow-y-auto flex-col px-4 pb-10 pt-6 bg-base-neutral-950">
         <div className="flex items-start justify-between gap-4">
           {logoContent}
 

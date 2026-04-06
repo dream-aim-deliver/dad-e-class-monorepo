@@ -262,7 +262,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         }}
         text={{ simpleText: '' }}
         defaultValue={locale}
-        absolutePosition={!closeOnSelection}
+        absolutePosition
         buttonClassName={closeOnSelection ? 'justify-center gap-2' : undefined}
       />
     );
