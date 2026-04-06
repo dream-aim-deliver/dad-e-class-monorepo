@@ -267,6 +267,7 @@ export const TransactionsGrid = (props: TransactionsGridProps) => {
             field: 'createdAt',
             headerName: dictionary.creationDateColumn,
             sortable: true,
+            sort: 'desc' as const,
             flex: 1,
             minWidth: 140,
             valueFormatter: (params: any) => {
