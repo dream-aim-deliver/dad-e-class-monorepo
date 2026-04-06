@@ -1,7 +1,7 @@
 'use client';
 
 import { topic } from '@maany_shr/e-class-models';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Button } from './button';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconChevronLeft } from './icons/icon-chevron-left';
@@ -31,7 +31,7 @@ function getVisibleRowCount(elements: HTMLElement[]) {
  * action that expands the full list in place.
  */
 const TopicList: React.FC<TopicListProps> = ({ title, list, locale }) => {
-    const sectionRef = useRef<HTMLDivElement>(null);
+    const titleId = useId();
     const measurementContainerRef = useRef<HTMLDivElement>(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [visibleTopicCount, setVisibleTopicCount] = useState(list.length);
@@ -114,8 +114,8 @@ const TopicList: React.FC<TopicListProps> = ({ title, list, locale }) => {
         !hasOverflow || isExpanded ? list : list.slice(0, visibleTopicCount);
 
     return (
-        <div ref={sectionRef} className="w-full flex flex-col items-center justify-center gap-6 py-2">
-            <h3 className="text-text-primary lg:text-mega text-2xl">{title}</h3>
+        <div className="w-full flex flex-col items-center justify-center gap-6 py-2">
+            <h3 id={titleId} className="text-text-primary lg:text-mega text-2xl">{title}</h3>
 
             <div className="relative w-full">
                 <div className="flex gap-2 flex-wrap items-center justify-center">
@@ -150,14 +150,12 @@ const TopicList: React.FC<TopicListProps> = ({ title, list, locale }) => {
                             iconLeft={<IconChevronLeft />}
                             onClick={() => {
                                 setIsExpanded(false);
-                                requestAnimationFrame(() => {
-                                    const el = sectionRef.current;
-                                    if (!el) return;
+                                const el = document.getElementById(titleId);
+                                if (el) {
                                     const nav = document.querySelector('nav');
-                                    const offset = nav ? nav.getBoundingClientRect().height : 0;
-                                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-                                    window.scrollTo({ top, behavior: 'smooth' });
-                                });
+                                    if (nav) el.style.scrollMarginTop = `${nav.offsetHeight}px`;
+                                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }
                             }}
                         />
                     )}
