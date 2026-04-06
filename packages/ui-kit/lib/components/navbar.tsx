@@ -245,28 +245,30 @@ export const Navbar: React.FC<NavbarProps> = ({
       return null;
     }
 
-    return (
-      <div className="relative">
-        <Dropdown
-          type="simple"
-          options={languageOptions}
-          onSelectionChange={(selected) => {
-            if (
-              typeof selected === 'string' &&
-              availableLocales.includes(selected as TLocale)
-            ) {
-              handleLocaleChange(selected as TLocale);
-              if (closeOnSelection) {
-                setIsMenuOpen(false);
-              }
+    const dropdown = (
+      <Dropdown
+        type="simple"
+        options={languageOptions}
+        onSelectionChange={(selected) => {
+          if (
+            typeof selected === 'string' &&
+            availableLocales.includes(selected as TLocale)
+          ) {
+            handleLocaleChange(selected as TLocale);
+            if (closeOnSelection) {
+              setIsMenuOpen(false);
             }
-          }}
-          text={{ simpleText: '' }}
-          defaultValue={locale}
-          absolutePosition={!closeOnSelection}
-        />
-      </div>
+          }
+        }}
+        text={{ simpleText: '' }}
+        defaultValue={locale}
+        absolutePosition={!closeOnSelection}
+        buttonClassName={closeOnSelection ? 'justify-center gap-2' : undefined}
+      />
     );
+
+    if (closeOnSelection) return dropdown;
+    return <div className="relative">{dropdown}</div>;
   };
 
   const renderLoginButton = (closeOnClick = false) => {
@@ -274,7 +276,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       return null;
     }
 
-    const buttonClassName = closeOnClick ? '' : 'ml-3';
+    const buttonClassName = closeOnClick ? 'w-full' : 'ml-3';
 
     if (onLogin) {
       return (
