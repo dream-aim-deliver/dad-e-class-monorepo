@@ -65,6 +65,7 @@ const FilterSwitch: React.FC<TopicListProps> = ({
     selectedTopics,
     setSelectedTopics,
 }) => {
+    const sectionRef = useRef<HTMLDivElement>(null);
     const measurementContainerRef = useRef<HTMLDivElement>(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [visibleTopicCount, setVisibleTopicCount] = useState(list.length);
@@ -165,7 +166,7 @@ const FilterSwitch: React.FC<TopicListProps> = ({
         !hasOverflow || isExpanded ? list : list.slice(0, visibleTopicCount);
 
     return (
-        <div className="w-full flex flex-col gap-4">
+        <div ref={sectionRef} className="w-full flex flex-col gap-4">
             <h5 className="text-text-primary md:text-lg lg:text-2xl">
                 {title}
             </h5>
@@ -203,7 +204,17 @@ const FilterSwitch: React.FC<TopicListProps> = ({
                             text={showLessText}
                             hasIconLeft
                             iconLeft={<IconChevronLeft />}
-                            onClick={() => setIsExpanded(false)}
+                            onClick={() => {
+                                setIsExpanded(false);
+                                requestAnimationFrame(() => {
+                                    const el = sectionRef.current;
+                                    if (!el) return;
+                                    const nav = document.querySelector('nav');
+                                    const offset = nav ? nav.getBoundingClientRect().height : 0;
+                                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                                    window.scrollTo({ top, behavior: 'smooth' });
+                                });
+                            }}
                         />
                     )}
                 </div>
