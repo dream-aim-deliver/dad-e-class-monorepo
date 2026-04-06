@@ -31,6 +31,7 @@ function getVisibleRowCount(elements: HTMLElement[]) {
  * action that expands the full list in place.
  */
 const TopicList: React.FC<TopicListProps> = ({ title, list, locale }) => {
+    const sectionRef = useRef<HTMLDivElement>(null);
     const measurementContainerRef = useRef<HTMLDivElement>(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const [visibleTopicCount, setVisibleTopicCount] = useState(list.length);
@@ -113,7 +114,7 @@ const TopicList: React.FC<TopicListProps> = ({ title, list, locale }) => {
         !hasOverflow || isExpanded ? list : list.slice(0, visibleTopicCount);
 
     return (
-        <div className="w-full flex flex-col items-center justify-center gap-6 py-2">
+        <div ref={sectionRef} className="w-full flex flex-col items-center justify-center gap-6 py-2">
             <h3 className="text-text-primary lg:text-mega text-2xl">{title}</h3>
 
             <div className="relative w-full">
@@ -147,7 +148,17 @@ const TopicList: React.FC<TopicListProps> = ({ title, list, locale }) => {
                             text={showLessText}
                             hasIconLeft
                             iconLeft={<IconChevronLeft />}
-                            onClick={() => setIsExpanded(false)}
+                            onClick={() => {
+                                setIsExpanded(false);
+                                requestAnimationFrame(() => {
+                                    const el = sectionRef.current;
+                                    if (!el) return;
+                                    const nav = document.querySelector('nav');
+                                    const offset = nav ? nav.getBoundingClientRect().height : 0;
+                                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                                    window.scrollTo({ top, behavior: 'smooth' });
+                                });
+                            }}
                         />
                     )}
                 </div>
