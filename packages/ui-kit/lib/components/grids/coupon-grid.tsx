@@ -12,6 +12,7 @@ import { IconFilter } from '../icons/icon-filter';
 import { IconPlus } from '../icons/icon-plus';
 import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { IconSearch } from '../icons/icon-search';
+import { Copy } from 'lucide-react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 
@@ -196,8 +197,22 @@ export const CouponGrid = (props: CouponGridProps) => {
             flex: 2, // Takes up more space
             minWidth: 150,
             cellRenderer: (params: { value: string }) => (
-                <span className="text-text-primary font-medium">
+                <span className="text-text-primary font-medium flex items-center gap-1">
                     {params.value}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(params.value);
+                            const btn = e.currentTarget;
+                            btn.style.color = '#4ade80';
+                            btn.classList.add('scale-125');
+                            setTimeout(() => { btn.style.color = ''; btn.classList.remove('scale-125'); }, 600);
+                        }}
+                        className="inline-flex items-center text-text-secondary hover:text-text-primary cursor-pointer transition-all duration-200"
+                        title="Copy"
+                    >
+                        <Copy className="h-3.5 w-3.5" />
+                    </button>
                 </span>
             )
         },
