@@ -23,6 +23,7 @@ interface TopicListProps extends isLocalAware {
 }
 
 const MAX_VISIBLE_ROWS = 3;
+const MIN_VISIBLE_ITEMS = 6;
 
 function getVisibleRowCount(elements: HTMLElement[]) {
     const rowTops = new Set(
@@ -132,12 +133,12 @@ const FilterSwitch: React.FC<TopicListProps> = ({
                 getVisibleRowCount([...topicNodes, viewAllNode]) <=
                 MAX_VISIBLE_ROWS
             ) {
-                setVisibleTopicCount(count);
+                setVisibleTopicCount(Math.max(count, Math.min(MIN_VISIBLE_ITEMS, list.length)));
                 return;
             }
         }
 
-        setVisibleTopicCount(0);
+        setVisibleTopicCount(Math.min(MIN_VISIBLE_ITEMS, list.length));
     }, [list.length]);
 
     useEffect(() => {
