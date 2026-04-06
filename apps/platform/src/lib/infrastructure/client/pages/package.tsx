@@ -675,24 +675,26 @@ export default function Package({ packageId }: PackageProps) {
 
       {/* Accordion Section */}
       {packageData.accordionItems.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <h3 className="text-bg font-semibold text-text-primary">
-            {t('packageDetails')}
-          </h3>
-          <DefaultAccordion
-            className="rounded-medium border border-card-stroke bg-card-fill px-6 md:px-8"
-            showNumbers={packageData.showAccordionNumbers}
-            items={packageData.accordionItems.map((item) => ({
-              title: item.title,
-              iconImageUrl: item.icon?.downloadUrl,
-              content: item.description,
-              position: item.position,
-            }))}
-          />
-        </div>
-      )}
+        <>
+          <div className="flex flex-col gap-4">
+            <h3 className="text-bg font-semibold text-text-primary">
+              {t('packageDetails')}
+            </h3>
+            <DefaultAccordion
+              className="rounded-medium border border-card-stroke bg-card-fill px-6 md:px-8"
+              showNumbers={packageData.showAccordionNumbers}
+              items={packageData.accordionItems.map((item) => ({
+                title: item.title,
+                iconImageUrl: item.icon?.downloadUrl,
+                content: item.description,
+                position: item.position,
+              }))}
+            />
+          </div>
 
-      <div className="border-t border-card-stroke" />
+          <div className="border-t border-card-stroke" />
+        </>
+      )}
 
       {/* Flexible Section - PackageCourseSelector */}
       <PackageCourseSelector
