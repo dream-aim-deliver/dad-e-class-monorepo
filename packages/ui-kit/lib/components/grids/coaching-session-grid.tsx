@@ -218,7 +218,14 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
                 if (coach && coach.username) props.onCoachClick(coach.username);
             },
             minWidth: 150,
-            filter: 'agTextColumnFilter'
+            filter: 'agTextColumnFilter',
+            filterValueGetter: (params: any) => {
+                if (params.data?.sessionType === 'group') {
+                    return (params.data.coaches || []).map((c: any) => `${c.name ?? ''} ${c.surname ?? ''} ${c.username ?? ''}`).join(' ');
+                }
+                const c = params.data?.coach;
+                return c ? `${c.name ?? ''} ${c.surname ?? ''} ${c.username ?? ''}` : '';
+            }
         },
         {
             field: 'student',
@@ -230,7 +237,14 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             },
             cellClass: 'cursor-pointer',
             minWidth: 150,
-            filter: 'agTextColumnFilter'
+            filter: 'agTextColumnFilter',
+            filterValueGetter: (params: any) => {
+                if (params.data?.sessionType === 'group') {
+                    return (params.data.students || []).map((s: any) => `${s.name ?? ''} ${s.surname ?? ''} ${s.username ?? ''}`).join(' ');
+                }
+                const s = params.data?.student;
+                return s ? `${s.name ?? ''} ${s.surname ?? ''} ${s.username ?? ''}` : '';
+            }
         },
 
         {
@@ -257,7 +271,8 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             },
             cellClass: 'cursor-pointer',
             minWidth: 180,
-            filter: 'agTextColumnFilter'
+            filter: 'agTextColumnFilter',
+            filterValueGetter: (params: any) => params.data?.course?.title ?? ''
         },
         {
             field: 'couponName',
