@@ -395,6 +395,10 @@ export const EN: TDictionary = {
       durationMinutes: 'minute(s)',
       noAvailableSessionText: 'No available sessions',
       loadingText: 'Loading Sessions...',
+      standaloneTitle: 'Standalone Coaching Sessions',
+      courseTitle: 'Course Coaching Sessions',
+      nextSessionFor: 'Next session for',
+      goToLesson: 'Go to lesson',
     },
     coachReview: {
       by: 'by',
@@ -2318,6 +2322,7 @@ export const EN: TDictionary = {
           title: 'Failed to Load Coaches',
           description: 'Unable to load available coaches. Please refresh the page.',
         },
+        noCoachesAvailable: 'Your coaching session is available, but there are currently no coaches assigned to this course. Please check back later or contact support.',
       },
       groups: {
         title: 'Groups',

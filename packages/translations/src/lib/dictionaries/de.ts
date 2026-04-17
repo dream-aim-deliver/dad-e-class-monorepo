@@ -398,6 +398,10 @@ export const DE: TDictionary = {
       durationMinutes: 'Minute(n)',
       loadingText: 'Sitzungen werden geladen...',
       noAvailableSessionText: 'Keine verfügbaren Sitzungen',
+      standaloneTitle: 'Einzelne Coaching-Sitzungen',
+      courseTitle: 'Kurs-Coaching-Sitzungen',
+      nextSessionFor: 'Nächste Sitzung für',
+      goToLesson: 'Zur Lektion gehen',
     },
     coachReview: {
       by: 'von',
@@ -2320,6 +2324,7 @@ export const DE: TDictionary = {
           title: 'Coaches konnten nicht geladen werden',
           description: 'Die verfügbaren Coaches konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
         },
+        noCoachesAvailable: 'Ihre Coaching-Sitzung ist verfügbar, aber derzeit sind diesem Kurs keine Coaches zugewiesen. Bitte versuchen Sie es später erneut oder wenden Sie sich an den Support.',
       },
       groups: {
         title: 'Gruppen',

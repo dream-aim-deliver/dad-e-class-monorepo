@@ -8,7 +8,7 @@ import { useListStudentCoachingSessionsPresenter } from "../../hooks/use-list-st
 import { useListCoachesPresenter } from "../../hooks/use-coaches-presenter";
 import { useCreateCoachingSessionReviewPresenter } from "../../hooks/use-create-coaching-session-review-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewDialog, CancelCoachingSessionModal } from "@maany_shr/e-class-ui-kit";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewDialog, CancelCoachingSessionModal, type CourseCoachingSessionData } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { formatTime } from "../../utils/format-time";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -282,9 +282,33 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
             .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
     }, [scheduledSessions]);
 
-    // Filter unscheduled sessions for Available tab
-    const unscheduledSessions = useMemo(() => {
-        return allSessions.filter(session => session.status === 'unscheduled');
+    // Filter unscheduled sessions for Available section - standalone only
+    const standaloneUnscheduledSessions = useMemo(() => {
+        return allSessions.filter(session => session.sessionType === 'standalone-unscheduled');
+    }, [allSessions]);
+
+    // Course unscheduled sessions - group by course, pick first per course
+    const courseCoachingSessionsData = useMemo(() => {
+        const courseUnscheduled = allSessions.filter(
+            (session): session is Extract<typeof session, { sessionType: 'course-unscheduled' }> =>
+                session.sessionType === 'course-unscheduled'
+        );
+        const nextPerCourse = Object.values(
+            courseUnscheduled.reduce((acc, session) => {
+                if (!acc[session.course.slug]) {
+                    acc[session.course.slug] = {
+                        courseTitle: session.course.title,
+                        courseSlug: session.course.slug,
+                        courseImageUrl: session.course.imageUrl,
+                        sessionTitle: session.coachingOfferingTitle || '',
+                        sessionDuration: session.coachingOfferingDuration || 0,
+                        sessionId: session.id!,
+                    };
+                }
+                return acc;
+            }, {} as Record<string, CourseCoachingSessionData>)
+        );
+        return nextPerCourse;
     }, [allSessions]);
 
     // For available tab - get coaches data
@@ -295,10 +319,10 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         return coachesViewModel.data.coaches || [];
     }, [coachesViewModel]);
 
-    // Transform unscheduled sessions to AvailableCoachingSessions format
+    // Transform standalone unscheduled sessions to AvailableCoachingSessions format
     const availableCoachingSessionsData = useMemo(() => {
         // Group sessions by title and duration, count occurrences
-        const sessionGroups = unscheduledSessions.reduce((acc, session) => {
+        const sessionGroups = standaloneUnscheduledSessions.reduce((acc, session) => {
             if (!session?.coachingOfferingTitle || session?.coachingOfferingDuration === undefined) {
                 return acc;
             }
@@ -315,7 +339,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         }, {} as Record<string, { title: string; time: number; numberOfSessions: number }>);
 
         return Object.values(sessionGroups);
-    }, [unscheduledSessions]);
+    }, [standaloneUnscheduledSessions]);
 
     // Pagination for upcoming sessions
     const {
@@ -541,6 +565,10 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         router.push(`/${locale}/coaching`);
     };
 
+    const handleClickCourseSession = (data: CourseCoachingSessionData) => {
+        router.push(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`);
+    };
+
     if (!studentCoachingSessionsViewModel || !coachesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
@@ -567,7 +595,9 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         text={coachingSessionTranslations('availableSessionsDescription')}
                         availableCoachingSessionsData={availableCoachingSessionsData}
                         onClickBuyMoreSessions={handleBuyMoreSessions}
-                        hideButton={availableCoachingSessionsData.length === 0}
+                        hideButton={availableCoachingSessionsData.length === 0 && courseCoachingSessionsData.length === 0}
+                        courseCoachingSessionsData={courseCoachingSessionsData}
+                        onClickCourseSession={handleClickCourseSession}
                     />
                 </div>
 

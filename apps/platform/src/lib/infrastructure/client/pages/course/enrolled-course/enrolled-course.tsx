@@ -368,7 +368,13 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                             if (currentRole) {
                                 params.set('role', currentRole);
                             }
-                            router.push(`/${locale}/courses/${props.courseSlug}?${params.toString()}`);
+                            const url = `/${locale}/courses/${props.courseSlug}?${params.toString()}`;
+                            // Use replace with no scroll when navigating from highlight resolution
+                            if (params.has('highlightSession')) {
+                                router.replace(url, { scroll: false });
+                            } else {
+                                router.push(url);
+                            }
                         }}
                     />
                 </Tabs.Content>

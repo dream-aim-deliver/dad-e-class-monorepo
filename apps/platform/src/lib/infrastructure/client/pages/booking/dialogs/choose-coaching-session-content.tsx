@@ -1,7 +1,8 @@
 'use client';
 
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { trpc } from '../../../trpc/cms-client';
 import React, { useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -9,6 +10,7 @@ import {
     AvailableCoachingSessionCard,
     Button,
     CoachingSessionData,
+    CourseCoachingSessionCard,
     DefaultError,
     DefaultLoading,
 } from '@maany_shr/e-class-ui-kit';
@@ -58,6 +60,35 @@ export default function ChooseCoachingSessionContent({
 
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.coaching');
+    const router = useRouter();
+    const dictionary = getDictionary(locale);
+
+    const studentSessionsQuery = trpc.listStudentCoachingSessions.useQuery(
+        {},
+        { enabled: !courseSlug, staleTime: 0, refetchOnMount: 'always' }
+    );
+
+    const courseCoachingSessions = useMemo(() => {
+        if (courseSlug || !studentSessionsQuery.data?.data?.sessions) return [];
+        const sessions = studentSessionsQuery.data.data.sessions;
+        const courseUnscheduled = sessions.filter(
+            (s: any) => s.sessionType === 'course-unscheduled'
+        );
+        return Object.values(
+            courseUnscheduled.reduce((acc: Record<string, { courseTitle: string; courseSlug: string; sessionTitle: string; sessionDuration: number; sessionId: number }>, session: any) => {
+                if (!acc[session.course.slug]) {
+                    acc[session.course.slug] = {
+                        courseTitle: session.course.title,
+                        courseSlug: session.course.slug,
+                        sessionTitle: session.coachingOfferingTitle || '',
+                        sessionDuration: session.coachingOfferingDuration || 0,
+                        sessionId: session.id,
+                    };
+                }
+                return acc;
+            }, {})
+        ) as { courseTitle: string; courseSlug: string; sessionTitle: string; sessionDuration: number; sessionId: number }[];
+    }, [courseSlug, studentSessionsQuery.data]);
 
     const groupedOfferings = useMemo(() => {
         if (!availableCoachingsViewModel) return [];
@@ -121,6 +152,11 @@ export default function ChooseCoachingSessionContent({
 
     return (
         <div className="flex flex-col gap-3">
+            {courseCoachingSessions.length > 0 && (
+                <span className="text-sm text-text-primary font-semibold">
+                    {dictionary?.components?.availableCoachingSessions?.standaloneTitle}
+                </span>
+            )}
             <span className="text-text-secondary">
                 Select a coaching session
             </span>
@@ -133,6 +169,25 @@ export default function ChooseCoachingSessionContent({
                     onClick={() => onChoose(offering)}
                 />
             ))}
+            {courseCoachingSessions.length > 0 && (
+                <>
+                    <span className="text-sm text-text-primary font-semibold mt-2">
+                        {dictionary?.components?.availableCoachingSessions?.courseTitle}
+                    </span>
+                    {courseCoachingSessions.map((session) => (
+                        <CourseCoachingSessionCard
+                            key={`${session.courseSlug}-${session.sessionId}`}
+                            sessionTitle={session.sessionTitle}
+                            sessionDuration={session.sessionDuration}
+                            courseTitle={session.courseTitle}
+                            durationMinutes={dictionary?.components?.availableCoachingSessions?.durationMinutes}
+                            onClick={() => {
+                                router.push(`/${locale}/courses/${session.courseSlug}?tab=study&highlightSession=${session.sessionId}`);
+                            }}
+                        />
+                    ))}
+                </>
+            )}
         </div>
     );
 }

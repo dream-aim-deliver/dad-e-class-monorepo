@@ -2,12 +2,23 @@
 import { Button } from '../button';
 import { FC, useRef, useState } from 'react';
 import { AvailableCoachingSessionCard } from './available-coaching-session-card';
+import { CourseCoachingSessionCard } from './course-coaching-session-card';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface CoachingSessionData {
     title: string;
     time: number;
     numberOfSessions: number;
+}
+
+export interface CourseCoachingSessionData {
+    courseTitle: string;
+    courseSlug: string;
+    courseImageUrl?: string | null;
+    sessionTitle: string;
+    sessionDuration: number;
+    sessionId: number;
+    lessonId?: number;
 }
 
 export interface AvailableCoachingSessionsProps extends isLocalAware {
@@ -19,6 +30,8 @@ export interface AvailableCoachingSessionsProps extends isLocalAware {
     hideButton?: boolean;
     hideTitle?: boolean;
     isDraggable?: boolean;
+    courseCoachingSessionsData?: CourseCoachingSessionData[];
+    onClickCourseSession?: (data: CourseCoachingSessionData) => void;
 }
 
 /**
@@ -61,8 +74,13 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
     hideButton = false,
     hideTitle = false,
     isDraggable = false,
+    courseCoachingSessionsData,
+    onClickCourseSession,
 }) => {
     const dictionary = getDictionary(locale);
+    const hasCourseData = courseCoachingSessionsData && courseCoachingSessionsData.length > 0;
+    const hasStandaloneData = availableCoachingSessionsData && availableCoachingSessionsData.length > 0;
+    const showSectionHeaders = hasCourseData;
 
     return (
         <div
@@ -75,9 +93,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                     {dictionary?.components?.availableCoachingSessions?.title}
                 </p>
             )}
-            {!isLoading &&
-            (!availableCoachingSessionsData ||
-                availableCoachingSessionsData?.length === 0) ? (
+            {!isLoading && !hasStandaloneData && !hasCourseData ? (
                 <div className="flex items-center justify-center w-full">
                     <p className="text-[1rem] text-text-secondary leading-[150%]">
                         {
@@ -95,9 +111,16 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                                     ?.availableCoachingSessions?.loadingText
                             }
                         </p>
-                    ) : (
+                    ) : text ? (
                         <p className="text-[0.875rem] text-text-secondary leading-[150%]">
                             {text}
+                        </p>
+                    ) : null}
+
+                    {/* Standalone Coaching Sessions */}
+                    {showSectionHeaders && (
+                        <p className="text-sm text-text-primary font-semibold leading-[120%]">
+                            {dictionary?.components?.availableCoachingSessions?.standaloneTitle}
                         </p>
                     )}
                     <div className="flex flex-col gap-2 items-end w-full">
@@ -113,7 +136,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                                     isLoading={isLoading}
                                 />
                             </>
-                        ) : (
+                        ) : hasStandaloneData ? (
                             availableCoachingSessionsData.map((session) => {
                                 return (
                                     <div key={session.title} className="w-full">
@@ -132,12 +155,9 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                                     </div>
                                 );
                             })
-                        )}
-                    </div>
-                    {!isLoading &&
-                        availableCoachingSessionsData.length === 0 && (
+                        ) : showSectionHeaders ? (
                             <div className="flex items-center justify-center w-full">
-                                <p className="text-[1rem] text-text-secondary leading-[150%]">
+                                <p className="text-[0.875rem] text-text-secondary leading-[150%]">
                                     {
                                         dictionary?.components
                                             ?.availableCoachingSessions
@@ -145,7 +165,34 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                                     }
                                 </p>
                             </div>
-                        )}
+                        ) : null}
+                    </div>
+
+                    {/* Course Coaching Sessions */}
+                    {hasCourseData && (
+                        <>
+                            <p className="text-sm text-text-primary font-semibold leading-[120%] mt-2">
+                                {dictionary?.components?.availableCoachingSessions?.courseTitle}
+                            </p>
+                            <div className="flex flex-col gap-2 items-end w-full">
+                                {courseCoachingSessionsData.map((session) => (
+                                    <div key={`${session.courseSlug}-${session.sessionId}`} className="w-full">
+                                        <CourseCoachingSessionCard
+                                            sessionTitle={session.sessionTitle}
+                                            sessionDuration={session.sessionDuration}
+                                            courseTitle={session.courseTitle}
+                                            durationMinutes={
+                                                dictionary?.components
+                                                    ?.availableCoachingSessions
+                                                    ?.durationMinutes
+                                            }
+                                            onClick={() => onClickCourseSession?.(session)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </>
             )}
             {!hideButton && (

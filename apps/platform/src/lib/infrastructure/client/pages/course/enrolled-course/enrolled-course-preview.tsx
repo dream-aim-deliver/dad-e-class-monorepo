@@ -14,7 +14,7 @@ import {
     ModulePagination,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { useSearchParams, usePathname } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
@@ -99,6 +99,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const lessonHeaderT = useTranslations('components.lessonHeader');
     const searchParams = useSearchParams();
     const pathname = usePathname();
+    const router = useRouter();
     const [copiedLessonId, setCopiedLessonId] = useState<number | null>(null);
     // State for showing/hiding notes panel (only for students with enableSubmit)
     const [showNotes, setShowNotes] = useState(false);
@@ -163,6 +164,68 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
             }
         }
     }, [courseStructureViewModel, initialLessonId]);
+
+    // Resolve highlightSession → lesson: find which lesson contains the coaching session
+    const highlightSessionId = searchParams.get('highlightSession');
+    const hasResolvedHighlight = useRef(false);
+    const utils = trpc.useUtils();
+
+    useEffect(() => {
+        if (
+            hasResolvedHighlight.current ||
+            !highlightSessionId ||
+            initialLessonId ||
+            !courseStructureViewModel ||
+            courseStructureViewModel.mode !== 'default'
+        ) {
+            return;
+        }
+        hasResolvedHighlight.current = true;
+
+        const modules = courseStructureViewModel.data.modules;
+        const allLessons = modules.flatMap((m, mi) =>
+            m.lessons.map((l, li) => ({ lessonId: l.id, moduleIndex: mi, lessonIndex: li }))
+        );
+
+        // Fetch lesson components for all lessons in parallel, find the one with the coaching session
+        (async () => {
+            const results = await Promise.all(
+                allLessons.map(async ({ lessonId, moduleIndex, lessonIndex }) => {
+                    try {
+                        const res = await utils.listLessonComponents.fetch({
+                            lessonId,
+                            withProgress: true,
+                        });
+                        // Check if any component is a coaching session with matching session ID
+                        const components = (res as any)?.data?.components;
+                        if (Array.isArray(components)) {
+                            const hasMatch = components.some(
+                                (c: any) =>
+                                    c.type === 'coachingSession' &&
+                                    c.progress?.session?.id != null &&
+                                    String(c.progress.session.id) === highlightSessionId
+                            );
+                            if (hasMatch) return { moduleIndex, lessonIndex, lessonId };
+                        }
+                    } catch {
+                        // Ignore fetch errors for individual lessons
+                    }
+                    return null;
+                })
+            );
+
+            const match = results.find((r) => r !== null);
+            if (match) {
+                setActiveModuleIndex(match.moduleIndex);
+                setActiveLessonIndex(match.lessonIndex);
+                hasInitializedLesson.current = true;
+                // Update URL to include the lesson param
+                if (props.onLessonNavigate) {
+                    props.onLessonNavigate(match.lessonId);
+                }
+            }
+        })();
+    }, [courseStructureViewModel, highlightSessionId, initialLessonId, utils]);
 
     if (!courseStructureViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;

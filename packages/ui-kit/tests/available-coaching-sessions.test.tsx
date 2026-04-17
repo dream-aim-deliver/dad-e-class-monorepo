@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { AvailableCoachingSessions } from '../lib/components/available-coaching-sessions/available-coaching-sessions';
 
@@ -9,6 +9,11 @@ vi.mock('@maany_shr/e-class-translations', () => ({
       availableCoachingSessions: {
         title: 'Available Coaching Sessions',
         buyMoreSessions: 'Buy More Sessions',
+        durationMinutes: 'minute(s)',
+        noAvailableSessionText: 'No available sessions',
+        loadingText: 'Loading Sessions...',
+        standaloneTitle: 'Standalone Coaching Sessions',
+        courseTitle: 'Course Coaching Sessions',
       },
     },
   }),
@@ -51,6 +56,28 @@ vi.mock('../lib/components/available-coaching-sessions/available-coaching-sessio
           <span className="truncate">x{numberOfSessions}</span>
         </span>
       )}
+    </div>
+  ),
+}));
+
+vi.mock('../lib/components/available-coaching-sessions/course-coaching-session-card', () => ({
+  CourseCoachingSessionCard: ({
+    sessionTitle,
+    sessionDuration,
+    courseTitle,
+    durationMinutes,
+    onClick,
+  }: {
+    sessionTitle: string;
+    sessionDuration: number;
+    courseTitle: string;
+    durationMinutes?: string;
+    onClick?: () => void;
+  }) => (
+    <div data-testid="course-coaching-session-card" onClick={onClick} className="cursor-pointer">
+      <p>{sessionTitle}</p>
+      <p>{sessionDuration} {durationMinutes}</p>
+      <p>{courseTitle}</p>
     </div>
   ),
 }));
@@ -118,5 +145,97 @@ describe('AvailableCoachingSessions', () => {
       'rounded-medium',
       'h-fit',
     );
+  });
+
+  describe('with courseCoachingSessionsData', () => {
+    const standaloneData = [
+      { title: 'Quick Sprint', time: 30, numberOfSessions: 1 },
+    ];
+    const courseData = [
+      {
+        courseTitle: 'React Fundamentals',
+        courseSlug: 'react-fundamentals',
+        sessionTitle: 'Course Intro Session',
+        sessionDuration: 60,
+        sessionId: 1,
+      },
+      {
+        courseTitle: 'Advanced TypeScript',
+        courseSlug: 'advanced-ts',
+        sessionTitle: 'TS Deep Dive',
+        sessionDuration: 45,
+        sessionId: 2,
+      },
+    ];
+
+    it('renders both Standalone and Course section headers when courseCoachingSessionsData is provided', () => {
+      render(
+        <AvailableCoachingSessions
+          locale="en"
+          availableCoachingSessionsData={standaloneData}
+          courseCoachingSessionsData={courseData}
+          onClickBuyMoreSessions={vi.fn()}
+        />,
+      );
+      expect(screen.getByText('Standalone Coaching Sessions')).toBeInTheDocument();
+      expect(screen.getByText('Course Coaching Sessions')).toBeInTheDocument();
+    });
+
+    it('does not show section headers when courseCoachingSessionsData is empty', () => {
+      render(
+        <AvailableCoachingSessions
+          locale="en"
+          availableCoachingSessionsData={standaloneData}
+          courseCoachingSessionsData={[]}
+          onClickBuyMoreSessions={vi.fn()}
+        />,
+      );
+      expect(screen.queryByText('Standalone Coaching Sessions')).not.toBeInTheDocument();
+      expect(screen.queryByText('Course Coaching Sessions')).not.toBeInTheDocument();
+    });
+
+    it('does not show section headers when courseCoachingSessionsData is undefined', () => {
+      render(
+        <AvailableCoachingSessions
+          locale="en"
+          availableCoachingSessionsData={standaloneData}
+          onClickBuyMoreSessions={vi.fn()}
+        />,
+      );
+      expect(screen.queryByText('Standalone Coaching Sessions')).not.toBeInTheDocument();
+      expect(screen.queryByText('Course Coaching Sessions')).not.toBeInTheDocument();
+    });
+
+    it('renders course session cards with correct course title', () => {
+      render(
+        <AvailableCoachingSessions
+          locale="en"
+          availableCoachingSessionsData={standaloneData}
+          courseCoachingSessionsData={courseData}
+          onClickBuyMoreSessions={vi.fn()}
+        />,
+      );
+      expect(screen.getByText('Course Intro Session')).toBeInTheDocument();
+      expect(screen.getByText('React Fundamentals')).toBeInTheDocument();
+      expect(screen.getByText('TS Deep Dive')).toBeInTheDocument();
+      expect(screen.getByText('Advanced TypeScript')).toBeInTheDocument();
+    });
+
+    it('calls onClickCourseSession when a course session card is clicked', () => {
+      const handleClickCourseSession = vi.fn();
+      render(
+        <AvailableCoachingSessions
+          locale="en"
+          availableCoachingSessionsData={standaloneData}
+          courseCoachingSessionsData={courseData}
+          onClickBuyMoreSessions={vi.fn()}
+          onClickCourseSession={handleClickCourseSession}
+        />,
+      );
+      const courseCards = screen.getAllByTestId('course-coaching-session-card');
+      fireEvent.click(courseCards[0]);
+      expect(handleClickCourseSession).toHaveBeenCalledTimes(1);
+      expect(handleClickCourseSession).toHaveBeenCalledWith(courseData[0]);
+    });
   });
 });

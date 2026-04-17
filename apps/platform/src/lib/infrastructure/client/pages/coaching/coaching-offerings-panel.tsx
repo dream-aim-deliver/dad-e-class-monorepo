@@ -13,6 +13,7 @@ import {
     Banner,
     type TransactionDraft,
     type CouponValidationResult,
+    type CourseCoachingSessionData,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -42,6 +43,35 @@ function AvailableCoachings() {
     presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
 
     const locale = useLocale() as TLocale;
+    const router = useRouter();
+
+    // Query course coaching sessions (this component is only rendered when logged in)
+    const studentSessionsQuery = trpc.listStudentCoachingSessions.useQuery(
+        {},
+        { enabled: true, staleTime: 0, refetchOnMount: 'always' }
+    );
+
+    const courseCoachingSessionsData = useMemo(() => {
+        if (!studentSessionsQuery.data?.data?.sessions) return [];
+        const sessions = studentSessionsQuery.data.data.sessions;
+        const courseUnscheduled = sessions.filter(
+            (s: any) => s.sessionType === 'course-unscheduled'
+        );
+        return Object.values(
+            courseUnscheduled.reduce((acc: Record<string, CourseCoachingSessionData>, session: any) => {
+                if (!acc[session.course.slug]) {
+                    acc[session.course.slug] = {
+                        courseTitle: session.course.title,
+                        courseSlug: session.course.slug,
+                        sessionTitle: session.coachingOfferingTitle || '',
+                        sessionDuration: session.coachingOfferingDuration || 0,
+                        sessionId: session.id,
+                    };
+                }
+                return acc;
+            }, {})
+        );
+    }, [studentSessionsQuery.data]);
 
     const groupedOfferings = useMemo(() => {
         if (!availableCoachingsViewModel) return [];
@@ -72,7 +102,7 @@ function AvailableCoachings() {
 
     const availableOfferings = availableCoachingsViewModel.data.offerings;
 
-    if (availableOfferings.length === 0) {
+    if (availableOfferings.length === 0 && courseCoachingSessionsData.length === 0) {
         return;
     }
 
@@ -85,6 +115,10 @@ function AvailableCoachings() {
                     document.getElementById('buy-coaching-sessions-desktop') ??
                     document.getElementById('buy-coaching-sessions');
                 buyCoachingsPanel?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            courseCoachingSessionsData={courseCoachingSessionsData}
+            onClickCourseSession={(data) => {
+                router.push(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`);
             }}
         />
     );

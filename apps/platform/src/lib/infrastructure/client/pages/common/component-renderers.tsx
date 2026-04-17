@@ -41,7 +41,7 @@ import {
     DialogBody,
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
-import { JSX, useEffect, useState, useMemo } from 'react';
+import { JSX, useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useFileUploadContext } from '../course/utils/file-upload';
@@ -466,6 +466,16 @@ function CourseCoachList({ sessionId, lessonComponentId, returnTo }: { sessionId
         />
     );
 
+    if (coaches.length === 0) {
+        return (
+            <div className="flex flex-col gap-2 w-full p-3 rounded-medium border border-card-stroke bg-card-fill">
+                <span className="text-text-secondary text-sm">
+                    {t('noCoachesAvailable')}
+                </span>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className="flex flex-col gap-4 w-full">
@@ -507,6 +517,32 @@ function CoachingSessionComponent({
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const highlightSessionId = searchParams.get('highlightSession');
+    const sessionId = element.progress?.session?.id;
+    const shouldHighlight = highlightSessionId != null && sessionId != null && String(sessionId) === highlightSessionId;
+    const [showHighlight, setShowHighlight] = useState(false);
+    const hasAppliedHighlight = useRef(false);
+
+    // Callback ref: fires when the DOM node mounts, guaranteeing scrollIntoView works
+    const highlightRef = useCallback((node: HTMLDivElement | null) => {
+        if (!node || !shouldHighlight || hasAppliedHighlight.current) return;
+        hasAppliedHighlight.current = true;
+        setShowHighlight(true);
+
+        // Scroll after a short delay to let layout settle
+        setTimeout(() => {
+            node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+
+        // Clear highlight after 6 seconds
+        setTimeout(() => {
+            setShowHighlight(false);
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete('highlightSession');
+            const newSearch = params.toString();
+            router.replace(pathname + (newSearch ? `?${newSearch}` : ''), { scroll: false });
+        }, 6000);
+    }, [shouldHighlight]);
 
     // This statement is needed for debugging
     console.log(
@@ -554,12 +590,26 @@ function CoachingSessionComponent({
     };
 
     return (
-        <CoachingSessionStudentView
-            key={key}
-            elementInstance={element}
-            locale={locale}
-            progressContent={getProgressContent()}
-        />
+        <div ref={highlightRef} className="relative">
+            <CoachingSessionStudentView
+                key={key}
+                elementInstance={element}
+                locale={locale}
+                progressContent={getProgressContent()}
+            />
+            <div
+                style={{
+                    position: 'absolute',
+                    inset: 0,
+                    border: '3px solid #facc15',
+                    borderRadius: '8px',
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                    opacity: showHighlight ? 1 : 0,
+                    transition: 'opacity 1.5s ease-out',
+                }}
+            />
+        </div>
     );
 }
 

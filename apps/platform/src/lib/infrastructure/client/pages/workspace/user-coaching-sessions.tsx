@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TUpcomingStudentCoachingSession, TListCoachCoachingSessionsSuccessResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
-import { Button, CoachingSessionCard, AvailableCoachingSessions, ConfirmationModal, CancelCoachingSessionModal } from '@maany_shr/e-class-ui-kit';
+import { Button, CoachingSessionCard, AvailableCoachingSessions, ConfirmationModal, CancelCoachingSessionModal, CourseCoachingSessionData } from '@maany_shr/e-class-ui-kit';
 import { useListUpcomingStudentCoachingSessionsPresenter } from '../../hooks/use-list-upcoming-student-coaching-sessions-presenter';
 import { useListStudentCoachingSessionsPresenter } from '../../hooks/use-list-student-coaching-sessions-presenter';
 import { useListCoachCoachingSessionsPresenter } from '../../hooks/use-list-coach-coaching-sessions-presenter';
@@ -426,9 +426,9 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
             return [];
         }
         const allSessions = studentCoachingSessionsViewModel.data.sessions || [];
-        const unscheduledSessions = allSessions.filter(session => session.status === 'unscheduled');
+        const standaloneUnscheduled = allSessions.filter(session => session.sessionType === 'standalone-unscheduled');
 
-        const sessionGroups = unscheduledSessions.reduce((acc, session) => {
+        const sessionGroups = standaloneUnscheduled.reduce((acc, session) => {
             if (!session?.coachingOfferingTitle || session?.coachingOfferingDuration === undefined) {
                 return acc;
             }
@@ -446,6 +446,36 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
 
         return Object.values(sessionGroups);
     }, [studentCoachingSessionsViewModel]);
+
+    const courseCoachingSessionsData = useMemo(() => {
+        if (!studentCoachingSessionsViewModel || studentCoachingSessionsViewModel.mode !== 'default' || !studentCoachingSessionsViewModel.data) {
+            return [];
+        }
+        const allSessions = studentCoachingSessionsViewModel.data.sessions || [];
+        const courseUnscheduled = allSessions.filter(
+            (session): session is Extract<typeof session, { sessionType: 'course-unscheduled' }> =>
+                session.sessionType === 'course-unscheduled'
+        );
+        return Object.values(
+            courseUnscheduled.reduce((acc, session) => {
+                if (!acc[session.course.slug]) {
+                    acc[session.course.slug] = {
+                        courseTitle: session.course.title,
+                        courseSlug: session.course.slug,
+                        courseImageUrl: session.course.imageUrl,
+                        sessionTitle: session.coachingOfferingTitle || '',
+                        sessionDuration: session.coachingOfferingDuration || 0,
+                        sessionId: session.id!,
+                    };
+                }
+                return acc;
+            }, {} as Record<string, CourseCoachingSessionData>)
+        );
+    }, [studentCoachingSessionsViewModel]);
+
+    const handleClickCourseSession = useCallback((data: CourseCoachingSessionData) => {
+        router.push(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`);
+    }, [router, locale]);
 
     const handleViewAllCoachingSessions = useCallback(() => {
         router.push(`/${locale}/workspace/coaching-sessions`);
@@ -594,7 +624,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                 ) : null}
             </div>
 
-            {availableCoachingSessionsData.length > 0 && (
+            {(availableCoachingSessionsData.length > 0 || courseCoachingSessionsData.length > 0) && (
                 <div className="mt-10">
                     <h3 className="mb-6">{t('availableCoachingSessions')}</h3>
                     <AvailableCoachingSessions
@@ -604,8 +634,10 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                         onClickBuyMoreSessions={() => {
                             router.push(`/${locale}/coaching`);
                         }}
-                        hideButton={availableCoachingSessionsData.length === 0}
+                        hideButton={availableCoachingSessionsData.length === 0 && courseCoachingSessionsData.length === 0}
                         hideTitle
+                        courseCoachingSessionsData={courseCoachingSessionsData}
+                        onClickCourseSession={handleClickCourseSession}
                     />
                 </div>
             )}
