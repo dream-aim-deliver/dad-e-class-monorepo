@@ -402,6 +402,10 @@ export const DictionarySchema = z.object({
       durationMinutes: z.string(),
       loadingText: z.string(),
       noAvailableSessionText: z.string(),
+      standaloneTitle: z.string(),
+      courseTitle: z.string(),
+      nextSessionFor: z.string(),
+      goToLesson: z.string(),
     }),
     buyCoachingSession: z.object({
       title: z.string(),
@@ -2427,6 +2431,7 @@ export const DictionarySchema = z.object({
           title: z.string(),
           description: z.string(),
         }),
+        noCoachesAvailable: z.string(),
       }),
       groups: z.object({
         title: z.string(),

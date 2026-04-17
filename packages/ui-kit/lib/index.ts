@@ -101,6 +101,7 @@ export { PackageCardList } from './components/packages/package-card-list';
 export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
 export { AvailableCoachingSessionCard } from './components/available-coaching-sessions/available-coaching-session-card';
+export { CourseCoachingSessionCard } from './components/available-coaching-sessions/course-coaching-session-card';
 
 export { FormElementRenderer } from './components/lesson/form-renderer';
 export { SubmissionElementsRenderer as SubmissionRenderer } from './components/lesson/submission-renderer';
@@ -236,7 +237,7 @@ export { MonthlyCalendar, formatDateKey } from './components/calendar/monthly-ca
 export { WeeklyCalendar } from './components/calendar/weekly-calendar';
 export { CalendarNavigationHeader } from './components/calendar/calendar-navigation-header';
 export * from './components/calendar/calendar-cards';
-export { type CoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
+export { type CoachingSessionData, type CourseCoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
 export { CoachingAvailabilityCard } from './components/available-coaching-sessions/coaching-availability-card';
 
 export { ReviewModal, ReviewDialog, ReviewCard } from './components/review/review-modal';
