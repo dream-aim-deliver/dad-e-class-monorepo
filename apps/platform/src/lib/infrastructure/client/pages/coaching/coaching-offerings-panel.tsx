@@ -52,8 +52,8 @@ function AvailableCoachings() {
     );
 
     const courseCoachingSessionsData = useMemo(() => {
-        if (!studentSessionsQuery.data?.data?.sessions) return [];
-        const sessions = studentSessionsQuery.data.data.sessions;
+        if (!studentSessionsQuery.data?.success || !studentSessionsQuery.data?.data) return [];
+        const sessions = (studentSessionsQuery.data.data as { sessions: TStudentCoachingSession[] }).sessions;
         const courseUnscheduled = sessions.filter(
             (s): s is Extract<TStudentCoachingSession, { sessionType: 'course-unscheduled' }> =>
                 s.sessionType === 'course-unscheduled' && s.id != null

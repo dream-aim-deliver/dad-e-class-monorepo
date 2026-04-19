@@ -72,16 +72,16 @@ export default function ChooseCoachingSessionContent({
     type CourseUnscheduledSession = Extract<TStudentCoachingSession, { sessionType: 'course-unscheduled' }>;
 
     const courseCoachingSessions = useMemo(() => {
-        if (courseSlug || !studentSessionsQuery.data?.data?.sessions) return [];
-        const sessions = studentSessionsQuery.data.data.sessions;
+        if (courseSlug || !studentSessionsQuery.data?.success || !studentSessionsQuery.data?.data) return [];
+        const sessions = (studentSessionsQuery.data.data as { sessions: TStudentCoachingSession[] }).sessions;
         const courseUnscheduled = sessions.filter(
             (s): s is CourseUnscheduledSession => s.sessionType === 'course-unscheduled' && s.id != null
         );
         return Object.values(
             courseUnscheduled.reduce((acc: Record<string, { courseTitle: string; courseSlug: string; sessionTitle: string; sessionDuration: number; sessionId: number; lessonId: number | null; moduleName: string | null; lessonName: string | null; moduleIndex: number | null; moduleTotalCount: number | null; lessonIndex: number | null; lessonTotalCount: number | null }>, session) => {
                 if (session.id == null) return acc;
-                if (!acc[session.course.slug]) {
-                    acc[session.course.slug] = {
+                if (!acc[`${session.course.slug}-${session.id}`]) {
+                    acc[`${session.course.slug}-${session.id}`] = {
                         courseTitle: session.course.title,
                         courseSlug: session.course.slug,
                         sessionTitle: session.coachingOfferingTitle || '',
