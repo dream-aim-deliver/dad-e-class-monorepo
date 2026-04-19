@@ -76,16 +76,16 @@ function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps)
     );
 
     const courseCoachingSessionsData = useMemo<CourseCoachingSessionData[]>(() => {
-        if (!studentSessionsQuery.data || studentSessionsQuery.data.success !== true) return [];
-        const sessions = studentSessionsQuery.data.data.sessions;
+        if (!studentSessionsQuery.data?.success || !studentSessionsQuery.data?.data) return [];
+        const sessions = (studentSessionsQuery.data.data as { sessions: TStudentCoachingSession[] }).sessions;
         const courseUnscheduled = sessions.filter(
             (s): s is CourseUnscheduledSession => s.sessionType === 'course-unscheduled' && s.id != null
         );
         return Object.values(
             courseUnscheduled.reduce((acc: Record<string, CourseCoachingSessionData>, session) => {
                 if (session.id == null) return acc;
-                if (!acc[session.course.slug]) {
-                    acc[session.course.slug] = {
+                if (!acc[`${session.course.slug}-${session.id}`]) {
+                    acc[`${session.course.slug}-${session.id}`] = {
                         courseTitle: session.course.title,
                         courseSlug: session.course.slug,
                         sessionTitle: session.coachingOfferingTitle ?? '',

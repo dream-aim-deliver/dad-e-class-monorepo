@@ -1,4 +1,5 @@
 import { TLocale } from '@maany_shr/e-class-translations';
+import { TLessonComponent } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     Button,
     CourseOutlineAccordion,
@@ -197,16 +198,13 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                             withProgress: true,
                         });
                         // Check if any component is a coaching session with matching session ID
-                        if (res && 'data' in res && res.data && 'components' in res.data) {
-                            const components = res.data.components;
-                            const hasMatch = components.some(
-                                (c) =>
-                                    c.type === 'coachingSession' &&
-                                    'progress' in c && c.progress &&
-                                    'session' in c.progress && c.progress.session &&
-                                    'id' in c.progress.session &&
-                                    String(c.progress.session.id) === highlightSessionId
-                            );
+                        if (res?.success && res?.data) {
+                            const components = (res.data as { components: TLessonComponent[] }).components;
+                            const hasMatch = components.some((c) => {
+                                if (c.type !== 'coachingSession') return false;
+                                return c.progress?.session?.id != null &&
+                                    String(c.progress.session.id) === highlightSessionId;
+                            });
                             if (hasMatch) return { moduleIndex, lessonIndex, lessonId };
                         }
                     } catch {
