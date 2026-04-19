@@ -19,7 +19,7 @@ export const Coaching_EN: TDictionary["pages"]["coaching"] = {
     goToDate: "Jump to {date}",
   },
   bookingHelp: {
-    standaloneDescription: "Browse the coach's availability on the calendar and select a time slot that works for you. You'll need to choose one of your available coaching sessions and provide a short briefing so your coach can prepare.",
+    standaloneDescription: "Browse the coach's availability and click a time slot to book it. You'll be asked to pick one of your available standalone coaching sessions and write a short briefing so your coach can prepare. Course coaching sessions shown below must be booked from within their course lesson.",
     courseDescription: "Select an available time slot on the calendar to schedule the coaching session for your course lesson. You'll be asked to provide a short briefing so your coach can prepare.",
   },
   error: {

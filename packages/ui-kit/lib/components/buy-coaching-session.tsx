@@ -93,9 +93,12 @@ function BuyCoachingSession({ offerings, onBuy, locale, currencyType }: BuyCoach
         <div className='min-auto border border-card-stroke rounded-medium bg-card-fill px-4 py-6 flex flex-col gap-4'>
             {/* Header */}
             <div className='flex flex-col gap-2'>
-                <h5 className="text-xl font-bold text-text-primary">
-                    {dictionary.components.buyCoachingSession.title}
-                </h5>
+                <div className="flex items-center gap-1">
+                    <h5 className="text-xl font-bold text-text-primary">
+                        {dictionary.components.buyCoachingSession.title}
+                    </h5>
+                    <Tooltip text="" description={dictionary.components.buyCoachingSession.tooltip} />
+                </div>
                 <p className='text-text-secondary text-md md:text-lg'>
                     {dictionary.components.buyCoachingSession.description}
                 </p>

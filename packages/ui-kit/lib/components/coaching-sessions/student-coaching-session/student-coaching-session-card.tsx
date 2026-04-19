@@ -7,6 +7,7 @@ import { ReviewCard } from '../review-card';
 import { IconCalendarAlt } from '../../icons/icon-calendar-alt';
 import { IconClock } from '../../icons/icon-clock';
 import { CoachingSessionCardProps } from '../coaching-session-card';
+import Tooltip from '../../tooltip';
 
 /**
  * Type definition for student coaching session card props extracted from the central discriminated union.
@@ -87,15 +88,28 @@ export type StudentCoachingSessionCardProps = Extract<CoachingSessionCardProps, 
 export const StudentCoachingSessionCard: React.FC<StudentCoachingSessionCardProps> = (props) => {
     const dictionary = getDictionary(props.locale);
 
+    const sessionTypeTooltip = (() => {
+        if ('groupName' in props && props.groupName) {
+            return dictionary.components.coachingSessionCard.groupSessionTooltip;
+        }
+        if ('courseName' in props && props.courseName) {
+            return dictionary.components.coachingSessionCard.courseSessionTooltip;
+        }
+        return dictionary.components.coachingSessionCard.standaloneSessionTooltip;
+    })();
+
     // Special case for sessions with undefined scheduling
     // These sessions don't have finalized date/time or creator assignments
     if (props.status === 'to-be-defined') {
         return (
             <div className="flex flex-col md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
                 <div className="flex gap-4 items-center justify-between">
-                    <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
-                        {props.title}
-                    </p>
+                    <div className="flex items-center gap-1 min-w-0">
+                        <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
+                            {props.title}
+                        </p>
+                        <Tooltip text="" description={sessionTypeTooltip} />
+                    </div>
                     <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
                         {props.duration}
                         {dictionary.components.coachingSessionCard.durationText}
@@ -127,9 +141,12 @@ export const StudentCoachingSessionCard: React.FC<StudentCoachingSessionCardProp
     return (
         <div className="flex flex-col md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
             <div className="flex gap-4 items-center justify-between">
-                <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
-                    {props.title}
-                </p>
+                <div className="flex items-center gap-1 min-w-0">
+                    <p title={props.title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
+                        {props.title}
+                    </p>
+                    <Tooltip text="" description={sessionTypeTooltip} />
+                </div>
                 <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
                     {props.duration}
                     {dictionary.components.coachingSessionCard.durationText}

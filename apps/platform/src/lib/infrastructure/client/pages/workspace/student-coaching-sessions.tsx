@@ -291,10 +291,11 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     const courseCoachingSessionsData = useMemo(() => {
         const courseUnscheduled = allSessions.filter(
             (session): session is Extract<typeof session, { sessionType: 'course-unscheduled' }> =>
-                session.sessionType === 'course-unscheduled'
+                session.sessionType === 'course-unscheduled' && session.id != null
         );
         const nextPerCourse = Object.values(
             courseUnscheduled.reduce((acc, session) => {
+                if (session.id == null) return acc;
                 if (!acc[session.course.slug]) {
                     acc[session.course.slug] = {
                         courseTitle: session.course.title,
@@ -302,7 +303,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                         courseImageUrl: session.course.imageUrl,
                         sessionTitle: session.coachingOfferingTitle || '',
                         sessionDuration: session.coachingOfferingDuration || 0,
-                        sessionId: session.id!,
+                        sessionId: typeof session.id === 'string' ? parseInt(session.id, 10) : session.id,
                     };
                 }
                 return acc;
@@ -566,7 +567,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
     };
 
     const handleClickCourseSession = (data: CourseCoachingSessionData) => {
-        router.push(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`);
+        window.open(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`, '_blank');
     };
 
     if (!studentCoachingSessionsViewModel || !coachesViewModel) {

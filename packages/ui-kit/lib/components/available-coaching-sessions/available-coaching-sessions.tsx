@@ -3,6 +3,7 @@ import { Button } from '../button';
 import { FC, useRef, useState } from 'react';
 import { AvailableCoachingSessionCard } from './available-coaching-session-card';
 import { CourseCoachingSessionCard } from './course-coaching-session-card';
+import Tooltip from '../tooltip';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface CoachingSessionData {
@@ -119,9 +120,12 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
 
                     {/* Standalone Coaching Sessions */}
                     {showSectionHeaders && (
-                        <p className="text-sm text-text-primary font-semibold leading-[120%]">
-                            {dictionary?.components?.availableCoachingSessions?.standaloneTitle}
-                        </p>
+                        <div className="flex items-center gap-1">
+                            <p className="text-sm text-text-primary font-semibold leading-[120%]">
+                                {dictionary?.components?.availableCoachingSessions?.standaloneTitle}
+                            </p>
+                            <Tooltip text="" description={dictionary?.components?.availableCoachingSessions?.standaloneTooltip || ''} />
+                        </div>
                     )}
                     <div className="flex flex-col gap-2 items-end w-full">
                         {isLoading || !availableCoachingSessionsData ? (
@@ -171,9 +175,12 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                     {/* Course Coaching Sessions */}
                     {hasCourseData && (
                         <>
-                            <p className="text-sm text-text-primary font-semibold leading-[120%] mt-2">
-                                {dictionary?.components?.availableCoachingSessions?.courseTitle}
-                            </p>
+                            <div className="flex items-center gap-1 mt-2">
+                                <p className="text-sm text-text-primary font-semibold leading-[120%]">
+                                    {dictionary?.components?.availableCoachingSessions?.courseTitle}
+                                </p>
+                                <Tooltip text="" description={dictionary?.components?.availableCoachingSessions?.courseTooltip || ''} />
+                            </div>
                             <div className="flex flex-col gap-2 items-end w-full">
                                 {courseCoachingSessionsData.map((session) => (
                                     <div key={`${session.courseSlug}-${session.sessionId}`} className="w-full">
