@@ -76,7 +76,7 @@ function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps)
     );
 
     const courseCoachingSessionsData = useMemo<CourseCoachingSessionData[]>(() => {
-        if (!studentSessionsQuery.data?.data?.sessions) return [];
+        if (!studentSessionsQuery.data || studentSessionsQuery.data.success !== true) return [];
         const sessions = studentSessionsQuery.data.data.sessions;
         const courseUnscheduled = sessions.filter(
             (s): s is CourseUnscheduledSession => s.sessionType === 'course-unscheduled' && s.id != null
