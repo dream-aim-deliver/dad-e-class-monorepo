@@ -1,6 +1,7 @@
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import React, { FC } from "react";
 import { Button } from "../button";
+import Tooltip from "../tooltip";
 
 export interface CoachingSessionTrackerProps extends isLocalAware {
     children: React.ReactNode;
@@ -41,12 +42,20 @@ export const CoachingSessionTracker: FC<CoachingSessionTrackerProps> = ({
     return (
         <div className="flex md:flex-row flex-col p-4 gap-4 bg-card-fill border-1 border-card-stroke rounded-medium items-center w-full">
             <div className="flex flex-col gap-2 items-start w-full">
-                <p className="text-xs lg:text-sm text-text-secondary font-important">
-                    {hasChildren ?
-                        dictionary.components.coachingSessionTracker.coachingSessionText :
-                        dictionary.components.coachingSessionTracker.noCoachingSessionText
-                    }
-                </p>
+                <div className="flex items-center gap-1">
+                    <p className="text-xs lg:text-sm text-text-secondary font-important">
+                        {hasChildren ?
+                            dictionary.components.coachingSessionTracker.coachingSessionText :
+                            dictionary.components.coachingSessionTracker.noCoachingSessionText
+                        }
+                    </p>
+                    {hasChildren && (
+                        <Tooltip
+                            text=""
+                            description={dictionary.components.coachingSessionTracker.usedTooltip}
+                        />
+                    )}
+                </div>
                 <div className="flex gap-2 pr-2 flex-wrap max-h-[7.1rem] overflow-y-auto relative scrollable-container">
                     {children}
                     {/* Scrollbar styling */}

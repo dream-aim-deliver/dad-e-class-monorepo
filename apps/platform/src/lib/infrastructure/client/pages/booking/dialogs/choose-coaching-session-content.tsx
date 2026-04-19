@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { trpc } from '../../../trpc/cms-client';
 import React, { useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
+import { TStudentCoachingSession } from '@dream-aim-deliver/e-class-cms-rest';
 import {
     AvailableCoachingSessionCard,
     Button,
@@ -13,6 +14,7 @@ import {
     CourseCoachingSessionCard,
     DefaultError,
     DefaultLoading,
+    Tooltip,
 } from '@maany_shr/e-class-ui-kit';
 import { useListAvailableCoachingsPresenter } from '../../../hooks/use-available-coachings-presenter';
 import { groupOfferings } from '../../../utils/group-offerings';
@@ -68,26 +70,29 @@ export default function ChooseCoachingSessionContent({
         { enabled: !courseSlug, staleTime: 0, refetchOnMount: 'always' }
     );
 
+    type CourseUnscheduledSession = Extract<TStudentCoachingSession, { sessionType: 'course-unscheduled' }>;
+
     const courseCoachingSessions = useMemo(() => {
         if (courseSlug || !studentSessionsQuery.data?.data?.sessions) return [];
         const sessions = studentSessionsQuery.data.data.sessions;
         const courseUnscheduled = sessions.filter(
-            (s: any) => s.sessionType === 'course-unscheduled'
+            (s): s is CourseUnscheduledSession => s.sessionType === 'course-unscheduled' && s.id != null
         );
         return Object.values(
-            courseUnscheduled.reduce((acc: Record<string, { courseTitle: string; courseSlug: string; sessionTitle: string; sessionDuration: number; sessionId: number }>, session: any) => {
+            courseUnscheduled.reduce((acc: Record<string, { courseTitle: string; courseSlug: string; sessionTitle: string; sessionDuration: number; sessionId: number }>, session) => {
+                if (session.id == null) return acc;
                 if (!acc[session.course.slug]) {
                     acc[session.course.slug] = {
                         courseTitle: session.course.title,
                         courseSlug: session.course.slug,
                         sessionTitle: session.coachingOfferingTitle || '',
                         sessionDuration: session.coachingOfferingDuration || 0,
-                        sessionId: session.id,
+                        sessionId: typeof session.id === 'string' ? parseInt(session.id, 10) : session.id,
                     };
                 }
                 return acc;
             }, {})
-        ) as { courseTitle: string; courseSlug: string; sessionTitle: string; sessionDuration: number; sessionId: number }[];
+        );
     }, [courseSlug, studentSessionsQuery.data]);
 
     const groupedOfferings = useMemo(() => {
@@ -153,9 +158,12 @@ export default function ChooseCoachingSessionContent({
     return (
         <div className="flex flex-col gap-3">
             {courseCoachingSessions.length > 0 && (
-                <span className="text-sm text-text-primary font-semibold">
-                    {dictionary?.components?.availableCoachingSessions?.standaloneTitle}
-                </span>
+                <div className="flex items-center gap-1">
+                    <span className="text-sm text-text-primary font-semibold">
+                        {dictionary?.components?.availableCoachingSessions?.standaloneTitle}
+                    </span>
+                    <Tooltip text="" description={dictionary?.components?.availableCoachingSessions?.standaloneTooltip || ''} />
+                </div>
             )}
             <span className="text-text-secondary">
                 Select a coaching session
@@ -171,9 +179,12 @@ export default function ChooseCoachingSessionContent({
             ))}
             {courseCoachingSessions.length > 0 && (
                 <>
-                    <span className="text-sm text-text-primary font-semibold mt-2">
-                        {dictionary?.components?.availableCoachingSessions?.courseTitle}
-                    </span>
+                    <div className="flex items-center gap-1 mt-2">
+                        <span className="text-sm text-text-primary font-semibold">
+                            {dictionary?.components?.availableCoachingSessions?.courseTitle}
+                        </span>
+                        <Tooltip text="" description={dictionary?.components?.availableCoachingSessions?.courseTooltip || ''} />
+                    </div>
                     {courseCoachingSessions.map((session) => (
                         <CourseCoachingSessionCard
                             key={`${session.courseSlug}-${session.sessionId}`}
@@ -182,7 +193,7 @@ export default function ChooseCoachingSessionContent({
                             courseTitle={session.courseTitle}
                             durationMinutes={dictionary?.components?.availableCoachingSessions?.durationMinutes}
                             onClick={() => {
-                                router.push(`/${locale}/courses/${session.courseSlug}?tab=study&highlightSession=${session.sessionId}`);
+                                window.open(`/${locale}/courses/${session.courseSlug}?tab=study&highlightSession=${session.sessionId}`, '_blank');
                             }}
                         />
                     ))}

@@ -399,6 +399,8 @@ export const EN: TDictionary = {
       courseTitle: 'Course Coaching Sessions',
       nextSessionFor: 'Next session for',
       goToLesson: 'Go to lesson',
+      standaloneTooltip: 'Standalone coaching sessions are purchased independently. You can book them with any available coach at any time.',
+      courseTooltip: 'Course coaching sessions are included in your course. Click to go to the lesson and book with an available coach.',
     },
     coachReview: {
       by: 'by',
@@ -414,11 +416,12 @@ export const EN: TDictionary = {
       nextAvailable: "Next available",
     },
     buyCoachingSession: {
-      title: 'Buy Coaching Session',
-      description: 'Schedule your sessions anytime, each with your favourite coach.',
+      title: 'Buy Standalone Coaching Sessions',
+      description: 'These are independent coaching sessions, not tied to any course. Schedule them anytime with any available coach.',
       buttonText: 'Buy coaching sessions',
       total: 'Total',
-      minutes: 'minute(s)'
+      minutes: 'minute(s)',
+      tooltip: 'Standalone sessions are purchased here and can be booked with any coach at any time. They are not connected to a specific course.',
     },
     buyCourseCoachingSessions: {
       title: 'Buy Course Coaching Sessions',
@@ -430,6 +433,7 @@ export const EN: TDictionary = {
       sessionAvailableSingular: 'session available',
       sessionAvailablePlural: 'sessions available',
       cancelText: 'Cancel',
+      tooltip: 'Course coaching sessions are tied to specific lessons in your course. Once purchased, go to the lesson to book with an available coach.',
     },
     videoPlayer: {
       videoErrorText: 'Video does not exist'
@@ -602,6 +606,9 @@ export const EN: TDictionary = {
       scheduleSessionText: 'Schedule Session',
       copyLinkText: 'Copy link',
       coachText: 'Coach',
+      standaloneSessionTooltip: 'This is a standalone coaching session — purchased independently, not tied to any course.',
+      courseSessionTooltip: 'This coaching session is linked to a course.',
+      groupSessionTooltip: 'This is a group coaching session for your course group. All group members participate together.',
     },
     coachingSessionCancelModal: {
       noText: 'No',
@@ -644,6 +651,7 @@ export const EN: TDictionary = {
     coachingSessionTracker: {
       minuteText: 'minute(s)',
       usedText: 'used',
+      usedTooltip: 'Shows how many of your included sessions of this type have been activated (requested, scheduled, completed, or cancelled) out of the total included with your course. The remainder are still available to book.',
       buyMoreSessionsText: 'Buy more sessions',
       buyCoachingSessionsText: 'Buy coaching sessions',
       coachingSessionText: 'Coaching sessions included',
@@ -2323,6 +2331,7 @@ export const EN: TDictionary = {
           description: 'Unable to load available coaches. Please refresh the page.',
         },
         noCoachesAvailable: 'Your coaching session is available, but there are currently no coaches assigned to this course. Please check back later or contact support.',
+        lessonCoachingTooltip: 'This coaching session is part of your course lesson. Select a coach below to schedule it.',
       },
       groups: {
         title: 'Groups',

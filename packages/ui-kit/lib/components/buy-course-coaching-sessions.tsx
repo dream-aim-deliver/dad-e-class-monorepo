@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { CheckBox } from './checkbox';
+import Tooltip from './tooltip';
 import { formatPrice } from '../utils/format-utils';
 
 type CoachingSession = {
@@ -118,9 +119,12 @@ function BuyCourseCoachingSessionsContent({
         <div className="flex flex-col gap-4 h-full">
             {/* Header */}
             <div className="flex flex-col gap-2 flex-shrink-0">
-                <h5 className="text-xl font-bold text-text-primary">
-                    {dictionary.components.buyCourseCoachingSessions.title}
-                </h5>
+                <div className="flex items-center gap-1">
+                    <h5 className="text-xl font-bold text-text-primary">
+                        {dictionary.components.buyCourseCoachingSessions.title}
+                    </h5>
+                    <Tooltip text="" description={dictionary.components.buyCourseCoachingSessions.tooltip} />
+                </div>
                 <p className="text-text-secondary text-md md:text-lg">
                     {dictionary.components.buyCourseCoachingSessions.description}
                 </p>

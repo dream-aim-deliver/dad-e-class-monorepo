@@ -1,5 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse, TStudentCoachingSession } from '@dream-aim-deliver/e-class-cms-rest';
 import { trpc } from '../../trpc/cms-client';
 import { Suspense, useMemo, useState, useEffect, useCallback } from 'react';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
@@ -55,17 +55,19 @@ function AvailableCoachings() {
         if (!studentSessionsQuery.data?.data?.sessions) return [];
         const sessions = studentSessionsQuery.data.data.sessions;
         const courseUnscheduled = sessions.filter(
-            (s: any) => s.sessionType === 'course-unscheduled'
+            (s): s is Extract<TStudentCoachingSession, { sessionType: 'course-unscheduled' }> =>
+                s.sessionType === 'course-unscheduled' && s.id != null
         );
         return Object.values(
-            courseUnscheduled.reduce((acc: Record<string, CourseCoachingSessionData>, session: any) => {
+            courseUnscheduled.reduce((acc: Record<string, CourseCoachingSessionData>, session) => {
+                if (session.id == null) return acc;
                 if (!acc[session.course.slug]) {
                     acc[session.course.slug] = {
                         courseTitle: session.course.title,
                         courseSlug: session.course.slug,
                         sessionTitle: session.coachingOfferingTitle || '',
                         sessionDuration: session.coachingOfferingDuration || 0,
-                        sessionId: session.id,
+                        sessionId: typeof session.id === 'string' ? parseInt(session.id, 10) : session.id,
                     };
                 }
                 return acc;
@@ -118,7 +120,7 @@ function AvailableCoachings() {
             }}
             courseCoachingSessionsData={courseCoachingSessionsData}
             onClickCourseSession={(data) => {
-                router.push(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`);
+                window.open(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`, '_blank');
             }}
         />
     );

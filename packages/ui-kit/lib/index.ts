@@ -102,6 +102,7 @@ export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
 export { AvailableCoachingSessionCard } from './components/available-coaching-sessions/available-coaching-session-card';
 export { CourseCoachingSessionCard } from './components/available-coaching-sessions/course-coaching-session-card';
+export { default as Tooltip } from './components/tooltip';
 
 export { FormElementRenderer } from './components/lesson/form-renderer';
 export { SubmissionElementsRenderer as SubmissionRenderer } from './components/lesson/submission-renderer';

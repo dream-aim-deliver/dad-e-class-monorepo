@@ -19,7 +19,7 @@ export const Coaching_DE: TDictionary['pages']['coaching'] = {
     goToDate: 'Zum {date} springen',
   },
   bookingHelp: {
-    standaloneDescription: 'Durchsuche die Verfügbarkeit des Coaches im Kalender und wähle einen passenden Zeitslot aus. Du musst eine deiner verfügbaren Coaching-Sessions auswählen und ein kurzes Briefing abgeben, damit sich dein Coach vorbereiten kann.',
+    standaloneDescription: 'Sieh dir die Verfügbarkeit des Coaches an und klicke auf einen Zeitslot, um ihn zu buchen. Du wirst gebeten, eine deiner verfügbaren Einzel-Coaching-Sessions auszuwählen und ein kurzes Briefing zu schreiben, damit sich dein Coach vorbereiten kann. Kurs-Coaching-Sessions, die unten angezeigt werden, müssen direkt in der jeweiligen Kurslektion gebucht werden.',
     courseDescription: 'Wähle einen verfügbaren Zeitslot im Kalender, um die Coaching-Session für deine Kurslektion zu planen. Du wirst gebeten, ein kurzes Briefing abzugeben, damit sich dein Coach vorbereiten kann.',
   },
   error: {

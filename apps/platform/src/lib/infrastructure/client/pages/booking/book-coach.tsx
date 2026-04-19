@@ -6,12 +6,13 @@ import { useRouter } from 'next/navigation';
 import { trpc } from '../../trpc/cms-client';
 import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
-import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
+import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse, TStudentCoachingSession } from '@dream-aim-deliver/e-class-cms-rest';
 import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
 import { groupOfferings } from '../../utils/group-offerings';
 import { useGetCoachAvailabilityPresenter } from '../../hooks/use-coach-availability-presenter';
 import {
     AvailableCoachingSessions,
+    type CourseCoachingSessionData,
     BuyCoachingSession,
     CheckoutModal,
     PurchaseAuthModal,
@@ -48,10 +49,12 @@ interface AvailableCoachingsProps {
 }
 
 type CheckoutAggregationData = viewModels.TPrepareCheckoutSuccess;
+type CourseUnscheduledSession = Extract<TStudentCoachingSession, { sessionType: 'course-unscheduled' }>;
 
 function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps) {
     const locale = useLocale() as TLocale;
     const coachingT = useTranslations('pages.coaching');
+    const router = useRouter();
     const [availableCoachingsResponse] =
         trpc.listAvailableCoachings.useSuspenseQuery({}, {
             staleTime: 0,
@@ -67,10 +70,42 @@ function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps)
     // @ts-ignore - TBaseResult structure needs unwrapping, presenter handles it
     presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
 
+    const studentSessionsQuery = trpc.listStudentCoachingSessions.useQuery(
+        {},
+        { staleTime: 0, refetchOnMount: 'always' }
+    );
+
+    const courseCoachingSessionsData = useMemo<CourseCoachingSessionData[]>(() => {
+        if (!studentSessionsQuery.data?.data?.sessions) return [];
+        const sessions = studentSessionsQuery.data.data.sessions;
+        const courseUnscheduled = sessions.filter(
+            (s): s is CourseUnscheduledSession => s.sessionType === 'course-unscheduled' && s.id != null
+        );
+        return Object.values(
+            courseUnscheduled.reduce((acc: Record<string, CourseCoachingSessionData>, session) => {
+                if (session.id == null) return acc;
+                if (!acc[session.course.slug]) {
+                    acc[session.course.slug] = {
+                        courseTitle: session.course.title,
+                        courseSlug: session.course.slug,
+                        sessionTitle: session.coachingOfferingTitle ?? '',
+                        sessionDuration: session.coachingOfferingDuration ?? 0,
+                        sessionId: typeof session.id === 'string' ? parseInt(session.id, 10) : session.id,
+                    };
+                }
+                return acc;
+            }, {})
+        );
+    }, [studentSessionsQuery.data]);
+
     const groupedOfferings = useMemo(() => {
         if (!availableCoachingsViewModel) return [];
         return groupOfferings(availableCoachingsViewModel);
     }, [availableCoachingsViewModel]);
+
+    const handleClickCourseSession = useCallback((data: CourseCoachingSessionData) => {
+        window.open(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`, '_blank');
+    }, [locale]);
 
     if (!availableCoachingsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -95,6 +130,8 @@ function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps)
             <AvailableCoachingSessions
                 locale={locale}
                 availableCoachingSessionsData={[]}
+                courseCoachingSessionsData={courseCoachingSessionsData}
+                onClickCourseSession={handleClickCourseSession}
                 onClickBuyMoreSessions={onClickBuyMoreSessions}
             />
         );
@@ -104,6 +141,8 @@ function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps)
         <AvailableCoachingSessions
             locale={locale}
             availableCoachingSessionsData={groupedOfferings}
+            courseCoachingSessionsData={courseCoachingSessionsData}
+            onClickCourseSession={handleClickCourseSession}
             onClickBuyMoreSessions={onClickBuyMoreSessions}
         />
     );

@@ -197,12 +197,14 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                             withProgress: true,
                         });
                         // Check if any component is a coaching session with matching session ID
-                        const components = (res as any)?.data?.components;
-                        if (Array.isArray(components)) {
+                        if (res && 'data' in res && res.data && 'components' in res.data) {
+                            const components = res.data.components;
                             const hasMatch = components.some(
-                                (c: any) =>
+                                (c) =>
                                     c.type === 'coachingSession' &&
-                                    c.progress?.session?.id != null &&
+                                    'progress' in c && c.progress &&
+                                    'session' in c.progress && c.progress.session &&
+                                    'id' in c.progress.session &&
                                     String(c.progress.session.id) === highlightSessionId
                             );
                             if (hasMatch) return { moduleIndex, lessonIndex, lessonId };

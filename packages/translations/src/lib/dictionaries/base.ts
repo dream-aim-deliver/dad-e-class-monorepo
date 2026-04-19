@@ -406,6 +406,8 @@ export const DictionarySchema = z.object({
       courseTitle: z.string(),
       nextSessionFor: z.string(),
       goToLesson: z.string(),
+      standaloneTooltip: z.string(),
+      courseTooltip: z.string(),
     }),
     buyCoachingSession: z.object({
       title: z.string(),
@@ -413,6 +415,7 @@ export const DictionarySchema = z.object({
       buttonText: z.string(),
       total: z.string(),
       minutes: z.string(),
+      tooltip: z.string(),
     }),
     buyCourseCoachingSessions: z.object({
       title: z.string(),
@@ -424,6 +427,7 @@ export const DictionarySchema = z.object({
       sessionAvailableSingular: z.string(),
       sessionAvailablePlural: z.string(),
       cancelText: z.string(),
+      tooltip: z.string(),
     }),
     videoPlayer: z.object({
       videoErrorText: z.string()
@@ -598,6 +602,9 @@ export const DictionarySchema = z.object({
       scheduleSessionText: z.string(),
       copyLinkText: z.string(),
       coachText: z.string(),
+      standaloneSessionTooltip: z.string(),
+      courseSessionTooltip: z.string(),
+      groupSessionTooltip: z.string(),
     }),
     coachingSessionCancelModal: z.object({
       noText: z.string(),
@@ -640,6 +647,7 @@ export const DictionarySchema = z.object({
     coachingSessionTracker: z.object({
       minuteText: z.string(),
       usedText: z.string(),
+      usedTooltip: z.string(),
       buyMoreSessionsText: z.string(),
       buyCoachingSessionsText: z.string(),
       coachingSessionText: z.string(),
@@ -2432,6 +2440,7 @@ export const DictionarySchema = z.object({
           description: z.string(),
         }),
         noCoachesAvailable: z.string(),
+        lessonCoachingTooltip: z.string(),
       }),
       groups: z.object({
         title: z.string(),

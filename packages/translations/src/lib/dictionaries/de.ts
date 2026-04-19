@@ -402,6 +402,8 @@ export const DE: TDictionary = {
       courseTitle: 'Kurs-Coaching-Sitzungen',
       nextSessionFor: 'Nächste Sitzung für',
       goToLesson: 'Zur Lektion gehen',
+      standaloneTooltip: 'Einzelne Coaching-Sitzungen werden unabhängig erworben. Sie können sie jederzeit bei einem verfügbaren Coach buchen.',
+      courseTooltip: 'Kurs-Coaching-Sitzungen sind in Ihrem Kurs enthalten. Klicken Sie, um zur Lektion zu gelangen und bei einem verfügbaren Coach zu buchen.',
     },
     coachReview: {
       by: 'von',
@@ -417,11 +419,12 @@ export const DE: TDictionary = {
       nextAvailable: "Nächster Termin",
     },
     buyCoachingSession: {
-      title: "Coaching-Sitzung kaufen",
-      description: "Plane deine Sitzungen jederzeit mit deinem Lieblingscoach.",
+      title: "Einzelne Coaching-Sitzungen kaufen",
+      description: "Diese Coaching-Sitzungen sind unabhängig und nicht an einen Kurs gebunden. Buche sie jederzeit bei einem verfügbaren Coach.",
       buttonText: "Coaching-Sitzungen kaufen",
       total: "Gesamt",
-      minutes: "Minute(n)"
+      minutes: "Minute(n)",
+      tooltip: "Einzelne Sitzungen werden hier gekauft und können jederzeit bei jedem Coach gebucht werden. Sie sind nicht mit einem bestimmten Kurs verbunden.",
     },
     buyCourseCoachingSessions: {
       title: "Kurs-Coaching-Sitzungen kaufen",
@@ -433,6 +436,7 @@ export const DE: TDictionary = {
       sessionAvailableSingular: "Sitzung verfügbar",
       sessionAvailablePlural: "Sitzungen verfügbar",
       cancelText: "Abbrechen",
+      tooltip: "Kurs-Coaching-Sitzungen sind an bestimmte Lektionen in Ihrem Kurs gebunden. Nach dem Kauf gehen Sie zur Lektion, um bei einem verfügbaren Coach zu buchen.",
     },
     videoPlayer: {
       videoErrorText: 'Video existiert nicht'
@@ -605,6 +609,9 @@ export const DE: TDictionary = {
       scheduleSessionText: 'Sitzung planen',
       copyLinkText: 'Link kopieren',
       coachText: 'Coach',
+      standaloneSessionTooltip: 'Dies ist eine einzelne Coaching-Sitzung — unabhängig erworben, nicht an einen Kurs gebunden.',
+      courseSessionTooltip: 'Diese Coaching-Sitzung ist mit einem Kurs verbunden.',
+      groupSessionTooltip: 'Dies ist eine Gruppen-Coaching-Sitzung für Ihre Kursgruppe. Alle Gruppenmitglieder nehmen gemeinsam teil.',
     },
     coachingSessionCancelModal: {
       noText: 'NEIN',
@@ -647,6 +654,7 @@ export const DE: TDictionary = {
     coachingSessionTracker: {
       minuteText: 'Minute(n)',
       usedText: 'gebraucht',
+      usedTooltip: 'Zeigt, wie viele deiner enthaltenen Sessions dieses Typs aktiviert wurden (angefragt, geplant, abgeschlossen oder abgebrochen) im Verhältnis zur Gesamtzahl, die in deinem Kurs enthalten sind. Die verbleibenden können noch gebucht werden.',
       buyMoreSessionsText: 'Kaufe weitere Sitzungen',
       buyCoachingSessionsText: 'Coaching-Sitzungen kaufen',
       coachingSessionText: 'Coaching-Sitzungen inklusive',
@@ -2325,6 +2333,7 @@ export const DE: TDictionary = {
           description: 'Die verfügbaren Coaches konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
         },
         noCoachesAvailable: 'Ihre Coaching-Sitzung ist verfügbar, aber derzeit sind diesem Kurs keine Coaches zugewiesen. Bitte versuchen Sie es später erneut oder wenden Sie sich an den Support.',
+        lessonCoachingTooltip: 'Diese Coaching-Sitzung ist Teil Ihrer Kurslektion. Wählen Sie unten einen Coach aus, um sie zu buchen.',
       },
       groups: {
         title: 'Gruppen',

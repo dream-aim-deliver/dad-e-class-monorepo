@@ -454,10 +454,11 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
         const allSessions = studentCoachingSessionsViewModel.data.sessions || [];
         const courseUnscheduled = allSessions.filter(
             (session): session is Extract<typeof session, { sessionType: 'course-unscheduled' }> =>
-                session.sessionType === 'course-unscheduled'
+                session.sessionType === 'course-unscheduled' && session.id != null
         );
         return Object.values(
             courseUnscheduled.reduce((acc, session) => {
+                if (session.id == null) return acc;
                 if (!acc[session.course.slug]) {
                     acc[session.course.slug] = {
                         courseTitle: session.course.title,
@@ -465,7 +466,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                         courseImageUrl: session.course.imageUrl,
                         sessionTitle: session.coachingOfferingTitle || '',
                         sessionDuration: session.coachingOfferingDuration || 0,
-                        sessionId: session.id!,
+                        sessionId: typeof session.id === 'string' ? parseInt(session.id, 10) : session.id,
                     };
                 }
                 return acc;
@@ -474,8 +475,8 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     }, [studentCoachingSessionsViewModel]);
 
     const handleClickCourseSession = useCallback((data: CourseCoachingSessionData) => {
-        router.push(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`);
-    }, [router, locale]);
+        window.open(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`, '_blank');
+    }, [locale]);
 
     const handleViewAllCoachingSessions = useCallback(() => {
         router.push(`/${locale}/workspace/coaching-sessions`);

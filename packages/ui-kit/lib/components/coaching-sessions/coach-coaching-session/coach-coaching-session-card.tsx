@@ -5,6 +5,7 @@ import { CourseCreator } from '../course-creator';
 import { ReviewCard } from '../review-card';
 import { CoachAction } from './coach-action';
 import { CoachingSessionCardProps } from '../coaching-session-card';
+import Tooltip from '../../tooltip';
 
 /**
  * Type definition for coach coaching session card props extracted from the central discriminated union.
@@ -110,15 +111,28 @@ export type CoachCoachingSessionCardProps = Extract<CoachingSessionCardProps, { 
 export const CoachCoachingSessionCard: React.FC<CoachCoachingSessionCardProps> = (props) => {
   const dictionary = getDictionary(props.locale);
 
+  const sessionTypeTooltip = (() => {
+    if (props.sessionType === 'group') {
+      return dictionary.components.coachingSessionCard.groupSessionTooltip;
+    }
+    if (props.courseName) {
+      return dictionary.components.coachingSessionCard.courseSessionTooltip;
+    }
+    return dictionary.components.coachingSessionCard.standaloneSessionTooltip;
+  })();
+
   return (
     <div className="flex flex-col md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto">
       <div className="flex gap-4 items-center justify-between">
-        <p
-          title={props.title}
-          className="text-md text-text-primary font-bold leading-[120%] line-clamp-2"
-        >
-          {props.title}
-        </p>
+        <div className="flex items-center gap-1 min-w-0">
+          <p
+            title={props.title}
+            className="text-md text-text-primary font-bold leading-[120%] line-clamp-2"
+          >
+            {props.title}
+          </p>
+          <Tooltip text="" description={sessionTypeTooltip} />
+        </div>
         <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
           {props.duration}
           {dictionary.components.coachingSessionCard.durationText}
