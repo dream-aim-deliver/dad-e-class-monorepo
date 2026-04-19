@@ -400,7 +400,7 @@ export const EN: TDictionary = {
       nextSessionFor: 'Next session for',
       goToLesson: 'Go to lesson',
       standaloneTooltip: 'Standalone coaching sessions are purchased independently. You can book them with any available coach at any time.',
-      courseTooltip: 'Course coaching sessions are included in your course. Click to go to the lesson and book with an available coach.',
+      courseTooltip: 'Course coaching sessions are included in your course. You are seeing the next unbooked session — tied to the earliest lesson in the course that still has a pending coaching session. Click to go to that lesson and book with an available coach.',
     },
     coachReview: {
       by: 'by',

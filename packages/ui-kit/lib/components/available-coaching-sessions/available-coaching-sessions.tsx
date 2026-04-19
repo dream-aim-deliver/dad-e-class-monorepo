@@ -19,7 +19,13 @@ export interface CourseCoachingSessionData {
     sessionTitle: string;
     sessionDuration: number;
     sessionId: number;
-    lessonId?: number;
+    lessonId?: number | null;
+    moduleName?: string | null;
+    lessonName?: string | null;
+    moduleIndex?: number | null;
+    moduleTotalCount?: number | null;
+    lessonIndex?: number | null;
+    lessonTotalCount?: number | null;
 }
 
 export interface AvailableCoachingSessionsProps extends isLocalAware {
@@ -188,6 +194,12 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                                             sessionTitle={session.sessionTitle}
                                             sessionDuration={session.sessionDuration}
                                             courseTitle={session.courseTitle}
+                                            moduleName={session.moduleName}
+                                            lessonName={session.lessonName}
+                                            moduleIndex={session.moduleIndex}
+                                            moduleTotalCount={session.moduleTotalCount}
+                                            lessonIndex={session.lessonIndex}
+                                            lessonTotalCount={session.lessonTotalCount}
                                             durationMinutes={
                                                 dictionary?.components
                                                     ?.availableCoachingSessions

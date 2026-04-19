@@ -91,6 +91,13 @@ function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps)
                         sessionTitle: session.coachingOfferingTitle ?? '',
                         sessionDuration: session.coachingOfferingDuration ?? 0,
                         sessionId: typeof session.id === 'string' ? parseInt(session.id, 10) : session.id,
+                        lessonId: session.lessonId ?? null,
+                        moduleName: session.moduleName ?? null,
+                        lessonName: session.lessonName ?? null,
+                        moduleIndex: session.moduleIndex ?? null,
+                        moduleTotalCount: session.moduleTotalCount ?? null,
+                        lessonIndex: session.lessonIndex ?? null,
+                        lessonTotalCount: session.lessonTotalCount ?? null,
                     };
                 }
                 return acc;
@@ -104,7 +111,7 @@ function AvailableCoachings({ onClickBuyMoreSessions }: AvailableCoachingsProps)
     }, [availableCoachingsViewModel]);
 
     const handleClickCourseSession = useCallback((data: CourseCoachingSessionData) => {
-        window.open(`/${locale}/courses/${data.courseSlug}?tab=study&highlightSession=${data.sessionId}`, '_blank');
+        window.open(`/${locale}/courses/${data.courseSlug}?tab=study&lesson=${data.lessonId}&highlightSession=${data.sessionId}`, '_blank');
     }, [locale]);
 
     if (!availableCoachingsViewModel) {
