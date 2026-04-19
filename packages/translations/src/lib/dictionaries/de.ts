@@ -3164,6 +3164,8 @@ export const DE: TDictionary = {
         title: 'Zu überprüfende Aufgaben',
         sortBy: 'Sortieren nach',
         selectSort: 'Sortieroption auswählen',
+        display: 'Anzeigen',
+        selectDisplay: 'Anzeigeoption auswählen',
         filterButton: 'Filter',
         selectCoursePrompt: 'Bitte wähle einen Kurs aus, um Aufgaben anzuzeigen',
         noAssignmentsFound: 'Keine Aufgaben gefunden',
@@ -3174,6 +3176,10 @@ export const DE: TDictionary = {
           student: 'Schülername',
           position: 'Kursreihenfolge',
           positionDesc: 'Kursreihenfolge (umgekehrt)',
+        },
+        displayOptions: {
+          submitted: 'Eingereicht',
+          all: 'Alle',
         },
       },
       nextCoachingSession: {

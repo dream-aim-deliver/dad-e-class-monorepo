@@ -3230,6 +3230,8 @@ export const DictionarySchema = z.object({
         title: z.string(),
         sortBy: z.string(),
         selectSort: z.string(),
+        display: z.string(),
+        selectDisplay: z.string(),
         filterButton: z.string(),
         selectCoursePrompt: z.string(),
         noAssignmentsFound: z.string(),
@@ -3240,6 +3242,10 @@ export const DictionarySchema = z.object({
           student: z.string(),
           position: z.string(),
           positionDesc: z.string(),
+        }),
+        displayOptions: z.object({
+          submitted: z.string(),
+          all: z.string(),
         }),
       }),
       nextCoachingSession: z.object({

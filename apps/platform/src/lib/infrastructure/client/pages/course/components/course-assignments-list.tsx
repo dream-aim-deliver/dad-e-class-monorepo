@@ -104,7 +104,7 @@ function CourseAssignmentsListContent({
     // Use student assignment filters hook
     const {
         filters,
-        sortBy,
+        displayMode,
         showFilterModal,
         assignmentsViewModel,
         isLoading,
@@ -113,7 +113,7 @@ function CourseAssignmentsListContent({
         availableModules,
         availableLessons,
         handleApplyFilters,
-        handleSortChange,
+        handleDisplayModeChange,
         handleOpenFilterModal,
         handleCloseFilterModal,
         resetFilters,
@@ -133,13 +133,10 @@ function CourseAssignmentsListContent({
         itemsPerPage: 10,
     });
 
-    // Sort options (no 'student' option since we're viewing one student's assignments)
-    const sortOptions = [
-        { value: 'title', label: t('assignments.sortOptions.title') },
-        { value: 'status', label: t('assignments.sortOptions.status') },
-        { value: 'date', label: t('assignments.sortOptions.date') },
-        { value: 'position', label: t('assignments.sortOptions.position') },
-        { value: 'position-desc', label: t('assignments.sortOptions.positionDesc') },
+    // Display mode options
+    const displayOptions = [
+        { value: 'submitted', label: t('assignments.displayOptions.submitted') },
+        { value: 'all', label: t('assignments.displayOptions.all') },
     ];
 
     // State for assignment modal
@@ -187,15 +184,15 @@ function CourseAssignmentsListContent({
                     <div className="flex items-center gap-2 flex-wrap">
                         <div className="flex items-center gap-2">
                             <p className="text-sm text-text-primary">
-                                {t('assignments.sortBy')}
+                                {t('assignments.display')}
                             </p>
                             <div className="w-48">
                                 <Dropdown
                                     type="simple"
-                                    options={sortOptions}
-                                    onSelectionChange={handleSortChange}
-                                    defaultValue={sortBy}
-                                    text={{ simpleText: t('assignments.selectSort') }}
+                                    options={displayOptions}
+                                    onSelectionChange={handleDisplayModeChange}
+                                    defaultValue={displayMode}
+                                    text={{ simpleText: t('assignments.selectDisplay') }}
                                 />
                             </div>
                         </div>
