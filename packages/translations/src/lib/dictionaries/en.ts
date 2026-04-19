@@ -3162,6 +3162,8 @@ export const EN: TDictionary = {
         title: 'Assignments to Review',
         sortBy: 'Sort by',
         selectSort: 'Select sort option',
+        display: 'Display',
+        selectDisplay: 'Select display option',
         filterButton: 'Filters',
         selectCoursePrompt: 'Please select a course to view assignments',
         noAssignmentsFound: 'No assignments found',
@@ -3172,6 +3174,10 @@ export const EN: TDictionary = {
           student: 'Student Name',
           position: 'Course Position',
           positionDesc: 'Course Position (Reverse)',
+        },
+        displayOptions: {
+          submitted: 'Submitted',
+          all: 'All',
         },
       },
       nextCoachingSession: {

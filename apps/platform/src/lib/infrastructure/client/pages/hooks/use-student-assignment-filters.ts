@@ -37,7 +37,7 @@ interface UseStudentAssignmentFiltersProps {
     initialFilters?: AssignmentFilters;
 }
 
-type SortByOption = 'title' | 'status' | 'date' | 'position' | 'position-desc';
+type DisplayMode = 'submitted' | 'all';
 
 export function useStudentAssignmentFilters({
     courseSlug,
@@ -46,7 +46,7 @@ export function useStudentAssignmentFilters({
     initialFilters = {},
 }: UseStudentAssignmentFiltersProps) {
     const [filters, setFilters] = useState<AssignmentFilters>(initialFilters);
-    const [sortBy, setSortBy] = useState<SortByOption>('status');
+    const [displayMode, setDisplayMode] = useState<DisplayMode>('submitted');
     const [showFilterModal, setShowFilterModal] = useState(false);
 
     // ViewModel state
@@ -95,9 +95,17 @@ export function useStudentAssignmentFilters({
         return [];
     }, [assignmentsViewModel]);
 
+    // Display mode filter: only show submitted assignments by default
+    const displayFilteredAssignments = useMemo(() => {
+        if (displayMode === 'all') return assignments;
+        return assignments.filter(
+            (assignment) => assignment.status !== null || !!assignment.lastReply,
+        );
+    }, [assignments, displayMode]);
+
     // Filter logic
     const filteredAssignments = useMemo(() => {
-        return assignments.filter((assignment) => {
+        return displayFilteredAssignments.filter((assignment) => {
             // Title filter
             if (
                 filters.title &&
@@ -145,74 +153,36 @@ export function useStudentAssignmentFilters({
 
             return true;
         });
-    }, [assignments, filters]);
+    }, [displayFilteredAssignments, filters]);
 
-    // Sort logic
+    // Sort logic — hardcoded to status priority order
     const sortedAndFilteredAssignments = useMemo(() => {
         return [...filteredAssignments].sort((a, b) => {
-            switch (sortBy) {
-                case 'title':
-                    return (a.title || '').localeCompare(b.title || '');
-                case 'status': {
-                    const statusOrder = {
-                        'long-wait': 1,
-                        'waiting-feedback': 2,
-                        'passed': 3,
-                    };
-                    const aOrder = statusOrder[a.status as keyof typeof statusOrder] ?? 999;
-                    const bOrder = statusOrder[b.status as keyof typeof statusOrder] ?? 999;
-                    if (aOrder !== bOrder) return aOrder - bOrder;
+            const statusOrder = {
+                'long-wait': 1,
+                'waiting-feedback': 2,
+                'passed': 3,
+            };
+            const aOrder = statusOrder[a.status as keyof typeof statusOrder] ?? 999;
+            const bOrder = statusOrder[b.status as keyof typeof statusOrder] ?? 999;
+            if (aOrder !== bOrder) return aOrder - bOrder;
 
-                    // Secondary: by last reply date, newest first
-                    const getReplyDate = (lastReply: typeof a.lastReply) => {
-                        if (!lastReply) return 0;
-                        if (lastReply.replyType === 'reply') return lastReply.sentAt ?? 0;
-                        if (lastReply.replyType === 'passed') return lastReply.passedAt ?? 0;
-                        return 0;
-                    };
-                    return getReplyDate(b.lastReply) - getReplyDate(a.lastReply);
-                }
-                case 'date': {
-                    const getReplyDate = (lastReply: any) => {
-                        if (!lastReply) return '';
+            // Secondary: by last reply date, newest first
+            const getReplyDate = (lastReply: typeof a.lastReply) => {
+                if (!lastReply) return 0;
+                if (lastReply.replyType === 'reply') return lastReply.sentAt ?? 0;
+                if (lastReply.replyType === 'passed') return lastReply.passedAt ?? 0;
+                return 0;
+            };
+            const dateDiff = getReplyDate(b.lastReply) - getReplyDate(a.lastReply);
+            if (dateDiff !== 0) return dateDiff;
 
-                        // Handle different lastReply structures
-                        if (lastReply.replyType === 'reply' && lastReply.sentAt) {
-                            return lastReply.sentAt;
-                        } else if (lastReply.replyType === 'passed' && lastReply.passedAt) {
-                            return lastReply.passedAt;
-                        }
-                        return '';
-                    };
-
-                    const aDate = getReplyDate(a.lastReply);
-                    const bDate = getReplyDate(b.lastReply);
-
-                    // Handle empty dates
-                    if (!aDate) return 1;
-                    if (!bDate) return -1;
-
-                    return (
-                        new Date(bDate).getTime() -
-                        new Date(aDate).getTime()
-                    );
-                }
-                case 'position': {
-                    // Sort by module first, then by lesson within each module
-                    const moduleDiff = (a.module ?? 0) - (b.module ?? 0);
-                    if (moduleDiff !== 0) return moduleDiff;
-                    return (a.lesson ?? 0) - (b.lesson ?? 0);
-                }
-                case 'position-desc': {
-                    const moduleDiff = (b.module ?? 0) - (a.module ?? 0);
-                    if (moduleDiff !== 0) return moduleDiff;
-                    return (b.lesson ?? 0) - (a.lesson ?? 0);
-                }
-                default:
-                    return 0;
-            }
+            // Tertiary: by position (module, then lesson)
+            const moduleDiff = (a.module ?? 0) - (b.module ?? 0);
+            if (moduleDiff !== 0) return moduleDiff;
+            return (a.lesson ?? 0) - (b.lesson ?? 0);
         });
-    }, [filteredAssignments, sortBy]);
+    }, [filteredAssignments]);
 
     // Handlers
     const handleApplyFilters = useCallback((newFilters: AssignmentFilters) => {
@@ -220,10 +190,10 @@ export function useStudentAssignmentFilters({
         setShowFilterModal(false);
     }, []);
 
-    const handleSortChange = useCallback(
+    const handleDisplayModeChange = useCallback(
         (selected: string | string[] | null) => {
             if (typeof selected === 'string') {
-                setSortBy(selected as SortByOption);
+                setDisplayMode(selected as DisplayMode);
             }
         },
         [],
@@ -277,7 +247,7 @@ export function useStudentAssignmentFilters({
     return {
         // State
         filters,
-        sortBy,
+        displayMode,
         showFilterModal,
 
         // ViewModel state
@@ -294,7 +264,7 @@ export function useStudentAssignmentFilters({
 
         // Handlers
         handleApplyFilters,
-        handleSortChange,
+        handleDisplayModeChange,
         handleOpenFilterModal,
         handleCloseFilterModal,
         resetFilters,
