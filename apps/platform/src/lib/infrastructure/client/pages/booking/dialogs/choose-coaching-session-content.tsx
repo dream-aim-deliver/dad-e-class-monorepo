@@ -14,7 +14,6 @@ import {
     CourseCoachingSessionCard,
     DefaultError,
     DefaultLoading,
-    Tooltip,
 } from '@maany_shr/e-class-ui-kit';
 import { useListAvailableCoachingsPresenter } from '../../../hooks/use-available-coachings-presenter';
 import { groupOfferings } from '../../../utils/group-offerings';
@@ -79,7 +78,7 @@ export default function ChooseCoachingSessionContent({
             (s): s is CourseUnscheduledSession => s.sessionType === 'course-unscheduled' && s.id != null
         );
         return Object.values(
-            courseUnscheduled.reduce((acc: Record<string, { courseTitle: string; courseSlug: string; sessionTitle: string; sessionDuration: number; sessionId: number }>, session) => {
+            courseUnscheduled.reduce((acc: Record<string, { courseTitle: string; courseSlug: string; sessionTitle: string; sessionDuration: number; sessionId: number; lessonId: number | null; moduleName: string | null; lessonName: string | null; moduleIndex: number | null; moduleTotalCount: number | null; lessonIndex: number | null; lessonTotalCount: number | null }>, session) => {
                 if (session.id == null) return acc;
                 if (!acc[session.course.slug]) {
                     acc[session.course.slug] = {
@@ -88,6 +87,13 @@ export default function ChooseCoachingSessionContent({
                         sessionTitle: session.coachingOfferingTitle || '',
                         sessionDuration: session.coachingOfferingDuration || 0,
                         sessionId: typeof session.id === 'string' ? parseInt(session.id, 10) : session.id,
+                        lessonId: session.lessonId ?? null,
+                        moduleName: session.moduleName ?? null,
+                        lessonName: session.lessonName ?? null,
+                        moduleIndex: session.moduleIndex ?? null,
+                        moduleTotalCount: session.moduleTotalCount ?? null,
+                        lessonIndex: session.lessonIndex ?? null,
+                        lessonTotalCount: session.lessonTotalCount ?? null,
                     };
                 }
                 return acc;
@@ -158,11 +164,11 @@ export default function ChooseCoachingSessionContent({
     return (
         <div className="flex flex-col gap-3">
             {courseCoachingSessions.length > 0 && (
-                <div className="flex items-center gap-1">
+                <div className="flex flex-col gap-1">
                     <span className="text-sm text-text-primary font-semibold">
                         {dictionary?.components?.availableCoachingSessions?.standaloneTitle}
                     </span>
-                    <Tooltip text="" description={dictionary?.components?.availableCoachingSessions?.standaloneTooltip || ''} />
+                    <p className="text-xs text-text-secondary">{dictionary?.components?.availableCoachingSessions?.standaloneTooltip}</p>
                 </div>
             )}
             <span className="text-text-secondary">
@@ -179,11 +185,11 @@ export default function ChooseCoachingSessionContent({
             ))}
             {courseCoachingSessions.length > 0 && (
                 <>
-                    <div className="flex items-center gap-1 mt-2">
+                    <div className="flex flex-col gap-1 mt-2">
                         <span className="text-sm text-text-primary font-semibold">
                             {dictionary?.components?.availableCoachingSessions?.courseTitle}
                         </span>
-                        <Tooltip text="" description={dictionary?.components?.availableCoachingSessions?.courseTooltip || ''} />
+                        <p className="text-xs text-text-secondary">{dictionary?.components?.availableCoachingSessions?.courseTooltip}</p>
                     </div>
                     {courseCoachingSessions.map((session) => (
                         <CourseCoachingSessionCard
@@ -191,9 +197,15 @@ export default function ChooseCoachingSessionContent({
                             sessionTitle={session.sessionTitle}
                             sessionDuration={session.sessionDuration}
                             courseTitle={session.courseTitle}
+                            moduleName={session.moduleName}
+                            lessonName={session.lessonName}
+                            moduleIndex={session.moduleIndex}
+                            moduleTotalCount={session.moduleTotalCount}
+                            lessonIndex={session.lessonIndex}
+                            lessonTotalCount={session.lessonTotalCount}
                             durationMinutes={dictionary?.components?.availableCoachingSessions?.durationMinutes}
                             onClick={() => {
-                                window.open(`/${locale}/courses/${session.courseSlug}?tab=study&highlightSession=${session.sessionId}`, '_blank');
+                                window.open(`/${locale}/courses/${session.courseSlug}?tab=study&lesson=${session.lessonId}&highlightSession=${session.sessionId}`, '_blank');
                             }}
                         />
                     ))}

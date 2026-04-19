@@ -403,7 +403,7 @@ export const DE: TDictionary = {
       nextSessionFor: 'Nächste Sitzung für',
       goToLesson: 'Zur Lektion gehen',
       standaloneTooltip: 'Einzelne Coaching-Sitzungen werden unabhängig erworben. Sie können sie jederzeit bei einem verfügbaren Coach buchen.',
-      courseTooltip: 'Kurs-Coaching-Sitzungen sind in Ihrem Kurs enthalten. Klicken Sie, um zur Lektion zu gelangen und bei einem verfügbaren Coach zu buchen.',
+      courseTooltip: 'Kurs-Coaching-Sitzungen sind in Ihrem Kurs enthalten. Sie sehen die nächste noch nicht gebuchte Sitzung – gebunden an die früheste Lektion im Kurs, die noch eine ausstehende Coaching-Sitzung hat. Klicken Sie, um zur entsprechenden Lektion zu gelangen und bei einem verfügbaren Coach zu buchen.',
     },
     coachReview: {
       by: 'von',

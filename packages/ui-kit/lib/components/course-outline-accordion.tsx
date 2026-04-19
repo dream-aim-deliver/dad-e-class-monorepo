@@ -77,11 +77,19 @@ export function CourseOutlineAccordion({
         return milestonesMap;
     }, [sortedModules]);
 
+    const activeModule = useMemo(() => {
+        if (activeLessonId != null) {
+            return sortedModules.find(m => m.lessons.some(l => l.id === activeLessonId)) ?? sortedModules[0];
+        }
+        return sortedModules[0];
+    }, [sortedModules, activeLessonId]);
+
     return (
         <Accordion
+            key={activeModule?.title}
             className={cn("flex flex-col gap-7 flex-shrink-0", className)}
             type="single"
-            defaultValue={[sortedModules[0].title]}
+            defaultValue={[activeModule?.title ?? '']}
         >
             <div className="w-full bg-card-fill rounded-medium border border-card-stroke p-4">
                 <p className="text-md text-text-primary font-bold border-b border-divider pb-4">
