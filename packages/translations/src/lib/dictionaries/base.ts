@@ -2530,8 +2530,7 @@ export const DictionarySchema = z.object({
       noCourseSelected: z.string(),
       selectCourseToViewAssignments: z.string(),
       selectCourseToViewInteractions: z.string(),
-      selectCourseToViewAssessment: z.string(),
-      showingAssessmentFor: z.string(),
+      noAssessmentFound: z.string(),
       studentInteractions: z.string(),
       noInteractionsFound: z.string(),
       tabs: z.object({

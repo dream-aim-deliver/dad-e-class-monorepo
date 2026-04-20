@@ -271,61 +271,63 @@ export default function SingleStudent({
                             )}
                         </div>
                     </div>
-                    <div className='flex items-center gap-4'>
-                        <p className='text-text-secondary md:text-sm text-xs'>
-                            {t('course')}
-                        </p>
-                        <div className='w-72'>
-                            <Dropdown
-                                type="simple"
-                                options={[
-                                    {
-                                        label: (
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-sm text-text-secondary italic">{t('deselectCourse')}</p>
-                                            </div>
-                                        ),
-                                        value: ''
-                                    },
-                                    ...courses.map(course => ({
-                                        label: (
-                                            <div className="flex items-center gap-2">
-                                                <UserAvatar
-                                                    fullName={course.title}
-                                                    size="small"
-                                                    imageUrl={course.image?.downloadUrl}
-                                                />
-                                                <p className="text-sm truncate">{course.title}</p>
-                                            </div>
-                                        ),
-                                        value: course.slug
-                                    }))
-                                ]}
-                                onSelectionChange={(selected) => {
-                                    if (typeof selected === 'string') {
-                                        setSelectedCourse(selected);
-                                        if (selected) {
-                                            const courseData = courses.find(c => c.slug === selected);
-                                            setSelectedCourseData(courseData || null);
-                                            updateSearchParams(selected);
-                                        } else {
-                                            setSelectedCourseData(null);
-                                            // Clear courseSlug from URL
-                                            const current = new URLSearchParams(Array.from(searchParams.entries()));
-                                            current.delete('courseSlug');
-                                            const search = current.toString();
-                                            const query = search ? `?${search}` : '';
-                                            router.push(`${window.location.pathname}${query}`);
+                    {activeTab !== StudentTab.PRE_COURSE_ASSESSMENT && (
+                        <div className='flex items-center gap-4'>
+                            <p className='text-text-secondary md:text-sm text-xs'>
+                                {t('course')}
+                            </p>
+                            <div className='w-72'>
+                                <Dropdown
+                                    type="simple"
+                                    options={[
+                                        {
+                                            label: (
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-sm text-text-secondary italic">{t('deselectCourse')}</p>
+                                                </div>
+                                            ),
+                                            value: ''
+                                        },
+                                        ...courses.map(course => ({
+                                            label: (
+                                                <div className="flex items-center gap-2">
+                                                    <UserAvatar
+                                                        fullName={course.title}
+                                                        size="small"
+                                                        imageUrl={course.image?.downloadUrl}
+                                                    />
+                                                    <p className="text-sm truncate">{course.title}</p>
+                                                </div>
+                                            ),
+                                            value: course.slug
+                                        }))
+                                    ]}
+                                    onSelectionChange={(selected) => {
+                                        if (typeof selected === 'string') {
+                                            setSelectedCourse(selected);
+                                            if (selected) {
+                                                const courseData = courses.find(c => c.slug === selected);
+                                                setSelectedCourseData(courseData || null);
+                                                updateSearchParams(selected);
+                                            } else {
+                                                setSelectedCourseData(null);
+                                                // Clear courseSlug from URL
+                                                const current = new URLSearchParams(Array.from(searchParams.entries()));
+                                                current.delete('courseSlug');
+                                                const search = current.toString();
+                                                const query = search ? `?${search}` : '';
+                                                router.push(`${window.location.pathname}${query}`);
+                                            }
                                         }
-                                    }
-                                }}
-                                defaultValue={selectedCourse}
-                                text={{
-                                    simpleText: t('selectACourse')
-                                }}
-                            />
+                                    }}
+                                    defaultValue={selectedCourse}
+                                    text={{
+                                        simpleText: t('selectACourse')
+                                    }}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
 
@@ -377,39 +379,30 @@ export default function SingleStudent({
 
                 <Tabs.Content value={StudentTab.PRE_COURSE_ASSESSMENT} className={tabContentClass}>
                     {(() => {
-                        const assessmentCourse = selectedCourse
-                            ? courses.find(c => c.slug === selectedCourse)
-                            : courses
-                                .filter(c => c.preCourseAssessmentCompleted && c.assessmentCompletedAt)
-                                .sort((a, b) =>
-                                    new Date(b.assessmentCompletedAt!).getTime() -
-                                    new Date(a.assessmentCompletedAt!).getTime()
-                                )[0];
+                        const assessmentCourse = courses
+                            .filter(c => c.preCourseAssessmentCompleted && c.assessmentCompletedAt)
+                            .sort((a, b) =>
+                                new Date(b.assessmentCompletedAt!).getTime() -
+                                new Date(a.assessmentCompletedAt!).getTime()
+                            )[0];
                         if (assessmentCourse) {
                             return (
-                                <div className="flex flex-col gap-4">
-                                    {!selectedCourse && (
-                                        <p className="text-sm text-text-secondary">
-                                            {t('showingAssessmentFor', { course: assessmentCourse.title })}
-                                        </p>
-                                    )}
-                                    <Suspense
-                                        fallback={
-                                            <DefaultLoading locale={locale} variant="minimal" />
-                                        }
-                                    >
-                                        <EnrolledCourseCompletedAssessment
-                                            courseSlug={assessmentCourse.slug}
-                                            studentUsername={studentUsername}
-                                        />
-                                    </Suspense>
-                                </div>
+                                <Suspense
+                                    fallback={
+                                        <DefaultLoading locale={locale} variant="minimal" />
+                                    }
+                                >
+                                    <EnrolledCourseCompletedAssessment
+                                        courseSlug={assessmentCourse.slug}
+                                        studentUsername={studentUsername}
+                                    />
+                                </Suspense>
                             );
                         }
                         return (
                             <EmptyState
                                 locale={locale}
-                                message={t('selectCourseToViewAssessment')}
+                                message={t('noAssessmentFound')}
                             />
                         );
                     })()}
