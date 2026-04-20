@@ -16,20 +16,16 @@
 import React, { Suspense, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useRouter } from 'next/navigation';
 import {
     AssignmentOverview,
     AssignmentOverviewList,
-    AssignmentCardFilterModal,
     Button,
     DefaultError,
     DefaultLoading,
     Dialog,
     DialogContent,
-    DialogTrigger,
     downloadFile,
     Dropdown,
-    IconFilter,
 } from '@maany_shr/e-class-ui-kit';
 import { useStudentAssignmentFilters } from '../../hooks/use-student-assignment-filters';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
@@ -91,7 +87,6 @@ function CourseAssignmentsListContent({
     isArchived,
 }: CourseAssignmentsListProps) {
     const locale = useLocale() as TLocale;
-    const router = useRouter();
     const utils = trpc.useUtils();
     const tCoach = useTranslations('pages.groupWorkspaceCoach');
     const tStudent = useTranslations('pages.groupWorkspaceStudent');
@@ -103,20 +98,11 @@ function CourseAssignmentsListContent({
 
     // Use student assignment filters hook
     const {
-        filters,
         displayMode,
-        showFilterModal,
         assignmentsViewModel,
         isLoading,
         sortedAndFilteredAssignments: assignments,
-        availableStatuses,
-        availableModules,
-        availableLessons,
-        handleApplyFilters,
         handleDisplayModeChange,
-        handleOpenFilterModal,
-        handleCloseFilterModal,
-        resetFilters,
     } = useStudentAssignmentFilters({
         courseSlug,
         requestType,
@@ -162,8 +148,8 @@ function CourseAssignmentsListContent({
         );
     }
 
-    // Empty state (includes not-found from backend)
-    if (assignmentsViewModel?.mode === 'not-found' || assignments.length === 0) {
+    // Empty state (only when backend returns not-found)
+    if (assignmentsViewModel?.mode === 'not-found') {
         return (
             <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                 <p className="text-text-primary text-md">
@@ -196,15 +182,6 @@ function CourseAssignmentsListContent({
                                 />
                             </div>
                         </div>
-                        <Button
-                            variant="secondary"
-                            size="medium"
-                            text={t('assignments.filterButton')}
-                            onClick={handleOpenFilterModal}
-                            hasIconLeft
-                            iconLeft={<IconFilter />}
-                            className="w-auto"
-                        />
                     </div>
                 </div>
 
@@ -281,20 +258,6 @@ function CourseAssignmentsListContent({
                     </div>
                 )}
             </div>
-
-            {/* Assignment Filter Modal */}
-            {showFilterModal && (
-                <AssignmentCardFilterModal
-                    onApplyFilters={handleApplyFilters}
-                    onClose={handleCloseFilterModal}
-                    initialFilters={filters}
-                    availableStatuses={availableStatuses}
-                    availableCourses={[]} // No course filter needed - already filtered by course
-                    availableModules={availableModules}
-                    availableLessons={availableLessons}
-                    locale={locale}
-                />
-            )}
 
             {/* Assignment View Modal */}
             {selectedAssignment && (
