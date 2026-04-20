@@ -410,7 +410,7 @@ function CoachNotesView({
         <div className="p-6 bg-[#211F1E] rounded-xl flex flex-col gap-4 text-text-primary">
             {hasValidDescription && (
                 <RichTextRenderer
-                    className="leading-[150%] md:text-[24px] text-lg"
+                    className="leading-[150%] text-base"
                     content={noteDescription}
                     onDeserializationError={(error) =>
                         console.error('Deserialization error:', error)
