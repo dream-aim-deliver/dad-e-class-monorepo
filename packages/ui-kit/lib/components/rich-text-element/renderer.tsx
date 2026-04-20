@@ -86,11 +86,11 @@ const RenderElement = ({ attributes, children, element }: {
         </blockquote>
       );
     case "numbered-list":
-      return <ol {...attributes} style={style} className="list-decimal pl-3 pb-4">{children}</ol>;
+      return <ol {...attributes} style={style} className="list-decimal pl-5 pb-4">{children}</ol>;
     case "bulleted-list":
-      return <ul {...attributes} style={style} className="list-disc pl-3 pb-4">{children}</ul>;
+      return <ul {...attributes} style={style} className="list-disc pl-5 pb-4">{children}</ul>;
     case "unordered-list":
-      return <ul {...attributes} style={style} className="list-disc pl-3 pb-4">{children}</ul>;
+      return <ul {...attributes} style={style} className="list-disc pl-5 pb-4">{children}</ul>;
     case "list-item":
       return <li {...attributes} style={style} className="ml-4">{children}</li>;
     case "h1":
@@ -116,14 +116,14 @@ const RenderElement = ({ attributes, children, element }: {
         <p
           {...attributes}
           style={style}
-          className={`text-base whitespace-pre-wrap leading-normal ${isEmpty ? "h-[1lh]" : ""}`}
+          className={`whitespace-pre-wrap ${isEmpty ? "h-[1lh]" : ""}`}
         >
           {content}
         </p>
       );
     }
     default:
-      return <div {...attributes} style={style} className={`text-base whitespace-pre-wrap ${isEmpty ? "h-[1lh]" : ""}`}>{content}</div>;
+      return <div {...attributes} style={style} className={`whitespace-pre-wrap ${isEmpty ? "h-[1lh]" : ""}`}>{content}</div>;
   }
 };
 
