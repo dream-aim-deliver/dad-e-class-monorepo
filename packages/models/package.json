@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "zod": "^3.24.1",
-        "@dream-aim-deliver/dad-cats": "^0.13.0",
-        "@dream-aim-deliver/e-class-cms-rest": "3.3.27"
+        "@dream-aim-deliver/dad-cats": "^0.13.4",
+        "@dream-aim-deliver/e-class-cms-rest": "3.3.30"
     },
     "publishConfig": {
         "access": "public"
