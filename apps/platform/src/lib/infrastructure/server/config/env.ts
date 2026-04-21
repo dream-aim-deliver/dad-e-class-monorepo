@@ -53,6 +53,8 @@ const runtimeEnv = {
     OTEL_SERVICE_NAME: process.env.OTEL_SERVICE_NAME || 'e-class-platform',
     OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || (isBuildTime ? 'sk_test_build_time_placeholder' : undefined),
+    NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
+    NEXT_PUBLIC_COOKIEBOT_CBID: process.env.NEXT_PUBLIC_COOKIEBOT_CBID,
 };
 
 const envValidationResult = serverEnvSchema.safeParse(runtimeEnv);
