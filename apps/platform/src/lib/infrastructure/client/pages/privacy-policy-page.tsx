@@ -13,6 +13,7 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
+import { CookieDeclaration } from '../analytics';
 
 export default function PrivacyPolicyPage() {
     const locale = useLocale() as TLocale;
@@ -83,6 +84,12 @@ export default function PrivacyPolicyPage() {
                     className="prose max-w-none text-text-primary"
                 />
             )}
+            {/*
+             * Cookiebot-rendered cookie disclosure table. Required by GDPR Art. 13
+             * and Swiss FMG Art. 45c. Renders nothing when the tenant has no
+             * NEXT_PUBLIC_COOKIEBOT_CBID configured.
+             */}
+            <CookieDeclaration />
         </div>
     );
 }
