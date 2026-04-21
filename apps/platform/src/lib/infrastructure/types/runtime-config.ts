@@ -11,7 +11,7 @@ export interface RuntimeConfig {
     NEXT_PUBLIC_APP_URL: string;
     NEXT_PUBLIC_E_CLASS_CMS_REST_URL: string;
     defaultTheme: 'just-do-ad' | 'job-brand-me' | 'bewerbeagentur' | 'cms';
-    // Analytics — optional; unset means tenant has no GTM/Cookiebot configured.
+    // Analytics — optional; unset means tenant has no GTM/CMP configured.
     NEXT_PUBLIC_GTM_ID?: string;
-    NEXT_PUBLIC_COOKIEBOT_CBID?: string;
+    NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID?: string;
 }

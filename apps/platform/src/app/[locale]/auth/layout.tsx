@@ -11,6 +11,7 @@ import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/contex
 import {
     PlatformAnalytics,
     ConsentModeDefaultScript,
+    UsercentricsAutoblocker,
 } from '../../../lib/infrastructure/client/analytics';
 
 export const metadata = {
@@ -61,6 +62,9 @@ export default async function RootLayout({
         <html lang={locale}>
             <head>
                 <ConsentModeDefaultScript />
+                <UsercentricsAutoblocker
+                    settingsId={runtimeConfig.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID}
+                />
                 <meta name="viewport" content="width=1280" />
             </head>
             <body

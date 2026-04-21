@@ -41,7 +41,7 @@ describe('PlatformAnalytics', () => {
         expect(screen.getByTestId('child')).toBeDefined();
     });
 
-    it('does NOT inject the Cookiebot script when CBID is unset in RuntimeConfig', () => {
+    it('does NOT inject the Usercentrics loader when settings ID is unset', () => {
         render(
             <RuntimeConfigProvider config={baseConfig()}>
                 <PlatformAnalytics>
@@ -49,11 +49,14 @@ describe('PlatformAnalytics', () => {
                 </PlatformAnalytics>
             </RuntimeConfigProvider>,
         );
-        expect(document.getElementById('Cookiebot')).toBeNull();
+        expect(document.getElementById('usercentrics-cmp')).toBeNull();
     });
 
-    it('injects the Cookiebot script when CBID is set in RuntimeConfig', () => {
-        const config = { ...baseConfig(), NEXT_PUBLIC_COOKIEBOT_CBID: '01234567-89ab-cdef-0123-456789abcdef' };
+    it('injects the Usercentrics loader when settings ID is set', () => {
+        const config = {
+            ...baseConfig(),
+            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: 'qYcjvyqjEYm8kA',
+        };
         render(
             <RuntimeConfigProvider config={config}>
                 <PlatformAnalytics>
@@ -61,8 +64,9 @@ describe('PlatformAnalytics', () => {
                 </PlatformAnalytics>
             </RuntimeConfigProvider>,
         );
-        const script = document.getElementById('Cookiebot') as HTMLScriptElement | null;
+        const script = document.getElementById('usercentrics-cmp') as HTMLScriptElement | null;
         expect(script).not.toBeNull();
-        expect(script!.getAttribute('data-cbid')).toBe('01234567-89ab-cdef-0123-456789abcdef');
+        expect(script!.getAttribute('data-settings-id')).toBe('qYcjvyqjEYm8kA');
+        expect(script!.src).toBe('https://web.cmp.usercentrics.eu/ui/loader.js');
     });
 });

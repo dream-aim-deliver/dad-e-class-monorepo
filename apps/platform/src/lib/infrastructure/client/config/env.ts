@@ -19,9 +19,11 @@ const clientEnvSchema = z.object({
         (v) => (v === '' ? undefined : v),
         z.string().regex(/^GTM-[A-Z0-9]{7,8}$/).optional(),
     ),
-    NEXT_PUBLIC_COOKIEBOT_CBID: z.preprocess(
+    // Usercentrics CMP Settings ID (e.g., "qYcjvyqjEYm8kA") — 10–30 chars,
+    // letters/digits/_/-. Found in the Usercentrics dashboard.
+    NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: z.preprocess(
         (v) => (v === '' ? undefined : v),
-        z.string().uuid().optional(),
+        z.string().regex(/^[A-Za-z0-9_-]{10,30}$/).optional(),
     ),
 });
 
@@ -42,7 +44,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
     NEXT_PUBLIC_CONTACT_PHONE: process.env.NEXT_PUBLIC_CONTACT_PHONE,
     NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
-    NEXT_PUBLIC_COOKIEBOT_CBID: process.env.NEXT_PUBLIC_COOKIEBOT_CBID,
+    NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: process.env.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID,
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);
