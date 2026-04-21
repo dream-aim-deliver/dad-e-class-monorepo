@@ -20,6 +20,8 @@ interface TUserCentricsUI {
     showFirstLayer?: () => void;
     showSecondLayer?: () => void;
     getServicesBaseInfo?: () => TUserCentricsService[];
+    /** Hides the persistent floating "privacy button" (fingerprint icon). */
+    hidePrivacyButton?: () => void;
 }
 
 declare global {
@@ -47,8 +49,15 @@ declare global {
  */
 function readUsercentricsState(): TConsentState {
     const ui = typeof window !== 'undefined' ? window.UC_UI : undefined;
-    const services = ui?.getServicesBaseInfo?.();
-    if (!services || services.length === 0) return { ...DENIED_CONSENT };
+    // Wait for the CMP to be fully initialized — otherwise getServicesBaseInfo
+    // may return a Promise, undefined, or a partially-constructed object
+    // depending on SDK version, none of which are safe to iterate.
+    if (!ui?.isInitialized?.()) return { ...DENIED_CONSENT };
+
+    const services = ui.getServicesBaseInfo?.();
+    if (!Array.isArray(services) || services.length === 0) {
+        return { ...DENIED_CONSENT };
+    }
 
     const has = (categories: string[]): boolean =>
         services.some(
@@ -98,6 +107,20 @@ export function createUsercentricsAdapter(
             script.async = true;
             script.setAttribute('data-settings-id', options.settingsId);
             document.head.appendChild(script);
+
+            // Belt-and-braces with the dashboard toggle: hide the persistent
+            // floating privacy button ("fingerprint" icon) at runtime too.
+            // Cookie-settings access is provided via the privacy policy page
+            // (<UsercentricsSecondLayerLink>), so the corner icon is redundant.
+            // Runs once, after the CMP initializes; no-op if the dashboard
+            // has already disabled the button or if the API is unavailable.
+            if (typeof window !== 'undefined') {
+                window.addEventListener(
+                    'UC_UI_INITIALIZED',
+                    () => window.UC_UI?.hidePrivacyButton?.(),
+                    { once: true },
+                );
+            }
         },
 
         onConsentChange(handler) {
