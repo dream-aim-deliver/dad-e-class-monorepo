@@ -12,6 +12,10 @@ const clientEnvSchema = z.object({
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
     NEXT_PUBLIC_CONTACT_EMAIL: z.string().email().optional(),
     NEXT_PUBLIC_CONTACT_PHONE: z.string().optional(),
+    // Analytics — all optional; if any is unset that layer is dark.
+    // GA4 Measurement ID lives only inside the GTM container, never in app env.
+    NEXT_PUBLIC_GTM_ID: z.string().regex(/^GTM-[A-Z0-9]+$/).optional(),
+    NEXT_PUBLIC_COOKIEBOT_CBID: z.string().uuid().optional(),
 });
 
 export { clientEnvSchema };
@@ -30,6 +34,8 @@ const runtimeEnv = {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder',
     NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
     NEXT_PUBLIC_CONTACT_PHONE: process.env.NEXT_PUBLIC_CONTACT_PHONE,
+    NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
+    NEXT_PUBLIC_COOKIEBOT_CBID: process.env.NEXT_PUBLIC_COOKIEBOT_CBID,
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);
