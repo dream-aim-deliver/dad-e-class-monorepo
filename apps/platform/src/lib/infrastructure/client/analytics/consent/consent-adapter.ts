@@ -3,8 +3,8 @@ import type { TConsentState } from '../types';
 /**
  * Interface every Consent Management Platform (CMP) integration must implement.
  *
- * Keeps the CMP swappable: Cookiebot today, Usercentrics/Iubenda/DIY tomorrow
- * by writing a new adapter and flipping one line in consent-provider.tsx.
+ * Keeps the CMP swappable: Usercentrics today, Cookiebot/Iubenda/DIY tomorrow
+ * by writing a new adapter and flipping one line in platform-analytics.tsx.
  */
 export interface TConsentAdapter {
     /** Load the CMP script / wire up its global listeners. Called once per app boot. */

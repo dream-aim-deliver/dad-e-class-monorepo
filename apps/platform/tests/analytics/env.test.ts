@@ -26,18 +26,26 @@ describe('clientEnvSchema — analytics additions', () => {
         expect(result.success).toBe(false);
     });
 
-    it('accepts a valid Cookiebot UUID CBID', () => {
+    it('accepts a valid Usercentrics Settings ID', () => {
         const result = clientEnvSchema.safeParse({
             ...base,
-            NEXT_PUBLIC_COOKIEBOT_CBID: '01234567-89ab-cdef-0123-456789abcdef',
+            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: 'qYcjvyqjEYm8kA',
         });
         expect(result.success).toBe(true);
     });
 
-    it('rejects a malformed Cookiebot CBID', () => {
+    it('rejects a Usercentrics Settings ID that is too short', () => {
         const result = clientEnvSchema.safeParse({
             ...base,
-            NEXT_PUBLIC_COOKIEBOT_CBID: 'not-a-uuid',
+            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: 'tooshort',
+        });
+        expect(result.success).toBe(false);
+    });
+
+    it('rejects a Usercentrics Settings ID with disallowed characters', () => {
+        const result = clientEnvSchema.safeParse({
+            ...base,
+            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: 'has spaces!!',
         });
         expect(result.success).toBe(false);
     });
@@ -79,10 +87,10 @@ describe('clientEnvSchema — analytics additions', () => {
         expect(result.success).toBe(true);
     });
 
-    it('treats empty NEXT_PUBLIC_COOKIEBOT_CBID as unset (does not reject)', () => {
+    it('treats empty NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID as unset (does not reject)', () => {
         const result = clientEnvSchema.safeParse({
             ...base,
-            NEXT_PUBLIC_COOKIEBOT_CBID: '',
+            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: '',
         });
         expect(result.success).toBe(true);
     });

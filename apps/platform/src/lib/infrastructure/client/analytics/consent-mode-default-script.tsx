@@ -5,9 +5,9 @@ import Script from 'next/script';
  *
  * Initializes window.dataLayer, defines window.gtag (GLOBAL, reused by
  * consent-mode.ts helpers), and applies the default-denied Consent Mode v2
- * baseline. When the user has consented on a prior visit, Cookiebot will fire
- * `consent update` within a few hundred milliseconds of load, preventing any
- * denied pings from being sent.
+ * baseline. When the user has consented on a prior visit, the CMP (e.g.,
+ * Usercentrics) will fire `consent update` within a few hundred milliseconds
+ * of load, preventing any denied pings from being sent.
  *
  * Strategy "beforeInteractive" is critical — it inlines into <head> so it runs
  * before any other script tag, including GTM itself.

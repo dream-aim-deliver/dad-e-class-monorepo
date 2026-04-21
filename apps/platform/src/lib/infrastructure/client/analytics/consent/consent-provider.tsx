@@ -17,7 +17,7 @@ const ConsentContext = createContext<TConsentContext>({
 });
 
 interface TConsentProviderProps {
-    /** Injected adapter — production = cookiebot or noop; tests = fake. */
+    /** Injected adapter — production = usercentrics or noop; tests = fake. */
     adapter: TConsentAdapter;
     children: React.ReactNode;
 }

@@ -33,6 +33,7 @@ import { MobileReadyStyle } from '../../../lib/mobile-hack';
 import {
     PlatformAnalytics,
     ConsentModeDefaultScript,
+    UsercentricsAutoblocker,
 } from '../../../lib/infrastructure/client/analytics';
 
 type MetadataProps = {
@@ -238,6 +239,9 @@ export default async function RootLayout({
         <html lang={locale}>
             <head>
                 <ConsentModeDefaultScript />
+                <UsercentricsAutoblocker
+                    settingsId={runtimeConfig.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID}
+                />
                 <MobileReadyStyle />
             </head>
 

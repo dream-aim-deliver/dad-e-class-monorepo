@@ -13,7 +13,7 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
-import { CookieDeclaration } from '../analytics';
+import { UsercentricsSecondLayerLink } from '../analytics';
 
 export default function PrivacyPolicyPage() {
     const locale = useLocale() as TLocale;
@@ -85,11 +85,14 @@ export default function PrivacyPolicyPage() {
                 />
             )}
             {/*
-             * Cookiebot-rendered cookie disclosure table. Required by GDPR Art. 13
-             * and Swiss FMG Art. 45c. Renders nothing when the tenant has no
-             * NEXT_PUBLIC_COOKIEBOT_CBID configured.
+             * Link that opens Usercentrics' second layer (detailed settings +
+             * cookie declaration). Required by GDPR Art. 13 and Swiss FMG
+             * Art. 45c. Renders nothing when the tenant has no
+             * NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID configured.
              */}
-            <CookieDeclaration />
+            <UsercentricsSecondLayerLink className="underline text-base-brand-500 self-start">
+                Manage cookies and view the full cookie list
+            </UsercentricsSecondLayerLink>
         </div>
     );
 }
