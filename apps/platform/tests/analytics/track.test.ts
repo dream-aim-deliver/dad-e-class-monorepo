@@ -46,7 +46,7 @@ describe('track.*', () => {
         });
 
         it('drops silently and console.errors on invalid payload in non-production', () => {
-            const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
             // @ts-expect-error — intentionally missing fields
             track.viewItem({ item_id: '' });
             expect(readDataLayer()).toEqual([]);
@@ -145,7 +145,7 @@ describe('track.*', () => {
         });
 
         it('rejects negative value and pushes nothing', () => {
-            const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
             track.purchase({
                 transaction_id: 'stripe_ch_bad',
                 value: -10,
