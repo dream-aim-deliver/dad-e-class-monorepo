@@ -11,6 +11,7 @@
         "@dream-aim-deliver/dad-cats": "^0.13.4",
         "@dream-aim-deliver/e-class-cms-rest": "3.3.30",
         "@mux/mux-player-react": "3.3.0",
+        "@next/third-parties": "^16.1.6",
         "@opentelemetry/api": "^1.9.0",
         "@opentelemetry/context-zone": "^1.26.0",
         "@opentelemetry/core": "^1.26.0",
