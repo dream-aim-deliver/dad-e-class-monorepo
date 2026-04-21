@@ -14,8 +14,15 @@ const clientEnvSchema = z.object({
     NEXT_PUBLIC_CONTACT_PHONE: z.string().optional(),
     // Analytics — all optional; if any is unset that layer is dark.
     // GA4 Measurement ID lives only inside the GTM container, never in app env.
-    NEXT_PUBLIC_GTM_ID: z.string().regex(/^GTM-[A-Z0-9]+$/).optional(),
-    NEXT_PUBLIC_COOKIEBOT_CBID: z.string().uuid().optional(),
+    // Empty strings are treated as unset so blank .env values don't crash boot.
+    NEXT_PUBLIC_GTM_ID: z.preprocess(
+        (v) => (v === '' ? undefined : v),
+        z.string().regex(/^GTM-[A-Z0-9]{7,8}$/).optional(),
+    ),
+    NEXT_PUBLIC_COOKIEBOT_CBID: z.preprocess(
+        (v) => (v === '' ? undefined : v),
+        z.string().uuid().optional(),
+    ),
 });
 
 export { clientEnvSchema };

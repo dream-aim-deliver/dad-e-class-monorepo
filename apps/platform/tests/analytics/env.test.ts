@@ -46,4 +46,44 @@ describe('clientEnvSchema — analytics additions', () => {
         const result = clientEnvSchema.safeParse(base);
         expect(result.success).toBe(true);
     });
+
+    it('rejects a GTM ID with a 6-char or shorter suffix', () => {
+        const result = clientEnvSchema.safeParse({
+            ...base,
+            NEXT_PUBLIC_GTM_ID: 'GTM-ABCDEF',
+        });
+        expect(result.success).toBe(false);
+    });
+
+    it('rejects a GTM ID with a 9-char or longer suffix', () => {
+        const result = clientEnvSchema.safeParse({
+            ...base,
+            NEXT_PUBLIC_GTM_ID: 'GTM-ABCDEFGHI',
+        });
+        expect(result.success).toBe(false);
+    });
+
+    it('accepts a 7-char GTM suffix', () => {
+        const result = clientEnvSchema.safeParse({
+            ...base,
+            NEXT_PUBLIC_GTM_ID: 'GTM-ABCDEFG',
+        });
+        expect(result.success).toBe(true);
+    });
+
+    it('treats empty NEXT_PUBLIC_GTM_ID as unset (does not reject)', () => {
+        const result = clientEnvSchema.safeParse({
+            ...base,
+            NEXT_PUBLIC_GTM_ID: '',
+        });
+        expect(result.success).toBe(true);
+    });
+
+    it('treats empty NEXT_PUBLIC_COOKIEBOT_CBID as unset (does not reject)', () => {
+        const result = clientEnvSchema.safeParse({
+            ...base,
+            NEXT_PUBLIC_COOKIEBOT_CBID: '',
+        });
+        expect(result.success).toBe(true);
+    });
 });
