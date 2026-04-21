@@ -3,7 +3,15 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { SessionProvider } from 'next-auth/react';
 import NextTopLoaderWrapper from '../../../lib/infrastructure/client/components/next-top-loader-wrapper';
+import getSession from '../../../lib/infrastructure/server/config/auth/get-session';
+import { getRuntimeConfig } from '../../../lib/infrastructure/server/utils/get-runtime-config';
+import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/context/runtime-config-context';
+import {
+    PlatformAnalytics,
+    ConsentModeDefaultScript,
+} from '../../../lib/infrastructure/client/analytics';
 
 export const metadata = {
     title: 'Next.js',
@@ -43,31 +51,42 @@ export default async function RootLayout({
     params: Promise<{ locale: string }>;
 }) {
     const { locale } = await paramsPromise;
-    const messages = await getMessages({ locale });
+    const [messages, session] = await Promise.all([
+        getMessages({ locale }),
+        getSession(),
+    ]);
+    const runtimeConfig = getRuntimeConfig();
 
     return (
         <html lang={locale}>
             <head>
+                <ConsentModeDefaultScript />
                 <meta name="viewport" content="width=1280" />
             </head>
             <body
                 className={`theme theme-cms ${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
                 <NextTopLoaderWrapper />
-                <NextIntlClientProvider locale={locale} messages={messages}>
-                    <div
-                        className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
-                        style={{
-                            // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4))`,
-                            backgroundSize: '100% auto',
-                            // TODO: have a fallback color
-                            backgroundColor: '#141414',
-                        }}
-                    >
-                        {children}
-                    </div>
-                </NextIntlClientProvider>
+                <SessionProvider session={session}>
+                    <RuntimeConfigProvider config={runtimeConfig}>
+                        <PlatformAnalytics>
+                            <NextIntlClientProvider locale={locale} messages={messages}>
+                                <div
+                                    className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
+                                    style={{
+                                        // Temporary linear gradient to match the Figma. Should be uploaded this dark.
+                                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4))`,
+                                        backgroundSize: '100% auto',
+                                        // TODO: have a fallback color
+                                        backgroundColor: '#141414',
+                                    }}
+                                >
+                                    {children}
+                                </div>
+                            </NextIntlClientProvider>
+                        </PlatformAnalytics>
+                    </RuntimeConfigProvider>
+                </SessionProvider>
             </body>
         </html>
     );
