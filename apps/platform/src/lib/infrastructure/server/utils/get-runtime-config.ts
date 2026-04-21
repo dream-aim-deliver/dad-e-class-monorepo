@@ -18,5 +18,7 @@ export const getRuntimeConfig = cache(() => {
         NEXT_PUBLIC_APP_URL: env.NEXT_PUBLIC_APP_URL,
         NEXT_PUBLIC_E_CLASS_CMS_REST_URL: env.NEXT_PUBLIC_E_CLASS_CMS_REST_URL,
         defaultTheme: env.DEFAULT_THEME,
+        NEXT_PUBLIC_GTM_ID: env.NEXT_PUBLIC_GTM_ID,
+        NEXT_PUBLIC_COOKIEBOT_CBID: env.NEXT_PUBLIC_COOKIEBOT_CBID,
     };
 });
