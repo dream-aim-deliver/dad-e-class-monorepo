@@ -30,6 +30,10 @@ import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import env from '../../../lib/infrastructure/server/config/env';
 import SidebarLayout from '../../../lib/infrastructure/server/pages/layouts/sidebar-layout';
 import { MobileReadyStyle } from '../../../lib/mobile-hack';
+import {
+    PlatformAnalytics,
+    ConsentModeDefaultScript,
+} from '../../../lib/infrastructure/client/analytics';
 
 type MetadataProps = {
     params: Promise<{ locale: string }>;
@@ -233,6 +237,7 @@ export default async function RootLayout({
     return (
         <html lang={locale}>
             <head>
+                <ConsentModeDefaultScript />
                 <MobileReadyStyle />
             </head>
 
@@ -243,25 +248,27 @@ export default async function RootLayout({
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <RuntimeConfigProvider config={runtimeConfig}>
-                            <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
-                                <OTelBrowserProvider config={otelConfig}>
-                                    <SessionMonitorWrapper locale={locale}>
-                                        <CMSTRPCClientProviders>
-                                            <HydrateClient>
-                                                <Suspense fallback={<DefaultLoadingWrapper />}>
-                                                    <PlatformProviderWithSuspense platform={platformData}>
-                                                        <Layout availableLocales={availableLocales}>
-                                                            <SidebarLayout params={{ locale }}>
-                                                                {children}
-                                                            </SidebarLayout>
-                                                        </Layout>
-                                                    </PlatformProviderWithSuspense>
-                                                </Suspense>
-                                            </HydrateClient>
-                                        </CMSTRPCClientProviders>
-                                    </SessionMonitorWrapper>
-                                </OTelBrowserProvider>
-                            </ThemeProvider>
+                            <PlatformAnalytics>
+                                <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
+                                    <OTelBrowserProvider config={otelConfig}>
+                                        <SessionMonitorWrapper locale={locale}>
+                                            <CMSTRPCClientProviders>
+                                                <HydrateClient>
+                                                    <Suspense fallback={<DefaultLoadingWrapper />}>
+                                                        <PlatformProviderWithSuspense platform={platformData}>
+                                                            <Layout availableLocales={availableLocales}>
+                                                                <SidebarLayout params={{ locale }}>
+                                                                    {children}
+                                                                </SidebarLayout>
+                                                            </Layout>
+                                                        </PlatformProviderWithSuspense>
+                                                    </Suspense>
+                                                </HydrateClient>
+                                            </CMSTRPCClientProviders>
+                                        </SessionMonitorWrapper>
+                                    </OTelBrowserProvider>
+                                </ThemeProvider>
+                            </PlatformAnalytics>
                         </RuntimeConfigProvider>
                     </NextIntlClientProvider>
                 </SessionProvider>
