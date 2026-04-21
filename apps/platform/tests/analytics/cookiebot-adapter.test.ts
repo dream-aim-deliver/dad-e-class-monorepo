@@ -23,23 +23,26 @@ describe('cookiebot-adapter', () => {
         delete (window as Window).Cookiebot;
     });
 
-    it('init() injects the Cookiebot script tag with the CBID', () => {
+    it('init() injects the canonical Cookiebot script tag', () => {
         const adapter = createCookiebotAdapter({ cbid: '01234567-89ab-cdef-0123-456789abcdef' });
         adapter.init();
 
-        const script = document.querySelector<HTMLScriptElement>('script[data-cookiebot="true"]');
+        const script = document.getElementById('Cookiebot') as HTMLScriptElement | null;
         expect(script).not.toBeNull();
-        expect(script!.src).toBe(
-            'https://consent.cookiebot.com/uc.js?cbid=01234567-89ab-cdef-0123-456789abcdef',
-        );
+        expect(script!.tagName).toBe('SCRIPT');
+        expect(script!.src).toBe('https://consent.cookiebot.com/uc.js');
+        expect(script!.getAttribute('data-cbid')).toBe('01234567-89ab-cdef-0123-456789abcdef');
         expect(script!.getAttribute('data-blockingmode')).toBe('auto');
+        expect(script!.type).toBe('text/javascript');
+        // Must be synchronous for auto-blocking to activate before other scripts.
+        expect(script!.async).toBe(false);
     });
 
     it('init() does not inject twice on repeat calls', () => {
         const adapter = createCookiebotAdapter({ cbid: 'abc' });
         adapter.init();
         adapter.init();
-        expect(document.querySelectorAll('script[data-cookiebot="true"]').length).toBe(1);
+        expect(document.querySelectorAll('script#Cookiebot').length).toBe(1);
     });
 
     it('onConsentChange fires handler immediately with denied state when consent not yet known', () => {

@@ -49,7 +49,7 @@ describe('PlatformAnalytics', () => {
                 </PlatformAnalytics>
             </RuntimeConfigProvider>,
         );
-        expect(document.querySelector('script[data-cookiebot="true"]')).toBeNull();
+        expect(document.getElementById('Cookiebot')).toBeNull();
     });
 
     it('injects the Cookiebot script when CBID is set in RuntimeConfig', () => {
@@ -61,8 +61,8 @@ describe('PlatformAnalytics', () => {
                 </PlatformAnalytics>
             </RuntimeConfigProvider>,
         );
-        const script = document.querySelector<HTMLScriptElement>('script[data-cookiebot="true"]');
+        const script = document.getElementById('Cookiebot') as HTMLScriptElement | null;
         expect(script).not.toBeNull();
-        expect(script!.src).toContain('01234567-89ab-cdef-0123-456789abcdef');
+        expect(script!.getAttribute('data-cbid')).toBe('01234567-89ab-cdef-0123-456789abcdef');
     });
 });

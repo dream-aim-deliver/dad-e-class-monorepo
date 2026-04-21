@@ -37,15 +37,25 @@ export function createCookiebotAdapter(
     return {
         init() {
             if (typeof document === 'undefined') return;
-            if (document.querySelector('script[data-cookiebot="true"]')) return;
+            // Idempotent: Cookiebot's runtime self-identifies via id="Cookiebot",
+            // so we key the guard on the same id.
+            if (document.getElementById('Cookiebot')) return;
 
             const script = document.createElement('script');
-            script.src = `https://consent.cookiebot.com/uc.js?cbid=${encodeURIComponent(options.cbid)}`;
-            script.setAttribute('data-cookiebot', 'true');
-            // Cookiebot's "auto" blocking mode automatically blocks prior-categorized
-            // tags until consent is given, belt-and-braces with Consent Mode v2.
+            // Canonical Cookiebot setup per https://www.cookiebot.com/en/developer/ —
+            // id="Cookiebot" + data-cbid attribute + data-blockingmode="auto", loaded
+            // synchronously so auto-blocking activates before any other script can
+            // set cookies. The query-string form (?cbid=...) works too but is the
+            // secondary method.
+            script.id = 'Cookiebot';
+            script.src = 'https://consent.cookiebot.com/uc.js';
+            script.type = 'text/javascript';
+            script.setAttribute('data-cbid', options.cbid);
             script.setAttribute('data-blockingmode', 'auto');
-            script.async = true;
+            // Explicit async=false preserves insertion order so Cookiebot's
+            // auto-blocking runtime activates before any subsequently-injected
+            // tracker script. (DOM-created scripts default to async=true.)
+            script.async = false;
             document.head.appendChild(script);
         },
 
