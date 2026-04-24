@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { UsercentricsSecondLayerLink } from '../analytics';
 
 interface FooterProps {
     platformViewModel: viewModels.TGetPlatformViewModel;
@@ -33,6 +34,11 @@ const FooterLinks = ({ locale }: { locale: TLocale }) => {
             <Link href={`/${locale}/privacy-policy`}>
                 <span className={linkClass}>{t('privacyPolicy')}</span>
             </Link>
+            <UsercentricsSecondLayerLink
+                className={`${linkClass} bg-transparent border-0 p-0 font-inherit`}
+            >
+                {t('privacySettings')}
+            </UsercentricsSecondLayerLink>
             <Link href={`/${locale}/terms-of-use`}>
                 <span className={linkClass}>{t('termsOfUse')}</span>
             </Link>

@@ -494,6 +494,7 @@ export const DE: TDictionary = {
     footer: {
       impressum: 'Impressum',
       privacyPolicy: 'Datenschutzrichtlinie',
+      privacySettings: 'Datenschutzeinstellungen',
       termsOfUse: 'Nutzungsbedingungen',
       rules: 'Regeln',
       coursesInformation: 'Kursinformationen',
