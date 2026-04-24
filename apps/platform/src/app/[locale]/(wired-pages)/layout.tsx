@@ -34,6 +34,7 @@ import {
     PlatformAnalytics,
     ConsentModeDefaultScript,
     UsercentricsAutoblocker,
+    UsercentricsCMPLoader,
 } from '../../../lib/infrastructure/client/analytics';
 
 type MetadataProps = {
@@ -240,6 +241,10 @@ export default async function RootLayout({
             <head>
                 <UsercentricsAutoblocker
                     settingsId={runtimeConfig.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID}
+                />
+                <UsercentricsCMPLoader
+                    settingsId={runtimeConfig.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID}
+                    language={locale}
                 />
                 <ConsentModeDefaultScript />
                 <MobileReadyStyle />

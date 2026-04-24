@@ -74,54 +74,22 @@ function readUsercentricsState(): TConsentState {
     };
 }
 
-interface TUsercentricsAdapterOptions {
-    /** Settings ID from the Usercentrics dashboard (data-settings-id). */
-    settingsId: string;
-    /**
-     * ISO 639-1 language code (e.g. "de", "en") that the banner and
-     * second-layer UI should render in. Sourced from next-intl's current
-     * locale so the CMP matches the rest of the app. Usercentrics defaults
-     * to `navigator.language` when unset, which mismatches our routed
-     * locale for users whose browser default differs from their URL
-     * (e.g. English-browser user on /de/). Usercentrics falls back to the
-     * dashboard's configured default if this code is not an enabled
-     * language in the dashboard.
-     */
-    language?: string;
-}
-
-const CMP_LOADER_URL = 'https://web.cmp.usercentrics.eu/ui/loader.js';
-
 /**
  * Usercentrics CMP v3 adapter.
  *
- * Injects the CMP loader script. The autoblocker is mounted separately via
- * `<UsercentricsAutoblocker />` in the layouts so it can run with
- * `beforeInteractive` priority — the adapter only handles the main CMP UI
- * and the consent-state translation.
+ * Script mounting is handled server-side by `<UsercentricsCMPLoader>` and
+ * `<UsercentricsAutoblocker>` rendered into `<head>`; this adapter only wires
+ * runtime listeners and translates consent state. Keeping injection out of
+ * client effects eliminates the hydration race (effect-never-runs cases like
+ * bfcache restore, upstream error boundary, cancelled hydration) that
+ * previously caused the banner to flakily not appear.
  *
  * Consent state is read from `window.UC_UI.getServicesBaseInfo()` on every
  * CMP event; the banner is opened via `window.UC_UI.showFirstLayer()`.
  */
-export function createUsercentricsAdapter(
-    options: TUsercentricsAdapterOptions,
-): TConsentAdapter {
+export function createUsercentricsAdapter(): TConsentAdapter {
     return {
         init() {
-            if (typeof document === 'undefined') return;
-            // Idempotent: Usercentrics's loader self-identifies via id="usercentrics-cmp".
-            if (document.getElementById('usercentrics-cmp')) return;
-
-            const script = document.createElement('script');
-            script.id = 'usercentrics-cmp';
-            script.src = CMP_LOADER_URL;
-            script.async = true;
-            script.setAttribute('data-settings-id', options.settingsId);
-            if (options.language) {
-                script.setAttribute('data-language', options.language);
-            }
-            document.head.appendChild(script);
-
             // Hide the persistent floating privacy button ("fingerprint" icon)
             // at runtime. Cookie-settings access is provided via the footer's
             // "Privacy Settings" link (<UsercentricsSecondLayerLink>), so the
