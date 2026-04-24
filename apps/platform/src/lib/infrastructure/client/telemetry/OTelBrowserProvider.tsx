@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, ReactNode } from 'react';
+import { useConsent } from '../analytics/consent/consent-provider';
 
 /**
  * Configuration for the browser tracer.
@@ -59,25 +60,41 @@ export function OTelBrowserProvider({
     children,
     config,
 }: OTelBrowserProviderProps) {
+    // Gate on the analytics consent category — mirrors Usercentrics' classification
+    // of this DPS under Statistics / Analytics (Art. 6 para. 1 s. 1 lit. a GDPR).
+    // Browser performance telemetry + fetch traces read the Performance Observer
+    // API and transmit IP / URL / page.route off-device, which falls within
+    // ePrivacy Art. 5(3) and is not "strictly necessary" for service delivery.
+    const { consent } = useConsent();
+    const hasConsent = consent.analytics;
+
     useEffect(() => {
-        if (config && config.enabled) {
-            // Dynamic import - only loads in browser, never on server
-            // This prevents @opentelemetry/context-zone from corrupting AsyncLocalStorage
+        if (!config || !config.enabled) return;
+
+        if (hasConsent) {
+            // Dynamic import — only loads in browser, never on server.
+            // Prevents @opentelemetry/context-zone from corrupting AsyncLocalStorage.
             Promise.all([
                 import('./browser-tracer'),
                 import('./web-vitals'),
             ])
                 .then(([{ initBrowserTracer }, { captureWebVitals }]) => {
-                    // Initialize the browser tracer first
                     initBrowserTracer(config);
-                    // Then capture Web Vitals (LCP, INP, CLS, FCP, TTFB)
                     captureWebVitals();
                 })
                 .catch((error) => {
                     console.warn('[OTel Browser] Failed to load tracer:', error);
                 });
+        } else {
+            // Consent absent or revoked — disable instrumentations and shut
+            // down the provider so no further spans are exported.
+            import('./browser-tracer')
+                .then(({ shutdownBrowserTracer }) => shutdownBrowserTracer())
+                .catch(() => {
+                    /* shutdown is best-effort; no user-facing action */
+                });
         }
-    }, [config]);
+    }, [config, hasConsent]);
 
     return <>{children}</>;
 }

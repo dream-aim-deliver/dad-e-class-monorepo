@@ -46,6 +46,8 @@ class PageAttributeSpanProcessor implements SpanProcessor {
 }
 
 let initialized = false;
+let providerRef: WebTracerProvider | null = null;
+let disableInstrumentations: (() => void) | null = null;
 
 export interface BrowserTracerConfig {
     serviceName: string;
@@ -148,8 +150,9 @@ export function initBrowserTracer(config: BrowserTracerConfig): void {
                   ),
               ];
 
-        // Register instrumentations
-        registerInstrumentations({
+        // Register instrumentations — keep the disable handle so we can stop
+        // auto-span creation on consent revocation.
+        const disable = registerInstrumentations({
             instrumentations: [
                 new FetchInstrumentation({
                     // Propagate trace headers to these URLs (CORS must allow)
@@ -161,6 +164,8 @@ export function initBrowserTracer(config: BrowserTracerConfig): void {
             ],
         });
 
+        providerRef = provider;
+        disableInstrumentations = disable;
         initialized = true;
         console.debug('[OTel Browser] Tracer initialized', {
             serviceName: config.serviceName,
@@ -177,4 +182,36 @@ export function initBrowserTracer(config: BrowserTracerConfig): void {
  */
 export function isBrowserTracerInitialized(): boolean {
     return initialized;
+}
+
+/**
+ * Shuts down the browser tracer cleanly so no further spans are collected
+ * or exported. Called on consent revocation (see OTelBrowserProvider).
+ *
+ * Disables the registered instrumentations (fetch, document-load) so they
+ * stop creating auto-spans, then shuts down the WebTracerProvider so any
+ * in-flight buffered spans are flushed and the processors stop. After this
+ * call, subsequent `trace.getTracer(...).startSpan(...)` calls will return
+ * no-op NonRecordingSpans that never reach the OTLP exporter.
+ *
+ * Idempotent — safe to call when the tracer is already shut down.
+ * Re-entrant — a subsequent `initBrowserTracer` call will re-initialize a
+ * fresh provider.
+ */
+export async function shutdownBrowserTracer(): Promise<void> {
+    if (!initialized) return;
+    try {
+        if (disableInstrumentations) {
+            disableInstrumentations();
+            disableInstrumentations = null;
+        }
+        if (providerRef) {
+            await providerRef.shutdown();
+            providerRef = null;
+        }
+    } catch (error) {
+        console.warn('[OTel Browser] Failed to shutdown tracer:', error);
+    } finally {
+        initialized = false;
+    }
 }
