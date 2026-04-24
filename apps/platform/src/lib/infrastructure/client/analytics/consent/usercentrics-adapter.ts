@@ -77,6 +77,17 @@ function readUsercentricsState(): TConsentState {
 interface TUsercentricsAdapterOptions {
     /** Settings ID from the Usercentrics dashboard (data-settings-id). */
     settingsId: string;
+    /**
+     * ISO 639-1 language code (e.g. "de", "en") that the banner and
+     * second-layer UI should render in. Sourced from next-intl's current
+     * locale so the CMP matches the rest of the app. Usercentrics defaults
+     * to `navigator.language` when unset, which mismatches our routed
+     * locale for users whose browser default differs from their URL
+     * (e.g. English-browser user on /de/). Usercentrics falls back to the
+     * dashboard's configured default if this code is not an enabled
+     * language in the dashboard.
+     */
+    language?: string;
 }
 
 const CMP_LOADER_URL = 'https://web.cmp.usercentrics.eu/ui/loader.js';
@@ -106,19 +117,33 @@ export function createUsercentricsAdapter(
             script.src = CMP_LOADER_URL;
             script.async = true;
             script.setAttribute('data-settings-id', options.settingsId);
+            if (options.language) {
+                script.setAttribute('data-language', options.language);
+            }
             document.head.appendChild(script);
 
-            // Belt-and-braces with the dashboard toggle: hide the persistent
-            // floating privacy button ("fingerprint" icon) at runtime too.
-            // Cookie-settings access is provided via the privacy policy page
-            // (<UsercentricsSecondLayerLink>), so the corner icon is redundant.
-            // Runs once, after the CMP initializes; no-op if the dashboard
-            // has already disabled the button or if the API is unavailable.
+            // Hide the persistent floating privacy button ("fingerprint" icon)
+            // at runtime. Cookie-settings access is provided via the footer's
+            // "Privacy Settings" link (<UsercentricsSecondLayerLink>), so the
+            // corner icon is redundant and the design intent is to route users
+            // through the footer link instead.
+            //
+            // Fire on the CMP's initial load AND on every subsequent consent
+            // event: some Usercentrics versions re-mount the button when the
+            // banner closes or when consent changes, so a single hide-once is
+            // not robust enough. Both calls are no-ops if the dashboard has
+            // already disabled the button or if the API is unavailable.
             if (typeof window !== 'undefined') {
+                const hidePrivacyButton = () =>
+                    window.UC_UI?.hidePrivacyButton?.();
                 window.addEventListener(
                     'UC_UI_INITIALIZED',
-                    () => window.UC_UI?.hidePrivacyButton?.(),
+                    hidePrivacyButton,
                     { once: true },
+                );
+                window.addEventListener(
+                    'UC_UI_CMP_EVENT',
+                    hidePrivacyButton,
                 );
             }
         },
