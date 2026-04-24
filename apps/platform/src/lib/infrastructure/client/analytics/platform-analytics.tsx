@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useLocale } from 'next-intl';
 import { createUsercentricsAdapter } from './consent/usercentrics-adapter';
 import { createNoopAdapter } from './consent/noop-adapter';
 import { ConsentProvider } from './consent/consent-provider';
@@ -35,13 +36,19 @@ interface TPlatformAnalyticsProps {
 export function PlatformAnalytics({ children }: TPlatformAnalyticsProps) {
     const { NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: settingsId } =
         useRuntimeConfig();
+    // Mirror next-intl's routed locale into the Usercentrics banner so the
+    // CMP language matches the page language. Our language switcher does a
+    // full page navigation (footer.tsx → `window.location.href = newUrl`),
+    // so the adapter is re-created with the fresh locale on every switch —
+    // no runtime UC_UI.changeLanguage() plumbing needed.
+    const locale = useLocale();
 
     const adapter = useMemo(
         () =>
             settingsId
-                ? createUsercentricsAdapter({ settingsId })
+                ? createUsercentricsAdapter({ settingsId, language: locale })
                 : createNoopAdapter(),
-        [settingsId],
+        [settingsId, locale],
     );
 
     return (
