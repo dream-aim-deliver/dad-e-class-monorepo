@@ -2723,6 +2723,7 @@ export const DE: TDictionary = {
     },
     privacyPolicy: {
       title: 'Datenschutzerklärung',
+      manageCookies: 'Cookies verwalten und die vollständige Cookie-Liste anzeigen',
       loadError: {
         title: 'Datenschutzerklärung konnte nicht geladen werden',
         description: 'Der Inhalt der Datenschutzerklärung konnte nicht geladen werden. Bitte versuchen Sie es erneut.',

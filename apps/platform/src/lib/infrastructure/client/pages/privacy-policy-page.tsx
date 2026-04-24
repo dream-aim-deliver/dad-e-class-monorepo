@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
              * NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID configured.
              */}
             <UsercentricsSecondLayerLink className="underline text-base-brand-500 self-start">
-                Manage cookies and view the full cookie list
+                {t('manageCookies')}
             </UsercentricsSecondLayerLink>
         </div>
     );
