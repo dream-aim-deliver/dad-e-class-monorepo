@@ -238,10 +238,10 @@ export default async function RootLayout({
     return (
         <html lang={locale}>
             <head>
-                <ConsentModeDefaultScript />
                 <UsercentricsAutoblocker
                     settingsId={runtimeConfig.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID}
                 />
+                <ConsentModeDefaultScript />
                 <MobileReadyStyle />
             </head>
 

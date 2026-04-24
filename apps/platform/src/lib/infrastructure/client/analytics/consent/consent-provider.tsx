@@ -33,8 +33,7 @@ export function ConsentProvider({ adapter, children }: TConsentProviderProps) {
             setConsent(state);
         });
         return unsubscribe;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [adapter]);
 
     const value: TConsentContext = {
         consent,
