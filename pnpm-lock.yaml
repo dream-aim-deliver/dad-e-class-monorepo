@@ -16,8 +16,8 @@ importers:
         specifier: ^0.13.4
         version: 0.13.4
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.30
-        version: 3.3.30(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 3.3.32
+        version: 3.3.32(encoding@0.1.13)(typescript@5.9.3)
       '@mux/mux-player-react':
         specifier: 3.3.0
         version: 3.3.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -389,8 +389,8 @@ importers:
   packages/auth:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.30
-        version: 3.3.30(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 3.3.32
+        version: 3.3.32(encoding@0.1.13)(typescript@5.9.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -413,8 +413,8 @@ importers:
         specifier: ^0.13.4
         version: 0.13.4
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.30
-        version: 3.3.30(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 3.3.32
+        version: 3.3.32(encoding@0.1.13)(typescript@5.9.3)
       zod:
         specifier: ^3.24.1
         version: 3.25.76
@@ -428,8 +428,8 @@ importers:
   packages/ui-kit:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.30
-        version: 3.3.30(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 3.3.32
+        version: 3.3.32(encoding@0.1.13)(typescript@5.9.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -1251,8 +1251,8 @@ packages:
   '@dream-aim-deliver/dad-data-platform-sdk-ts@1.3.1':
     resolution: {integrity: sha512-aJDfUEj5IUjzt/cqlkEyg6eqzeG3cEuVRv58FVN6xl5VmNi0jDUM1kr0v233gt3blQcDveCTVhTNEE8W+Tb7ag==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/1.3.1/e99cd7a0bbead1c720a96a16cba20002640e18e9}
 
-  '@dream-aim-deliver/e-class-cms-rest@3.3.30':
-    resolution: {integrity: sha512-A1wBNpdtx1ZW74CY0HTjlkyAKT6ceTQibLhe2Ht7kj4E81spzd3uxhu+tskFdxYbOoktRfm1epWFru/oog5gmw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.3.30/caa8470d95fc5d114ad32b82f45411f1d8f61a24}
+  '@dream-aim-deliver/e-class-cms-rest@3.3.32':
+    resolution: {integrity: sha512-qJ0TK2Q9m4LQBZozjvnKyb36mzkCb96/+FWb7iDIFPBgpxuWtOdFIB4pCypaSp+nOcA/fTW4Sj3OVKGqVO1/Fw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.3.32/3cc2bf4603d348215f83a625459fd71999ed89f9}
 
   '@emnapi/core@1.8.1':
     resolution: {integrity: sha512-AvT9QFpxK0Zd8J0jopedNm+w/2fIzvtPKPjqyw9jwvBaReTTqPBk9Hixaz7KbjimP+QNz605/XnjFcDAL2pqBg==}
@@ -11750,7 +11750,7 @@ snapshots:
       - debug
       - encoding
 
-  '@dream-aim-deliver/e-class-cms-rest@3.3.30(encoding@0.1.13)(typescript@5.9.3)':
+  '@dream-aim-deliver/e-class-cms-rest@3.3.32(encoding@0.1.13)(typescript@5.9.3)':
     dependencies:
       '@dream-aim-deliver/dad-cats': 0.13.4
       '@dream-aim-deliver/dad-data-platform-sdk-ts': 1.3.1(encoding@0.1.13)
