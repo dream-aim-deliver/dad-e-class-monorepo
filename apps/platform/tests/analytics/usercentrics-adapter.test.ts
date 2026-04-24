@@ -32,27 +32,14 @@ describe('usercentrics-adapter', () => {
         delete (window as Window).UC_UI;
     });
 
-    it('init() injects the canonical Usercentrics CMP loader script', () => {
-        const adapter = createUsercentricsAdapter({ settingsId: 'qYcjvyqjEYm8kA' });
+    it('init() does not inject the loader script (now rendered server-side in <head>)', () => {
+        const adapter = createUsercentricsAdapter();
         adapter.init();
-
-        const script = document.getElementById('usercentrics-cmp') as HTMLScriptElement | null;
-        expect(script).not.toBeNull();
-        expect(script!.tagName).toBe('SCRIPT');
-        expect(script!.src).toBe('https://web.cmp.usercentrics.eu/ui/loader.js');
-        expect(script!.getAttribute('data-settings-id')).toBe('qYcjvyqjEYm8kA');
-        expect(script!.async).toBe(true);
-    });
-
-    it('init() does not inject twice on repeat calls', () => {
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc123xyz000' });
-        adapter.init();
-        adapter.init();
-        expect(document.querySelectorAll('script#usercentrics-cmp').length).toBe(1);
+        expect(document.getElementById('usercentrics-cmp')).toBeNull();
     });
 
     it('onConsentChange fires handler immediately with denied state when UC_UI is not loaded', () => {
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         adapter.onConsentChange(handler);
         expect(handler).toHaveBeenCalledWith({ analytics: false, marketing: false, preferences: false });
@@ -69,7 +56,7 @@ describe('usercentrics-adapter', () => {
             ],
         };
 
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         adapter.onConsentChange(handler);
         expect(handler).toHaveBeenCalledWith({ analytics: false, marketing: false, preferences: false });
@@ -87,7 +74,7 @@ describe('usercentrics-adapter', () => {
             getServicesBaseInfo: () => Promise.resolve([]),
         };
 
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         expect(() => adapter.onConsentChange(handler)).not.toThrow();
         expect(handler).toHaveBeenCalledWith({ analytics: false, marketing: false, preferences: false });
@@ -103,7 +90,7 @@ describe('usercentrics-adapter', () => {
             ],
         };
 
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         adapter.onConsentChange(handler);
         handler.mockClear();
@@ -125,7 +112,7 @@ describe('usercentrics-adapter', () => {
             ],
         };
 
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         adapter.onConsentChange(handler);
         handler.mockClear();
@@ -146,7 +133,7 @@ describe('usercentrics-adapter', () => {
             ],
         };
 
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         adapter.onConsentChange(handler);
         handler.mockClear();
@@ -163,7 +150,7 @@ describe('usercentrics-adapter', () => {
             ],
         };
 
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         const unsubscribe = adapter.onConsentChange(handler);
         handler.mockClear();
@@ -177,13 +164,13 @@ describe('usercentrics-adapter', () => {
         const showFirstLayer = vi.fn();
         window.UC_UI = { showFirstLayer };
 
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         adapter.showBanner();
         expect(showFirstLayer).toHaveBeenCalledTimes(1);
     });
 
     it('showBanner() is a no-op if UC_UI is not loaded yet', () => {
-        const adapter = createUsercentricsAdapter({ settingsId: 'abc' });
+        const adapter = createUsercentricsAdapter();
         expect(() => adapter.showBanner()).not.toThrow();
     });
 });

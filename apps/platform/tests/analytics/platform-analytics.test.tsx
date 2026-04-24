@@ -44,55 +44,7 @@ describe('PlatformAnalytics', () => {
         expect(screen.getByTestId('child')).toBeDefined();
     });
 
-    it('does NOT inject the Usercentrics loader when settings ID is unset', () => {
-        render(
-            <NextIntlClientProvider locale="en" messages={{}}>
-                <RuntimeConfigProvider config={baseConfig()}>
-                    <PlatformAnalytics>
-                        <span />
-                    </PlatformAnalytics>
-                </RuntimeConfigProvider>
-            </NextIntlClientProvider>,
-        );
-        expect(document.getElementById('usercentrics-cmp')).toBeNull();
-    });
-
-    it('injects the Usercentrics loader when settings ID is set', () => {
-        const config = {
-            ...baseConfig(),
-            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: 'qYcjvyqjEYm8kA',
-        };
-        render(
-            <NextIntlClientProvider locale="en" messages={{}}>
-                <RuntimeConfigProvider config={config}>
-                    <PlatformAnalytics>
-                        <span />
-                    </PlatformAnalytics>
-                </RuntimeConfigProvider>
-            </NextIntlClientProvider>,
-        );
-        const script = document.getElementById('usercentrics-cmp') as HTMLScriptElement | null;
-        expect(script).not.toBeNull();
-        expect(script!.getAttribute('data-settings-id')).toBe('qYcjvyqjEYm8kA');
-        expect(script!.src).toBe('https://web.cmp.usercentrics.eu/ui/loader.js');
-    });
-
-    it('passes the locale as data-language on the Usercentrics loader script', () => {
-        const config = {
-            ...baseConfig(),
-            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: 'qYcjvyqjEYm8kA',
-        };
-        render(
-            <NextIntlClientProvider locale="de" messages={{}}>
-                <RuntimeConfigProvider config={config}>
-                    <PlatformAnalytics>
-                        <span />
-                    </PlatformAnalytics>
-                </RuntimeConfigProvider>
-            </NextIntlClientProvider>,
-        );
-        const script = document.getElementById('usercentrics-cmp') as HTMLScriptElement | null;
-        expect(script).not.toBeNull();
-        expect(script!.getAttribute('data-language')).toBe('de');
-    });
+    // Loader-script injection is the responsibility of <UsercentricsCMPLoader>
+    // rendered in the root layouts — see usercentrics-cmp-loader.test.tsx.
+    // PlatformAnalytics itself only composes the Consent/Analytics providers.
 });
