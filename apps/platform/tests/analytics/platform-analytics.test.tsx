@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { NextIntlClientProvider } from 'next-intl';
 
 vi.mock('@next/third-parties/google', () => ({
     GoogleTagManager: () => null,
@@ -32,22 +33,26 @@ describe('PlatformAnalytics', () => {
 
     it('renders children even when no analytics env vars are set in RuntimeConfig', () => {
         render(
-            <RuntimeConfigProvider config={baseConfig()}>
-                <PlatformAnalytics>
-                    <span data-testid="child">hello</span>
-                </PlatformAnalytics>
-            </RuntimeConfigProvider>,
+            <NextIntlClientProvider locale="en" messages={{}}>
+                <RuntimeConfigProvider config={baseConfig()}>
+                    <PlatformAnalytics>
+                        <span data-testid="child">hello</span>
+                    </PlatformAnalytics>
+                </RuntimeConfigProvider>
+            </NextIntlClientProvider>,
         );
         expect(screen.getByTestId('child')).toBeDefined();
     });
 
     it('does NOT inject the Usercentrics loader when settings ID is unset', () => {
         render(
-            <RuntimeConfigProvider config={baseConfig()}>
-                <PlatformAnalytics>
-                    <span />
-                </PlatformAnalytics>
-            </RuntimeConfigProvider>,
+            <NextIntlClientProvider locale="en" messages={{}}>
+                <RuntimeConfigProvider config={baseConfig()}>
+                    <PlatformAnalytics>
+                        <span />
+                    </PlatformAnalytics>
+                </RuntimeConfigProvider>
+            </NextIntlClientProvider>,
         );
         expect(document.getElementById('usercentrics-cmp')).toBeNull();
     });
@@ -58,15 +63,36 @@ describe('PlatformAnalytics', () => {
             NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: 'qYcjvyqjEYm8kA',
         };
         render(
-            <RuntimeConfigProvider config={config}>
-                <PlatformAnalytics>
-                    <span />
-                </PlatformAnalytics>
-            </RuntimeConfigProvider>,
+            <NextIntlClientProvider locale="en" messages={{}}>
+                <RuntimeConfigProvider config={config}>
+                    <PlatformAnalytics>
+                        <span />
+                    </PlatformAnalytics>
+                </RuntimeConfigProvider>
+            </NextIntlClientProvider>,
         );
         const script = document.getElementById('usercentrics-cmp') as HTMLScriptElement | null;
         expect(script).not.toBeNull();
         expect(script!.getAttribute('data-settings-id')).toBe('qYcjvyqjEYm8kA');
         expect(script!.src).toBe('https://web.cmp.usercentrics.eu/ui/loader.js');
+    });
+
+    it('passes the locale as data-language on the Usercentrics loader script', () => {
+        const config = {
+            ...baseConfig(),
+            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: 'qYcjvyqjEYm8kA',
+        };
+        render(
+            <NextIntlClientProvider locale="de" messages={{}}>
+                <RuntimeConfigProvider config={config}>
+                    <PlatformAnalytics>
+                        <span />
+                    </PlatformAnalytics>
+                </RuntimeConfigProvider>
+            </NextIntlClientProvider>,
+        );
+        const script = document.getElementById('usercentrics-cmp') as HTMLScriptElement | null;
+        expect(script).not.toBeNull();
+        expect(script!.getAttribute('data-language')).toBe('de');
     });
 });
