@@ -2789,6 +2789,7 @@ export const DictionarySchema = z.object({
     }),
     privacyPolicy: z.object({
       title: z.string(),
+      manageCookies: z.string(),
       loadError: z.object({
         title: z.string(),
         description: z.string(),

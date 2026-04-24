@@ -2721,6 +2721,7 @@ export const EN: TDictionary = {
     },
     privacyPolicy: {
       title: 'Privacy Policy',
+      manageCookies: 'Manage cookies and view the full cookie list',
       loadError: {
         title: 'Unable to load privacy policy',
         description: 'We couldn\'t load the privacy policy content. Please try again.',
