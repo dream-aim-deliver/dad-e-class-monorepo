@@ -489,6 +489,7 @@ export const DictionarySchema = z.object({
     footer: z.object({
       impressum: z.string(),
       privacyPolicy: z.string(),
+      privacySettings: z.string(),
       termsOfUse: z.string(),
       rules: z.string(),
       coursesInformation: z.string(),
