@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@dream-aim-deliver/e-class-cms-rest": "3.3.32",
+    "@dream-aim-deliver/e-class-cms-rest": "3.3.35",
     "@maany_shr/e-class-models": "workspace:*",
     "@maany_shr/e-class-translations": "workspace:*",
     "@mux/mux-player-react": "^3.3.0",
@@ -30,7 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "fuse.js": "^7.1.0",
-    "jspdf": "^3.0.2",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.473.0",
     "react": "19.2.4",
     "react-day-picker": "^9.13.0",
