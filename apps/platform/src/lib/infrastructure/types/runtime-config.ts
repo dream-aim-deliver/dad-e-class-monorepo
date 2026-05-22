@@ -14,4 +14,6 @@ export interface RuntimeConfig {
     // Analytics — optional; unset means tenant has no GTM/CMP configured.
     NEXT_PUBLIC_GTM_ID?: string;
     NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID?: string;
+    // Google Search Console site verification token. Optional — unset means no meta tag.
+    NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?: string;
 }

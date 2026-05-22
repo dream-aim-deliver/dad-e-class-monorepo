@@ -25,6 +25,12 @@ const clientEnvSchema = z.object({
         (v) => (v === '' ? undefined : v),
         z.string().regex(/^[A-Za-z0-9_-]{10,30}$/).optional(),
     ),
+    // Google Search Console site-verification token (meta-tag method).
+    // Tenant-specific; unset means no verification meta tag is emitted.
+    NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: z.preprocess(
+        (v) => (v === '' ? undefined : v),
+        z.string().regex(/^[A-Za-z0-9_-]{20,128}$/).optional(),
+    ),
 });
 
 export { clientEnvSchema };
@@ -45,6 +51,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_CONTACT_PHONE: process.env.NEXT_PUBLIC_CONTACT_PHONE,
     NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
     NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: process.env.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID,
+    NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);
