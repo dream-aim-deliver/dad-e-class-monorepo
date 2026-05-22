@@ -56,6 +56,7 @@ export async function generateMetadata({ params }: MetadataProps): Promise<Metad
 
     const appName = env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
     const appUrl = env.NEXT_PUBLIC_APP_URL;
+    const runtimeConfig = getRuntimeConfig();
 
     // Get platform logo (cached for 15 min, same cache as layout)
     let ogImage = FALLBACK_OG_IMAGE;
@@ -93,6 +94,11 @@ export async function generateMetadata({ params }: MetadataProps): Promise<Metad
             description: t('ogDescription'),
             images: [ogImage],
         },
+        ...(runtimeConfig.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION && {
+            verification: {
+                google: runtimeConfig.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+            },
+        }),
     };
 }
 
