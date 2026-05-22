@@ -55,6 +55,7 @@ const runtimeEnv = {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || (isBuildTime ? 'sk_test_build_time_placeholder' : undefined),
     NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
     NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: process.env.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID,
+    NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
 };
 
 const envValidationResult = serverEnvSchema.safeParse(runtimeEnv);
