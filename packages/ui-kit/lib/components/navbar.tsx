@@ -158,6 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dictionary = getDictionary(locale);
+  const logoHref = `https://www.justdoad.ai/${locale}`;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -225,7 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     <nav className="bg-neutral-950/50 backdrop-blur-md text-text-primary py-3 px-14 flex items-center justify-between w-full fixed top-0 z-1000">
       {/* Logo */}
       <div className="flex items-center">
-        <a href="/" className="block h-12">
+        <a href={logoHref} className="block h-12">
           {logo}
           {logoSrc && <img
             src={logoSrc}
@@ -331,7 +332,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="fixed top-0 left-0 w-full h-full bg-button-primary-text text-white flex flex-col items-center justify-center lg:hidden z-9999"
         >
           <div className="absolute top-3 left-0 right-0 flex justify-between items-center px-4 w-full">
-            <a href="/" className="block h-12">
+            <a href={logoHref} className="block h-12">
               {logo}
               {logoSrc && <img
                 src={logoSrc}
