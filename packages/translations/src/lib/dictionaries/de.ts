@@ -635,8 +635,8 @@ export const DE: TDictionary = {
     assessmentSubmissionConfirmationModal: {
       goBackText: 'Zurück',
       submitText: 'Einreichen',
-      title: 'Vortest abschicken?',
-      message: 'Du kannst deine Antworten nach der Einreichung nicht mehr ändern. Möchtest du wirklich einreichen?',
+      title: 'Standortbestimmung abschicken?',
+      message: 'Sie können Ihre Antworten nach der Einreichung nicht mehr ändern. Möchten Sie wirklich einreichen?',
     },
     purchaseAuthModal: {
       title: 'Konto erstellen oder einloggen',
@@ -733,7 +733,7 @@ export const DE: TDictionary = {
       },
     },
     formRenderer: {
-      title: 'Vortest',
+      title: 'Standortbestimmung',
       alertText: 'Sobald du deine Antwort abgeschickt hast, kannst du keine Änderungen mehr vornehmen. Bitte überprüfe sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
       submitText: 'Antwort senden',
       requiredText: 'Erforderlich',
@@ -1311,8 +1311,8 @@ export const DE: TDictionary = {
       yourProfile: 'Dein Profil',
       legalTexts: 'Rechtliche Texte',
       yourCoachingSessions: 'Deine Coaching-Sitzungen',
-      preCourseAssessmentForm: "Vortest",
-      yourCalendar: "Dein Kalender",
+      preCourseAssessmentForm: "Standortbestimmung",
+      yourCalendar: "Ihr Kalender",
       calendar: "Kalender",
       groupCoachingCalendar: "Gruppen-Coaching-Kalender",
       yourReviews: 'Deine Bewertungen',
@@ -2210,8 +2210,8 @@ export const DE: TDictionary = {
     assessmentForm: {
       defaultFormError: 'Fehler beim Laden des Formulars. Bitte versuche es erneut.',
       error: {
-        title: 'Vortest konnte nicht geladen werden',
-        description: 'Der Vortest konnte nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
+        title: 'Standortbestimmung konnte nicht geladen werden',
+        description: 'Die Standortbestimmung konnte nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
       },
     },
     auth: {
@@ -2253,7 +2253,7 @@ export const DE: TDictionary = {
         assignments: "Aufgaben",
         notes: "Deine Notizen", // Guidelines: informal 'Du' instead of formal 'Sie/Ihre'
         material: "Material",
-        assessment: "Vortest",
+        assessment: "Standortbestimmung",
         preview: "Kurs-Vorschau",
         students: "Studierende", // Guidelines: gender-neutral wording
         coaches: "Coach",
@@ -2384,11 +2384,11 @@ export const DE: TDictionary = {
       },
     },
     enrolledCourse: {
-      noSubmittedAssessment: 'Für diesen Kurs wurde keine Vorkurs-Selbsteinschätzung eingereicht.',
+      noSubmittedAssessment: 'Für diesen Kurs wurde keine Standortbestimmung eingereicht.',
       error: {
         title: 'Fehler',
         description: 'Beim Laden des Kursinhalts ist ein Fehler aufgetreten. Bitte versuche es erneut.',
-        assessmentComponentsLoadFailed: 'Der Vortest konnte nicht geladen werden. Bitte aktualisiere die Seite.',
+        assessmentComponentsLoadFailed: 'Die Standortbestimmung konnte nicht geladen werden. Bitte aktualisiere die Seite.',
         courseEmpty: 'Dieser Kurs hat noch keine Inhalte.',
         notFound: {
           title: 'Kursinhalt nicht gefunden',
@@ -2424,13 +2424,13 @@ export const DE: TDictionary = {
       noCourseSelected: 'Kein Kurs ausgewählt',
       selectCourseToViewAssignments: 'Bitte wähle einen Kurs, um die Aufgaben anzuzeigen',
       selectCourseToViewInteractions: 'Bitte wähle einen Kurs, um die Interaktionen anzuzeigen',
-      noAssessmentFound: 'Keine Vorab-Bewertung gefunden',
+      noAssessmentFound: 'Keine Standortbestimmung gefunden',
       studentInteractions: 'Schüler-Interaktionen',
       noInteractionsFound: 'Keine Interaktionen für diesen Kurs gefunden',
       tabs: {
         assignments: 'Aufgaben',
         interactions: 'Interaktionen',
-        preCourseAssessment: 'Vorab-Bewertung',
+        preCourseAssessment: 'Standortbestimmung',
       },
       error: {
         title: 'Schüler konnte nicht geladen werden',
@@ -2471,7 +2471,7 @@ export const DE: TDictionary = {
       packages: "Pakete",
       categories: "Kategorien",
       topics: "Themen",
-      preCourseAssessmentForm: "Vorbereitungsfragebogen",
+      preCourseAssessmentForm: "Formular zur Standortbestimmung",
       legalTexts: "Rechtliche Texte",
       coachingOffering: "Coaching-Angebot",
       coachingSessions: "Coaching-Sitzungen",
@@ -3844,7 +3844,7 @@ export const DE: TDictionary = {
       },
     },
     preCourseAssessmentForm: {
-      title: "Vortest",
+      title: "Formular zur Standortbestimmung",
       description: "Dieses Formular wird automatisch zu Beginn jedes Kurses angezeigt.",
       formBuilderTab: "Formular-Editor",
       previewTab: "Vorschau",
@@ -3856,14 +3856,14 @@ export const DE: TDictionary = {
       disable: "Deaktivieren",
       disabling: "Wird deaktiviert...",
       toggleError: "Beim Umschalten des Formulars ist ein Fehler aufgetreten.",
-      saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuche es erneut.",
-      saveSuccess: "Vortest erfolgreich gespeichert!",
+      saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      saveSuccess: "Standortbestimmung erfolgreich gespeichert!",
       error: {
-        title: 'Vortest konnte nicht geladen werden',
-        description: 'Der Vortest konnte nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
+        title: 'Standortbestimmung konnte nicht geladen werden',
+        description: 'Die Standortbestimmung konnte nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
         notFound: {
-          title: 'Vortest nicht gefunden',
-          description: 'Der angeforderte Vortest konnte nicht gefunden werden.',
+          title: 'Standortbestimmung nicht gefunden',
+          description: 'Die angeforderte Standortbestimmung konnte nicht gefunden werden.',
         },
       },
     },
