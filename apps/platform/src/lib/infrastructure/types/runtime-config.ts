@@ -16,4 +16,5 @@ export interface RuntimeConfig {
     NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID?: string;
     // Google Search Console site verification token. Optional — unset means no meta tag.
     NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?: string;
+    NEXT_PUBLIC_LOGO_HREF?: string;
 }

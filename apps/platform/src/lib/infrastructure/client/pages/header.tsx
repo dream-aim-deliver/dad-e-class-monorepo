@@ -11,6 +11,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { trpc } from '../trpc/cms-client';
 import { useCountUnreadNotificationsPresenter } from '../hooks/use-count-unread-notifications-presenter';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface HeaderProps {
     platformViewModel: viewModels.TGetPlatformViewModel;
@@ -81,6 +82,7 @@ export default function Header({
 }: HeaderProps) {
     const pathname = usePathname();
     const router = useRouter();
+    const { NEXT_PUBLIC_LOGO_HREF } = useRuntimeConfig();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [isLocaleChanging, setIsLocaleChanging] = useState(false);
     const t = useTranslations('components.navbar');
@@ -170,7 +172,7 @@ export default function Header({
             isLoggedIn={!!session}
             availableLocales={availableLocales}
             locale={locale}
-            logoHref={process.env.NEXT_PUBLIC_LOGO_HREF ? `${process.env.NEXT_PUBLIC_LOGO_HREF}/${locale}` : '/'}
+            logoHref={NEXT_PUBLIC_LOGO_HREF ? `${NEXT_PUBLIC_LOGO_HREF}/${locale}` : '/'}
             onLogin={handleLogin}
             logo={
                 platformViewModel.data.logo?.downloadUrl ? (
