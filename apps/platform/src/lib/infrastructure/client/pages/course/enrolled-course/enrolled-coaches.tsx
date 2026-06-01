@@ -72,6 +72,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         });
 
     const [availableCoachesResponse] = trpc.listCoaches.useSuspenseQuery({
+        publicCoaches: false,
     });
 
     // Set up presenter for transforming the response to view model
