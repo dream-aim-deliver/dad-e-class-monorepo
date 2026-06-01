@@ -11,10 +11,10 @@ export const Home_DE: TDictionary["pages"]["home"] = {
     topicsTitle: 'Angebote nach Thema',
     loadError: {
         title: 'Startseite konnte nicht geladen werden',
-        description: 'Der Inhalt der Startseite konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Der Inhalt der Startseite konnte nicht geladen werden. Bitte versuche es erneut.',
     },
     topicsLoadError: {
         title: 'Themen konnten nicht geladen werden',
-        description: 'Die Themenliste konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Die Themenliste konnte nicht geladen werden. Bitte versuche es erneut.',
     },
 };

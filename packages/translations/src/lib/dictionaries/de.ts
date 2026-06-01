@@ -171,7 +171,7 @@ export const DE: TDictionary = {
     },
     calendar: {
       coachAvailability: 'Coach-Verfügbarkeit',
-      yourMeeting: 'Ihr Meeting',
+      yourMeeting: 'Dein Meeting',
       availability: 'Verfügbarkeit',
       meeting: 'Meeting',
       scheduleSession: 'Sitzung planen',
@@ -190,8 +190,8 @@ export const DE: TDictionary = {
         recurringText: 'Wiederkehrend',
         singleText: 'Einmalig',
         chooseDateText: 'Datum wählen',
-        chooseDaysText: 'Wählen Sie Tage',
-        chooseTimeText: 'Wählen Sie Zeit',
+        chooseDaysText: 'Wähle Tage',
+        chooseTimeText: 'Wähle Zeit',
         startText: 'Start',
         endText: 'Ende',
         expirationDateText: 'Ablaufdatum',
@@ -201,7 +201,7 @@ export const DE: TDictionary = {
         addText: 'Hinzufügen',
         deleteText: 'Löschen',
         deleteAvailabilityText: 'Verfügbarkeit löschen',
-        failedToDeleteText: 'Fehler beim Löschen der Verfügbarkeit. Bitte versuchen Sie es erneut.',
+        failedToDeleteText: 'Fehler beim Löschen der Verfügbarkeit. Bitte versuche es erneut.',
         dateText: 'Datum',
         timeSlotText: 'Zeitslot',
         backText: 'Zurück',
@@ -252,9 +252,9 @@ export const DE: TDictionary = {
       draftBadge: 'Entwurf',
       completedBadge: 'Kurs abgeschlossen',
       cochingSession: 'Coaching-Sitzung(en) gesamt',
-      cochingSessionHint: 'Dies ist die Gesamtanzahl der Coaching-Sitzungen, die Teil dieses Kurses sind. Sie spiegelt nicht wider, wie viele Sie bereits erworben haben oder wie viele noch buchbar sind.',
+      cochingSessionHint: 'Dies ist die Gesamtanzahl der Coaching-Sitzungen, die Teil dieses Kurses sind. Sie spiegelt nicht wider, wie viele du bereits erworben hast oder wie viele noch buchbar sind.',
       availableCoachingSession: 'Verfügbare Coaching-Sitzung(en)',
-      availableCoachingSessionHint: 'Die Anzahl der Coaching-Sitzungen, die Sie in diesem Kurs buchen können.',
+      availableCoachingSessionHint: 'Die Anzahl der Coaching-Sitzungen, die du in diesem Kurs buchen kannst.',
       sale: 'Verkauf',
       sales: 'Verkäufe',
       hours: 'Stunden',
@@ -274,7 +274,7 @@ export const DE: TDictionary = {
       includeCoursesTitle: 'Kurse hinzufügen',
       includedCoursesCount: 'Hinzugefügte Kurse',
       allCoursesTitle: 'Alle Kurse',
-      savingsWithCoachingTooltip: 'Ihre Ersparnis beim Kauf mit inklusivem Coaching',
+      savingsWithCoachingTooltip: 'Deine Ersparnis beim Kauf mit inklusivem Coaching',
     },
     reviewModal: {
       coachingTitle: 'Wie würdest du deinen Coach bewerten?',
@@ -380,7 +380,7 @@ export const DE: TDictionary = {
       skills: 'Deine Fähigkeiten',
       skillsEn: 'Fähigkeiten (Englisch)',
       skillsDe: 'Fähigkeiten (Deutsch)',
-      switchLanguageHint: 'Wechseln Sie zur anderen Sprache, um Fähigkeiten in dieser Sprache hinzuzufügen oder zu bearbeiten',
+      switchLanguageHint: 'Wechsle zur anderen Sprache, um Fähigkeiten in dieser Sprache hinzuzufügen oder zu bearbeiten',
       addSkills: 'Fähigkeiten hinzufügen',
       selectSkills: 'Fähigkeiten auswählen',
       searchSkillsPlaceholder: 'Fähigkeiten suchen',
@@ -402,8 +402,8 @@ export const DE: TDictionary = {
       courseTitle: 'Kurs-Coaching-Sitzungen',
       nextSessionFor: 'Nächste Sitzung für',
       goToLesson: 'Zur Lektion gehen',
-      standaloneTooltip: 'Einzelne Coaching-Sitzungen werden unabhängig erworben. Sie können sie jederzeit bei einem verfügbaren Coach buchen.',
-      courseTooltip: 'Kurs-Coaching-Sitzungen sind in Ihrem Kurs enthalten. Sie sehen die nächste noch nicht gebuchte Sitzung – gebunden an die früheste Lektion im Kurs, die noch eine ausstehende Coaching-Sitzung hat. Klicken Sie, um zur entsprechenden Lektion zu gelangen und bei einem verfügbaren Coach zu buchen.',
+      standaloneTooltip: 'Einzelne Coaching-Sitzungen werden unabhängig erworben. Du kannst sie jederzeit bei einem verfügbaren Coach buchen.',
+      courseTooltip: 'Kurs-Coaching-Sitzungen sind in deinem Kurs enthalten. Du siehst die nächste noch nicht gebuchte Sitzung – gebunden an die früheste Lektion im Kurs, die noch eine ausstehende Coaching-Sitzung hat. Klicke, um zur entsprechenden Lektion zu gelangen und bei einem verfügbaren Coach zu buchen.',
     },
     coachReview: {
       by: 'von',
@@ -436,7 +436,7 @@ export const DE: TDictionary = {
       sessionAvailableSingular: "Sitzung verfügbar",
       sessionAvailablePlural: "Sitzungen verfügbar",
       cancelText: "Abbrechen",
-      tooltip: "Kurs-Coaching-Sitzungen sind an bestimmte Lektionen in Ihrem Kurs gebunden. Nach dem Kauf gehen Sie zur Lektion, um bei einem verfügbaren Coach zu buchen.",
+      tooltip: "Kurs-Coaching-Sitzungen sind an bestimmte Lektionen in deinem Kurs gebunden. Nach dem Kauf gehst du zur Lektion, um bei einem verfügbaren Coach zu buchen.",
     },
     videoPlayer: {
       videoErrorText: 'Video existiert nicht'
@@ -480,7 +480,7 @@ export const DE: TDictionary = {
       yourCourses: 'Deine Angebote',
       error: {
         title: 'Navigation konnte nicht geladen werden',
-        description: 'Die Navigation konnte nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Die Navigation konnte nicht geladen werden. Bitte aktualisiere die Seite.',
       },
     },
     cmsNavbar: {
@@ -488,7 +488,7 @@ export const DE: TDictionary = {
     },
     logoutConfirmation: {
       title: 'Abmelden',
-      message: 'Dies meldet Sie vom Identitätsanbieter ab. Möglicherweise müssen Sie sich in anderen verbundenen Anwendungen erneut authentifizieren.',
+      message: 'Dies meldet dich vom Identitätsanbieter ab. Möglicherweise musst du dich in anderen verbundenen Anwendungen erneut authentifizieren.',
       confirmButton: 'Abmelden',
     },
     footer: {
@@ -500,7 +500,7 @@ export const DE: TDictionary = {
       coursesInformation: 'Kursinformationen',
       error: {
         title: 'Fußzeile konnte nicht geladen werden',
-        description: 'Die Fußzeile konnte nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Die Fußzeile konnte nicht geladen werden. Bitte aktualisiere die Seite.',
       },
     },
     activity: {
@@ -530,7 +530,7 @@ export const DE: TDictionary = {
       allPackagesText: 'All packages',
       showArchivedText: 'Show archived',
       createPackageButton: 'Create Package',
-      savingsTooltip: 'Sie sparen diesen Betrag im Vergleich zum separaten Kauf von Kursen und Coaching-Sitzungen',
+      savingsTooltip: 'Du sparst diesen Betrag im Vergleich zum separaten Kauf von Kursen und Coaching-Sitzungen',
       viewPackage: 'Paket ansehen',
     },
     sideMenu: {
@@ -544,13 +544,13 @@ export const DE: TDictionary = {
       students: 'Student(en)',
       course: 'Kurs',
       coaches: 'Coach(es)',
-      you: 'Sie',
+      you: 'Du',
       createdBy: 'Erstellt von',
       manage: 'Verwalten',
     },
     joinGroup: {
       title: 'Gruppe beitreten',
-      description: 'Geben Sie einen gültigen Gutscheincode ein, um Coach einer Gruppe zu werden',
+      description: 'Gib einen gültigen Gutscheincode ein, um Coach einer Gruppe zu werden',
       joinButton: 'Gruppe beitreten',
       couponCodeLabel: 'Gutscheincode',
       couponCodePlaceholder: 'z.B. ACME_MKTG_2025',
@@ -559,21 +559,21 @@ export const DE: TDictionary = {
       alreadyHasCoachWarning: 'Es gibt bereits einen Coach für diese Gruppe',
       validationErrors: {
         alreadyHasCoach: 'Es gibt bereits einen Coach für diese Gruppe',
-        invalidCode: 'Ungültiger Gutscheincode. Bitte überprüfen Sie ihn und versuchen Sie es erneut.',
-        networkError: 'Netzwerkfehler. Bitte versuchen Sie es später erneut.',
+        invalidCode: 'Ungültiger Gutscheincode. Bitte überprüfe ihn und versuche es erneut.',
+        networkError: 'Netzwerkfehler. Bitte versuche es später erneut.',
       },
     },
     groupsList: {
       title: 'Gruppen',
       allGroups: 'Alle Gruppen',
-      yourGroups: 'Ihre Gruppen',
+      yourGroups: 'Deine Gruppen',
       showMore: 'Mehr anzeigen',
       noGroups: 'Keine Gruppen verfügbar',
-      noGroupsDescription: 'Schauen Sie später nach neuen Gruppen',
-      noYourGroups: 'Sie sind noch keiner Gruppe beigetreten',
-      noYourGroupsDescription: 'Verwenden Sie einen Gutscheincode, um einer Gruppe beizutreten',
+      noGroupsDescription: 'Schau später nach neuen Gruppen',
+      noYourGroups: 'Du bist noch keiner Gruppe beigetreten',
+      noYourGroupsDescription: 'Verwende einen Gutscheincode, um einer Gruppe beizutreten',
       loading: 'Gruppen werden geladen...',
-      loadingYourGroups: 'Ihre Gruppen werden geladen...',
+      loadingYourGroups: 'Deine Gruppen werden geladen...',
     },
     coachingSessionCard: {
       durationText: ' Min.',
@@ -612,31 +612,31 @@ export const DE: TDictionary = {
       coachText: 'Coach',
       standaloneSessionTooltip: 'Dies ist eine einzelne Coaching-Sitzung — unabhängig erworben, nicht an einen Kurs gebunden.',
       courseSessionTooltip: 'Diese Coaching-Sitzung ist mit einem Kurs verbunden.',
-      groupSessionTooltip: 'Dies ist eine Gruppen-Coaching-Sitzung für Ihre Kursgruppe. Alle Gruppenmitglieder nehmen gemeinsam teil.',
+      groupSessionTooltip: 'Dies ist eine Gruppen-Coaching-Sitzung für deine Kursgruppe. Alle Gruppenmitglieder nehmen gemeinsam teil.',
     },
     coachingSessionCancelModal: {
       noText: 'NEIN',
       yesCancelText: 'Ja, Abbrechen',
-      modalText: 'Möchten Sie diese Coaching-Sitzung wirklich abbrechen?',
+      modalText: 'Möchtest du diese Coaching-Sitzung wirklich abbrechen?',
       cancelReasonPlaceholder: 'Gib hier deinen Stornierungsgrund ein...',
-      errorMessage: 'Beim Stornieren der Sitzung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      errorMessage: 'Beim Stornieren der Sitzung ist ein Fehler aufgetreten. Bitte versuche es erneut.',
     },
     coachingSessionRescheduleModal: {
-      modalText: 'Möchten Sie diese Coaching-Sitzung wirklich verschieben? Die aktuelle Sitzung wird storniert.',
+      modalText: 'Möchtest du diese Coaching-Sitzung wirklich verschieben? Die aktuelle Sitzung wird storniert.',
       rescheduleReasonPlaceholder: 'Gib hier deinen Grund für die Verschiebung ein...',
       yesRescheduleText: 'Ja, verschieben',
-      errorMessage: 'Beim Verschieben der Sitzung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      errorMessage: 'Beim Verschieben der Sitzung ist ein Fehler aufgetreten. Bitte versuche es erneut.',
     },
     deleteConfirmationModal: {
       noText: 'NEIN',
       yesDeleteText: 'Ja, Löschen',
-      modalText: 'Sind Sie sicher, dass Sie dieses Element löschen möchten?',
+      modalText: 'Bist du sicher, dass du dieses Element löschen möchtest?',
     },
     assessmentSubmissionConfirmationModal: {
       goBackText: 'Zurück',
       submitText: 'Einreichen',
       title: 'Vortest abschicken?',
-      message: 'Sie können Ihre Antworten nach der Einreichung nicht mehr ändern. Möchten Sie wirklich einreichen?',
+      message: 'Du kannst deine Antworten nach der Einreichung nicht mehr ändern. Möchtest du wirklich einreichen?',
     },
     purchaseAuthModal: {
       title: 'Konto erstellen oder einloggen',
@@ -646,8 +646,8 @@ export const DE: TDictionary = {
     },
     sessionExpirationModal: {
       title: 'Sitzung abgelaufen',
-      message: 'Ihre Sitzung ist aufgrund von Inaktivität abgelaufen. Bitte melden Sie sich erneut an, um fortzufahren.',
-      unsavedChangesWarning: 'Warnung: Sie haben ungespeicherte Änderungen, die verloren gehen.',
+      message: 'Deine Sitzung ist aufgrund von Inaktivität abgelaufen. Bitte melde dich erneut an, um fortzufahren.',
+      unsavedChangesWarning: 'Warnung: Du hast ungespeicherte Änderungen, die verloren gehen.',
       stayLoggedInText: 'Angemeldet bleiben',
       continueAsVisitorText: 'Als Besucher fortfahren',
       logoutText: 'Abmelden',
@@ -729,7 +729,7 @@ export const DE: TDictionary = {
       uploadVideo: {
         choseVideos: "Videos auswählen",
         description: "oder Videos per Drag & Drop reinziehen",
-        processingHelperText: 'Nach dem Hochladen werden Videos im Hintergrund verarbeitet. Während dieser Zeit sehen Nutzer, die den Inhalt aufrufen, die Meldung „Video existiert nicht". Das ist normal und kann einige Minuten dauern. Große Videos (Hunderte von MB oder mehr) können länger dauern. Wenn das Video nach einigen Stunden nicht erschienen ist, wenden Sie sich bitte an den Support.',
+        processingHelperText: 'Nach dem Hochladen werden Videos im Hintergrund verarbeitet. Während dieser Zeit sehen Nutzer, die den Inhalt aufrufen, die Meldung „Video existiert nicht". Das ist normal und kann einige Minuten dauern. Große Videos (Hunderte von MB oder mehr) können länger dauern. Wenn das Video nach einigen Stunden nicht erschienen ist, wende dich bitte an den Support.',
       },
     },
     formRenderer: {
@@ -758,7 +758,7 @@ export const DE: TDictionary = {
       richText: 'Rich-Text',
       typeValidationText: 'Falscher Elementtyp',
       elementValidationText: 'Element ist ungültig',
-      choiceInput: 'Geben Sie Ihre Auswahl ein',
+      choiceInput: 'Gib deine Auswahl ein',
       feedback: 'Feedback',
     },
     lessonHeader: {
@@ -861,7 +861,7 @@ export const DE: TDictionary = {
       readLess: 'Weniger lesen',
     },
     reviewDisplay: {
-      yourReview: 'Ihre Bewertung',
+      yourReview: 'Deine Bewertung',
       close: 'Schließen',
     },
     moduleCompletionModal: {
@@ -1214,11 +1214,11 @@ export const DE: TDictionary = {
         sendMessageText: 'Nachricht senden',
         sendingMessageText: 'Nachricht wird gesendet...',
         messageSentSuccessText: 'Nachricht erfolgreich gesendet!',
-        messageSentErrorText: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
+        messageSentErrorText: 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
         replyPlaceholderText: 'Gebe hier weitere Kommentare ein.',
         addLinkText: 'Link hinzufügen',
         confirmPassTitle: 'Bestätigung: Als bestanden markieren',
-        confirmPassMessage: 'Sind Sie sicher, dass Sie diese Aufgabe als bestanden markieren möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
+        confirmPassMessage: 'Bist du sicher, dass du diese Aufgabe als bestanden markieren möchtest? Diese Aktion kann nicht rückgängig gemacht werden.',
         cancelButton: 'Abbrechen',
         confirmButton: 'Bestätigen',
         orText: 'oder',
@@ -1308,16 +1308,16 @@ export const DE: TDictionary = {
       offersPage: 'Angebots-Seite',
       coachingOfferings: 'Coaching-Angebote',
       yourStudents: 'Deine Schüler',
-      yourProfile: 'Ihr Profil',
+      yourProfile: 'Dein Profil',
       legalTexts: 'Rechtliche Texte',
       yourCoachingSessions: 'Deine Coaching-Sitzungen',
       preCourseAssessmentForm: "Vortest",
-      yourCalendar: "Ihr Kalender",
+      yourCalendar: "Dein Kalender",
       calendar: "Kalender",
       groupCoachingCalendar: "Gruppen-Coaching-Kalender",
       yourReviews: 'Deine Bewertungen',
       coupons: 'Gutscheine',
-      yourCourses: 'Ihre Kurse',
+      yourCourses: 'Deine Kurse',
       groups: 'Gruppen',
       groupLabel: "Gruppe '{name}'",
       coachingSessionReviews: 'Coaching-Sitzungsbewertungen',
@@ -1464,41 +1464,41 @@ export const DE: TDictionary = {
       statusLive: 'Live',
       statusArchived: 'Archiviert',
       publishCourse: 'Kurs veröffentlichen',
-      publishConfirmation: 'Sind Sie sicher, dass Sie diesen Kurs veröffentlichen möchten? Diese Aktion ist irreversibel.',
+      publishConfirmation: 'Bist du sicher, dass du diesen Kurs veröffentlichen möchtest? Diese Aktion ist irreversibel.',
       publishConfirmationTitle: 'Kurs veröffentlichen',
       publishRequirements: 'Veröffentlichungsanforderungen:\n\n1. Erforderliche Kurs-Metadatenfelder:\n   - Selbststudiendauer\n   - Basispreis\n   - Preis inklusive Coachings\n   - Einführung\n\n2. Einführungsvideo:\n   - Der Kurs muss ein Einführungsvideo haben\n\n3. Lektionskomponenten:\n   - Der Kurs muss mindestens ein Modul haben\n   - Das Modul muss mindestens eine Lektion haben\n   - Mindestens eine Lektion muss Lektionskomponenten haben\n\nAll dies muss vorhanden sein, sonst schlägt die Veröffentlichung fehl.',
       publishSuccess: 'Kurs erfolgreich veröffentlicht!',
       publishSuccessTitle: 'Erfolg',
       publishError: 'Fehler beim Veröffentlichen des Kurses',
       publishErrorTitle: 'Veröffentlichung fehlgeschlagen',
-      publishErrorGeneric: 'Beim Veröffentlichen des Kurses ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
-      saveBeforePublish: 'Sie müssen vor dem Veröffentlichen speichern. Bitte speichern Sie zuerst Ihre Änderungen.',
+      publishErrorGeneric: 'Beim Veröffentlichen des Kurses ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+      saveBeforePublish: 'Du musst vor dem Veröffentlichen speichern. Bitte speichere zuerst deine Änderungen.',
       confirmPublish: 'Veröffentlichen',
       archiveCourse: 'Kurs archivieren',
-      archiveConfirmation: 'Sind Sie sicher, dass Sie diesen Kurs archivieren möchten? Studenten können sich nicht mehr anmelden.',
+      archiveConfirmation: 'Bist du sicher, dass du diesen Kurs archivieren möchtest? Studenten können sich nicht mehr anmelden.',
       archiveConfirmationTitle: 'Kurs archivieren',
       archiveSuccess: 'Kurs erfolgreich archiviert!',
       archiveSuccessTitle: 'Erfolg',
       archiveError: 'Fehler beim Archivieren des Kurses',
       archiveErrorTitle: 'Archivierung fehlgeschlagen',
-      archiveErrorGeneric: 'Beim Archivieren des Kurses ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      archiveErrorGeneric: 'Beim Archivieren des Kurses ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       confirmArchive: 'Archivieren',
       deleteCourse: 'Kurs löschen',
-      deleteConfirmation: 'Sind Sie sicher, dass Sie diesen Kurs löschen möchten? Diese Aktion ist PERMANENT und kann nicht rückgängig gemacht werden.',
+      deleteConfirmation: 'Bist du sicher, dass du diesen Kurs löschen möchtest? Diese Aktion ist PERMANENT und kann nicht rückgängig gemacht werden.',
       deleteConfirmationTitle: 'Kurs löschen',
       deleteSuccess: 'Kurs erfolgreich gelöscht!',
       deleteSuccessTitle: 'Erfolg',
       deleteError: 'Fehler beim Löschen des Kurses',
       deleteErrorTitle: 'Löschen fehlgeschlagen',
-      deleteErrorGeneric: 'Beim Löschen des Kurses ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      deleteErrorGeneric: 'Beim Löschen des Kurses ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       confirmDelete: 'Löschen',
       cancel: 'Abbrechen',
       submitForReview: 'Zur Prüfung senden',
-      submitForReviewConfirmation: 'Möchten Sie diesen Kurs wirklich zur Prüfung einreichen? Alle Superadmins werden per E-Mail benachrichtigt.',
+      submitForReviewConfirmation: 'Möchtest du diesen Kurs wirklich zur Prüfung einreichen? Alle Superadmins werden per E-Mail benachrichtigt.',
       submitForReviewConfirmationTitle: 'Zur Prüfung senden',
       submitForReviewSuccess: 'Kurs zur Prüfung eingereicht! Superadmins wurden benachrichtigt.',
       submitForReviewError: 'Fehler beim Einreichen des Kurses zur Prüfung',
-      submitForReviewErrorGeneric: 'Beim Einreichen des Kurses zur Prüfung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      submitForReviewErrorGeneric: 'Beim Einreichen des Kurses zur Prüfung ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       confirmSubmitForReview: 'Senden',
     },
     lessonComponentBar: {
@@ -1726,7 +1726,7 @@ export const DE: TDictionary = {
         packageRequired: 'Bitte wähle ein Paket aus'
       },
       error: {
-        createFailed: 'Gutschein konnte nicht erstellt werden. Bitte versuchen Sie es erneut.'
+        createFailed: 'Gutschein konnte nicht erstellt werden. Bitte versuche es erneut.'
       },
     },
     addTransactionModal: {
@@ -1827,13 +1827,13 @@ export const DE: TDictionary = {
     packagePricingStep: {
       title: 'Preise wählen',
       completePackageTitle: 'Vollständiges Paket',
-      completePackageDescription: 'Legen Sie den Gesamtpreis für Studierende fest, die alle Kurse in diesem Paket kaufen. Der Preis "Mit Coaching" beinhaltet Coaching-Sitzungen, während der Preis "Ohne Coaching" nur den Kurszugang umfasst.',
+      completePackageDescription: 'Lege den Gesamtpreis für Studierende fest, die alle Kurse in diesem Paket kaufen. Der Preis "Mit Coaching" beinhaltet Coaching-Sitzungen, während der Preis "Ohne Coaching" nur den Kurszugang umfasst.',
       withCoachingLabel: 'Mit Coaching',
       withCoachingPlaceholder: 'z.B. 5400 CHF',
       withoutCoachingLabel: 'Ohne Coaching',
       withoutCoachingPlaceholder: 'z.B. 5400 CHF',
       partialDiscountsTitle: 'Teilpaket-Rabatte',
-      partialDiscountsDescription: 'Wenn ein Studierender nur einige der Kurse in diesem Paket kauft (anstatt des gesamten Bündels), können Sie einen prozentualen Rabatt im Vergleich zum Einzelkauf jedes Kurses anbieten. Dieser Rabatt gilt unabhängig davon, ob Coaching enthalten ist oder nicht.',
+      partialDiscountsDescription: 'Wenn ein Studierender nur einige der Kurse in diesem Paket kauft (anstatt des gesamten Bündels), kannst du einen prozentualen Rabatt im Vergleich zum Einzelkauf jedes Kurses anbieten. Dieser Rabatt gilt unabhängig davon, ob Coaching enthalten ist oder nicht.',
       partialDiscountsVisibilityNote: 'Hinweis: Rabatt-Felder erscheinen nur bei Paketen mit 3 oder mehr Kursen, und nur bis zu einem Kurs weniger als die Gesamtzahl. Beispiel: Ein Paket mit 2 Kursen zeigt keine Rabatt-Felder (beide kaufen = Gesamtpaketpreis, einen kaufen = individueller Kurspreis). Ein Paket mit 3 Kursen zeigt ein Feld (für 2 Kurse), da alle 3 den Gesamtpaketpreis ergeben und 1 Kurs den Einzelpreis hat. Ein Paket mit 5 Kursen zeigt Felder für 2, 3 und 4 Kurse. Grundsätzlich: Alle Kurse kaufen nutzt immer den oben angegebenen Gesamtpaketpreis, und ein einzelner Kurs wird zum individuellen Kurspreis berechnet — keines von beiden braucht ein Rabatt-Feld.',
       coursesLabel: 'Kurse',
       discountPlaceholder: 'z.B. 20%',
@@ -1869,7 +1869,7 @@ export const DE: TDictionary = {
         uploadThumbnailLabel: 'Vorschaubild hochladen',
         heroVideoTitle: 'Hero-Video',
         heroVideoDescription: 'Lade ein Video für den Hero-Bereich hoch. Das Video wird prominent auf der Startseite angezeigt.',
-        videoProcessingHelperText: 'Nach dem Hochladen werden Videos im Hintergrund verarbeitet. Während dieser Zeit sehen Nutzer, die den Inhalt aufrufen, die Meldung „Video existiert nicht". Das ist normal und kann einige Minuten dauern. Große Videos (Hunderte von MB oder mehr) können länger dauern. Wenn das Video nach einigen Stunden nicht erschienen ist, wenden Sie sich bitte an den Support.',
+        videoProcessingHelperText: 'Nach dem Hochladen werden Videos im Hintergrund verarbeitet. Während dieser Zeit sehen Nutzer, die den Inhalt aufrufen, die Meldung „Video existiert nicht". Das ist normal und kann einige Minuten dauern. Große Videos (Hunderte von MB oder mehr) können länger dauern. Wenn das Video nach einigen Stunden nicht erschienen ist, wende dich bitte an den Support.',
       },
       coachingDemandSection: {
         heading: 'Coaching On Demand Section',
@@ -1973,26 +1973,26 @@ export const DE: TDictionary = {
       removeCoupon: 'Entfernen',
       proceedToPayment: 'Zur Zahlung',
       invalidCoupon: 'Ungültiger Gutscheincode. Muss Zahlen enthalten.',
-      couponError: 'Gutschein konnte nicht angewendet werden. Bitte versuchen Sie es erneut.',
+      couponError: 'Gutschein konnte nicht angewendet werden. Bitte versuche es erneut.',
       withCoachingSession: 'Mit Coaching Sessions',
       addCoachingHelperText: 'Füge Coaching Sessions zu einem vergünstigten Preis hinzu und erhalte persönliche Unterstützung und Feedback von unseren Experten.',
     },
     checkoutErrors: {
       alreadyOwned: {
         title: 'Bereits gekauft',
-        description: 'Sie haben bereits Zugang zu diesem Inhalt.',
+        description: 'Du hast bereits Zugang zu diesem Inhalt.',
       },
       notFound: {
         title: 'Nicht gefunden',
-        description: 'Der Artikel, den Sie kaufen möchten, wurde nicht gefunden.',
+        description: 'Der Artikel, den du kaufen möchtest, wurde nicht gefunden.',
       },
       notEnrolled: {
         title: 'Nicht eingeschrieben',
-        description: 'Sie müssen im Kurs eingeschrieben sein, um Coaching-Sitzungen zu kaufen.',
+        description: 'Du musst im Kurs eingeschrieben sein, um Coaching-Sitzungen zu kaufen.',
       },
       alreadyPurchased: {
         title: 'Bereits gekauft',
-        description: 'Sie haben bereits Coaching für diese Komponente gekauft.',
+        description: 'Du hast bereits Coaching für diese Komponente gekauft.',
       },
       couponNotFound: {
         title: 'Ungültiger Gutschein',
@@ -2012,13 +2012,13 @@ export const DE: TDictionary = {
       },
       genericError: {
         title: 'Fehler',
-        description: 'Beim Checkout ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+        description: 'Beim Checkout ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       },
     },
     schedulingErrors: {
       notAuthenticated: {
         title: 'Anmeldung erforderlich',
-        description: 'Bitte melden Sie sich an, um eine Coaching-Sitzung zu planen.',
+        description: 'Bitte melde dich an, um eine Coaching-Sitzung zu planen.',
       },
       notStudent: {
         title: 'Nicht berechtigt',
@@ -2030,11 +2030,11 @@ export const DE: TDictionary = {
       },
       sessionNotUnscheduled: {
         title: 'Sitzung nicht verfügbar',
-        description: 'Diese Coaching-Sitzung ist nicht mehr zur Buchung verfügbar. Bitte wählen Sie eine andere Sitzung.',
+        description: 'Diese Coaching-Sitzung ist nicht mehr zur Buchung verfügbar. Bitte wähle eine andere Sitzung.',
       },
       sessionInPast: {
         title: 'Ungültige Zeit',
-        description: 'Eine Sitzung in der Vergangenheit kann nicht geplant werden. Bitte wählen Sie einen zukünftigen Zeitpunkt.',
+        description: 'Eine Sitzung in der Vergangenheit kann nicht geplant werden. Bitte wähle einen zukünftigen Zeitpunkt.',
       },
       insufficientAdvanceNotice: {
         title: 'Zu kurzfristig',
@@ -2050,27 +2050,27 @@ export const DE: TDictionary = {
       },
       coachUnavailable: {
         title: 'Coach nicht verfügbar',
-        description: 'Der Coach ist zum ausgewählten Zeitpunkt nicht verfügbar. Bitte wählen Sie einen anderen Zeitslot.',
+        description: 'Der Coach ist zum ausgewählten Zeitpunkt nicht verfügbar. Bitte wähle einen anderen Zeitslot.',
       },
       sessionOverlap: {
         title: 'Zeitkonflikt',
-        description: 'Der Coach hat bereits eine Sitzung zu diesem Zeitpunkt. Bitte wählen Sie einen anderen Zeitpunkt.',
+        description: 'Der Coach hat bereits eine Sitzung zu diesem Zeitpunkt. Bitte wähle einen anderen Zeitpunkt.',
       },
       coachSessionOverlap: {
         title: 'Coach hat Terminkonflikt',
-        description: 'Der Coach hat bereits eine Coaching-Sitzung (geplant oder ausstehend) zu diesem Zeitpunkt. Bitte wählen Sie einen anderen Zeitslot.',
+        description: 'Der Coach hat bereits eine Coaching-Sitzung (geplant oder ausstehend) zu diesem Zeitpunkt. Bitte wähle einen anderen Zeitslot.',
       },
       forbidden: {
         title: 'Zugriff verweigert',
-        description: 'Sie haben keine Berechtigung für diese Aktion.',
+        description: 'Du hast keine Berechtigung für diese Aktion.',
       },
       coachNotAssignedToGroup: {
         title: 'Coach nicht zugewiesen',
-        description: 'Sie sind nicht als Coach für diese Gruppe zugewiesen.',
+        description: 'Du bist nicht als Coach für diese Gruppe zugewiesen.',
       },
       courseCreatorNotAuthorized: {
         title: 'Nicht berechtigt',
-        description: 'Sie sind nicht berechtigt, Sitzungen für diesen Kurs zu erstellen.',
+        description: 'Du bist nicht berechtigt, Sitzungen für diesen Kurs zu erstellen.',
       },
       groupNotFound: {
         title: 'Gruppe nicht gefunden',
@@ -2094,11 +2094,11 @@ export const DE: TDictionary = {
       },
       platformIdRequired: {
         title: 'Plattformfehler',
-        description: 'Plattforminformationen fehlen. Bitte versuchen Sie es erneut.',
+        description: 'Plattforminformationen fehlen. Bitte versuche es erneut.',
       },
       invalidStartTimeFormat: {
         title: 'Ungültiges Zeitformat',
-        description: 'Das Startzeitformat der Sitzung ist ungültig. Bitte wählen Sie eine gültige Zeit.',
+        description: 'Das Startzeitformat der Sitzung ist ungültig. Bitte wähle eine gültige Zeit.',
       },
       cannotLinkStandaloneSession: {
         title: 'Verknüpfung nicht möglich',
@@ -2126,17 +2126,17 @@ export const DE: TDictionary = {
       },
       briefingRequired: {
         title: 'Briefing erforderlich',
-        description: 'Bitte geben Sie ein Briefing für Ihren Coach ein.',
+        description: 'Bitte gib ein Briefing für deinen Coach ein.',
       },
       genericError: {
         title: 'Planung fehlgeschlagen',
-        description: 'Bei der Planung Ihrer Sitzung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+        description: 'Bei der Planung deiner Sitzung ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       },
     },
     availabilityErrors: {
       missingTimes: {
         title: 'Fehlende Zeitauswahl',
-        description: 'Bitte wählen Sie sowohl Start- als auch Endzeit aus.',
+        description: 'Bitte wähle sowohl Start- als auch Endzeit aus.',
       },
       invalidTimeRange: {
         title: 'Ungültiger Zeitraum',
@@ -2148,7 +2148,7 @@ export const DE: TDictionary = {
       },
       genericError: {
         title: 'Verfügbarkeit konnte nicht hinzugefügt werden',
-        description: 'Beim Hinzufügen der Verfügbarkeit ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+        description: 'Beim Hinzufügen der Verfügbarkeit ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       },
     },
     sendNotificationModal: {
@@ -2157,7 +2157,7 @@ export const DE: TDictionary = {
       step3Title: 'Benachrichtigung an %{count} Empfänger gesendet',
       notificationContent: 'Benachrichtigungsinhalt',
       messageLabel: 'Nachricht (max. 120 Zeichen)',
-      messagePlaceholder: 'Geben Sie hier Ihre Nachricht ein',
+      messagePlaceholder: 'Gib hier deine Nachricht ein',
       linkTitleLabel: 'Link-Titel',
       linkTitlePlaceholder: 'z.B. Kurs ansehen',
       urlLabel: 'Url',
@@ -2174,7 +2174,7 @@ export const DE: TDictionary = {
       dateAndTime: 'Datum und Uhrzeit',
       validationErrors: {
         messageRequired: 'Nachricht ist erforderlich (max. 120 Zeichen)',
-        urlInvalid: 'Bitte geben Sie eine gültige URL ein',
+        urlInvalid: 'Bitte gib eine gültige URL ein',
       },
     },
     orderHistoryCard: {
@@ -2224,7 +2224,7 @@ export const DE: TDictionary = {
     },
     errorBoundary: {
       title: 'Etwas ist schiefgelaufen',
-      description: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
+      description: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.',
     },
     course: {
       completedPanel: {
@@ -2290,12 +2290,12 @@ export const DE: TDictionary = {
         save: 'Senden',
         saving: 'Wird gesendet...',
         progressSaved: 'Fortschritt erfolgreich gespeichert!',
-        saveFailed: 'Fortschritt konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.',
-        validationTextInput: 'Bitte füllen Sie das Textfeld aus, bevor Sie speichern.',
-        validationSingleChoice: 'Bitte wählen Sie eine Option aus, bevor Sie speichern.',
-        validationMultiCheck: 'Bitte wählen Sie mindestens eine Option aus, bevor Sie speichern.',
-        validationOneOutOfThree: 'Bitte wählen Sie in jeder Zeile eine Option aus, bevor Sie speichern.',
-        validationUploadFiles: 'Bitte laden Sie mindestens eine Datei hoch, bevor Sie speichern.',
+        saveFailed: 'Fortschritt konnte nicht gespeichert werden. Bitte versuche es erneut.',
+        validationTextInput: 'Bitte fülle das Textfeld aus, bevor du speicherst.',
+        validationSingleChoice: 'Bitte wähle eine Option aus, bevor du speicherst.',
+        validationMultiCheck: 'Bitte wähle mindestens eine Option aus, bevor du speicherst.',
+        validationOneOutOfThree: 'Bitte wähle in jeder Zeile eine Option aus, bevor du speicherst.',
+        validationUploadFiles: 'Bitte lade mindestens eine Datei hoch, bevor du speicherst.',
       },
       enrolledCoaches: {
         title: 'Coaches',
@@ -2312,9 +2312,9 @@ export const DE: TDictionary = {
         noCoachesAssigned: 'Diesem Kurs sind noch keine Coaches zugewiesen.',
         noCoachesFound: 'Keine Coaches gefunden, die deiner Suche entsprechen.',
         confirmAddTitle: 'Coach zum Kurs hinzufügen',
-        confirmAddMessage: 'Möchten Sie diesen Coach wirklich zum Kurs hinzufügen?',
+        confirmAddMessage: 'Möchtest du diesen Coach wirklich zum Kurs hinzufügen?',
         confirmRemoveTitle: 'Coach aus Kurs entfernen',
-        confirmRemoveMessage: 'Möchten Sie diesen Coach wirklich aus dem Kurs entfernen?',
+        confirmRemoveMessage: 'Möchtest du diesen Coach wirklich aus dem Kurs entfernen?',
         confirmButton: 'Bestätigen',
         cancelButton: 'Abbrechen',
         addingCoach: 'Coach wird hinzugefügt...',
@@ -2331,10 +2331,10 @@ export const DE: TDictionary = {
       lessonCoaches: {
         error: {
           title: 'Coaches konnten nicht geladen werden',
-          description: 'Die verfügbaren Coaches konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+          description: 'Die verfügbaren Coaches konnten nicht geladen werden. Bitte aktualisiere die Seite.',
         },
-        noCoachesAvailable: 'Ihre Coaching-Sitzung ist verfügbar, aber derzeit sind diesem Kurs keine Coaches zugewiesen. Bitte versuchen Sie es später erneut oder wenden Sie sich an den Support.',
-        lessonCoachingTooltip: 'Diese Coaching-Sitzung ist Teil Ihrer Kurslektion. Wählen Sie unten einen Coach aus, um sie zu buchen.',
+        noCoachesAvailable: 'Deine Coaching-Sitzung ist verfügbar, aber derzeit sind diesem Kurs keine Coaches zugewiesen. Bitte versuche es später erneut oder wende dich an den Support.',
+        lessonCoachingTooltip: 'Diese Coaching-Sitzung ist Teil deiner Kurslektion. Wähle unten einen Coach aus, um sie zu buchen.',
       },
       groups: {
         title: 'Gruppen',
@@ -2409,7 +2409,7 @@ export const DE: TDictionary = {
       lastAssignment: 'Letzte Aufgabe',
       viewDetails: 'Details anzeigen',
       loadError: 'Fehler beim Laden der Schüler',
-      tryAgain: 'Bitte versuchen Sie es erneut',
+      tryAgain: 'Bitte versuche es erneut',
       noStudents: 'Du hast noch keine Schüler',
       noStudentsDescription: 'Schüler werden hier angezeigt, sobald sie sich für deine Kurse anmelden',
       noStudentsFound: 'Keine Schüler gefunden...',
@@ -2492,7 +2492,7 @@ export const DE: TDictionary = {
       yourCoachingSessions: "Deine Coaching-Sitzungen",
       upcoming: "Bevorstehende",
       ended: "Beendet",
-      noSessionsFound: "Sie haben noch keine Sitzungen.",
+      noSessionsFound: "Du hast noch keine Sitzungen.",
       loadMore: "Mehr laden",
       confirmAcceptance: "Akzeptanz bestätigen",
       confirmAcceptanceMessage: "Bist du sicher, dass du diese Coaching-Sitzungsanfrage annehmen möchtest?",
@@ -2587,15 +2587,15 @@ export const DE: TDictionary = {
         priceIncludingCoachingsPlaceholder: 'Preis mit Coachings eingeben',
         priceIncludingCoachingsHelper: 'Preis inklusive Coaching-Sitzungen',
       },
-      introductionRequiredForPreview: 'Bitte füllen Sie den Einführungstext aus, bevor Sie die Vorschau anzeigen.',
-      outlineRequiredForPreview: 'Bitte fügen Sie mindestens einen Gliederungspunkt hinzu, bevor Sie die Vorschau anzeigen.',
-      outlineItemsIncomplete: 'Bitte füllen Sie Titel und Inhalt für alle Gliederungspunkte aus, bevor Sie die Vorschau anzeigen.',
-      titleRequiredForPreview: 'Bitte füllen Sie den Angebotstitel aus, bevor Sie die Vorschau anzeigen.',
-      descriptionRequiredForPreview: 'Bitte füllen Sie die Angebotsbeschreibung aus, bevor Sie die Vorschau anzeigen.',
-      durationRequiredForPreview: 'Bitte geben Sie eine gültige Dauer ein, bevor Sie die Vorschau anzeigen.',
-      imageRequiredForPreview: 'Bitte laden Sie ein Angebotsbild hoch, bevor Sie die Vorschau anzeigen.',
-      modulesRequiredForPreview: 'Bitte fügen Sie mindestens ein Modul hinzu, bevor Sie die Vorschau anzeigen.',
-      lessonsRequiredForPreview: 'Bitte fügen Sie mindestens eine Lektion oder einen Meilenstein zu einem Modul hinzu, bevor Sie die Vorschau anzeigen.',
+      introductionRequiredForPreview: 'Bitte fülle den Einführungstext aus, bevor du die Vorschau anzeigst.',
+      outlineRequiredForPreview: 'Bitte füge mindestens einen Gliederungspunkt hinzu, bevor du die Vorschau anzeigst.',
+      outlineItemsIncomplete: 'Bitte fülle Titel und Inhalt für alle Gliederungspunkte aus, bevor du die Vorschau anzeigst.',
+      titleRequiredForPreview: 'Bitte fülle den Angebotstitel aus, bevor du die Vorschau anzeigst.',
+      descriptionRequiredForPreview: 'Bitte fülle die Angebotsbeschreibung aus, bevor du die Vorschau anzeigst.',
+      durationRequiredForPreview: 'Bitte gib eine gültige Dauer ein, bevor du die Vorschau anzeigst.',
+      imageRequiredForPreview: 'Bitte lade ein Angebotsbild hoch, bevor du die Vorschau anzeigst.',
+      modulesRequiredForPreview: 'Bitte füge mindestens ein Modul hinzu, bevor du die Vorschau anzeigst.',
+      lessonsRequiredForPreview: 'Bitte füge mindestens eine Lektion oder einen Meilenstein zu einem Modul hinzu, bevor du die Vorschau anzeigst.',
       error: {
         title: 'Kurs konnte nicht geladen werden',
         description: 'Die Kursdaten konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
@@ -2644,7 +2644,7 @@ export const DE: TDictionary = {
       emptyState: 'Du hast noch keine Angebote.',
       error: {
         title: 'Kursfehler',
-        description: 'Ihre Kurse konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Deine Kurse konnten nicht geladen werden. Bitte aktualisiere die Seite.',
       },
     },
     profile: {
@@ -2661,14 +2661,14 @@ export const DE: TDictionary = {
       emailRequired: 'E-Mail ist erforderlich',
       bioRequired: 'Biografie ist erforderlich',
       bioTooLong: 'Biografie darf maximal 280 Zeichen lang sein',
-      linkedinInvalid: 'Bitte geben Sie eine gültige LinkedIn-URL ein (z.B. https://linkedin.com/in/benutzername)',
-      portfolioInvalid: 'Bitte geben Sie eine gültige Portfolio-Website-URL ein',
+      linkedinInvalid: 'Bitte gib eine gültige LinkedIn-URL ein (z.B. https://linkedin.com/in/benutzername)',
+      portfolioInvalid: 'Bitte gib eine gültige Portfolio-Website-URL ein',
       applyToBecomeCoach: 'Bewerbung als Coach',
       coachApplicationTitle: 'Bewerbung als Coach',
-      coachApplicationDescription: 'Füllen Sie Ihr berufliches Profil aus, um sich als Coach zu bewerben. Ein Lebenslauf ist für Ihre Bewerbung erforderlich.',
+      coachApplicationDescription: 'Fülle dein berufliches Profil aus, um dich als Coach zu bewerben. Ein Lebenslauf ist für deine Bewerbung erforderlich.',
       cvRequiredForApplication: 'Lebenslauf ist für die Coach-Bewerbung erforderlich',
-      applicationSubmittedSuccessfully: 'Ihre Bewerbung wurde erfolgreich eingereicht. Wir werden sie prüfen und uns bald bei Ihnen melden.',
-      applicationRateLimitExceeded: 'Sie können sich maximal dreimal pro Monat bewerben. Ihre Bewerbung wurde nicht eingereicht.',
+      applicationSubmittedSuccessfully: 'Deine Bewerbung wurde erfolgreich eingereicht. Wir werden sie prüfen und uns bald bei dir melden.',
+      applicationRateLimitExceeded: 'Du kannst dich maximal dreimal pro Monat bewerben. Deine Bewerbung wurde nicht eingereicht.',
       unsavedChangesDialog: {
         title: 'Ungespeicherte Änderungen',
         description: 'Du hast ungespeicherte Änderungen. Möchtest du sie speichern oder verwerfen?',
@@ -2677,26 +2677,26 @@ export const DE: TDictionary = {
       },
       loadError: {
         title: 'Profil konnte nicht geladen werden',
-        description: 'Deine Profildaten konnten nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Deine Profildaten konnten nicht geladen werden. Bitte versuche es erneut.',
       },
       languagesLoadError: {
         title: 'Sprachen konnten nicht geladen werden',
-        description: 'Die verfügbaren Sprachen konnten nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Die verfügbaren Sprachen konnten nicht geladen werden. Bitte versuche es erneut.',
       },
       languagesMissingError: {
         title: 'Sprachdaten fehlen',
-        description: 'Die erforderlichen Sprachoptionen sind nicht verfügbar. Bitte versuchen Sie es erneut.',
+        description: 'Die erforderlichen Sprachoptionen sind nicht verfügbar. Bitte versuche es erneut.',
       },
     },
     aboutPage: {
       title: 'Über uns',
       loadError: {
         title: 'Seite konnte nicht geladen werden',
-        description: 'Der Inhalt der Über-uns-Seite konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Der Inhalt der Über-uns-Seite konnte nicht geladen werden. Bitte versuche es erneut.',
       },
       contentError: {
         title: 'Fehler bei der Inhaltsanzeige',
-        description: 'Beim Anzeigen des Seiteninhalts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+        description: 'Beim Anzeigen des Seiteninhalts ist ein Problem aufgetreten. Bitte versuche es erneut.',
       },
     },
     impressum: {
@@ -2748,11 +2748,11 @@ export const DE: TDictionary = {
       title: 'Angebotsinformationen',
       loadError: {
         title: 'Angebotsinformationen konnten nicht geladen werden',
-        description: 'Die Angebotsinformationen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Die Angebotsinformationen konnten nicht geladen werden. Bitte aktualisiere die Seite.',
       },
       contentError: {
         title: 'Fehler bei der Inhaltsanzeige',
-        description: 'Der Inhalt der Angebotsinformationen konnte nicht angezeigt werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Der Inhalt der Angebotsinformationen konnte nicht angezeigt werden. Bitte aktualisiere die Seite.',
       },
     },
     studentCoachingSessions: {
@@ -2760,13 +2760,13 @@ export const DE: TDictionary = {
       upcoming: 'Demnächst',
       ended: 'Beendet',
       available: 'Verfügbar',
-      availableSessionsDescription: 'Nehmen Sie an Gruppen-Coachings teil oder buchen Sie eine 1:1-Sitzung mit Ihrem Coach.',
+      availableSessionsDescription: 'Nimm an Gruppen-Coachings teil oder buche eine 1:1-Sitzung mit deinem Coach.',
       noCoachesFound: 'Du hast noch keine Coaches',
       noCoachesDescription: 'Entdecke verfügbare Coaches und buche deine erste Sitzung.',
       exploreCoaches: 'Entdecke unsere Coaches',
-      yourPastCoaches: 'Ihre vergangenen Coaches',
+      yourPastCoaches: 'Deine vergangenen Coaches',
       viewAllCoaches: 'Alle Coaches ansehen',
-      noSessionsFound: 'Sie haben derzeit keine geplanten Sitzungen.',
+      noSessionsFound: 'Du hast derzeit keine geplanten Sitzungen.',
       sessionWithCoach: 'Sitzung mit {coachName}',
       sessionWithGroup: 'Gruppensitzung',
       viewCoachProfile: 'Coach-Profil anzeigen',
@@ -2786,7 +2786,7 @@ export const DE: TDictionary = {
       asStudent: 'Als Teilnehmer',
       error: {
         title: 'Fehler bei den Coaching-Sitzungen',
-        description: 'Ihre Coaching-Sitzungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Deine Coaching-Sitzungen konnten nicht geladen werden. Bitte aktualisiere die Seite.',
       },
     },
     userDashboard: {
@@ -2797,16 +2797,16 @@ export const DE: TDictionary = {
       yourCourses: "Deine Kurse",
       createCourse: "Kurs erstellen",
       viewAllCourses: "Alle Kurse anzeigen",
-      errorAccess: "Zugriff verweigert. Sie haben keine Berechtigung, auf das Dashboard zuzugreifen.",
-      errorFailed: "Fehler beim Laden der Dashboard-Daten. Bitte versuchen Sie es später erneut.",
+      errorAccess: "Zugriff verweigert. Du hast keine Berechtigung, auf das Dashboard zuzugreifen.",
+      errorFailed: "Fehler beim Laden der Dashboard-Daten. Bitte versuche es später erneut.",
       duplicatingCourse: "Kurs wird dupliziert, bitte warten...",
       duplicateSuccess: "Kurs erfolgreich dupliziert!",
-      duplicateError: "Fehler beim Duplizieren des Kurses. Bitte versuchen Sie es erneut.",
+      duplicateError: "Fehler beim Duplizieren des Kurses. Bitte versuche es erneut.",
       coupon: {
         error: {
           redeemFailedTitle: "Gutscheineinlösung fehlgeschlagen",
           redeemFailed: "Gutschein konnte nicht eingelöst werden",
-          redeemFailedGeneric: "Der Gutscheincode konnte nicht eingelöst werden. Bitte überprüfen Sie den Code und versuchen Sie es erneut.",
+          redeemFailedGeneric: "Der Gutscheincode konnte nicht eingelöst werden. Bitte überprüfe den Code und versuche es erneut.",
         },
         packageCoursesCount: "Paket mit {count} Kursen",
       },
@@ -2814,14 +2814,14 @@ export const DE: TDictionary = {
     notifications: {
       error: {
         title: 'Fehler bei Benachrichtigungen',
-        description: 'Ihre Benachrichtigungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Deine Benachrichtigungen konnten nicht geladen werden. Bitte aktualisiere die Seite.',
       },
     },
     manageTopics: {
       title: 'Themen verwalten (aka Fähigkeiten)',
       description: 'Maximal 25 Themen pro Plattform',
       createTopic: 'Neues Thema',
-      deleteTopicConfirmation: 'Sind Sie sicher, dass Sie dieses Thema löschen möchten?',
+      deleteTopicConfirmation: 'Bist du sicher, dass du dieses Thema löschen möchtest?',
       error: {
         title: 'Themen konnten nicht geladen werden',
         description: 'Die Themen konnten nicht geladen werden. Bitte aktualisiere die Seite oder kontaktiere den Support.',
@@ -2881,11 +2881,11 @@ export const DE: TDictionary = {
       },
       helperText: {
         visibilityTitle: 'Sichtbarkeit auf der Angebotsseite',
-        visibilityDescription: 'Pakete werden nicht automatisch auf der öffentlichen Angebotsseite angezeigt. Um ein Paket sichtbar zu machen, müssen Sie es explizit im Angebotsseiten-Editor (CMS → Angebotsseite) für jede Sprache auswählen, in der es erscheinen soll.',
+        visibilityDescription: 'Pakete werden nicht automatisch auf der öffentlichen Angebotsseite angezeigt. Um ein Paket sichtbar zu machen, musst du es explizit im Angebotsseiten-Editor (CMS → Angebotsseite) für jede Sprache auswählen, in der es erscheinen soll.',
         languageTitle: 'Sprachunabhängigkeit',
         languageDescription: 'Pakete sind bewusst nicht direkt mit einer bestimmten Sprache verknüpft – nur die zugehörigen Kurse haben Spracheinstellungen. Daher werden hier alle Pakete unabhängig von der aktuell ausgewählten Inhaltssprache angezeigt.',
         badgeTitle: 'Veröffentlicht-Badge',
-        badgeDescription: 'Das Badge „Veröffentlicht" bedeutet, dass das Paket aktiv und kaufbar ist – aber nicht, dass es auf der Angebotsseite sichtbar ist. Dazu müssen Sie es im Angebotsseiten-Editor (CMS → Angebotsseite) hinzufügen.',
+        badgeDescription: 'Das Badge „Veröffentlicht" bedeutet, dass das Paket aktiv und kaufbar ist – aber nicht, dass es auf der Angebotsseite sichtbar ist. Dazu musst du es im Angebotsseiten-Editor (CMS → Angebotsseite) hinzufügen.',
       },
     },
     listPlatforms: {
@@ -2988,7 +2988,7 @@ export const DE: TDictionary = {
     },
     manageOffersPage: {
       title: 'Seite „Angebote verwalten“',
-      description: 'Passen Sie den Inhalt und das Layout Ihrer Angebotsseite an',
+      description: 'Passe den Inhalt und das Layout deiner Angebotsseite an',
       save: 'Änderungen speichern',
       saving: 'Speichert…',
       saved: 'Änderungen erfolgreich gespeichert',
@@ -3000,7 +3000,7 @@ export const DE: TDictionary = {
         description: 'Beim Laden der Angebotsseite ist ein Fehler aufgetreten',
         unauthorized: {
           title: 'Zugriff verweigert',
-          description: 'Sie haben keine Berechtigung, diese Seite aufzurufen',
+          description: 'Du hast keine Berechtigung, diese Seite aufzurufen',
         },
         notFound: {
           title: 'Nicht gefunden',
@@ -3010,7 +3010,7 @@ export const DE: TDictionary = {
     },
     manageCoachingPage: {
       title: 'Seite „Coaching verwalten"',
-      description: 'Passen Sie den Inhalt und das Layout Ihrer Coaching-Seite an',
+      description: 'Passe den Inhalt und das Layout deiner Coaching-Seite an',
       save: 'Änderungen speichern',
       saving: 'Speichert…',
       saved: 'Änderungen erfolgreich gespeichert',
@@ -3022,7 +3022,7 @@ export const DE: TDictionary = {
         description: 'Beim Laden der Coaching-Seite ist ein Fehler aufgetreten',
         unauthorized: {
           title: 'Zugriff verweigert',
-          description: 'Sie haben keine Berechtigung, diese Seite aufzurufen',
+          description: 'Du hast keine Berechtigung, diese Seite aufzurufen',
         },
         notFound: {
           title: 'Nicht gefunden',
@@ -3310,7 +3310,7 @@ export const DE: TDictionary = {
       error: {
         kaboom: {
           title: 'Fehler',
-          description: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.',
+          description: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.',
         },
         notFound: {
           title: 'Paket nicht gefunden',
@@ -3318,8 +3318,8 @@ export const DE: TDictionary = {
         },
       },
       relatedPackages: {
-        title: 'Andere Pakete, die Ihnen gefallen könnten',
-        subtitle: 'Vielleicht ist hier etwas für Sie dabei? Wenn nicht, können Sie hier alle Angebote finden.',
+        title: 'Andere Pakete, die dir gefallen könnten',
+        subtitle: 'Vielleicht ist hier etwas für dich dabei? Wenn nicht, kannst du hier alle Angebote finden.',
         findAllOffers: 'alle Angebote hier finden',
       },
       packageDetails: 'Paket-Details',
@@ -3329,7 +3329,7 @@ export const DE: TDictionary = {
       completePackage: 'Komplettes Paket',
       getAllCoursesTogether: 'Alle Kurse zusammen erhalten',
       buyCompletePackageTitle: 'Komplettes Paket kaufen',
-      buyCompletePackageDescription: 'Hier erhalten Sie alles im Paket enthalten. Sie können dadurch schrittweise Ihr gesamtes Erscheinungsbild mit einem Key Visual, neuem Branding, einer Website und entsprechenden Videoinhalten umsetzen.',
+      buyCompletePackageDescription: 'Hier erhältst du alles im Paket enthalten. Du kannst dadurch schrittweise dein gesamtes Erscheinungsbild mit einem Key Visual, neuem Branding, einer Website und entsprechenden Videoinhalten umsetzen.',
     },
     coupons: {
       filterButton: 'Filtern',
@@ -3372,9 +3372,9 @@ export const DE: TDictionary = {
       error: {
         title: 'Fehler',
         description: 'Beim Laden der Coupons ist ein Fehler aufgetreten.',
-        createFailed: 'Coupon konnte nicht erstellt werden. Bitte versuchen Sie es erneut.',
-        revokeFailed: 'Coupon konnte nicht widerrufen werden. Bitte versuchen Sie es erneut.',
-        unauthorized: 'Sie haben keine Berechtigung, diesen Coupon zu widerrufen.',
+        createFailed: 'Coupon konnte nicht erstellt werden. Bitte versuche es erneut.',
+        revokeFailed: 'Coupon konnte nicht widerrufen werden. Bitte versuche es erneut.',
+        unauthorized: 'Du hast keine Berechtigung, diesen Coupon zu widerrufen.',
         notFound: 'Coupon nicht gefunden.',
         kaboom: {
           title: 'Fehler',
@@ -3591,7 +3591,7 @@ export const DE: TDictionary = {
       },
       coachingOfferingsError: {
         title: 'Coaching-Angebote konnten nicht geladen werden',
-        description: 'Die Coaching-Angebote konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Die Coaching-Angebote konnten nicht geladen werden. Bitte aktualisiere die Seite.',
       },
       submitError: {
         title: 'Übermittlung fehlgeschlagen',
@@ -3637,7 +3637,7 @@ export const DE: TDictionary = {
       title: 'Fußzeile verwalten',
       description: 'Aktualisiere den Fußzeileninhalt für deine Plattform',
       footerContentTitle: 'Fußzeileninhalt',
-      languageIndependentNote: 'Hinweis: Der Fußzeileninhalt wird für alle Sprachen der Plattform geteilt. Bitte beachten Sie, dass es bis zu 15 Minuten dauern kann, bis die Änderungen im System angezeigt werden.',
+      languageIndependentNote: 'Hinweis: Der Fußzeileninhalt wird für alle Sprachen der Plattform geteilt. Bitte beachte, dass es bis zu 15 Minuten dauern kann, bis die Änderungen im System angezeigt werden.',
       saveButton: 'Änderungen speichern',
       saving: 'Änderungen werden gespeichert...',
       saveSuccess: 'Fußzeileninhalt erfolgreich gespeichert!',
@@ -3725,7 +3725,7 @@ export const DE: TDictionary = {
       description: 'Verwalte Plattform-Transaktionen und Zahlungen',
       deleteModal: {
         title: 'Transaktion löschen',
-        message: 'Sind Sie sicher, dass Sie diese Transaktion löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
+        message: 'Bist du sicher, dass du diese Transaktion löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.',
         confirm: 'Löschen',
         cancel: 'Abbrechen',
         deleting: 'Wird gelöscht...',
@@ -3733,9 +3733,9 @@ export const DE: TDictionary = {
       error: {
         title: 'Fehler',
         description: 'Beim Laden der Transaktionen ist ein Fehler aufgetreten.',
-        createFailed: 'Fehler beim Erstellen der Transaktion. Bitte versuchen Sie es erneut.',
-        deleteFailed: 'Fehler beim Löschen der Transaktion. Bitte versuchen Sie es erneut.',
-        unauthorized: 'Sie sind nicht berechtigt, diese Transaktion zu löschen.',
+        createFailed: 'Fehler beim Erstellen der Transaktion. Bitte versuche es erneut.',
+        deleteFailed: 'Fehler beim Löschen der Transaktion. Bitte versuche es erneut.',
+        unauthorized: 'Du bist nicht berechtigt, diese Transaktion zu löschen.',
         notFound: {
           title: 'Nicht gefunden',
           description: 'Die angeforderten Transaktionen konnten nicht gefunden werden.',
@@ -3751,12 +3751,12 @@ export const DE: TDictionary = {
       },
       invoice: {
         transactionNotFound: 'Transaktion nicht gefunden. Rechnung kann nicht erstellt werden.',
-        coachDataFetchFailed: 'Fehler beim Laden der Coach-Daten. Bitte versuchen Sie es erneut.',
+        coachDataFetchFailed: 'Fehler beim Laden der Coach-Daten. Bitte versuche es erneut.',
         coachDataMissing: 'Das Coach-Profil ist unvollständig. Vor- und Nachname sind erforderlich, um eine Rechnung zu erstellen.',
-        platformDataMissing: 'Die Unternehmensinformationen der Plattform sind unvollständig. Bitte aktualisieren Sie die Plattform-Einstellungen mit Firmenname, Adresse und UID.',
+        platformDataMissing: 'Die Unternehmensinformationen der Plattform sind unvollständig. Bitte aktualisiere die Plattform-Einstellungen mit Firmenname, Adresse und UID.',
         generationFailedTitle: 'Rechnungserstellung fehlgeschlagen',
         generationFailed: 'Fehler beim Erstellen der Rechnung',
-        generationFailedGeneric: 'Beim Erstellen der Rechnung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+        generationFailedGeneric: 'Beim Erstellen der Rechnung ist ein Fehler aufgetreten. Bitte versuche es erneut.',
         invoiceNo: 'Rechnungsnr.',
         invoiceDate: 'Rechnungsdatum',
         customerDetails: 'Kundendetails',
@@ -3856,7 +3856,7 @@ export const DE: TDictionary = {
       disable: "Deaktivieren",
       disabling: "Wird deaktiviert...",
       toggleError: "Beim Umschalten des Formulars ist ein Fehler aufgetreten.",
-      saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuche es erneut.",
       saveSuccess: "Vortest erfolgreich gespeichert!",
       error: {
         title: 'Vortest konnte nicht geladen werden',
@@ -3880,17 +3880,17 @@ export const DE: TDictionary = {
       activeFilters: "Aktive Filter:",
       clearFilters: "Alle löschen",
       loadMore: "Mehr laden",
-      errorMessage: "Die Bewertungen der Coaching-Sitzung konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
-      defaultError: "Die Bewertungen der Coaching-Sitzungen konnten nicht abgerufen werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an den Support.",
+      errorMessage: "Die Bewertungen der Coaching-Sitzung konnten nicht abgerufen werden. Bitte versuche es später erneut. Wenn das Problem weiterhin besteht, wende dich bitte an den Support.",
+      defaultError: "Die Bewertungen der Coaching-Sitzungen konnten nicht abgerufen werden. Bitte versuche es später erneut. Wenn das Problem weiterhin besteht, wende dich bitte an den Support.",
       error: {
         title: 'Bewertungsfehler',
-        description: 'Ihre Bewertungen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite.',
+        description: 'Deine Bewertungen konnten nicht geladen werden. Bitte aktualisiere die Seite.',
       },
     },
     becomeACoach: {
       title: 'Möchtest du Trainer werden?',
-      description: 'Wir freuen uns darauf, Ihre Bewerbung zu erhalten und Sie kennenzulernen.',
-      formTitle: 'Bitte füllen Sie das Formular aus.',
+      description: 'Wir freuen uns darauf, deine Bewerbung zu erhalten und dich kennenzulernen.',
+      formTitle: 'Bitte fülle das Formular aus.',
       formDescription: 'Fülle das Formular unten aus, um dich als Coach zu bewerben. Wir werden deine Bewerbung prüfen und uns in Kürze bei dir melden.',
       submitButton: 'Bewerbung absenden',
       submitting: 'Wird gesendet...',
@@ -3908,8 +3908,8 @@ export const DE: TDictionary = {
       validation: {
         bioRequired: 'Biografie ist erforderlich',
         linkedinRequired: 'LinkedIn URL ist erforderlich',
-        linkedinInvalid: 'Bitte geben Sie eine gültige LinkedIn URL ein (z.B. https://www.linkedin.com/in/ihrname)',
-        portfolioInvalid: 'Bitte geben Sie eine gültige Portfolio URL ein (z.B. https://www.ihrportfolio.com)',
+        linkedinInvalid: 'Bitte gib eine gültige LinkedIn URL ein (z.B. https://www.linkedin.com/in/deinname)',
+        portfolioInvalid: 'Bitte gib eine gültige Portfolio URL ein (z.B. https://www.deinportfolio.com)',
       },
       email: {
         subject: 'Bewerbung für die Trainerlaufbahn',
@@ -3930,10 +3930,10 @@ export const DE: TDictionary = {
         curriculumVitae: 'Lebenslauf:',
         fileName: 'Dateiname',
         fileSize: 'Dateigröße',
-        attachmentNote: 'Hinweis: Bitte fügen Sie diese Lebenslauf-Datei manuell zu Ihrer E-Mail hinzu.',
+        attachmentNote: 'Hinweis: Bitte füge diese Lebenslauf-Datei manuell zu deiner E-Mail hinzu.',
         noCvUploaded: 'Keine Lebenslauf-Datei hochgeladen',
         notProvided: 'Nicht angegeben',
-        footerNote: 'Diese Bewerbung wurde über das Coach-Registrierungsformular eingereicht.\nBitte prüfen Sie diese und führen Sie entsprechende Nachfassaktionen durch.',
+        footerNote: 'Diese Bewerbung wurde über das Coach-Registrierungsformular eingereicht.\nBitte prüfe diese und führe entsprechende Nachfassaktionen durch.',
       },
     },
     addGroupSession: {
@@ -4033,7 +4033,7 @@ export const DE: TDictionary = {
       error: {
         saveFailedTitle: 'Speichern fehlgeschlagen',
         saveFailed: 'Lektionsnotizen konnten nicht gespeichert werden',
-        saveFailedGeneric: 'Beim Speichern Ihrer Notizen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+        saveFailedGeneric: 'Beim Speichern deiner Notizen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
         deserializationTitle: 'Inhaltsfehler',
         deserializationFailed: 'Notizeninhalt konnte nicht geladen werden',
       },
@@ -4050,10 +4050,10 @@ export const DE: TDictionary = {
       bestFirst: "Beste zuerst",
       worstFirst: "Schlechteste zuerst",
       emptyStateCourses: "Bei diesem Trainer sind keine Kurse verfügbar.",
-      exploreCourses: "Entdecken Sie Kurse",
+      exploreCourses: "Entdecke Kurse",
       error: {
         title: "Trainerprofil konnte nicht geladen werden",
-        description: "Das Trainerprofil konnte nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.",
+        description: "Das Trainerprofil konnte nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.",
       },
     },
     checkoutReturn: CheckoutReturn_DE,
@@ -4072,12 +4072,12 @@ export const DE: TDictionary = {
     platform: {
       title: "{appName} - Lernplattform",
       description: "Zugang zu Kursen, Coaching-Sitzungen und beruflicher Weiterbildung.",
-      ogDescription: "Entdecken Sie Kurse, verbinden Sie sich mit Coaches und entwickeln Sie Ihre Karriere.",
+      ogDescription: "Entdecke Kurse, verbinde dich mit Coaches und entwickle deine Karriere.",
     },
     cms: {
       title: "E-Class CMS - Content Management",
-      description: "Verwalten Sie Kurse, Benutzer und Plattforminhalte.",
-      ogDescription: "Leistungsstarkes Content Management für Ihre Lernplattform.",
+      description: "Verwalte Kurse, Benutzer und Plattforminhalte.",
+      ogDescription: "Leistungsstarkes Content Management für deine Lernplattform.",
     },
   },
 };

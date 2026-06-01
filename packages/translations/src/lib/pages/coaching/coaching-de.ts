@@ -24,6 +24,6 @@ export const Coaching_DE: TDictionary['pages']['coaching'] = {
   },
   error: {
     title: 'Coaching konnte nicht geladen werden',
-    description: 'Die Coaching-Informationen konnten nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.',
+    description: 'Die Coaching-Informationen konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.',
   },
 };
