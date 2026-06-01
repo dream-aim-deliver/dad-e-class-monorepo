@@ -10,6 +10,7 @@ interface FooterProps extends isLocalAware {
     children?: React.ReactNode;
     footerChildren?: React.ReactNode;
     availableLocales: TLocale[];
+    logoHref?: string;
 }
 
 /**
@@ -47,6 +48,7 @@ export const Footer: React.FC<FooterProps> = ({
     children,
     footerChildren,
     availableLocales,
+    logoHref = '/',
 }) => {
     const ImageComponent = useImageComponent();
 
@@ -71,7 +73,7 @@ export const Footer: React.FC<FooterProps> = ({
                     <div className="flex justify-between items-start">
                         {/* Logo (Left) */}
                         <div className="w-1/2">
-                            <a href="/" className="block h-12 w-fit">
+                            <a href={logoHref} className="block h-12 w-fit">
                                 {logo}
                                 {logoSrc && (
                                     <ImageComponent
@@ -125,7 +127,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <div className="hidden py-6 lg:flex flex-row justify-between items-start lg:items-center">
                     {/* Left Section: Logo Only */}
                     <div className="mb-6 lg:mb-0">
-                        <a href="/" className="block h-12 w-fit">
+                        <a href={logoHref} className="block h-12 w-fit">
                             {logo}
                             {logoSrc && (
                                 <ImageComponent
