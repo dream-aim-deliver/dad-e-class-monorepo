@@ -19,17 +19,25 @@ interface CarouselProps extends isLocalAware {
 // Content renderer that won't re-render on state changes
 export const CarouselContent: React.FC<{
     items: React.ReactNode[];
-}> = React.memo(({ items }) => {
+    itemsPerView: number;
+}> = React.memo(({ items, itemsPerView }) => {
+    const gridColsClass =
+        itemsPerView === 1
+            ? 'grid-cols-1'
+            : itemsPerView === 2
+              ? 'grid-cols-2'
+              : 'grid-cols-3';
+
     return (
         <div
-            className="flex w-full flex-shrink-0 gap-4 transition-opacity duration-300 opacity-100"
+            className={`grid w-full ${gridColsClass} gap-4 flex-shrink-0 transition-opacity duration-300 opacity-100`}
             role="list"
         >
             {items.map((item, index) => (
                 <div
                     key={index}
                     role="listitem"
-                    className="min-w-0 flex-1 transition-all duration-300 [&>*]:w-full [&>*]:max-w-none"
+                    className="flex min-w-0 justify-center transition-all duration-300 [&>*]:w-full"
                 >
                     {item}
                 </div>
@@ -215,6 +223,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
                             {itemGroups[currentPage] && (
                                 <CarouselContent
                                     items={itemGroups[currentPage]}
+                                    itemsPerView={itemsPerView}
                                 />
                             )}
                         </div>
