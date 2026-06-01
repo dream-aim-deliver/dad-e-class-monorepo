@@ -32,6 +32,7 @@ interface NavbarProps extends isLocalAware {
   dropdownTriggerText?: string;
   onNotificationClick?: () => void;
   onMobileWorkspaceTriggerClick?: () => void;
+  logoHref?: string;
 }
 
 interface NavBarDropdownProps {
@@ -178,11 +179,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   dropdownTriggerText = '',
   onNotificationClick,
   onMobileWorkspaceTriggerClick,
+  logoHref = '/',
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dictionary = getDictionary(locale);
   const ImageComponent = useImageComponent();
-  const logoHref = `https://www.justdoad.ai/${locale}`;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
