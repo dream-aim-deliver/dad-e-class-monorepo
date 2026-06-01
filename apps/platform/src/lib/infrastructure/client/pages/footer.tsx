@@ -14,6 +14,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { UsercentricsSecondLayerLink } from '../analytics';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 
 interface FooterProps {
     platformViewModel: viewModels.TGetPlatformViewModel;
@@ -59,6 +60,7 @@ export default function Footer({
 }: FooterProps) {
     const pathname = usePathname();
     const router = useRouter();
+    const { NEXT_PUBLIC_LOGO_HREF } = useRuntimeConfig();
     const t = useTranslations('components.footer');
 
     const [isLocaleChanging, setIsLocaleChanging] = useState(false);
@@ -86,7 +88,7 @@ export default function Footer({
         <FooterComponent
             availableLocales={availableLocales}
             locale={locale}
-            logoHref={process.env.NEXT_PUBLIC_LOGO_HREF ? `${process.env.NEXT_PUBLIC_LOGO_HREF}/${locale}` : '/'}
+            logoHref={NEXT_PUBLIC_LOGO_HREF ? `${NEXT_PUBLIC_LOGO_HREF}/${locale}` : '/'}
             logo={
                 platformViewModel.data.logo?.downloadUrl ? (
                     <Image

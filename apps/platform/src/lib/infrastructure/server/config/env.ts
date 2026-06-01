@@ -56,6 +56,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
     NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: process.env.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID,
     NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    NEXT_PUBLIC_LOGO_HREF: process.env.NEXT_PUBLIC_LOGO_HREF,
 };
 
 const envValidationResult = serverEnvSchema.safeParse(runtimeEnv);

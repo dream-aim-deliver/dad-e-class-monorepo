@@ -31,6 +31,10 @@ const clientEnvSchema = z.object({
         (v) => (v === '' ? undefined : v),
         z.string().regex(/^[A-Za-z0-9_-]{20,128}$/).optional(),
     ),
+    NEXT_PUBLIC_LOGO_HREF: z.preprocess(
+        (v) => (v === '' ? undefined : v),
+        z.string().url().optional(),
+    ),
 });
 
 export { clientEnvSchema };
@@ -52,6 +56,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
     NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: process.env.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID,
     NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    NEXT_PUBLIC_LOGO_HREF: process.env.NEXT_PUBLIC_LOGO_HREF,
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);
