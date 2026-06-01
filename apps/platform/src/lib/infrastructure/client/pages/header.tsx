@@ -170,6 +170,7 @@ export default function Header({
             isLoggedIn={!!session}
             availableLocales={availableLocales}
             locale={locale}
+            logoHref={process.env.NEXT_PUBLIC_LOGO_HREF ? `${process.env.NEXT_PUBLIC_LOGO_HREF}/${locale}` : '/'}
             onLogin={handleLogin}
             logo={
                 platformViewModel.data.logo?.downloadUrl ? (
