@@ -86,6 +86,7 @@ export default function Footer({
         <FooterComponent
             availableLocales={availableLocales}
             locale={locale}
+            logoHref={process.env.NEXT_PUBLIC_LOGO_HREF ? `${process.env.NEXT_PUBLIC_LOGO_HREF}/${locale}` : '/'}
             logo={
                 platformViewModel.data.logo?.downloadUrl ? (
                     <Image
