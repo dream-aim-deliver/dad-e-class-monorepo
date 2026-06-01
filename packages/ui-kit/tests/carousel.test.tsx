@@ -219,6 +219,24 @@ describe('Carousel', () => {
         }
     });
 
+    it('keeps partial last page cards at the same width as full pages on desktop', async () => {
+        const { container } = render(<Carousel {...defaultProps} />);
+
+        const rightButton = screen.getByLabelText('Next slide');
+        fireEvent.click(rightButton);
+
+        await vi.waitFor(
+            () => {
+                expect(screen.getByText('Card 4')).toBeInTheDocument();
+            },
+            { timeout: 500 },
+        );
+
+        const grid = container.querySelector('.grid-cols-3');
+        expect(grid).toBeInTheDocument();
+        expect(grid?.children).toHaveLength(1);
+    });
+
     it('handles touch swipe to previous page', async () => {
         const { container } = render(<Carousel {...defaultProps} />);
 
