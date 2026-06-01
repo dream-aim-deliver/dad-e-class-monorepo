@@ -26,6 +26,6 @@ export const Offers_DE: TDictionary['pages']['offers'] = {
   },
   loadError: {
     title: "Angebote konnten nicht geladen werden",
-    description: "Die Angebote konnten nicht geladen werden. Bitte aktualisieren Sie die Seite oder versuchen Sie es später erneut.",
+    description: "Die Angebote konnten nicht geladen werden. Bitte aktualisiere die Seite oder versuche es später erneut.",
   },
 };
