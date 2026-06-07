@@ -348,7 +348,7 @@ export default function LessonForm({
     };
 
     return (
-        <AssignmentViewProvider mode="study" config={{ studentUsername, isArchived }}>
+        <AssignmentViewProvider mode="study" config={{ studentUsername, isArchived, courseSlug }}>
             <FeedbackViewProvider mode="study" config={{ studentUsername, isArchived }}>
                 <FileUploadProvider
                     mode={enableSubmit ? 'real' : 'mock'}

@@ -1222,6 +1222,8 @@ export const DE: TDictionary = {
         cancelButton: 'Abbrechen',
         confirmButton: 'Bestätigen',
         orText: 'oder',
+        editText: 'Bearbeiten',
+        editingReplyText: 'Antwort bearbeiten...',
       },
       assignmentBuilder: {
         assignmentText: 'Aufgabe',
@@ -3227,6 +3229,8 @@ export const DE: TDictionary = {
         title: 'Aufgaben',
         sortBy: 'Sortieren nach',
         selectSort: 'Sortieroption auswählen',
+        display: 'Anzeigen',
+        selectDisplay: 'Anzeigeoption auswählen',
         filterButton: 'Filter',
         selectCoursePrompt: 'Bitte wähle einen Kurs aus, um Aufgaben anzuzeigen',
         noAssignmentsFound: 'Keine Aufgaben gefunden',
@@ -3237,6 +3241,10 @@ export const DE: TDictionary = {
           student: 'Schüler (A-Z)',
           position: 'Kursreihenfolge',
           positionDesc: 'Kursreihenfolge (umgekehrt)',
+        },
+        displayOptions: {
+          submitted: 'Eingereicht',
+          all: 'Alle',
         },
       },
       nextCoachingSession: {

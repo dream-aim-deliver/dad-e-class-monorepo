@@ -134,6 +134,7 @@ export interface AssignmentElement extends BaseCourseFormElement {
     progress?: {
         status: AssignmentStatus;
         lastReply?: AssignmentReply;
+        hasCoachInteracted?: boolean;
     }
 }
 
