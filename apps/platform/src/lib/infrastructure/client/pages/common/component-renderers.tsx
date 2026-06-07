@@ -620,6 +620,7 @@ function AssignmentComponent({
 }: ComponentRendererProps) {
     const element = formElement as AssignmentElement;
     const viewService = useAssignmentView();
+    const hasCoachInteracted = element.progress?.hasCoachInteracted ?? false;
 
     return (
         <AssignmentFormComponent
@@ -627,7 +628,7 @@ function AssignmentComponent({
             onFileDownload={(file) => {
                 downloadFile(file.url, file.name);
             }}
-            viewButton={viewService.getComponent(element.id)}
+            viewButton={viewService.getComponent(element.id, { hasCoachInteracted })}
             elementInstance={formElement as AssignmentElement}
             locale={locale}
         />

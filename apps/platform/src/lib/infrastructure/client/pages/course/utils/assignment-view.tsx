@@ -9,14 +9,14 @@ import React, { Suspense } from 'react';
 import AssignmentContent from '../enrolled-course/assignment-content';
 import { useLocale } from 'next-intl';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
-
 export interface AssignmentViewServiceConfig {
     studentUsername?: string;
     isArchived?: boolean;
+    courseSlug?: string;
 }
 
 export interface AssignmentViewService {
-    getComponent: (assignmentId: string) => React.ReactNode | null;
+    getComponent: (assignmentId: string, options?: { hasCoachInteracted?: boolean }) => React.ReactNode | null;
 }
 
 export type AssignmentViewMode = 'preview' | 'study';
@@ -32,7 +32,7 @@ interface AssignmentViewProviderProps {
 }
 
 export const usePreviewAssignmentView = (): AssignmentViewService => {
-    const getComponent = (assignmentId: string): React.ReactNode | null => {
+    const getComponent = (_assignmentId: string, _options?: { hasCoachInteracted?: boolean }): React.ReactNode | null => {
         return null;
     };
 
@@ -47,7 +47,20 @@ export const useStudyAssignmentView = (
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
 
-    const getComponent = (assignmentId: string): React.ReactNode | null => {
+    const getComponent = (assignmentId: string, options?: { hasCoachInteracted?: boolean }): React.ReactNode | null => {
+        if (options?.hasCoachInteracted && config.courseSlug) {
+            return (
+                <Button
+                    text={dictionary.components.assignment.assignmentCard.viewText}
+                    variant="secondary"
+                    className="w-full"
+                    onClick={() => {
+                        window.location.assign(`/${locale}/courses/${config.courseSlug}?tab=assignments&role=student`);
+                    }}
+                />
+            );
+        }
+
         return (
             <Dialog
                 open={undefined}

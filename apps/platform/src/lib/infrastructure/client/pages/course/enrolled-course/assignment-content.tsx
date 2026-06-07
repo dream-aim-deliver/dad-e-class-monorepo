@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGetAssignmentPresenter } from '../../../hooks/use-get-assignment-presenter';
 import { trpc } from '../../../trpc/cms-client';
 import {
@@ -11,6 +11,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import {
     AssignmentModalContent,
     AssignmentStatus,
+    Button,
     DefaultError,
     DefaultLoading,
     DefaultNotFound,
@@ -18,6 +19,7 @@ import {
     Message,
     ReplyPanel,
 } from '@maany_shr/e-class-ui-kit';
+import { getDictionary } from '@maany_shr/e-class-translations';
 import { useSession } from 'next-auth/react';
 import { useRealProgressUpload } from '../utils/file-upload';
 
@@ -47,6 +49,16 @@ export default function AssignmentContent({
     >(undefined);
     const { presenter } = useGetAssignmentPresenter(setAssignmentViewModel);
 
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+
+    const onStartEdit = useCallback(() => {
+        setIsEditing(true);
+    }, []);
+
+    const onCancelEdit = useCallback(() => {
+        setIsEditing(false);
+    }, []);
+
     // @ts-ignore
     presenter.present(assignmentResponse, assignmentViewModel);
 
@@ -71,6 +83,12 @@ export default function AssignmentContent({
 
     const assignment = assignmentViewModel.data;
 
+    const isAssignmentOwner = session.data?.user?.name === studentUsername;
+    const hasCoachInteracted = assignment.progress?.hasCoachInteracted ?? false;
+    const hasExistingStudentReply = (assignment.progress?.replies?.length ?? 0) > 0 &&
+        assignment.progress?.replies?.some(r => r.sender.role === 'student');
+    const canEditLastReply = isAssignmentOwner && !!hasExistingStudentReply && !hasCoachInteracted && !assignment.progress?.passedDetails;
+
     return (
         <div className="p-4 flex flex-col gap-4">
             <AssignmentModalWrapper assignment={assignment} locale={locale} />
@@ -80,6 +98,8 @@ export default function AssignmentContent({
                     passedDetails={assignment.progress.passedDetails}
                     locale={locale}
                     currentUserId={session.data?.user?.id || ''}
+                    canEditLastReply={canEditLastReply}
+                    onStartEdit={onStartEdit}
                 />
             )}
             <AssignmentInteraction
@@ -88,6 +108,8 @@ export default function AssignmentContent({
                 assignment={assignment}
                 refetchAssignment={refetchAssignment}
                 isArchived={isArchived}
+                isEditing={isEditing}
+                onCancelEdit={onCancelEdit}
             />
         </div>
     );
@@ -99,6 +121,8 @@ interface AssignmentInteractionProps {
     assignment: viewModels.TAssignmentSuccess;
     refetchAssignment: () => void;
     isArchived?: boolean;
+    isEditing: boolean;
+    onCancelEdit: () => void;
 }
 
 function AssignmentInteraction({
@@ -107,6 +131,8 @@ function AssignmentInteraction({
     assignment,
     refetchAssignment,
     isArchived,
+    isEditing,
+    onCancelEdit,
 }: AssignmentInteractionProps) {
     const locale = useLocale() as TLocale;
     const session = useSession();
@@ -135,6 +161,16 @@ function AssignmentInteraction({
             void utils.listCoachStudents.invalidate();
         },
     });
+    const updateReplyMutation = trpc.updateAssignmentReply.useMutation({
+        onSuccess: (_data, variables) => {
+            void utils.getAssignment.invalidate({ assignmentId: variables.assignmentId, studentUsername: variables.studentUsername });
+            void utils.listStudentAssignments.invalidate();
+            void utils.listLessonComponents.invalidate();
+            void utils.listGroupAssignments.invalidate();
+            void utils.listGroupMembers.invalidate();
+            void utils.listCoachStudents.invalidate();
+        },
+    });
 
     const [comment, setComment] = useState<string>('');
     const [files, setFiles] = useState<fileMetadata.TFileMetadata[]>([]);
@@ -147,6 +183,31 @@ function AssignmentInteraction({
     const { uploadFile, uploadError } = useRealProgressUpload({
         lessonId: assignment.lesson.id,
     });
+
+    // Pre-fill reply panel when entering edit mode
+    useEffect(() => {
+        if (isEditing) {
+            const lastStudentReply = [...(assignment.progress?.replies ?? [])].reverse().find(r => r.sender.role === 'student');
+            if (lastStudentReply) {
+                setComment(lastStudentReply.comment);
+                setFiles(lastStudentReply.files.map(f => ({
+                    ...f,
+                    url: f.downloadUrl,
+                    status: 'available' as const,
+                })));
+                setLinks(lastStudentReply.links.map((l, i) => ({
+                    linkId: i,
+                    title: l.title,
+                    url: l.url,
+                    customIcon: l.iconFile ? { ...l.iconFile, url: l.iconFile.downloadUrl, status: 'available' as const } : undefined,
+                })));
+            }
+        } else {
+            setComment('');
+            setFiles([]);
+            setLinks([]);
+        }
+    }, [isEditing, assignment.progress?.replies]);
 
     const onFileDownload = (id: string) => {
         const file = files.find((f) => f.id === id);
@@ -213,34 +274,42 @@ function AssignmentInteraction({
         }
 
         setShowErrorBanner(false);
-        sendReplyMutation.mutate(
-            {
-                assignmentId,
-                studentUsername,
-                comment: comment,
-                fileIds: files.map((f) => Number(f.id)),
-                links: links.map((l) => ({
-                    title: l.title,
-                    url: l.url,
-                    iconFileId: l.customIcon?.id ? Number(l.customIcon.id) : undefined,
-                })),
+
+        const mutationPayload = {
+            assignmentId,
+            studentUsername,
+            comment: comment,
+            fileIds: files.map((f) => Number(f.id)),
+            links: links.map((l) => ({
+                title: l.title,
+                url: l.url,
+                iconFileId: l.customIcon?.id ? Number(l.customIcon.id) : undefined,
+            })),
+        };
+
+        const mutationCallbacks = {
+            onSuccess: () => {
+                setComment('');
+                setFiles([]);
+                setLinks([]);
+                if (isEditing) {
+                    onCancelEdit();
+                }
+                setShowSuccessBanner(true);
+                setTimeout(() => {
+                    setShowSuccessBanner(false);
+                }, 5000);
             },
-            {
-                onSuccess: () => {
-                    // Component-scoped: only fires if still mounted (UI state updates)
-                    setComment('');
-                    setFiles([]);
-                    setLinks([]);
-                    setShowSuccessBanner(true);
-                    setTimeout(() => {
-                        setShowSuccessBanner(false);
-                    }, 5000);
-                },
-                onError: () => {
-                    setShowErrorBanner(true);
-                },
+            onError: () => {
+                setShowErrorBanner(true);
             },
-        );
+        };
+
+        if (isEditing) {
+            updateReplyMutation.mutate(mutationPayload, mutationCallbacks);
+        } else {
+            sendReplyMutation.mutate(mutationPayload, mutationCallbacks);
+        }
     };
 
     const onClickMarkAsPassed = async () => {
@@ -264,7 +333,7 @@ function AssignmentInteraction({
     };
 
     const isSending =
-        sendReplyMutation.isPending || passAssignmentMutation.isPending;
+        sendReplyMutation.isPending || passAssignmentMutation.isPending || updateReplyMutation.isPending;
 
     const isAssignmentOwner = session.data?.user?.name === studentUsername;
     const isCoach = session.data?.user?.roles?.includes('coach');
@@ -280,34 +349,51 @@ function AssignmentInteraction({
         return null;
     }
 
+    const dictionary = getDictionary(locale);
+
     return (
-        <ReplyPanel
-            role={isAssignmentOwner ? 'student' : 'coach'}
-            comment={comment}
-            files={files}
-            links={links}
-            linkEditIndex={linkEditIndex}
-            onChangeComment={setComment}
-            onFileDownload={onFileDownload}
-            onFileDelete={onFileDelete}
-            onFilesChange={onFileChange}
-            onImageChange={onFileChange}
-            onDeleteIcon={onDeleteIcon}
-            onUploadComplete={onUploadComplete}
-            onCreateLink={onSaveLink}
-            onClickEditLink={onClickEditLink}
-            onLinkDelete={onLinkDelete}
-            onLinkDiscard={onLinkDiscard}
-            onClickAddLink={onCreateLink}
-            locale={locale}
-            onClickSendMessage={onClickSendMessage}
-            onClickMarkAsPassed={onClickMarkAsPassed}
-            isSending={isSending}
-            showSuccessBanner={showSuccessBanner}
-            onCloseSuccessBanner={() => setShowSuccessBanner(false)}
-            showErrorBanner={showErrorBanner || !!uploadError}
-            onCloseErrorBanner={() => setShowErrorBanner(false)}
-        />
+        <div className="flex flex-col gap-2">
+            {isEditing && (
+                <div className="flex items-center justify-between px-2">
+                    <span className="text-sm font-medium text-text-secondary">
+                        {dictionary.components.assignment.replyPanel.editingReplyText}
+                    </span>
+                    <Button
+                        text={dictionary.components.assignment.replyPanel.cancelButton}
+                        variant="secondary"
+                        size="small"
+                        onClick={onCancelEdit}
+                    />
+                </div>
+            )}
+            <ReplyPanel
+                role={isAssignmentOwner ? 'student' : 'coach'}
+                comment={comment}
+                files={files}
+                links={links}
+                linkEditIndex={linkEditIndex}
+                onChangeComment={setComment}
+                onFileDownload={onFileDownload}
+                onFileDelete={onFileDelete}
+                onFilesChange={onFileChange}
+                onImageChange={onFileChange}
+                onDeleteIcon={onDeleteIcon}
+                onUploadComplete={onUploadComplete}
+                onCreateLink={onSaveLink}
+                onClickEditLink={onClickEditLink}
+                onLinkDelete={onLinkDelete}
+                onLinkDiscard={onLinkDiscard}
+                onClickAddLink={onCreateLink}
+                locale={locale}
+                onClickSendMessage={onClickSendMessage}
+                onClickMarkAsPassed={onClickMarkAsPassed}
+                isSending={isSending}
+                showSuccessBanner={showSuccessBanner}
+                onCloseSuccessBanner={() => setShowSuccessBanner(false)}
+                showErrorBanner={showErrorBanner || !!uploadError}
+                onCloseErrorBanner={() => setShowErrorBanner(false)}
+            />
+        </div>
     );
 }
 
@@ -414,6 +500,8 @@ interface RepliesListProps {
     passedDetails: TAssignmentProgress['passedDetails'];
     locale: TLocale;
     currentUserId: string;
+    canEditLastReply?: boolean;
+    onStartEdit?: () => void;
 }
 
 // Render replies as Message components
@@ -422,18 +510,47 @@ function RepliesList({
     passedDetails,
     locale,
     currentUserId,
+    canEditLastReply,
+    onStartEdit,
 }: RepliesListProps) {
+    const dictionary = getDictionary(locale);
+
+    // Find the index of the last student reply
+    const lastStudentReplyIndex = useMemo(() => {
+        for (let i = replies.length - 1; i >= 0; i--) {
+            if (replies[i].sender.role === 'student') {
+                return i;
+            }
+        }
+        return -1;
+    }, [replies]);
+
     const messageComponents: React.ReactNode[] = useMemo(() => {
-        const components = replies.map((reply, index) => (
-            <Message
-                key={`reply-${index}`}
-                reply={transformReplyData(reply, currentUserId, locale)}
-                onFileDownload={(file) => {
-                    downloadFile(file.url, file.name);
-                }}
-                locale={locale}
-            />
-        ));
+        const components = replies.map((reply, index) => {
+            const isLastStudentReply = canEditLastReply && index === lastStudentReplyIndex;
+            return (
+                <div key={`reply-wrapper-${index}`}>
+                    <Message
+                        key={`reply-${index}`}
+                        reply={transformReplyData(reply, currentUserId, locale)}
+                        onFileDownload={(file) => {
+                            downloadFile(file.url, file.name);
+                        }}
+                        locale={locale}
+                    />
+                    {isLastStudentReply && onStartEdit && (
+                        <div className="flex justify-end mt-1">
+                            <Button
+                                text={dictionary.components.assignment.replyPanel.editText}
+                                variant="text"
+                                size="small"
+                                onClick={onStartEdit}
+                            />
+                        </div>
+                    )}
+                </div>
+            );
+        });
         if (passedDetails) {
             components.push(
                 <Message
@@ -451,7 +568,7 @@ function RepliesList({
             );
         }
         return components;
-    }, [replies, locale, passedDetails, currentUserId]);
+    }, [replies, locale, passedDetails, currentUserId, canEditLastReply, lastStudentReplyIndex, onStartEdit, dictionary]);
 
     return messageComponents;
 }

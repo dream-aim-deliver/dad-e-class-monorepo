@@ -436,6 +436,7 @@ function transformAssignment(
         links: component.links,
         progress: component.progress ? {
             status: getStatus(),
+            hasCoachInteracted: component.progress.hasCoachInteracted ?? false,
             lastReply: component.progress.lastActivity ? {
                 replyType: 'reply' as const,
                 sentAt: component.progress.lastActivity.sentAt,
