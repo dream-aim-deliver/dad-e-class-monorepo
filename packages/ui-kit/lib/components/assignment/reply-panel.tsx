@@ -124,6 +124,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
     const isFormInvalid = !comment && files.length === 0 && links.length === 0;
+    const hasUnsentContent = !isFormInvalid;
 
     return (
         <div className="flex flex-col gap-[27px] p-4 bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium">
@@ -268,10 +269,14 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                     <DialogBody>
                         <div className="flex flex-col gap-4 p-2">
                             <h3>
-                                {dictionary.components.assignment.replyPanel.confirmPassTitle}
+                                {hasUnsentContent
+                                    ? dictionary.components.assignment.replyPanel.confirmPassTitleWithUnsent
+                                    : dictionary.components.assignment.replyPanel.confirmPassTitle}
                             </h3>
                             <p className="text-sm text-text-secondary">
-                                {dictionary.components.assignment.replyPanel.confirmPassMessage}
+                                {hasUnsentContent
+                                    ? dictionary.components.assignment.replyPanel.confirmPassMessageWithUnsent
+                                    : dictionary.components.assignment.replyPanel.confirmPassMessage}
                             </p>
                             <div className="flex gap-2 justify-end items-center">
                                 <DialogClose asChild>

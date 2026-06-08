@@ -1204,6 +1204,8 @@ export const DictionarySchema = z.object({
         addLinkText: z.string(),
         confirmPassTitle: z.string(),
         confirmPassMessage: z.string(),
+        confirmPassTitleWithUnsent: z.string(),
+        confirmPassMessageWithUnsent: z.string(),
         cancelButton: z.string(),
         confirmButton: z.string(),
         orText: z.string(),
