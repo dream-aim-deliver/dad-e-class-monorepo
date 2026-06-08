@@ -63,6 +63,7 @@ const richTextElement: FormElementTemplate = {
 interface RichTextDesignerComponentProps extends DesignerComponentProps {
     onContentChange: (value: string) => void;
     onIncludeInMaterialsChange?: (value: boolean) => void;
+    onAsPartOfMaterialsOnlyChange?: (value: boolean) => void;
 }
 
 export const getValidationError: ElementValidator = (props) => {
@@ -94,6 +95,7 @@ export function DesignerComponent({
     validationError,
     isCourseBuilder,
     onIncludeInMaterialsChange,
+    onAsPartOfMaterialsOnlyChange,
 }: RichTextDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
     const dictionary = getDictionary(locale);
@@ -120,6 +122,10 @@ export function DesignerComponent({
         // TODO: Update the content in the element instance
     };
 
+    // When asPartOfMaterialsOnly is true, includeInMaterials must also be true
+    const isAsPartOfMaterialsOnly = elementInstance.asPartOfMaterialsOnly ?? false;
+    const includeInMaterialsChecked = isAsPartOfMaterialsOnly || (elementInstance.includeInMaterials ?? false);
+
     return (
         <DesignerLayout
             type={elementInstance.type}
@@ -136,7 +142,7 @@ export function DesignerComponent({
                 <CheckBox
                     name={`include-in-materials-${elementInstance.id}`}
                     value={elementInstance.id}
-                    checked={elementInstance.includeInMaterials}
+                    checked={includeInMaterialsChecked}
                     withText
                     label="Include rich text in course material tab"
                     onChange={() =>
@@ -144,6 +150,26 @@ export function DesignerComponent({
                             !elementInstance.includeInMaterials,
                         )
                     }
+                    className="mb-2"
+                    disabled={isAsPartOfMaterialsOnly}
+                />
+            )}
+            {onAsPartOfMaterialsOnlyChange && (
+                <CheckBox
+                    name={`as-part-of-materials-only-${elementInstance.id}`}
+                    value={elementInstance.id}
+                    checked={isAsPartOfMaterialsOnly}
+                    withText
+                    label="Show only in materials tab (hide from lesson)"
+                    onChange={() => {
+                        const newValue = !isAsPartOfMaterialsOnly;
+                        onAsPartOfMaterialsOnlyChange(newValue);
+                        // When enabling asPartOfMaterialsOnly, also enable includeInMaterials
+                        if (newValue && !elementInstance.includeInMaterials) {
+                            onIncludeInMaterialsChange?.(true);
+                        }
+                    }}
+                    className="mb-2"
                 />
             )}
             <RichTextEditor
@@ -165,6 +191,7 @@ export function DesignerComponent({
  */
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
+    if (elementInstance.asPartOfMaterialsOnly) return null;
 
     const dictionary = getDictionary(locale);
 

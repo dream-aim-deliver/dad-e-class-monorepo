@@ -187,6 +187,7 @@ export const RichTextSchema = BaseComponent.extend({
     type: z.literal('richText'),
     text: z.string(),
     includeInMaterials: z.boolean(),
+    asPartOfMaterialsOnly: z.boolean(),
 });
 
 const HeadingSchema = BaseComponent.extend({
@@ -447,6 +448,7 @@ const RichTextComponentRequestSchema = BaseComponentRequestSchema.extend({
     type: z.literal('richText'),
     text: z.string(),
     includeInMaterials: z.boolean(),
+    asPartOfMaterialsOnly: z.boolean(),
 });
 
 const HeadingComponentRequestSchema = BaseComponentRequestSchema.extend({

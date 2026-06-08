@@ -27,12 +27,17 @@ export function useLessonToRequest() {
             throw new Error('Invalid component type');
         }
 
+        // When asPartOfMaterialsOnly is true, includeInMaterials must be true
+        const asPartOfMaterialsOnly = component.asPartOfMaterialsOnly ?? false;
+        const includeInMaterials = asPartOfMaterialsOnly || (component.includeInMaterials ?? false);
+
         return {
             id: extractId(component.id),
             type: 'richText',
             position: order,
             text: component.content,
-            includeInMaterials: component.includeInMaterials ?? false,
+            includeInMaterials: includeInMaterials,
+            asPartOfMaterialsOnly: asPartOfMaterialsOnly,
         };
     }
 

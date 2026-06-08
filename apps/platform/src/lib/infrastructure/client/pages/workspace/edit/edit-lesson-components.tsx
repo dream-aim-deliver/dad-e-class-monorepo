@@ -223,12 +223,29 @@ function RichTextComponent({
         );
     };
 
+    const onAsPartOfMaterialsOnlyChange = (value: boolean) => {
+        setComponents((prev) =>
+            prev.map((comp) => {
+                if (comp.type !== FormElementType.RichText) return comp;
+                if (comp.id !== elementInstance.id) return comp;
+                // When enabling asPartOfMaterialsOnly, also enable includeInMaterials
+                if (value) {
+                    return { ...comp, asPartOfMaterialsOnly: value, includeInMaterials: true };
+                }
+                return { ...comp, asPartOfMaterialsOnly: value };
+            }),
+        );
+    };
+
     return (
         <RichTextDesignerComponent
             elementInstance={elementInstance as RichTextElement}
             locale={locale}
             onIncludeInMaterialsChange={
                 hasMaterials ? onIncludeInMaterialsChange : undefined
+            }
+            onAsPartOfMaterialsOnlyChange={
+                hasMaterials ? onAsPartOfMaterialsOnlyChange : undefined
             }
             onUpClick={onUpClick}
             onDownClick={onDownClick}
