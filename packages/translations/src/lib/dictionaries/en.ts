@@ -1216,6 +1216,8 @@ export const EN: TDictionary = {
         addLinkText: 'Add link',
         confirmPassTitle: 'Confirm Mark as Passed',
         confirmPassMessage: 'Are you sure you want to mark this assignment as passed? This action cannot be undone.',
+        confirmPassTitleWithUnsent: 'Unsent Message',
+        confirmPassMessageWithUnsent: 'You have written a message for your student. Are you sure you want to mark the assignment as passed? The student will not receive your message.',
         cancelButton: 'Cancel',
         confirmButton: 'Confirm',
         orText: 'or',

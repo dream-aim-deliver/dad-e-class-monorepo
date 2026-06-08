@@ -1219,6 +1219,8 @@ export const DE: TDictionary = {
         addLinkText: 'Link hinzufügen',
         confirmPassTitle: 'Bestätigung: Als bestanden markieren',
         confirmPassMessage: 'Bist du sicher, dass du diese Aufgabe als bestanden markieren möchtest? Diese Aktion kann nicht rückgängig gemacht werden.',
+        confirmPassTitleWithUnsent: 'Nicht gesendete Nachricht',
+        confirmPassMessageWithUnsent: 'Du hast eine Nachricht für deinen Teilnehmer geschrieben. Bist du sicher, dass du die Aufgabe als bestanden markieren möchtest? Der Teilnehmer wird deine Nachricht nicht erhalten.',
         cancelButton: 'Abbrechen',
         confirmButton: 'Bestätigen',
         orText: 'oder',
