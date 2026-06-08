@@ -37,6 +37,7 @@ function transformRichText(
         id: component.id,
         content: component.text,
         includeInMaterials: component.includeInMaterials,
+        asPartOfMaterialsOnly: component.asPartOfMaterialsOnly,
     };
 }
 
