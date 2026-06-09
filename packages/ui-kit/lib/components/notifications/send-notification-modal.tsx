@@ -21,7 +21,7 @@ export interface SendNotificationModalProps extends isLocalAware {
   isOpen: boolean;
   onClose: () => void;
   recipients: UserRow[];
-  onSendNotification: (data: { userIds: number[]; notification: { message: string; actionTitle: string; actionUrl: string; sendEmail: boolean } }) => Promise<void> | void;
+  onSendNotification: (data: { userIds: number[]; notification: { message: string; actions: { title: string; url: string }[]; sendEmail: boolean } }) => Promise<void> | void;
   isSending?: boolean;
   isSuccess?: boolean;
   recipientCount?: number;
@@ -42,8 +42,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
   const dictionary = getDictionary(locale).components.sendNotificationModal;
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [message, setMessage] = useState('');
-  const [actionTitle, setActionTitle] = useState('');
-  const [actionUrl, setActionUrl] = useState('');
+  const [actions, setActions] = useState<{ title: string; url: string }[]>([{ title: '', url: '' }]);
   const [sendEmail, setSendEmail] = useState(false);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -54,8 +53,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
     if (!isOpen) {
       setCurrentStep(1);
       setMessage('');
-      setActionTitle('');
-      setActionUrl('');
+      setActions([{ title: '', url: '' }]);
       setSendEmail(false);
       setHasAttemptedSubmit(false);
       setErrorMessage(null);
@@ -69,29 +67,10 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
     }
   }, [isSuccess, currentStep]);
 
-  // URL validation helper
-  const isValidUrl = (url: string): boolean => {
-    if (!url || url.trim().length === 0) return false;
-    try {
-      // Try with the URL as-is
-      new URL(url);
-      return true;
-    } catch {
-      // If it fails, try adding https:// prefix (common user error)
-      try {
-        new URL(`https://${url}`);
-        return true;
-      } catch {
-        return false;
-      }
-    }
-  };
-
   // Validation
-  const isMessageValid = message.trim().length > 0 && message.trim().length <= 120;
-  const isActionTitleValid = actionTitle.trim().length > 0;
-  const isActionUrlValid = actionUrl.trim().length > 0 && isValidUrl(actionUrl.trim());
-  const isFormValid = isMessageValid && isActionTitleValid && isActionUrlValid && recipients.length > 0;
+  const isMessageValid = message.trim().length > 0;
+  const hasAtLeastOneValidAction = actions.some(a => a.title.trim().length > 0 && a.url.trim().length > 0);
+  const isFormValid = isMessageValid && hasAtLeastOneValidAction && recipients.length > 0;
 
   // Recipients grid column definitions
   const recipientsColumnDefs = useMemo<ColDef[]>(() => [
@@ -158,12 +137,14 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
     const userIds = recipients.map(r => r.userId);
     
     try {
+      const validActions = actions
+        .filter(a => a.title.trim().length > 0 && a.url.trim().length > 0)
+        .map(a => ({ title: a.title.trim(), url: a.url.trim() }));
       await onSendNotification({
         userIds,
         notification: {
           message: message.trim(),
-          actionTitle: actionTitle.trim(),
-          actionUrl: actionUrl.trim(),
+          actions: validActions,
           sendEmail,
         },
       });
@@ -231,42 +212,64 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
         />
         {hasAttemptedSubmit && !isMessageValid && (
           <p className="text-sm text-feedback-error-primary">
-            {dictionary.validationErrors?.messageRequired || 'Message is required (max 120 characters)'}
+            {dictionary.validationErrors?.messageRequired}
           </p>
         )}
 
-        <div className="flex flex-col gap-1">
-          <label className="text-sm text-text-secondary">{dictionary.linkTitleLabel}</label>
-          <InputField
-            value={actionTitle}
-            setValue={setActionTitle}
-            inputText={dictionary.linkTitlePlaceholder}
-            state={hasAttemptedSubmit && !isActionTitleValid ? 'error' : 'placeholder'}
-          />
-          {hasAttemptedSubmit && !isActionTitleValid && (
-            <p className="text-sm text-feedback-error-primary">
-              Link title is required
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-sm text-text-secondary">{dictionary.urlLabel}</label>
-          <InputField
-            value={actionUrl}
-            setValue={setActionUrl}
-            inputText={dictionary.urlPlaceholder}
-            state={hasAttemptedSubmit && !isActionUrlValid ? 'error' : 'placeholder'}
-            type="url"
-          />
-          {hasAttemptedSubmit && !isActionUrlValid && (
-            <p className="text-sm text-feedback-error-primary">
-              {actionUrl.trim().length === 0 
-                ? 'URL is required' 
-                : (dictionary.validationErrors?.urlInvalid || 'Please enter a valid URL')}
-            </p>
-          )}
-        </div>
+        {actions.map((action, index) => {
+          const isTitleValid = action.title.trim().length > 0;
+          const isUrlValid = action.url.trim().length > 0;
+          return (
+            <div key={index} className={`flex flex-col gap-2 ${actions.length > 1 ? 'border border-divider rounded-medium p-3' : ''}`}>
+              {actions.length > 1 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary font-medium">Link {index + 1}</span>
+                  <Button
+                    variant="text"
+                    size="small"
+                    text={dictionary.removeLink || 'Remove'}
+                    onClick={() => setActions(prev => prev.filter((_, i) => i !== index))}
+                  />
+                </div>
+              )}
+              <div className="flex flex-col gap-1">
+                <label className="text-sm text-text-secondary">{dictionary.linkTitleLabel}</label>
+                <InputField
+                  value={action.title}
+                  setValue={(val: string) => setActions(prev => prev.map((a, i) => i === index ? { ...a, title: val } : a))}
+                  inputText={dictionary.linkTitlePlaceholder}
+                  state={hasAttemptedSubmit && !isTitleValid ? 'error' : 'placeholder'}
+                />
+                {hasAttemptedSubmit && !isTitleValid && (
+                  <p className="text-sm text-feedback-error-primary">
+                    {dictionary.validationErrors?.linkTitleRequired}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm text-text-secondary">{dictionary.urlLabel}</label>
+                <InputField
+                  value={action.url}
+                  setValue={(val: string) => setActions(prev => prev.map((a, i) => i === index ? { ...a, url: val } : a))}
+                  inputText={dictionary.urlPlaceholder}
+                  state={hasAttemptedSubmit && !isUrlValid ? 'error' : 'placeholder'}
+                  type="url"
+                />
+                {hasAttemptedSubmit && !isUrlValid && (
+                  <p className="text-sm text-feedback-error-primary">
+                    {dictionary.validationErrors?.urlRequired}
+                  </p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        <Button
+          variant="text"
+          size="small"
+          text={dictionary.addAnotherLink || 'Add another link'}
+          onClick={() => setActions(prev => [...prev, { title: '', url: '' }])}
+        />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -295,7 +298,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
           disabled={!isFormValid}
           hasIconRight
           iconRight={<IconChevronRight />}
-          title={!isFormValid ? `Validation: message=${isMessageValid}, title=${isActionTitleValid}, url=${isActionUrlValid}, recipients=${recipients.length > 0}` : undefined}
+          title={!isFormValid ? `Validation: message=${isMessageValid}, actions=${hasAtLeastOneValidAction}, recipients=${recipients.length > 0}` : undefined}
         />
         <Button
           variant="text"
@@ -316,7 +319,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
         <div className="flex-1">
           <Activity
             message={message}
-            action={(actionTitle && actionUrl ? { title: actionTitle, url: actionUrl } : { title: '', url: '' }) as { title: string; url: string }}
+            actions={actions.filter(a => a.title.trim() && a.url.trim())}
             timestamp={new Date().toISOString()}
             isRead={false}
             platformName=""
@@ -383,7 +386,7 @@ export const SendNotificationModal: React.FC<SendNotificationModalProps> = ({
       
       <Activity
         message={message}
-        action={(actionTitle && actionUrl ? { title: actionTitle, url: actionUrl } : { title: '', url: '' }) as { title: string; url: string }}
+        actions={actions.filter(a => a.title.trim() && a.url.trim())}
         timestamp={new Date().toISOString()}
         isRead={false}
         platformName=""

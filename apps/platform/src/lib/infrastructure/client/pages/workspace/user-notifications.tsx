@@ -63,32 +63,37 @@ export default function UserNotifications() {
         if (!viewModel || viewModel.mode !== 'default') return [];
 
         const notifications = viewModel.data.notifications;
-        return notifications.map((notification) => (
-            <Activity
-                key={notification.id}
-                message={notification.message}
-                action={{ title: notification.actionTitle, url: notification.actionUrl }}
-                timestamp={notification.createdAt instanceof Date ? notification.createdAt.toISOString() : String(notification.createdAt)}
-                isRead={notification.isRead}
-                platformName={platform.name}
-                recipients={1}
-                layout="vertical"
-                locale={locale}
-                onClickActivity={(url: string) => () => {
-                    if (url.startsWith('mailto:')) {
-                        window.open(url);
-                    } else {
-                        router.push(`/${locale}/workspace/notifications?highlight=${notification.id}`);
-                    }
-                    if (!notification.isRead) {
-                        const numericId = Number(notification.id);
-                        if (!Number.isNaN(numericId)) {
-                            markAsReadMutation.mutate({ notificationIds: [numericId] });
+        return notifications.map((notification) => {
+            const notificationWithRelations = notification as typeof notification & { actions?: { title: string; url: string; position?: number }[] };
+            const notificationActions = (notificationWithRelations.actions || []).map(a => ({ title: a.title, url: a.url }));
+            return (
+                <Activity
+                    key={notification.id}
+                    message={notification.message}
+                    actions={notificationActions}
+                    maxActions={1}
+                    timestamp={notification.createdAt instanceof Date ? notification.createdAt.toISOString() : String(notification.createdAt)}
+                    isRead={notification.isRead}
+                    platformName={platform.name}
+                    recipients={1}
+                    layout="vertical"
+                    locale={locale}
+                    onClickActivity={(url: string) => () => {
+                        if (url.startsWith('mailto:')) {
+                            window.open(url);
+                        } else {
+                            router.push(`/${locale}/workspace/notifications?highlight=${notification.id}`);
                         }
-                    }
-                }}
-            />
-        ));
+                        if (!notification.isRead) {
+                            const numericId = Number(notification.id);
+                            if (!Number.isNaN(numericId)) {
+                                markAsReadMutation.mutate({ notificationIds: [numericId] });
+                            }
+                        }
+                    }}
+                />
+            );
+        });
     }, [viewModel, locale, platform.name, markAsReadMutation]);
 
     // Present the data when available

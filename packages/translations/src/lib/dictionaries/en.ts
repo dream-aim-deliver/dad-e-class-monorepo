@@ -502,7 +502,8 @@ export const EN: TDictionary = {
     },
     activity: {
       atText: 'at',
-      recipientsText: 'Recipients'
+      recipientsText: 'Recipients',
+      moreActions: '+{count} more',
     },
     recentActivity: {
       recentActivity: 'Recent Activity',
@@ -2158,12 +2159,12 @@ export const EN: TDictionary = {
       step2Title: 'Please review the details',
       step3Title: 'Notification sent to %{count} recipients',
       notificationContent: 'Notification content',
-      messageLabel: 'Message (max 120 char)',
-      messagePlaceholder: 'Enter your message here',
+      messageLabel: 'Message',
+      messagePlaceholder: 'Enter your notification message',
       linkTitleLabel: 'Link Title',
       linkTitlePlaceholder: 'e.g. View course',
-      urlLabel: 'Url',
-      urlPlaceholder: 'e.g. https://example.com/course/?id=123',
+      urlLabel: 'URL',
+      urlPlaceholder: 'e.g. /courses/my-course or https://example.com',
       recipients: 'Recipients',
       nameColumn: 'Name',
       surnameColumn: 'Surname',
@@ -2174,9 +2175,12 @@ export const EN: TDictionary = {
       sendNotificationButton: 'Send Notification',
       recipientsCountLabel: 'recipients',
       dateAndTime: 'Date and time',
+      addAnotherLink: 'Add another link',
+      removeLink: 'Remove',
       validationErrors: {
-        messageRequired: 'Message is required (max 120 characters)',
-        urlInvalid: 'Please enter a valid URL',
+        messageRequired: 'Please enter a notification message',
+        linkTitleRequired: 'Please enter a title for this link',
+        urlRequired: 'Please enter a URL for this link',
       },
     },
     orderHistoryCard: {

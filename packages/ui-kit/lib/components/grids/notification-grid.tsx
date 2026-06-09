@@ -51,11 +51,15 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 const NotificationMessageRenderer = (props: {
   value: string;
-  data?: { id?: string | number };
+  data?: ExtendedNotification;
   expandedMessagesRef?: { current: Set<string | number> };
+  api?: any;
+  eGridCell?: HTMLElement;
 }) => {
   const notificationId = props.data?.id;
   const expandedRef = props.expandedMessagesRef;
+  const actionCount = props.data?.actions?.length ?? 1;
+  const lineClamp = actionCount > 1 ? actionCount * 2 : 1;
 
   const [isExpanded, setIsExpanded] = useState(() => {
     if (notificationId != null && expandedRef?.current) {
@@ -63,66 +67,59 @@ const NotificationMessageRenderer = (props: {
     }
     return false;
   });
-  const [isTruncated, setIsTruncated] = useState(false);
-  const spanRef = useRef<HTMLSpanElement>(null);
+
   const message = props.value || '';
-
-  useEffect(() => {
-    const el = spanRef.current;
-    if (!el) return;
-
-    const update = () => {
-      if (!isExpanded) {
-        setIsTruncated(el.scrollWidth > el.clientWidth);
-      }
-    };
-
-    update(); // initial check
-
-    const resizeObserver = new ResizeObserver(update);
-    resizeObserver.observe(el);
-
-    return () => resizeObserver.disconnect();
-  }, [message, isExpanded]);
+  const isTruncated = !isExpanded && message.length > lineClamp * 40;
 
   const handleClick = () => {
-    if (!isTruncated) return;
-    setIsExpanded(prev => {
-      const next = !prev;
-      if (notificationId != null && expandedRef?.current) {
-        if (next) expandedRef.current.add(notificationId);
-        else expandedRef.current.delete(notificationId);
-      }
-      return next;
-    });
+    if (!isTruncated && !isExpanded) return;
+    const next = !isExpanded;
+    if (notificationId != null && expandedRef?.current) {
+      if (next) expandedRef.current.add(notificationId);
+      else expandedRef.current.delete(notificationId);
+    }
+    setIsExpanded(next);
   };
 
   return (
     <div
-      className="flex items-center text-sm my-2.5 space-x-2"
-      onClick={handleClick}
-      style={{ cursor: isTruncated ? 'pointer' : 'default' }}
+      className="flex text-sm py-2.5 space-x-2 min-w-0 w-full"
+      onClick={() => { if (!window.getSelection()?.toString()) handleClick(); }}
+      style={{ cursor: isTruncated || isExpanded ? 'pointer' : 'default' }}
     >
       <span
-        ref={spanRef}
-        className={isExpanded ? 'whitespace-normal' : 'truncate'}
+        className="min-w-0 whitespace-normal break-words"
+        style={!isExpanded ? {
+          display: '-webkit-box',
+          WebkitBoxOrient: 'vertical' as const,
+          WebkitLineClamp: lineClamp,
+          overflow: 'hidden',
+          wordBreak: 'break-word' as const,
+        } : undefined}
       >
-        {message}
+        {isExpanded ? message : message.slice(0, lineClamp * 200)}
       </span>
-      {isTruncated &&
-        (isExpanded ? (
-          <ChevronUp className="flex-shrink-0 w-4 h-4" />
+      {(isTruncated || isExpanded) && (
+        isExpanded ? (
+          <ChevronUp className="flex-shrink-0 w-4 h-4 mt-0.5" />
         ) : (
-          <ChevronDown className="flex-shrink-0 w-4 h-4" />
-        ))}
+          <ChevronDown className="flex-shrink-0 w-4 h-4 mt-0.5" />
+        )
+      )}
     </div>
   );
 };
 
 
-const NotificationActionRenderer = (props: { value: notification.TNotification['action'] }) => {
-  const action = props.value;
-  return <Button variant="text" className="text-sm px-0" text={action?.title || ''} />;
+const NotificationActionRenderer = (props: { value: notification.TNotification['actions'] }) => {
+  const actions = props.value || [];
+  return (
+    <div className="flex flex-col gap-1 py-1">
+      {actions.map((a, i) => (
+        <Button key={i} variant="text" className="text-sm px-0" text={a?.title || ''} />
+      ))}
+    </div>
+  );
 };
 
 const NotificationStatusRenderer = (props: { value: boolean }) => {
@@ -261,13 +258,14 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       cellRenderer: NotificationStatusRenderer,
       minWidth: 100,
       maxWidth: 100,
+      cellStyle: { display: 'flex', alignItems: 'center' },
     },
     {
       flex: 1,
       field: 'message',
       headerName: dictionary.message,
-      wrapText: true,
       autoHeight: true,
+      wrapText: true,
       cellRenderer: NotificationMessageRenderer,
       cellRendererParams: { expandedMessagesRef },
       filter: 'agTextColumnFilter',
@@ -276,9 +274,10 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       },
     },
     {
-      field: 'action',
+      field: 'actions',
       headerName: dictionary.action,
       cellRenderer: NotificationActionRenderer,
+      autoHeight: true,
       onCellClicked: (event: { data: ExtendedNotification; }) => {
         handleOptimisticNotificationClick(event.data);
       },
@@ -290,6 +289,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       valueFormatter: (params: { value: string | number | Date; }) => (params.value ? formatDate(new Date(params.value)) : ''),
       filter: 'agDateColumnFilter',
       sort: 'desc' as 'asc' | 'desc' | null,
+      cellStyle: { display: 'flex', alignItems: 'center' },
       onCellClicked: (event: { data: ExtendedNotification }) => {
         handleOptimisticMarkAsRead(event.data);
       },
@@ -327,7 +327,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       // Search filter
       const searchLower = searchTerm.toLowerCase();
       const messageMatch = notification.message?.toLowerCase().includes(searchLower);
-      const actionMatch = notification.action?.title?.toLowerCase().includes(searchLower);
+      const actionMatch = notification.actions?.some(a => a.title?.toLowerCase().includes(searchLower));
 
       // Platform filter (only for CMS variant)
       const platformMatch =
@@ -351,7 +351,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
       // Modal search filter (overrides top search if set)
       if (filters.search && filters.search.length > 0) {
         const modalSearch = filters.search.toLowerCase();
-        if (!notification.message?.toLowerCase().includes(modalSearch) && !notification.action?.title?.toLowerCase().includes(modalSearch)) {
+        if (!notification.message?.toLowerCase().includes(modalSearch) && !notification.actions?.some(a => a.title?.toLowerCase().includes(modalSearch))) {
           return false;
         }
       } else if (searchTerm && !(messageMatch || actionMatch)) {
@@ -466,6 +466,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
           gridRef={gridRef}
           locale={locale}
           suppressRowHoverHighlight={true}
+          enableCellTextSelection={true}
           columnDefs={columnDefs}
           rowData={notificationsToShow}
           pagination={true}

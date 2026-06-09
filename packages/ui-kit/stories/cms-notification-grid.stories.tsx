@@ -128,8 +128,7 @@ const generateMockReceivedNotifications = (count: number): ReceivedNotification[
     state: 'created' as const,
     createdAt: new Date(Date.now() - i * 3600000), // Each notification 1 hour apart
     updatedAt: new Date(Date.now() - i * 3600000),
-    actionTitle: 'View Details',
-    actionUrl: `https://cms.example.com/notifications/${i + 1}`,
+    actions: [{ title: 'View Details', url: `https://cms.example.com/notifications/${i + 1}` }],
     sendEmail: i % 2 === 0,
   }));
 };
@@ -141,8 +140,7 @@ const mockSentNotifications: SentNotification[] = [
     message: 'You sent a notification to students about the upcoming exam.',
     createdAt: '2025-04-08T10:00:00.000Z',
     updatedAt: '2025-04-08T10:00:00.000Z',
-    actionTitle: 'View sent notification',
-    actionUrl: 'https://cms.example.com/notifications/sent/1',
+    actions: [{ title: 'View sent notification', url: 'https://cms.example.com/notifications/sent/1' }],
     sendEmail: true,
     receivers: [
       { id: 1, username: 'alice', isNotificationRead: true, notificationId: 1, name: 'Alice Johnson' },
@@ -154,8 +152,7 @@ const mockSentNotifications: SentNotification[] = [
     message: 'Reminder sent to all enrolled students for assignment submission.',
     createdAt: '2025-04-12T14:30:00.000Z',
     updatedAt: '2025-04-12T14:30:00.000Z',
-    actionTitle: 'View sent notification',
-    actionUrl: 'https://cms.example.com/notifications/sent/2',
+    actions: [{ title: 'View sent notification', url: 'https://cms.example.com/notifications/sent/2' }],
     sendEmail: false,
     receivers: [
       { id: 4, username: 'diana', isNotificationRead: true, notificationId: 2, name: 'Diana Prince' },

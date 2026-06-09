@@ -120,10 +120,14 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
     }
   };
 
-  // Handle notification action click — open URL and mark as read
+  // Handle notification action click — open first URL and mark as read
   const handleNotificationClick = (notification: ExtendedNotification) => {
-    if (notification.action?.url && notification.action.url !== '#') {
-      window.open(notification.action.url, '_blank', 'noopener,noreferrer');
+    const firstAction = notification.actions?.[0];
+    if (firstAction?.url && firstAction.url !== '#') {
+      const url = firstAction.url.startsWith('/') || firstAction.url.startsWith('http')
+        ? firstAction.url
+        : `/${firstAction.url}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
     handleMarkAsRead(notification);
   };
@@ -165,20 +169,20 @@ export default function ActivityHistory({ locale }: ActivityHistoryProps) {
   const notificationsData = listNotificationsViewModel.data;
 
   const extendedNotifications: ExtendedNotification[] = notificationsData.notifications
-    .filter(notification => notification.actionTitle && notification.actionUrl)
-    .map(notification => ({
-      id: notification.id,
-      message: notification.message,
-      isRead: notification.isRead,
-      platform: platform.name, // Use platform name from context
-      timestamp: typeof notification.createdAt === 'string'
-        ? notification.createdAt
-        : new Date(notification.createdAt).toISOString(), // Backend sends string, handle as string primarily
-      action: {
-        title: notification.actionTitle,
-        url: notification.actionUrl
-      },
-    }));
+    .map(notification => {
+      const notificationWithRelations = notification as typeof notification & { actions?: { title: string; url: string; position?: number }[] };
+      const actions = (notificationWithRelations.actions || []).map(a => ({ title: a.title, url: a.url }));
+      return {
+        id: notification.id,
+        message: notification.message,
+        isRead: notification.isRead,
+        platform: platform.name,
+        timestamp: typeof notification.createdAt === 'string'
+          ? notification.createdAt
+          : new Date(notification.createdAt).toISOString(),
+        actions,
+      };
+    });
 
   return (
     <div className="flex flex-col h-[calc(100vh-200px)] space-y-5">

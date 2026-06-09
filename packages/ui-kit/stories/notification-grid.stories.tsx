@@ -88,10 +88,10 @@ const mockNotificationsBase = [
   {
     id: 1,
     message: longMessage,
-    action: {
+    actions: [{
       title: 'Session details',
       url: 'https://coaching.example.com/sessions/12345',
-    },
+    }],
     timestamp: '2025-04-07T21:30:00.000Z',
     isRead: false,
     platform: 'justdoad',
@@ -99,10 +99,10 @@ const mockNotificationsBase = [
   {
     id: 2,
     message: 'Coach Michael Johnson suggested a new date for the coaching session',
-    action: {
+    actions: [{
       title: longActionText,
       url: 'https://coaching.example.com/sessions/12346',
-    },
+    }],
     timestamp: '2025-04-10T21:17:00.000Z',
     isRead: true,
     platform: 'justdoad',
@@ -110,10 +110,10 @@ const mockNotificationsBase = [
   {
     id: 3,
     message: longMessage,
-    action: {
+    actions: [{
       title: longActionText,
       url: 'https://coaching.example.com/sessions/12347',
-    },
+    }],
     timestamp: '2025-04-12T21:17:00.000Z',
     isRead: false,
     platform: 'justdoad',
@@ -121,10 +121,10 @@ const mockNotificationsBase = [
   {
     id: 4,
     message: 'Coaching session canceled by you',
-    action: {
+    actions: [{
       title: 'Session details',
       url: 'https://coaching.example.com/sessions/12348',
-    },
+    }],
     timestamp: '2025-04-15T21:17:00.000Z',
     isRead: true,
     platform: 'justdoad',
@@ -132,10 +132,10 @@ const mockNotificationsBase = [
   {
     id: 5,
     message: 'Coaching session canceled by Coach David Martinez',
-    action: {
+    actions: [{
       title: 'Session details',
       url: 'https://coaching.example.com/sessions/12349',
-    },
+    }],
     timestamp: '2025-04-18T21:17:00.000Z',
     isRead: false,
     platform: 'justdoad',
@@ -143,10 +143,10 @@ const mockNotificationsBase = [
   {
     id: 6,
     message: 'Coach Jennifer Lee replied to your assignment in Advanced Leadership Skills',
-    action: {
+    actions: [{
       title: 'View assignment',
       url: 'https://coaching.example.com/courses/leadership/assignments/89012',
-    },
+    }],
     timestamp: '2025-04-19T21:17:00.000Z',
     isRead: true,
     platform: 'bewerbeagentur',
@@ -154,10 +154,10 @@ const mockNotificationsBase = [
   {
     id: 7,
     message: 'Coach Robert Chen marked your assignment in Data Science Fundamentals as passed',
-    action: {
+    actions: [{
       title: 'View assignment',
       url: 'https://coaching.example.com/courses/data-science/assignments/45678',
-    },
+    }],
     timestamp: '2025-04-20T21:17:00.000Z',
     isRead: false,
     platform: 'bewerbeagentur',
@@ -165,10 +165,10 @@ const mockNotificationsBase = [
   {
     id: 8,
     message: 'Coach Priya Patel has updated the shared workspaces for the group Marketing Team',
-    action: {
+    actions: [{
       title: 'Group workspace',
       url: 'https://coaching.example.com/groups/marketing-team/workspace',
-    },
+    }],
     timestamp: '2025-04-21T21:17:00.000Z',
     isRead: true,
     platform: 'jobbrandme',
@@ -176,10 +176,10 @@ const mockNotificationsBase = [
   {
     id: 9,
     message: 'Coach Thomas Wilson has updated the shared workspaces for the group Product Development',
-    action: {
+    actions: [{
       title: 'Group workspace',
       url: 'https://coaching.example.com/groups/product-dev/workspace',
-    },
+    }],
     timestamp: '2025-04-22T21:17:00.000Z',
     isRead: false,
     platform: 'jobbrandme',
@@ -187,10 +187,10 @@ const mockNotificationsBase = [
   {
     id: 10,
     message: 'Coaching session ended',
-    action: {
+    actions: [{
       title: 'Rate coach',
       url: 'https://coaching.example.com/sessions/12350/feedback',
-    },
+    }],
     timestamp: '2025-04-23T21:17:00.000Z',
     isRead: false,
     platform: 'justdoad',
@@ -200,7 +200,7 @@ const mockNotificationsBase = [
 const mockNotifications = Array(10).fill(mockNotificationsBase).flat();
 
 const mockOnNotificationClick = (notification: ExtendedNotification) => {
-  alert('Proceeding to ' + notification.action?.url);
+  alert('Proceeding to ' + notification.actions?.[0]?.url);
 }
 
 const mockOnMarkAllRead = () => {
@@ -272,7 +272,7 @@ export const MockMarkAllAsRead: Story = {
     locale: 'en',
     variant: 'student',
     onNotificationClick: (notification) => {
-      alert('Proceeding to ' + notification.action?.url);
+      alert('Proceeding to ' + notification.actions?.[0]?.url);
     },
   },
 };

@@ -505,7 +505,8 @@ export const DE: TDictionary = {
     },
     activity: {
       atText: 'bei',
-      recipientsText: 'Empfänger'
+      recipientsText: 'Empfänger',
+      moreActions: '+{count} weitere',
     },
     recentActivity: {
       recentActivity: 'Letzte Aktivität',
@@ -2160,12 +2161,12 @@ export const DE: TDictionary = {
       step2Title: 'Bitte Details überprüfen',
       step3Title: 'Benachrichtigung an %{count} Empfänger gesendet',
       notificationContent: 'Benachrichtigungsinhalt',
-      messageLabel: 'Nachricht (max. 120 Zeichen)',
-      messagePlaceholder: 'Gib hier deine Nachricht ein',
+      messageLabel: 'Nachricht',
+      messagePlaceholder: 'Gib deine Benachrichtigungsnachricht ein',
       linkTitleLabel: 'Link-Titel',
       linkTitlePlaceholder: 'z.B. Kurs ansehen',
-      urlLabel: 'Url',
-      urlPlaceholder: 'z.B. https://example.com/course/?id=123',
+      urlLabel: 'URL',
+      urlPlaceholder: 'z.B. /courses/mein-kurs oder https://example.com',
       recipients: 'Empfänger',
       nameColumn: 'Name',
       surnameColumn: 'Nachname',
@@ -2176,9 +2177,12 @@ export const DE: TDictionary = {
       sendNotificationButton: 'Benachrichtigung senden',
       recipientsCountLabel: 'Empfänger',
       dateAndTime: 'Datum und Uhrzeit',
+      addAnotherLink: 'Weiteren Link hinzufügen',
+      removeLink: 'Entfernen',
       validationErrors: {
-        messageRequired: 'Nachricht ist erforderlich (max. 120 Zeichen)',
-        urlInvalid: 'Bitte gib eine gültige URL ein',
+        messageRequired: 'Bitte gib eine Benachrichtigungsnachricht ein',
+        linkTitleRequired: 'Bitte gib einen Titel für diesen Link ein',
+        urlRequired: 'Bitte gib eine URL für diesen Link ein',
       },
     },
     orderHistoryCard: {
