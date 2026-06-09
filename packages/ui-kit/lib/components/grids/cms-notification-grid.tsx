@@ -16,8 +16,7 @@ export type SentNotification = {
     message: string;
     createdAt: string;
     updatedAt: string;
-    actionTitle: string;
-    actionUrl: string;
+    actions: { title: string; url: string }[];
     sendEmail: boolean;
     receivers: {
         id: number;
@@ -36,15 +35,14 @@ export type ReceivedNotification = {
     state: "created";
     createdAt: Date;
     updatedAt: Date;
-    actionTitle: string;
-    actionUrl: string;
+    actions: { title: string; url: string }[];
     sendEmail: boolean;
 };
 
 export interface NotificationRow {
     id?: string;
     message: string;
-    action?: { title: string; url?: string };
+    actions: { title: string; url?: string }[];
     timestamp?: string;
     isRead?: boolean;
     platform?: string;
@@ -66,8 +64,10 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 const NotificationMessageRenderer = (props: {
     value: string;
-    data?: { id?: string | number };
+    data?: NotificationRow;
     expandedMessagesRef?: { current: Set<string | number> };
+    api?: any;
+    eGridCell?: HTMLElement;
 }) => {
     const notificationId = props.data?.id;
     const expandedRef = props.expandedMessagesRef;
@@ -79,8 +79,32 @@ const NotificationMessageRenderer = (props: {
         return false;
     });
     const [isTruncated, setIsTruncated] = useState(false);
+    const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
     const spanRef = useRef<HTMLSpanElement>(null);
     const message = props.value || '';
+
+    useEffect(() => {
+        if (isExpanded) return;
+        const cell = props.eGridCell;
+        if (!cell) return;
+        const row = cell.closest('.ag-row');
+        if (!row) return;
+
+        const measure = () => {
+            const actionsCell = row.querySelector<HTMLElement>('[col-id="actions"]');
+            if (actionsCell) {
+                const h = actionsCell.scrollHeight;
+                if (h > 0) setMaxHeight(h);
+            }
+        };
+
+        measure();
+        const observer = new ResizeObserver(measure);
+        const actionsCell = row.querySelector<HTMLElement>('[col-id="actions"]');
+        if (actionsCell) observer.observe(actionsCell);
+
+        return () => observer.disconnect();
+    }, [isExpanded, props.eGridCell]);
 
     useEffect(() => {
         const el = spanRef.current;
@@ -88,20 +112,20 @@ const NotificationMessageRenderer = (props: {
 
         const update = () => {
             if (!isExpanded) {
-                setIsTruncated(el.scrollWidth > el.clientWidth);
+                setIsTruncated(el.scrollHeight > el.clientHeight + 1);
             }
         };
 
-        update(); // initial check
+        update();
 
         const resizeObserver = new ResizeObserver(update);
         resizeObserver.observe(el);
 
         return () => resizeObserver.disconnect();
-    }, [message, isExpanded]);
+    }, [message, isExpanded, maxHeight]);
 
     const handleClick = () => {
-        if (!isTruncated) return;
+        if (!isTruncated && !isExpanded) return;
         setIsExpanded(prev => {
             const next = !prev;
             if (notificationId != null && expandedRef?.current) {
@@ -110,26 +134,43 @@ const NotificationMessageRenderer = (props: {
             }
             return next;
         });
+        setTimeout(() => props.api?.resetRowHeights(), 0);
     };
 
     return (
         <div
-            className="flex items-center text-sm my-2.5 space-x-2"
+            className="flex text-sm py-2.5 space-x-2 min-w-0 w-full"
             onClick={handleClick}
-            style={{ cursor: isTruncated ? 'pointer' : 'default' }}
+            style={{ cursor: isTruncated || isExpanded ? 'pointer' : 'default' }}
         >
             <span
                 ref={spanRef}
-                className={isExpanded ? 'whitespace-normal' : 'truncate'}
+                className={isExpanded ? 'whitespace-normal break-words min-w-0' : 'min-w-0'}
+                style={!isExpanded ? (() => {
+                    let lines = 1;
+                    if (maxHeight && spanRef.current) {
+                        const computed = getComputedStyle(spanRef.current);
+                        const lineH = parseFloat(computed.lineHeight);
+                        lines = Math.max(1, Math.floor(maxHeight / lineH));
+                    }
+                    return {
+                        overflow: 'hidden',
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical' as const,
+                        WebkitLineClamp: lines,
+                        wordBreak: 'break-word' as const,
+                    };
+                })() : undefined}
             >
                 {message}
             </span>
-            {isTruncated &&
-                (isExpanded ? (
-                    <ChevronUp className="flex-shrink-0 w-4 h-4" />
+            {(isTruncated || isExpanded) && (
+                isExpanded ? (
+                    <ChevronUp className="flex-shrink-0 w-4 h-4 mt-0.5" />
                 ) : (
-                    <ChevronDown className="flex-shrink-0 w-4 h-4" />
-                ))}
+                    <ChevronDown className="flex-shrink-0 w-4 h-4 mt-0.5" />
+                )
+            )}
         </div>
     );
 };
@@ -188,23 +229,27 @@ const RecipientsRenderer = (props: { value: { name: string }[] }) => {
     );
 };
 
-const ActionRenderer = (props: { value: { title: string; url?: string } }) => {
-    const action = props.value;
+const ActionRenderer = (props: { value: { title: string; url?: string }[] }) => {
+    const actions = props.value || [];
+    const validActions = actions.filter(a => a?.title && a?.url);
 
-    if (!action?.url || !action?.title) {
+    if (validActions.length === 0) {
         return <span>-</span>;
     }
 
     return (
-        <div className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-            <a
-                href={action.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-button-primary-fill hover:text-button-primary-hover-fill underline text-sm"
-            >
-                {action.title}
-            </a>
+        <div className="flex flex-col gap-1 py-1" onClick={(e) => e.stopPropagation()}>
+            {validActions.map((action, i) => (
+                <a
+                    key={i}
+                    href={action.url?.startsWith('/') || action.url?.startsWith('http') ? action.url : `/${action.url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-button-primary-fill hover:text-button-primary-hover-fill underline text-sm"
+                >
+                    {action.title}
+                </a>
+            ))}
         </div>
     );
 };
@@ -237,14 +282,14 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             ...n,
             type: 'received' as const,
             id: String(n.id),
-            action: { title: n.actionTitle, url: n.actionUrl },
+            actions: n.actions || [],
             timestamp: n.createdAt,
             isRead: n.isRead
         })),
         ...sentNotifications.map((n) => ({
             ...n,
             type: 'sent' as const,
-            action: { title: n.actionTitle, url: n.actionUrl },
+            actions: n.actions || [],
             timestamp: n.createdAt,
             isRead: true,
             recipients: n.receivers || [],
@@ -287,8 +332,8 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             flex: 1,
             field: 'message',
             headerName: dictionary.message,
-            wrapText: true,
             autoHeight: true,
+            wrapText: true,
             cellRenderer: NotificationMessageRenderer,
             cellRendererParams: { expandedMessagesRef },
             filter: 'agTextColumnFilter',
@@ -315,9 +360,10 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             },
         },
         {
-            field: 'action',
+            field: 'actions',
             headerName: dictionary.action,
             cellRenderer: ActionRenderer,
+            autoHeight: true,
             minWidth: 150,
             maxWidth: 200,
             headerClass: 'ag-header-cell-center',
@@ -356,7 +402,7 @@ export const CMSNotificationGrid = (props: CMSNotificationGridProps) => {
             if (searchTerm) {
                 const searchLower = searchTerm.toLowerCase();
                 const messageMatch = notification.message?.toLowerCase().includes(searchLower);
-                const actionMatch = notification.action?.title?.toLowerCase().includes(searchLower);
+                const actionMatch = notification.actions?.some(a => a.title?.toLowerCase().includes(searchLower));
                 const recipientsMatch = notification.recipients?.some(r => r.name?.toLowerCase().includes(searchLower));
 
                 if (!(messageMatch || actionMatch || recipientsMatch)) {

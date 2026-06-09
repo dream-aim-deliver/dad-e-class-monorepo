@@ -19,7 +19,7 @@ const meta: Meta<typeof Activity> = {
   ],
   argTypes: {
     message: { control: 'text' },
-    action: { control: 'object' },
+    actions: { control: 'object' },
     timestamp: { control: 'text' },
     isRead: { control: 'boolean' },
     children: { control: 'text' },
@@ -51,7 +51,7 @@ export const Default: Story = {
   args: {
     message:
       'Coach John Doe accepted your request to reschedule the coaching session.',
-    action: { title: 'Session details', url: 'https://google.com' },
+    actions: [{ title: 'Session details', url: 'https://google.com' }],
     timestamp: '2028-08-07T21:17:00.000Z',
     isRead: false,
     platformName: 'E-Class',

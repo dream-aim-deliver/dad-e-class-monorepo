@@ -13,6 +13,7 @@ export interface ActivityProps
     layout?: 'horizontal' | 'vertical';
     onClickActivity?: (url: string) => () => void;
     className?: string;
+    maxActions?: number;
 }
 
 /**
@@ -20,7 +21,8 @@ export interface ActivityProps
  * It supports horizontal and vertical layouts and provides options for interaction.
  *
  * @param message The main message or content of the activity.
- * @param action An object containing action details such as title and URL.
+ * @param actions An array of action objects, each containing title and URL.
+ * @param maxActions When set and actions.length > maxActions, show only maxActions actions plus a "+N more" text.
  * @param timestamp The timestamp of when the activity occurred, formatted as a string.
  * @param isRead A boolean indicating whether the activity has been read.
  * @param children Optional ReactNode elements to be displayed within the component.
@@ -34,7 +36,7 @@ export interface ActivityProps
  * @example
  * <Activity
  *   message="New course available!"
- *   action={{ title: "View Course", url: "/course/123" }}
+ *   actions={[{ title: "View Course", url: "/course/123" }]}
  *   timestamp="2025-04-07T12:30:00Z"
  *   isRead={false}
  *   platformName="E-Class"
@@ -47,7 +49,7 @@ export interface ActivityProps
 
 export const Activity: FC<ActivityProps> = ({
     message = '',
-    action,
+    actions = [],
     timestamp,
     isRead = false,
     children,
@@ -57,6 +59,7 @@ export const Activity: FC<ActivityProps> = ({
     className,
     onClickActivity,
     locale,
+    maxActions,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -124,10 +127,18 @@ export const Activity: FC<ActivityProps> = ({
         );
     }
 
+    const visibleActions = maxActions != null && actions.length > maxActions
+        ? actions.slice(0, maxActions)
+        : actions;
+    const overflowCount = maxActions != null && actions.length > maxActions
+        ? actions.length - maxActions
+        : 0;
+    const firstActionUrl = actions[0]?.url ?? '';
+
     return (
         <div
             data-testid="activity"
-            onClick={onClickActivity?.(action?.url ?? '')}
+            onClick={onClickActivity?.(firstActionUrl)}
             className={clsx(
                 `flex p-2 my-[0.125rem] w-full border-b border-divider cursor-pointer overflow-hidden relative ${
                     isRead
@@ -164,14 +175,26 @@ export const Activity: FC<ActivityProps> = ({
 
             {/* Action and metadata section */}
             <div className="flex flex-row items-center gap-2 flex-shrink-0 w-full">
-                {action?.title && (
-                    <Button
-                        variant="text"
-                        size="small"
-                        text={action.title}
-                        className="p-0 truncate flex-shrink-0"
-                    />
-                )}
+                <div className="flex flex-wrap gap-1 items-center">
+                    {visibleActions.map((a, i) => (
+                        a.title ? (
+                            <Button
+                                key={i}
+                                variant="text"
+                                size="small"
+                                text={a.title}
+                                className="p-0 truncate flex-shrink-0"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (a.url) onClickActivity?.(a.url)?.();
+                                }}
+                            />
+                        ) : null
+                    ))}
+                    {overflowCount > 0 && (
+                        <span className="text-xs text-text-secondary flex-shrink-0">+{overflowCount} more</span>
+                    )}
+                </div>
                 {formattedDateTime && (
                     <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap ml-auto">
                         {formattedDateTime.formattedDate} {atText}{' '}

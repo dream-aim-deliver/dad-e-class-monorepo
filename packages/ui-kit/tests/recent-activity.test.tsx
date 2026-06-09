@@ -56,7 +56,7 @@ describe('<RecentActivity />', () => {
     <Activity
       key="1"
       message="Activity 1 message"
-      action={{ title: 'View', url: '/view1' }}
+      actions={[{ title: 'View', url: '/view1' }]}
       timestamp="2025-03-05T11:00:00Z"
       isRead={false}
       platformName="Platform 1"
@@ -67,7 +67,7 @@ describe('<RecentActivity />', () => {
     <Activity
       key="2"
       message="Activity 2 message"
-      action={{ title: 'Details', url: '/details2' }}
+      actions={[{ title: 'Details', url: '/details2' }]}
       timestamp="2025-03-05T10:30:00Z"
       isRead={true}
       platformName="Platform 2"

@@ -501,6 +501,7 @@ export const DictionarySchema = z.object({
     activity: z.object({
       atText: z.string(),
       recipientsText: z.string(),
+      moreActions: z.string(),
     }),
     recentActivity: z.object({
       recentActivity: z.string(),
@@ -2158,9 +2159,12 @@ export const DictionarySchema = z.object({
       sendNotificationButton: z.string(),
       recipientsCountLabel: z.string(),
       dateAndTime: z.string(),
+      addAnotherLink: z.string(),
+      removeLink: z.string(),
       validationErrors: z.object({
         messageRequired: z.string(),
-        urlInvalid: z.string(),
+        linkTitleRequired: z.string(),
+        urlRequired: z.string(),
       }),
     }),
     orderHistoryCard: z.object({

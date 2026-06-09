@@ -121,8 +121,7 @@ export default function PlatformUsers({ locale, platformSlug }: PlatformUsersPro
     userIds: number[];
     notification: {
       message: string;
-      actionTitle: string;
-      actionUrl: string;
+      actions: { title: string; url: string }[];
       sendEmail: boolean;
     };
   }) => {

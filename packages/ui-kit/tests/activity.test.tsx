@@ -5,7 +5,7 @@ import { Activity, ActivityProps } from '../lib/components/notifications/activit
 describe('<Activity />', () => {
   const defaultProps: ActivityProps = {
     message: 'Coach John Doe accepted your request',
-    action: { title: 'Session details', url: '/session' },
+    actions: [{ title: 'Session details', url: '/session' }],
     timestamp: '2024-08-07T21:17:00Z',
     isRead: false,
     layout: 'horizontal',
@@ -78,9 +78,31 @@ describe('<Activity />', () => {
     expect(mockOnClickActivity.mock.results[0].value).toBeInstanceOf(Function); // Returns a function
   });
 
-  it('does not render action button when action.title is missing', () => {
-    render(<Activity {...defaultProps} action={{ url: '/session' }} />);
+  it('does not render action button when action title is missing', () => {
+    render(<Activity {...defaultProps} actions={[{ title: '', url: '/session' }]} />);
 
     expect(screen.queryByText('Session details')).not.toBeInTheDocument();
+  });
+
+  it('renders multiple actions', () => {
+    render(<Activity {...defaultProps} actions={[
+      { title: 'View', url: '/view' },
+      { title: 'Edit', url: '/edit' },
+    ]} />);
+
+    expect(screen.getByText('View')).toBeInTheDocument();
+    expect(screen.getByText('Edit')).toBeInTheDocument();
+  });
+
+  it('renders truncated actions with overflow count', () => {
+    render(<Activity {...defaultProps} actions={[
+      { title: 'View', url: '/view' },
+      { title: 'Edit', url: '/edit' },
+      { title: 'Delete', url: '/delete' },
+    ]} maxActions={1} />);
+
+    expect(screen.getByText('View')).toBeInTheDocument();
+    expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+    expect(screen.getByText('+2 more')).toBeInTheDocument();
   });
 });
