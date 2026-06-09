@@ -234,7 +234,7 @@ export function FormComponent({
     };
 
     return (
-        <div className="p-4 pt-2 w-full border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
+        <div className="p-4 w-full border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
             <div className="flex items-center gap-2 flex-1 text-text-primary py-4 border-b border-divider">
                 <span className="min-w-0 flex-shrink-0">
                     <IconCloudUpload />

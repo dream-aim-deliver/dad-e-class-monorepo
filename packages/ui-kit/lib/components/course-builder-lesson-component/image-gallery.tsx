@@ -239,7 +239,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         : 0;
 
     return (
-        <section className="w-full flex justify-start p-4 rounded-lg">
+        <section className="w-full">
             <div className="w-full max-w-[1000px]">
                 {/* Featured image */}
                 <img
