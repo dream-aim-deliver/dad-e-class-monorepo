@@ -32,7 +32,7 @@ import SidebarLayout from '../../../lib/infrastructure/server/pages/layouts/side
 import { MobileReadyStyle } from '../../../lib/mobile-hack';
 import {
     PlatformAnalytics,
-    ConsentModeDefaultScript,
+    GtagBootstrapScript,
     UsercentricsAutoblocker,
     UsercentricsCMPLoader,
 } from '../../../lib/infrastructure/client/analytics';
@@ -252,7 +252,7 @@ export default async function RootLayout({
                     settingsId={runtimeConfig.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID}
                     language={locale}
                 />
-                <ConsentModeDefaultScript />
+                <GtagBootstrapScript />
                 <MobileReadyStyle />
             </head>
 

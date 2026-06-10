@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { updateConsent, applyDefaultConsent } from '../../src/lib/infrastructure/client/analytics/consent-mode';
+import { updateConsent } from '../../src/lib/infrastructure/client/analytics/consent-mode';
 
 declare global {
     interface Window {
@@ -9,10 +9,14 @@ declare global {
 }
 
 /**
- * Mimic ConsentModeDefaultScript's inline bootstrap: define window.gtag
- * so it pushes its arguments into window.dataLayer. We assert against the
+ * Mimic GtagBootstrapScript's inline bootstrap: define window.gtag so it
+ * pushes its arguments into window.dataLayer. We assert against the
  * resulting dataLayer entries rather than spying on gtag directly; this
  * exercises the full "shape that lands in dataLayer" contract.
+ *
+ * NOTE: there is deliberately no applyDefaultConsent / consent-default test —
+ * the denied baseline is owned by the Usercentrics GTM template (see
+ * consent-mode.ts ownership doc).
  */
 function setupGtagShim(): void {
     (window as Window).dataLayer = [];
@@ -33,32 +37,6 @@ describe('consent-mode', () => {
     afterEach(() => {
         delete (window as Window).dataLayer;
         delete (window as Window).gtag;
-    });
-
-    describe('applyDefaultConsent', () => {
-        it('calls gtag with the default all-denied block (security/functionality granted)', () => {
-            applyDefaultConsent();
-            expect(readDataLayer()[0]).toEqual([
-                'consent',
-                'default',
-                {
-                    ad_storage: 'denied',
-                    ad_user_data: 'denied',
-                    ad_personalization: 'denied',
-                    analytics_storage: 'denied',
-                    functionality_storage: 'granted',
-                    personalization_storage: 'denied',
-                    security_storage: 'granted',
-                    wait_for_update: 500,
-                },
-            ]);
-        });
-
-        it('is a no-op when window.gtag is missing', () => {
-            delete (window as Window).gtag;
-            expect(() => applyDefaultConsent()).not.toThrow();
-            expect(readDataLayer()).toEqual([]);
-        });
     });
 
     describe('updateConsent', () => {

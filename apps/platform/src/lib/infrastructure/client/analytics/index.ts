@@ -1,6 +1,6 @@
 export { track } from './track';
 export { PlatformAnalytics } from './platform-analytics';
-export { ConsentModeDefaultScript } from './consent-mode-default-script';
+export { GtagBootstrapScript } from './gtag-bootstrap-script';
 export { UsercentricsAutoblocker } from './usercentrics-autoblocker';
 export { UsercentricsCMPLoader } from './usercentrics-cmp-loader';
 export { UsercentricsSecondLayerLink } from './usercentrics-second-layer-link';
