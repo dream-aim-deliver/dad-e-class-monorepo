@@ -156,7 +156,7 @@ export const EN: TDictionary = {
       all: 'All',
       new: 'New',
       message: 'Message',
-      action: 'Action',
+      action: 'Action(s)',
       dateTime: 'Date & Time',
       clearFilters: 'Clear Filters',
       filterButton: 'Filters',
