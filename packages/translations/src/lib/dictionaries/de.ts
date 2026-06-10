@@ -153,7 +153,7 @@ export const DE: TDictionary = {
     notificationGrid: {
       new: 'Neue',
       message: 'Nachricht',
-      action: 'Aktion',
+      action: 'Aktion(en)',
       dateTime: 'Datum & Uhrzeit',
       markAllAsRead: 'Ausgewählte als gelesen markieren',
       searchPlaceholder: 'Suchaktivität',
