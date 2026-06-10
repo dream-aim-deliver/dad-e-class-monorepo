@@ -11,7 +11,7 @@ import { getRuntimeConfig } from '../../../lib/infrastructure/server/utils/get-r
 import { RuntimeConfigProvider } from '../../../lib/infrastructure/client/context/runtime-config-context';
 import {
     PlatformAnalytics,
-    ConsentModeDefaultScript,
+    GtagBootstrapScript,
     UsercentricsAutoblocker,
     UsercentricsCMPLoader,
 } from '../../../lib/infrastructure/client/analytics';
@@ -78,7 +78,7 @@ export default async function RootLayout({
                     settingsId={runtimeConfig.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID}
                     language={locale}
                 />
-                <ConsentModeDefaultScript />
+                <GtagBootstrapScript />
 
                 <meta name="viewport" content="width=1280" />
             </head>

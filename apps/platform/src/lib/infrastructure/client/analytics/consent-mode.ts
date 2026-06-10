@@ -2,7 +2,7 @@ import type { TConsentState } from './types';
 
 declare global {
     interface Window {
-        // Defined by ConsentModeDefaultScript (Task 10) before any script loads.
+        // Defined by GtagBootstrapScript before any other script loads.
         // Wraps window.dataLayer.push(arguments) in the variadic gtag shape.
         gtag?: (...args: unknown[]) => void;
         dataLayer?: unknown[];
@@ -10,25 +10,22 @@ declare global {
 }
 
 /**
- * Google Consent Mode v2 — default consent applied before GTM loads.
+ * IMPORTANT — Consent default ownership (Compliance-Critical):
  *
- * This is ALREADY called inline by ConsentModeDefaultScript (Task 10) at
- * `beforeInteractive`, so production rendering does not need to invoke it
- * again. The export exists so unit tests can exercise the shape independently.
+ * The `consent default = denied` baseline is owned EXCLUSIVELY by the
+ * Usercentrics GTM Tag Template in the tenant's GTM container (fires on the
+ * Consent Initialization trigger, `wait_for_update: 2000` recommended).
+ *
+ * DO NOT add a consent-default command in code (here or in
+ * GtagBootstrapScript) — that recreates the duplicate-default setup removed
+ * in the TSK-1783 / PR #699 follow-up. This guarantee only holds while the
+ * Usercentrics template is configured in GTM; if Usercentrics/GTM is ever
+ * removed, a denied-by-default baseline must be re-implemented in code.
+ *
+ * Consent UPDATES stay code-owned: GtagBootstrapScript defines window.gtag,
+ * and updateConsent() below translates the (Promise-aware) Usercentrics
+ * adapter state into gtag 'update' signals.
  */
-export function applyDefaultConsent(): void {
-    if (typeof window === 'undefined' || !window.gtag) return;
-    window.gtag('consent', 'default', {
-        ad_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-        analytics_storage: 'denied',
-        functionality_storage: 'granted',
-        personalization_storage: 'denied',
-        security_storage: 'granted',
-        wait_for_update: 500,
-    });
-}
 
 /** Translate a normalized TConsentState into gtag consent 'update' signals. */
 export function updateConsent(state: TConsentState): void {

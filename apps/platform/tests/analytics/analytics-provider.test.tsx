@@ -25,7 +25,7 @@ function readDataLayer(): unknown[] {
 }
 
 /**
- * Mimic ConsentModeDefaultScript's bootstrap: define window.gtag as a
+ * Mimic GtagBootstrapScript's bootstrap: define window.gtag as a
  * push-arguments-onto-dataLayer shim so the test can verify consent
  * updates land in dataLayer with the expected shape.
  */
