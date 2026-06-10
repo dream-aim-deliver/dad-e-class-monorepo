@@ -47,4 +47,69 @@ describe('PlatformAnalytics', () => {
     // Loader-script injection is the responsibility of <UsercentricsCMPLoader>
     // rendered in the root layouts — see usercentrics-cmp-loader.test.tsx.
     // PlatformAnalytics itself only composes the Consent/Analytics providers.
+
+    it('propagates granted consent to gtag when the UC SDK returns services as a Promise', async () => {
+        // Regression test for the production incident where CMP v3.121+
+        // (async getServicesBaseInfo) made the adapter report denied forever,
+        // so granted users were sent gtag('consent','update', all-denied)
+        // and GA4 recorded every hit as gcs=G100. Exercises the full chain:
+        // UC_UI → adapter → ConsentProvider → AnalyticsProvider → dataLayer.
+        (window as Window & { dataLayer?: unknown[] }).dataLayer = [];
+        (window as Window & { gtag?: (...a: unknown[]) => void }).gtag =
+            function (...args: unknown[]) {
+                (window as Window & { dataLayer?: unknown[] }).dataLayer?.push(
+                    args,
+                );
+            };
+        (window as Window & { UC_UI?: unknown }).UC_UI = {
+            isInitialized: () => true,
+            getServicesBaseInfo: () =>
+                Promise.resolve([
+                    {
+                        id: 'ga',
+                        categorySlug: 'statistics',
+                        consent: { status: true },
+                    },
+                    {
+                        id: 'ads',
+                        categorySlug: 'marketing',
+                        consent: { status: true },
+                    },
+                ]),
+        };
+
+        try {
+            render(
+                <NextIntlClientProvider locale="en" messages={{}}>
+                    <RuntimeConfigProvider
+                        config={{
+                            ...baseConfig(),
+                            NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID:
+                                'testSettingsId',
+                        }}
+                    >
+                        <PlatformAnalytics>
+                            <span>child</span>
+                        </PlatformAnalytics>
+                    </RuntimeConfigProvider>
+                </NextIntlClientProvider>,
+            );
+
+            await vi.waitFor(() => {
+                const dl = (window as Window & { dataLayer?: unknown[] })
+                    .dataLayer as unknown[][];
+                const updates = dl.filter(
+                    (e) => e[0] === 'consent' && e[1] === 'update',
+                );
+                expect(updates.at(-1)?.[2]).toMatchObject({
+                    analytics_storage: 'granted',
+                    ad_storage: 'granted',
+                });
+            });
+        } finally {
+            delete (window as Window & { UC_UI?: unknown }).UC_UI;
+            delete (window as Window & { gtag?: unknown }).gtag;
+            delete (window as Window & { dataLayer?: unknown[] }).dataLayer;
+        }
+    });
 });
