@@ -81,6 +81,7 @@ export function useComputeWeeklyEvents({
                                 onSessionClick?.(segment.original.id)
                             }
                             platformName={segment.original.platformSlug && segment.original.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? segment.original.platformSlug : undefined}
+                            userRole={(segment.original as { userRole?: 'coach' | 'student' }).userRole}
                         />
                     ),
                 });

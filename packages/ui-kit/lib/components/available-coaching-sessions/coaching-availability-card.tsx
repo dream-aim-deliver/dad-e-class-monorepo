@@ -2,6 +2,7 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from '../button';
 import { cn } from '../../utils/style-utils';
 import { Badge } from '../badge';
+import { IconStudent } from '../icons';
 
 interface CoachingAvailabilityCardProps extends isLocalAware {
     availability?: {
@@ -15,6 +16,7 @@ interface CoachingAvailabilityCardProps extends isLocalAware {
         onClick?: () => void;
         title: string;
         platformName?: string;
+        userRole?: 'coach' | 'student';
     }[];
     onRequest?: () => void;
 }
@@ -33,6 +35,8 @@ function CoachingSessionCard({
     onClick,
     sessionLabel,
     platformName,
+    userRole,
+    studentRoleTooltip,
 }: {
     startTime: Date;
     endTime: Date;
@@ -40,6 +44,8 @@ function CoachingSessionCard({
     onClick?: () => void;
     sessionLabel: string;
     platformName?: string;
+    userRole?: 'coach' | 'student';
+    studentRoleTooltip?: string;
 }) {
     return (
         <div
@@ -56,7 +62,15 @@ function CoachingSessionCard({
                     {formatTime(startTime)} - {formatTime(endTime)}
                 </p>
                 {platformName && (
-                    <Badge variant="info" size="small" text={platformName} />
+                    <Badge variant="info" size="medium" text={platformName} />
+                )}
+                {userRole === 'student' && studentRoleTooltip && (
+                    <span
+                        title={studentRoleTooltip}
+                        className="inline-flex items-center justify-center bg-base-neutral-400 text-text-primary-inverted rounded-small py-1 px-[5px]"
+                    >
+                        <IconStudent size="4" />
+                    </span>
                 )}
             </div>
         </div>
@@ -82,6 +96,11 @@ export function CoachingAvailabilityCard({
                             title={session.title}
                             onClick={session.onClick}
                             platformName={session.platformName}
+                            userRole={session.userRole}
+                            studentRoleTooltip={
+                                dictionary?.components
+                                    ?.coachingSessionCard?.studentRoleTooltip
+                            }
                             sessionLabel={
                                 dictionary?.components
                                     ?.coachingAvailabilityCard?.session

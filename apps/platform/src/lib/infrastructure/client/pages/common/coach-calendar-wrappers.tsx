@@ -265,6 +265,7 @@ export function MonthlyCoachCalendarWrapper({
                             ? () => onSessionClick(Number(session.id))
                             : undefined,
                         platformName: session.platformSlug && session.platformSlug !== currentPlatform ? session.platformSlug : undefined,
+                        userRole: (session as { userRole?: 'coach' | 'student' }).userRole,
                     }));
 
                     return (

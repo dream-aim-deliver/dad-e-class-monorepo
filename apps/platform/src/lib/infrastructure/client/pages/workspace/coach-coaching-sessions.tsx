@@ -7,13 +7,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../trpc/cms-client";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListCoachCoachingSessionsPresenter } from "../../hooks/use-list-coach-coaching-sessions-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, ConfirmationModal, CancelCoachingSessionModal, Breadcrumbs, Dropdown } from "@maany_shr/e-class-ui-kit";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, ConfirmationModal, CancelCoachingSessionModal, Breadcrumbs } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { formatTime } from "../../utils/format-time";
 import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-coaching-session-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
 import { TListCoachCoachingSessionsSuccessResponse } from "@dream-aim-deliver/e-class-cms-rest";
-import StudentCoachingSessions from "./student-coaching-sessions";
 import clientEnv from "../../config/env";
 
 function getCrossPlatformName(session: { platformSlug?: string | null }): string | undefined {
@@ -23,7 +22,15 @@ function getCrossPlatformName(session: { platformSlug?: string | null }): string
 }
 
 // Type for a single session from the API response
-type TCoachSession = TListCoachCoachingSessionsSuccessResponse['data']['sessions'][number];
+type TCoachSessionBase = TListCoachCoachingSessionsSuccessResponse['data']['sessions'][number];
+
+// Extended type with student-role fields (added by backend in parallel)
+type TCoachSession = TCoachSessionBase & {
+    userRole?: 'coach' | 'student';
+    coachName?: string | null;
+    coachSurname?: string | null;
+    coachUsername?: string | null;
+};
 
 // Type for scheduled sessions only (have meetingUrl)
 type TScheduledSession = Extract<TCoachSession, { sessionType: 'individual-scheduled' | 'group-scheduled' }>;
@@ -125,6 +132,7 @@ function ScheduledCoachSessionCard({
             onClickStudent: onStudentClick,
         };
 
+    const sessionWithRole = session as TCoachSession;
     const commonProps = {
         locale,
         userType: "coach" as const,
@@ -136,6 +144,9 @@ function ScheduledCoachSessionCard({
         courseName,
         onClickCourse,
         platformName: getCrossPlatformName(session),
+        userRole: sessionWithRole.userRole || ('coach' as const),
+        coachName: sessionWithRole.userRole === 'student' ? sessionWithRole.coachName || undefined : undefined,
+        coachUsername: sessionWithRole.userRole === 'student' ? sessionWithRole.coachUsername || undefined : undefined,
         ...sessionTypeProps,
     };
 
@@ -174,40 +185,15 @@ function ScheduledCoachSessionCard({
     );
 }
 
-interface CoachCoachingSessionsProps {
-    role?: string;
-}
-
-export default function CoachCoachingSessions({ role: initialRole }: CoachCoachingSessionsProps) {
+export default function CoachCoachingSessions() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.coachCoachingSessions');
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    // Role options for the dropdown
-    const roleOptions = [
-        { label: t('roleCoach'), value: 'coach' },
-        { label: t('roleStudent'), value: 'student' }
-    ];
-
-    // Current role state - use initialRole from server if provided, otherwise from search params
-    const [currentRole, setCurrentRole] = useState(
-        initialRole || searchParams.get('role') || 'coach'
-    );
-
     // Current tab state from URL, defaults to 'upcoming'
     const currentTab = searchParams.get('tab') || 'upcoming';
-
-    // Handle role change and update search params
-    const onRoleChange = (selected: string | string[] | null) => {
-        const roleValue = selected as string;
-
-        setCurrentRole(roleValue);
-        const newSearchParams = new URLSearchParams(searchParams.toString());
-        newSearchParams.set('role', roleValue);
-        router.push(`?${newSearchParams.toString()}`);
-    };
 
     // Handle tab change and update search params
     const onTabChange = (tab: string) => {
@@ -468,6 +454,9 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             const startDateTime = new Date(session.startTime);
             const isGroup = isGroupSession(session);
             const platformName = getCrossPlatformName(session);
+            const sessionUserRole = session.userRole || ('coach' as const);
+            const sessionCoachName = session.userRole === 'student' ? session.coachName || undefined : undefined;
+            const sessionCoachUsername = session.userRole === 'student' ? session.coachUsername || undefined : undefined;
 
             // Build course info props (group sessions always have course, individual may not)
             const courseName = isGroup ? session.course.title : session.course?.title;
@@ -503,6 +492,9 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         courseName={courseName}
                         onClickCourse={onClickCourse}
                         platformName={platformName}
+                        userRole={sessionUserRole}
+                        coachName={sessionCoachName}
+                        coachUsername={sessionCoachUsername}
                         {...sessionTypeProps}
                         onClickAccept={() => handleAcceptClick(parseInt(`${session.id}`))}
                         onClickDecline={() => handleDeclineClick(parseInt(`${session.id}`))}
@@ -547,6 +539,9 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             courseName={courseName}
                             onClickCourse={onClickCourse}
                             platformName={platformName}
+                            userRole={sessionUserRole}
+                            coachName={sessionCoachName}
+                            coachUsername={sessionCoachUsername}
                             {...sessionTypeProps}
                             reviewType="call-quality"
                             callQualityRating={session.review.rating || 0}
@@ -570,6 +565,9 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             courseName={courseName}
                             onClickCourse={onClickCourse}
                             platformName={platformName}
+                            userRole={sessionUserRole}
+                            coachName={sessionCoachName}
+                            coachUsername={sessionCoachUsername}
                             {...sessionTypeProps}
                             onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}
@@ -584,106 +582,83 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
     return (
         <div className="w-full h-full flex flex-col gap-4"  >
-            <div className="w-full flex justify-between items-center " >
-                <Breadcrumbs
-                    items={[
-                        {
-                            label: breadcrumbsTranslations('home'),
-                            onClick: () => router.push(`/${locale}`),
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => router.push(`/${locale}`),
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => router.push(`/${locale}/workspace/`),
+                    },
+                    {
+                        label: breadcrumbsTranslations('yourCoachingSessions'),
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
                         },
-                        {
-                            label: breadcrumbsTranslations('workspace'),
-                            onClick: () => router.push(`/${locale}/workspace/`),
-                        },
-                        {
-                            label: breadcrumbsTranslations('yourCoachingSessions'),
-                            onClick: () => {
-                                // Nothing should happen on clicking the current page
-                            },
-                        },
-                    ]}
-                />
+                    },
+                ]}
+            />
 
-                <Dropdown
-                    type="simple"
-                    className="w-fit"
-                    options={roleOptions}
-                    defaultValue={currentRole}
-                    text={{ simpleText: t('selectRole') }}
-                    onSelectionChange={onRoleChange}
-                />
-            </div>
-
-            {/* Render student or coach content based on selected role */}
-            {currentRole === 'student' ? (
-                <StudentCoachingSessions hideBreadcrumbs={true} />
-            ) : (
-                <Tabs.Root defaultTab={currentTab} onValueChange={onTabChange}>
-                    <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
-                        <div className="w-full flex gap-4 items-center justify-between flex-wrap" >
-                            <h1>
-                                {t('yourCoachingSessions')}
-                            </h1>
-                            <Tabs.List className="flex rounded-medium gap-2 w-fit">
-                                <Tabs.Trigger value="upcoming" isLast={false}>
-                                    {t('upcoming')}
-                                </Tabs.Trigger>
-                                <Tabs.Trigger value="ended" isLast={true}>
-                                    {t('ended')}
-                                </Tabs.Trigger>
-                            </Tabs.List>
-                        </div>
+            <Tabs.Root defaultTab={currentTab} onValueChange={onTabChange}>
+                <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
+                    <div className="w-full flex gap-4 items-center justify-between flex-wrap" >
+                        <h1>
+                            {t('yourCoachingSessions')}
+                        </h1>
+                        <Tabs.List className="flex rounded-medium gap-2 w-fit">
+                            <Tabs.Trigger value="upcoming" isLast={false}>
+                                {t('upcoming')}
+                            </Tabs.Trigger>
+                            <Tabs.Trigger value="ended" isLast={true}>
+                                {t('ended')}
+                            </Tabs.Trigger>
+                        </Tabs.List>
                     </div>
-                    <Tabs.Content value="upcoming" className="mt-10">
-                        {renderSessionContent(upcomingSessions, displayedUpcomingSessions, hasMoreUpcomingSessions, handleLoadMoreUpcomingSessions)}
-                    </Tabs.Content>
+                </div>
+                <Tabs.Content value="upcoming" className="mt-10">
+                    {renderSessionContent(upcomingSessions, displayedUpcomingSessions, hasMoreUpcomingSessions, handleLoadMoreUpcomingSessions)}
+                </Tabs.Content>
 
-                    <Tabs.Content value="ended" className="mt-10">
-                        {renderSessionContent(endedSessions, displayedEndedSessions, hasMoreEndedSessions, handleLoadMoreEndedSessions)}
-                    </Tabs.Content>
-                </Tabs.Root>
+                <Tabs.Content value="ended" className="mt-10">
+                    {renderSessionContent(endedSessions, displayedEndedSessions, hasMoreEndedSessions, handleLoadMoreEndedSessions)}
+                </Tabs.Content>
+            </Tabs.Root>
+
+            {isAcceptModalOpen && (
+                <ConfirmationModal
+                    type="accept"
+                    isOpen={true}
+                    onClose={() => {
+                        setIsAcceptModalOpen(false);
+                        setAcceptSessionId(null);
+                    }}
+                    onConfirm={handleConfirmAccept}
+                    title={t('confirmAcceptance')}
+                    message={t('confirmAcceptanceMessage')}
+                    confirmText={t('accept')}
+                    isLoading={scheduleMutation.isPending}
+                    viewModel={scheduleViewModel}
+                    locale={locale}
+                />
             )}
 
-            {/* Coach-specific modals - only render when in coach mode */}
-            {currentRole !== 'student' && (
-                <>
-                    {/* Accept Modal */}
-                    {isAcceptModalOpen && (
-                        <ConfirmationModal
-                            type="accept"
-                            isOpen={true}
-                            onClose={() => {
-                                setIsAcceptModalOpen(false);
-                                setAcceptSessionId(null);
-                            }}
-                            onConfirm={handleConfirmAccept}
-                            title={t('confirmAcceptance')}
-                            message={t('confirmAcceptanceMessage')}
-                            confirmText={t('accept')}
-                            isLoading={scheduleMutation.isPending}
-                            viewModel={scheduleViewModel}
-                            locale={locale}
-                        />
-                    )}
-
-                    {/* Decline/Cancel Modal - using same component as student page */}
-                    {isDeclineModalOpen && (
-                        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
-                            <CancelCoachingSessionModal
-                                locale={locale}
-                                onClose={() => {
-                                    setIsDeclineModalOpen(false);
-                                    setDeclineSessionId(null);
-                                }}
-                                onCancel={(reason: string) => {
-                                    if (declineSessionId) handleDecline(declineSessionId, reason);
-                                }}
-                                isLoading={unscheduleMutation.isPending}
-                                isError={unscheduleViewModel?.mode === 'kaboom'}
-                            />
-                        </div>
-                    )}
-                </>
+            {isDeclineModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
+                    <CancelCoachingSessionModal
+                        locale={locale}
+                        onClose={() => {
+                            setIsDeclineModalOpen(false);
+                            setDeclineSessionId(null);
+                        }}
+                        onCancel={(reason: string) => {
+                            if (declineSessionId) handleDecline(declineSessionId, reason);
+                        }}
+                        isLoading={unscheduleMutation.isPending}
+                        isError={unscheduleViewModel?.mode === 'kaboom'}
+                    />
+                </div>
             )}
         </div>
     );

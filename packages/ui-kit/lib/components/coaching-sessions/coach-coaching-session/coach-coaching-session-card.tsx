@@ -135,10 +135,15 @@ export const CoachCoachingSessionCard: React.FC<CoachCoachingSessionCardProps> =
           <Tooltip text="" description={sessionTypeTooltip} />
         </div>
         <div className="flex flex-col items-end gap-1">
-          <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
-            {props.duration}
-            {dictionary.components.coachingSessionCard.durationText}
-          </p>
+          <div className="flex items-center gap-1">
+            <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
+              {props.duration}
+              {dictionary.components.coachingSessionCard.durationText}
+            </p>
+            {props.userRole === 'student' && (
+              <Tooltip text="" description={dictionary.components.coachingSessionCard.studentRoleTooltip} />
+            )}
+          </div>
           {props.platformName && (
             <Badge variant="info" size="small" text={props.platformName} />
           )}
@@ -187,13 +192,14 @@ export const CoachCoachingSessionCard: React.FC<CoachCoachingSessionCardProps> =
         )}
       <CourseCreator
         sessionType={props.sessionType}
-        studentName={props.studentName}
-        studentImageUrl={props.studentImageUrl}
+        studentName={props.userRole === 'student' ? undefined : props.studentName}
+        studentImageUrl={props.userRole === 'student' ? undefined : props.studentImageUrl}
+        creatorName={props.userRole === 'student' ? props.coachName : undefined}
         courseName={props.courseName}
         courseImageUrl={props.courseImageUrl}
         groupName={props.groupName}
-        userRole="coach"
-        onClickStudent={props.onClickStudent}
+        userRole={props.userRole === 'student' ? 'student' : 'coach'}
+        onClickStudent={props.userRole === 'student' ? undefined : props.onClickStudent}
         onClickCourse={props.onClickCourse}
         onClickGroup={props.onClickGroup}
         isCrossPlatform={!!props.platformName}
