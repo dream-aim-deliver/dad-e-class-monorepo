@@ -27,7 +27,7 @@ export default function StudentCalendar({ hideBreadcrumbs = false }: StudentCale
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.calendarPage');
     const [listStudentCoachingSessionsResponse] =
-        trpc.listStudentCoachingSessions.useSuspenseQuery({});
+        trpc.listStudentCoachingSessions.useSuspenseQuery({ includeAllPlatforms: true });
     const [
         studentCoachingSessionsViewModel,
         setStudentCoachingSessionsViewModel,

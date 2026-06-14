@@ -16,6 +16,7 @@ interface BaseCardSharedProps {
     courseName?: string;
     courseImageUrl?: string;
     onClickCourse?: () => void;
+    platformName?: string;
 }
 
 /**

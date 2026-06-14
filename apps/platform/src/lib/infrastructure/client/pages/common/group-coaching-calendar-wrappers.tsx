@@ -9,6 +9,7 @@ import {
     SessionCalendarCard,
 } from '@maany_shr/e-class-ui-kit';
 import { splitTimeRangeByDays } from '../../utils/split-time-range';
+import clientEnv from '../../config/env';
 
 interface WeeklyGroupCoachingCalendarWrapperProps {
     groupCoachingSessionsViewModel:
@@ -66,6 +67,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
                                     end={endTime}
                                     title={`Group: ${session.course?.title || 'Coaching Session'}`}
                                     onClick={onSessionClick ? () => onSessionClick(Number(session.id)) : undefined}
+                                    platformName={session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? session.platformSlug : undefined}
                                 />
                             ),
                         });
@@ -96,6 +98,7 @@ export function WeeklyGroupCoachingCalendarWrapper({
                                     end={endTime}
                                     title={`${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`}
                                     onClick={onSessionClick ? () => onSessionClick(Number(session.id)) : undefined}
+                                    platformName={session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? session.platformSlug : undefined}
                                 />
                             ),
                         });
@@ -233,6 +236,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
             endTime: Date;
             title: string;
             type: 'group' | 'individual';
+            platformSlug?: string | null;
         }> = [];
 
         // Add group sessions for selected date
@@ -257,6 +261,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                             endTime,
                             title: `Group: ${session.course?.title || 'Coaching Session'}`,
                             type: 'group',
+                            platformSlug: (session as { platformSlug?: string | null }).platformSlug,
                         });
                     }
                 });
@@ -284,6 +289,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                             endTime,
                             title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingTitle}`,
                             type: session.sessionType?.startsWith('group-') ? 'group' : 'individual',
+                            platformSlug: session.platformSlug,
                         });
                     }
                 });
@@ -323,6 +329,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                                 endTime: session.endTime,
                                 title: session.title,
                                 onClick: onSessionClick ? () => onSessionClick(Number(session.id)) : undefined,
+                                platformName: session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? session.platformSlug : undefined,
                             }]}
                         />
                     ))}

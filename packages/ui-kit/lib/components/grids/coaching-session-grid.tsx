@@ -275,6 +275,13 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             filterValueGetter: (params: any) => params.data?.course?.title ?? ''
         },
         {
+            field: 'platformSlug',
+            headerName: 'Platform',
+            width: 130,
+            filter: 'agTextColumnFilter',
+            valueFormatter: (params: any) => params.value || '-',
+        },
+        {
             field: 'couponName',
             headerName: 'Coupon',
             cellRenderer: CouponCellRenderer,
@@ -296,6 +303,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             const titleMatch = session.coachingOfferingTitle?.toLowerCase().includes(searchLower);
             const courseTitleMatch = session.course?.title?.toLowerCase().includes(searchLower);
             const couponNameMatch = session.couponName?.toLowerCase().includes(searchLower);
+            const platformSlugMatch = session.platformSlug?.toLowerCase().includes(searchLower);
 
             // Search in coach/student fields — handle both individual and group sessions
             let coachNameMatch = false;
@@ -321,7 +329,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
                     session.student?.username?.toLowerCase().includes(searchLower));
             }
 
-            if (!(titleMatch || coachNameMatch || studentNameMatch || courseTitleMatch || couponNameMatch)) {
+            if (!(titleMatch || coachNameMatch || studentNameMatch || courseTitleMatch || couponNameMatch || platformSlugMatch)) {
                 return false;
             }
         }

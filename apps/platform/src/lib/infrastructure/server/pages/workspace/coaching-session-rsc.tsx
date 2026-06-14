@@ -28,7 +28,7 @@ export default async function CoachingSessionsServerComponent(props: CoachingSes
 
         // Also prefetch student data when viewing as student
         if (userRole === 'student') {
-            prefetch(trpc.listStudentCoachingSessions.queryOptions({}));
+            prefetch(trpc.listStudentCoachingSessions.queryOptions({ includeAllPlatforms: true }));
             prefetch(trpc.listCoaches.queryOptions({ pastCoaches: true }));
         }
 
@@ -43,7 +43,7 @@ export default async function CoachingSessionsServerComponent(props: CoachingSes
         );
     } else if (roles && roles.includes('student')) {
         // User is only a student (no coach role), show student view without role selector
-        prefetch(trpc.listStudentCoachingSessions.queryOptions({}));
+        prefetch(trpc.listStudentCoachingSessions.queryOptions({ includeAllPlatforms: true }));
 
         return (
             <>

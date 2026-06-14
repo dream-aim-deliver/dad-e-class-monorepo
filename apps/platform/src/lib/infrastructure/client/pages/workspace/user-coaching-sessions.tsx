@@ -14,6 +14,13 @@ import { useScheduleCoachingSessionPresenter } from '../../hooks/use-schedule-co
 import { useUnscheduleCoachingSessionPresenter } from '../../hooks/use-unschedule-coaching-session-presenter';
 import { trpc } from '../../trpc/cms-client';
 import { formatTime } from '../../utils/format-time';
+import clientEnv from '../../config/env';
+
+function getCrossPlatformName(session: { platformSlug?: string | null }): string | undefined {
+    return session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME
+        ? session.platformSlug
+        : undefined;
+}
 
 interface UserCoachingSessionsProps {
     studentUsername: string | undefined | null;
@@ -121,6 +128,7 @@ function ScheduledCoachSessionCard({
         date: startDateTime,
         startTime: formatTime(session.startTime),
         endTime: formatTime(session.endTime),
+        platformName: getCrossPlatformName(session),
         ...sessionTypeProps,
     };
 
@@ -231,6 +239,7 @@ function ScheduledStudentDashboardCard({
         courseName: session.course?.title,
         onClickCourse: onViewCourse,
         groupName: isGroup ? session.group.name : undefined,
+        platformName: getCrossPlatformName(session),
     };
 
     if (cardStatus === 'ongoing') {
@@ -288,10 +297,11 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const { presenter: allSessionsPresenter } = useListStudentCoachingSessionsPresenter(setStudentCoachingSessionsViewModel);
 
     const [upcomingSessionsResponse] = trpc.listUpcomingStudentCoachingSessions.useSuspenseQuery({
-        studentUsername: studentUsername || ''
+        studentUsername: studentUsername || '',
+        includeAllPlatforms: true,
     });
 
-    const [studentCoachingSessionsResponse] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
+    const [studentCoachingSessionsResponse] = trpc.listStudentCoachingSessions.useSuspenseQuery({ includeAllPlatforms: true });
 
     useEffect(() => {
         // @ts-ignore
@@ -523,6 +533,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
         return upcomingCoachSessions.slice(0, 4).map((session) => {
             const startDateTime = new Date(session.startTime);
             const isGroup = isGroupCoachSession(session);
+            const platformName = getCrossPlatformName(session);
 
             const sessionTypeProps = isGroup
                 ? {
@@ -549,6 +560,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                         date={startDateTime}
                         startTime={formatTime(session.startTime)}
                         endTime={formatTime(session.endTime)}
+                        platformName={platformName}
                         {...sessionTypeProps}
                         onClickAccept={() => handleAcceptClick(parseInt(`${session.id}`))}
                         onClickDecline={() => handleDeclineClick(parseInt(`${session.id}`))}

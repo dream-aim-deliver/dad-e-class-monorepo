@@ -8,6 +8,7 @@ import { IconCalendarAlt } from '../../icons/icon-calendar-alt';
 import { IconClock } from '../../icons/icon-clock';
 import { CoachingSessionCardProps } from '../coaching-session-card';
 import Tooltip from '../../tooltip';
+import { Badge } from '../../badge';
 
 /**
  * Type definition for student coaching session card props extracted from the central discriminated union.
@@ -147,10 +148,15 @@ export const StudentCoachingSessionCard: React.FC<StudentCoachingSessionCardProp
                     </p>
                     <Tooltip text="" description={sessionTypeTooltip} />
                 </div>
-                <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
-                    {props.duration}
-                    {dictionary.components.coachingSessionCard.durationText}
-                </p>
+                <div className="flex flex-col items-end gap-1">
+                    <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
+                        {props.duration}
+                        {dictionary.components.coachingSessionCard.durationText}
+                    </p>
+                    {props.platformName && (
+                        <Badge variant="info" size="small" text={props.platformName} />
+                    )}
+                </div>
             </div>
             {props.status === 'rescheduled' ? (
                 <DateAndTime
@@ -191,6 +197,7 @@ export const StudentCoachingSessionCard: React.FC<StudentCoachingSessionCardProp
                 onClickCourse={props.onClickCourse}
                 onClickCreator={props.onClickCreator}
                 onClickGroup={props.onClickGroup}
+                isCrossPlatform={!!props.platformName}
                 locale={props.locale}
             />
             <div className="mt-auto">

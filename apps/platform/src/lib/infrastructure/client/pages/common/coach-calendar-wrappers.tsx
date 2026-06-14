@@ -12,6 +12,7 @@ import {
     useComputeWeeklyEvents,
 } from './hooks/use-compute-events';
 import { splitTimeRangeByDays } from '../../utils/split-time-range';
+import clientEnv from '../../config/env';
 
 interface WeeklyCoachCalendarWrapperProps {
     coachAvailabilityViewModel:
@@ -255,6 +256,7 @@ export function MonthlyCoachCalendarWrapper({
                           }
                         : undefined;
 
+                    const currentPlatform = clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME;
                     const sessionProps = sessions.map((session) => ({
                         startTime: new Date(session.startTime),
                         endTime: new Date(session.endTime),
@@ -262,6 +264,7 @@ export function MonthlyCoachCalendarWrapper({
                         onClick: onSessionClick
                             ? () => onSessionClick(Number(session.id))
                             : undefined,
+                        platformName: session.platformSlug && session.platformSlug !== currentPlatform ? session.platformSlug : undefined,
                     }));
 
                     return (

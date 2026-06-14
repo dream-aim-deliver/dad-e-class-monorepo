@@ -1,6 +1,7 @@
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from '../button';
 import { cn } from '../../utils/style-utils';
+import { Badge } from '../badge';
 
 interface CoachingAvailabilityCardProps extends isLocalAware {
     availability?: {
@@ -13,6 +14,7 @@ interface CoachingAvailabilityCardProps extends isLocalAware {
         endTime: Date;
         onClick?: () => void;
         title: string;
+        platformName?: string;
     }[];
     onRequest?: () => void;
 }
@@ -30,12 +32,14 @@ function CoachingSessionCard({
     title,
     onClick,
     sessionLabel,
+    platformName,
 }: {
     startTime: Date;
     endTime: Date;
     title: string;
     onClick?: () => void;
     sessionLabel: string;
+    platformName?: string;
 }) {
     return (
         <div
@@ -47,9 +51,14 @@ function CoachingSessionCard({
         >
             <h6 className="text-text-primary-inverted">{sessionLabel}</h6>
             <h5 className="text-text-primary-inverted">{title}</h5>
-            <p className="text-text-primary-inverted text-sm">
-                {formatTime(startTime)} - {formatTime(endTime)}
-            </p>
+            <div className="flex items-center gap-2">
+                <p className="text-text-primary-inverted text-sm">
+                    {formatTime(startTime)} - {formatTime(endTime)}
+                </p>
+                {platformName && (
+                    <Badge variant="info" size="small" text={platformName} />
+                )}
+            </div>
         </div>
     );
 }
@@ -72,6 +81,7 @@ export function CoachingAvailabilityCard({
                             endTime={session.endTime}
                             title={session.title}
                             onClick={session.onClick}
+                            platformName={session.platformName}
                             sessionLabel={
                                 dictionary?.components
                                     ?.coachingAvailabilityCard?.session

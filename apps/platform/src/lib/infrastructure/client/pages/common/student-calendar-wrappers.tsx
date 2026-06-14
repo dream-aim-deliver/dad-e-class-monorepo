@@ -10,6 +10,7 @@ import {
     WeeklyCalendar,
 } from '@maany_shr/e-class-ui-kit';
 import { splitTimeRangeByDays } from '../../utils/split-time-range';
+import clientEnv from '../../config/env';
 
 interface WeeklyStudentCalendarWrapperProps {
     studentCoachingSessionsViewModel:
@@ -62,6 +63,7 @@ export function WeeklyStudentCalendarWrapper({
                             onClick={() =>
                                 onSessionClick?.(segment.original.id)
                             }
+                            platformName={segment.original.platformSlug && segment.original.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? segment.original.platformSlug : undefined}
                         />
                     ),
                 });
@@ -213,6 +215,7 @@ export function MonthlyStudentCalendarWrapper({
                         onClick:
                             onSessionClick &&
                             (() => onSessionClick?.(Number(session.id))),
+                        platformName: session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? session.platformSlug : undefined,
                     }))}
                 />
             )}

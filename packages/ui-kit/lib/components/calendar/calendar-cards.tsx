@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { IconPlus } from '../icons';
 import { isLocalAware } from '@maany_shr/e-class-translations';
+import { Badge } from '../badge';
 
 interface AvailabilityCalendarCardProps extends isLocalAware {
     start: Date;
@@ -77,6 +78,7 @@ interface SessionCalendarCardProps extends isLocalAware {
     end: Date;
     onClick?: () => void;
     title: string;
+    platformName?: string;
 }
 
 export function SessionCalendarCard(props: SessionCalendarCardProps) {
@@ -101,6 +103,9 @@ export function SessionCalendarCard(props: SessionCalendarCardProps) {
             <div className="truncate" title={props.title}>
                 {props.title}
             </div>
+            {props.platformName && (
+                <Badge variant="info" size="small" text={props.platformName} />
+            )}
         </div>
     );
 }

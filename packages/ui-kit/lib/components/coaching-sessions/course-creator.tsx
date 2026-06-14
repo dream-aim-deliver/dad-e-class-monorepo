@@ -20,6 +20,7 @@ export interface CourseCreatorProps extends isLocalAware {
     onClickCreator?: () => void;
     onClickCourse?: () => void;
     onClickGroup?: () => void;
+    isCrossPlatform?: boolean;
 }
 
 /**
@@ -68,6 +69,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
     onClickCourse,
     onClickCreator,
     onClickGroup,
+    isCrossPlatform,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
@@ -112,22 +114,28 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
                             </>
                         )}
                     </div>
-                    <Button
-                        size="small"
-                        variant="text"
-                        className="flex gap-1 p-0 h-8 max-w-full"
-                        text={userRole === 'student' ? creatorName : studentName}
-                        onClick={userRole === 'student' ? onClickCreator : onClickStudent}
-                        hasIconLeft
-                        iconLeft={
-                            <UserAvatar
-                                size="xSmall"
-                                imageUrl={
-                                    userRole === 'student' ? creatorImageUrl : studentImageUrl
-                                }
-                            />
-                        }
-                    />
+                    {isCrossPlatform ? (
+                        <p className="text-sm text-text-primary truncate">
+                            {userRole === 'student' ? creatorName : studentName}
+                        </p>
+                    ) : (
+                        <Button
+                            size="small"
+                            variant="text"
+                            className="flex gap-1 p-0 h-8 max-w-full"
+                            text={userRole === 'student' ? creatorName : studentName}
+                            onClick={userRole === 'student' ? onClickCreator : onClickStudent}
+                            hasIconLeft
+                            iconLeft={
+                                <UserAvatar
+                                    size="xSmall"
+                                    imageUrl={
+                                        userRole === 'student' ? creatorImageUrl : studentImageUrl
+                                    }
+                                />
+                            }
+                        />
+                    )}
                 </div>
             )}
             {courseName && (
