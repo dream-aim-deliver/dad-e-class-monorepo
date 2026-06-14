@@ -8,6 +8,7 @@ import {
 import { useLocale } from 'next-intl';
 import { useMemo } from 'react';
 import { splitTimeRangeByDays } from '../../../utils/split-time-range';
+import clientEnv from '../../../config/env';
 
 /**
  * Splits an availability period that spans multiple days into separate daily segments.
@@ -79,6 +80,7 @@ export function useComputeWeeklyEvents({
                             onClick={() =>
                                 onSessionClick?.(segment.original.id)
                             }
+                            platformName={segment.original.platformSlug && segment.original.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? segment.original.platformSlug : undefined}
                         />
                     ),
                 });

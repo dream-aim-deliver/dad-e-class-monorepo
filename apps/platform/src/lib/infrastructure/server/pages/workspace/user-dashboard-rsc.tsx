@@ -41,9 +41,10 @@ export default async function UserDashboardServerComponent() {
 
     // TSK-PERF-014: Add coaching sessions prefetch for all users
     prefetch(trpc.listUpcomingStudentCoachingSessions.queryOptions({
-        studentUsername: session.user.name || ''
+        studentUsername: session.user.name || '',
+        includeAllPlatforms: true,
     }));
-    prefetch(trpc.listStudentCoachingSessions.queryOptions({}));
+    prefetch(trpc.listStudentCoachingSessions.queryOptions({ includeAllPlatforms: true }));
 
     // Add coach-specific data prefetching
     if (isCoach) {

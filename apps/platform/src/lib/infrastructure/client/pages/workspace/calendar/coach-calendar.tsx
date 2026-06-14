@@ -26,6 +26,7 @@ import {
     WeeklyCoachCalendarWrapper,
 } from '../../common/coach-calendar-wrappers';
 import { useRouter } from 'next/navigation';
+import clientEnv from '../../../config/env';
 
 function CalendarContent() {
     const locale = useLocale() as TLocale;
@@ -61,6 +62,7 @@ function CalendarContent() {
         studentUsername?: string | null;
         groupName?: string | null;
         courseName?: string | null;
+        platformName?: string | null;
     } | undefined>(undefined);
 
     const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
@@ -105,6 +107,7 @@ function CalendarContent() {
             studentUsername: session.studentUsername || null,
             groupName: session.groupName || null,
             courseName: session.courseTitle || null,
+            platformName: session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? session.platformSlug : null,
         });
         setIsSessionDetailsDialogOpen(true);
     };
@@ -176,6 +179,7 @@ function CalendarContent() {
                     studentUsername={chosenSession.studentUsername}
                     groupName={chosenSession.groupName}
                     courseName={chosenSession.courseName}
+                    platformName={chosenSession.platformName}
                     onCancelSuccess={handleSessionCancelSuccess}
                 />
             )}

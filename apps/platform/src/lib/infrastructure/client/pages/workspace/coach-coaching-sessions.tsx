@@ -14,6 +14,13 @@ import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-co
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
 import { TListCoachCoachingSessionsSuccessResponse } from "@dream-aim-deliver/e-class-cms-rest";
 import StudentCoachingSessions from "./student-coaching-sessions";
+import clientEnv from "../../config/env";
+
+function getCrossPlatformName(session: { platformSlug?: string | null }): string | undefined {
+    return session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME
+        ? session.platformSlug
+        : undefined;
+}
 
 // Type for a single session from the API response
 type TCoachSession = TListCoachCoachingSessionsSuccessResponse['data']['sessions'][number];
@@ -128,6 +135,7 @@ function ScheduledCoachSessionCard({
         endTime: formatTime(session.endTime),
         courseName,
         onClickCourse,
+        platformName: getCrossPlatformName(session),
         ...sessionTypeProps,
     };
 
@@ -459,6 +467,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             // Create start DateTime for time calculations
             const startDateTime = new Date(session.startTime);
             const isGroup = isGroupSession(session);
+            const platformName = getCrossPlatformName(session);
 
             // Build course info props (group sessions always have course, individual may not)
             const courseName = isGroup ? session.course.title : session.course?.title;
@@ -480,7 +489,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                 };
 
             if (session.status === 'requested') {
-                // For requested sessions (upcoming tab)
                 return (
                     <CoachingSessionCard
                         key={session.id}
@@ -494,6 +502,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         endTime={formatTime(session.endTime)}
                         courseName={courseName}
                         onClickCourse={onClickCourse}
+                        platformName={platformName}
                         {...sessionTypeProps}
                         onClickAccept={() => handleAcceptClick(parseInt(`${session.id}`))}
                         onClickDecline={() => handleDeclineClick(parseInt(`${session.id}`))}
@@ -521,8 +530,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             }
 
             if (session.status === 'completed') {
-                // For completed sessions (ended tab)
-                // Check if review exists (for completed sessions, the review is optional)
                 const hasReview = 'review' in session && session.review !== undefined;
 
                 if (hasReview && session.review) {
@@ -539,6 +546,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             courseName={courseName}
                             onClickCourse={onClickCourse}
+                            platformName={platformName}
                             {...sessionTypeProps}
                             reviewType="call-quality"
                             callQualityRating={session.review.rating || 0}
@@ -547,7 +555,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         />
                     );
                 } else {
-                    // Completed session without review
                     return (
                         <CoachingSessionCard
                             key={session.id}
@@ -562,6 +569,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             courseName={courseName}
                             onClickCourse={onClickCourse}
+                            platformName={platformName}
                             {...sessionTypeProps}
                             onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}

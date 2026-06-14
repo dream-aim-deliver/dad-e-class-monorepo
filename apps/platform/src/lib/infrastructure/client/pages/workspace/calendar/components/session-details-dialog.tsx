@@ -26,6 +26,7 @@ interface SessionDetailsDialogProps {
     studentUsername?: string | null;
     groupName?: string | null;
     courseName?: string | null;
+    platformName?: string | null;
     onCancelSuccess: () => void;
 }
 
@@ -43,6 +44,7 @@ export function SessionDetailsDialog({
     studentUsername,
     groupName,
     courseName,
+    platformName,
     onCancelSuccess,
 }: SessionDetailsDialogProps) {
     const locale = useLocale() as TLocale;
@@ -81,7 +83,14 @@ export function SessionDetailsDialog({
                     <div className="flex flex-col gap-4">
                         <h4>{t('sessionDetailsTitle')}</h4>
                         <div className="p-4 flex flex-col gap-3 bg-card-stroke rounded-md border border-divider text-text-primary">
-                            <span className="font-medium">{sessionTitle}</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-medium">{sessionTitle}</span>
+                                {platformName && (
+                                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 truncate max-w-[120px]">
+                                        {platformName}
+                                    </span>
+                                )}
+                            </div>
                             <div className="flex flex-row gap-2 text-text-secondary">
                                 <IconCalendar />
                                 <span>{t('dateLabel')}</span>

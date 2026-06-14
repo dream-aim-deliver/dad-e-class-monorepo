@@ -13,6 +13,7 @@ import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { formatTime } from "../../utils/format-time";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../trpc/cms-client";
+import clientEnv from "../../config/env";
 
 // Type for scheduled sessions (excluding unscheduled)
 type ScheduledStudentSession = Exclude<NonNullable<viewModels.TStudentCoachingSessionsListSuccess['sessions']>[number], { status: 'unscheduled' }>;
@@ -29,6 +30,12 @@ interface ScheduledStudentSessionCardProps {
     onClickGroup?: () => void;
     courseName?: string;
     groupName?: string;
+}
+
+function getCrossPlatformName(session: { platformSlug?: string | null }): string | undefined {
+    return session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME
+        ? session.platformSlug
+        : undefined;
 }
 
 interface StudentCoachingSessionsProps {
@@ -110,6 +117,7 @@ function ScheduledStudentSessionCard({
         onClickCourse: onViewCourse,
         groupName,
         onClickGroup,
+        platformName: getCrossPlatformName(session),
     };
 
     if (cardStatus === 'ongoing') {
@@ -186,7 +194,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
         });
     };
 
-    const [studentCoachingSessionsResponse, { refetch: refetchStudentCoachingSessions }] = trpc.listStudentCoachingSessions.useSuspenseQuery({}, {
+    const [studentCoachingSessionsResponse, { refetch: refetchStudentCoachingSessions }] = trpc.listStudentCoachingSessions.useSuspenseQuery({ includeAllPlatforms: true }, {
         staleTime: 0,
         refetchOnMount: 'always',
         refetchInterval: (query) => {
@@ -730,6 +738,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
 
             // Create start DateTime for time calculations
             const startDateTime = new Date(session.startTime);
+            const platformName = getCrossPlatformName(session);
 
             // Common properties for all session cards (excluding key)
             const coach = session.coach;
@@ -752,6 +761,7 @@ export default function StudentCoachingSessions({ hideBreadcrumbs = false }: Stu
                 onClickCourse: course?.slug ? () => handleViewCourse(course.slug || '') : undefined,
                 groupName: group?.name,
                 onClickGroup: course?.slug && group ? () => handleGroupClick(course.slug!) : undefined,
+                platformName,
             };
 
             if (session.status === 'requested') {
