@@ -17,6 +17,12 @@ interface BaseCardSharedProps {
     courseImageUrl?: string;
     onClickCourse?: () => void;
     platformName?: string;
+    /** Whether the current user is acting as coach or student in this session */
+    userRole?: 'coach' | 'student';
+    /** Coach's display name (when userRole is 'student') */
+    coachName?: string;
+    /** Coach's username (when userRole is 'student') */
+    coachUsername?: string;
 }
 
 /**

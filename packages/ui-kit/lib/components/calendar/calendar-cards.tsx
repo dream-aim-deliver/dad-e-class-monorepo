@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { IconPlus } from '../icons';
-import { isLocalAware } from '@maany_shr/e-class-translations';
+import { IconPlus, IconStudent } from '../icons';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Badge } from '../badge';
 
 interface AvailabilityCalendarCardProps extends isLocalAware {
@@ -79,9 +79,11 @@ interface SessionCalendarCardProps extends isLocalAware {
     onClick?: () => void;
     title: string;
     platformName?: string;
+    userRole?: 'coach' | 'student';
 }
 
 export function SessionCalendarCard(props: SessionCalendarCardProps) {
+    const dictionary = getDictionary(props.locale);
     const formatTime = (date: Date) => {
         return date.toLocaleTimeString(props.locale, {
             hour: '2-digit',
@@ -103,9 +105,19 @@ export function SessionCalendarCard(props: SessionCalendarCardProps) {
             <div className="truncate" title={props.title}>
                 {props.title}
             </div>
-            {props.platformName && (
-                <Badge variant="info" size="small" text={props.platformName} />
-            )}
+            <div className="flex items-center gap-1">
+                {props.platformName && (
+                    <Badge variant="info" size="medium" text={props.platformName} />
+                )}
+                {props.userRole === 'student' && (
+                    <span
+                        title={dictionary.components.coachingSessionCard.studentRoleTooltip}
+                        className="inline-flex items-center justify-center bg-base-neutral-400 text-text-primary-inverted rounded-small py-1 px-[5px]"
+                    >
+                        <IconStudent size="4" />
+                    </span>
+                )}
+            </div>
         </div>
     );
 }

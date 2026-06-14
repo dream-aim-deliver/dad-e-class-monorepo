@@ -20,7 +20,6 @@ import { DeleteRecurringAvailabilityDialog } from './components/delete-recurring
 import { AvailabilityDetailsDialog } from './components/availability-details-dialog';
 import { SessionDetailsDialog } from './components/session-details-dialog';
 import { useSession } from 'next-auth/react';
-import StudentCalendar from './student-calendar';
 import {
     MonthlyCoachCalendarWrapper,
     WeeklyCoachCalendarWrapper,
@@ -63,6 +62,10 @@ function CalendarContent() {
         groupName?: string | null;
         courseName?: string | null;
         platformName?: string | null;
+        userRole?: 'coach' | 'student';
+        coachName?: string | null;
+        coachSurname?: string | null;
+        coachUsername?: string | null;
     } | undefined>(undefined);
 
     const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
@@ -99,6 +102,12 @@ function CalendarContent() {
         if (!coachAvailabilityViewModel || coachAvailabilityViewModel.mode !== 'default') return;
         const session = coachAvailabilityViewModel.data.mySessions.find(s => s.id === sessionId);
         if (!session) return;
+        const sessionWithRole = session as typeof session & {
+            userRole?: 'coach' | 'student';
+            coachName?: string | null;
+            coachSurname?: string | null;
+            coachUsername?: string | null;
+        };
         setChosenSession({
             id: Number(session.id),
             title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingName}`,
@@ -108,6 +117,10 @@ function CalendarContent() {
             groupName: session.groupName || null,
             courseName: session.courseTitle || null,
             platformName: session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? session.platformSlug : null,
+            userRole: sessionWithRole.userRole || 'coach',
+            coachName: sessionWithRole.coachName || null,
+            coachSurname: sessionWithRole.coachSurname || null,
+            coachUsername: sessionWithRole.coachUsername || null,
         });
         setIsSessionDetailsDialogOpen(true);
     };
@@ -180,6 +193,10 @@ function CalendarContent() {
                     groupName={chosenSession.groupName}
                     courseName={chosenSession.courseName}
                     platformName={chosenSession.platformName}
+                    userRole={chosenSession.userRole}
+                    coachName={chosenSession.coachName}
+                    coachSurname={chosenSession.coachSurname}
+                    coachUsername={chosenSession.coachUsername}
                     onCancelSuccess={handleSessionCancelSuccess}
                 />
             )}
@@ -284,53 +301,9 @@ export default function CoachCalendar() {
     const t = useTranslations('pages.calendarPage');
     const router = useRouter();
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
-    const isStudent = session.data?.user?.roles?.includes('student');
-    const tabContentClass = 'mt-4';
-
     // Wait for session to be authenticated before making authenticated queries
     if (session.status === 'loading') {
         return <DefaultLoading locale={locale} />;
-    }
-
-    if (isStudent) {
-        return (
-            <div className="flex flex-col space-y-2">
-                <Breadcrumbs
-                    items={[
-                        {
-                            label: breadcrumbsTranslations('home'),
-                            onClick: () => router.push(`/${locale}`),
-                        },
-                        {
-                            label: breadcrumbsTranslations('workspace'),
-                            onClick: () => router.push(`/${locale}/workspace/`),
-                        },
-                        {
-                            label: breadcrumbsTranslations('yourCalendar'),
-                            onClick: () => {
-                                // Nothing should happen on clicking the current page
-                            },
-                        },
-                    ]}
-                />
-                <Tabs.Root defaultTab="coach">
-                    <Tabs.List>
-                        <Tabs.Trigger value="coach" isLast={false}>
-                            {t('coachTab')}
-                        </Tabs.Trigger>
-                        <Tabs.Trigger value="student" isLast={true}>
-                            {t('studentTab')}
-                        </Tabs.Trigger>
-                    </Tabs.List>
-                    <Tabs.Content value="coach" className={tabContentClass}>
-                        <CalendarContent />
-                    </Tabs.Content>
-                    <Tabs.Content value="student" className={tabContentClass}>
-                        <StudentCalendar hideBreadcrumbs={true} />
-                    </Tabs.Content>
-                </Tabs.Root>
-            </div>
-        );
     }
 
     return (
