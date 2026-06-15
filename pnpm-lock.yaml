@@ -19,8 +19,8 @@ importers:
         specifier: ^0.13.4
         version: 0.13.4
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.35
-        version: 3.3.35(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 3.4.0
+        version: 3.4.0(encoding@0.1.13)(typescript@5.9.3)
       '@mux/mux-player-react':
         specifier: 3.3.0
         version: 3.3.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -392,8 +392,8 @@ importers:
   packages/auth:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.35
-        version: 3.3.35(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 3.4.0
+        version: 3.4.0(encoding@0.1.13)(typescript@5.9.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -416,8 +416,8 @@ importers:
         specifier: ^0.13.4
         version: 0.13.4
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.35
-        version: 3.3.35(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 3.4.0
+        version: 3.4.0(encoding@0.1.13)(typescript@5.9.3)
       zod:
         specifier: ^3.24.1
         version: 3.25.76
@@ -431,8 +431,8 @@ importers:
   packages/ui-kit:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.3.35
-        version: 3.3.35(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 3.4.0
+        version: 3.4.0(encoding@0.1.13)(typescript@5.9.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -1255,8 +1255,8 @@ packages:
   '@dream-aim-deliver/dad-data-platform-sdk-ts@1.3.1':
     resolution: {integrity: sha512-aJDfUEj5IUjzt/cqlkEyg6eqzeG3cEuVRv58FVN6xl5VmNi0jDUM1kr0v233gt3blQcDveCTVhTNEE8W+Tb7ag==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/1.3.1/e99cd7a0bbead1c720a96a16cba20002640e18e9}
 
-  '@dream-aim-deliver/e-class-cms-rest@3.3.35':
-    resolution: {integrity: sha512-MHxVjB0gTLXGnUO3+sLZkV/YznHEEuHDfqxlKugWo2HtWmI29K+oAo3XABbYKCf/VaZ/wOccSrA6X2EfmSOcbQ==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.3.35/6cac1b12860abf7c68c51e21e22fa7332d3ffac2}
+  '@dream-aim-deliver/e-class-cms-rest@3.4.0':
+    resolution: {integrity: sha512-eV8ly8+vDgOrw3jfNK4DMdiEOh+7LygLECkwPkDEcRqnuwnYlpDbR1e89kK2XxzhAZYpDmjB0P+Jcmmvl6mD3w==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.4.0/25fb9897a4f1a8d565ed78efb193629a13bc7b64}
 
   '@emnapi/core@1.8.1':
     resolution: {integrity: sha512-AvT9QFpxK0Zd8J0jopedNm+w/2fIzvtPKPjqyw9jwvBaReTTqPBk9Hixaz7KbjimP+QNz605/XnjFcDAL2pqBg==}
@@ -2587,12 +2587,6 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
 
-  '@opentelemetry/context-async-hooks@2.2.0':
-    resolution: {integrity: sha512-qRkLWiUEZNAmYapZ7KGS5C4OmBLcP/H2foXeOEaowYCR0wi89fHejrfYfbuLVCMLp/dWZXKvQusdbUEZjERfwQ==}
-    engines: {node: ^18.19.0 || >=20.6.0}
-    peerDependencies:
-      '@opentelemetry/api': '>=1.0.0 <1.10.0'
-
   '@opentelemetry/context-async-hooks@2.7.1':
     resolution: {integrity: sha512-OPFBYuXEn1E4ja3Y6eeA7O+ZnLBNcXTV5Cgsn1VaqBZ6hC5FnpZPLBNme1LJY8ZtF4aOujPKFoeWN4ik487KuQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
@@ -2903,12 +2897,6 @@ packages:
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
-
-  '@opentelemetry/sdk-trace-node@2.2.0':
-    resolution: {integrity: sha512-+OaRja3f0IqGG2kptVeYsrZQK9nKRSpfFrKtRBq4uh6nIB8bTBgaGvYQrQoRrQWQMA5dK5yLhDMDc0dvYvCOIQ==}
-    engines: {node: ^18.19.0 || >=20.6.0}
-    peerDependencies:
-      '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.7.1':
     resolution: {integrity: sha512-pCpQxU68lV+I9s9svqMyVu5iHdDDUnqUpSxqwyCU8A9ejEsSnMPCbearwsUO4yk08ZJzAIUCFuReMdVQvHrdvg==}
@@ -4391,6 +4379,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
     resolution: {integrity: sha512-ppLRUgHVaGRWUx0R0Ut06Mjo9gBaBkg3v/8AxusGLhsIotbBLuRk51rAzqLC8gq6NyyAojEXglNjzf6R948DNw==}
@@ -10469,6 +10458,7 @@ packages:
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -11823,7 +11813,7 @@ snapshots:
       - debug
       - encoding
 
-  '@dream-aim-deliver/e-class-cms-rest@3.3.35(encoding@0.1.13)(typescript@5.9.3)':
+  '@dream-aim-deliver/e-class-cms-rest@3.4.0(encoding@0.1.13)(typescript@5.9.3)':
     dependencies:
       '@dream-aim-deliver/dad-cats': 0.13.4
       '@dream-aim-deliver/dad-data-platform-sdk-ts': 1.3.1(encoding@0.1.13)
@@ -11837,10 +11827,10 @@ snapshots:
       '@opentelemetry/exporter-trace-otlp-http': 0.208.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.207.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation-http': 0.208.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 2.2.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-metrics': 2.2.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 2.7.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-metrics': 2.7.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-node': 0.218.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-node': 2.2.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-node': 2.7.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.38.0
       '@trpc/client': 11.16.0(@trpc/server@11.16.0(typescript@5.9.3))(typescript@5.9.3)
       '@trpc/server': 11.16.0(typescript@5.9.3)
@@ -12024,7 +12014,7 @@ snapshots:
   '@fastify/otel@0.13.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 2.2.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 2.7.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.207.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.38.0
       minimatch: 10.2.1
@@ -13810,10 +13800,6 @@ snapshots:
       '@opentelemetry/core': 2.7.1(@opentelemetry/api@1.9.0)
       yaml: 2.8.2
 
-  '@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-
   '@opentelemetry/context-async-hooks@2.7.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -14242,13 +14228,6 @@ snapshots:
       '@opentelemetry/core': 2.7.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/resources': 2.7.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.38.0
-
-  '@opentelemetry/sdk-trace-node@2.2.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/context-async-hooks': 2.2.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/core': 2.2.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 2.2.0(@opentelemetry/api@1.9.0)
 
   '@opentelemetry/sdk-trace-node@2.7.1(@opentelemetry/api@1.9.0)':
     dependencies:
