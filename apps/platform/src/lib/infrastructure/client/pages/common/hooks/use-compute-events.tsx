@@ -24,7 +24,7 @@ function splitAvailabilityByDays(availability: useCaseModels.TAvailability) {
 /**
  * Splits a coaching session that spans multiple days into separate daily segments.
  */
-function splitSessionByDays(session: useCaseModels.TCoachCoachingSession) {
+function splitSessionByDays(session: viewModels.TCoachAvailabilitySuccess['mySessions'][number]) {
     return splitTimeRangeByDays(session.startTime, session.endTime, session);
 }
 
@@ -81,7 +81,7 @@ export function useComputeWeeklyEvents({
                                 onSessionClick?.(segment.original.id)
                             }
                             platformName={segment.original.platformSlug && segment.original.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? segment.original.platformSlug : undefined}
-                            userRole={(segment.original as { userRole?: 'coach' | 'student' }).userRole}
+                            userRole={segment.original.userRole === 'student' ? 'student' : segment.original.userRole === 'coach' ? 'coach' : undefined}
                         />
                     ),
                 });

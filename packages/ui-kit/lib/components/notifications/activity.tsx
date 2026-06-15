@@ -185,7 +185,7 @@ export const Activity: FC<ActivityProps> = ({
                                 text={a.title}
                                 className="p-0 truncate flex-shrink-0"
                                 onClick={(e) => {
-                                    e.stopPropagation();
+                                    e?.stopPropagation();
                                     if (a.url) onClickActivity?.(a.url)?.();
                                 }}
                             />
