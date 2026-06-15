@@ -7,6 +7,8 @@ overrides:
   jspdf: ^4.2.1
   handlebars: ^4.7.9
   protobufjs: ^7.5.5
+minimumReleaseAgeExclude:
+  - '@dream-aim-deliver/*'
 allowBuilds:
   '@parcel/watcher': true
   '@swc/core': true
