@@ -190,16 +190,28 @@ function AssignmentInteraction({
             const lastStudentReply = [...(assignment.progress?.replies ?? [])].reverse().find(r => r.sender.role === 'student');
             if (lastStudentReply) {
                 setComment(lastStudentReply.comment);
-                setFiles(lastStudentReply.files.map(f => ({
-                    ...f,
-                    url: f.downloadUrl,
-                    status: 'available' as const,
-                })));
+                setFiles(lastStudentReply.files.map(f => {
+                    const base = {
+                        ...f,
+                        url: f.downloadUrl,
+                        status: 'available' as const,
+                    };
+                    if (f.category === 'video') {
+                        return { ...base, category: 'video' as const, videoId: null };
+                    }
+                    if (f.category === 'image') {
+                        return { ...base, category: 'image' as const };
+                    }
+                    if (f.category === 'document') {
+                        return { ...base, category: 'document' as const };
+                    }
+                    return { ...base, category: 'generic' as const };
+                }));
                 setLinks(lastStudentReply.links.map((l, i) => ({
                     linkId: i,
                     title: l.title,
                     url: l.url,
-                    customIcon: l.iconFile ? { ...l.iconFile, url: l.iconFile.downloadUrl, status: 'available' as const } : undefined,
+                    customIcon: l.iconFile ? { ...l.iconFile, url: l.iconFile.downloadUrl, status: 'available' as const, thumbnailUrl: null } : undefined,
                 })));
             }
         } else {

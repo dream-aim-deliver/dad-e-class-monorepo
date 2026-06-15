@@ -261,7 +261,7 @@ export function MonthlyGroupCoachingCalendarWrapper({
                             endTime,
                             title: `Group: ${session.course?.title || 'Coaching Session'}`,
                             type: 'group',
-                            platformSlug: (session as { platformSlug?: string | null }).platformSlug,
+                            platformSlug: session.platformSlug,
                         });
                     }
                 });

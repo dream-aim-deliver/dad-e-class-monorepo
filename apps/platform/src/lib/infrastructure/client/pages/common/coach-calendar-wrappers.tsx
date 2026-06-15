@@ -159,7 +159,7 @@ export function MonthlyCoachCalendarWrapper({
 
         const result: Array<{
             availability?: useCaseModels.TAvailability;
-            sessions: useCaseModels.TCoachCoachingSession[];
+            sessions: viewModels.TCoachAvailabilitySuccess['mySessions'];
         }> = [];
 
         // Track which sessions have been assigned to an availability
@@ -265,7 +265,7 @@ export function MonthlyCoachCalendarWrapper({
                             ? () => onSessionClick(Number(session.id))
                             : undefined,
                         platformName: session.platformSlug && session.platformSlug !== currentPlatform ? session.platformSlug : undefined,
-                        userRole: (session as { userRole?: 'coach' | 'student' }).userRole,
+                        userRole: session.userRole,
                     }));
 
                     return (

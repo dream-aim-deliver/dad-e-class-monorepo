@@ -102,12 +102,6 @@ function CalendarContent() {
         if (!coachAvailabilityViewModel || coachAvailabilityViewModel.mode !== 'default') return;
         const session = coachAvailabilityViewModel.data.mySessions.find(s => s.id === sessionId);
         if (!session) return;
-        const sessionWithRole = session as typeof session & {
-            userRole?: 'coach' | 'student';
-            coachName?: string | null;
-            coachSurname?: string | null;
-            coachUsername?: string | null;
-        };
         setChosenSession({
             id: Number(session.id),
             title: `${session.sessionType?.startsWith('group-') ? 'Group Session' : 'Individual'}: ${session.coachingOfferingName}`,
@@ -117,10 +111,10 @@ function CalendarContent() {
             groupName: session.groupName || null,
             courseName: session.courseTitle || null,
             platformName: session.platformSlug && session.platformSlug !== clientEnv.NEXT_PUBLIC_E_CLASS_RUNTIME ? session.platformSlug : null,
-            userRole: sessionWithRole.userRole || 'coach',
-            coachName: sessionWithRole.coachName || null,
-            coachSurname: sessionWithRole.coachSurname || null,
-            coachUsername: sessionWithRole.coachUsername || null,
+            userRole: session.userRole === 'student' ? 'student' : 'coach',
+            coachName: session.coachName || null,
+            coachSurname: session.coachSurname || null,
+            coachUsername: session.coachUsername || null,
         });
         setIsSessionDetailsDialogOpen(true);
     };

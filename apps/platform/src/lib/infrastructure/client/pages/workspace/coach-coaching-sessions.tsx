@@ -24,13 +24,7 @@ function getCrossPlatformName(session: { platformSlug?: string | null }): string
 // Type for a single session from the API response
 type TCoachSessionBase = TListCoachCoachingSessionsSuccessResponse['data']['sessions'][number];
 
-// Extended type with student-role fields (added by backend in parallel)
-type TCoachSession = TCoachSessionBase & {
-    userRole?: 'coach' | 'student';
-    coachName?: string | null;
-    coachSurname?: string | null;
-    coachUsername?: string | null;
-};
+type TCoachSession = TCoachSessionBase;
 
 // Type for scheduled sessions only (have meetingUrl)
 type TScheduledSession = Extract<TCoachSession, { sessionType: 'individual-scheduled' | 'group-scheduled' }>;
@@ -132,7 +126,8 @@ function ScheduledCoachSessionCard({
             onClickStudent: onStudentClick,
         };
 
-    const sessionWithRole = session as TCoachSession;
+    const sessionUserRoleRaw = session.userRole;
+    const sessionUserRole: 'coach' | 'student' = sessionUserRoleRaw === 'student' ? 'student' : 'coach';
     const commonProps = {
         locale,
         userType: "coach" as const,
@@ -144,9 +139,9 @@ function ScheduledCoachSessionCard({
         courseName,
         onClickCourse,
         platformName: getCrossPlatformName(session),
-        userRole: sessionWithRole.userRole || ('coach' as const),
-        coachName: sessionWithRole.userRole === 'student' ? sessionWithRole.coachName || undefined : undefined,
-        coachUsername: sessionWithRole.userRole === 'student' ? sessionWithRole.coachUsername || undefined : undefined,
+        userRole: sessionUserRole,
+        coachName: sessionUserRole === 'student' ? session.coachName || undefined : undefined,
+        coachUsername: sessionUserRole === 'student' ? session.coachUsername || undefined : undefined,
         ...sessionTypeProps,
     };
 
@@ -454,9 +449,9 @@ export default function CoachCoachingSessions() {
             const startDateTime = new Date(session.startTime);
             const isGroup = isGroupSession(session);
             const platformName = getCrossPlatformName(session);
-            const sessionUserRole = session.userRole || ('coach' as const);
-            const sessionCoachName = session.userRole === 'student' ? session.coachName || undefined : undefined;
-            const sessionCoachUsername = session.userRole === 'student' ? session.coachUsername || undefined : undefined;
+            const sessionUserRole: 'coach' | 'student' = session.userRole === 'student' ? 'student' : 'coach';
+            const sessionCoachName = sessionUserRole === 'student' ? session.coachName || undefined : undefined;
+            const sessionCoachUsername = sessionUserRole === 'student' ? session.coachUsername || undefined : undefined;
 
             // Build course info props (group sessions always have course, individual may not)
             const courseName = isGroup ? session.course.title : session.course?.title;
