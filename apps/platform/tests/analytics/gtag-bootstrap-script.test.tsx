@@ -3,9 +3,9 @@ import { GtagBootstrapScript } from '../../src/lib/infrastructure/client/analyti
 
 /**
  * The bootstrap replaces ConsentModeDefaultScript under the "Golden Rule":
- * the Usercentrics GTM template is the single owner of the consent DEFAULT,
- * so this script must define window.dataLayer + window.gtag (required by
- * consent-mode.ts updateConsent) and must NOT issue any consent command.
+ * the Usercentrics GTM template is the single owner of consent DEFAULT and
+ * UPDATE, so this script must define window.dataLayer + window.gtag and
+ * must NOT issue any consent command.
  */
 describe('GtagBootstrapScript', () => {
     function renderedCode(): string {

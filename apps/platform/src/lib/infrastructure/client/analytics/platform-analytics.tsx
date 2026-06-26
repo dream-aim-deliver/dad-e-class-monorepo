@@ -14,10 +14,13 @@ interface TPlatformAnalyticsProps {
 
 /**
  * Single wrapper component that composes the full analytics stack:
- *   <ConsentProvider>
- *     <AnalyticsProvider>
+ *   <ConsentProvider>   ← in-app gating only (OTel, track.*); no gtag
+ *     <AnalyticsProvider>   ← GTM load only; consent owned by GTM tag
  *       <AnalyticsIdentityBinder />
  *       children
+ *
+ * Google Consent Mode (default + update) is owned by the Usercentrics GTM
+ * tag — see `docs/consent-mode-ownership.md`.
  *
  * Adapter selection is RuntimeConfig-driven: Usercentrics when
  * NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID is present in the tenant's runtime

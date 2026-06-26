@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { act, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 // Mock @next/third-parties/google so we don't actually load GTM in tests.
 const GtmMock = vi.fn(() => null);
@@ -25,9 +25,8 @@ function readDataLayer(): unknown[] {
 }
 
 /**
- * Mimic GtagBootstrapScript's bootstrap: define window.gtag as a
- * push-arguments-onto-dataLayer shim so the test can verify consent
- * updates land in dataLayer with the expected shape.
+ * Mimic GtagBootstrapScript's bootstrap: define window.gtag so we can assert
+ * AnalyticsProvider does not push consent updates (GTM-owned).
  */
 function setupGtagShim(): void {
     (window as Window).dataLayer = [];
@@ -105,7 +104,7 @@ describe('AnalyticsProvider', () => {
         expect(GtmMock).not.toHaveBeenCalled();
     });
 
-    it('calls gtag("consent","update",...) when adapter emits a new state', () => {
+    it('does NOT push gtag("consent","update",...) — consent updates are GTM-owned', () => {
         const config = { ...baseConfig(), NEXT_PUBLIC_GTM_ID: 'GTM-TKP9GV24' };
         const adapter = fakeAdapter();
         render(
@@ -118,22 +117,14 @@ describe('AnalyticsProvider', () => {
             </RuntimeConfigProvider>,
         );
 
-        // Clear dataLayer (the mount also fired an initial consent update for the denied state).
-        (window as Window).dataLayer = [];
-        act(() => {
-            adapter.emit({ analytics: true, marketing: true, preferences: false });
-        });
+        adapter.emit({ analytics: true, marketing: true, preferences: false });
 
-        expect(readDataLayer()).toContainEqual([
-            'consent',
-            'update',
-            {
-                analytics_storage: 'granted',
-                ad_storage: 'granted',
-                ad_user_data: 'granted',
-                ad_personalization: 'granted',
-                personalization_storage: 'denied',
-            },
-        ]);
+        const consentUpdates = readDataLayer().filter(
+            (entry) =>
+                Array.isArray(entry) &&
+                entry[0] === 'consent' &&
+                entry[1] === 'update',
+        );
+        expect(consentUpdates).toEqual([]);
     });
 });

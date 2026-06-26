@@ -3,8 +3,8 @@ import Script from 'next/script';
 /**
  * Inline gtag bootstrap — MUST render before GTM loads.
  *
- * Initializes window.dataLayer and defines window.gtag (GLOBAL, reused by
- * consent-mode.ts updateConsent() when the user interacts with the CMP).
+ * Initializes window.dataLayer and defines window.gtag (GLOBAL shim used by
+ * GTM and the Usercentrics GTM tag for Consent Mode commands).
  *
  * IMPORTANT — Consent default ownership (Compliance-Critical):
  * This script deliberately issues NO consent command. The
@@ -18,7 +18,7 @@ import Script from 'next/script';
  * re-implemented in code.
  *
  * Why `window.gtag = window.gtag || function(){...}` (not a local function):
- * consent-mode.ts calls `window.gtag('consent', 'update', {...})` later, so
+ * GTM and the Usercentrics template call `window.gtag('consent', …)`, so
  * gtag must be a window global. The guard keeps an existing definition
  * (e.g. if GTM's own bootstrap ran first) intact.
  *
