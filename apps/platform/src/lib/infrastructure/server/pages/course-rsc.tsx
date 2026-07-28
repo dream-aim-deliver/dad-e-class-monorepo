@@ -110,7 +110,14 @@ export default async function CourseServerComponent({
         return renderVisitorView(slug, locale);
     }
 
-    const rawRole = role ?? highestRoleParsed;
+    let rawRole = role ?? highestRoleParsed;
+    if (!roles.includes(rawRole)) {
+        const privileged = ['admin', 'superadmin'];
+        const userPrivilegedRole = roles.find((r: string) => privileged.includes(r));
+        if (userPrivilegedRole) {
+            rawRole = userPrivilegedRole;
+        }
+    }
     validateRoleAccess(rawRole, roles);
     // Normalize superadmin→admin for all downstream components (same privileges in UI)
     const currentRole = rawRole === 'superadmin' ? 'admin' : rawRole;
