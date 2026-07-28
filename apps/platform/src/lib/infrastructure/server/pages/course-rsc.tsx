@@ -110,10 +110,9 @@ export default async function CourseServerComponent({
         return renderVisitorView(slug, locale);
     }
 
-    let rawRole = role ?? highestRoleParsed;
+    let rawRole = (role ?? highestRoleParsed) as (typeof roles)[number];
     if (!roles.includes(rawRole)) {
-        const privileged = ['admin', 'superadmin'];
-        const userPrivilegedRole = roles.find((r: string) => privileged.includes(r));
+        const userPrivilegedRole = roles.find((r) => r === 'admin' || r === 'superadmin');
         if (userPrivilegedRole) {
             rawRole = userPrivilegedRole;
         }
