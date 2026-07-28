@@ -33,6 +33,9 @@ export interface GroupsListProps {
   
   // Loading states
   isLoading?: boolean;
+
+  // Whether to show the "All Groups / Your Groups" toggle (hidden for coaches, shown for admins)
+  showGroupToggle?: boolean;
 }
 
 /**
@@ -74,6 +77,7 @@ export const GroupsList: FC<GroupsListProps> = ({
   onClickManage,
   onClickViewProfile,
   isLoading = false,
+  showGroupToggle = true,
 }) => {
   const dictionary = getDictionary(locale);
   const [activeTab, setActiveTab] = useState('all-groups');
@@ -103,33 +107,35 @@ export const GroupsList: FC<GroupsListProps> = ({
         <div className="flex items-center justify-between">
           <h2 className="text-white text-3xl font-bold leading-[100%] tracking-[-0.64px]">{dictionary.components.groupsList.title}</h2>
           
-          {/* Tab Navigation - compact width */}
-          <Tabs.List className="flex gap-1 border border-card-stroke rounded-md p-1 w-auto">
-            <Tabs.Trigger 
-              value="all-groups"
-              isLast={false}
-              className={cn(
-                'px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap',
-                activeTab === 'all-groups' 
-                  ? 'bg-button-primary-fill text-button-primary-text' 
-                  : 'text-text-secondary hover:text-text-primary'
-              )}
-            >
-              {dictionary.components.groupsList.allGroups}
-            </Tabs.Trigger>
-            <Tabs.Trigger 
-              value="your-groups"
-              isLast={true}
-              className={cn(
-                'px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap',
-                activeTab === 'your-groups' 
-                  ? 'bg-button-primary-fill text-button-primary-text' 
-                  : 'text-text-secondary hover:text-text-primary'
-              )}
-            >
-              {dictionary.components.groupsList.yourGroups}
-            </Tabs.Trigger>
-          </Tabs.List>
+          {/* Tab Navigation - compact width, hidden for coaches */}
+          {showGroupToggle && (
+            <Tabs.List className="flex gap-1 border border-card-stroke rounded-md p-1 w-auto">
+              <Tabs.Trigger
+                value="all-groups"
+                isLast={false}
+                className={cn(
+                  'px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap',
+                  activeTab === 'all-groups'
+                    ? 'bg-button-primary-fill text-button-primary-text'
+                    : 'text-text-secondary hover:text-text-primary'
+                )}
+              >
+                {dictionary.components.groupsList.allGroups}
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="your-groups"
+                isLast={true}
+                className={cn(
+                  'px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap',
+                  activeTab === 'your-groups'
+                    ? 'bg-button-primary-fill text-button-primary-text'
+                    : 'text-text-secondary hover:text-text-primary'
+                )}
+              >
+                {dictionary.components.groupsList.yourGroups}
+              </Tabs.Trigger>
+            </Tabs.List>
+          )}
         </div>
 
         {/* Tab Content */}
