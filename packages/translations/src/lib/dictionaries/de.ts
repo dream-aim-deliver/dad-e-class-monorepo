@@ -1284,7 +1284,7 @@ export const DE: TDictionary = {
       defaultSortBy: 'Titel',
     },
     assignmentOverviewList: {
-      emptyState: 'Noch keine Aufgaben eingereicht.',
+      emptyState: 'Keine Aufgaben zur Prüfung eingereicht.',
     },
     userAvatarReel: {
       andLabel: 'und',

@@ -1281,7 +1281,7 @@ export const EN: TDictionary = {
       defaultSortBy: 'title',
     },
     assignmentOverviewList: {
-      emptyState: 'No assignments yet.',
+      emptyState: 'No assignments pending review.',
     },
     userAvatarReel: {
       andLabel: 'and',
