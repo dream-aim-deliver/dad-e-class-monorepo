@@ -280,6 +280,7 @@ export default function CoachCourseGroups({
                 validationMessage={feedbackMessage?.message}
                 validationMessageType={feedbackMessage?.type}
                 isLoading={registerCoachMutation.isPending}
+                showGroupToggle={currentRole !== 'coach'}
             />
 
             {/* Load More Button */}
