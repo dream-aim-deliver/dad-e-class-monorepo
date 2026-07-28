@@ -10,7 +10,6 @@ import { FormComponent as SingleChoiceFormComponent } from '../lesson-components
 import { FormComponent as MultiCheckFormComponent } from '../lesson-components/multi-check';
 import { FormComponent as OneOutOfThreeFormComponent } from '../lesson-components/one-out-of-three';
 import { FormComponent as UploadFilesFormComponent } from '../lesson-components/upload-files';
-import { Divider } from '../divider';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
@@ -129,12 +128,9 @@ export function PreCourseAssessmentPreviewer({
 
     return (
         <div className="flex flex-col gap-5">
-            {components.map((component, index) => (
+            {components.map((component) => (
                 <div key={component.id}>
                     {renderComponent(component)}
-                    {index < components.length - 1 && (
-                        <Divider className="mb-5 mt-5" />
-                    )}
                 </div>
             ))}
         </div>
