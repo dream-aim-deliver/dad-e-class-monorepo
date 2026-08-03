@@ -1,0 +1,67 @@
+# Consent Mode audit results
+
+Saved output from `../src/consent-audit.spec.ts` — evidence that tracking
+consent is (or is no longer) granted before a visitor touches the cookie
+banner, on both production sites.
+
+## Running
+
+```bash
+AUDIT_LABEL=before-fix pnpm exec playwright test -c apps/platform-e2e/consent-audit.config.ts
+```
+
+Each run writes two files per label:
+
+- `consent-audit-<label>.json` — full machine-readable observation
+- `consent-audit-<label>.md` — human-readable report to share
+
+`AUDIT_LABEL` names the run. Use `before-fix` / `after-fix` so the two are
+directly diffable:
+
+```bash
+diff consent-audit-before-fix.md consent-audit-after-fix.md
+```
+
+## What "fixed" looks like
+
+The suite fails today. After the Usercentrics change, all three assertions
+should pass on both sites:
+
+| Check | Broken (now) | Fixed |
+| --- | --- | --- |
+| Non-essential services granted pre-click | 7 | 0 |
+| Granted `gtag` consent updates pre-click | 2–3 | 0 |
+| GA4 hits above `gcs=G100` pre-click | 1–2 | 0 |
+| Verdict | FAIL ❌ | PASS ✅ |
+
+## Baseline: `before-fix` (2026-08-03)
+
+Both sites load the **same** Usercentrics configuration `jnaPMX-WDaJ4Ig`, so one
+dashboard change affects both.
+
+| Site | Pre-click result |
+| --- | --- |
+| justdoad.ai (Wix) | `G100` → **`G101`** — analytics granted, no click |
+| eclass.justdoad.ch (Next.js) | `G100` → **`G101`** → **`G111`** — analytics + ads granted, no click |
+
+The same 7 non-essential services are pre-granted (`type: IMPLICIT`) on both:
+Google Analytics, Google Ads, Google Tag Manager, DoubleClick Ad, LinkedIn
+Insight Tag, LinkedIn Plugin, YouTube Video.
+
+The shared `G101` comes from the Usercentrics GTM template acting on implicit
+consent; the additional `G111` on eclass is the app's own consent bridge
+escalating it to ad consent. **Both sites are affected** — the Wix site is not
+clean, so the defect is not specific to the Next.js integration.
+
+## Caveats
+
+- **Pre-click only.** A passing run proves nothing is granted *before* the
+  banner is touched. It does not verify that consent correctly turns *on* after
+  a real Accept — that needs a separate interaction phase.
+- **Bot detection matters.** Usercentrics serves a permissive config to headless
+  automation (`isBot=true`) under which everything reports as accepted. The
+  suite spoofs a normal browser fingerprint and asserts the bot config was not
+  served; if that evasion ever breaks, the run fails loudly rather than
+  reporting a false all-clear.
+- Results depend on live third-party infrastructure and on the CMP dashboard, so
+  this suite is deliberately excluded from CI.
