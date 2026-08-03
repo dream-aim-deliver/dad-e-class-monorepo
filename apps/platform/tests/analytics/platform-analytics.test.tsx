@@ -13,6 +13,7 @@ vi.mock('next-auth/react', () => ({
 }));
 
 import { PlatformAnalytics } from '../../src/lib/infrastructure/client/analytics/platform-analytics';
+import { useConsent } from '../../src/lib/infrastructure/client/analytics/consent/consent-provider';
 import { RuntimeConfigProvider } from '../../src/lib/infrastructure/client/context/runtime-config-context';
 import type { RuntimeConfig } from '../../src/lib/infrastructure/types/runtime-config';
 
@@ -48,12 +49,17 @@ describe('PlatformAnalytics', () => {
     // rendered in the root layouts — see usercentrics-cmp-loader.test.tsx.
     // PlatformAnalytics itself only composes the Consent/Analytics providers.
 
-    it('propagates granted consent to gtag when the UC SDK returns services as a Promise', async () => {
+    it('propagates granted consent through the provider chain when the UC SDK returns services as a Promise', async () => {
         // Regression test for the production incident where CMP v3.121+
         // (async getServicesBaseInfo) made the adapter report denied forever,
-        // so granted users were sent gtag('consent','update', all-denied)
-        // and GA4 recorded every hit as gcs=G100. Exercises the full chain:
-        // UC_UI → adapter → ConsentProvider → AnalyticsProvider → dataLayer.
+        // so GA4 recorded every hit as gcs=G100. Exercises the full chain:
+        // UC_UI → adapter → ConsentProvider → useConsent().
+        //
+        // The chain used to terminate in gtag('consent','update',...); since
+        // #705 the app writes no Consent Mode signals (the Usercentrics GTM
+        // template is the single writer), so what is asserted is the consent
+        // the app itself resolves. The dataLayer is checked too — it must stay
+        // free of consent commands even on this fully-granted path.
         (window as Window & { dataLayer?: unknown[] }).dataLayer = [];
         (window as Window & { gtag?: (...a: unknown[]) => void }).gtag =
             function (...args: unknown[]) {
@@ -67,17 +73,32 @@ describe('PlatformAnalytics', () => {
                 Promise.resolve([
                     {
                         id: 'ga',
+                        name: 'Google Analytics',
                         categorySlug: 'statistics',
                         // Explicit: models a user who has actively consented.
                         consent: { status: true, type: 'EXPLICIT' },
                     },
                     {
                         id: 'ads',
+                        name: 'Google Ads',
                         categorySlug: 'marketing',
                         consent: { status: true, type: 'EXPLICIT' },
                     },
                 ]),
         };
+
+        function ConsentProbe() {
+            const { consent } = useConsent();
+            return (
+                <span data-testid="granted">
+                    {Object.entries(consent.services ?? {})
+                        .filter(([, granted]) => granted)
+                        .map(([name]) => name)
+                        .sort()
+                        .join(',')}
+                </span>
+            );
+        }
 
         try {
             render(
@@ -90,23 +111,21 @@ describe('PlatformAnalytics', () => {
                         }}
                     >
                         <PlatformAnalytics>
-                            <span>child</span>
+                            <ConsentProbe />
                         </PlatformAnalytics>
                     </RuntimeConfigProvider>
                 </NextIntlClientProvider>,
             );
 
             await vi.waitFor(() => {
-                const dl = (window as Window & { dataLayer?: unknown[] })
-                    .dataLayer as unknown[][];
-                const updates = dl.filter(
-                    (e) => e[0] === 'consent' && e[1] === 'update',
+                expect(screen.getByTestId('granted').textContent).toBe(
+                    'google ads,google analytics',
                 );
-                expect(updates.at(-1)?.[2]).toMatchObject({
-                    analytics_storage: 'granted',
-                    ad_storage: 'granted',
-                });
             });
+
+            const dl = (window as Window & { dataLayer?: unknown[] })
+                .dataLayer as unknown[][];
+            expect(dl.filter((e) => e[0] === 'consent')).toEqual([]);
         } finally {
             delete (window as Window & { UC_UI?: unknown }).UC_UI;
             delete (window as Window & { gtag?: unknown }).gtag;

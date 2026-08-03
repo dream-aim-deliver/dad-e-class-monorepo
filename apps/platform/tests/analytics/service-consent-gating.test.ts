@@ -7,17 +7,20 @@ import {
 } from '../../src/lib/infrastructure/client/analytics/types';
 
 /**
- * Per-service consent gating.
+ * Per-service consent gating — the app's only consent question.
  *
- * The three category flags (analytics / marketing / preferences) are a lossy
- * summary — a category is true when ANY service in it is consented. Gating one
- * specific first-party integration on a category therefore misfires. Measured
- * on the live CMP: Google Analytics is filed under "marketing", and our
+ * The adapter used to also aggregate services into analytics / marketing /
+ * preferences category flags. Those were a lossy summary (a category is true
+ * when ANY service in it is consented) and existed only to feed Google Consent
+ * Mode, which the app no longer writes to. They were removed in #705; these
+ * tests pin the two production incidents that motivated the per-service model,
+ * so neither can return via a different route.
+ *
+ * Measured on the live CMP: Google Analytics is filed under "marketing" and our
  * OpenTelemetry monitoring under "functional", with no statistics category at
- * all. Gating OTel on `consent.analytics` meant a user who accepted GA but
- * REFUSED OpenTelemetry still got telemetry sent off-device.
- *
- * `hasServiceConsent()` gates on the service itself instead.
+ * all. So the dashboard's category assignment is not a safe proxy for anything —
+ * which is why nothing here reads `category`, and why these fixtures still
+ * carry deliberately misleading ones.
  */
 
 interface TUcCmpFixture {
@@ -72,27 +75,27 @@ afterEach(() => {
 
 describe('per-service consent gating', () => {
     it('does NOT enable OTel when the user accepted Google Analytics but refused OpenTelemetry', async () => {
-        // The over-collection bug: GA lives under "marketing" and forces
-        // consent.analytics true via the GA special case, so the old
-        // category-based gate started telemetry the user had refused.
+        // The over-collection bug: GA lives under "marketing", which the old
+        // mapping turned into consent.analytics, which the old gate treated as
+        // permission to start telemetry the user had explicitly refused.
         const consent = await readConsent([
             { name: 'Google Analytics', category: 'marketing', given: true },
             { name: OTEL, category: 'functional', given: false },
         ]);
 
-        expect(consent.analytics).toBe(true); // category flag says yes...
-        expect(hasServiceConsent(consent, 'opentelemetry')).toBe(false); // ...service says no
+        expect(hasServiceConsent(consent, 'google analytics')).toBe(true);
+        expect(hasServiceConsent(consent, 'opentelemetry')).toBe(false);
     });
 
     it('DOES enable OTel when the user accepted only the OpenTelemetry service', async () => {
         // The under-collection case: the user consented to this service
-        // specifically, so it must run even though no analytics category is set.
+        // specifically, so it must run even though nothing else is granted.
         const consent = await readConsent([
             { name: 'Google Analytics', category: 'marketing', given: false },
             { name: OTEL, category: 'functional', given: true },
         ]);
 
-        expect(consent.analytics).toBe(false);
+        expect(hasServiceConsent(consent, 'google analytics')).toBe(false);
         expect(hasServiceConsent(consent, 'opentelemetry')).toBe(true);
     });
 
@@ -108,7 +111,8 @@ describe('per-service consent gating', () => {
         // No services enumerated (noop adapter, failed read): absent is not
         // consent — telemetry must stay off rather than fall back to a category.
         expect(hasServiceConsent(DENIED_CONSENT, 'opentelemetry')).toBe(false);
-        expect(hasServiceConsent({ ...DENIED_CONSENT, analytics: true }, 'opentelemetry')).toBe(false);
+        // No services key at all (a read that never resolved).
+        expect(hasServiceConsent({}, 'opentelemetry')).toBe(false);
         // Service simply missing from an otherwise-populated payload.
         expect(
             hasServiceConsent(
@@ -127,51 +131,49 @@ describe('per-service consent gating', () => {
         expect(hasServiceConsent(consent, 'sentry')).toBe(false);
     });
 
-    it('does NOT grant advertising consent when the user accepted only Google Analytics', async () => {
+    it('does NOT spread consent to other services sharing a category', async () => {
         // Measured on production via the CMP's granular "Save settings": a user
         // who accepted ONLY Google Analytics had ad_storage, ad_user_data and
         // ad_personalization granted (gcs=G111), because GA is filed under
         // "marketing" in this tenant's dashboard and alone flipped the whole
-        // category. GA is an analytics service regardless of where the
-        // dashboard files it, so it must not imply advertising consent.
+        // category. Nothing reads `category` any more, so a refused service
+        // sharing a category with an accepted one stays refused.
         const consent = await readConsent([
             { name: 'Google Analytics', category: 'marketing', given: true },
             { name: 'Google Ads', category: 'marketing', given: false },
             { name: 'Facebook Pixel', category: 'marketing', given: false },
         ]);
 
-        expect(consent.analytics).toBe(true);
-        expect(consent.marketing).toBe(false);
+        expect(hasServiceConsent(consent, 'google analytics')).toBe(true);
+        expect(hasServiceConsent(consent, 'google ads')).toBe(false);
+        expect(hasServiceConsent(consent, 'facebook pixel')).toBe(false);
     });
 
-    it('still grants marketing when a genuine marketing service is accepted', async () => {
+    it('reports each accepted service independently', async () => {
         const consent = await readConsent([
             { name: 'Google Analytics', category: 'marketing', given: true },
             { name: 'Google Ads', category: 'marketing', given: true },
         ]);
 
-        expect(consent.analytics).toBe(true);
-        expect(consent.marketing).toBe(true);
+        expect(hasServiceConsent(consent, 'google analytics')).toBe(true);
+        expect(hasServiceConsent(consent, 'google ads')).toBe(true);
     });
 
-    it('still exposes per-service consent alongside the category flags', async () => {
+    it('exposes the full per-service map, and nothing else', async () => {
         const consent = await readConsent([
             { name: 'Google Analytics', category: 'marketing', given: true },
             { name: 'Sentry', category: 'functional', given: false },
             { name: OTEL, category: 'functional', given: true },
         ]);
 
-        expect(consent.services).toMatchObject({
+        expect(consent.services).toEqual({
             'google analytics': true,
             sentry: false,
             [OTEL.toLowerCase()]: true,
         });
-        // Category flags remain intact for Google Consent Mode, which is
-        // category-shaped by design. Marketing is false because the only
-        // granted service under it is Google Analytics, which is excluded from
-        // category aggregation — accepting GA must not grant ad consent.
-        expect(consent.analytics).toBe(true);
-        expect(consent.marketing).toBe(false);
-        expect(consent.preferences).toBe(true);
+        // No category flags survive on the consent state. Exact-key assertion
+        // rather than a per-key absence check, so any reintroduced aggregate
+        // fails here.
+        expect(Object.keys(consent)).toEqual(['services']);
     });
 });

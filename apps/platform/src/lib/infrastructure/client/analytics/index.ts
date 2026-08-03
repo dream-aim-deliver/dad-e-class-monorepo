@@ -5,4 +5,5 @@ export { UsercentricsAutoblocker } from './usercentrics-autoblocker';
 export { UsercentricsCMPLoader } from './usercentrics-cmp-loader';
 export { UsercentricsSecondLayerLink } from './usercentrics-second-layer-link';
 export { useConsent } from './consent/consent-provider';
+export { hasServiceConsent } from './types';
 export type { TConsentState, TOfferType, TItem } from './types';

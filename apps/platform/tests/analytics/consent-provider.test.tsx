@@ -5,28 +5,36 @@ import {
     useConsent,
 } from '../../src/lib/infrastructure/client/analytics/consent/consent-provider';
 import type { TConsentAdapter } from '../../src/lib/infrastructure/client/analytics/consent/consent-adapter';
+import {
+    DENIED_CONSENT,
+    hasServiceConsent,
+    type TConsentState,
+} from '../../src/lib/infrastructure/client/analytics/types';
 
 function Probe() {
     const { consent, showBanner } = useConsent();
     return (
         <div>
-            <span data-testid="analytics">{String(consent.analytics)}</span>
-            <span data-testid="marketing">{String(consent.marketing)}</span>
-            <span data-testid="preferences">{String(consent.preferences)}</span>
+            <span data-testid="ga">
+                {String(hasServiceConsent(consent, 'google analytics'))}
+            </span>
+            <span data-testid="otel">
+                {String(hasServiceConsent(consent, 'opentelemetry'))}
+            </span>
             <button onClick={showBanner}>manage</button>
         </div>
     );
 }
 
 function fakeAdapter(): TConsentAdapter & {
-    emit: (s: { analytics: boolean; marketing: boolean; preferences: boolean }) => void;
+    emit: (s: TConsentState) => void;
 } {
-    let currentHandler: ((s: unknown) => void) | null = null;
+    let currentHandler: ((s: TConsentState) => void) | null = null;
     return {
         init: vi.fn(),
         onConsentChange(handler) {
-            handler({ analytics: false, marketing: false, preferences: false });
-            currentHandler = handler as (s: unknown) => void;
+            handler({ ...DENIED_CONSENT });
+            currentHandler = handler;
             return () => {
                 currentHandler = null;
             };
@@ -47,7 +55,8 @@ describe('ConsentProvider', () => {
             </ConsentProvider>,
         );
         expect(adapter.init).toHaveBeenCalledTimes(1);
-        expect(screen.getByTestId('analytics').textContent).toBe('false');
+        expect(screen.getByTestId('ga').textContent).toBe('false');
+        expect(screen.getByTestId('otel').textContent).toBe('false');
     });
 
     it('re-renders children when adapter emits a new consent state', () => {
@@ -59,12 +68,19 @@ describe('ConsentProvider', () => {
         );
 
         act(() => {
-            adapter.emit({ analytics: true, marketing: false, preferences: true });
+            adapter.emit({
+                services: {
+                    'google analytics': true,
+                    'platform performance & error monitoring (opentelemetry)':
+                        false,
+                },
+            });
         });
 
-        expect(screen.getByTestId('analytics').textContent).toBe('true');
-        expect(screen.getByTestId('preferences').textContent).toBe('true');
-        expect(screen.getByTestId('marketing').textContent).toBe('false');
+        expect(screen.getByTestId('ga').textContent).toBe('true');
+        // Consent is per service: accepting Google Analytics must not imply
+        // consent to an unrelated service.
+        expect(screen.getByTestId('otel').textContent).toBe('false');
     });
 
     it('showBanner() on the context delegates to adapter.showBanner', () => {

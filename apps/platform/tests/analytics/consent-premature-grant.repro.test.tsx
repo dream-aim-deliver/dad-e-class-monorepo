@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { act } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 
@@ -13,6 +13,8 @@ vi.mock('next-auth/react', () => ({
 }));
 
 import { PlatformAnalytics } from '../../src/lib/infrastructure/client/analytics/platform-analytics';
+import { useConsent } from '../../src/lib/infrastructure/client/analytics/consent/consent-provider';
+import { hasServiceConsent } from '../../src/lib/infrastructure/client/analytics/types';
 import { RuntimeConfigProvider } from '../../src/lib/infrastructure/client/context/runtime-config-context';
 import type { RuntimeConfig } from '../../src/lib/infrastructure/types/runtime-config';
 
@@ -21,13 +23,12 @@ import type { RuntimeConfig } from '../../src/lib/infrastructure/types/runtime-c
  *
  * Symptom observed live on eclass.justdoad.ch (fresh incognito, banner
  * untouched): GA4 hits fired with `gcs=G101` (analytics_storage granted) —
- * i.e. the app pushed a granted `consent update` BEFORE the user made any
- * choice in the Usercentrics banner.
+ * i.e. a granted `consent update` reached GTM BEFORE the user made any choice
+ * in the Usercentrics banner.
  *
  * These tests drive the real provider chain
- *   CMP -> usercentrics adapter -> ConsentProvider -> AnalyticsProvider
- *   -> updateConsent() -> window.gtag -> window.dataLayer
- * and inspect what `consent update` signals land in the dataLayer.
+ *   CMP -> usercentrics adapter -> ConsentProvider -> useConsent()
+ * and inspect what consent the app believes it has.
  *
  * The key production fact (measured live on both justdoad.ai and
  * eclass.justdoad.ch): the CMP reported services as consented on init, BEFORE
@@ -37,6 +38,12 @@ import type { RuntimeConfig } from '../../src/lib/infrastructure/types/runtime-c
  * The root cause was the CMP's own per-service configuration and was fixed
  * there. These tests pin the app's defence-in-depth layer: even if the CMP
  * starts reporting implicit grants again, the app must not act on them.
+ *
+ * Since #705 the app no longer writes Google Consent Mode at all — the
+ * Usercentrics GTM template is the single writer — so "acting on a grant" now
+ * means enabling a first-party integration rather than pushing a gtag signal.
+ * The dataLayer is still inspected here, to assert the app writes NOTHING to
+ * it under any of these paths.
  */
 
 function baseConfig(): RuntimeConfig {
@@ -100,11 +107,23 @@ function installGtag(): void {
     };
 }
 
-function consentUpdates(): Record<string, string>[] {
+function consentCommands(): unknown[][] {
     const dl = ((window as DataLayerWindow).dataLayer ?? []) as unknown[][];
-    return dl
-        .filter((entry) => entry[0] === 'consent' && entry[1] === 'update')
-        .map((entry) => entry[2] as Record<string, string>);
+    return dl.filter((entry) => entry[0] === 'consent');
+}
+
+/** Surfaces what the app concluded about Google Analytics consent. */
+function Probe() {
+    const { consent } = useConsent();
+    return (
+        <span data-testid="ga">
+            {String(hasServiceConsent(consent, 'google analytics'))}
+        </span>
+    );
+}
+
+function gaConsent(): boolean {
+    return screen.getByTestId('ga').textContent === 'true';
 }
 
 function renderChain() {
@@ -117,12 +136,17 @@ function renderChain() {
                 }}
             >
                 <PlatformAnalytics>
-                    <span>child</span>
+                    <Probe />
                 </PlatformAnalytics>
             </RuntimeConfigProvider>
         </NextIntlClientProvider>,
     );
 }
+
+const GOOGLE_ANALYTICS = {
+    name: 'Google Analytics',
+    category: 'marketing',
+} as const;
 
 describe('consent premature grant (reproduction)', () => {
     beforeEach(() => {
@@ -138,19 +162,11 @@ describe('consent premature grant (reproduction)', () => {
         delete w.dataLayer;
     });
 
-    it('does NOT push a granted consent update on first load while the banner is untouched (implicit consent)', async () => {
+    it('does NOT treat an implicit pre-interaction default as consent', async () => {
         // First-time visitor: the CMP has initialized and — as observed in
         // production — already reports GA as consented, but the user has NOT
         // interacted with the banner. No UC_UI_CMP_EVENT is dispatched.
-        installCmp([
-            {
-                name: 'Google Analytics',
-                category: 'marketing',
-                given: true,
-                // Implicit/default state reported before any user choice.
-                type: 'IMPLICIT',
-            },
-        ]);
+        installCmp([{ ...GOOGLE_ANALYTICS, given: true, type: 'IMPLICIT' }]);
 
         renderChain();
 
@@ -163,26 +179,16 @@ describe('consent premature grant (reproduction)', () => {
             await Promise.resolve();
         });
 
-        const grants = consentUpdates().filter(
-            (u) => u.analytics_storage === 'granted' || u.ad_storage === 'granted',
-        );
         expect(
-            grants,
-            `Leaked a granted consent update before interaction: ${JSON.stringify(grants)}`,
-        ).toHaveLength(0);
+            gaConsent(),
+            'Treated an IMPLICIT pre-interaction default as a user grant',
+        ).toBe(false);
     });
 
-    it('DOES push a granted consent update after the user explicitly accepts', async () => {
-        // Same services, but now the user clicks "Accept All" — the CMP
+    it('DOES honor consent once the user explicitly accepts', async () => {
+        // Same service, but now the user clicks "Accept All" — the CMP
         // dispatches UC_UI_CMP_EVENT and the status is an explicit choice.
-        installCmp([
-            {
-                name: 'Google Analytics',
-                category: 'marketing',
-                given: true,
-                type: 'EXPLICIT',
-            },
-        ]);
+        installCmp([{ ...GOOGLE_ANALYTICS, given: true, type: 'EXPLICIT' }]);
 
         renderChain();
 
@@ -201,10 +207,7 @@ describe('consent premature grant (reproduction)', () => {
             await Promise.resolve();
         });
 
-        const analyticsGrants = consentUpdates().filter(
-            (u) => u.analytics_storage === 'granted',
-        );
-        expect(analyticsGrants.length).toBeGreaterThan(0);
+        expect(gaConsent()).toBe(true);
     });
 
     it('DOES restore a returning visitor whose stored consent is EXPLICIT on init (no interaction this session)', async () => {
@@ -212,14 +215,7 @@ describe('consent premature grant (reproduction)', () => {
         // previous visit. On this load the CMP restores that decision and fires
         // UC_UI_INITIALIZED with NO UC_UI_CMP_EVENT — but because the stored
         // consent is EXPLICIT (a real prior choice), it must be honored.
-        installCmp([
-            {
-                name: 'Google Analytics',
-                category: 'marketing',
-                given: true,
-                type: 'EXPLICIT',
-            },
-        ]);
+        installCmp([{ ...GOOGLE_ANALYTICS, given: true, type: 'EXPLICIT' }]);
 
         renderChain();
 
@@ -229,9 +225,42 @@ describe('consent premature grant (reproduction)', () => {
             await Promise.resolve();
         });
 
-        const analyticsGrants = consentUpdates().filter(
-            (u) => u.analytics_storage === 'granted',
-        );
-        expect(analyticsGrants.length).toBeGreaterThan(0);
+        expect(gaConsent()).toBe(true);
+    });
+
+    it('writes NO Consent Mode command to the dataLayer, accepted or not', async () => {
+        // Single-writer invariant (#705). Google Consent Mode is owned entirely
+        // by the Usercentrics GTM template; the app duplicating those signals is
+        // what escalated this incident from gcs=G101 to gcs=G111. A second
+        // writer must not reappear — including on the explicit-accept path,
+        // where pushing a grant looks superficially correct.
+        installCmp([{ ...GOOGLE_ANALYTICS, given: true, type: 'EXPLICIT' }]);
+
+        renderChain();
+
+        await act(async () => {
+            window.dispatchEvent(new Event('UC_UI_INITIALIZED'));
+            await Promise.resolve();
+            await Promise.resolve();
+        });
+        await act(async () => {
+            window.dispatchEvent(
+                Object.assign(new Event('UC_UI_CMP_EVENT'), {
+                    detail: { type: 'ACCEPT_ALL' },
+                }),
+            );
+            await Promise.resolve();
+            await Promise.resolve();
+        });
+
+        // Guard against a vacuous pass: the app must genuinely have seen the
+        // grant and still written nothing.
+        expect(gaConsent()).toBe(true);
+
+        const commands = consentCommands();
+        expect(
+            commands,
+            `App wrote Consent Mode commands: ${JSON.stringify(commands)}`,
+        ).toHaveLength(0);
     });
 });
