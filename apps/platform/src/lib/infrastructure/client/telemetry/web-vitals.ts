@@ -82,11 +82,27 @@ function reportWebVital(metric: Metric): void {
  * captureWebVitals();
  * ```
  */
+/**
+ * The web-vitals library has no way to unregister a callback, so registering
+ * twice permanently doubles every reported metric. This is reachable through
+ * consent: a user who grants, revokes, then re-grants within one session (via
+ * the CMP's privacy settings) runs the OTelBrowserProvider effect again.
+ *
+ * Mirrors the `initialized` guard in browser-tracer.ts. Deliberately NOT reset
+ * by shutdownBrowserTracer(): the listeners survive shutdown, and re-arming
+ * them would be the very double-registration this prevents. After a re-grant
+ * the existing listeners resume emitting through the re-initialised provider.
+ */
+let capturing = false;
+
 export function captureWebVitals(): void {
     // Only run in browser
     if (typeof window === 'undefined') {
         return;
     }
+
+    if (capturing) return;
+    capturing = true;
 
     // Largest Contentful Paint - Loading performance
     // Good: < 2.5s, Needs improvement: 2.5s-4s, Poor: > 4s

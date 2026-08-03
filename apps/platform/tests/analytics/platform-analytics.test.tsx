@@ -68,12 +68,13 @@ describe('PlatformAnalytics', () => {
                     {
                         id: 'ga',
                         categorySlug: 'statistics',
-                        consent: { status: true },
+                        // Explicit: models a user who has actively consented.
+                        consent: { status: true, type: 'EXPLICIT' },
                     },
                     {
                         id: 'ads',
                         categorySlug: 'marketing',
-                        consent: { status: true },
+                        consent: { status: true, type: 'EXPLICIT' },
                     },
                 ]),
         };

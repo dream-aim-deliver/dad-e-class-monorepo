@@ -1,0 +1,378 @@
+{
+  "label": "after-fix",
+  "takenAt": "2026-08-03T13:33:45.252Z",
+  "sites": [
+    {
+      "site": "justdoad.ai (Wix)",
+      "url": "https://www.justdoad.ai/",
+      "observed": {
+        "settingsId": "jnaPMX-WDaJ4Ig",
+        "consentRequired": true,
+        "overallStatus": "ALL_DENIED",
+        "services": [
+          {
+            "name": "Auth0",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Syndication",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "gstatic.com",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Mux",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Stripe",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Usercentrics Consent Management Platform",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "WIX",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Conversion Linker",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "DoubleClick Ad",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Facebook Pixel",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Facebook Social Plugins",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Ads",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Analytics",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Fonts",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Tag Manager",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "LinkedIn Insight Tag",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "LinkedIn Plugin",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Platform Performance & Error Monitoring (OpenTelemetry)",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "reCAPTCHA",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Sentry",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "TikTok",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "YouTube Video",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          }
+        ],
+        "updates": [],
+        "isBotConfig": false,
+        "gaHits": [
+          {
+            "gcs": "G100",
+            "event": "page_view"
+          }
+        ]
+      }
+    },
+    {
+      "site": "eclass.justdoad.ch (Next.js)",
+      "url": "https://eclass.justdoad.ch/",
+      "observed": {
+        "settingsId": "jnaPMX-WDaJ4Ig",
+        "consentRequired": true,
+        "overallStatus": "ALL_DENIED",
+        "services": [
+          {
+            "name": "Auth0",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Syndication",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "gstatic.com",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Mux",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Stripe",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Usercentrics Consent Management Platform",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "WIX",
+            "category": "essential",
+            "essential": true,
+            "given": true,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Conversion Linker",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "DoubleClick Ad",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Facebook Pixel",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Facebook Social Plugins",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Ads",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Analytics",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Fonts",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Google Tag Manager",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "LinkedIn Insight Tag",
+            "category": "marketing",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "LinkedIn Plugin",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Platform Performance & Error Monitoring (OpenTelemetry)",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "reCAPTCHA",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "Sentry",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "TikTok",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          },
+          {
+            "name": "YouTube Video",
+            "category": "functional",
+            "essential": false,
+            "given": false,
+            "type": "IMPLICIT"
+          }
+        ],
+        "updates": [
+          {
+            "analytics_storage": "denied",
+            "ad_storage": "denied",
+            "ad_user_data": "denied",
+            "ad_personalization": "denied",
+            "personalization_storage": "denied"
+          },
+          {
+            "analytics_storage": "denied",
+            "ad_storage": "denied",
+            "ad_user_data": "denied",
+            "ad_personalization": "denied",
+            "personalization_storage": "denied"
+          },
+          {
+            "analytics_storage": "denied",
+            "ad_storage": "denied",
+            "ad_user_data": "denied",
+            "ad_personalization": "denied",
+            "personalization_storage": "denied"
+          }
+        ],
+        "isBotConfig": false,
+        "gaHits": [
+          {
+            "gcs": "G100",
+            "event": "scroll"
+          },
+          {
+            "gcs": "G100",
+            "event": "page_view"
+          }
+        ]
+      }
+    }
+  ]
+}

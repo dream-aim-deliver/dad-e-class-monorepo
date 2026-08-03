@@ -72,3 +72,7 @@ storybook-static
 vitest.config.*.timestamp*
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+# Playwright scratch output (consent audit + e2e runs)
+test-results/
+playwright-report/
