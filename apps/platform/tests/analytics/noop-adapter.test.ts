@@ -12,11 +12,11 @@ describe('noop-adapter', () => {
         const adapter = createNoopAdapter();
         const handler = vi.fn();
         const unsubscribe = adapter.onConsentChange(handler);
-        expect(handler).toHaveBeenCalledWith({
+        expect(handler).toHaveBeenCalledWith(expect.objectContaining({
             analytics: false,
             marketing: false,
             preferences: false,
-        });
+        }));
         expect(handler).toHaveBeenCalledTimes(1);
         expect(typeof unsubscribe).toBe('function');
         // Unsubscribe is a no-op but must not throw.
