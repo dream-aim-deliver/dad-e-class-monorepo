@@ -111,14 +111,13 @@ describe('OTelBrowserProvider consent gating', () => {
         await waitFor(() => expect(captureWebVitals).toHaveBeenCalledTimes(1));
     });
 
-    it('does NOT start telemetry when the user accepted analytics but refused the OTel service', async () => {
-        // The over-collection regression: the analytics category is granted
-        // (Google Analytics is filed under marketing and forces it true), but
-        // this specific service was refused.
+    it('does NOT start telemetry when the user accepted Google Analytics but refused the OTel service', async () => {
+        // The over-collection regression: another analytics-shaped service is
+        // granted, but this specific one was refused. Under the old category
+        // mapping, GA (filed under marketing) forced `analytics` true and the
+        // gate started telemetry anyway.
         const { adapter } = controllableAdapter(
             state({
-                analytics: true,
-                marketing: true,
                 services: {
                     'google analytics': true,
                     [OTEL_SERVICE]: false,
@@ -133,10 +132,12 @@ describe('OTelBrowserProvider consent gating', () => {
         expect(captureWebVitals).not.toHaveBeenCalled();
     });
 
-    it('starts telemetry even when no analytics category is granted, if the service itself is', async () => {
+    it('starts telemetry when the service itself is granted and nothing else is', async () => {
         // The under-collection regression, mirrored.
         const { adapter } = controllableAdapter(
-            state({ analytics: false, services: { [OTEL_SERVICE]: true } }),
+            state({
+                services: { 'google analytics': false, [OTEL_SERVICE]: true },
+            }),
         );
         renderWith(adapter);
 
@@ -156,8 +157,10 @@ describe('OTelBrowserProvider consent gating', () => {
     });
 
     it('treats an absent consent record as no consent', async () => {
-        // No services enumerated at all — must not fall back to a category.
-        const { adapter } = controllableAdapter(state({ analytics: true }));
+        // No `services` key at all — the CMP was never successfully read. That
+        // is distinct from an empty record ("asked, nothing granted") and must
+        // also mean no telemetry: absent consent is not consent.
+        const { adapter } = controllableAdapter({});
         renderWith(adapter);
 
         await waitFor(() => expect(shutdownBrowserTracer).toHaveBeenCalled());

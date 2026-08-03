@@ -9,9 +9,13 @@ declare global {
          * NO application code calls this — see the ownership note below. It is
          * declared so tests and any future gtag.js interop see the real shape
          * rather than `any`.
+         *
+         * `dataLayer` is deliberately NOT declared here: @next/third-parties
+         * already declares it globally as `Object[]`, and a second declaration
+         * with a different element type is a compile error ("Subsequent
+         * property declarations must have the same type").
          */
         gtag?: (...args: unknown[]) => void;
-        dataLayer?: unknown[];
     }
 }
 
