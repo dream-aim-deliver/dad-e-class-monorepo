@@ -36,6 +36,21 @@ declare global {
     }
 }
 
+/**
+ * The all-denied state: the CMP was asked and granted nothing.
+ *
+ * Since #705 consent is reported per service only — there are no
+ * analytics/marketing/preferences category flags — so "denied" is an empty
+ * service map. Note this is also what a payload of unnamed services produces:
+ * services are keyed by name, and one without a name cannot be gated on.
+ */
+const DENIED = { services: {} };
+
+/** Expected shape for a set of named services. */
+function services(map: Record<string, boolean>) {
+    return { services: map };
+}
+
 describe('usercentrics-adapter', () => {
     beforeEach(() => {
         document.head.innerHTML = '';
@@ -59,7 +74,7 @@ describe('usercentrics-adapter', () => {
         const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         adapter.onConsentChange(handler);
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ analytics: false, marketing: false, preferences: false }));
+        expect(handler).toHaveBeenCalledWith(DENIED);
     });
 
     it('returns denied state when UC_UI exists but isInitialized() is false', () => {
@@ -76,7 +91,7 @@ describe('usercentrics-adapter', () => {
         const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         adapter.onConsentChange(handler);
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ analytics: false, marketing: false, preferences: false }));
+        expect(handler).toHaveBeenCalledWith(DENIED);
     });
 
     it('returns denied state when getServicesBaseInfo returns a non-array, non-thenable value', () => {
@@ -93,7 +108,7 @@ describe('usercentrics-adapter', () => {
         const adapter = createUsercentricsAdapter();
         const handler = vi.fn();
         expect(() => adapter.onConsentChange(handler)).not.toThrow();
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ analytics: false, marketing: false, preferences: false }));
+        expect(handler).toHaveBeenCalledWith(DENIED);
     });
 
     it('resolves consent state when getServicesBaseInfo returns a Promise (CMP v3.121+)', async () => {
@@ -104,8 +119,8 @@ describe('usercentrics-adapter', () => {
             isInitialized: () => true,
             getServicesBaseInfo: () =>
                 Promise.resolve([
-                    { id: 'ga', categorySlug: 'marketing', consent: { status: true, type: 'EXPLICIT' } },
-                    { id: 'ot', categorySlug: 'functional', consent: { status: true, type: 'EXPLICIT' } },
+                    { id: 'ga', name: 'Google Analytics', categorySlug: 'marketing', consent: { status: true, type: 'EXPLICIT' } },
+                    { id: 'ot', name: 'OpenTelemetry', categorySlug: 'functional', consent: { status: true, type: 'EXPLICIT' } },
                 ]),
         };
 
@@ -114,14 +129,15 @@ describe('usercentrics-adapter', () => {
         adapter.onConsentChange(handler);
 
         // Synchronous first call keeps the documented first-paint contract.
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ analytics: false, marketing: false, preferences: false }));
+        expect(handler).toHaveBeenCalledWith(DENIED);
 
         await vi.waitFor(() =>
-            expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-                analytics: false,
-                marketing: true,
-                preferences: true,
-            })),
+            expect(handler).toHaveBeenCalledWith(
+                services({
+                    'google analytics': true,
+                    opentelemetry: true,
+                }),
+            ),
         );
     });
 
@@ -131,7 +147,7 @@ describe('usercentrics-adapter', () => {
             isInitialized: () => true,
             getServicesBaseInfo: () =>
                 Promise.resolve([
-                    { id: 'ga', categorySlug: 'statistics', consent: { status: granted, type: 'EXPLICIT' } },
+                    { id: 'ga', name: 'Google Analytics', categorySlug: 'statistics', consent: { status: granted, type: 'EXPLICIT' } },
                 ]),
         };
 
@@ -145,18 +161,15 @@ describe('usercentrics-adapter', () => {
         window.dispatchEvent(new Event('UC_UI_CMP_EVENT'));
 
         await vi.waitFor(() =>
-            expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-                analytics: true,
-                marketing: false,
-                preferences: false,
-            })),
+            expect(handler).toHaveBeenCalledWith(
+                services({ 'google analytics': true }),
+            ),
         );
         // The event-driven emission must not push a transient denied state.
-        expect(handler).not.toHaveBeenCalledWith(expect.objectContaining({
-            analytics: false,
-            marketing: false,
-            preferences: false,
-        }));
+        expect(handler).not.toHaveBeenCalledWith(DENIED);
+        expect(handler).not.toHaveBeenCalledWith(
+            services({ 'google analytics': false }),
+        );
     });
 
     it('drops stale async resolutions so an older snapshot cannot overwrite a newer one', async () => {
@@ -166,7 +179,7 @@ describe('usercentrics-adapter', () => {
         let resolveFirst: (s: UCService[]) => void = () => undefined;
         const first = new Promise<UCService[]>((res) => { resolveFirst = res; });
         const second = Promise.resolve([
-            { id: 'ga', categorySlug: 'statistics', consent: { status: true, type: 'EXPLICIT' } },
+            { id: 'ga', name: 'Google Analytics', categorySlug: 'statistics', consent: { status: true, type: 'EXPLICIT' } },
         ]);
         let call = 0;
         window.UC_UI = {
@@ -181,15 +194,13 @@ describe('usercentrics-adapter', () => {
 
         window.dispatchEvent(new Event('UC_UI_CMP_EVENT'));
         await vi.waitFor(() =>
-            expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-                analytics: true,
-                marketing: false,
-                preferences: false,
-            })),
+            expect(handler).toHaveBeenCalledWith(
+                services({ 'google analytics': true }),
+            ),
         );
         handler.mockClear();
 
-        resolveFirst([{ id: 'ga', categorySlug: 'statistics', consent: { status: false } }]);
+        resolveFirst([{ id: 'ga', name: 'Google Analytics', categorySlug: 'statistics', consent: { status: false } }]);
         await new Promise((res) => setTimeout(res, 10));
         expect(handler).not.toHaveBeenCalled();
     });
@@ -228,7 +239,7 @@ describe('usercentrics-adapter', () => {
         expect(handler).not.toHaveBeenCalled();
     });
 
-    it('maps services by categorySlug into the normalized consent state on UC_UI_CMP_EVENT', () => {
+    it('keys services by lower-cased name on UC_UI_CMP_EVENT', () => {
         window.UC_UI = {
             isInitialized: () => true,
             getServicesBaseInfo: () => [
@@ -244,24 +255,28 @@ describe('usercentrics-adapter', () => {
         handler.mockClear();
 
         window.dispatchEvent(new Event('UC_UI_CMP_EVENT'));
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-            analytics: true,
-            marketing: false,
-            preferences: true,
-        }));
+        expect(handler).toHaveBeenCalledWith(
+            services({
+                'google analytics': true,
+                'meta pixel': false,
+                'youtube preferences': true,
+            }),
+        );
     });
 
-    it('grants analytics when the Google Analytics service is consented, even under a "marketing" category', () => {
-        // Real tenant payload shape: the Usercentrics dashboard for
-        // eclass.justdoad.ch has no statistics/analytics category at all —
-        // Google Analytics is classified under "marketing". Consent to the
-        // GA service itself IS analytics consent; without this mapping,
-        // analytics_storage stays denied forever (gcs=G110 incident).
+    it('ignores the dashboard category entirely', () => {
+        // Two production incidents both came from reading `categorySlug`:
+        // Google Analytics filed under "marketing" once left analytics_storage
+        // denied (gcs=G110), and later granted every advertising signal to a
+        // user who accepted GA alone (gcs=G111). The category is now unused, so
+        // services sharing one are fully independent — and a service whose
+        // category is nonsense is reported like any other.
         window.UC_UI = {
             isInitialized: () => true,
             getServicesBaseInfo: () => [
                 { id: 'ga', name: 'Google Analytics', categorySlug: 'marketing', consent: { status: true, type: 'EXPLICIT' } },
-                { id: 'gtm', name: 'Google Tag Manager', categorySlug: 'marketing', consent: { status: true, type: 'EXPLICIT' } },
+                { id: 'li', name: 'LinkedIn Insight Tag', categorySlug: 'marketing', consent: { status: false } },
+                { id: 'x', name: 'Odd Service', categorySlug: 'something-weird', consent: { status: true, type: 'EXPLICIT' } },
             ],
         };
 
@@ -271,19 +286,24 @@ describe('usercentrics-adapter', () => {
         handler.mockClear();
 
         window.dispatchEvent(new Event('UC_UI_CMP_EVENT'));
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-            analytics: true,
-            marketing: true,
-            preferences: false,
-        }));
+        expect(handler).toHaveBeenCalledWith(
+            services({
+                'google analytics': true,
+                'linkedin insight tag': false,
+                'odd service': true,
+            }),
+        );
     });
 
-    it('does NOT grant analytics from other marketing services when Google Analytics itself is refused', () => {
+    it('skips services the CMP reports without a name', () => {
+        // Consent is keyed by name, so an unnamed service cannot be gated on.
+        // Dropping it is the safe direction: hasServiceConsent() then reports
+        // no record, which reads as no consent.
         window.UC_UI = {
             isInitialized: () => true,
             getServicesBaseInfo: () => [
-                { id: 'ga', name: 'Google Analytics', categorySlug: 'marketing', consent: { status: false } },
-                { id: 'li', name: 'LinkedIn Insight Tag', categorySlug: 'marketing', consent: { status: true, type: 'EXPLICIT' } },
+                { id: 'anon', categorySlug: 'statistics', consent: { status: true, type: 'EXPLICIT' } },
+                { id: 'ga', name: 'Google Analytics', categorySlug: 'statistics', consent: { status: true, type: 'EXPLICIT' } },
             ],
         };
 
@@ -293,33 +313,9 @@ describe('usercentrics-adapter', () => {
         handler.mockClear();
 
         window.dispatchEvent(new Event('UC_UI_CMP_EVENT'));
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-            analytics: false,
-            marketing: true,
-            preferences: false,
-        }));
-    });
-
-    it('treats "analytics" and "preferences" slugs as equivalent aliases', () => {
-        window.UC_UI = {
-            isInitialized: () => true,
-            getServicesBaseInfo: () => [
-                { id: 'x', categorySlug: 'analytics', consent: { status: true, type: 'EXPLICIT' } },
-                { id: 'y', categorySlug: 'preferences', consent: { status: true, type: 'EXPLICIT' } },
-            ],
-        };
-
-        const adapter = createUsercentricsAdapter();
-        const handler = vi.fn();
-        adapter.onConsentChange(handler);
-        handler.mockClear();
-
-        window.dispatchEvent(new Event('UC_UI_CMP_EVENT'));
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-            analytics: true,
-            marketing: false,
-            preferences: true,
-        }));
+        expect(handler).toHaveBeenCalledWith(
+            services({ 'google analytics': true }),
+        );
     });
 
     // ---- Preferred source: __ucCmp.getConsentDetails() -------------------
@@ -348,12 +344,17 @@ describe('usercentrics-adapter', () => {
         adapter.onConsentChange(handler);
 
         await new Promise((res) => setTimeout(res, 10));
-        expect(handler).not.toHaveBeenCalledWith(
-            expect.objectContaining({ analytics: true }),
+        expect(handler).toHaveBeenCalledWith(
+            services({
+                'google analytics': false,
+                'meta pixel': false,
+                youtube: false,
+            }),
         );
-        expect(handler).not.toHaveBeenCalledWith(
-            expect.objectContaining({ marketing: true }),
-        );
+        // Nothing granted, on any call.
+        for (const [state] of handler.mock.calls) {
+            expect(Object.values(state.services ?? {})).not.toContain(true);
+        }
     });
 
     it('grants from __ucCmp when consent is EXPLICIT', async () => {
@@ -372,15 +373,9 @@ describe('usercentrics-adapter', () => {
         adapter.onConsentChange(handler);
 
         await vi.waitFor(() =>
-            // GA under "marketing" still grants analytics (the gcs=G110 fix),
-            // but NOT marketing: GA is an analytics service whichever category
-            // the dashboard files it under, so accepting it alone must not
-            // grant advertising consent (the gcs=G111 granular-save finding).
-            expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-                analytics: true,
-                marketing: false,
-                preferences: false,
-            })),
+            expect(handler).toHaveBeenCalledWith(
+                services({ 'google analytics': true }),
+            ),
         );
     });
 
@@ -401,11 +396,12 @@ describe('usercentrics-adapter', () => {
         adapter.onConsentChange(handler);
 
         await vi.waitFor(() =>
-            expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-                analytics: true,
-                marketing: false, // IMPLICIT — must not be treated as consent
-                preferences: false,
-            })),
+            expect(handler).toHaveBeenCalledWith(
+                services({
+                    'google analytics': true,
+                    'meta pixel': false, // IMPLICIT — must not count as consent
+                }),
+            ),
         );
     });
 
@@ -429,39 +425,20 @@ describe('usercentrics-adapter', () => {
         const handler = vi.fn();
         adapter.onConsentChange(handler);
 
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-            analytics: true,
-            marketing: false,
-            preferences: false,
-        }));
+        expect(handler).toHaveBeenCalledWith(
+            services({ 'google analytics': true }),
+        );
         expect(warn).toHaveBeenCalledWith(
             expect.stringContaining('__ucCmp'),
         );
         warn.mockRestore();
     });
 
-    it('ignores unknown category slugs (safe default)', () => {
-        window.UC_UI = {
-            isInitialized: () => true,
-            getServicesBaseInfo: () => [
-                { id: 'x', categorySlug: 'something-weird', consent: { status: true, type: 'EXPLICIT' } },
-            ],
-        };
-
-        const adapter = createUsercentricsAdapter();
-        const handler = vi.fn();
-        adapter.onConsentChange(handler);
-        handler.mockClear();
-
-        window.dispatchEvent(new Event('UC_UI_CMP_EVENT'));
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ analytics: false, marketing: false, preferences: false }));
-    });
-
     it('unsubscribe stops further callbacks', () => {
         window.UC_UI = {
             isInitialized: () => true,
             getServicesBaseInfo: () => [
-                { id: 'x', categorySlug: 'statistics', consent: { status: true, type: 'EXPLICIT' } },
+                { id: 'x', name: 'Some Service', categorySlug: 'statistics', consent: { status: true, type: 'EXPLICIT' } },
             ],
         };
 

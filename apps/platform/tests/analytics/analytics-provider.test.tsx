@@ -12,6 +12,10 @@ import { AnalyticsProvider } from '../../src/lib/infrastructure/client/analytics
 import { RuntimeConfigProvider } from '../../src/lib/infrastructure/client/context/runtime-config-context';
 import type { TConsentAdapter } from '../../src/lib/infrastructure/client/analytics/consent/consent-adapter';
 import type { RuntimeConfig } from '../../src/lib/infrastructure/types/runtime-config';
+import {
+    DENIED_CONSENT,
+    type TConsentState,
+} from '../../src/lib/infrastructure/client/analytics/types';
 
 declare global {
     interface Window {
@@ -46,13 +50,13 @@ function baseConfig(): RuntimeConfig {
     };
 }
 
-function fakeAdapter(): TConsentAdapter & { emit: (s: { analytics: boolean; marketing: boolean; preferences: boolean }) => void } {
-    let currentHandler: ((s: unknown) => void) | null = null;
+function fakeAdapter(): TConsentAdapter & { emit: (s: TConsentState) => void } {
+    let currentHandler: ((s: TConsentState) => void) | null = null;
     return {
         init: vi.fn(),
         onConsentChange(handler) {
-            handler({ analytics: false, marketing: false, preferences: false });
-            currentHandler = handler as (s: unknown) => void;
+            handler({ ...DENIED_CONSENT });
+            currentHandler = handler;
             return () => {
                 currentHandler = null;
             };
@@ -105,7 +109,13 @@ describe('AnalyticsProvider', () => {
         expect(GtmMock).not.toHaveBeenCalled();
     });
 
-    it('calls gtag("consent","update",...) when adapter emits a new state', () => {
+    it('writes NO consent command to the dataLayer, on mount or on a new state', () => {
+        // Single-writer invariant (#705). Google Consent Mode is owned entirely
+        // by the Usercentrics GTM template. This provider used to mirror the
+        // CMP's category state into gtag('consent','update',...), which made two
+        // writers to one global state and pushed the less accurate of the two
+        // payloads. Neither the mount (denied) nor a subsequent grant may
+        // produce a consent command.
         const config = { ...baseConfig(), NEXT_PUBLIC_GTM_ID: 'GTM-TKP9GV24' };
         const adapter = fakeAdapter();
         render(
@@ -118,22 +128,20 @@ describe('AnalyticsProvider', () => {
             </RuntimeConfigProvider>,
         );
 
-        // Clear dataLayer (the mount also fired an initial consent update for the denied state).
-        (window as Window).dataLayer = [];
+        expect(readDataLayer()).toEqual([]);
+
         act(() => {
-            adapter.emit({ analytics: true, marketing: true, preferences: false });
+            adapter.emit({
+                services: { 'google analytics': true, 'google ads': true },
+            });
         });
 
-        expect(readDataLayer()).toContainEqual([
-            'consent',
-            'update',
-            {
-                analytics_storage: 'granted',
-                ad_storage: 'granted',
-                ad_user_data: 'granted',
-                ad_personalization: 'granted',
-                personalization_storage: 'denied',
-            },
-        ]);
+        const consentCommands = readDataLayer().filter(
+            (entry) => Array.isArray(entry) && entry[0] === 'consent',
+        );
+        expect(
+            consentCommands,
+            `AnalyticsProvider wrote Consent Mode commands: ${JSON.stringify(consentCommands)}`,
+        ).toEqual([]);
     });
 });

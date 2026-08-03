@@ -83,7 +83,8 @@ export function OTelBrowserProvider({
     // the account. The category proxy therefore misfired in both directions —
     // most importantly it STARTED telemetry for users who had explicitly
     // refused this service but accepted Google Analytics (which is filed under
-    // marketing and forces `analytics` true).
+    // marketing and forced `analytics` true). Those category flags no longer
+    // exist — consent is reported per service only (#705).
     //
     // If the CMP reports no record for the service, hasServiceConsent() returns
     // false and telemetry stays off: absent consent is not consent.

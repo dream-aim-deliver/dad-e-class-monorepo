@@ -24,7 +24,6 @@ type TConsentType = 'EXPLICIT' | 'IMPLICIT';
 interface TUserCentricsService {
     id?: string;
     name?: string;
-    categorySlug?: string;
     consent?: { status?: boolean; type?: TConsentType };
 }
 
@@ -55,12 +54,14 @@ interface TUserCentricsUI {
  * EXPLICIT/IMPLICIT distinction is actually available to us.
  *
  * Note the shape differs from getServicesBaseInfo(): services come back as a
- * keyed object (not an array), the category field is `category` (not
- * `categorySlug`), and consent is `given` (not `status`).
+ * keyed object (not an array), and consent is `given` (not `status`).
+ *
+ * Both payloads also carry a category field (`category` here, `categorySlug`
+ * there). Neither is read — the app answers consent per service, not per
+ * category.
  */
 interface TUcCmpService {
     name?: string;
-    category?: string;
     essential?: boolean;
     consent?: { given?: boolean; type?: TConsentType };
 }
@@ -87,75 +88,24 @@ declare global {
  */
 interface TNormalizedService {
     name?: string;
-    category?: string;
     granted: boolean;
 }
 
 /**
- * Translate the Usercentrics per-service consent payload into our normalized
- * {analytics, marketing, preferences} shape.
+ * Index the Usercentrics per-service consent payload by service name.
  *
- * Usercentrics doesn't have a first-class "category" concept in the JS API,
- * so we aggregate by the `categorySlug` field that admins set on each
- * service in the Usercentrics dashboard. Canonical category slugs:
- *   - statistics / analytics  → our `analytics`
- *   - marketing               → our `marketing`
- *   - functional / preferences → our `preferences`
- *   - essential               → always granted, not surfaced in TConsentState
+ * There is deliberately no category aggregation. It used to exist to feed
+ * Google Consent Mode, which the app no longer writes to — the Usercentrics
+ * GTM template owns that, and got the cases our mapping got wrong (see #705).
  *
- * We're deliberately tolerant here: a tenant's admin may use non-standard
- * slugs. Unknown slugs map to nothing (false for all three), which means
- * services under those slugs won't unlock any tracking in our app — safe
- * default.
+ * The service's `category` is not read at all, which also retires the
+ * Google-Analytics-under-"marketing" special case: consent is now answered per
+ * service, so where a tenant's dashboard files a service can no longer leak
+ * into an unrelated signal.
  */
 function mapServicesToConsentState(
     services: TNormalizedService[],
 ): TConsentState {
-    const isGoogleAnalytics = (s: TNormalizedService): boolean =>
-        typeof s.name === 'string' &&
-        s.name.toLowerCase().startsWith('google analytics');
-
-    // Google Analytics is deliberately excluded from category aggregation and
-    // handled only by hasGoogleAnalyticsConsent below.
-    //
-    // Measured on production: a user who opened the CMP's granular settings and
-    // accepted ONLY Google Analytics had ad_storage, ad_user_data and
-    // ad_personalization granted (gcs=G111). GA is filed under "marketing" in
-    // this tenant's dashboard, so it alone flipped the marketing category and,
-    // through it, every advertising signal — for a user who consented to an
-    // analytics service and nothing else. The Usercentrics GTM template got the
-    // same case right (it pushed all ad signals denied); only our mapping
-    // disagreed, which is what identified this as ours.
-    //
-    // GA is an analytics service whichever category the dashboard files it
-    // under, so its consent must not imply advertising consent.
-    const has = (categories: string[]): boolean =>
-        services.some(
-            (s) =>
-                s.granted &&
-                !isGoogleAnalytics(s) &&
-                typeof s.category === 'string' &&
-                categories.includes(s.category.toLowerCase()),
-        );
-
-    // Tenant dashboards (e.g. eclass.justdoad.ch) may have no
-    // statistics/analytics category at all and file Google Analytics under
-    // "marketing". The user's per-service consent to GA itself IS analytics
-    // consent, regardless of which category the dashboard admin chose.
-    //
-    // This matches on a dashboard-editable label, so it is brittle by nature:
-    // renaming the service in Usercentrics silently reopens the gcs=G110 bug
-    // with no compile-time or unit-test signal. A per-tenant service id is not
-    // a safe substitute (ids differ per account, and env-specific values must
-    // not be hardcoded here). The tripwire is the live audit —
-    // apps/platform-e2e/src/consent-audit.spec.ts — which would catch the
-    // regression against production; run it after any CMP dashboard change.
-    const hasGoogleAnalyticsConsent = services.some(
-        (s) => s.granted && isGoogleAnalytics(s),
-    );
-
-    // Per-service consent, so callers can gate ONE integration precisely
-    // instead of relying on a category proxy. See hasServiceConsent().
     const perService: Record<string, boolean> = {};
     for (const service of services) {
         if (typeof service.name !== 'string') continue;
@@ -163,14 +113,7 @@ function mapServicesToConsentState(
         // A name could appear twice; consent to either counts.
         perService[key] = perService[key] || service.granted;
     }
-
-    return {
-        analytics:
-            has(['statistics', 'analytics']) || hasGoogleAnalyticsConsent,
-        marketing: has(['marketing']),
-        preferences: has(['functional', 'preferences']),
-        services: perService,
-    };
+    return { services: perService };
 }
 
 /**
@@ -188,7 +131,6 @@ function normalizeFromCmpDetails(
 ): TNormalizedService[] {
     return Object.values(details.services ?? {}).map((service) => ({
         name: service.name,
-        category: service.category,
         granted:
             !!service.consent?.given && service.consent?.type === 'EXPLICIT',
     }));
@@ -213,7 +155,6 @@ function normalizeFromBaseInfo(
 ): TNormalizedService[] {
     return services.map((service) => ({
         name: service.name,
-        category: service.categorySlug,
         granted: !!service.consent?.status,
     }));
 }

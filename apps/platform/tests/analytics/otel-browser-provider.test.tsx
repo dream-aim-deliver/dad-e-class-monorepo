@@ -76,12 +76,7 @@ function controllableAdapter(initial: TConsentState) {
 }
 
 function state(overrides: Partial<TConsentState> = {}): TConsentState {
-    return {
-        analytics: false,
-        marketing: false,
-        preferences: false,
-        ...overrides,
-    };
+    return { services: {}, ...overrides };
 }
 
 function renderWith(adapter: TConsentAdapter) {

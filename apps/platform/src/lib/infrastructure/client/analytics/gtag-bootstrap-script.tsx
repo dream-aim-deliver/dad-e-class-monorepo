@@ -1,29 +1,48 @@
 import Script from 'next/script';
 
+declare global {
+    interface Window {
+        /**
+         * Standard Consent Mode plumbing: wraps window.dataLayer.push(arguments)
+         * in the variadic gtag shape. Defined by GtagBootstrapScript below.
+         *
+         * NO application code calls this — see the ownership note below. It is
+         * declared so tests and any future gtag.js interop see the real shape
+         * rather than `any`.
+         */
+        gtag?: (...args: unknown[]) => void;
+        dataLayer?: unknown[];
+    }
+}
+
 /**
- * Inline gtag bootstrap — MUST render before GTM loads.
+ * Inline dataLayer/gtag bootstrap — MUST render before GTM loads.
  *
- * Initializes window.dataLayer and defines window.gtag (GLOBAL, reused by
- * consent-mode.ts updateConsent() when the user interacts with the CMP).
+ * Guarantees `window.dataLayer` exists in <head> before the Usercentrics CMP
+ * and GTM scripts run, and defines the conventional `window.gtag` queue
+ * wrapper.
  *
- * IMPORTANT — Consent default ownership (Compliance-Critical):
- * This script deliberately issues NO consent command. The
- * `gtag(... , 'default', all-denied)` baseline is owned exclusively by the
- * Usercentrics GTM Tag Template (fires on GTM's Consent Initialization
- * trigger; `wait_for_update` is configured there — 2000 ms recommended).
- * Re-adding a default here would create the duplicate-default situation
- * removed in TSK-1783 / PR #699 follow-up. The guarantee only holds while
- * the Usercentrics template is configured in the tenant's GTM container —
- * if Usercentrics/GTM is ever removed, a denied-by-default baseline must be
- * re-implemented in code.
+ * IMPORTANT — Consent Mode ownership (Compliance-Critical):
+ * This script issues NO consent command, and neither does any other app code.
+ * The whole of Google Consent Mode — the `default` all-denied baseline and
+ * every `update` — is owned exclusively by the Usercentrics GTM Tag Template
+ * in the tenant's GTM container (the default fires on GTM's Consent
+ * Initialization trigger; `wait_for_update` is configured there, 2000 ms
+ * recommended). Adding a default here recreates the duplicate-default setup
+ * removed in TSK-1783 / PR #699; adding an update recreates the two-writer
+ * setup removed in #705. The guarantee only holds while the Usercentrics
+ * template is configured in the tenant's GTM container — if Usercentrics/GTM
+ * is ever removed, a denied-by-default baseline must be re-implemented in code.
  *
- * Why `window.gtag = window.gtag || function(){...}` (not a local function):
- * consent-mode.ts calls `window.gtag('consent', 'update', {...})` later, so
- * gtag must be a window global. The guard keeps an existing definition
- * (e.g. if GTM's own bootstrap ran first) intact.
+ * Why keep `window.gtag` when nothing in the app calls it: it is the standard
+ * global gtag.js and GTM expect to find or define, and defining it early means
+ * any call that arrives before GTM loads is queued into the dataLayer rather
+ * than lost. Removing it is a plausible further cleanup, but one that can only
+ * be verified against a deployed environment, so it is deliberately not
+ * bundled with #705.
  *
  * Strategy "beforeInteractive" is critical — it inlines into <head> so the
- * global exists before GTM and before any consent update can fire.
+ * globals exist before GTM and before the CMP can emit anything.
  */
 export function GtagBootstrapScript() {
     const code = `

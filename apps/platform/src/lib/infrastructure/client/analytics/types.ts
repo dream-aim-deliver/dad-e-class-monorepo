@@ -18,23 +18,23 @@ export interface TItem {
     index?: number;
 }
 
-/** Normalized consent state exposed by any CMP adapter. */
+/**
+ * Normalized consent state exposed by any CMP adapter.
+ *
+ * Deliberately per-service only. There are no analytics/marketing/preferences
+ * category flags: those existed to feed Google Consent Mode, which the app no
+ * longer writes to (the Usercentrics GTM template owns it — see #705). What is
+ * left is the one question the app genuinely has to answer for itself: may this
+ * specific first-party integration run?
+ *
+ * Categories were also a lossy proxy — a category is true when ANY service in
+ * it is consented — which is what let monitoring run for users who had
+ * explicitly refused it, and what granted advertising signals to a user who
+ * accepted only Google Analytics.
+ */
 export interface TConsentState {
-    /** Statistics / analytics cookies (maps to GA4 `analytics_storage`). */
-    analytics: boolean;
-    /** Marketing / advertising cookies (maps to `ad_storage` + `ad_user_data` + `ad_personalization`). */
-    marketing: boolean;
-    /** Preference cookies (maps to `personalization_storage`). */
-    preferences: boolean;
     /**
      * Per-service consent, keyed by lower-cased CMP service name.
-     *
-     * The three category flags above are a lossy summary: a category is true
-     * when ANY service in it is consented. That's fine for Google Consent Mode
-     * (which is category-shaped anyway), but wrong for gating one specific
-     * first-party integration — a user can consent to Google Analytics while
-     * refusing our OpenTelemetry monitoring, and the category flags conflate
-     * the two.
      *
      * Undefined when the CMP could not enumerate services (e.g. the noop
      * adapter, or a failed read) — callers must treat "absent" as "no consent
@@ -46,9 +46,7 @@ export interface TConsentState {
 
 /** Default all-denied consent state used before the CMP has answered. */
 export const DENIED_CONSENT: TConsentState = {
-    analytics: false,
-    marketing: false,
-    preferences: false,
+    services: {},
 };
 
 /**
@@ -60,9 +58,9 @@ export const DENIED_CONSENT: TConsentState = {
  * stable fragment ("opentelemetry") without pinning the full string.
  *
  * Returns `false` when the service is absent from the CMP payload: no consent
- * record means no consent. This is deliberately stricter than falling back to a
- * category flag — a category proxy is exactly what let monitoring run for users
- * who had explicitly refused it.
+ * record means no consent. There is deliberately no broader fallback — the
+ * category proxy this replaced is exactly what let monitoring run for users who
+ * had explicitly refused it.
  *
  * Caveat: substring matching means an unrelated service whose name happens to
  * contain the fragment would also match. Safe for the fragments in use today,

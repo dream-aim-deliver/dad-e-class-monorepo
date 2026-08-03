@@ -751,6 +751,96 @@ test.describe('Consent Mode audit — no tracking consent before the user clicks
         }
     });
 
+    /**
+     * SINGLE WRITER — only the Usercentrics GTM template may push Consent Mode.
+     *
+     * Acceptance criterion for #705. The app used to mirror the CMP's state into
+     * `gtag('consent','update',...)` as well, so one accept produced two updates
+     * to one global state. The two payloads were distinguishable by shape:
+     *
+     *   Usercentrics GTM template  4 keys: ad_storage, ad_user_data,
+     *                                      ad_personalization, analytics_storage
+     *   our app                    the same 4 PLUS personalization_storage
+     *
+     * `personalization_storage` is therefore a reliable fingerprint: the
+     * template never emits it, so any update carrying it came from app code.
+     * Asserting on shape rather than on a raw count is deliberate — GTM may
+     * legitimately push more than one update (initialization, then the user's
+     * choice), so a count would be brittle where the fingerprint is exact.
+     *
+     * NOTE: this necessarily runs against deployed code. It cannot pass before
+     * the change is released, and it is the check to run immediately after.
+     */
+    test('eclass.justdoad.ch: only the Usercentrics template writes Consent Mode', async ({
+        browser,
+    }) => {
+        const context = await browser.newContext({
+            locale: 'de-CH',
+            timezoneId: 'Europe/Zurich',
+            userAgent: REAL_UA,
+        });
+        await applyHumanFingerprint(context);
+        const page = await context.newPage();
+
+        try {
+            await page.goto('https://eclass.justdoad.ch/', {
+                waitUntil: 'domcontentloaded',
+            });
+            await page.waitForTimeout(SETTLE_MS);
+
+            await page
+                .locator('#usercentrics-cmp-ui button[data-action-type="accept"]')
+                .click();
+            await page.waitForTimeout(9_000);
+
+            const updates = await page.evaluate(() => {
+                const layer =
+                    (window as unknown as { dataLayer?: unknown[] }).dataLayer ?? [];
+                const found: Record<string, string>[] = [];
+                for (const entry of layer) {
+                    const args = Array.from((entry ?? []) as ArrayLike<unknown>);
+                    if (args[0] === 'consent' && args[1] === 'update') {
+                        found.push(args[2] as Record<string, string>);
+                    }
+                }
+                return found;
+            });
+
+            console.log('\n──────── Consent Mode writers after Accept ────────');
+            for (const update of updates) {
+                const keys = Object.keys(update).sort();
+                const source =
+                    'personalization_storage' in update
+                        ? 'app (5-key)'
+                        : 'Usercentrics GTM template';
+                console.log(`   [${source}] ${JSON.stringify(update)}`);
+                console.log(`      keys: ${keys.join(', ')}`);
+            }
+
+            // Guard against a vacuous pass: if nothing writes Consent Mode at
+            // all, the template is misconfigured and consent is not being
+            // reported — a different, worse failure than two writers.
+            expect(
+                updates.length,
+                'No consent update reached the dataLayer after Accept. The ' +
+                    'Usercentrics GTM template is the only writer now, so this ' +
+                    'means it is not firing.',
+            ).toBeGreaterThan(0);
+
+            const fromApp = updates.filter(
+                (update) => 'personalization_storage' in update,
+            );
+            expect(
+                fromApp,
+                'A Consent Mode update carrying personalization_storage reached ' +
+                    'the dataLayer. The Usercentrics template never emits that ' +
+                    'key, so app code is writing Consent Mode again (#705).',
+            ).toEqual([]);
+        } finally {
+            await context.close();
+        }
+    });
+
     test('both sites share one Usercentrics configuration', async ({ browser }) => {
         // Documents WHY one dashboard change fixes both sites — and why neither
         // can be fixed in isolation.
