@@ -2,6 +2,16 @@
 
 import { useEffect, ReactNode } from 'react';
 import { useConsent } from '../analytics/consent/consent-provider';
+import { hasServiceConsent } from '../analytics/types';
+
+/**
+ * Name fragment identifying this integration's own service in the CMP.
+ *
+ * Matches the Usercentrics service "Platform Performance & Error Monitoring
+ * (OpenTelemetry)". A fragment rather than the full label so a wording change
+ * in the dashboard doesn't silently break the gate.
+ */
+const OTEL_CMP_SERVICE = 'opentelemetry';
 
 /**
  * Configuration for the browser tracer.
@@ -60,13 +70,25 @@ export function OTelBrowserProvider({
     children,
     config,
 }: OTelBrowserProviderProps) {
-    // Gate on the analytics consent category — mirrors Usercentrics' classification
-    // of this DPS under Statistics / Analytics (Art. 6 para. 1 s. 1 lit. a GDPR).
-    // Browser performance telemetry + fetch traces read the Performance Observer
-    // API and transmit IP / URL / page.route off-device, which falls within
-    // ePrivacy Art. 5(3) and is not "strictly necessary" for service delivery.
+    // Gate on THIS integration's own CMP service, not on a consent category.
+    //
+    // Browser performance telemetry + fetch traces read the Performance
+    // Observer API and transmit IP / URL / page.route off-device, which falls
+    // within ePrivacy Art. 5(3) and is not "strictly necessary" for service
+    // delivery — so it needs the user's consent for this specific service.
+    //
+    // This previously gated on `consent.analytics`, on the assumption that the
+    // CMP filed this DPS under Statistics/Analytics. It does not: the service
+    // sits under "functional", and there is no statistics category at all on
+    // the account. The category proxy therefore misfired in both directions —
+    // most importantly it STARTED telemetry for users who had explicitly
+    // refused this service but accepted Google Analytics (which is filed under
+    // marketing and forces `analytics` true).
+    //
+    // If the CMP reports no record for the service, hasServiceConsent() returns
+    // false and telemetry stays off: absent consent is not consent.
     const { consent } = useConsent();
-    const hasConsent = consent.analytics;
+    const hasConsent = hasServiceConsent(consent, OTEL_CMP_SERVICE);
 
     useEffect(() => {
         if (!config || !config.enabled) return;
