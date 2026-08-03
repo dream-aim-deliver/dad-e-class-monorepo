@@ -50,6 +50,18 @@ const SETTLE_MS = 13_000;
 const REAL_UA =
     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36';
 
+/**
+ * Advertising endpoints that must stay silent without marketing consent.
+ *
+ * Unlike GA4 — which legitimately keeps sending cookieless `gcs=G100` pings
+ * under Consent Mode — these vendors have no consent-aware mode: a request to
+ * them at all means tracking happened. Drawn from the services the CMP lists
+ * for this account (Facebook Pixel, LinkedIn Insight Tag, TikTok, Google Ads /
+ * DoubleClick).
+ */
+const AD_VENDOR_PATTERN =
+    /(facebook\.(com|net)|fbcdn|linkedin\.com|licdn\.com|tiktok\.com|ttwstatic|doubleclick\.net|googleadservices\.com|google\.com\/(ads|pagead))/i;
+
 interface TUcService {
     name: string;
     category: string;
@@ -585,6 +597,166 @@ test.describe('Consent Mode audit — no tracking consent before the user clicks
     }
 
     /**
+     * EXPLICIT REFUSAL — the mirror of the Accept test.
+     *
+     * The suite grew around two questions: "is anything granted before the
+     * click?" and "does Accept work?". Neither covers the visitor who opens the
+     * banner and says no — the one for whom the guarantee matters most. A
+     * refusal has to be recorded as a real decision (EXPLICIT, given=false) and
+     * must leave every downstream signal denied.
+     *
+     * `gcs=G100` after Deny is the CORRECT outcome, not a failure: GA4 still
+     * sends cookieless pings under Consent Mode, and those carry G100. What
+     * must not appear is any hit above G100.
+     */
+    for (const site of SITES) {
+        test(`${site.name}: nothing is granted after an explicit Deny`, async ({
+            browser,
+        }) => {
+            const context = await browser.newContext({
+                locale: 'de-CH',
+                timezoneId: 'Europe/Zurich',
+                userAgent: REAL_UA,
+            });
+            await applyHumanFingerprint(context);
+            const page = await context.newPage();
+
+            const gaHits: TGaHit[] = [];
+            page.on('request', (request) => {
+                const requestUrl = request.url();
+                if (!requestUrl.includes('/g/collect')) return;
+                try {
+                    const params = new URL(requestUrl).searchParams;
+                    gaHits.push({
+                        gcs: params.get('gcs'),
+                        event: params.get('en'),
+                    });
+                } catch {
+                    /* ignore */
+                }
+            });
+
+            const adVendorHits: string[] = [];
+            page.on('request', (request) => {
+                if (AD_VENDOR_PATTERN.test(request.url())) {
+                    adVendorHits.push(request.url());
+                }
+            });
+
+            try {
+                await page.goto(site.url, { waitUntil: 'domcontentloaded' });
+                await page.waitForTimeout(SETTLE_MS);
+
+                const denyButton = page.locator(
+                    '#usercentrics-cmp-ui button[data-action-type="deny"]',
+                );
+                await expect(
+                    denyButton,
+                    'The Usercentrics Deny button was not found — the banner did ' +
+                        'not render, so consent could not be refused.',
+                ).toBeVisible();
+
+                const hitsBeforeClick = gaHits.length;
+                const adHitsBeforeClick = adVendorHits.length;
+                await denyButton.click();
+                await page.waitForTimeout(8_000);
+
+                const after = await page.evaluate(async () => {
+                    const cmp = (
+                        window as unknown as {
+                            __ucCmp?: {
+                                getConsentDetails?: () => Promise<unknown>;
+                            };
+                        }
+                    ).__ucCmp;
+                    const details = (await cmp?.getConsentDetails?.()) as
+                        | {
+                              consent?: { status?: string };
+                              services?: Record<
+                                  string,
+                                  {
+                                      name?: string;
+                                      essential?: boolean;
+                                      consent?: {
+                                          given?: boolean;
+                                          type?: string;
+                                      };
+                                  }
+                              >;
+                          }
+                        | undefined;
+                    const services = Object.values(details?.services ?? {});
+                    return {
+                        status: details?.consent?.status,
+                        // Any non-essential service still reporting consent
+                        // after an explicit refusal is a compliance failure.
+                        stillGranted: services
+                            .filter((s) => !s.essential && !!s.consent?.given)
+                            .map((s) => s.name ?? '(unnamed)'),
+                        explicitCount: services.filter(
+                            (s) => s.consent?.type === 'EXPLICIT',
+                        ).length,
+                    };
+                });
+
+                const postClickHits = gaHits.slice(hitsBeforeClick);
+                const leakyHits = postClickHits.filter(
+                    (hit) => hit.gcs !== null && hit.gcs !== 'G100',
+                );
+                const postClickAdHits = adVendorHits.slice(adHitsBeforeClick);
+
+                console.log(`\n──────── ${site.name} — after explicit Deny ────────`);
+                console.log(`overall status            : ${after.status}`);
+                console.log(`services now EXPLICIT     : ${after.explicitCount}`);
+                console.log(
+                    `non-essential still granted: ${after.stillGranted.length}`,
+                );
+                for (const name of after.stillGranted) {
+                    console.log(`   ✗ ${name}`);
+                }
+                console.log(`GA4 hits after Deny       :`);
+                for (const hit of postClickHits) {
+                    console.log(
+                        `   ${hit.gcs === 'G100' ? '✓' : '✗'} ${hit.event ?? '(no event)'} → ${describeGcs(hit.gcs)}`,
+                    );
+                }
+                console.log(
+                    `advertising vendor requests: ${postClickAdHits.length}`,
+                );
+                for (const url of postClickAdHits) {
+                    console.log(`   ✗ ${new URL(url).host}`);
+                }
+
+                // The refusal must be recorded as a genuine decision, not left
+                // as a pre-interaction default.
+                expect(
+                    after.explicitCount,
+                    'After clicking Deny, the CMP should record EXPLICIT ' +
+                        'decisions — a refusal is a decision.',
+                ).toBeGreaterThan(0);
+
+                expect(
+                    after.stillGranted,
+                    'Non-essential services still report consent after the user ' +
+                        'explicitly refused',
+                ).toEqual([]);
+
+                expect(
+                    leakyHits,
+                    'A GA4 hit carried consent above G100 after an explicit Deny',
+                ).toEqual([]);
+
+                expect(
+                    postClickAdHits,
+                    'An advertising vendor was contacted after an explicit Deny',
+                ).toEqual([]);
+            } finally {
+                await context.close();
+            }
+        });
+    }
+
+    /**
      * GRANULAR CONSENT — accepting one service must not grant others.
      *
      * The two tests above only exercise Accept-All and Deny-All, which is why
@@ -836,6 +1008,527 @@ test.describe('Consent Mode audit — no tracking consent before the user clicks
                     'the dataLayer. The Usercentrics template never emits that ' +
                     'key, so app code is writing Consent Mode again (#705).',
             ).toEqual([]);
+        } finally {
+            await context.close();
+        }
+    });
+
+    /**
+     * CUSTOM `track.*` EVENTS — the app's own dataLayer pushes.
+     *
+     * `track.ts` calls `sendGTMEvent(...)` unconditionally; it has never gated
+     * on consent, and does not now. That was survivable while the app also
+     * wrote Consent Mode signals. Since #705 it does not, so the ONLY thing
+     * between a pre-consent `track.purchase()` and a vendor request is whether
+     * the corresponding tags are consent-gated inside the GTM container —
+     * configuration this repo cannot see or assert on statically.
+     *
+     * This drives that path for real: with the banner untouched, push the same
+     * dataLayer events `track.*` pushes, then check nothing tracked.
+     *
+     * The events are pushed directly rather than by driving UI that happens to
+     * call `track.*`. That is deliberate — it exercises the exact payload
+     * `sendGTMEvent` produces without depending on a particular page having a
+     * particular button, so the test does not rot when the UI changes.
+     *
+     * `gcs=G100` hits are expected and fine (cookieless pings). A hit above
+     * G100, or any advertising-vendor request, means a tag fired for a user who
+     * had consented to nothing.
+     *
+     * HONEST CAVEAT (measured 2026-08-03): this currently passes trivially.
+     * `track.*` has no call sites in the app, and the GTM container has no tag
+     * bound to these events — verified by the control at the end, which pushes
+     * the same event AFTER accepting everything and still sees no GA4 hit. The
+     * test is kept because it costs one page load and starts doing real work
+     * the moment either of those changes, which is exactly when the risk
+     * appears and when nobody would think to add it.
+     */
+    test('eclass.justdoad.ch: custom track events do not fire tags before consent', async ({
+        browser,
+    }) => {
+        const context = await browser.newContext({
+            locale: 'de-CH',
+            timezoneId: 'Europe/Zurich',
+            userAgent: REAL_UA,
+        });
+        await applyHumanFingerprint(context);
+        const page = await context.newPage();
+
+        const gaHits: TGaHit[] = [];
+        const adVendorHits: string[] = [];
+        page.on('request', (request) => {
+            const requestUrl = request.url();
+            if (requestUrl.includes('/g/collect')) {
+                try {
+                    const params = new URL(requestUrl).searchParams;
+                    gaHits.push({
+                        gcs: params.get('gcs'),
+                        event: params.get('en'),
+                    });
+                } catch {
+                    /* ignore */
+                }
+            }
+            if (AD_VENDOR_PATTERN.test(requestUrl)) {
+                adVendorHits.push(requestUrl);
+            }
+        });
+
+        try {
+            await page.goto('https://eclass.justdoad.ch/', {
+                waitUntil: 'domcontentloaded',
+            });
+            await page.waitForTimeout(SETTLE_MS);
+
+            // Precondition: the banner is up and untouched.
+            await expect(
+                page.locator(
+                    '#usercentrics-cmp-ui button[data-action-type="accept"]',
+                ),
+                'The banner did not render, so this test would be measuring a ' +
+                    'page with no consent prompt at all.',
+            ).toBeVisible();
+
+            const gaBefore = gaHits.length;
+            const adBefore = adVendorHits.length;
+
+            // The payloads `track.viewItem` / `track.beginCheckout` /
+            // `track.purchase` push. Ecommerce events are used because they are
+            // the ones that would carry commercial value to an ad vendor.
+            const pushed = await page.evaluate(() => {
+                const layer = (
+                    window as unknown as { dataLayer?: unknown[] }
+                ).dataLayer;
+                if (!Array.isArray(layer)) return 0;
+                const item = {
+                    item_id: 'audit-course',
+                    item_name: 'Consent audit probe',
+                    item_category: 'course',
+                    price: 199,
+                    quantity: 1,
+                };
+                layer.push({
+                    event: 'view_item',
+                    ecommerce: { currency: 'CHF', value: 199, items: [item] },
+                });
+                layer.push({
+                    event: 'begin_checkout',
+                    ecommerce: { currency: 'CHF', value: 199, items: [item] },
+                });
+                layer.push({
+                    event: 'purchase',
+                    ecommerce: {
+                        transaction_id: 'audit-probe-tx',
+                        currency: 'CHF',
+                        value: 199,
+                        items: [item],
+                    },
+                });
+                return 3;
+            });
+
+            await page.waitForTimeout(8_000);
+
+            const newGaHits = gaHits.slice(gaBefore);
+            const leakyHits = newGaHits.filter(
+                (hit) => hit.gcs !== null && hit.gcs !== 'G100',
+            );
+            const newAdHits = adVendorHits.slice(adBefore);
+
+            console.log(
+                '\n──────── custom track.* events pushed before consent ────────',
+            );
+            console.log(`events pushed              : ${pushed}`);
+            console.log(`GA4 hits triggered         : ${newGaHits.length}`);
+            for (const hit of newGaHits) {
+                console.log(
+                    `   ${hit.gcs === 'G100' ? '✓' : '✗'} ${hit.event ?? '(no event)'} → ${describeGcs(hit.gcs)}`,
+                );
+            }
+            console.log(`advertising vendor requests: ${newAdHits.length}`);
+            for (const url of newAdHits) {
+                console.log(`   ✗ ${new URL(url).host}`);
+            }
+
+            // Guard against a vacuous pass: if the dataLayer was missing, the
+            // events never went anywhere and the assertions prove nothing.
+            expect(
+                pushed,
+                'window.dataLayer was not an array — the track.* events were ' +
+                    'never pushed, so this test proved nothing.',
+            ).toBe(3);
+
+            expect(
+                leakyHits,
+                'A custom track.* event produced a GA4 hit with consent above ' +
+                    'G100 before the user consented to anything. The GTM tag ' +
+                    'for this event is not consent-gated.',
+            ).toEqual([]);
+
+            expect(
+                newAdHits,
+                'A custom track.* event caused an advertising vendor request ' +
+                    'before the user consented to anything.',
+            ).toEqual([]);
+
+            // ---- Diagnostic: is this test currently meaningful? --------------
+            //
+            // "Nothing fired" has two possible causes: the tags are correctly
+            // consent-gated, or GTM has no tag bound to these events at all.
+            // Measured 2026-08-03, it is the second — pushing the same event
+            // AFTER accepting everything also produces no GA4 hit.
+            //
+            // So this test passes trivially today. It is kept as the guard for
+            // when `track.*` is wired up (it has no call sites in the app yet)
+            // and GTM gains matching tags; at that point the assertions above
+            // start doing real work. Reported rather than asserted, so a known
+            // and expected state does not leave the audit permanently red and
+            // drown out the consent findings.
+            await page
+                .locator('#usercentrics-cmp-ui button[data-action-type="accept"]')
+                .click();
+            await page.waitForTimeout(8_000);
+
+            const gaAfterConsent = gaHits.length;
+            await page.evaluate(() => {
+                const layer = (
+                    window as unknown as { dataLayer?: unknown[] }
+                ).dataLayer;
+                if (!Array.isArray(layer)) return;
+                layer.push({
+                    event: 'view_item',
+                    ecommerce: {
+                        currency: 'CHF',
+                        value: 199,
+                        items: [
+                            {
+                                item_id: 'audit-course',
+                                item_name: 'Consent audit probe',
+                                item_category: 'course',
+                                price: 199,
+                                quantity: 1,
+                            },
+                        ],
+                    },
+                });
+            });
+            await page.waitForTimeout(8_000);
+
+            const consentedHits = gaHits.slice(gaAfterConsent);
+            console.log(
+                `\nControl — same event after Accept: ${consentedHits.length} GA4 hit(s)`,
+            );
+            for (const hit of consentedHits) {
+                console.log(
+                    `   ${hit.event ?? '(no event)'} → ${describeGcs(hit.gcs)}`,
+                );
+            }
+            if (consentedHits.length === 0) {
+                console.log(
+                    '   ⚠ No GTM tag consumes these events, so the pre-consent\n' +
+                        '     assertions above passed trivially. They become\n' +
+                        '     meaningful once track.* is wired up and GTM has\n' +
+                        '     matching tags — until then this is a reminder, not\n' +
+                        '     a pass.',
+                );
+            }
+        } finally {
+            await context.close();
+        }
+    });
+
+    /**
+     * REVOCATION — consent withdrawn mid-session must actually take effect.
+     *
+     * Accept, then reopen the CMP's second layer and refuse. Everything that
+     * started on the strength of the acceptance has to stop: no GA4 hit above
+     * G100 afterwards, and — the app-side half — no further OpenTelemetry
+     * traces, since `OTelBrowserProvider` is supposed to shut the tracer down
+     * when its service loses consent.
+     *
+     * Withdrawal is the direction that tends to go untested: the code path runs
+     * only for users who change their mind, so a broken shutdown can sit in
+     * production indefinitely without anyone noticing.
+     */
+    test('eclass.justdoad.ch: revoking consent mid-session stops tracking', async ({
+        browser,
+    }) => {
+        const context = await browser.newContext({
+            locale: 'de-CH',
+            timezoneId: 'Europe/Zurich',
+            userAgent: REAL_UA,
+        });
+        await applyHumanFingerprint(context);
+        const page = await context.newPage();
+
+        const gaHits: TGaHit[] = [];
+        const otelRequests: string[] = [];
+        page.on('request', (request) => {
+            const requestUrl = request.url();
+            if (requestUrl.includes('/g/collect')) {
+                try {
+                    const params = new URL(requestUrl).searchParams;
+                    gaHits.push({
+                        gcs: params.get('gcs'),
+                        event: params.get('en'),
+                    });
+                } catch {
+                    /* ignore */
+                }
+            }
+            if (/\/v1\/(traces|metrics|logs)/.test(requestUrl)) {
+                otelRequests.push(requestUrl);
+            }
+        });
+
+        try {
+            await page.goto('https://eclass.justdoad.ch/', {
+                waitUntil: 'domcontentloaded',
+            });
+            await page.waitForTimeout(SETTLE_MS);
+
+            await page
+                .locator('#usercentrics-cmp-ui button[data-action-type="accept"]')
+                .click();
+            await page.waitForTimeout(8_000);
+
+            const grantedBeforeRevoke = gaHits.filter(
+                (hit) => hit.gcs !== null && hit.gcs !== 'G100',
+            ).length;
+
+            // Reopen the CMP and refuse everything.
+            await page.evaluate(() => {
+                (
+                    window as unknown as {
+                        UC_UI?: { showSecondLayer?: () => void };
+                    }
+                ).UC_UI?.showSecondLayer?.();
+            });
+            await page.waitForTimeout(3_000);
+
+            const denyButton = page.locator(
+                '#usercentrics-cmp-ui button[data-action-type="deny"]',
+            );
+            await expect(
+                denyButton,
+                'The Deny control was not reachable from the second layer, so ' +
+                    'consent could not be withdrawn.',
+            ).toBeVisible();
+
+            const gaMark = gaHits.length;
+            const otelMark = otelRequests.length;
+            await denyButton.click();
+            await page.waitForTimeout(9_000);
+
+            const after = await page.evaluate(async () => {
+                const cmp = (
+                    window as unknown as {
+                        __ucCmp?: { getConsentDetails?: () => Promise<unknown> };
+                    }
+                ).__ucCmp;
+                const details = (await cmp?.getConsentDetails?.()) as
+                    | {
+                          services?: Record<
+                              string,
+                              {
+                                  name?: string;
+                                  essential?: boolean;
+                                  consent?: { given?: boolean };
+                              }
+                          >;
+                      }
+                    | undefined;
+                return Object.values(details?.services ?? {})
+                    .filter((s) => !s.essential && !!s.consent?.given)
+                    .map((s) => s.name ?? '(unnamed)');
+            });
+
+            const postRevokeHits = gaHits.slice(gaMark);
+            const leakyHits = postRevokeHits.filter(
+                (hit) => hit.gcs !== null && hit.gcs !== 'G100',
+            );
+            const otelAfterRevoke = otelRequests.length - otelMark;
+
+            console.log('\n──────── consent revoked mid-session ────────');
+            console.log(`granted GA4 hits before revoke : ${grantedBeforeRevoke}`);
+            console.log(
+                `non-essential still granted    : ${after.length}`,
+            );
+            for (const name of after) {
+                console.log(`   ✗ ${name}`);
+            }
+            console.log(`GA4 hits after revoke          :`);
+            for (const hit of postRevokeHits) {
+                console.log(
+                    `   ${hit.gcs === 'G100' ? '✓' : '✗'} ${hit.event ?? '(no event)'} → ${describeGcs(hit.gcs)}`,
+                );
+            }
+            console.log(`OTel collector posts after revoke: ${otelAfterRevoke}`);
+
+            // Guard against a vacuous pass: if the Accept never took effect,
+            // there was nothing to revoke and the assertions are trivial.
+            expect(
+                grantedBeforeRevoke,
+                'Consent never took effect before the revoke, so this test ' +
+                    'would prove nothing about withdrawal.',
+            ).toBeGreaterThan(0);
+
+            expect(
+                after,
+                'Non-essential services still report consent after the user ' +
+                    'withdrew it',
+            ).toEqual([]);
+
+            expect(
+                leakyHits,
+                'GA4 fired with consent granted after the user withdrew consent',
+            ).toEqual([]);
+
+            expect(
+                otelAfterRevoke,
+                'OpenTelemetry kept posting traces after consent was withdrawn ' +
+                    '— the tracer did not shut down',
+            ).toBe(0);
+        } finally {
+            await context.close();
+        }
+    });
+
+    /**
+     * RETURNING VISITOR — a stored decision must be restored, not re-asked.
+     *
+     * Every other test opens a fresh context, so none of them exercises consent
+     * PERSISTENCE. That gap matters: on a return visit the CMP restores the
+     * stored decision and fires `UC_UI_INITIALIZED` with no user interaction at
+     * all, and the app has to honour it. Reading that state wrongly is exactly
+     * the `gcs=G100` incident — consent granted, analytics silently dead —
+     * which is the failure this pins.
+     *
+     * Same browser context throughout, so cookies and localStorage survive the
+     * reload the way they do for a real returning visitor.
+     */
+    test('eclass.justdoad.ch: stored consent is restored on a return visit', async ({
+        browser,
+    }) => {
+        const context = await browser.newContext({
+            locale: 'de-CH',
+            timezoneId: 'Europe/Zurich',
+            userAgent: REAL_UA,
+        });
+        await applyHumanFingerprint(context);
+        const page = await context.newPage();
+
+        const gaHits: TGaHit[] = [];
+        page.on('request', (request) => {
+            const requestUrl = request.url();
+            if (!requestUrl.includes('/g/collect')) return;
+            try {
+                const params = new URL(requestUrl).searchParams;
+                gaHits.push({
+                    gcs: params.get('gcs'),
+                    event: params.get('en'),
+                });
+            } catch {
+                /* ignore */
+            }
+        });
+
+        try {
+            await page.goto('https://eclass.justdoad.ch/', {
+                waitUntil: 'domcontentloaded',
+            });
+            await page.waitForTimeout(SETTLE_MS);
+            await page
+                .locator('#usercentrics-cmp-ui button[data-action-type="accept"]')
+                .click();
+            await page.waitForTimeout(8_000);
+
+            // Second visit, same profile, no interaction.
+            const mark = gaHits.length;
+            await page.reload({ waitUntil: 'domcontentloaded' });
+            await page.waitForTimeout(SETTLE_MS);
+
+            const restored = await page.evaluate(async () => {
+                const cmp = (
+                    window as unknown as {
+                        __ucCmp?: { getConsentDetails?: () => Promise<unknown> };
+                    }
+                ).__ucCmp;
+                const details = (await cmp?.getConsentDetails?.()) as
+                    | {
+                          consent?: { status?: string };
+                          services?: Record<
+                              string,
+                              {
+                                  name?: string;
+                                  consent?: {
+                                      given?: boolean;
+                                      type?: string;
+                                  };
+                              }
+                          >;
+                      }
+                    | undefined;
+                const ga = Object.values(details?.services ?? {}).find((s) =>
+                    (s.name ?? '').toLowerCase().startsWith('google analytics'),
+                );
+                return {
+                    status: details?.consent?.status,
+                    gaGiven: !!ga?.consent?.given,
+                    gaType: ga?.consent?.type,
+                };
+            });
+
+            const bannerVisible = await page
+                .locator('#usercentrics-cmp-ui button[data-action-type="accept"]')
+                .isVisible()
+                .catch(() => false);
+
+            const reloadHits = gaHits.slice(mark);
+            const grantedHits = reloadHits.filter(
+                (hit) => hit.gcs !== null && hit.gcs !== 'G100',
+            );
+
+            console.log('\n──────── return visit (stored consent) ────────');
+            console.log(`overall status       : ${restored.status}`);
+            console.log(
+                `Google Analytics     : given=${restored.gaGiven} type=${restored.gaType}`,
+            );
+            console.log(`banner shown again   : ${bannerVisible}`);
+            console.log(`GA4 hits after reload:`);
+            for (const hit of reloadHits) {
+                console.log(
+                    `   ${hit.gcs === 'G100' ? '✗' : '✓'} ${hit.event ?? '(no event)'} → ${describeGcs(hit.gcs)}`,
+                );
+            }
+
+            // The stored decision is a real prior choice and must stay EXPLICIT
+            // — if it came back as IMPLICIT, the app would (correctly) refuse to
+            // act on it and analytics would silently die for returning users.
+            expect(
+                restored.gaType,
+                'Stored consent came back as something other than EXPLICIT on a ' +
+                    'return visit. The app deliberately ignores non-EXPLICIT ' +
+                    'consent, so analytics would be silently dead for every ' +
+                    'returning visitor.',
+            ).toBe('EXPLICIT');
+            expect(
+                restored.gaGiven,
+                'Stored consent was not restored on the return visit',
+            ).toBe(true);
+
+            expect(
+                bannerVisible,
+                'The banner was shown again to a visitor who had already ' +
+                    'decided — the stored decision was not honoured.',
+            ).toBe(false);
+
+            expect(
+                grantedHits.length,
+                'GA4 stayed at G100 on a return visit despite stored consent — ' +
+                    'analytics is silently dead for returning users (the ' +
+                    'original gcs=G100 incident).',
+            ).toBeGreaterThan(0);
         } finally {
             await context.close();
         }
