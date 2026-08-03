@@ -123,6 +123,14 @@ function mapServicesToConsentState(
     // statistics/analytics category at all and file Google Analytics under
     // "marketing". The user's per-service consent to GA itself IS analytics
     // consent, regardless of which category the dashboard admin chose.
+    //
+    // This matches on a dashboard-editable label, so it is brittle by nature:
+    // renaming the service in Usercentrics silently reopens the gcs=G110 bug
+    // with no compile-time or unit-test signal. A per-tenant service id is not
+    // a safe substitute (ids differ per account, and env-specific values must
+    // not be hardcoded here). The tripwire is the live audit —
+    // apps/platform-e2e/src/consent-audit.spec.ts — which would catch the
+    // regression against production; run it after any CMP dashboard change.
     const hasGoogleAnalyticsConsent = services.some(
         (s) =>
             s.granted &&

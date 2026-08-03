@@ -53,6 +53,21 @@ consent; the additional `G111` on eclass is the app's own consent bridge
 escalating it to ad consent. **Both sites are affected** — the Wix site is not
 clean, so the defect is not specific to the Next.js integration.
 
+## Run this on a schedule
+
+This suite is the only safeguard that catches the original incident class. The
+app-side guard warns when `window.__ucCmp` is *absent*, but the incident was a
+*misconfigured* CMP — services reporting consent the user never gave — which no
+client-side warning detects.
+
+Because it is deliberately excluded from CI (it depends on live third-party
+infrastructure), nothing runs it automatically. Run it:
+
+- after any change to the Usercentrics dashboard — service categories, new
+  services, consent-required regions;
+- after any Usercentrics CMP version bump;
+- otherwise periodically, e.g. monthly, saved under a dated `AUDIT_LABEL`.
+
 ## Caveats
 
 - **Pre-click only.** A passing run proves nothing is granted *before* the

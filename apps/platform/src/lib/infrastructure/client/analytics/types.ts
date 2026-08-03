@@ -63,6 +63,11 @@ export const DENIED_CONSENT: TConsentState = {
  * record means no consent. This is deliberately stricter than falling back to a
  * category flag — a category proxy is exactly what let monitoring run for users
  * who had explicitly refused it.
+ *
+ * Caveat: substring matching means an unrelated service whose name happens to
+ * contain the fragment would also match. Safe for the fragments in use today,
+ * but pick fragments specific enough to stay unambiguous as more per-service
+ * gates are added.
  */
 export function hasServiceConsent(
     state: TConsentState,
