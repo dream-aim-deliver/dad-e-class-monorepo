@@ -111,10 +111,29 @@ interface TNormalizedService {
 function mapServicesToConsentState(
     services: TNormalizedService[],
 ): TConsentState {
+    const isGoogleAnalytics = (s: TNormalizedService): boolean =>
+        typeof s.name === 'string' &&
+        s.name.toLowerCase().startsWith('google analytics');
+
+    // Google Analytics is deliberately excluded from category aggregation and
+    // handled only by hasGoogleAnalyticsConsent below.
+    //
+    // Measured on production: a user who opened the CMP's granular settings and
+    // accepted ONLY Google Analytics had ad_storage, ad_user_data and
+    // ad_personalization granted (gcs=G111). GA is filed under "marketing" in
+    // this tenant's dashboard, so it alone flipped the marketing category and,
+    // through it, every advertising signal — for a user who consented to an
+    // analytics service and nothing else. The Usercentrics GTM template got the
+    // same case right (it pushed all ad signals denied); only our mapping
+    // disagreed, which is what identified this as ours.
+    //
+    // GA is an analytics service whichever category the dashboard files it
+    // under, so its consent must not imply advertising consent.
     const has = (categories: string[]): boolean =>
         services.some(
             (s) =>
                 s.granted &&
+                !isGoogleAnalytics(s) &&
                 typeof s.category === 'string' &&
                 categories.includes(s.category.toLowerCase()),
         );
@@ -132,10 +151,7 @@ function mapServicesToConsentState(
     // apps/platform-e2e/src/consent-audit.spec.ts — which would catch the
     // regression against production; run it after any CMP dashboard change.
     const hasGoogleAnalyticsConsent = services.some(
-        (s) =>
-            s.granted &&
-            typeof s.name === 'string' &&
-            s.name.toLowerCase().startsWith('google analytics'),
+        (s) => s.granted && isGoogleAnalytics(s),
     );
 
     // Per-service consent, so callers can gate ONE integration precisely

@@ -127,6 +127,33 @@ describe('per-service consent gating', () => {
         expect(hasServiceConsent(consent, 'sentry')).toBe(false);
     });
 
+    it('does NOT grant advertising consent when the user accepted only Google Analytics', async () => {
+        // Measured on production via the CMP's granular "Save settings": a user
+        // who accepted ONLY Google Analytics had ad_storage, ad_user_data and
+        // ad_personalization granted (gcs=G111), because GA is filed under
+        // "marketing" in this tenant's dashboard and alone flipped the whole
+        // category. GA is an analytics service regardless of where the
+        // dashboard files it, so it must not imply advertising consent.
+        const consent = await readConsent([
+            { name: 'Google Analytics', category: 'marketing', given: true },
+            { name: 'Google Ads', category: 'marketing', given: false },
+            { name: 'Facebook Pixel', category: 'marketing', given: false },
+        ]);
+
+        expect(consent.analytics).toBe(true);
+        expect(consent.marketing).toBe(false);
+    });
+
+    it('still grants marketing when a genuine marketing service is accepted', async () => {
+        const consent = await readConsent([
+            { name: 'Google Analytics', category: 'marketing', given: true },
+            { name: 'Google Ads', category: 'marketing', given: true },
+        ]);
+
+        expect(consent.analytics).toBe(true);
+        expect(consent.marketing).toBe(true);
+    });
+
     it('still exposes per-service consent alongside the category flags', async () => {
         const consent = await readConsent([
             { name: 'Google Analytics', category: 'marketing', given: true },
@@ -140,9 +167,11 @@ describe('per-service consent gating', () => {
             [OTEL.toLowerCase()]: true,
         });
         // Category flags remain intact for Google Consent Mode, which is
-        // category-shaped by design.
+        // category-shaped by design. Marketing is false because the only
+        // granted service under it is Google Analytics, which is excluded from
+        // category aggregation — accepting GA must not grant ad consent.
         expect(consent.analytics).toBe(true);
-        expect(consent.marketing).toBe(true);
+        expect(consent.marketing).toBe(false);
         expect(consent.preferences).toBe(true);
     });
 });

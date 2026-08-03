@@ -372,10 +372,13 @@ describe('usercentrics-adapter', () => {
         adapter.onConsentChange(handler);
 
         await vi.waitFor(() =>
-            // GA under "marketing" still grants analytics (the gcs=G110 fix).
+            // GA under "marketing" still grants analytics (the gcs=G110 fix),
+            // but NOT marketing: GA is an analytics service whichever category
+            // the dashboard files it under, so accepting it alone must not
+            // grant advertising consent (the gcs=G111 granular-save finding).
             expect(handler).toHaveBeenCalledWith(expect.objectContaining({
                 analytics: true,
-                marketing: true,
+                marketing: false,
                 preferences: false,
             })),
         );

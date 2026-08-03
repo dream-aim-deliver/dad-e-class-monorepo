@@ -584,6 +584,173 @@ test.describe('Consent Mode audit — no tracking consent before the user clicks
         });
     }
 
+    /**
+     * GRANULAR CONSENT — accepting one service must not grant others.
+     *
+     * The two tests above only exercise Accept-All and Deny-All, which is why
+     * both category-proxy bugs reached production unnoticed. This drives the
+     * CMP's second layer, enables ONLY Google Analytics, and saves.
+     *
+     * Measured on eclass.justdoad.ch before the fix, with GA the sole accepted
+     * service:
+     *   - the app pushed ad_storage / ad_user_data / ad_personalization as
+     *     GRANTED (gcs=G111) because GA is filed under "marketing"
+     *   - OpenTelemetry traces were posted to the collector despite the service
+     *     being explicitly refused
+     * The Usercentrics GTM template got the same case right (all ad signals
+     * denied), which is what identified the app as the source.
+     *
+     * Service ids are read from the CMP at runtime rather than hardcoded — they
+     * differ per Usercentrics account and must not be baked into the repo.
+     */
+    test('eclass.justdoad.ch: accepting only Google Analytics grants nothing else', async ({
+        browser,
+    }) => {
+        const context = await browser.newContext({
+            locale: 'de-CH',
+            timezoneId: 'Europe/Zurich',
+            userAgent: REAL_UA,
+        });
+        await applyHumanFingerprint(context);
+        const page = await context.newPage();
+
+        const otelRequests: string[] = [];
+        page.on('request', (request) => {
+            if (/\/v1\/(traces|metrics|logs)/.test(request.url())) {
+                otelRequests.push(request.url());
+            }
+        });
+
+        try {
+            await page.goto('https://eclass.justdoad.ch/', {
+                waitUntil: 'domcontentloaded',
+            });
+            await page.waitForTimeout(SETTLE_MS);
+
+            // Resolve the CMP's own ids for the services we care about.
+            const ids = await page.evaluate(async () => {
+                const cmp = (
+                    window as unknown as {
+                        __ucCmp?: { getConsentDetails?: () => Promise<unknown> };
+                    }
+                ).__ucCmp;
+                const details = (await cmp?.getConsentDetails?.()) as
+                    | { services?: Record<string, { name?: string }> }
+                    | undefined;
+                const find = (fragment: string) =>
+                    Object.entries(details?.services ?? {}).find(([, service]) =>
+                        (service.name ?? '').toLowerCase().includes(fragment),
+                    )?.[0];
+                return {
+                    ga: find('google analytics'),
+                    otel: find('opentelemetry'),
+                };
+            });
+            expect(ids.ga, 'Google Analytics service not found in CMP').toBeTruthy();
+            expect(ids.otel, 'OpenTelemetry service not found in CMP').toBeTruthy();
+
+            // Open the second layer, enable ONLY Google Analytics, save.
+            await page.evaluate(() =>
+                (
+                    window as unknown as {
+                        UC_UI?: { showSecondLayer?: () => void };
+                    }
+                ).UC_UI?.showSecondLayer?.(),
+            );
+            await page.waitForTimeout(3_000);
+            await page.evaluate((gaId) => {
+                const root = document.querySelector('#usercentrics-cmp-ui')
+                    ?.shadowRoot;
+                const toggle = root?.getElementById(`uc-service-${gaId}-toggle`);
+                if (toggle?.getAttribute('aria-checked') !== 'true') {
+                    (toggle as HTMLElement | null)?.click();
+                }
+            }, ids.ga);
+            await page.waitForTimeout(800);
+
+            const dataLayerMark = await page.evaluate(
+                () =>
+                    ((window as unknown as { dataLayer?: unknown[] }).dataLayer ?? [])
+                        .length,
+            );
+            const otelMark = otelRequests.length;
+
+            await page.locator('#usercentrics-cmp-ui button[data-action-type="save"]').click();
+            await page.waitForTimeout(9_000);
+
+            const result = await page.evaluate(async (mark) => {
+                const cmp = (
+                    window as unknown as {
+                        __ucCmp?: { getConsentDetails?: () => Promise<unknown> };
+                    }
+                ).__ucCmp;
+                const details = (await cmp?.getConsentDetails?.()) as
+                    | {
+                          services?: Record<
+                              string,
+                              { name?: string; consent?: { given?: boolean } }
+                          >;
+                      }
+                    | undefined;
+                const given = (fragment: string) =>
+                    Object.values(details?.services ?? {}).some(
+                        (service) =>
+                            (service.name ?? '').toLowerCase().includes(fragment) &&
+                            !!service.consent?.given,
+                    );
+
+                const layer =
+                    (window as unknown as { dataLayer?: unknown[] }).dataLayer ?? [];
+                const updates: Record<string, string>[] = [];
+                for (const entry of layer.slice(mark)) {
+                    const args = Array.from((entry ?? []) as ArrayLike<unknown>);
+                    if (args[0] === 'consent' && args[1] === 'update') {
+                        updates.push(args[2] as Record<string, string>);
+                    }
+                }
+                return {
+                    gaGiven: given('google analytics'),
+                    otelGiven: given('opentelemetry'),
+                    updates,
+                };
+            }, dataLayerMark);
+
+            console.log('\n──────── granular save: only Google Analytics accepted ────────');
+            console.log(`Google Analytics consented : ${result.gaGiven}`);
+            console.log(`OpenTelemetry consented    : ${result.otelGiven}`);
+            for (const update of result.updates) {
+                console.log(`   consent update → ${JSON.stringify(update)}`);
+            }
+            console.log(
+                `OTel collector posts after save: ${otelRequests.length - otelMark}`,
+            );
+
+            // Precondition: the click actually took effect.
+            expect(result.gaGiven, 'Google Analytics should be consented').toBe(true);
+            expect(result.otelGiven, 'OpenTelemetry should NOT be consented').toBe(false);
+
+            // Accepting an analytics service must not grant advertising.
+            const adGrants = result.updates.filter(
+                (update) =>
+                    update.ad_storage === 'granted' ||
+                    update.ad_user_data === 'granted' ||
+                    update.ad_personalization === 'granted',
+            );
+            expect(
+                adGrants,
+                'Advertising consent was granted although only Google Analytics was accepted',
+            ).toEqual([]);
+
+            // ...and must not start telemetry for a service that was refused.
+            expect(
+                otelRequests.length - otelMark,
+                'OpenTelemetry traces were sent although the service was refused',
+            ).toBe(0);
+        } finally {
+            await context.close();
+        }
+    });
+
     test('both sites share one Usercentrics configuration', async ({ browser }) => {
         // Documents WHY one dashboard change fixes both sites — and why neither
         // can be fixed in isolation.

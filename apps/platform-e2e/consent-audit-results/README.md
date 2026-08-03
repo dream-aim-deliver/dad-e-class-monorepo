@@ -53,6 +53,32 @@ consent; the additional `G111` on eclass is the app's own consent bridge
 escalating it to ad consent. **Both sites are affected** — the Wix site is not
 clean, so the defect is not specific to the Next.js integration.
 
+## Granular consent (2026-08-03) — two app-side bugs, fix not yet deployed
+
+The granular test drives the CMP's second layer, accepts **only Google
+Analytics**, and saves. Measured on eclass.justdoad.ch:
+
+| Source | Consent update pushed |
+| --- | --- |
+| Usercentrics GTM template | `analytics_storage: granted`, all ad signals **denied** ✅ |
+| **our app** | `ad_storage`, `ad_user_data`, `ad_personalization` **granted** ❌ |
+
+Plus **13 OpenTelemetry collector posts** after saving, for a service the user
+had explicitly refused.
+
+Two distinct defects, both app-side, both invisible to Accept-All / Deny-All:
+
+1. **Advertising consent from an analytics-only choice.** Google Analytics is
+   filed under `marketing` in this tenant's dashboard, so accepting it alone
+   flipped the whole marketing category and every ad signal with it. The
+   Usercentrics template handled the same case correctly, which is what
+   identified the app as the source.
+2. **Telemetry for a refused service.** OpenTelemetry was gated on the
+   `analytics` category rather than on its own service.
+
+Both are fixed in PR #702. **This test will keep failing against production
+until that PR is deployed** — it is measuring the live site, not the branch.
+
 ## Run this on a schedule
 
 This suite is the only safeguard that catches the original incident class. The
