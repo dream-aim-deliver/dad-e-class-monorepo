@@ -63,7 +63,7 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
     onFileDelete: (id: string) => void;
     /** Callback function to handle file download */
     onFileDownload: (id: string) => void;
-    /** Maximum number of files allowed (default: 5) */
+    /** Maximum number of files allowed (default: unlimited) */
     maxFiles?: number;
     /** Maximum file size allowed in megabytes (default: 5MB) */
     maxSize?: number;
@@ -97,7 +97,7 @@ export function DesignerComponent({
     onFileDelete,
     onFileDownload,
     validationError,
-    maxFiles = 5,
+    maxFiles = Infinity,
     maxSize = 15, // Default to 15MB
     uploadProgress,
 }: DownloadFilesDesignerProps) {
