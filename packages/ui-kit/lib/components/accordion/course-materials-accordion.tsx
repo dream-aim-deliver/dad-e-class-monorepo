@@ -107,7 +107,7 @@ export const CourseMaterialsAccordion: React.FC<
                             </p>
                         </span>
                         <div className="px-4 border border-base-neutral-700 rounded-medium mb-4">
-                            {material.files?.map((file: any, idx: number) => (
+                            {material.files?.filter(Boolean).map((file: any, idx: number) => (
                                 <FilePreview
                                     key={idx}
                                     uploadResponse={{
