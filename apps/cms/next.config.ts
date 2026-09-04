@@ -21,7 +21,18 @@ const nextConfig: NextConfig = {
                 search: '',
             },
         ],
-        dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development',
+        // Next 16's image optimizer refuses to fetch upstreams that resolve to a
+        // private IP (SSRF protection). Inside the fra1 cluster DigitalOcean
+        // resolves fra1.digitaloceanspaces.com to a private VPC IP (e.g. 10.x) so
+        // same-region Spaces traffic stays on the private network, which makes the
+        // optimizer reject every DO-hosted image with 400 "url" parameter is not
+        // allowed. remotePatterns below is the real trust boundary (only those
+        // hosts can be fetched at all), so we opt in to allowing private-IP
+        // upstreams for DO-hosted deployments via IMAGE_ALLOW_LOCAL_IP. The strict
+        // default stays on for any deployment that doesn't set it. See issue #710.
+        dangerouslyAllowLocalIP:
+            process.env.NODE_ENV === 'development' ||
+            process.env.IMAGE_ALLOW_LOCAL_IP === 'true',
         formats: ['image/avif', 'image/webp'],
         // Cache optimized images for 10 hours minimum, matching signed URL TTL from MinIO
         minimumCacheTTL: 36000,
