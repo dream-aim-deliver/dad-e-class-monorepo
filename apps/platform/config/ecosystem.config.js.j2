@@ -21,7 +21,8 @@ module.exports = {
                 NEXT_PUBLIC_E_CLASS_CMS_REST_URL: "{{ NEXT_PUBLIC_E_CLASS_CMS_REST_URL }}",
                 S3_HOSTNAME: "{{ S3_HOSTNAME }}",
                 S3_PORT: "{{ S3_PORT }}",
-                S3_PROTOCOL: "{{ S3_PROTOCOL }}"
+                S3_PROTOCOL: "{{ S3_PROTOCOL }}",
+                IMAGE_ALLOW_LOCAL_IP: "{{ IMAGE_ALLOW_LOCAL_IP | default('false') }}"
             }
         }
     ]
