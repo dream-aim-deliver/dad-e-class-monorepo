@@ -36,7 +36,7 @@ export default async function proxy(req: NextRequest) {
         if (!session) {
             // Redirect to login page with callback URL
             const loginUrl = new URL(`/${locale}/auth/login`, req.url);
-            loginUrl.searchParams.set('callbackUrl', pathname);
+            loginUrl.searchParams.set('callbackUrl', `${pathname}${req.nextUrl.search}`);
             return NextResponse.redirect(loginUrl);
         }
     }

@@ -9,7 +9,7 @@ import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { USERNAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 import { trpc } from '../trpc/cms-client';
 import { z } from 'zod';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
 	DefaultLoading,
 	DefaultError,
@@ -42,6 +42,22 @@ interface ProfileProps {
 
 // LinkedIn URL validation regex - matches standard LinkedIn profile/company URLs
 const linkedInUrlRegex = /^https:\/\/(www\.)?linkedin\.com\/(in|company|school|showcase)\/[\w-]+\/?$/;
+
+// Static default used both by the "apply to become coach" modal and the professional tab upsert
+// flow. Kept at module scope (not recreated per render) so it's a stable dependency for hooks.
+const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
+	id: 0,
+	bioEn: '',
+	bioDe: '',
+	linkedinUrl: null,
+	curriculumVitae: null,
+	skills: [],
+	skillsEn: [],
+	skillsDe: [],
+	private: true,
+	hideAsCoach: false,
+	doNotSendEmails: false,
+};
 
 // Zod schema factory for professional profile validation (accepts translation function)
 function createProfessionalProfileValidationSchema(t: (key: string) => string) {
@@ -219,6 +235,66 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	// to ensure hooks always receive consistent data
 	const personalProfile = personalProfileViewModel?.mode === 'default' ? personalProfileViewModel.data.profile : null;
 	const professionalProfile = professionalProfileViewModel?.mode === 'default' ? professionalProfileViewModel.data.profile : null;
+
+	const isCoach = roles.includes('coach');
+	const isStudent = roles.includes('student') && !roles.includes('coach');
+
+	// Synchronous: available on ProfileTabs' first mount so useState seeds correctly.
+	const applyCoachRequested = searchParams.get('apply') === 'coach';
+	const coachApplyInitialTab = applyCoachRequested && isCoach ? 'professional' : undefined;
+
+	// Handler for opening application modal (hoisted above the early returns so the deep-link
+	// effect below can call it unconditionally on mount).
+	const handleOpenApplicationModal = useCallback(() => {
+		setApplicationModalErrorMessage(null);
+		setApplicationModalSuccessMessage(null);
+		// Use existing professional profile data if available, otherwise use defaults
+		const profileToUse = professionalProfile || defaultProfessionalProfile;
+		setApplicationFormData(profileToUse);
+		setIsApplicationProcessing(false);
+
+		// Set CV in the upload hook if professional profile has one
+		if (profileToUse?.curriculumVitae) {
+			const cvDocument: Extract<fileMetadata.TFileMetadata, { category: 'document' }> = {
+				id: profileToUse.curriculumVitae.id,
+				name: profileToUse.curriculumVitae.name,
+				url: profileToUse.curriculumVitae.downloadUrl,
+				size: profileToUse.curriculumVitae.size,
+				category: 'document' as const,
+				status: 'available' as const,
+			};
+			applicationModalCurriculumVitaeUpload.handleUploadComplete(cvDocument);
+		} else {
+			// Clear CV if no professional profile CV exists
+			if (applicationModalCurriculumVitaeUpload.curriculumVitae) {
+				applicationModalCurriculumVitaeUpload.handleDelete(applicationModalCurriculumVitaeUpload.curriculumVitae.id);
+			}
+		}
+
+		setIsApplicationModalOpen(true);
+	}, [professionalProfile, applicationModalCurriculumVitaeUpload]);
+
+	// Deep-link: open the modal for non-coaches and strip the param from the URL.
+	useEffect(() => {
+		if (!personalProfileViewModel || personalProfileViewModel.mode === 'kaboom') {
+			return;
+		}
+
+		const applyParam = searchParams.get('apply');
+		if (applyParam !== 'coach') {
+			return;
+		}
+
+		if (!isCoach) {
+			handleOpenApplicationModal();
+		}
+
+		// Strip `apply` from the URL so a refresh doesn't re-trigger.
+		const remainingParams = new URLSearchParams(searchParams.toString());
+		remainingParams.delete('apply');
+		const queryString = remainingParams.toString();
+		router.replace(queryString ? `?${queryString}` : '?', { scroll: false });
+	}, [personalProfileViewModel, isCoach, searchParams, handleOpenApplicationModal, router]);
 
 	// Memoize file metadata objects to prevent unnecessary re-creation
 	const initialProfilePicture = useMemo((): fileMetadata.TFileMetadataImage | null => {
@@ -529,55 +605,9 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		receiveNewsletter: false,
 	};
 
-	const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
-		id: 0,
-		bioEn: '',
-		bioDe: '',
-		linkedinUrl: null,
-		curriculumVitae: null,
-		skills: [],
-		skillsEn: [],
-		skillsDe: [],
-		private: true,
-		hideAsCoach: false,
-		doNotSendEmails: false,
-	};
-
 	// Use actual profiles if they exist, otherwise use defaults
 	const personalProfileToUse = personalProfile || defaultPersonalProfile;
 	const professionalProfileToUse = professionalProfile || defaultProfessionalProfile;
-
-	const isCoach = roles.includes('coach');
-	const isStudent = roles.includes('student') && !roles.includes('coach');
-
-	// Handler for opening application modal
-	const handleOpenApplicationModal = () => {
-		setApplicationModalErrorMessage(null);
-		setApplicationModalSuccessMessage(null);
-		// Use existing professional profile data if available, otherwise use defaults
-		setApplicationFormData(professionalProfileToUse);
-		setIsApplicationProcessing(false);
-
-		// Set CV in the upload hook if professional profile has one
-		if (professionalProfileToUse?.curriculumVitae) {
-			const cvDocument: Extract<fileMetadata.TFileMetadata, { category: 'document' }> = {
-				id: professionalProfileToUse.curriculumVitae.id,
-				name: professionalProfileToUse.curriculumVitae.name,
-				url: professionalProfileToUse.curriculumVitae.downloadUrl,
-				size: professionalProfileToUse.curriculumVitae.size,
-				category: 'document' as const,
-				status: 'available' as const,
-			};
-			applicationModalCurriculumVitaeUpload.handleUploadComplete(cvDocument);
-		} else {
-			// Clear CV if no professional profile CV exists
-			if (applicationModalCurriculumVitaeUpload.curriculumVitae) {
-				applicationModalCurriculumVitaeUpload.handleDelete(applicationModalCurriculumVitaeUpload.curriculumVitae.id);
-			}
-		}
-
-		setIsApplicationModalOpen(true);
-	};
 
 	// Handler for closing modal - reset state
 	const handleCloseApplicationModal = (open: boolean) => {
@@ -771,6 +801,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						curriculumVitaeUploadProgress={curriculumVitaeUploadProgress}
 						isSaving={savePersonalMutation.isPending || saveProfessionalMutation.isPending}
 						hasProfessionalProfile={isCoach}
+						initialTab={coachApplyInitialTab}
 						onTabChange={handleTabChange}
 						skillsLanguageHint={professionalInfoTranslations('skillsLanguageHint')}
 						showApplyToCoachButton={isStudent}

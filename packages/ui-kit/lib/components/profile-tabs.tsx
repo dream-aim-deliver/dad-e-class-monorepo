@@ -55,6 +55,7 @@ export interface ProfileTabsProps extends isLocalAware {
   showApplyToCoachButton?: boolean;
   onApplyToCoachClick?: () => void;
   usernameValidator?: (username: string) => string | null;
+  initialTab?: 'personal' | 'professional';
 }
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
@@ -87,6 +88,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   showApplyToCoachButton = false,
   onApplyToCoachClick,
   usernameValidator,
+  initialTab,
 }) => {
   const personalForm = useFormState(personalProfile, {
     enableReloadProtection: true
@@ -95,7 +97,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   const professionalForm = useFormState(professionalProfile, {
     enableReloadProtection: true,
   });
-  const [currentTab, setCurrentTab] = useState<'personal' | 'professional'>('personal');
+  const [currentTab, setCurrentTab] = useState<'personal' | 'professional'>(initialTab ?? 'personal');
   const dictionary = getDictionary(locale as TLocale);
 
   const unsavedGuard = useUnsavedChangesGuard({
@@ -209,7 +211,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   return (
     <div className="w-full mx-auto">
       <Tabs.Root
-        defaultTab="personal"
+        defaultTab={initialTab ?? 'personal'}
         onValueChange={handleTabChange}
         className="w-full"
       >
