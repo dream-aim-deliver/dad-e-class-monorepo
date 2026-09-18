@@ -349,4 +349,53 @@ describe('ProfileTabs', () => {
     expect(onSaveProfessionalMock).toHaveBeenCalled();
   });
 
+  it('selects the Professional tab initially when initialTab="professional" is passed', () => {
+    render(
+      <ProfileTabs
+        personalProfile={mockPersonalProfile}
+        professionalProfile={mockProfessionalProfile}
+        availableSkills={mockAvailableSkills}
+        availableLanguages={mockAvailableLanguages}
+        onPersonalFileUpload={mockFileUpload}
+        onProfessionalFileUpload={mockFileUpload}
+        onProfilePictureDelete={mockOnProfilePictureDelete}
+        onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        onProfilePictureUploadComplete={mockOnProfilePictureUploadComplete}
+        onCurriculumVitaeUploadComplete={mockOnCurriculumVitaeUploadComplete}
+        hasProfessionalProfile={true}
+        locale="en"
+        initialTab="professional"
+      />
+    );
+
+    const selectedTab = screen.getByRole('tab', { selected: true });
+    expect(selectedTab).toHaveTextContent(/professional/i);
+
+    expect(
+      screen.getByText(/Experienced software engineer/i),
+    ).toBeInTheDocument();
+  });
+
+  it('defaults to the Personal tab when initialTab is omitted or "personal"', () => {
+    render(
+      <ProfileTabs
+        personalProfile={mockPersonalProfile}
+        professionalProfile={mockProfessionalProfile}
+        availableSkills={mockAvailableSkills}
+        availableLanguages={mockAvailableLanguages}
+        onPersonalFileUpload={mockFileUpload}
+        onProfessionalFileUpload={mockFileUpload}
+        onProfilePictureDelete={mockOnProfilePictureDelete}
+        onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        onProfilePictureUploadComplete={mockOnProfilePictureUploadComplete}
+        onCurriculumVitaeUploadComplete={mockOnCurriculumVitaeUploadComplete}
+        hasProfessionalProfile={true}
+        locale="en"
+      />
+    );
+
+    const selectedTab = screen.getByRole('tab', { selected: true });
+    expect(selectedTab).toHaveTextContent(/personal/i);
+  });
+
 });
