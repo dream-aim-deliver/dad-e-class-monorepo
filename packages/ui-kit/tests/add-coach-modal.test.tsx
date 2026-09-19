@@ -17,6 +17,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
                 addedLabel: 'Added',
                 addButton: 'Add',
                 closeButton: 'Close',
+                noProfileMessage: 'This coach has not completed their professional profile. Please ask them to do so first.',
             },
         },
     }),
@@ -193,5 +194,105 @@ describe('AddCoachModal', () => {
         render(<AddCoachModal {...mockProps} />);
         fireEvent.click(screen.getByTestId('button-Close'));
         expect(mockProps.onClose).toHaveBeenCalledTimes(1); // now total 2
+    });
+
+    describe('hasProfessionalProfile behavior', () => {
+        const coachWithoutProfile: AddCoachModalProps = {
+            locale: 'en',
+            onClose: vi.fn(),
+            onAdd: vi.fn(),
+            content: [
+                {
+                    id: '2',
+                    coachName: 'No Profile Coach',
+                    coachAvatarUrl: '/avatars/noprofile.jpg',
+                    totalRating: 10,
+                    rating: 3.5,
+                    hasProfessionalProfile: false,
+                },
+            ],
+            addedCoachIds: [],
+        };
+
+        it('renders coach without professional profile with opacity-50 class', () => {
+            const { container } = render(
+                <AddCoachModal {...coachWithoutProfile} />,
+            );
+            fireEvent.change(screen.getByTestId('search-input'), {
+                target: { value: 'No Profile' },
+            });
+
+            const listItem = container.querySelector('li');
+            expect(listItem).toBeInTheDocument();
+            expect(listItem?.className).toContain('opacity-50');
+            expect(listItem?.className).not.toContain('hover:bg-base-neutral-800');
+        });
+
+        it('shows noProfileMessage instead of star ratings for coach without profile', () => {
+            render(<AddCoachModal {...coachWithoutProfile} />);
+            fireEvent.change(screen.getByTestId('search-input'), {
+                target: { value: 'No Profile' },
+            });
+
+            expect(
+                screen.getByText(
+                    'This coach has not completed their professional profile. Please ask them to do so first.',
+                ),
+            ).toBeInTheDocument();
+            expect(screen.queryByTestId('star-rating')).not.toBeInTheDocument();
+        });
+
+        it('does not render Add button for coach without professional profile', () => {
+            render(<AddCoachModal {...coachWithoutProfile} />);
+            fireEvent.change(screen.getByTestId('search-input'), {
+                target: { value: 'No Profile' },
+            });
+
+            expect(screen.queryByTestId('button-Add')).not.toBeInTheDocument();
+        });
+
+        it('renders normally with ratings and Add button when hasProfessionalProfile is true', () => {
+            const coachWithProfile: AddCoachModalProps = {
+                locale: 'en',
+                onClose: vi.fn(),
+                onAdd: vi.fn(),
+                content: [
+                    {
+                        id: '3',
+                        coachName: 'Profile Coach',
+                        coachAvatarUrl: '/avatars/profile.jpg',
+                        totalRating: 20,
+                        rating: 4.5,
+                        hasProfessionalProfile: true,
+                    },
+                ],
+                addedCoachIds: [],
+            };
+
+            const { container } = render(
+                <AddCoachModal {...coachWithProfile} />,
+            );
+            fireEvent.change(screen.getByTestId('search-input'), {
+                target: { value: 'Profile Coach' },
+            });
+
+            // Should have hover class, not opacity-50
+            const listItem = container.querySelector('li');
+            expect(listItem?.className).toContain('hover:bg-base-neutral-800');
+            expect(listItem?.className).not.toContain('opacity-50');
+
+            // Should show star rating, not the no-profile message
+            expect(screen.getByTestId('star-rating')).toHaveTextContent(
+                'Rating: 4.5',
+            );
+            expect(
+                screen.queryByText(
+                    'This coach has not completed their professional profile. Please ask them to do so first.',
+                ),
+            ).not.toBeInTheDocument();
+
+            // Should show Add button
+            expect(screen.getByTestId('button-Add')).toBeInTheDocument();
+        });
     });
 });
