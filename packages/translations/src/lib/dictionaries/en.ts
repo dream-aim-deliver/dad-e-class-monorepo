@@ -1058,6 +1058,7 @@ export const EN: TDictionary = {
       isYou: 'You',
       noFoundLabel: 'No coaches found...',
       closeButton: "Close",
+      noProfileMessage: 'This coach has not completed their professional profile. Please ask them to do so first.',
     },
     quiz: {
       quizText: 'Quiz',

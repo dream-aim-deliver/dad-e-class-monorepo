@@ -1060,7 +1060,8 @@ export const DE: TDictionary = {
       addedLabel: 'Bereits Coach',
       isYou: 'Du',
       noFoundLabel: 'Keinen Coach gefunden...',
-      closeButton: "Schliessen"
+      closeButton: "Schliessen",
+      noProfileMessage: 'Dieser Coach hat sein professionelles Profil noch nicht ausgefüllt. Bitte fordern Sie ihn dazu auf.',
     },
     quiz: {
       quizText: 'Quiz',

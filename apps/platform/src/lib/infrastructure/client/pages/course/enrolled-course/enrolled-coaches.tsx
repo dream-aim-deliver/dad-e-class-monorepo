@@ -117,6 +117,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                 coachAvatarUrl: coach.avatarUrl || '',
                 totalRating: coach.reviewCount,
                 rating: coach.averageRating || 0,
+                hasProfessionalProfile: coach.hasProfessionalProfile,
             };
         });
     }, [availableCoaches]);

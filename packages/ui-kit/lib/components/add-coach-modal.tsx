@@ -17,6 +17,7 @@ type CoachContent = {
     coachAvatarUrl: string;
     totalRating: number;
     rating: number;
+    hasProfessionalProfile?: boolean;
 };
 
 export interface AddCoachModalProps extends isLocalAware {
@@ -154,11 +155,12 @@ export const AddCoachModal = ({
                                 const isAdded = addedCoachIds.includes(
                                     coach.id,
                                 );
+                                const hasProfile = coach.hasProfessionalProfile !== false;
                                 // List of coaches & content
                                 return (
                                     <li
                                         key={coach.id}
-                                        className={`p-4 rounded-lg hover:bg-base-neutral-800 cursor-default`}
+                                        className={`p-4 rounded-lg cursor-default ${hasProfile ? 'hover:bg-base-neutral-800' : 'opacity-50'}`}
                                     >
                                         <div className="flex justify-between items-center">
                                             <div className="flex flex-row items-center gap-3">
@@ -173,27 +175,33 @@ export const AddCoachModal = ({
                                                     <h6 className="text-text-primary">
                                                         {coach.coachName}
                                                     </h6>
-                                                    <div className="flex items-center gap-2 mt-1">
-                                                        <StarRating
-                                                            totalStars={5}
-                                                            size={'4'}
-                                                            rating={
-                                                                coach.rating
-                                                            }
-                                                        />
-                                                        <p className="text-text-primary text-sm font-important">
-                                                            {coach.rating}
+                                                    {hasProfile ? (
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <StarRating
+                                                                totalStars={5}
+                                                                size={'4'}
+                                                                rating={
+                                                                    coach.rating
+                                                                }
+                                                            />
+                                                            <p className="text-text-primary text-sm font-important">
+                                                                {coach.rating}
+                                                            </p>
+                                                            <p className="text-xs text-text-secondary font-important">
+                                                                ({coach.totalRating}
+                                                                )
+                                                            </p>
+                                                        </div>
+                                                    ) : (
+                                                        <p className="text-xs text-text-secondary mt-1">
+                                                            {dictionary.noProfileMessage}
                                                         </p>
-                                                        <p className="text-xs text-text-secondary font-important">
-                                                            ({coach.totalRating}
-                                                            )
-                                                        </p>
-                                                    </div>
+                                                    )}
                                                 </div>
                                             </div>
                                             {/* Show Add Button or Added Label */}
                                             <div className="flex items-end">
-                                                {isAdded ? (
+                                                {!hasProfile ? null : isAdded ? (
                                                     <span className="text-text-secondary text-sm">
                                                         {dictionary.addedLabel}
                                                     </span>

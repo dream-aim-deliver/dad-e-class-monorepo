@@ -1041,6 +1041,7 @@ export const DictionarySchema = z.object({
       isYou: z.string(),
       noFoundLabel: z.string(),
       closeButton: z.string(),
+      noProfileMessage: z.string(),
     }),
     quiz: z.object({
       quizText: z.string(),
