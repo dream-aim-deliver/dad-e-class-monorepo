@@ -9,7 +9,7 @@ import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { USERNAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 import { trpc } from '../trpc/cms-client';
 import { z } from 'zod';
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
 	DefaultLoading,
 	DefaultError,
@@ -111,8 +111,11 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-	// State for application modal
-	const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+	// State for application modal. Seeded from ?apply=coach deep link for non-coaches.
+	const applyCoachParam = searchParams.get('apply') === 'coach';
+	const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(
+		() => applyCoachParam && !roles.includes('coach'),
+	);
 	const [applicationFormData, setApplicationFormData] = useState<viewModels.TGetProfessionalProfileSuccess['profile'] | null>(null);
 	// Separate message state for application modal
 	const [applicationModalErrorMessage, setApplicationModalErrorMessage] = useState<string | null>(null);
@@ -239,21 +242,26 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const isCoach = roles.includes('coach');
 	const isStudent = roles.includes('student') && !roles.includes('coach');
 
-	// Synchronous: available on ProfileTabs' first mount so useState seeds correctly.
-	const applyCoachRequested = searchParams.get('apply') === 'coach';
-	const coachApplyInitialTab = applyCoachRequested && isCoach ? 'professional' : undefined;
+	// Deep-link: ?apply=coach selects Professional tab for coaches
+	const coachApplyInitialTab = applyCoachParam && isCoach ? 'professional' : undefined;
+	const applyParamCleaned = useRef(false);
 
-	// Handler for opening application modal (hoisted above the early returns so the deep-link
-	// effect below can call it unconditionally on mount).
+	useEffect(() => {
+		if (!applyCoachParam || applyParamCleaned.current) return;
+		applyParamCleaned.current = true;
+		const remainingParams = new URLSearchParams(searchParams.toString());
+		remainingParams.delete('apply');
+		const queryString = remainingParams.toString();
+		router.replace(queryString ? `?${queryString}` : window.location.pathname, { scroll: false });
+	}, [applyCoachParam, searchParams, router]);
+
 	const handleOpenApplicationModal = useCallback(() => {
 		setApplicationModalErrorMessage(null);
 		setApplicationModalSuccessMessage(null);
-		// Use existing professional profile data if available, otherwise use defaults
 		const profileToUse = professionalProfile || defaultProfessionalProfile;
 		setApplicationFormData(profileToUse);
 		setIsApplicationProcessing(false);
 
-		// Set CV in the upload hook if professional profile has one
 		if (profileToUse?.curriculumVitae) {
 			const cvDocument: Extract<fileMetadata.TFileMetadata, { category: 'document' }> = {
 				id: profileToUse.curriculumVitae.id,
@@ -265,7 +273,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			};
 			applicationModalCurriculumVitaeUpload.handleUploadComplete(cvDocument);
 		} else {
-			// Clear CV if no professional profile CV exists
 			if (applicationModalCurriculumVitaeUpload.curriculumVitae) {
 				applicationModalCurriculumVitaeUpload.handleDelete(applicationModalCurriculumVitaeUpload.curriculumVitae.id);
 			}
@@ -273,28 +280,6 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 
 		setIsApplicationModalOpen(true);
 	}, [professionalProfile, applicationModalCurriculumVitaeUpload]);
-
-	// Deep-link: open the modal for non-coaches and strip the param from the URL.
-	useEffect(() => {
-		if (!personalProfileViewModel || personalProfileViewModel.mode === 'kaboom') {
-			return;
-		}
-
-		const applyParam = searchParams.get('apply');
-		if (applyParam !== 'coach') {
-			return;
-		}
-
-		if (!isCoach) {
-			handleOpenApplicationModal();
-		}
-
-		// Strip `apply` from the URL so a refresh doesn't re-trigger.
-		const remainingParams = new URLSearchParams(searchParams.toString());
-		remainingParams.delete('apply');
-		const queryString = remainingParams.toString();
-		router.replace(queryString ? `?${queryString}` : '?', { scroll: false });
-	}, [personalProfileViewModel, isCoach, searchParams, handleOpenApplicationModal, router]);
 
 	// Memoize file metadata objects to prevent unnecessary re-creation
 	const initialProfilePicture = useMemo((): fileMetadata.TFileMetadataImage | null => {
