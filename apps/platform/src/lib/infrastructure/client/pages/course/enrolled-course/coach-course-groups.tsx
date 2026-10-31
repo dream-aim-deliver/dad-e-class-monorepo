@@ -20,10 +20,12 @@ import { useListCourseGroupsPresenter } from '../../../hooks/use-list-course-gro
 import { useRegisterCoachToGroupPresenter } from '../../../hooks/use-register-coach-to-group-presenter';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import { useTranslations } from 'next-intl';
+import GroupNoteTemplateEditor from './group-note-template-editor';
 
 
 interface EnrolledCourseGroupsProps {
     courseSlug: string;
+    courseId: number;
     currentRole: string;
 }
 
@@ -51,6 +53,7 @@ interface BackendGroup {
 
 export default function CoachCourseGroups({
     courseSlug,
+    courseId,
     currentRole,
 }: EnrolledCourseGroupsProps) {
     const locale = useLocale() as TLocale;
@@ -70,6 +73,11 @@ export default function CoachCourseGroups({
     const { presenter } = useListCourseGroupsPresenter(setGroupsViewModel);
 
     const utils = trpc.useUtils();
+
+    // Group note template is editable only by admins and the creator of this course
+    // (currentRole is derived from getCourseAccess; superadmin is normalised to 'admin')
+    const canEditGroupNoteTemplate =
+        currentRole === 'admin' || currentRole === 'course_creator';
 
     // State for coupon code handling
     const [couponCode, setCouponCode] = useState<string>('');
@@ -266,6 +274,14 @@ export default function CoachCourseGroups({
                     </DialogBody>
                 </DialogContent>
             </Dialog>
+
+            {canEditGroupNoteTemplate && (
+                <GroupNoteTemplateEditor
+                    locale={locale}
+                    courseSlug={courseSlug}
+                    courseId={courseId}
+                />
+            )}
 
             <GroupsList
                 locale={locale}

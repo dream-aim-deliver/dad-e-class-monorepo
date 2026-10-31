@@ -2361,6 +2361,15 @@ export const DE: TDictionary = {
         couponError: 'Gutscheincode konnte nicht validiert werden',
         crossCourseSuccess: 'Du bist jetzt Coach für Gruppe {groupName} im Kurs {courseTitle}',
         goToCourse: 'Zum Kurs',
+        noteTemplate: {
+          editButton: 'Gruppennotiz-Vorlage bearbeiten',
+          title: 'Gruppennotiz-Vorlage',
+          description: 'Wird auf neue Gruppen dieses Kurses sowie auf Gruppen angewendet, denen noch niemand beigetreten ist und deren Notizen nicht bearbeitet wurden. Gruppen mit Mitgliedern oder bearbeiteten Notizen werden nicht verändert.',
+          loadErrorTitle: 'Fehler beim Laden der Gruppennotiz-Vorlage',
+          loadErrorDescription: 'Beim Laden der Gruppennotiz-Vorlage ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+          saveSuccess: 'Gruppennotiz-Vorlage erfolgreich gespeichert!',
+          saveError: 'Fehler beim Speichern der Gruppennotiz-Vorlage. Bitte versuche es erneut.',
+        },
         error: {
           title: 'Fehler beim Laden der Gruppen',
           description: 'Beim Laden der Kursgruppen ist ein Fehler aufgetreten. Bitte versuche es erneut.',

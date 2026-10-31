@@ -2359,6 +2359,15 @@ export const EN: TDictionary = {
         couponError: 'Failed to validate coupon code',
         crossCourseSuccess: 'You\'re now a coach for group {groupName} of course {courseTitle}',
         goToCourse: 'Go to course',
+        noteTemplate: {
+          editButton: 'Edit Group Note Template',
+          title: 'Group note template',
+          description: 'Applied to new groups of this course and to groups nobody has joined yet and whose notes have not been edited. Groups with members or edited notes are not changed.',
+          loadErrorTitle: 'Failed to load group note template',
+          loadErrorDescription: 'An error occurred while loading the group note template. Please try again.',
+          saveSuccess: 'Group note template saved successfully!',
+          saveError: 'Failed to save group note template. Please try again.',
+        },
         error: {
           title: 'Failed to load groups',
           description: 'An error occurred while loading course groups. Please try again.',

@@ -10,7 +10,7 @@ export interface coachNotesEditDialogProps extends coachNotesProps {
 }
 
 /**
- * 
+ *
  * @param param0 Props for the CoachNotesEditDialog component
  * @param param0.isOpen Whether the dialog is open
  * @param param0.onOpenChange Function to change the open state of the dialog

@@ -2468,6 +2468,15 @@ export const DictionarySchema = z.object({
         couponError: z.string(),
         crossCourseSuccess: z.string(),
         goToCourse: z.string(),
+        noteTemplate: z.object({
+          editButton: z.string(),
+          title: z.string(),
+          description: z.string(),
+          loadErrorTitle: z.string(),
+          loadErrorDescription: z.string(),
+          saveSuccess: z.string(),
+          saveError: z.string(),
+        }),
         error: z.object({
           title: z.string(),
           description: z.string(),
