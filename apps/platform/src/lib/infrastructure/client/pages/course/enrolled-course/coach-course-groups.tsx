@@ -20,6 +20,7 @@ import { useListCourseGroupsPresenter } from '../../../hooks/use-list-course-gro
 import { useRegisterCoachToGroupPresenter } from '../../../hooks/use-register-coach-to-group-presenter';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import { useTranslations } from 'next-intl';
+import { isCourseGroupManagerRole } from '../../../../common/utils/course-group-access';
 
 
 interface EnrolledCourseGroupsProps {
@@ -58,6 +59,9 @@ export default function CoachCourseGroups({
 
     // Add translations
     const t = useTranslations('pages.course.groups');
+
+    // Superadmin / admin / course creator: manage without coupon membership
+    const canManageAllGroups = isCourseGroupManagerRole(currentRole);
 
     const [groupsResponse] = trpc.listCourseGroups.useSuspenseQuery({
         courseSlug,
@@ -281,6 +285,8 @@ export default function CoachCourseGroups({
                 validationMessageType={feedbackMessage?.type}
                 isLoading={registerCoachMutation.isPending}
                 showGroupToggle={currentRole !== 'coach'}
+                canManageAllGroups={canManageAllGroups}
+                showJoinGroup={!canManageAllGroups}
             />
 
             {/* Load More Button */}
