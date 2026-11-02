@@ -2362,7 +2362,7 @@ export const EN: TDictionary = {
         noteTemplate: {
           editButton: 'Edit Group Note Template',
           title: 'Group note template',
-          description: 'Applied to new groups of this course and to groups nobody has joined yet and whose notes have not been edited. Groups with members or edited notes are not changed.',
+          description: 'Applied to new groups of this course and to groups that have no students yet and whose notes have not been edited. Groups with students or edited notes are not changed.',
           loadErrorTitle: 'Failed to load group note template',
           loadErrorDescription: 'An error occurred while loading the group note template. Please try again.',
           saveSuccess: 'Group note template saved successfully!',

@@ -2364,7 +2364,7 @@ export const DE: TDictionary = {
         noteTemplate: {
           editButton: 'Gruppennotiz-Vorlage bearbeiten',
           title: 'Gruppennotiz-Vorlage',
-          description: 'Wird auf neue Gruppen dieses Kurses sowie auf Gruppen angewendet, denen noch niemand beigetreten ist und deren Notizen nicht bearbeitet wurden. Gruppen mit Mitgliedern oder bearbeiteten Notizen werden nicht verändert.',
+          description: 'Wird auf neue Gruppen dieses Kurses sowie auf Gruppen angewendet, die noch keine Teilnehmenden haben und deren Notizen nicht bearbeitet wurden. Gruppen mit Teilnehmenden oder bearbeiteten Notizen werden nicht verändert.',
           loadErrorTitle: 'Fehler beim Laden der Gruppennotiz-Vorlage',
           loadErrorDescription: 'Beim Laden der Gruppennotiz-Vorlage ist ein Fehler aufgetreten. Bitte versuche es erneut.',
           saveSuccess: 'Gruppennotiz-Vorlage erfolgreich gespeichert!',
