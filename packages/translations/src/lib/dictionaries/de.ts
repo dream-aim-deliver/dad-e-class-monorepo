@@ -264,7 +264,7 @@ export const DE: TDictionary = {
       packageCourseSelectorTitle: 'Kaufe das gesamte Paket oder wähle nur die Kurse aus, die du benötigst',
       packageCourseSelectorDescription: 'Mit diesem Paket kannst du nur bestimmte Kurse auswählen oder das gesamte Paket erwerben, um maximal zu sparen.',
       packageCourseSelectorButton: 'Ausgewählte Angebote kaufen',
-      saveText: 'speichern',
+      saveText: 'Du sparst',
       addToPackageButton: 'Zum Paket hinzufügen',
       removeButton: 'Entfernen',
       searchCourse: 'Kurs suchen',
@@ -412,6 +412,7 @@ export const DE: TDictionary = {
     },
     coachCard: {
       coachingSession: "Coaching-Sitzung",
+      coachingSessions: "Coaching-Sitzungen",
       more: "mehr",
       teaches: "Unterrichtet",
       viewProfile: "Profil ansehen",
@@ -517,11 +518,11 @@ export const DE: TDictionary = {
       emptyState: 'Noch keine Benachrichtigungen'
     },
     packages: {
-      purchasePackageText: 'Kaufpaket',
+      purchasePackageText: 'Paket kaufen',
       detailsText: 'Details',
       placeHolderText: 'Kein Bild verfügbar',
       coursesText: 'Angebote',
-      saveText: 'Speichern',
+      saveText: 'Du sparst',
       archivedBadge: 'Archiviert',
       publishedBadge: 'Veröffentlicht',
       editButton: 'Bearbeiten',
@@ -639,7 +640,7 @@ export const DE: TDictionary = {
       goBackText: 'Zurück',
       submitText: 'Einreichen',
       title: 'Standortbestimmung abschicken?',
-      message: 'Sie können Ihre Antworten nach der Einreichung nicht mehr ändern. Möchten Sie wirklich einreichen?',
+      message: 'Du kannst deine Antworten nach der Einreichung nicht mehr ändern. Möchtest du wirklich einreichen?',
     },
     purchaseAuthModal: {
       title: 'Konto erstellen oder einloggen',
@@ -690,7 +691,7 @@ export const DE: TDictionary = {
       hoursText: 'Stunden',
       filmMaterialText: 'von Filmmaterial',
       coachingWithAProfessionalText: 'von 1-zu-1-Coaching mit einem Industry Expert',
-      feedbackFromExpertsText: 'Mit Feedback von Industry Experts',
+      feedbackFromExpertsText: 'Mit Feedback von Profis aus der Branche',
       selfStudyMaterialText: 'von Selbstlernmaterial',
       createdByText: 'Erstellt von',
       yourProgressText: 'Dein Fortschritt',
@@ -700,12 +701,13 @@ export const DE: TDictionary = {
       coachingIncluded: 'Coaching inklusiv',
       withFeedback: 'Mit Feedback',
       chooseSupportLevel: 'Wähle deinen Support-Level',
-      chooseSupportLevelDescription: 'Jeder Kurs enthält Feedback von Industry Experts. Wenn du zusätzlich one-to-one Coachings möchtest, wähle bitte die Coaching-Option.',
+      chooseSupportLevelDescription: 'Jeder Kurs enthält Feedback von Profis aus der Branche. Wenn du zusätzlich 1:1-Coachings möchtest, wähle bitte die Coaching-Option.',
       saveLabel: 'Sparen',
-      reviewLabel: 'Bewerten',
+      reviewLabelSingular: 'Bewertung',
+      reviewLabelPlural: 'Bewertungen',
       bookLabel: 'Buchen',
       taughtBy: 'Unterrichtet von',
-      requirementsTitle: 'Vorraussetzungen',
+      requirementsTitle: 'Voraussetzungen',
       requirementsDetails: 'Bevor du mit dem Kurs beginnst, empfehlen wir dringend, diese Kurse abzuschliessen:',
       noRequirements: 'Für diesen Kurs sind keine Voraussetzungen erforderlich.',
       courseCompletedBadge: 'Kurs abgeschlossen',
@@ -995,7 +997,7 @@ export const DE: TDictionary = {
     buyCompletePackageBanner: {
       purchaseButton: 'Paket kaufen',
       fromText: 'ab',
-      saveText: 'Speichern',
+      saveText: 'Du sparst',
       coachingIncluded: 'Coaching inbegriffen',
     },
     link: {
@@ -1035,7 +1037,7 @@ export const DE: TDictionary = {
       coachingIncluded: 'Coaching inklusive',
       purchaseButton: 'Paket kaufen',
       fromText: 'ab',
-      saveText: 'Speichern',
+      saveText: 'Du sparst',
       errorImageText: 'Bild nicht verfügbar.',
     },
     studentCard: {
@@ -1061,7 +1063,7 @@ export const DE: TDictionary = {
       isYou: 'Du',
       noFoundLabel: 'Keinen Coach gefunden...',
       closeButton: "Schliessen",
-      noProfileMessage: 'Dieser Coach hat sein professionelles Profil noch nicht ausgefüllt. Bitte fordern Sie ihn dazu auf.',
+      noProfileMessage: 'Dieser Coach hat sein professionelles Profil noch nicht ausgefüllt. Bitte fordere ihn dazu auf.',
     },
     quiz: {
       quizText: 'Quiz',
@@ -1320,7 +1322,7 @@ export const DE: TDictionary = {
       legalTexts: 'Rechtliche Texte',
       yourCoachingSessions: 'Deine Coaching-Sitzungen',
       preCourseAssessmentForm: "Standortbestimmung",
-      yourCalendar: "Ihr Kalender",
+      yourCalendar: "Dein Kalender",
       calendar: "Kalender",
       groupCoachingCalendar: "Gruppen-Coaching-Kalender",
       yourReviews: 'Deine Bewertungen',
@@ -2714,22 +2716,22 @@ export const DE: TDictionary = {
       title: 'Impressum',
       loadError: {
         title: 'Impressum konnte nicht geladen werden',
-        description: 'Der Inhalt des Impressums konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Der Inhalt des Impressums konnte nicht geladen werden. Bitte versuche es erneut.',
       },
       contentError: {
         title: 'Fehler bei der Inhaltsanzeige',
-        description: 'Beim Anzeigen des Impressum-Inhalts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+        description: 'Beim Anzeigen des Impressum-Inhalts ist ein Problem aufgetreten. Bitte versuche es erneut.',
       },
     },
     termsOfUse: {
       title: 'Nutzungsbedingungen',
       loadError: {
         title: 'Nutzungsbedingungen konnten nicht geladen werden',
-        description: 'Der Inhalt der Nutzungsbedingungen konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Der Inhalt der Nutzungsbedingungen konnte nicht geladen werden. Bitte versuche es erneut.',
       },
       contentError: {
         title: 'Fehler bei der Inhaltsanzeige',
-        description: 'Beim Anzeigen der Nutzungsbedingungen ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+        description: 'Beim Anzeigen der Nutzungsbedingungen ist ein Problem aufgetreten. Bitte versuche es erneut.',
       },
     },
     privacyPolicy: {
@@ -2737,22 +2739,22 @@ export const DE: TDictionary = {
       manageCookies: 'Cookies verwalten und die vollständige Cookie-Liste anzeigen',
       loadError: {
         title: 'Datenschutzerklärung konnte nicht geladen werden',
-        description: 'Der Inhalt der Datenschutzerklärung konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Der Inhalt der Datenschutzerklärung konnte nicht geladen werden. Bitte versuche es erneut.',
       },
       contentError: {
         title: 'Fehler bei der Inhaltsanzeige',
-        description: 'Beim Anzeigen der Datenschutzerklärung ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+        description: 'Beim Anzeigen der Datenschutzerklärung ist ein Problem aufgetreten. Bitte versuche es erneut.',
       },
     },
     rules: {
       title: 'Regeln',
       loadError: {
         title: 'Regeln konnten nicht geladen werden',
-        description: 'Der Inhalt der Regeln konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+        description: 'Der Inhalt der Regeln konnte nicht geladen werden. Bitte versuche es erneut.',
       },
       contentError: {
         title: 'Fehler bei der Inhaltsanzeige',
-        description: 'Beim Anzeigen der Regeln ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+        description: 'Beim Anzeigen der Regeln ist ein Problem aufgetreten. Bitte versuche es erneut.',
       },
     },
     offerInformation: {
@@ -3876,7 +3878,7 @@ export const DE: TDictionary = {
       disable: "Deaktivieren",
       disabling: "Wird deaktiviert...",
       toggleError: "Beim Umschalten des Formulars ist ein Fehler aufgetreten.",
-      saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      saveError: "Komponenten konnten nicht gespeichert werden. Bitte versuche es erneut.",
       saveSuccess: "Standortbestimmung erfolgreich gespeichert!",
       error: {
         title: 'Standortbestimmung konnte nicht geladen werden',
