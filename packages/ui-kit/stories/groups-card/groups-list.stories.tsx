@@ -36,6 +36,7 @@ const sampleGroups = [
     groupName: 'JavaScript Fundamentals',
     currentStudents: 12,
     totalStudents: 20,
+    source: { type: 'course' },
     course: {
       image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
       title: 'Learn the basics of JavaScript programming',
@@ -54,6 +55,7 @@ const sampleGroups = [
     groupName: 'Advanced React Patterns',
     currentStudents: 8,
     totalStudents: 15,
+    source: { type: 'package', packageTitle: 'Frontend Bundle' },
     course: {
       image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
       title: 'Master advanced React concepts and patterns',
@@ -72,6 +74,7 @@ const sampleGroups = [
     groupName: 'Full-Stack Development',
     currentStudents: 15,
     totalStudents: 18,
+    source: { type: 'course' },
     course: {
       image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
       title: 'Complete web development with React and Node.js',
@@ -90,6 +93,7 @@ const sampleGroups = [
     groupName: 'UI/UX Design Principles',
     currentStudents: 20,
     totalStudents: 20,
+    source: { type: 'course' },
     course: {
       image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
       title: 'Learn design thinking and user experience principles',
@@ -108,6 +112,7 @@ const sampleGroups = [
     groupName: 'Web Performance Optimization',
     currentStudents: 6,
     totalStudents: 12,
+    source: { type: 'course' },
     course: {
       image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
       title: 'Optimize your web applications for speed and performance',
@@ -126,6 +131,7 @@ const sampleGroups = [
     groupName: 'API Development & Testing',
     currentStudents: 14,
     totalStudents: 22,
+    source: { type: 'course' },
     course: {
       image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
       title: 'Learn to build and test RESTful APIs',
@@ -144,6 +150,7 @@ const sampleGroups = [
     groupName: 'Cloud Computing Essentials',
     currentStudents: 22,
     totalStudents: 30,
+    source: { type: 'course' },
     course: {
       image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
       title: 'Learn AWS, Azure, and Google Cloud Platform fundamentals',
@@ -162,6 +169,7 @@ const sampleGroups = [
     groupName: 'Machine Learning Basics',
     currentStudents: 14,
     totalStudents: 20,
+    source: { type: 'course' },
     course: {
       image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
       title: 'Introduction to ML algorithms and Python libraries',

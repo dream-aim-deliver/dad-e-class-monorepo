@@ -548,6 +548,7 @@ export const DE: TDictionary = {
       you: 'Du',
       createdBy: 'Erstellt von',
       manage: 'Verwalten',
+      packageSource: 'Paket: {packageTitle}',
     },
     joinGroup: {
       title: 'Gruppe beitreten',
@@ -2361,6 +2362,15 @@ export const DE: TDictionary = {
         couponError: 'Gutscheincode konnte nicht validiert werden',
         crossCourseSuccess: 'Du bist jetzt Coach für Gruppe {groupName} im Kurs {courseTitle}',
         goToCourse: 'Zum Kurs',
+        noteTemplate: {
+          editButton: 'Gruppennotiz-Vorlage bearbeiten',
+          title: 'Gruppennotiz-Vorlage',
+          description: 'Wird auf neue Gruppen dieses Kurses sowie auf Gruppen angewendet, die noch keine Teilnehmenden haben und deren Notizen nicht bearbeitet wurden. Gruppen mit Teilnehmenden oder bearbeiteten Notizen werden nicht verändert.',
+          loadErrorTitle: 'Fehler beim Laden der Gruppennotiz-Vorlage',
+          loadErrorDescription: 'Beim Laden der Gruppennotiz-Vorlage ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+          saveSuccess: 'Gruppennotiz-Vorlage erfolgreich gespeichert!',
+          saveError: 'Fehler beim Speichern der Gruppennotiz-Vorlage. Bitte versuche es erneut.',
+        },
         error: {
           title: 'Fehler beim Laden der Gruppen',
           description: 'Beim Laden der Kursgruppen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
@@ -2917,6 +2927,15 @@ export const DE: TDictionary = {
       updating: 'Wird aktualisiert...',
       platformInfo: 'Plattform: {platformSlug} | Inhaltssprache: {platformLocale}',
       success: 'Erfolg',
+      groupNoteTemplate: {
+        editButton: 'Paket-Gruppennotiz-Vorlage bearbeiten',
+        title: 'Paket-Gruppennotiz-Vorlage',
+        description: 'Wird auf neue Gruppen dieses Pakets sowie auf seine Gruppen angewendet, die noch keine Teilnehmenden haben und deren Notizen nicht bearbeitet wurden. Gruppen mit Teilnehmenden oder bearbeiteten Notizen werden nicht verändert.',
+        loadErrorTitle: 'Fehler beim Laden der Paket-Gruppennotiz-Vorlage',
+        loadErrorDescription: 'Beim Laden der Paket-Gruppennotiz-Vorlage ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+        saveSuccess: 'Paket-Gruppennotiz-Vorlage erfolgreich gespeichert!',
+        saveError: 'Fehler beim Speichern der Paket-Gruppennotiz-Vorlage. Bitte versuche es erneut.',
+      },
       successMessages: {
         packageUpdated: 'Paket erfolgreich aktualisiert!',
       },

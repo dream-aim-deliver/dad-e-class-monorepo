@@ -543,6 +543,7 @@ export const DictionarySchema = z.object({
       you: z.string(),
       createdBy: z.string(),
       manage: z.string(),
+      packageSource: z.string(),
     }),
     joinGroup: z.object({
       title: z.string(),
@@ -2468,6 +2469,15 @@ export const DictionarySchema = z.object({
         couponError: z.string(),
         crossCourseSuccess: z.string(),
         goToCourse: z.string(),
+        noteTemplate: z.object({
+          editButton: z.string(),
+          title: z.string(),
+          description: z.string(),
+          loadErrorTitle: z.string(),
+          loadErrorDescription: z.string(),
+          saveSuccess: z.string(),
+          saveError: z.string(),
+        }),
         error: z.object({
           title: z.string(),
           description: z.string(),
@@ -2983,6 +2993,15 @@ export const DictionarySchema = z.object({
       updating: z.string(),
       platformInfo: z.string(),
       success: z.string(),
+      groupNoteTemplate: z.object({
+        editButton: z.string(),
+        title: z.string(),
+        description: z.string(),
+        loadErrorTitle: z.string(),
+        loadErrorDescription: z.string(),
+        saveSuccess: z.string(),
+        saveError: z.string(),
+      }),
       successMessages: z.object({
         packageUpdated: z.string(),
       }),
