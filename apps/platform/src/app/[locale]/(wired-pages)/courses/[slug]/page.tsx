@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { TLocale } from '@maany_shr/e-class-translations';
 import CourseServerComponent from '../../../../../lib/infrastructure/server/pages/course-rsc';
 import getSession from '../../../../../lib/infrastructure/server/config/auth/get-session';
@@ -5,14 +6,49 @@ import { redirect } from 'next/navigation';
 import { getQueryClient, trpc } from '../../../../../lib/infrastructure/server/config/trpc/cms-server';
 import { createGetCourseAccessPresenter } from '../../../../../lib/infrastructure/server/presenter/get-course-access-presenter';
 import { viewModels } from '@maany_shr/e-class-models';
+import { buildEntityMetadata } from '../../../../../lib/infrastructure/server/utils/build-entity-metadata';
+
+type CoursePageProps = {
+    params: Promise<{ locale: string; slug: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({
+    params: paramsPromise,
+}: {
+    params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+    const { locale, slug } = await paramsPromise;
+    const queryClient = getQueryClient();
+
+    try {
+        const response = await queryClient.fetchQuery(
+            trpc.getPublicCourseDetails.queryOptions({ courseSlug: slug }),
+        );
+
+        if (response?.success === true && response.data) {
+            return buildEntityMetadata({
+                locale,
+                path: `/${locale}/courses/${slug}`,
+                title: response.data.title,
+                description: response.data.description,
+                imageUrl: response.data.imageFile?.downloadUrl,
+            });
+        }
+    } catch (error) {
+        console.warn('[generateMetadata] Failed to load course details:', error);
+    }
+
+    return buildEntityMetadata({
+        locale,
+        path: `/${locale}/courses/${slug}`,
+    });
+}
 
 export default async function Page({
     params: paramsPromise,
     searchParams: searchParamsPromise,
-}: {
-    params: Promise<{ locale: string; slug: string }>;
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+}: CoursePageProps) {
     const params = await paramsPromise;
     const searchParams = await searchParamsPromise;
 

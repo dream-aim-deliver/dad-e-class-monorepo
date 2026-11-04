@@ -3,22 +3,61 @@
 // Usecases: getPackageWithCourses, listPackageRelatedPackages
 // Features: Display package details with courses, Show related packages, Login prompt for unregistered users
 
-import type { Viewport } from 'next';
+import type { Metadata, Viewport } from 'next';
 import PackageServerComponent from '../../../../../lib/infrastructure/server/pages/package-rsc';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { MobileReadyStyle } from '../../../../../lib/mobile-hack';
+import { getQueryClient, trpc } from '../../../../../lib/infrastructure/server/config/trpc/cms-server';
+import { buildEntityMetadata } from '../../../../../lib/infrastructure/server/utils/build-entity-metadata';
 
 // MOBILE-HACK: Override layout's 1280px viewport with responsive mobile viewport
 export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
+export async function generateMetadata({
+  params: paramsPromise,
+}: {
+  params: Promise<{ locale: string; package_id: string }>;
+}): Promise<Metadata> {
+  const { locale, package_id } = await paramsPromise;
+  const packageId = Number.parseInt(package_id, 10);
+  const path = `/${locale}/packages/${package_id}`;
+
+  if (!Number.isFinite(packageId)) {
+    return buildEntityMetadata({ locale, path });
+  }
+
+  try {
+    const queryClient = getQueryClient();
+    const response = await queryClient.fetchQuery(
+      trpc.getPackageWithCourses.queryOptions({
+        packageId,
+        includeCoachingPrices: false,
+      }),
+    );
+
+    if (response?.success === true && response.data?.package) {
+      const pkg = response.data.package;
+      return buildEntityMetadata({
+        locale,
+        path,
+        title: pkg.title,
+        description: pkg.description,
+        imageUrl: pkg.image?.downloadUrl,
+      });
+    }
+  } catch (error) {
+    console.warn('[generateMetadata] Failed to load package details:', error);
+  }
+
+  return buildEntityMetadata({ locale, path });
+}
+
 export default async function PackagePage({
-  searchParams: searchParamsPromise,
   params: paramsPromise,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
   params: Promise<{ locale: string; package_id: string }>;
 }) {
-  const searchParams = await searchParamsPromise;
   const params = await paramsPromise;
 
   return (
