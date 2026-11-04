@@ -545,6 +545,7 @@ export const EN: TDictionary = {
       you: 'You',
       createdBy: 'Created by',
       manage: 'Manage',
+      packageSource: 'Package: {packageTitle}',
     },
     joinGroup: {
       title: 'Join Group',
@@ -2924,6 +2925,15 @@ export const EN: TDictionary = {
       updating: 'Updating...',
       platformInfo: 'Platform: {platformSlug} | Content Language: {platformLocale}',
       success: 'Success',
+      groupNoteTemplate: {
+        editButton: 'Edit Package Group Note Template',
+        title: 'Package group note template',
+        description: 'Applied to new groups of this package and to its groups that have no students yet and whose notes have not been edited. Groups with students or edited notes are not changed.',
+        loadErrorTitle: 'Failed to load package group note template',
+        loadErrorDescription: 'An error occurred while loading the package group note template. Please try again.',
+        saveSuccess: 'Package group note template saved successfully!',
+        saveError: 'Failed to save package group note template. Please try again.',
+      },
       successMessages: {
         packageUpdated: 'Package updated successfully!',
       },

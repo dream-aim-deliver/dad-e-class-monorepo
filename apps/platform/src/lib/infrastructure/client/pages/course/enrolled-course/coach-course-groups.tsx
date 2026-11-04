@@ -49,6 +49,9 @@ interface BackendGroup {
         avatarUrl: string;
         isCurrentUser: boolean;
     }>;
+    source:
+        | { type: 'course' }
+        | { type: 'package'; packageId: number; packageTitle: string };
 }
 
 export default function CoachCourseGroups({
@@ -132,7 +135,7 @@ export default function CoachCourseGroups({
 
         if (!Array.isArray(groups)) return [];
 
-        return (groups as BackendGroup[]).map((group: BackendGroup) => {
+        return (groups as BackendGroup[]).map((group: BackendGroup): GroupOverviewCardDetails => {
             return {
                 groupId: group.id,
                 groupName: group.name,
@@ -148,6 +151,9 @@ export default function CoachCourseGroups({
                     isCurrentUser: coach.isCurrentUser,
                     avatarUrl: coach.avatarUrl || undefined,
                 })) || [],
+                source: group.source.type === 'package'
+                    ? { type: 'package', packageTitle: group.source.packageTitle }
+                    : { type: 'course' },
             };
         });
     }, [groupsResponse, t]);
@@ -188,6 +194,8 @@ export default function CoachCourseGroups({
 
         const result = await registerCoachMutation.mutateAsync({
             couponCode: couponCode.trim(),
+            // A package group belongs to every course of its package: stay on this course when it is one of them
+            courseSlug,
         });
 
         // Pass through presenter to update view model

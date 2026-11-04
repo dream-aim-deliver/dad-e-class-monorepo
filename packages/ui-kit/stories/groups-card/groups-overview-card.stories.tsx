@@ -29,6 +29,7 @@ const sampleGroupDetails = {
   groupName: 'Marketing Team Group',
   currentStudents: 22,
   totalStudents: 24,
+  source: { type: 'course' },
   course: {
     image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     title: 'Course Title',
@@ -59,6 +60,19 @@ export const German: Story = {
     isAdmin: true,
     cardDetails: sampleGroupDetails,
     locale: 'de',
+    onClickManage: () => console.log('Manage clicked'),
+    onClickCourse: (slug: string) => console.log('Course clicked:', slug),
+  },
+};
+
+export const FromPackage: Story = {
+  args: {
+    isAdmin: true,
+    cardDetails: {
+      ...sampleGroupDetails,
+      source: { type: 'package', packageTitle: 'Marketing Essentials Bundle' },
+    },
+    locale: 'en',
     onClickManage: () => console.log('Manage clicked'),
     onClickCourse: (slug: string) => console.log('Course clicked:', slug),
   },

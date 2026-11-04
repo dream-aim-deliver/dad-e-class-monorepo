@@ -171,3 +171,5 @@ export * from './list-required-courses-view-model';
 export * from './count-unread-notifications-view-model';
 export * from './get-group-note-template-view-model';
 export * from './save-group-note-template-view-model';
+export * from './get-package-group-note-template-view-model';
+export * from './save-package-group-note-template-view-model';

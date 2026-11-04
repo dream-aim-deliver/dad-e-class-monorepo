@@ -17,6 +17,7 @@ import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
 import React from 'react';
 import { idToNumber } from '../utils/id-to-number';
 import { useEffect } from 'react';
+import PackageGroupNoteTemplateEditor from './package-group-note-template-editor';
 
 interface PackageImage {
   id: string;
@@ -373,14 +374,20 @@ export default function EditPackage({
             {/* Breadcrumbs */}
             <Breadcrumbs items={breadcrumbItems} />
             
-            <div className="flex flex-col space-y-2">
-                <h1>{editPackageTranslations('pageTitle')}</h1>
-                <p className="text-text-secondary text-sm">
-                    {editPackageTranslations('platformInfo', { 
-                        platformSlug, 
-                        platformLocale: platformLocale.toUpperCase() 
-                    })}
-                </p>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex flex-col space-y-2">
+                    <h1>{editPackageTranslations('pageTitle')}</h1>
+                    <p className="text-text-secondary text-sm">
+                        {editPackageTranslations('platformInfo', { 
+                            platformSlug, 
+                            platformLocale: platformLocale.toUpperCase() 
+                        })}
+                    </p>
+                </div>
+                <PackageGroupNoteTemplateEditor
+                    locale={currentLocale}
+                    packageId={packageIdInt}
+                />
             </div>
             
             {/* Success Banner */}
