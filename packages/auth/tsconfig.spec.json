@@ -10,7 +10,8 @@
             "node",
             "vitest"
         ],
-        "ignoreDeprecations": "6.0"
+        "ignoreDeprecations": "6.0",
+        "rootDir": "."
     },
     "include": [
         "vite.config.ts",
