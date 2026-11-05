@@ -1,24 +1,22 @@
 {
-  "name": "platform",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/platform",
-  "projectType": "application",
-  "implicitDependencies": ["ui-kit", "models", "translations"],
-  "tags": [],
-  "// targets": "to see all targets run: nx show project platform --web",
-  "targets": {
-    "lint": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "apps/platform",
-        "command": "eslint ."
-      }
-    },
-    "test": {
-      "executor": "@nx/vitest:test",
-      "options": {
-        "configFile": "apps/platform/vitest.config.ts"
-      }
+    "name": "platform",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/platform",
+    "projectType": "application",
+    "tags": [],
+    "implicitDependencies": ["ui-kit", "models", "translations"],
+    "targets": {
+        "lint": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/platform",
+                "command": "eslint ."
+            }
+        },
+        "test": {
+            "options": {
+                "config": "./vitest.config.ts"
+            }
+        }
     }
-  }
 }

@@ -87,6 +87,14 @@
             "options": {
                 "testTargetName": "test"
             }
+        },
+        {
+            "plugin": "@nx/vitest",
+            "options": {
+                "testMode": "run",
+                "testTargetName": "test"
+            },
+            "include": ["apps/platform/**/*"]
         }
     ],
     "targetDefaults": {
