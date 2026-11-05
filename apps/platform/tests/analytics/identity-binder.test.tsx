@@ -8,12 +8,6 @@ vi.mock('next-auth/react', () => ({
 
 import { AnalyticsIdentityBinder } from '../../src/lib/infrastructure/client/analytics/identity-binder';
 
-declare global {
-    interface Window {
-        dataLayer?: unknown[];
-    }
-}
-
 function readDataLayer(): unknown[] {
     return ((window as Window).dataLayer ?? []).slice();
 }
