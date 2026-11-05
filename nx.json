@@ -151,5 +151,8 @@
             }
         },
         "versionPlans": true
+    },
+    "affected": {
+        "legacy": true
     }
 }
