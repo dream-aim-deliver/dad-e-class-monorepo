@@ -1,11 +1,11 @@
-import { defineConfig, type UserConfigFnPromise } from 'vitest/config';
+import { defineConfig, type ViteUserConfigFnPromise } from 'vitest/config';
 import * as path from 'path';
 import { glob } from "glob";
 import { fileURLToPath } from "url";
 
 // Async config to avoid Node.js ESM race condition (ERR_INTERNAL_ASSERTION)
 // when Nx loads multiple vite configs in parallel during project graph construction
-const config: UserConfigFnPromise = async () => {
+const config: ViteUserConfigFnPromise = async () => {
   let dtsPlugin: any;
   let checkerPlugin: any;
   if (!process.env.CI) {

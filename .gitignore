@@ -80,3 +80,4 @@ playwright-report/
 .nx/polygraph
 .nx/self-healing
 .nx/migrate-runs
+.vitest
