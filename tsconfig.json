@@ -23,5 +23,8 @@
         {
             "path": "./apps/cms"
         }
-    ]
+    ],
+    "compilerOptions": {
+        "ignoreDeprecations": "6.0"
+    }
 }

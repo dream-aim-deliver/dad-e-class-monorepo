@@ -29,6 +29,11 @@
             "@maany_shr/e-class-ui-kit/tailwind.css": [
                 "packages/ui-kit/lib/assets/css/tailwind.css"
             ]
-        }
+        },
+        "strict": false,
+        "noUncheckedSideEffectImports": false,
+        "types": ["*"],
+        "esModuleInterop": false,
+        "ignoreDeprecations": "6.0"
     }
 }

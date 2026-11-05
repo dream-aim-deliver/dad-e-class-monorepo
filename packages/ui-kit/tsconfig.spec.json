@@ -1,37 +1,38 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "./out-tsc/vitest",
-    "moduleResolution": "bundler",
-    "jsx": "react-jsx",
-    "types": [
-      "vitest/globals",
-      "vitest/importMeta",
-      "vite/client",
-      "node",
-      "vitest",
-      "@testing-library/jest-dom",
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./out-tsc/vitest",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "types": [
+            "vitest/globals",
+            "vitest/importMeta",
+            "vite/client",
+            "node",
+            "vitest",
+            "@testing-library/jest-dom"
+        ],
+        "ignoreDeprecations": "6.0"
+    },
+    "include": [
+        "vite.config.ts",
+        "vite.config.mts",
+        "vitest.config.ts",
+        "vitest.config.mts",
+        "tests/**/*.test.ts",
+        "tests/**/*.spec.ts",
+        "tests/**/*.test.tsx",
+        "tests/**/*.spec.tsx",
+        "tests/**/*.test.js",
+        "tests/**/*.spec.js",
+        "tests/**/*.test.jsx",
+        "tests/**/*.spec.jsx",
+        "tests/**/*.d.ts"
+    ],
+    "references": [
+        {
+            // tsconfig.lib.json for this project
+            "path": "./tsconfig.lib.json"
+        }
     ]
-  },
-  "include": [
-    "vite.config.ts",
-    "vite.config.mts",
-    "vitest.config.ts",
-    "vitest.config.mts",
-    "tests/**/*.test.ts",
-    "tests/**/*.spec.ts",
-    "tests/**/*.test.tsx",
-    "tests/**/*.spec.tsx",
-    "tests/**/*.test.js",
-    "tests/**/*.spec.js",
-    "tests/**/*.test.jsx",
-    "tests/**/*.spec.jsx",
-    "tests/**/*.d.ts"
-  ],
-  "references": [
-    {
-      // tsconfig.lib.json for this project 
-      "path": "./tsconfig.lib.json"
-    }
-  ]
 }
