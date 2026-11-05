@@ -1,14 +1,10 @@
 import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from 'next';
-const { composePlugins, withNx } = require('@nx/next');
 
 const withNextIntl = createNextIntlPlugin(
     './src/lib/infrastructure/server/config/next-intl/request.ts',
 );
 
-/**
- * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
- **/
 const nextConfig: NextConfig = {
     images: {
         localPatterns: [
@@ -70,10 +66,4 @@ const nextConfig: NextConfig = {
     } : undefined,
 };
 
-const plugins = [
-    // Add more Next.js plugins to this list if needed.
-    withNx,
-    withNextIntl, // Add the next-intl plugin
-];
-
-module.exports = composePlugins(...plugins)(nextConfig);
+export default withNextIntl(nextConfig);
