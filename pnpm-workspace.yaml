@@ -15,7 +15,7 @@ overrides:
   follow-redirects: ^1.16.2
   smol-toml: ^1.9.1
   tinypool: ^2.1.2
-  typescript: 5.9.3
+  typescript: 6.0.3
   uuid@<11.1.1: ^11.1.1
 minimumReleaseAgeExclude:
   - '@dream-aim-deliver/*'
