@@ -16,14 +16,16 @@ import {
     DefaultNotFound,
     StudentCourseCard,
     ReviewDialog,
+    ReviewDisplay,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
 
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 import { trpc } from '../../trpc/cms-client';
+import { mapCourseReviewErrorMessage } from '../../utils/map-course-review-error';
 
 interface UserCoursesListProps {
     maxItems?: number;
@@ -45,6 +47,9 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
         courseTitle: string;
     } | null>(null);
     const [reviewErrorMessage, setReviewErrorMessage] = useState<string | undefined>(undefined);
+    const [viewedReviewSlug, setViewedReviewSlug] = useState<string | null>(null);
+    const courseCardDictionary = getDictionary(locale).components.courseCard;
+    const reviewModalDictionary = getDictionary(locale).components.reviewModal;
 
     const utils = trpc.useUtils();
 
@@ -53,7 +58,17 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
         onMutate: () => {
             setReviewErrorMessage(undefined);
         },
-        onSuccess: () => {
+        onSuccess: (result) => {
+            if (result && 'success' in result && result.success === false) {
+                setReviewErrorMessage(
+                    mapCourseReviewErrorMessage(result, {
+                        courseNotStarted: courseCardDictionary.courseNotStartedHint,
+                        notEnrolled: courseCardDictionary.notEnrolledHint,
+                        fallback: reviewModalDictionary.errorState,
+                    }),
+                );
+                return;
+            }
             setReviewErrorMessage(undefined);
             setReviewModalOpen(false);
             setSelectedCourseForReview(null);
@@ -61,7 +76,13 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
             utils.listUserCourses.invalidate({});
         },
         onError: (error) => {
-            setReviewErrorMessage(error.message);
+            setReviewErrorMessage(
+                mapCourseReviewErrorMessage(error, {
+                    courseNotStarted: courseCardDictionary.courseNotStartedHint,
+                    notEnrolled: courseCardDictionary.notEnrolledHint,
+                    fallback: error.message || reviewModalDictionary.errorState,
+                }),
+            );
         }
     });
 
@@ -150,6 +171,22 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
         setSelectedCourseForReview({ courseSlug, courseTitle });
         setReviewModalOpen(true);
     };
+
+    const onViewReview = (courseSlug: string) => {
+        setViewedReviewSlug(courseSlug);
+    };
+
+    const { data: viewedReviewResponse } = trpc.getStudentCourseReview.useQuery(
+        { courseSlug: viewedReviewSlug ?? '' },
+        { enabled: Boolean(viewedReviewSlug) },
+    );
+    const viewedReview =
+        viewedReviewResponse &&
+        'success' in viewedReviewResponse &&
+        viewedReviewResponse.success &&
+        viewedReviewResponse.data?.review
+            ? viewedReviewResponse.data.review
+            : null;
 
     const handleReviewSubmit = (rating: number, review: string) => {
         if (!selectedCourseForReview) return;
@@ -261,6 +298,7 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                                 onBegin={() => onCourseVisit(course.slug || '')}
                                 onResume={() => onCourseVisit(course.slug || '')}
                                 onReview={() => onReviewCourse(course.slug || '', course.title || '')}
+                                onViewReview={() => onViewReview(course.slug || '')}
                                 onDetails={() => onCourseVisit(course.slug || '')}
                                 groupName={course.group?.name}
                                 onClickUser={() =>
@@ -291,9 +329,20 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
                     onClose={() => setReviewModalOpen(false)}
                     locale={locale}
                     isLoading={createReviewMutation.isPending}
-                    isError={createReviewMutation.isError}
+                    isError={Boolean(reviewErrorMessage) || createReviewMutation.isError}
                     errorMessage={reviewErrorMessage}
                 />
+            )}
+
+            {viewedReviewSlug && viewedReview && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <ReviewDisplay
+                        reviewText={viewedReview.review || ''}
+                        rating={viewedReview.rating}
+                        onClose={() => setViewedReviewSlug(null)}
+                        locale={locale}
+                    />
+                </div>
             )}
         </div>
     );

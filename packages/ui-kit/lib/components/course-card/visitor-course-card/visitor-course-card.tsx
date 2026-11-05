@@ -19,6 +19,14 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
     onDetails?: () => void;
     onBuy?: () => void;
     onClickUser?: () => void;
+    /**
+     * When set, stars are interactive for logged-in users.
+     * Typically shows a not-enrolled hint (visitor cards are for non-purchased courses).
+     * Omit for logged-out visitors (display only).
+     */
+    onClickRating?: () => void;
+    /** When set with onClickRating omitted, click shows this hint (e.g. not enrolled). */
+    ratingBlockedHint?: string;
     coachingIncluded?: boolean;
     locale: TLocale;
 }
@@ -74,6 +82,8 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     onDetails,
     onClickUser,
     onBuy,
+    onClickRating,
+    ratingBlockedHint,
 }) => {
     const ImageComponent = useImageComponent();
     const [isImageError, setIsImageError] = React.useState(false);
@@ -131,7 +141,17 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                         </div>
 
                         {showRating && (
-                            <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
+                            <RatingDisplay
+                                rating={rating as number}
+                                totalRatings={reviewCount}
+                                tooltip={
+                                    onClickRating || ratingBlockedHint
+                                        ? dictionary.components.courseCard.rateCourseTooltip
+                                        : undefined
+                                }
+                                blockedHint={ratingBlockedHint}
+                                onActivate={onClickRating}
+                            />
                         )}
 
                         <CourseCreator

@@ -205,6 +205,11 @@ const ReviewModalBase: React.FC<ReviewProps> = (props) => {
           <label htmlFor="reviewText" className="self-start text-sm leading-[120%]">
             {dictionary.components!.reviewModal!.yourReview}
           </label>
+          <p className="self-start text-xs leading-[140%] text-stone-400">
+            {modalType === 'coaching'
+              ? dictionary.components!.reviewModal!.coachingHint
+              : dictionary.components!.reviewModal!.courseHint}
+          </p>
 
           <div className="flex flex-col w-full text-base leading-6">
             <TextAreaInput

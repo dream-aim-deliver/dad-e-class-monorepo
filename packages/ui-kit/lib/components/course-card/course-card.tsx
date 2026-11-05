@@ -30,9 +30,11 @@ type StudentCourseCardProps = BaseCourseCardProps & {
   userType: 'student';
   sales: number;
   progress: number;
+  hasReviewed?: boolean;
   onBegin?: () => void;
   onResume?: () => void;
   onReview?: () => void;
+  onViewReview?: () => void;
   onDetails?: () => void;
 };
 
@@ -52,6 +54,8 @@ type VisitorCourseCardProps = BaseCourseCardProps & {
   sales: number;
   onDetails?: () => void;
   onBuy?: () => void;
+  onClickRating?: () => void;
+  ratingBlockedHint?: string;
 };
 
 // Discriminated union type for type-safe props
@@ -203,7 +207,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     }
 
     case 'student': {
-      const { sales, progress, onBegin, onResume, onReview, onDetails } = props;
+      const { sales, progress, hasReviewed, onBegin, onResume, onReview, onViewReview, onDetails } = props;
       return (
         <div className={className}>
           <StudentCourseCard
@@ -219,9 +223,11 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             reviewCount={reviewCount}
             sales={sales}
             progress={progress}
+            hasReviewed={hasReviewed}
             onBegin={onBegin}
             onResume={onResume}
             onReview={onReview}
+            onViewReview={onViewReview}
             onDetails={onDetails}
             onClickUser={onClickUser}
           />
@@ -230,7 +236,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     }
 
     case 'visitor': {
-      const { sessions, sales, onDetails, onBuy } = props;
+      const { sessions, sales, onDetails, onBuy, onClickRating, ratingBlockedHint } = props;
       return (
         <div className={className}>
           <VisitorCourseCard
@@ -247,6 +253,8 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             imageUrl={course.imageUrl}
             onDetails={onDetails}
             onBuy={onBuy}
+            onClickRating={onClickRating}
+            ratingBlockedHint={ratingBlockedHint}
             locale={locale}
             onClickUser={onClickUser}
           />
