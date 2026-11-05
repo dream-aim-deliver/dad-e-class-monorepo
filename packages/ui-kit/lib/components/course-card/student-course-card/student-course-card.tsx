@@ -12,6 +12,7 @@ import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../../rich-text-element/renderer';
 import { useImageComponent } from '../../../contexts/image-component-context';
 import { computeTotalDurationMinutes, formatCompactDuration } from '../../../utils/video-duration';
+import { shouldShowRating } from '../../../utils/should-show-rating';
 import { Badge } from '../../badge';
 import { IconGroup } from '../../icons/icon-group';
 import { IconPerson } from '../../icons/icon-person';
@@ -29,6 +30,8 @@ interface StudentCourseCardProps extends TCourseMetadata {
   onBegin?: () => void;
   onResume?: () => void;
   onReview?: () => void;
+  /** Opens existing review display when the student has already rated. */
+  onViewReview?: () => void;
   onDetails?: () => void;
   onClickUser?: () => void;
   groupName?: string;
@@ -92,6 +95,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   onBegin,
   onResume,
   onReview,
+  onViewReview,
   onDetails,
   onClickUser,
   groupName,
@@ -150,6 +154,18 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
       : progress > 0
         ? 'in-progress'
         : 'yet-to-start';
+  const showPublicRating = shouldShowRating(reviewCount);
+  const canRate = progress > 0 && !hasReviewed;
+  const ratingTooltip = dictionary.components.courseCard.rateCourseTooltip;
+  const ratingBlockedHint =
+    progress === 0
+      ? dictionary.components.courseCard.courseNotStartedHint
+      : undefined;
+  const handleRatingActivate = canRate
+    ? onReview
+    : hasReviewed
+      ? onViewReview || onReview
+      : undefined;
 
   return (
     <div className="w-full mx-auto">
@@ -205,7 +221,15 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               </h6>
               
             </div>
-            <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
+            <RatingDisplay
+              rating={rating as number}
+              totalRatings={reviewCount}
+              isRateEntry={!showPublicRating}
+              rateEntryLabel={dictionary.components.courseCard.rateEntryLabel}
+              tooltip={canRate || hasReviewed ? ratingTooltip : undefined}
+              blockedHint={ratingBlockedHint}
+              onActivate={handleRatingActivate}
+            />
 
             <CourseCreator
               creatorName={author?.name as string}

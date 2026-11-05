@@ -21,6 +21,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../utils/use-client-side-pagination';
 import { StudentCourseTab } from '../utils/course-tabs';
+import { mapCourseReviewErrorMessage } from '../utils/map-course-review-error';
 
 interface CoachProfileProps {
 	locale: TLocale;
@@ -118,6 +119,9 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 
 	const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
 	const [reviewError, setReviewError] = useState<boolean>(false);
+	const [reviewErrorMessage, setReviewErrorMessage] = useState<string | undefined>(undefined);
+	const courseCardDictionary = getDictionary(locale).components.courseCard;
+	const reviewModalDictionary = getDictionary(locale).components.reviewModal;
 
 	const { presenter: coachIntroductionPresenter } = useGetCoachIntroductionPresenter(
 		setCoachIntroductionViewModel,
@@ -307,41 +311,64 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						// Success - update UI state
 						setReviewSubmitted(true);
 						setReviewError(false);
+						setReviewErrorMessage(undefined);
 						refetchCoachReviews();
 						refetchCoachCourses();
 					} else {
 						// Business logic failure (e.g., course not found, validation error)
 						setReviewError(true);
 						setReviewSubmitted(false);
+						setReviewErrorMessage(
+							mapCourseReviewErrorMessage(result, {
+								courseNotStarted: courseCardDictionary.courseNotStartedHint,
+								notEnrolled: courseCardDictionary.notEnrolledHint,
+								fallback: reviewModalDictionary.errorState,
+							}),
+						);
 						// Keep modal open so user can retry
 					}
 				},
-					onError: () => {
+					onError: (error) => {
 						// Error occurred during API call (network error, exception, etc.)
 						setReviewError(true);
 						setReviewSubmitted(false);
+						setReviewErrorMessage(
+							mapCourseReviewErrorMessage(error, {
+								courseNotStarted: courseCardDictionary.courseNotStartedHint,
+								notEnrolled: courseCardDictionary.notEnrolledHint,
+								fallback: reviewModalDictionary.errorState,
+							}),
+						);
 					// Keep modal open so user can retry
 				}
 			}
 		);
 	};
 
-	// Handle review functionality - shows modal or snippet based on existing review
+	// Handle review functionality - shows modal or snippet based on existing review / progress
 	const handleReviewAction = (course: CourseWithStatus) => {
 		setReviewingCourse(course);
 		setReviewSubmitted(false);
 		setReviewError(false);
+		setReviewErrorMessage(undefined);
 
-		// Check if the course is completed and has an existing review
-		const isCompleted = course?.status?.status === 'completed';
-		const hasReview = course.studentReview;
+		const status = course?.status?.status;
+		const progress =
+			status === 'inProgress' && 'progress' in course.status
+				? course.status.progress
+				: status === 'completed'
+					? 100
+					: 0;
+		const hasReview = Boolean(course.studentReview);
+		const hasStarted = progress > 0 || status === 'completed';
 
-		if (isCompleted && hasReview) {
-			// Course has been reviewed - show ReviewSnippet
+		if (hasReview) {
 			setShowReviewSnippet(true);
 			setShowReviewModal(false);
-		} else if (isCompleted && !hasReview) {
-			// Course completed but no review - show ReviewModal
+			return;
+		}
+
+		if (hasStarted) {
 			setShowReviewModal(true);
 			setShowReviewSnippet(false);
 		}
@@ -399,6 +426,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 
 			if (isPurchased) {
 				const progress = course.status.status === 'inProgress' ? course.status.progress : 100;
+				const hasReviewed = Boolean(course.studentReview);
 				return (
 					<CourseCard
 						{...baseProps}
@@ -406,6 +434,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						userType="student"
 						sales={course.salesCount}
 						progress={progress}
+						hasReviewed={hasReviewed}
 						onBegin={() => {
 							route.push(`/${locale}/courses/${course.slug}`);
 						}}
@@ -413,6 +442,9 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 							route.push(`/${locale}/courses/${course.slug}?tab=${StudentCourseTab.STUDY}`);
 						}}
 						onReview={() => {
+							handleReviewAction(course);
+						}}
+						onViewReview={() => {
 							handleReviewAction(course);
 						}}
 						onDetails={() => {
@@ -428,6 +460,9 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						userType="visitor"
 						sessions={course.coachingSessionCount}
 						sales={course.salesCount}
+						ratingBlockedHint={
+							isLoggedIn ? courseCardDictionary.notEnrolledHint : undefined
+						}
 						onDetails={() => {
 							route.push(`/${locale}/courses/${course.slug}`);
 						}}
@@ -712,6 +747,7 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 						locale={locale}
 						isLoading={createReviewMutation.isPending}
 						isError={createReviewMutation.isError || reviewError}
+						errorMessage={reviewErrorMessage}
 						submitted={reviewSubmitted}
 					/>
 				</div>

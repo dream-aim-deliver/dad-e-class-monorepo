@@ -26,9 +26,10 @@ import {
     Button,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { mapCourseReviewErrorMessage } from '../utils/map-course-review-error';
 
 interface CourseCompletionProps {
     slug: string;
@@ -115,12 +116,25 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
 
     const utils = trpc.useUtils();
 
+    const courseCardDictionary = getDictionary(locale).components.courseCard;
+    const reviewModalDictionary = getDictionary(locale).components.reviewModal;
+
     // TRPC mutation for creating review with proper callbacks
     const createReviewMutation = trpc.createCourseReview.useMutation({
         onMutate: () => {
             setErrorMessage(undefined);
         },
         onSuccess: (data) => {
+            if (data && 'success' in data && data.success === false) {
+                setErrorMessage(
+                    mapCourseReviewErrorMessage(data, {
+                        courseNotStarted: courseCardDictionary.courseNotStartedHint,
+                        notEnrolled: courseCardDictionary.notEnrolledHint,
+                        fallback: reviewModalDictionary.errorState,
+                    }),
+                );
+                return;
+            }
             setErrorMessage(undefined);
             // @ts-ignore
             courseReviewPresenter.present(data, courseReviewViewModel);
@@ -133,7 +147,13 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
             utils.getStudentCourseReview.invalidate({ courseSlug: slug });
         },
         onError: (error) => {
-            setErrorMessage(error.message);
+            setErrorMessage(
+                mapCourseReviewErrorMessage(error, {
+                    courseNotStarted: courseCardDictionary.courseNotStartedHint,
+                    notEnrolled: courseCardDictionary.notEnrolledHint,
+                    fallback: error.message || reviewModalDictionary.errorState,
+                }),
+            );
         }
     });
 

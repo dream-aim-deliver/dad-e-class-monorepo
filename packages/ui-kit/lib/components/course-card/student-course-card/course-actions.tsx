@@ -19,7 +19,7 @@ interface CourseActionsProps extends isLocalAware{
  *
  * @param onBegin Optional callback function triggered when the "Begin Course" button is clicked. Used when studyProgress is 'yet-to-start'.
  * @param onResume Optional callback function triggered when the "Resume Course" button is clicked. Used when studyProgress is 'in-progress'.
- * @param onReview Optional callback function triggered when the "Review Course" button is clicked. Used when studyProgress is 'completed'.
+ * @param onReview Optional callback function triggered when the "Review Course" button is clicked. Used when progress > 0 (in-progress or completed) and not yet reviewed.
  * @param onDetails Optional callback function triggered when the "Details" button is clicked. Used when studyProgress is 'completed'.
  * @param progress Optional numeric value representing the course completion progress (not directly used in this component but included in props).
  * @param studyProgress The current study progress of the course. Options:
@@ -49,6 +49,7 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
   locale
 }) => {
   const dictionary = getDictionary(locale);
+  const canReview = !hasReviewed && (studyProgress === 'in-progress' || studyProgress === 'completed' || (typeof progress === 'number' && progress > 0));
 
   if (studyProgress === 'completed') {
     return (
@@ -62,7 +63,7 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
           hasIconLeft
         />
         <div className="flex flex-col gap-2">
-          {!hasReviewed && (
+          {canReview && (
             <Button
               className=""
               variant={'primary'}
@@ -83,13 +84,24 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
     );
   } else if (studyProgress === 'in-progress') {
     return (
-      <Button
-        onClick={onResume}
-        className="w-full p-3"
-        variant={'primary'}
-        size={'medium'}
-        text={dictionary.components.courseCard.resumeCourseButton}
-      />
+      <div className="flex flex-col gap-2">
+        <Button
+          onClick={onResume}
+          className="w-full p-3"
+          variant={'primary'}
+          size={'medium'}
+          text={dictionary.components.courseCard.resumeCourseButton}
+        />
+        {canReview && (
+          <Button
+            onClick={onReview}
+            className="w-full p-3"
+            variant={'secondary'}
+            size={'medium'}
+            text={dictionary.components.courseCard.reviewCourseButton}
+          />
+        )}
+      </div>
     );
   }
 

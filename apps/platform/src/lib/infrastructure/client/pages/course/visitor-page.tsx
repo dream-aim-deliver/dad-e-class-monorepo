@@ -26,7 +26,7 @@ import { TPrepareCheckoutRequest, TPrepareCheckoutUseCaseResponse } from '@dream
 import { useState, useEffect, useCallback, } from 'react';
 import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
 import { useGetCoachingPagePresenter } from '../../hooks/use-get-coaching-page-presenter';
 import { useGetPublicCourseDetailsPresenter } from '../../hooks/use-public-course-details-presenter';
@@ -462,6 +462,11 @@ function VisitorPageContent({
                             }),
                         )}
                         onClickRequiredCourse={handleClickRequiredCourse}
+                        ratingBlockedHint={
+                            isLoggedIn
+                                ? getDictionary(locale).components.courseCard.notEnrolledHint
+                                : undefined
+                        }
                         locale={locale}
                     />
                 );

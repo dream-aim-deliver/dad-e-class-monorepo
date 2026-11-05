@@ -345,6 +345,8 @@ export const DictionarySchema = z.object({
       yourReview: z.string(),
       thankYouText: z.string(),
       errorState: z.string(),
+      courseHint: z.string(),
+      coachingHint: z.string(),
     }),
     courseCard: z.object({
       courseEmptyState: z.object({
@@ -366,6 +368,10 @@ export const DictionarySchema = z.object({
       detailsCourseButton: z.string(),
       buyButton: z.string(),
       fromButton: z.string(),
+      rateCourseTooltip: z.string(),
+      rateEntryLabel: z.string(),
+      courseNotStartedHint: z.string(),
+      notEnrolledHint: z.string(),
       publishedBadge: z.string(),
       underReviewBadge: z.string(),
       draftBadge: z.string(),
