@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act, render } from '@testing-library/react';
 
 // Mock @next/third-parties/google so we don't actually load GTM in tests.
-const GtmMock = vi.fn(() => null);
+const GtmMock = vi.fn<(props: { gtmId: string }) => null>(() => null);
 vi.mock('@next/third-parties/google', () => ({
     GoogleTagManager: (props: { gtmId: string }) => GtmMock(props),
 }));
@@ -17,9 +17,10 @@ import {
     type TConsentState,
 } from '../../src/lib/infrastructure/client/analytics/types';
 
+// `dataLayer` is declared globally by @next/third-parties as `Object[]`;
+// redeclaring it with another element type is TS2717.
 declare global {
     interface Window {
-        dataLayer?: unknown[];
         gtag?: (...args: unknown[]) => void;
     }
 }
