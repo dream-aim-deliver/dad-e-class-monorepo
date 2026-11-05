@@ -7,6 +7,10 @@
   "tags": [],
   "// targets": "to see all targets run: nx show project cms --web",
   "targets": {
+    "build": {
+      "// dependsOn": "Nx 24 infers ^typecheck for next build; keep the pre-upgrade ^build-only chain (ui-kit typecheck has pre-existing story errors)",
+      "dependsOn": ["^build"]
+    },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
