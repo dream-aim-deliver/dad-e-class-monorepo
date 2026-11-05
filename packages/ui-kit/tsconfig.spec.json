@@ -12,7 +12,8 @@
             "vitest",
             "@testing-library/jest-dom"
         ],
-        "ignoreDeprecations": "6.0"
+        "ignoreDeprecations": "6.0",
+        "rootDir": "."
     },
     "include": [
         "vite.config.ts",
