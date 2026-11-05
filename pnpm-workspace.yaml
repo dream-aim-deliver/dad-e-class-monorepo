@@ -2,11 +2,21 @@ packages:
   - 'packages/*'
   - 'apps/*'
 overrides:
-  '@types/react': 19.2.14
-  '@types/react-dom': 19.2.3
+  '@types/react': 19.3.0
+  '@types/react-dom': 19.3.0
   jspdf: ^4.2.1
-  handlebars: ^4.7.9
-  protobufjs: ^7.5.5
+  handlebars: ^4.7.10
+  protobufjs: ^7.6.5
+  '@opentelemetry/core@2': ^2.12.0
+  '@opentelemetry/propagator-jaeger@2': ^2.12.0
+  axios: ^1.21.0
+  brace-expansion@5: ^5.0.12
+  fastify: ^5.12.8
+  follow-redirects: ^1.16.2
+  smol-toml: ^1.9.1
+  tinypool: ^2.1.2
+  typescript: 5.9.3
+  uuid@<11.1.1: ^11.1.1
 minimumReleaseAgeExclude:
   - '@dream-aim-deliver/*'
 allowBuilds:
@@ -14,6 +24,7 @@ allowBuilds:
   '@swc/core': true
   core-js: true
   esbuild: true
+  less: false
   nx: true
   protobufjs: true
   sharp: true
