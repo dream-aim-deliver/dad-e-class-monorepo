@@ -9,6 +9,7 @@ import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import SkillBadges from '../skill-badges';
 import { IconAccountInformation, IconTrashAlt } from '../icons';
 import { IconCalendarAvailability } from '../icons/icon-calendar-availability';
+import { shouldShowRating } from '../../utils/should-show-rating';
 
 interface Course {
   image: string;
@@ -34,6 +35,8 @@ type BaseCoachCardProps = {
   onClickCourse?: (slug: string) => void;
   className?: string;
   locale: TLocale;
+  /** When true (public listings), hide ratings below the min-reviews threshold. */
+  isPublicView?: boolean;
 };
 
 type CoachVariantProps = BaseCoachCardProps & {
@@ -72,7 +75,7 @@ export type CoachCardProps = CoachVariantProps | CourseCreatorVariantProps | Def
  * */
 
 const CoachCard: FC<CoachCardProps> = (props) => {
-  const { cardDetails, onClickCourse, className, locale, variant = 'student' } = props;
+  const { cardDetails, onClickCourse, className, locale, variant = 'student', isPublicView = false } = props;
 
   // Type-safe extraction of variant-specific props
   const onClickViewProfile = props.onClickViewProfile;
@@ -82,6 +85,7 @@ const CoachCard: FC<CoachCardProps> = (props) => {
   if (!cardDetails) return null; // Prevents errors if cardDetails is undefined
 
   const dictionary = getDictionary(locale);
+  const showRating = !isPublicView || shouldShowRating(cardDetails.totalRatings);
 
   return (
     <div
@@ -97,7 +101,9 @@ const CoachCard: FC<CoachCardProps> = (props) => {
           <UserAvatar fullName={cardDetails.coachName} className="w-10 h-10 rounded-full flex-shrink-0" imageUrl={cardDetails.coachImage} />
           <div className="flex flex-col min-w-0 gap-1">
             <p className="text-color-text-primary text-white text-sm md:text-md leading-4 font-bold truncate">{cardDetails.coachName}</p>
-            <RatingDisplay rating={cardDetails.rating} totalRatings={cardDetails.totalRatings} />
+            {showRating && (
+              <RatingDisplay rating={cardDetails.rating} totalRatings={cardDetails.totalRatings} />
+            )}
           </div>
         </div>
 
