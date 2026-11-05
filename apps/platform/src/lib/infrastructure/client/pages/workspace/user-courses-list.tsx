@@ -126,6 +126,49 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
     const limitedCourses = maxItems ? displayedCourses.slice(0, maxItems) : displayedCourses;
     const showLoadMore = maxItems ? false : hasMoreCourses;
 
+    const { data: viewedReviewResponse } = trpc.getStudentCourseReview.useQuery(
+        { courseSlug: viewedReviewSlug ?? '' },
+        { enabled: Boolean(viewedReviewSlug) },
+    );
+    const viewedReview =
+        viewedReviewResponse &&
+        'success' in viewedReviewResponse &&
+        viewedReviewResponse.success &&
+        viewedReviewResponse.data?.review
+            ? viewedReviewResponse.data.review
+            : null;
+
+    const onCourseVisit = (courseSlug: string) => {
+        router.push(`/${locale}/courses/${courseSlug}`);
+    };
+
+    const onCourseEdit = (courseSlug: string) => {
+        router.push(`/${locale}/edit/course/${courseSlug}`);
+    };
+
+    const onClickUser = (username: string) => {
+        router.push(`/${locale}/coaches/${username}`);
+    };
+
+    const onReviewCourse = (courseSlug: string, courseTitle: string) => {
+        setSelectedCourseForReview({ courseSlug, courseTitle });
+        setReviewModalOpen(true);
+    };
+
+    const onViewReview = (courseSlug: string) => {
+        setViewedReviewSlug(courseSlug);
+    };
+
+    const handleReviewSubmit = (rating: number, review: string) => {
+        if (!selectedCourseForReview) return;
+
+        createReviewMutation.mutate({
+            courseSlug: selectedCourseForReview.courseSlug,
+            rating,
+            review,
+        });
+    };
+
     if (!coursesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
@@ -154,49 +197,6 @@ export default function UserCoursesList({ maxItems }: UserCoursesListProps = {})
             </div>
         );
     }
-
-    const onCourseVisit = (courseSlug: string) => {
-        router.push(`/${locale}/courses/${courseSlug}`);
-    };
-
-    const onCourseEdit = (courseSlug: string) => {
-        router.push(`/${locale}/edit/course/${courseSlug}`);
-    };
-
-    const onClickUser = (username: string) => {
-        router.push(`/${locale}/coaches/${username}`);
-    };
-
-    const onReviewCourse = (courseSlug: string, courseTitle: string) => {
-        setSelectedCourseForReview({ courseSlug, courseTitle });
-        setReviewModalOpen(true);
-    };
-
-    const onViewReview = (courseSlug: string) => {
-        setViewedReviewSlug(courseSlug);
-    };
-
-    const { data: viewedReviewResponse } = trpc.getStudentCourseReview.useQuery(
-        { courseSlug: viewedReviewSlug ?? '' },
-        { enabled: Boolean(viewedReviewSlug) },
-    );
-    const viewedReview =
-        viewedReviewResponse &&
-        'success' in viewedReviewResponse &&
-        viewedReviewResponse.success &&
-        viewedReviewResponse.data?.review
-            ? viewedReviewResponse.data.review
-            : null;
-
-    const handleReviewSubmit = (rating: number, review: string) => {
-        if (!selectedCourseForReview) return;
-
-        createReviewMutation.mutate({
-            courseSlug: selectedCourseForReview.courseSlug,
-            rating,
-            review,
-        });
-    };
 
     return (
         <div className="flex flex-col space-y-2 mt-6 pb-15">

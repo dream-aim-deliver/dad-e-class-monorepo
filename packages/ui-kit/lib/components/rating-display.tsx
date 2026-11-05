@@ -61,7 +61,7 @@ export const RatingDisplay = ({
           rating={displayRating}
           onActivate={isInteractive ? handleActivate : undefined}
           tooltip={tooltip}
-          ariaLabel={tooltip}
+          ariaLabel={tooltip || rateEntryLabel || blockedHint}
         />
         {isRateEntry ? (
           rateEntryLabel ? (

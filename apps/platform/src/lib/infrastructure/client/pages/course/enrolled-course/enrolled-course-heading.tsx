@@ -1,6 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetStudentCourseReviewPresenter } from '../../../hooks/use-get-student-course-review-presenter';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import {
     Badge,
     Button,
@@ -11,7 +11,10 @@ import {
     IconTrashAlt,
     IconLoaderSpinner,
     StarRating,
+    RatingDisplay,
     ReviewCard,
+    ReviewDialog,
+    ReviewDisplay,
     PaginatedCertificate,
     PaginatedCertificateHandle,
     DefaultError,
@@ -25,6 +28,7 @@ import { useMemo, useState, useRef, Suspense } from 'react';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/cms-client';
 import StudentGroupButton from './student-group-button';
+import { mapCourseReviewErrorMessage } from '../../../utils/map-course-review-error';
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -64,12 +68,38 @@ export default function EnrolledCourseHeading({
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const utils = trpc.useUtils();
+    const courseCardDictionary = getDictionary(locale).components.courseCard;
+    const reviewModalDictionary = getDictionary(locale).components.reviewModal;
+    const [reviewErrorMessage, setReviewErrorMessage] = useState<string | undefined>(undefined);
+    const [showStarReviewModal, setShowStarReviewModal] = useState(false);
+    const [showStarReviewDisplay, setShowStarReviewDisplay] = useState(false);
     const createReviewMutation = trpc.createCourseReview.useMutation({
-        onSuccess: () => {
+        onSuccess: (result) => {
+            if (result && 'success' in result && result.success === false) {
+                setReviewErrorMessage(
+                    mapCourseReviewErrorMessage(result, {
+                        courseNotStarted: courseCardDictionary.courseNotStartedHint,
+                        notEnrolled: courseCardDictionary.notEnrolledHint,
+                        fallback: reviewModalDictionary.errorState,
+                    }),
+                );
+                return;
+            }
+            setReviewErrorMessage(undefined);
+            setShowStarReviewModal(false);
             // Invalidate course details to refresh review stats
             utils.getEnrolledCourseDetails.invalidate({ courseSlug });
             // Invalidate existing review query to update the submitted state
             utils.getStudentCourseReview.invalidate({ courseSlug });
+        },
+        onError: (error) => {
+            setReviewErrorMessage(
+                mapCourseReviewErrorMessage(error, {
+                    courseNotStarted: courseCardDictionary.courseNotStartedHint,
+                    notEnrolled: courseCardDictionary.notEnrolledHint,
+                    fallback: error.message || reviewModalDictionary.errorState,
+                }),
+            );
         },
     });
 
@@ -166,11 +196,26 @@ export default function EnrolledCourseHeading({
 
 
     const handleReviewSubmit = (rating: number, review: string) => {
+        setReviewErrorMessage(undefined);
         createReviewMutation.mutate({
             courseSlug,
             rating,
             review,
         });
+    };
+
+    const progressValue =
+        isCompleted ? 100 : hasProgress ? (progressPercent ?? 0) : 0;
+    const canRateFromStars =
+        currentRole === 'student' && progressValue > 0 && !hasExistingReview;
+    const handleStarRatingActivate = () => {
+        if (hasExistingReview) {
+            setShowStarReviewDisplay(true);
+            return;
+        }
+        if (canRateFromStars) {
+            setShowStarReviewModal(true);
+        }
     };
 
 
@@ -205,7 +250,8 @@ export default function EnrolledCourseHeading({
                                 locale={locale}
                                 onSubmit={handleReviewSubmit}
                                 isLoading={createReviewMutation.isPending}
-                                isError={createReviewMutation.isError}
+                                isError={Boolean(reviewErrorMessage) || createReviewMutation.isError}
+                                errorMessage={reviewErrorMessage}
                                 submitted={createReviewMutation.isSuccess}
                                 showSkipButton={false}
                             />
@@ -342,18 +388,25 @@ export default function EnrolledCourseHeading({
                                     />
                                 )}
                             </div>
-                            <div className="flex space-x-2 items-center">
-                                <StarRating
-                                    totalStars={5}
-                                    rating={courseViewModel.data.averageRating}
-                                />
-                                <span className="text-text-primary">
-                                    {courseViewModel.data.averageRating}
-                                </span>
-                                <span className="text-sm text-text-secondary">
-                                    ({courseViewModel.data.reviewCount})
-                                </span>
-                            </div>
+                            <RatingDisplay
+                                rating={courseViewModel.data.averageRating}
+                                totalRatings={courseViewModel.data.reviewCount}
+                                tooltip={
+                                    canRateFromStars || hasExistingReview
+                                        ? courseCardDictionary.rateCourseTooltip
+                                        : undefined
+                                }
+                                blockedHint={
+                                    currentRole === 'student' && progressValue === 0
+                                        ? courseCardDictionary.courseNotStartedHint
+                                        : undefined
+                                }
+                                onActivate={
+                                    canRateFromStars || hasExistingReview
+                                        ? handleStarRatingActivate
+                                        : undefined
+                                }
+                            />
                         </div>
                         <div className="flex items-center gap-2">
                             {isCompleted ? (
@@ -421,6 +474,35 @@ export default function EnrolledCourseHeading({
 
                 </div>
             </div>
+
+            {showStarReviewModal && (
+                <ReviewDialog
+                    isOpen={showStarReviewModal}
+                    onOpenChange={setShowStarReviewModal}
+                    modalType="course"
+                    locale={locale}
+                    onSubmit={handleReviewSubmit}
+                    onClose={() => setShowStarReviewModal(false)}
+                    isLoading={createReviewMutation.isPending}
+                    isError={Boolean(reviewErrorMessage) || createReviewMutation.isError}
+                    errorMessage={reviewErrorMessage}
+                    showSkipButton={false}
+                />
+            )}
+
+            {showStarReviewDisplay &&
+                hasExistingReview &&
+                existingReviewViewModel?.mode === 'default' &&
+                existingReviewViewModel.data?.review && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm">
+                        <ReviewDisplay
+                            reviewText={existingReviewViewModel.data.review.review || ''}
+                            rating={existingReviewViewModel.data.review.rating}
+                            onClose={() => setShowStarReviewDisplay(false)}
+                            locale={locale}
+                        />
+                    </div>
+                )}
 
             {/* Missing student data modal */}
             <Dialog open={showMissingDataModal} onOpenChange={setShowMissingDataModal} defaultOpen={false}>

@@ -22,7 +22,7 @@ import {
   computeTotalDurationMinutes,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -747,6 +747,11 @@ export default function Package({ packageId }: PackageProps) {
               onClickUser={() => handleCourseAuthorClick(course.id.toString())}
               onClickDetails={() => handleCourseDetails(course.id.toString())}
               onClickIncludeExclude={() => handleIncludeExclude(course.id.toString())}
+              ratingBlockedHint={
+                isLoggedIn
+                  ? getDictionary(currentLocale).components.courseCard.notEnrolledHint
+                  : undefined
+              }
               locale={currentLocale}
                 />
           );
