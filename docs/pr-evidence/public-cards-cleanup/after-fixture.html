@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Public cards cleanup — after fixture</title>
+  <style>
+    :root {
+      --bg: #141414;
+      --card: #1c1c1c;
+      --stroke: #333;
+      --text: #f5f5f5;
+      --muted: #a3a3a3;
+      --accent: #f5a623;
+      --btn: #ff8a00;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 32px;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg); color: var(--text);
+    }
+    h1 { font-size: 22px; margin: 0 0 8px; }
+    .note { color: var(--muted); font-size: 13px; margin-bottom: 28px; max-width: 720px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 320px); gap: 20px; }
+    .card {
+      background: var(--card); border: 1px solid var(--stroke);
+      border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+      min-height: 420px;
+    }
+    .img { height: 140px; background: #2a2a2a; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; }
+    .body { padding: 16px; display:flex; flex-direction:column; gap: 10px; flex:1; }
+    .title { font-weight: 700; font-size: 15px; }
+    /* Platform accent — same orange as primary buttons */
+    .stars { color: var(--btn); font-size: 13px; letter-spacing: 0.02em; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .creator { display:flex; align-items:center; gap:8px; font-size:13px; color: var(--accent); }
+    .avatar { width: 22px; height:22px; border-radius:50%; background:#555; }
+    .stats { display:flex; flex-direction:column; gap:8px; font-size:13px; color:var(--muted); }
+    .row { display:flex; gap:14px; }
+    .btn {
+      display:block; width:100%; text-align:center; padding:10px 12px;
+      border-radius:8px; font-weight:600; font-size:14px; border:none; cursor:default;
+    }
+    .btn-secondary { background: transparent; color: var(--accent); border:1px solid var(--accent); }
+    .btn-primary { background: var(--btn); color: #111; margin-top:8px; }
+    .actions { margin-top:auto; }
+    .label { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:8px; }
+    .section { margin-bottom: 36px; }
+    .coach-header { display:flex; gap:16px; align-items:center; margin-bottom:16px; }
+    .coach-header .big { width:64px; height:64px; border-radius:50%; background:#444; }
+    .badge { display:inline-block; background:#264a6e; color:#9fd; padding:2px 8px; border-radius:6px; font-size:12px; margin-left:8px; }
+    .internal .sales { color: var(--text); }
+  </style>
+</head>
+<body>
+  <h1>After — Public cards cleanup (fixture)</h1>
+  <p class="note">
+    Local platform stack not runnable here (no node_modules / GH Packages token).
+    Intended public UI: no sales, no CourseCreator row (label + avatar + name),
+    ratings only when reviewCount ≥ 1, DE price prefix «ab», price-0 hides price button.
+    Stars use the platform button orange. Internal creator card still shows sales + creator.
+  </p>
+
+  <div class="section">
+    <div class="label">Public visitor cards</div>
+    <div class="grid">
+      <!-- Card with reviews ≥ 1 — no creator row -->
+      <div class="card">
+        <div class="img">Course image</div>
+        <div class="body">
+          <div class="title">Positionierung &amp; Briefing</div>
+          <div class="stars">★★★★★ 5 (1)</div>
+          <div class="stats">
+            <div class="row"><span>🌐 DE</span><span>2 Coaching-Sitzung(en)</span></div>
+            <div class="row"><span>⏱ 32m</span></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary">Zum Angebot</button>
+            <button class="btn btn-primary">ab CHF 75</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card with 0 reviews — no stars, no creator -->
+      <div class="card">
+        <div class="img">Course image</div>
+        <div class="body">
+          <div class="title">Creative Idea</div>
+          <div class="stats">
+            <div class="row"><span>🌐 DE</span></div>
+            <div class="row"><span>⏱ 29m</span></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary">Zum Angebot</button>
+            <button class="btn btn-primary">ab CHF 75</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price 0 — only Zum Angebot -->
+      <div class="card">
+        <div class="img">Course image</div>
+        <div class="body">
+          <div class="title">Gratis Kickoff</div>
+          <div class="stats">
+            <div class="row"><span>🌐 DE</span></div>
+            <div class="row"><span>⏱ 15m</span></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary">Zum Angebot</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Coach profile header — 0 reviews (stars hidden) vs ≥1</div>
+    <div class="coach-header">
+      <div class="big"></div>
+      <div>
+        <div style="font-size:28px;font-weight:700;">Kim Sokola <span class="badge">Coach</span></div>
+        <div class="muted">0 reviews → stars hidden</div>
+      </div>
+    </div>
+    <div class="coach-header">
+      <div class="big"></div>
+      <div>
+        <div style="font-size:28px;font-weight:700;">Coach With Reviews <span class="badge">Coach</span></div>
+        <div class="stars">★★★★★ 4.8 (12)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Internal creator card — sales + creator still visible</div>
+    <div class="grid">
+      <div class="card internal">
+        <div class="img">Course image</div>
+        <div class="body">
+          <div class="title">Positionierung &amp; Briefing (Creator)</div>
+          <div class="stars">★★★★★ 5 (1)</div>
+          <div class="creator"><span class="avatar"></span> Erstellt von · Du</div>
+          <div class="stats">
+            <div class="row"><span>🌐 DE</span><span>2 Coaching-Sitzung(en)</span></div>
+            <div class="row sales"><span>⏱ 32m</span><span>🏷 3 Verkäufe</span></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary">Kurs bearbeiten</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

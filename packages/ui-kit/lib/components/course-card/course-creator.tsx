@@ -9,6 +9,8 @@ interface CourseCreatorProps extends isLocalAware {
   imageUrl?: string;
   you?: boolean;
   onClickUser?: () => void;
+  /** When true (public cards), hide the entire creator row (label, avatar, name). */
+  isPublicView?: boolean;
 }
 
 /**
@@ -33,9 +35,15 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
   you = false,
   imageUrl,
   onClickUser,
-  locale
+  locale,
+  isPublicView = false,
 }) => {
   const dictionary = getDictionary(locale);
+
+  if (isPublicView) {
+    return null;
+  }
+
   return (
     <div className="flex flex-wrap items-center gap-1 min-h-[32px] w-full">
       <div className="flex items-center gap-1 text-sm text-text-secondary">

@@ -27,6 +27,8 @@ export interface CourseStatsProps extends isLocalAware{
   duration: string;
   sales: number;
   sessionLabelVariant?: 'total' | 'available';
+  /** When true (public cards/pages), hide sales so duration stands alone. */
+  isPublicView?: boolean;
 }
 
 /**
@@ -54,6 +56,7 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
   sales,
   locale,
   sessionLabelVariant,
+  isPublicView = false,
 }) => {
   const dictionary = getDictionary(locale);
 
@@ -82,16 +85,20 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
       : []),
   ];
 
-  // Second row: Duration and Sales
+  // Second row: Duration (+ Sales on internal views only)
   const secondRowStats = [
     {
       icon: <IconClock classNames="text-text-secondary" size="5" />,
       text: duration,
     },
-    {
-      icon: <IconSales classNames="text-text-secondary" size="5" />,
-      text: `${sales} ${sales === 1 ? dictionary.components.courseCard.sale : dictionary.components.courseCard.sales}`,
-    },
+    ...(!isPublicView
+      ? [
+          {
+            icon: <IconSales classNames="text-text-secondary" size="5" />,
+            text: `${sales} ${sales === 1 ? dictionary.components.courseCard.sale : dictionary.components.courseCard.sales}`,
+          },
+        ]
+      : []),
   ];
 
   return (

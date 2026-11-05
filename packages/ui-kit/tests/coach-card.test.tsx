@@ -70,4 +70,27 @@ describe('CoachCard Component', () => {
     fireEvent.click(bookSessionButton);
     expect(mockBookSession).toHaveBeenCalledTimes(1); // ✅ Now it works!
   });
+
+  it('hides ratings on public view when review count is below the minimum', () => {
+    render(
+      <CoachCard
+        cardDetails={{ ...mockCoachDetails, totalRatings: 0 }}
+        locale="en"
+        isPublicView
+      />
+    );
+
+    expect(screen.queryByText('(0)')).not.toBeInTheDocument();
+  });
+
+  it('keeps ratings on internal view even with zero reviews', () => {
+    render(
+      <CoachCard
+        cardDetails={{ ...mockCoachDetails, totalRatings: 0 }}
+        locale="en"
+      />
+    );
+
+    expect(screen.getByText('(0)')).toBeInTheDocument();
+  });
 });

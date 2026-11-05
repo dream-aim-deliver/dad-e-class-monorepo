@@ -11,6 +11,7 @@ import { PackageCourseActions } from './package-course-actions';
 import { cn } from "../../../utils/style-utils";
 import { useImageComponent } from '../../../contexts/image-component-context';
 import { computeTotalDurationMinutes, formatCompactDuration } from '../../../utils/video-duration';
+import { shouldShowRating } from '../../../utils/should-show-rating';
 import RichTextRenderer from '../../rich-text-element/renderer';
 
 
@@ -133,13 +134,16 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
                         </h6>
 
                     </div>
-                    <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
+                    {shouldShowRating(reviewCount) && (
+                        <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
+                    )}
 
                     <CourseCreator
                         creatorName={author?.name as string}
                         imageUrl={author?.image}
                         locale={locale as TLocale}
                         onClickUser={onClickUser}
+                        isPublicView
                     />
 
                     <CourseStats
@@ -148,6 +152,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
                         sessions={coachingSessionCount ?? 0}
                         duration={formattedDuration}
                         sales={sales}
+                        isPublicView
                     />
 
                     {description && (

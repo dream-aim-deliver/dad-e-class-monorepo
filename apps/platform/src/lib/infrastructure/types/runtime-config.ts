@@ -17,4 +17,6 @@ export interface RuntimeConfig {
     // Google Search Console site verification token. Optional — unset means no meta tag.
     NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?: string;
     NEXT_PUBLIC_LOGO_HREF?: string;
+    /** Min review count before stars+count show on public cards/pages. Default 1. */
+    NEXT_PUBLIC_MIN_REVIEWS_TO_SHOW?: number;
 }

@@ -248,7 +248,7 @@ export const DE: TDictionary = {
       publishedBadge: 'Veröffentlicht',
       underReviewBadge: 'In Bearbeitung',
       buyButton: 'Kaufen',
-      fromButton: 'von',
+      fromButton: 'ab',
       draftBadge: 'Entwurf',
       completedBadge: 'Kurs abgeschlossen',
       cochingSession: 'Coaching-Sitzung(en) gesamt',
