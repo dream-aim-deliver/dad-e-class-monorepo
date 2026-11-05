@@ -169,6 +169,10 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, locale, noRowsMessage, ..
           onPaginationChanged={onPaginationChanged}
           loadingOverlayComponent={() => <div>{dictionary.loading}</div>}
           noRowsOverlayComponent={() => <div>{noRowsMessage || dictionary.noRows}</div>}
+          // AG Grid 35+ shows a hard-coded English "No Matching Rows" overlay when
+          // filters hide every row; the grids always report an external filter, so
+          // suppress it to keep the pre-36 behaviour of an empty grid.
+          suppressOverlays={['noMatchingRows']}
         />
       </div>
       <SimplePaginationPanel
