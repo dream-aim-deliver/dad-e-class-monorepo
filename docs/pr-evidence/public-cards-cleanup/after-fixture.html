@@ -30,7 +30,8 @@
     .img { height: 140px; background: #2a2a2a; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; }
     .body { padding: 16px; display:flex; flex-direction:column; gap: 10px; flex:1; }
     .title { font-weight: 700; font-size: 15px; }
-    .stars { color: gold; font-size: 13px; }
+    /* Platform accent — same orange as primary buttons */
+    .stars { color: var(--btn); font-size: 13px; letter-spacing: 0.02em; }
     .muted { color: var(--muted); font-size: 13px; }
     .creator { display:flex; align-items:center; gap:8px; font-size:13px; color: var(--accent); }
     .avatar { width: 22px; height:22px; border-radius:50%; background:#555; }
@@ -55,21 +56,20 @@
   <h1>After — Public cards cleanup (fixture)</h1>
   <p class="note">
     Local platform stack not runnable here (no node_modules / GH Packages token).
-    This fixture mirrors the intended public UI after the PR: no sales, no «Erstellt von» label,
+    Intended public UI: no sales, no CourseCreator row (label + avatar + name),
     ratings only when reviewCount ≥ 1, DE price prefix «ab», price-0 hides price button.
-    Internal creator card still shows sales.
+    Stars use the platform button orange. Internal creator card still shows sales + creator.
   </p>
 
   <div class="section">
     <div class="label">Public visitor cards</div>
     <div class="grid">
-      <!-- Card with reviews ≥ 1 -->
+      <!-- Card with reviews ≥ 1 — no creator row -->
       <div class="card">
         <div class="img">Course image</div>
         <div class="body">
           <div class="title">Positionierung &amp; Briefing</div>
           <div class="stars">★★★★★ 5 (1)</div>
-          <div class="creator"><span class="avatar"></span> Conny Wehrli</div>
           <div class="stats">
             <div class="row"><span>🌐 DE</span><span>2 Coaching-Sitzung(en)</span></div>
             <div class="row"><span>⏱ 32m</span></div>
@@ -81,13 +81,11 @@
         </div>
       </div>
 
-      <!-- Card with 0 reviews — no stars -->
+      <!-- Card with 0 reviews — no stars, no creator -->
       <div class="card">
         <div class="img">Course image</div>
         <div class="body">
           <div class="title">Creative Idea</div>
-          <!-- no stars -->
-          <div class="creator"><span class="avatar"></span> Conny Wehrli</div>
           <div class="stats">
             <div class="row"><span>🌐 DE</span></div>
             <div class="row"><span>⏱ 29m</span></div>
@@ -104,14 +102,12 @@
         <div class="img">Course image</div>
         <div class="body">
           <div class="title">Gratis Kickoff</div>
-          <div class="creator"><span class="avatar"></span> Conny Wehrli</div>
           <div class="stats">
             <div class="row"><span>🌐 DE</span></div>
             <div class="row"><span>⏱ 15m</span></div>
           </div>
           <div class="actions">
             <button class="btn btn-secondary">Zum Angebot</button>
-            <!-- price button hidden -->
           </div>
         </div>
       </div>
@@ -124,7 +120,6 @@
       <div class="big"></div>
       <div>
         <div style="font-size:28px;font-weight:700;">Kim Sokola <span class="badge">Coach</span></div>
-        <!-- 0 reviews: no stars row -->
         <div class="muted">0 reviews → stars hidden</div>
       </div>
     </div>
@@ -138,14 +133,14 @@
   </div>
 
   <div class="section">
-    <div class="label">Internal creator card — sales still visible</div>
+    <div class="label">Internal creator card — sales + creator still visible</div>
     <div class="grid">
       <div class="card internal">
         <div class="img">Course image</div>
         <div class="body">
           <div class="title">Positionierung &amp; Briefing (Creator)</div>
           <div class="stars">★★★★★ 5 (1)</div>
-          <div class="muted">Erstellt von · Du</div>
+          <div class="creator"><span class="avatar"></span> Erstellt von · Du</div>
           <div class="stats">
             <div class="row"><span>🌐 DE</span><span>2 Coaching-Sitzung(en)</span></div>
             <div class="row sales"><span>⏱ 32m</span><span>🏷 3 Verkäufe</span></div>

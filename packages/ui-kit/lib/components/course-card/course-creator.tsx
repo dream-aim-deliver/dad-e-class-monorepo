@@ -9,7 +9,7 @@ interface CourseCreatorProps extends isLocalAware {
   imageUrl?: string;
   you?: boolean;
   onClickUser?: () => void;
-  /** When true (public cards), hide the «Erstellt von» / «Created by» label. */
+  /** When true (public cards), hide the entire creator row (label, avatar, name). */
   isPublicView?: boolean;
 }
 
@@ -39,14 +39,17 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
   isPublicView = false,
 }) => {
   const dictionary = getDictionary(locale);
+
+  if (isPublicView) {
+    return null;
+  }
+
   return (
     <div className="flex flex-wrap items-center gap-1 min-h-[32px] w-full">
-      {!isPublicView && (
-        <div className="flex items-center gap-1 text-sm text-text-secondary">
-          <IconCoachingOffer size='5' data-testid="briefcase-icon" />
-          <span>{dictionary.components.courseCard.createdBy}</span>
-        </div>
-      )}
+      <div className="flex items-center gap-1 text-sm text-text-secondary">
+        <IconCoachingOffer size='5' data-testid="briefcase-icon" />
+        <span>{dictionary.components.courseCard.createdBy}</span>
+      </div>
       {!you ? (
         <Button
           size="small"

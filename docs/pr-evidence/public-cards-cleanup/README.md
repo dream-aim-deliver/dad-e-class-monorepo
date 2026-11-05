@@ -17,3 +17,8 @@ Full-resolution PNGs also in Project store `media/public-cards-pr/`.
 Local platform stack could not be started on this Mac (no `node_modules` / GH Packages token).
 
 - `after-fixture.html` / `after-fixture.png` — intended public UI after this PR
+  - no CourseCreator row (label + avatar + name)
+  - no sales; duration alone
+  - stars only when reviews ≥ 1, drawn in platform button orange
+  - `ab` price prefix; price 0 → only «Zum Angebot»
+  - internal creator card still shows sales + creator
