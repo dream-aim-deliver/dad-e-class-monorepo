@@ -465,11 +465,11 @@ importers:
         specifier: 16.3.3
         version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       ag-grid-community:
-        specifier: ^33.3.2
-        version: 33.3.2
+        specifier: ^36.3.0
+        version: 36.3.0
       ag-grid-react:
-        specifier: ^33.3.2
-        version: 33.3.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^36.3.0
+        version: 36.3.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -498,14 +498,14 @@ importers:
         specifier: ^20.1.4
         version: 20.1.4(@types/react@19.3.0)(react@19.3.1)
       slate:
-        specifier: ^0.112.0
-        version: 0.112.0
+        specifier: ^0.147.4
+        version: 0.147.4
       slate-history:
-        specifier: ^0.110.3
-        version: 0.110.3(slate@0.112.0)
+        specifier: ^0.144.0
+        version: 0.144.0(slate@0.147.4)
       slate-react:
-        specifier: ^0.112.1
-        version: 0.112.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(slate-dom@0.112.2(slate@0.112.0))(slate@0.112.0)
+        specifier: ^0.147.5
+        version: 0.147.5(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(slate-dom@0.147.3(slate@0.147.4))(slate@0.147.4)
       spark-md5:
         specifier: ^3.0.2
         version: 3.0.2
@@ -4962,17 +4962,20 @@ packages:
     resolution: {integrity: sha512-XNAb/a6TCqou+TufU8/u11HCu9x1gYvOoxLwtlXgIqmkrYQADVv6ljyW2zwiPhHz9R1gItAWpuDrdJMmrOBFEA==}
     engines: {node: '>= 16.0.0'}
 
-  ag-charts-types@11.3.2:
-    resolution: {integrity: sha512-trPGqgGYiTeLgtf9nLuztDYOPOFOLbqHn1g2D99phf7QowcwdX0TPx0wfWG8Hm90LjB8IH+G2s3AZe2vrdAtMQ==}
+  ag-charts-types@14.3.0:
+    resolution: {integrity: sha512-6VtzUYBKN5mFY24/Eye3RUn1AAq7s+/B4hEu83ZOK/Pjqx26tHq2MoxiXlBE8F7oQO0VpjV5rZZaw6wxSpMNJg==}
 
-  ag-grid-community@33.3.2:
-    resolution: {integrity: sha512-9bx0e/+ykOyLvUxHqmdy0cRVANH6JAtv0yZdnBZEXYYqBAwN+G5a4NY+2I1KvoOCYzbk8SnStG7y4hCdVAAWOQ==}
+  ag-grid-community@36.3.0:
+    resolution: {integrity: sha512-0JRaIwE82TuOcx+upA3OnTyhDAIUDqrMxLoBib6yVON0SyfICdpOnwD4QdiT0A1lgrC8SkzLBFRst73bTREF6Q==}
 
-  ag-grid-react@33.3.2:
-    resolution: {integrity: sha512-5bv4JIJvGov23sduIUIyQTqpa/qhoQrRkQm5pFOQb7RMwusfx6xBPrkLwIIlCJiQ8g0OOinxWzZ2kQ2Zml6tLw==}
+  ag-grid-react@36.3.0:
+    resolution: {integrity: sha512-Ttpb5J7b3oun8AdzTrLnXd5iMyh/G3R1esdG3nXnrfPC4kzFsM3sD0/h/wATE3dw7MH1oEKERa7xvQ+8QLuk1A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  ag-stack@36.3.0:
+    resolution: {integrity: sha512-KbX/b6cM0GIJ4cz6W3jk8YoDG/XpqOC4WurYl8CDuQtER2d4rihjPI4tOLN4LqS0yfVspZ31ED1273kfG+6m0w==}
 
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -6688,9 +6691,6 @@ packages:
   ignore@7.0.14:
     resolution: {integrity: sha512-wCBiZ77u1tuWde6G/nfOtLaCTYcFDU5yCzARzK10y+rLhzYoL7a7yEemcopcc2Mzow7gZOIjnV2ym1NYmdiJOQ==}
     engines: {node: '>= 4'}
-
-  immer@10.2.0:
-    resolution: {integrity: sha512-d/+XTN3zfODyjr89gM3mPq1WNX2B8pYsu7eORitdwyA2sBubnTl3laYlBk4sXY5FUa5qTZGBDPJICVbvqzjlbw==}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -8703,26 +8703,33 @@ packages:
     resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
     engines: {node: '>=14.16'}
 
-  slate-dom@0.112.2:
-    resolution: {integrity: sha512-cozITMlpcBxrov854reM6+TooiHiqpfM/nZPrnjpN1wSiDsAQmYbWUyftC+jlwcpFj80vywfDHzlG6hXIc5h6A==}
+  slate-dom@0.147.3:
+    resolution: {integrity: sha512-dG5m3NSXh2hs5dY7DT7HHetsOFEbJbcJG+rHXvgrEFMEkUiGd0RxFIPVekGg8B+5rX9h4l7ct603QCGKc9R/Ig==}
     peerDependencies:
-      slate: '>=0.99.0'
+      slate: '>=0.121.0'
 
-  slate-history@0.110.3:
-    resolution: {integrity: sha512-sgdff4Usdflmw5ZUbhDkxFwCBQ2qlDKMMkF93w66KdV48vHOgN2BmLrf+2H8SdX8PYIpP/cTB0w8qWC2GwhDVA==}
+  slate-history@0.144.0:
+    resolution: {integrity: sha512-+ZTjXWyXTSxvzkCC4UW0xd6PTlsP8ZUPEkJXTt9M1SK2HjDisBrgQZbFFk8XxbpLaWZaL5DZIG3/WGPPj3muNg==}
     peerDependencies:
-      slate: '>=0.65.3'
+      slate: '>=0.114.3'
 
-  slate-react@0.112.1:
-    resolution: {integrity: sha512-V9b+waxPweXqAkSQmKQ1afG4Me6nVQACPpxQtHPIX02N7MXa5f5WilYv+bKt7vKKw+IZC2F0Gjzhv5BekVgP/A==}
+  slate-react@0.147.5:
+    resolution: {integrity: sha512-XTMz12tMWOi/hRs8PtH9FFEndPt5ZGiPmWcRLmcXACngPo8qtufiBwd7PYG0xRhYo0AsR0g5Ps9NtnBIq8s6lg==}
     peerDependencies:
+      '@types/lodash': ^4.14.0
+      '@types/react': 19.3.0
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
-      slate: '>=0.99.0'
-      slate-dom: '>=0.110.2'
+      slate: '>=0.121.0'
+      slate-dom: '>=0.141.0'
+    peerDependenciesMeta:
+      '@types/lodash':
+        optional: true
+      '@types/react':
+        optional: true
 
-  slate@0.112.0:
-    resolution: {integrity: sha512-PRnfFgDA3tSop4OH47zu4M1R4Uuhm/AmASu29Qp7sGghVFb713kPBKEnSf1op7Lx/nCHkRlCa3ThfHtCBy+5Yw==}
+  slate@0.147.4:
+    resolution: {integrity: sha512-AaoMVtj+6AUhMAvMubk9OZn7cdA5MsZLWbt+jx5RvHimd3lDRhQhKVgLy6uegwT2lEYB8lDKqWGcN6vU8W2V9w==}
 
   smol-toml@1.9.1:
     resolution: {integrity: sha512-j7WyPdf0CJoutMzMoPLF/bVXHtKZIT9Rb4eGeEbWw8X2t5oirjPgpL+OpaENZrILYaXqYwnVH+qgUwVbl+pUJQ==}
@@ -9040,9 +9047,6 @@ packages:
 
   tiny-invariant@1.3.3:
     resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
-
-  tiny-warning@1.0.3:
-    resolution: {integrity: sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==}
 
   tinybench@6.2.3:
     resolution: {integrity: sha512-Al01C2JIBnO2CXCAPbpAl6sUiOZHeThGtHYNTa51JRw9PyWOCdr+9Ong05R4qg/Sk3+H645E8ov1h2c58ityNw==}
@@ -14680,18 +14684,21 @@ snapshots:
 
   address@2.0.3: {}
 
-  ag-charts-types@11.3.2: {}
+  ag-charts-types@14.3.0: {}
 
-  ag-grid-community@33.3.2:
+  ag-grid-community@36.3.0:
     dependencies:
-      ag-charts-types: 11.3.2
+      ag-charts-types: 14.3.0
+      ag-stack: 36.3.0
 
-  ag-grid-react@33.3.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  ag-grid-react@36.3.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
-      ag-grid-community: 33.3.2
+      ag-grid-community: 36.3.0
       prop-types: 15.8.1
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
+
+  ag-stack@36.3.0: {}
 
   agent-base@6.0.2:
     dependencies:
@@ -16690,8 +16697,6 @@ snapshots:
   ignore@7.0.12: {}
 
   ignore@7.0.14: {}
-
-  immer@10.2.0: {}
 
   import-fresh@3.3.1:
     dependencies:
@@ -19309,7 +19314,7 @@ snapshots:
 
   slash@5.1.0: {}
 
-  slate-dom@0.112.2(slate@0.112.0):
+  slate-dom@0.147.3(slate@0.147.4):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
@@ -19317,33 +19322,29 @@ snapshots:
       is-plain-object: 5.1.0
       lodash: 4.18.1
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.112.0
+      slate: 0.147.4
       tiny-invariant: 1.3.1
 
-  slate-history@0.110.3(slate@0.112.0):
+  slate-history@0.144.0(slate@0.147.4):
     dependencies:
-      is-plain-object: 5.1.0
-      slate: 0.112.0
+      slate: 0.147.4
 
-  slate-react@0.112.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(slate-dom@0.112.2(slate@0.112.0))(slate@0.112.0):
+  slate-react@0.147.5(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(slate-dom@0.147.3(slate@0.147.4))(slate@0.147.4):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
       is-hotkey: 0.2.1
-      is-plain-object: 5.1.0
       lodash: 4.18.1
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.112.0
-      slate-dom: 0.112.2(slate@0.112.0)
+      slate: 0.147.4
+      slate-dom: 0.147.3(slate@0.147.4)
       tiny-invariant: 1.3.1
+    optionalDependencies:
+      '@types/react': 19.3.0
 
-  slate@0.112.0:
-    dependencies:
-      immer: 10.2.0
-      is-plain-object: 5.1.0
-      tiny-warning: 1.0.3
+  slate@0.147.4: {}
 
   smol-toml@1.9.1: {}
 
@@ -19706,8 +19707,6 @@ snapshots:
   tiny-invariant@1.3.1: {}
 
   tiny-invariant@1.3.3: {}
-
-  tiny-warning@1.0.3: {}
 
   tinybench@6.2.3: {}
 
