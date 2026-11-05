@@ -105,7 +105,7 @@ const config: UserConfigFnPromise = async () => {
         // Don't forget to update your package.json as well.
         formats: ['es'],
       },
-      rollupOptions: {
+      rolldownOptions: {
         // External packages that should not be bundled into your library.
         external: ['react', 'react-dom', 'react/jsx-runtime', '@maany_shr/e-class-translations'],
         input: Object.fromEntries(

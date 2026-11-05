@@ -59,7 +59,7 @@ const config: UserConfigFnPromise = async () => {
         // Don't forget to update your package.json as well.
         formats: ['es'],
       },
-      rollupOptions: {
+      rolldownOptions: {
         // External packages that should not be bundled into your library.
         external: ['@maany_shr/e-class-models', '@dream-aim-deliver/e-class-cms-rest'],
         input: Object.fromEntries(
