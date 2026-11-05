@@ -1,16 +1,18 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "files": [],
-  "include": [],
-  "references": [
-    // References to projects used by this package
-    // This project's other tsconfig.*.json files
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
+    "extends": "../../tsconfig.base.json",
+    "files": [],
+    "include": [],
+    "references": [
+        // References to projects used by this package
+        // This project's other tsconfig.*.json files
+        {
+            "path": "./tsconfig.lib.json"
+        },
+        {
+            "path": "./tsconfig.spec.json"
+        }
+    ],
+    "compilerOptions": {
+        "ignoreDeprecations": "6.0"
     }
-  ]
 }
-
