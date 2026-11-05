@@ -130,7 +130,7 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
  * Supports initial value parsing, custom key bindings, and a toolbar for formatting options.
  */
 export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
-  function RichTextEditor({ name, locale, onChange, onLoseFocus, placeholder, initialValue, onDeserializationError }) {
+  function RichTextEditor({ locale, onChange, onLoseFocus, placeholder, initialValue, onDeserializationError }) {
 
     // Deserialize the initial value to Slate format
     const deserializedInitialValue = deserialize({
@@ -195,7 +195,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
             >
               <div className="p-4 w-full">
                 <Editable
-                  name={name}
                   placeholder={placeholder}
                   spellCheck
                   renderLeaf={RenderLeaf}
