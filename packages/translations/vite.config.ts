@@ -1,7 +1,32 @@
 import { defineConfig, type ViteUserConfigFnPromise } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import * as path from 'path';
-import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import * as fs from 'fs';
+import type { Plugin } from 'vite';
+
+/**
+ * Copies the package's top-level markdown files (README.md) into the build output.
+ * Stands in for nxCopyAssetsPlugin(['*.md']), which Nx 24 reduced to an inert stub.
+ */
+function copyRootMarkdown(): Plugin {
+  let outDir: string;
+  const markdownFiles = () => fs.readdirSync(__dirname).filter((file) => file.endsWith('.md'));
+  return {
+    name: 'copy-root-markdown',
+    apply: 'build',
+    configResolved(resolved) {
+      outDir = path.resolve(resolved.root, resolved.build.outDir);
+    },
+    buildStart() {
+      for (const file of markdownFiles()) this.addWatchFile(path.join(__dirname, file));
+    },
+    writeBundle() {
+      for (const file of markdownFiles()) {
+        fs.copyFileSync(path.join(__dirname, file), path.join(outDir, file));
+      }
+    },
+  };
+}
 
 // Async config to avoid Node.js ESM race condition (ERR_INTERNAL_ASSERTION)
 // when Nx loads multiple vite configs in parallel during project graph construction
@@ -27,7 +52,7 @@ const config: ViteUserConfigFnPromise = async () => {
     cacheDir: '../../node_modules/.vite/packages/translations',
     plugins: [
       react(),
-      nxCopyAssetsPlugin(['*.md']),
+      copyRootMarkdown(),
       dtsPlugin,
       checkerPlugin,
     ],
