@@ -1,4 +1,4 @@
-import { defineConfig, type UserConfigFnPromise } from "vitest/config";
+import { defineConfig, type ViteUserConfigFnPromise } from "vitest/config";
 import react from '@vitejs/plugin-react';
 import * as path from 'path';
 import tailwindcss from '@tailwindcss/vite'
@@ -45,7 +45,7 @@ const COVERAGE_EXCLUDE_PATTERNS = [
 
 // Async config to avoid Node.js ESM race condition (ERR_INTERNAL_ASSERTION)
 // when Nx loads multiple vite configs in parallel during project graph construction
-const config: UserConfigFnPromise = async () => {
+const config: ViteUserConfigFnPromise = async () => {
   let dtsPlugin: any;
   const checkerRoot = path.relative(process.cwd(), __dirname) || '.';
   // vite-plugin-dts generates .d.ts files — only needed for publishing, not in CI
