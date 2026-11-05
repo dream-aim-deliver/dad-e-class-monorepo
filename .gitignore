@@ -76,3 +76,6 @@ vitest.config.*.timestamp*
 # Playwright scratch output (consent audit + e2e runs)
 test-results/
 playwright-report/
+
+.nx/polygraph
+.nx/self-healing
