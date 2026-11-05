@@ -1,4 +1,4 @@
-import { HomePageSchema, THomePage, HomeBannerSchema, GeneralCardSchema, TGeneralCard, CoachingOnDemandSchema, TCoachingOnDemand, AccordionListSchema, TAccordionList } from '../src/home-page';
+import { HomePageSchema, THomePage, HomeBannerSchema, GeneralCardSchema, CoachingOnDemandSchema, AccordionListSchema, TAccordionList } from '../src/home-page';
 import { describe, it, expect } from 'vitest';
 
 
@@ -70,7 +70,7 @@ describe('HomePage Schema Validation', () => {
     });
 
     it('should invalidate a general card object with missing required fields', () => {
-        const invalidGeneralCard: TGeneralCard = {
+        const invalidGeneralCard = {
             title: 'Enterprise',
             description: 'Ideal für Unternehmen, die eine individuelle Lösung benötigen und Wert auf Qualität und Nachhaltigkeit legen.',
             imageUrl: 'https://example.com/card2.jpg',
@@ -81,7 +81,7 @@ describe('HomePage Schema Validation', () => {
     });
 
     it('should invalidate a coaching on demand object with missing required fields', () => {
-        const invalidCoachingOnDemand: TCoachingOnDemand = {
+        const invalidCoachingOnDemand = {
             title: 'Coaching On Demand',
             description: 'Are you looking for someone to help guide you through your journey?\nDo you need support and advice from someone who has been there before?\nOur coaching on demand service is here to help you!',
             desktopImageUrl: 'https://example.com/coaching-desktop.jpg',
@@ -92,7 +92,7 @@ describe('HomePage Schema Validation', () => {
     });
 
     it('should invalidate an accordion list object with missing required fields', () => {
-        const invalidAccordionList: TAccordionList = {
+        const invalidAccordionList = {
             title: 'Frequently Asked Questions',
             showNumbers: true,
             // Missing 'items'
