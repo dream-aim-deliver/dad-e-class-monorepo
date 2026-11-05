@@ -12,7 +12,7 @@ import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
 
@@ -95,7 +95,7 @@ export function initBrowserTracer(config: BrowserTracerConfig): void {
         const pageLocale = pathSegments[0] || 'en';
 
         // Create resource with service name and app identification attributes
-        const resource = new Resource({
+        const resource = resourceFromAttributes({
             [ATTR_SERVICE_NAME]: config.serviceName,
             'app.type': 'cms',
             'app.layer': 'browser',
@@ -103,27 +103,26 @@ export function initBrowserTracer(config: BrowserTracerConfig): void {
             'page.locale': pageLocale,
         });
 
-        // Create tracer provider
-        const provider = new WebTracerProvider({ resource });
-
         // Configure OTLP exporter
         const exporter = new OTLPTraceExporter({
             url: `${config.otlpEndpoint}/v1/traces`,
         });
 
-        // Add page attribute processor first (runs before batch processor)
-        // This ensures every span gets page.route and page.locale attributes
-        provider.addSpanProcessor(new PageAttributeSpanProcessor());
-
-        // Add batch processor for efficient export
-        provider.addSpanProcessor(
-            new BatchSpanProcessor(exporter, {
-                maxQueueSize: 100,
-                maxExportBatchSize: 10,
-                scheduledDelayMillis: 500,
-                exportTimeoutMillis: 30000,
-            })
-        );
+        // Create tracer provider. Processors run in order: the page attribute
+        // processor first, so every span gets page.route and page.locale before
+        // the batch processor exports it.
+        const provider = new WebTracerProvider({
+            resource,
+            spanProcessors: [
+                new PageAttributeSpanProcessor(),
+                new BatchSpanProcessor(exporter, {
+                    maxQueueSize: 100,
+                    maxExportBatchSize: 10,
+                    scheduledDelayMillis: 500,
+                    exportTimeoutMillis: 30000,
+                }),
+            ],
+        });
 
         // Register provider with context manager and propagator
         provider.register({
