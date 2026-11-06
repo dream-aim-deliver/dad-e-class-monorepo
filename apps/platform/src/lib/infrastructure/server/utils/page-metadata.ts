@@ -43,7 +43,7 @@ export async function generatePageMetadata(
         description,
         alternates: {
             canonical: url,
-            languages: { en: `/en${path}`, de: `/de${path}`, 'x-default': `/en${path}` },
+            languages: { en: `/en${path}`, de: `/de${path}`, 'x-default': `/de${path}` },
         },
         openGraph: {
             title,
