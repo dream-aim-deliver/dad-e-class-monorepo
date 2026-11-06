@@ -31,8 +31,12 @@ jobs:
         with:
           fetch-depth: 1
 
+      # continue-on-error: expired/missing CLAUDE_CODE_OAUTH_TOKEN must not
+      # block tiny CI PRs. Refresh the secret via `claude setup-token` when
+      # review is needed again (last failure: OAuth access token has expired).
       - name: Run Claude Code Review
         id: claude-review
+        continue-on-error: true
         uses: anthropics/claude-code-action@beta
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
