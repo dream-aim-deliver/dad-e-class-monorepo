@@ -19,6 +19,8 @@ export async function generateMetadata({
     params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
     const { locale, slug } = await paramsPromise;
+    // Keep canonical/hreflang encoding aligned with sitemap.ts.
+    const path = `/${locale}/courses/${encodeURIComponent(slug)}`;
     const queryClient = getQueryClient();
 
     try {
@@ -29,7 +31,7 @@ export async function generateMetadata({
         if (response?.success === true && response.data) {
             return buildEntityMetadata({
                 locale,
-                path: `/${locale}/courses/${slug}`,
+                path,
                 title: response.data.title,
                 description: response.data.description,
                 imageUrl: response.data.imageFile?.downloadUrl,
@@ -41,7 +43,7 @@ export async function generateMetadata({
 
     return buildEntityMetadata({
         locale,
-        path: `/${locale}/courses/${slug}`,
+        path,
     });
 }
 

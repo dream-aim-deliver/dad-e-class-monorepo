@@ -54,6 +54,8 @@ export async function buildEntityMetadata({
 
     const absoluteUrl = `${appUrl}${path}`;
     const pathWithoutLocale = path.replace(/^\/(de|en)/, '') || '/';
+    const dePath = `/de${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`;
+    const enPath = `/en${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`;
 
     return {
         title: documentTitle,
@@ -61,8 +63,10 @@ export async function buildEntityMetadata({
         alternates: {
             canonical: path,
             languages: {
-                de: `/de${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`,
-                en: `/en${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`,
+                de: dePath,
+                en: enPath,
+                // German is the primary public locale for JustDoAd crawlers.
+                'x-default': dePath,
             },
         },
         openGraph: {

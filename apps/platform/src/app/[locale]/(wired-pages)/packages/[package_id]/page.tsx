@@ -20,7 +20,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, package_id } = await paramsPromise;
   const packageId = Number.parseInt(package_id, 10);
-  const path = `/${locale}/packages/${package_id}`;
+  // Keep canonical/hreflang encoding aligned with sitemap.ts.
+  const path = `/${locale}/packages/${encodeURIComponent(package_id)}`;
 
   if (!Number.isFinite(packageId)) {
     return buildEntityMetadata({ locale, path });

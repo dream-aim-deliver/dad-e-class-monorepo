@@ -4,6 +4,25 @@ import { createPublicCmsTrpcClient } from '../lib/infrastructure/server/utils/pu
 const LOCALES = ['de', 'en'] as const;
 const PAGE_SIZE = 100;
 
+/**
+ * Static public routes (no workspace/auth/checkout).
+ * Aligned with `public-routes.ts` + SEO inventory.
+ * No dedicated `/courses` or `/coaches` index pages exist — catalog entry
+ * points are `/offers` (packages + coaches) and `/coaching` (coach list).
+ * `/cms-example` is a demo page and intentionally omitted.
+ */
+const STATIC_PUBLIC_PATHS = [
+    '/',
+    '/about',
+    '/impressum',
+    '/privacy-policy',
+    '/rules',
+    '/terms-of-use',
+    '/offer-information',
+    '/offers',
+    '/coaching',
+] as const;
+
 /** Refresh public URLs periodically without requiring a full redeploy. */
 export const revalidate = 3600;
 
@@ -132,9 +151,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]);
 
     for (const locale of LOCALES) {
+        for (const staticPath of STATIC_PUBLIC_PATHS) {
+            const urlPath = staticPath === '/' ? `/${locale}` : `/${locale}${staticPath}`;
+            entries.push({
+                url: `${baseUrl}${urlPath}`,
+                changeFrequency: staticPath === '/' || staticPath === '/offers' ? 'daily' : 'monthly',
+                priority: staticPath === '/' ? 1 : staticPath === '/offers' || staticPath === '/coaching' ? 0.9 : 0.5,
+            });
+        }
+
         for (const slug of courseSlugs) {
             entries.push({
-                url: `${baseUrl}/${locale}/courses/${slug}`,
+                url: `${baseUrl}/${locale}/courses/${encodeURIComponent(slug)}`,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             });
@@ -142,7 +170,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
         for (const packageId of packageIds) {
             entries.push({
-                url: `${baseUrl}/${locale}/packages/${packageId}`,
+                url: `${baseUrl}/${locale}/packages/${encodeURIComponent(packageId)}`,
                 changeFrequency: 'weekly',
                 priority: 0.7,
             });

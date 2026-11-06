@@ -18,7 +18,8 @@ export async function generateMetadata({
 	params: Promise<{ locale: string; username: string }>;
 }): Promise<Metadata> {
 	const { locale, username } = await paramsPromise;
-	const path = `/${locale}/coaches/${username}`;
+	// Keep canonical/hreflang encoding aligned with sitemap.ts.
+	const path = `/${locale}/coaches/${encodeURIComponent(username)}`;
 
 	try {
 		const queryClient = getQueryClient();
