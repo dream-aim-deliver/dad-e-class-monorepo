@@ -4094,6 +4094,44 @@ export const DE: TDictionary = {
       description: "Zugang zu Kursen, Coaching-Sitzungen und beruflicher Weiterbildung.",
       ogDescription: "Entdecke Kurse, verbinde dich mit Coaches und entwickle deine Karriere.",
     },
+    pages: {
+      home: {
+        title: "{appName} – Online-Kurse und Coaching für deine Karriere",
+        description: "Online-Kurse und persönliches Coaching für Bewerbung, Personal Branding und Sichtbarkeit. Lerne in deinem Tempo, mit Coaches an deiner Seite.",
+      },
+      about: {
+        title: "Über uns | {appName}",
+        description: "Wer hinter {appName} steht und wie wir dich mit Kursen und Coaching sichtbar machen – für Arbeitgeber, Kundschaft und Auftraggeber.",
+      },
+      offers: {
+        title: "Kurse und Angebote | {appName}",
+        description: "Alle Kurse und Pakete von {appName} im Überblick: Bewerbung, Personal Branding und Selbstmarketing, online und mit Coaching.",
+      },
+      offerInformation: {
+        title: "So funktionieren unsere Angebote | {appName}",
+        description: "Wie Kurse, Pakete und Coaching bei {appName} funktionieren und was dich nach der Buchung erwartet.",
+      },
+      coaching: {
+        title: "Coaching buchen | {appName}",
+        description: "Buche eine persönliche Coaching-Sitzung online: für Bewerbung, Auftritt und nächste Karriereschritte, direkt mit erfahrenen Coaches.",
+      },
+      rules: {
+        title: "Plattformregeln | {appName}",
+        description: "Die Regeln für die Zusammenarbeit auf {appName}: wie wir miteinander umgehen, als Lernende, Coaches und Kursanbietende.",
+      },
+      impressum: {
+        title: "Impressum | {appName}",
+        description: "Impressum von {appName}: Anbieterin, Kontaktangaben und rechtliche Hinweise zur Lernplattform.",
+      },
+      privacyPolicy: {
+        title: "Datenschutz | {appName}",
+        description: "Wie {appName} mit deinen Daten umgeht: welche Daten wir bearbeiten, wozu und welche Rechte du hast.",
+      },
+      termsOfUse: {
+        title: "Nutzungsbedingungen | {appName}",
+        description: "Die Nutzungsbedingungen von {appName}: was für Konto, Kurse, Coaching und Zahlungen auf der Lernplattform gilt.",
+      },
+    },
     cms: {
       title: "E-Class CMS - Content Management",
       description: "Verwalte Kurse, Benutzer und Plattforminhalte.",

@@ -4200,6 +4200,17 @@ export const DictionarySchema = z.object({
       description: z.string(),
       ogDescription: z.string(),
     }),
+    pages: z.object({
+      home: z.object({ title: z.string(), description: z.string() }),
+      about: z.object({ title: z.string(), description: z.string() }),
+      offers: z.object({ title: z.string(), description: z.string() }),
+      offerInformation: z.object({ title: z.string(), description: z.string() }),
+      coaching: z.object({ title: z.string(), description: z.string() }),
+      rules: z.object({ title: z.string(), description: z.string() }),
+      impressum: z.object({ title: z.string(), description: z.string() }),
+      privacyPolicy: z.object({ title: z.string(), description: z.string() }),
+      termsOfUse: z.object({ title: z.string(), description: z.string() }),
+    }),
     cms: z.object({
       title: z.string(),
       description: z.string(),

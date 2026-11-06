@@ -1,10 +1,18 @@
-import type { Viewport } from 'next';
+import type { ResolvingMetadata, Viewport } from 'next';
 import { extractListParams } from '../../../../lib/infrastructure/server/utils/extract-params';
 import OffersServerComponent from '../../../../lib/infrastructure/server/pages/offers-page-rsc';
 import { MobileReadyStyle } from '../../../../lib/mobile-hack';
+import { generatePageMetadata } from '../../../../lib/infrastructure/server/utils/page-metadata';
 
 // MOBILE-HACK: Override layout's 1280px viewport with responsive mobile viewport
 export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
+
+export async function generateMetadata(
+    { params }: { params: Promise<{ locale: string }> },
+    parent: ResolvingMetadata,
+) {
+    return generatePageMetadata(params, parent, 'offers', '/offers');
+}
 
 export default async function Page({
     searchParams: searchParamsPromise,

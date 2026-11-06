@@ -4092,6 +4092,44 @@ export const EN: TDictionary = {
       description: "Access courses, coaching sessions, and professional development.",
       ogDescription: "Discover courses, connect with coaches, and advance your career.",
     },
+    pages: {
+      home: {
+        title: "{appName} – Online Courses and Coaching for Your Career",
+        description: "Online courses and personal coaching for job applications, personal branding and visibility. Learn at your own pace, with coaches by your side.",
+      },
+      about: {
+        title: "About Us | {appName}",
+        description: "Who is behind {appName} and how our courses and coaching make you visible to employers, clients and customers.",
+      },
+      offers: {
+        title: "Courses and Offers | {appName}",
+        description: "All {appName} courses and packages at a glance: job applications, personal branding and self-marketing, online and with coaching.",
+      },
+      offerInformation: {
+        title: "How Our Offers Work | {appName}",
+        description: "How courses, packages and coaching work at {appName} and what to expect after you book.",
+      },
+      coaching: {
+        title: "Book a Coaching Session | {appName}",
+        description: "Book a personal coaching session online: for job applications, how you present yourself and your next career steps, with experienced coaches.",
+      },
+      rules: {
+        title: "Platform Rules | {appName}",
+        description: "The rules for working together on {appName}: how learners, coaches and course creators treat each other.",
+      },
+      impressum: {
+        title: "Legal Notice | {appName}",
+        description: "Legal notice of {appName}: provider, contact details and legal information about the learning platform.",
+      },
+      privacyPolicy: {
+        title: "Privacy Policy | {appName}",
+        description: "How {appName} handles your data: what we process, why, and which rights you have.",
+      },
+      termsOfUse: {
+        title: "Terms of Use | {appName}",
+        description: "The terms of use of {appName}: what applies to your account, courses, coaching and payments on the learning platform.",
+      },
+    },
     cms: {
       title: "E-Class CMS - Content Management",
       description: "Manage courses, users, and platform content.",
