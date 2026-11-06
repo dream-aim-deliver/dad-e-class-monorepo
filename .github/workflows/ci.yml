@@ -68,29 +68,14 @@ jobs:
           'S3_PROTOCOL': 'http'
           'E_CLASS_DEV_MODE': 'true'
 
-      # Retry absorbs Next 16 + next/font/google Turbopack flake when Google
-      # Fonts occasionally returns extensionless /l/font?kit= URLs
-      # (vercel/next.js#99114 → "queries have exactly one entry"). Fixed upstream
-      # in Next >= 16.4.3; until that bump, 2 retries keep CI usable.
+      # Mock Google Fonts CSS so Turbopack never sees extensionless /l/font?kit=
+      # URLs (vercel/next.js#99114 → "queries have exactly one entry"). Stable
+      # .woff2 files are still downloaded from fonts.gstatic.com. Upstream fix
+      # lands in Next >= 16.4.3; mock can go once that bump lands.
       - name: Build
-        run: |
-          set +e
-          for attempt in 1 2 3; do
-            echo "::group::Build attempt ${attempt}/3"
-            pnpm exec nx run-many --no-cloud --skipNxCache -t build --parallel=1
-            status=$?
-            echo "::endgroup::"
-            if [ "$status" -eq 0 ]; then
-              exit 0
-            fi
-            echo "Build attempt ${attempt} failed with exit ${status}"
-            if [ "$attempt" -lt 3 ]; then
-              echo "Retrying in 10s (next/font/google flake)..."
-              sleep 10
-            fi
-          done
-          exit 1
+        run: pnpm exec nx run-many --no-cloud --skipNxCache -t build --parallel=1
         env:
+          NEXT_FONT_GOOGLE_MOCKED_RESPONSES: ${{ github.workspace }}/tools/ci/mocked-google-fonts.js
           NODE_OPTIONS: '--max-old-space-size=2560'
           'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
           'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
