@@ -2,23 +2,56 @@
 // Notion: https://www.notion.so/Coach-profile-student-view-book-coaching-outside-courses-4417f760c1a24df8986566bb342a5270
 // Features: listCoachReviews, createCourseReview, getCoachIntroduction, getCoachProfileAccess, listCoachCourses
 
-import type { Viewport } from 'next';
+import type { Metadata, Viewport } from 'next';
 import CoachProfileServerComponent from '../../../../../lib/infrastructure/server/pages/coach-profile-rsc';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { MobileReadyStyle } from '../../../../../lib/mobile-hack';
+import { getQueryClient, trpc } from '../../../../../lib/infrastructure/server/config/trpc/cms-server';
+import { buildEntityMetadata } from '../../../../../lib/infrastructure/server/utils/build-entity-metadata';
 
 // MOBILE-HACK: Override layout's 1280px viewport with responsive mobile viewport
 export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
+export async function generateMetadata({
+	params: paramsPromise,
+}: {
+	params: Promise<{ locale: string; username: string }>;
+}): Promise<Metadata> {
+	const { locale, username } = await paramsPromise;
+	// Keep canonical/hreflang encoding aligned with sitemap.ts.
+	const path = `/${locale}/coaches/${encodeURIComponent(username)}`;
+
+	try {
+		const queryClient = getQueryClient();
+		const response = await queryClient.fetchQuery(
+			trpc.getCoachIntroduction.queryOptions({ coachUsername: username }),
+		);
+
+		if (response?.success === true && response.data?.coach) {
+			const coach = response.data.coach;
+			const fullName = [coach.name, coach.surname].filter(Boolean).join(' ').trim();
+			return buildEntityMetadata({
+				locale,
+				path,
+				title: fullName,
+				description: coach.bio,
+				imageUrl: coach.avatarImage?.downloadUrl,
+			});
+		}
+	} catch (error) {
+		console.warn('[generateMetadata] Failed to load coach introduction:', error);
+	}
+
+	return buildEntityMetadata({ locale, path });
+}
+
 export default async function Page({
 	params: paramsPromise,
-	searchParams: searchParamsPromise,
 }: {
 	params: Promise<{ locale: string; username: string }>;
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
 	const params = await paramsPromise;
-	const searchParams = await searchParamsPromise;
 
 	const locale = params.locale as TLocale;
 	const { username } = params;
