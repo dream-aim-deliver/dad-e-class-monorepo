@@ -114,8 +114,10 @@ const CoachCard: FC<CoachCardProps> = (props) => {
               <p className="flex items-center gap-1 truncate">
                 <IconCoachingSession classNames='flex-shrink-0' size="4" />
                 <span className="capitalize truncate">
-                  {cardDetails.sessionCount} {dictionary.components.coachCard.coachingSession}
-                  {cardDetails.sessionCount > 1 ? 's' : ''}
+                  {cardDetails.sessionCount}{' '}
+                  {cardDetails.sessionCount === 1
+                    ? dictionary.components.coachCard.coachingSession
+                    : dictionary.components.coachCard.coachingSessions}
                 </span>
               </p>
             )}
