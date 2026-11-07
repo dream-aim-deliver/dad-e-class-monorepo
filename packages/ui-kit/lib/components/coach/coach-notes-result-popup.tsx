@@ -13,6 +13,8 @@ export interface CoachNotesResultPopupProps extends isLocalAware {
   onClose: () => void;
   isSuccess: boolean;
   isError: boolean;
+  successMessage?: string;
+  errorMessage?: string;
 }
 
 /**
@@ -21,12 +23,16 @@ export interface CoachNotesResultPopupProps extends isLocalAware {
  * @param onClose Callback function triggered when the popup is closed
  * @param isSuccess Boolean indicating if the operation was successful
  * @param isError Boolean indicating if there was an error
+ * @param successMessage Optional success text; defaults to the coach notes success translation
+ * @param errorMessage Optional error text; defaults to the coach notes error translation
  * @param locale The locale used for translations
  */
 export const CoachNotesResultPopup: React.FC<CoachNotesResultPopupProps> = ({
   onClose,
   isSuccess,
   isError,
+  successMessage,
+  errorMessage,
   locale,
 }) => {
   const dictionary = getDictionary(locale);
@@ -37,7 +43,7 @@ export const CoachNotesResultPopup: React.FC<CoachNotesResultPopupProps> = ({
         <div className="flex flex-col gap-4 w-full">
           <IconSuccess classNames="text-feedback-success-primary" />
           <h5 className="text-lg text-base-white text-justify leading-none">
-            {dictionary.components.coachNotes.successMessage}
+            {successMessage ?? dictionary.components.coachNotes.successMessage}
           </h5>
         </div>
       </div>
@@ -58,7 +64,7 @@ export const CoachNotesResultPopup: React.FC<CoachNotesResultPopupProps> = ({
         <div className="flex flex-col gap-4 w-full">
           <IconError classNames="text-feedback-error-primary" />
           <h5 className="text-lg text-base-white text-justify leading-none">
-            {dictionary.components.coachNotes.errorMessage}
+            {errorMessage ?? dictionary.components.coachNotes.errorMessage}
           </h5>
         </div>
       </div>

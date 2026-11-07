@@ -425,6 +425,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     >
                         <CoachCourseGroups
                             courseSlug={props.courseSlug}
+                            courseId={courseViewModel.data.id}
                             currentRole={props.currentRole}
                         />
                     </Suspense>

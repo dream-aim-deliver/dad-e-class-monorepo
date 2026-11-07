@@ -19,8 +19,8 @@ importers:
         specifier: ^0.13.4
         version: 0.13.4(debug@4.4.3(supports-color@8.1.1))
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.4.6
-        version: 3.4.6(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 3.4.8
+        version: 3.4.8(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)
       '@mux/mux-player-react':
         specifier: 3.3.0
         version: 3.3.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -392,8 +392,8 @@ importers:
   packages/auth:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.4.6
-        version: 3.4.6(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 3.4.8
+        version: 3.4.8(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -416,8 +416,8 @@ importers:
         specifier: ^0.13.4
         version: 0.13.4(debug@4.4.3(supports-color@8.1.1))
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.4.6
-        version: 3.4.6(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 3.4.8
+        version: 3.4.8(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)
       zod:
         specifier: ^3.24.1
         version: 3.25.76
@@ -431,8 +431,8 @@ importers:
   packages/ui-kit:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.4.6
-        version: 3.4.6(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)
+        specifier: 3.4.8
+        version: 3.4.8(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -1255,8 +1255,8 @@ packages:
   '@dream-aim-deliver/dad-data-platform-sdk-ts@1.3.1':
     resolution: {integrity: sha512-aJDfUEj5IUjzt/cqlkEyg6eqzeG3cEuVRv58FVN6xl5VmNi0jDUM1kr0v233gt3blQcDveCTVhTNEE8W+Tb7ag==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/1.3.1/e99cd7a0bbead1c720a96a16cba20002640e18e9}
 
-  '@dream-aim-deliver/e-class-cms-rest@3.4.6':
-    resolution: {integrity: sha512-YDNoVWxe6Afl/xYlohD+wym1PFE8N93R8+ktRMuPIGr40QXRdUEMvrnDPvLHx8MLdAWdEG6/ESiQCRKgR+YDDQ==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.4.6/04ce802877f700830cdf84898313121dae95f16f}
+  '@dream-aim-deliver/e-class-cms-rest@3.4.8':
+    resolution: {integrity: sha512-CMGq2aEAGxuksoGp61pYN8/cl1lX1c8Rm1nn1Hbjb5Y9ZUCRG3CuSBYjskJ4GjOO5deT5tN1Y3rzWxZLXR5iJw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.4.8/6ea7905670c0151cf3aca51ad11ba3e3510e05ba}
 
   '@emnapi/core@1.8.1':
     resolution: {integrity: sha512-AvT9QFpxK0Zd8J0jopedNm+w/2fIzvtPKPjqyw9jwvBaReTTqPBk9Hixaz7KbjimP+QNz605/XnjFcDAL2pqBg==}
@@ -2180,6 +2180,7 @@ packages:
 
   '@mux/mux-node@12.6.1':
     resolution: {integrity: sha512-aQ0wHR3rDShgOwPvSR1fAG3+m0oL4ISv0CbkSIqD0BzD9fROzVC5Xxm4v/NY6cRQ89H+hA2hIUCmWHQijvOfbw==}
+    deprecated: '@mux/mux-node was renamed to @mux/ts. 15.5.0 is the final release under this name; install @mux/ts for all future releases. Migration guide: https://github.com/muxinc/mux-ts/blob/main/MIGRATION.md'
 
   '@mux/mux-player-react@3.3.0':
     resolution: {integrity: sha512-S+P7shdph+Uj73emLiDoAfDKxHbbzQaqTHmndMXqsNhjfOF0ve7ZF7pLZOAV16UUwBrBDwOQwwmIFwd3wYgY+w==}
@@ -2805,6 +2806,7 @@ packages:
   '@opentelemetry/propagator-jaeger@2.7.1':
     resolution: {integrity: sha512-KMjVBHzP4N60bOzxja76M1F1hZZ43lGPga5ix+mkv9+kk1nx9SbkxSvJsMbuVUxdPQmsPTqGShmhN8ulrMOg6Q==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Package no longer supported. See https://github.com/open-telemetry/opentelemetry-js/pull/7077
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -2877,42 +2879,49 @@ packages:
   '@opentelemetry/sdk-trace-base@1.29.0':
     resolution: {integrity: sha512-hEOpAYLKXF3wGJpXOtWsxEtqBgde0SCv+w+jvr3/UusR4ll3QrENEGnSl1WDCyRrpqOQ5NCNOvZch9UFVa7MnQ==}
     engines: {node: '>=14'}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@1.30.1':
     resolution: {integrity: sha512-jVPgBbH1gCy2Lb7X0AVQ8XAfgg0pJ4nvl8/IiQA6nxOsPvS+0zMJaFSs2ltXe0J6C8dqjcnpyqINDJmU30+uOg==}
     engines: {node: '>=14'}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.2.0':
     resolution: {integrity: sha512-xWQgL0Bmctsalg6PaXExmzdedSp3gyKV8mQBwK/j9VGdCDu2fmXIb2gAehBKbkXCpJ4HPkgv3QfoJWRT4dHWbw==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.7.1':
     resolution: {integrity: sha512-NAYIlsF8MPUsKqJMiDQJTMPOmlbawC1Iz/omMLygZ1C9am8fTKYjTaI+OZM+WTY3t3Glo0wnOg/6/pac6RGPPw==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.7.1':
     resolution: {integrity: sha512-pCpQxU68lV+I9s9svqMyVu5iHdDDUnqUpSxqwyCU8A9ejEsSnMPCbearwsUO4yk08ZJzAIUCFuReMdVQvHrdvg==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-web@1.29.0':
     resolution: {integrity: sha512-PQVtJ76dsZ7HYBSlgZGIuxFtnKXxNbyHzMnRUxww7V2/6V/qtQN+cvNkqwPVffrUfbvClOnejo08NezAE1y+6g==}
     engines: {node: '>=14'}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-web@1.30.1':
     resolution: {integrity: sha512-AUo2e+1uyTGMB36VlbvBqnCogVzQhpC7dRcVVdCrt+cFHLpFRRJcd45J2obGTgs0XiAwNLyq5bhkW3JF2NZA+A==}
     engines: {node: '>=14'}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -11812,7 +11821,7 @@ snapshots:
       - debug
       - encoding
 
-  '@dream-aim-deliver/e-class-cms-rest@3.4.6(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)':
+  '@dream-aim-deliver/e-class-cms-rest@3.4.8(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@dream-aim-deliver/dad-cats': 0.13.4(debug@4.4.3(supports-color@8.1.1))
       '@dream-aim-deliver/dad-data-platform-sdk-ts': 1.3.1(debug@4.4.3(supports-color@8.1.1))(encoding@0.1.13)

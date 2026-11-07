@@ -3,13 +3,18 @@ import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
 import { cn } from '../../utils/style-utils';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
-import { IconGroup, IconCourse, IconAccountInformation } from '../icons';
+import { IconGroup, IconCourse, IconAccountInformation, IconPackageCourseBundle } from '../icons';
+import { Badge } from '../badge';
 
 interface Course {
     image: string;
     title: string;
     slug: string;
 }
+
+type GroupSource =
+    | { type: 'course' }
+    | { type: 'package'; packageTitle: string };
 
 interface Coach {
     name: string;
@@ -24,6 +29,7 @@ export interface GroupOverviewCardDetails {
     totalStudents?: number;
     course: Course;
     coaches: Coach[];
+    source: GroupSource;
 }
 
 type BaseGroupOverviewCardProps = {
@@ -72,6 +78,21 @@ const GroupOverviewCard: FC<GroupOverviewCardProps> = ({
                 <h3 className="text-text-primary text-sm md:text-md leading-4 font-bold">
                     {cardDetails.groupName}
                 </h3>
+
+                {/* Source - shown only for groups created from a package */}
+                {cardDetails.source.type === 'package' && (
+                    <Badge
+                        hasIconLeft
+                        iconLeft={<IconPackageCourseBundle size="4" />}
+                        text={dictionary.components.groupCard.packageSource.replace(
+                            '{packageTitle}',
+                            cardDetails.source.packageTitle,
+                        )}
+                        variant="info"
+                        size="medium"
+                        className="w-fit max-w-full"
+                    />
+                )}
 
                 {/* Student Count */}
                 <div className="flex items-center gap-1">
