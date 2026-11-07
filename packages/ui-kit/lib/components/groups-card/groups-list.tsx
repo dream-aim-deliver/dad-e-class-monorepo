@@ -36,6 +36,15 @@ export interface GroupsListProps {
 
   // Whether to show the "All Groups / Your Groups" toggle (hidden for coaches, shown for admins)
   showGroupToggle?: boolean;
+
+  /**
+   * Course managers (superadmin / admin / course creator) may manage any
+   * listed group without coupon membership. Does not change coach coupon flow.
+   */
+  canManageAllGroups?: boolean;
+
+  /** Hide coupon join card for managers who do not join via coupon. Default true. */
+  showJoinGroup?: boolean;
 }
 
 /**
@@ -56,10 +65,12 @@ export interface GroupsListProps {
  * @param validationMessage - Validation message to display
  * @param validationMessageType - Type of validation message ('error' or 'success')
  * @param onClickCourse - Callback for clicking on course
- * @param onClickManage - Callback for manage action (shown if current user is a coach)
+ * @param onClickManage - Callback for manage action
  * @param onClickViewProfile - Callback for view profile action
  * @param isLoading - Whether data is loading
  * @param className - Additional CSS classes
+ * @param canManageAllGroups - Show Manage on every card for course managers
+ * @param showJoinGroup - Whether to show the coupon join card
  */
 export const GroupsList: FC<GroupsListProps> = ({
   locale,
@@ -78,6 +89,8 @@ export const GroupsList: FC<GroupsListProps> = ({
   onClickViewProfile,
   isLoading = false,
   showGroupToggle = true,
+  canManageAllGroups = false,
+  showJoinGroup = true,
 }) => {
   const dictionary = getDictionary(locale);
   const [activeTab, setActiveTab] = useState('all-groups');
@@ -96,6 +109,7 @@ export const GroupsList: FC<GroupsListProps> = ({
         locale={locale}
         onClickCourse={onClickCourse}
         onClickManage={() => onClickManage?.(String(group.groupId))}
+        canManageWithoutMembership={canManageAllGroups}
       />
     );
   };
@@ -143,19 +157,21 @@ export const GroupsList: FC<GroupsListProps> = ({
           <Tabs.Content value="all-groups">
             {/* Groups Grid - Full Width with Join Group as first item */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {/* Join Group as first grid item */}
-              <div className="w-full">
-                <JoinGroup
-                  locale={locale}
-                  couponCode={couponCode}
-                  onCouponCodeChange={onCouponCodeChange}
-                  onValidateCode={onValidateCode}
-                  isValidating={isValidating}
-                  hasValidationMessage={hasValidationMessage}
-                  validationMessage={validationMessage}
-                  validationMessageType={validationMessageType}
-                />
-              </div>
+              {/* Join Group (coupon) — coaches only; managers oversee without joining */}
+              {showJoinGroup && (
+                <div className="w-full">
+                  <JoinGroup
+                    locale={locale}
+                    couponCode={couponCode}
+                    onCouponCodeChange={onCouponCodeChange}
+                    onValidateCode={onValidateCode}
+                    isValidating={isValidating}
+                    hasValidationMessage={hasValidationMessage}
+                    validationMessage={validationMessage}
+                    validationMessageType={validationMessageType}
+                  />
+                </div>
+              )}
               
               {filteredAllGroups.map((group, index) => renderGroupCard(group, index, false))}
               

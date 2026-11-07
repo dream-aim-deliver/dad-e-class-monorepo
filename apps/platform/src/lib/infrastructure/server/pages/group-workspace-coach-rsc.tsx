@@ -12,6 +12,7 @@ import GroupWorkspaceCoach from '../../client/pages/group-workspace-coach';
 import { TLocale } from '@maany_shr/e-class-translations';
 import GroupWorkspaceStudent from '../../client/pages/group-workspace-student';
 import getSession from '../config/auth/get-session';
+import { canAccessCoachGroupWorkspace } from '../../common/utils/course-group-access';
 
 interface GroupWorkspaceCoachServerComponentProps {
   locale: TLocale;
@@ -23,9 +24,12 @@ export default async function GroupWorkspaceCoachServerComponent(
   props: GroupWorkspaceCoachServerComponentProps
 ) {
   const session = await getSession();
-  const isCoach = session?.user?.roles?.includes('coach');
+  // Coaches (coupon members) OR course managers (superadmin/admin/course_creator)
+  const canUseCoachWorkspace = canAccessCoachGroupWorkspace(
+    session?.user?.roles,
+  );
 
-  if(isCoach) {
+  if (canUseCoachWorkspace) {
     // TRPC prefetching for page data
     // Usecases: saveGroupNotes, getGroupNotes, listGroupAssignments, listGroupMembers, getGroupNextCoachingSession
     prefetch(trpc.getGroupIntroduction.queryOptions({
