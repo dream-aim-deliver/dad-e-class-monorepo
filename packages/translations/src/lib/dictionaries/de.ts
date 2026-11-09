@@ -4101,7 +4101,7 @@ export const DE: TDictionary = {
       },
       about: {
         title: "Über uns | {appName}",
-        description: "Wer hinter {appName} steht und wie wir dich mit Kursen und Coaching sichtbar machen – für Arbeitgeber, Kundschaft und Auftraggeber.",
+        description: "Werbeagentur anders gedacht: {appName} verbindet KI mit menschlicher Expertise. So funktionieren Kurse, Pakete und Coaching – und was dich erwartet.",
       },
       offers: {
         title: "Kurse und Angebote | {appName}",
