@@ -4106,8 +4106,8 @@ export const EN: TDictionary = {
         description: "All {appName} courses and packages at a glance: job applications, personal branding and self-marketing, online and with coaching.",
       },
       offerInformation: {
-        title: "How Our Offers Work | {appName}",
-        description: "How courses, packages and coaching work at {appName} and what to expect after you book.",
+        title: "Rethinking the Agency: How {appName} Works",
+        description: "Rethinking the agency: Just do Ad combines AI with human expertise. How courses, packages and coaching work – and what to expect.",
       },
       coaching: {
         title: "Book a Coaching Session | {appName}",
