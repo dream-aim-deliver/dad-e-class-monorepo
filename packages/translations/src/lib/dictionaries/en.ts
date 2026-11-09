@@ -4098,8 +4098,8 @@ export const EN: TDictionary = {
         description: "Online courses and personal coaching for job applications, personal branding and visibility. Learn at your own pace, with coaches by your side.",
       },
       about: {
-        title: "About Us | {appName}",
-        description: "Who is behind {appName} and how our courses and coaching make you visible to employers, clients and customers.",
+        title: "About Us: Agency Power in Your Hands | {appName}",
+        description: "Agency know-how for everyone: {appName} brings together advertising experts, courses and coaching so you can make your ideas, brand and services visible.",
       },
       offers: {
         title: "Courses and Offers | {appName}",
