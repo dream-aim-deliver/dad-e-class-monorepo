@@ -2700,7 +2700,7 @@ export const DE: TDictionary = {
       },
     },
     aboutPage: {
-      title: 'Über uns',
+      title: 'Über {appName}: Agenturpower in deinen Händen',
       loadError: {
         title: 'Seite konnte nicht geladen werden',
         description: 'Der Inhalt der Über-uns-Seite konnte nicht geladen werden. Bitte versuche es erneut.',
@@ -2756,7 +2756,7 @@ export const DE: TDictionary = {
       },
     },
     offerInformation: {
-      title: 'Angebotsinformationen',
+      title: 'So funktionieren die Angebote von {appName}',
       loadError: {
         title: 'Angebotsinformationen konnten nicht geladen werden',
         description: 'Die Angebotsinformationen konnten nicht geladen werden. Bitte aktualisiere die Seite.',
