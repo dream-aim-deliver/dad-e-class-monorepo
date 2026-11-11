@@ -99,7 +99,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
                     <CoachCard
                         key={`coach-${coach.username}`}
                         locale={locale}
-                        isPublicView
+                        hideRating
                         cardDetails={{
                             coachName: [coach.name, coach.surname].filter(Boolean).join(' ') || coach.username,
                             coachImage: coach.avatarUrl ?? undefined,

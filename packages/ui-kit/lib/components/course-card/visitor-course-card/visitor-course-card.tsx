@@ -140,7 +140,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             you={false}
                             locale={locale as TLocale}
                             onClickUser={onClickUser}
-                            isPublicView
+                            hideCreator
                         />
 
                         <CourseStats
@@ -149,7 +149,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             sessions={sessions}
                             duration={formattedDuration}
                             sales={sales}
-                            isPublicView
+                            hideSales
                         />
                     </div>
 

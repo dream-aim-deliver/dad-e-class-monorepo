@@ -36,7 +36,7 @@ type BaseCoachCardProps = {
   className?: string;
   locale: TLocale;
   /** When true (public listings), hide ratings below the min-reviews threshold. */
-  isPublicView?: boolean;
+  hideRating?: boolean;
 };
 
 type CoachVariantProps = BaseCoachCardProps & {
@@ -75,7 +75,7 @@ export type CoachCardProps = CoachVariantProps | CourseCreatorVariantProps | Def
  * */
 
 const CoachCard: FC<CoachCardProps> = (props) => {
-  const { cardDetails, onClickCourse, className, locale, variant = 'student', isPublicView = false } = props;
+  const { cardDetails, onClickCourse, className, locale, variant = 'student', hideRating = false } = props;
 
   // Type-safe extraction of variant-specific props
   const onClickViewProfile = props.onClickViewProfile;
@@ -85,7 +85,7 @@ const CoachCard: FC<CoachCardProps> = (props) => {
   if (!cardDetails) return null; // Prevents errors if cardDetails is undefined
 
   const dictionary = getDictionary(locale);
-  const showRating = !isPublicView || shouldShowRating(cardDetails.totalRatings);
+  const showRating = !hideRating || shouldShowRating(cardDetails.totalRatings);
 
   return (
     <div

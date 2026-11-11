@@ -76,7 +76,7 @@ describe('CoachCard Component', () => {
       <CoachCard
         cardDetails={{ ...mockCoachDetails, totalRatings: 0 }}
         locale="en"
-        isPublicView
+        hideRating
       />
     );
 

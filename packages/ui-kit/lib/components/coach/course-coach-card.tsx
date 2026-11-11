@@ -36,7 +36,7 @@ export interface CoachCardProps {
   className?: string;
   locale: TLocale;
   /** When true (public surfaces), hide ratings below the min-reviews threshold. */
-  isPublicView?: boolean;
+  hideRating?: boolean;
 }
 
 /**
@@ -58,12 +58,12 @@ const CourseCoachCard: FC<CoachCardProps> = ({
   onClickBookSession,
   className,
   locale,
-  isPublicView = false,
+  hideRating = false,
 }) => {
   if (!cardDetails) return null; // Prevents errors if cardDetails is undefined
 
   const dictionary = getDictionary(locale);
-  const showRating = !isPublicView || shouldShowRating(cardDetails.totalRatings);
+  const showRating = !hideRating || shouldShowRating(cardDetails.totalRatings);
 
   return (
     <div

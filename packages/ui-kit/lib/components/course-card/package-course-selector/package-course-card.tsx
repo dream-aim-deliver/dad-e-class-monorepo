@@ -143,7 +143,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
                         imageUrl={author?.image}
                         locale={locale as TLocale}
                         onClickUser={onClickUser}
-                        isPublicView
+                        hideCreator
                     />
 
                     <CourseStats
@@ -152,7 +152,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
                         sessions={coachingSessionCount ?? 0}
                         duration={formattedDuration}
                         sales={sales}
-                        isPublicView
+                        hideSales
                     />
 
                     {description && (
