@@ -9,6 +9,7 @@ import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import SkillBadges from '../skill-badges';
 import { IconTrashAlt } from '../icons/icon-trash-alt';
 import { IconAccountInformation } from '../icons/icon-account-information';
+import { shouldShowRating } from '../../utils/should-show-rating';
 
 interface Course {
   image: string;
@@ -34,6 +35,8 @@ export interface CoachCardProps {
   onClickBookSession?: () => void;
   className?: string;
   locale: TLocale;
+  /** When true (public surfaces), hide ratings below the min-reviews threshold. */
+  hideRating?: boolean;
 }
 
 /**
@@ -54,11 +57,13 @@ const CourseCoachCard: FC<CoachCardProps> = ({
   onClickViewProfile,
   onClickBookSession,
   className,
-  locale
+  locale,
+  hideRating = false,
 }) => {
   if (!cardDetails) return null; // Prevents errors if cardDetails is undefined
 
   const dictionary = getDictionary(locale);
+  const showRating = !hideRating || shouldShowRating(cardDetails.totalRatings);
 
   return (
     <div
@@ -74,7 +79,9 @@ const CourseCoachCard: FC<CoachCardProps> = ({
           <UserAvatar fullName={cardDetails.coachName} className="w-10 h-10 rounded-full flex-shrink-0" imageUrl={cardDetails.coachImage} />
           <div className="flex flex-col min-w-0 gap-1">
             <p className="text-color-text-primary text-white text-sm md:text-md leading-4 font-bold truncate">{cardDetails.coachName}</p>
-            <RatingDisplay rating={cardDetails.rating} totalRatings={cardDetails.totalRatings} />
+            {showRating && (
+              <RatingDisplay rating={cardDetails.rating} totalRatings={cardDetails.totalRatings} />
+            )}
           </div>
         </div>
 

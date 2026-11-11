@@ -9,6 +9,7 @@ import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../../rich-text-element/renderer';
 import { useImageComponent } from '../../../contexts/image-component-context';
 import { computeTotalDurationMinutes, formatCompactDuration } from '../../../utils/video-duration';
+import { shouldShowRating } from '../../../utils/should-show-rating';
 
 // Extend the existing type with the properties we need that aren't in TCourseMetadata
 export interface VisitorCourseCardProps extends course.TCourseMetadata {
@@ -89,8 +90,10 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     };
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
-
+    const showRating = shouldShowRating(reviewCount);
+    const showPriceButton = (pricing.partialPrice ?? 0) > 0;
     const pricingLabel = `${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice}`;
+
     return (
         <div className="w-full mx-auto">
             <div className="flex flex-col w-auto h-[37.5rem] rounded-medium border border-card-stroke bg-card-fill overflow-visible transition-transform hover:scale-[1.02]">
@@ -127,7 +130,9 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             </h6>
                         </div>
 
-                        <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
+                        {showRating && (
+                            <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
+                        )}
 
                         <CourseCreator
                             creatorName={author?.name as string}
@@ -135,6 +140,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             you={false}
                             locale={locale as TLocale}
                             onClickUser={onClickUser}
+                            hideCreator
                         />
 
                         <CourseStats
@@ -143,6 +149,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                             sessions={sessions}
                             duration={formattedDuration}
                             sales={sales}
+                            hideSales
                         />
                     </div>
 
@@ -165,13 +172,15 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
                                     .detailsCourseButton
                             }
                         />
-                        <Button
-                            className=""
-                            variant={'primary'}
-                            size={'medium'}
-                            onClick={onDetails}
-                            text={pricingLabel}
-                        />
+                        {showPriceButton && (
+                            <Button
+                                className=""
+                                variant={'primary'}
+                                size={'medium'}
+                                onClick={onDetails}
+                                text={pricingLabel}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
