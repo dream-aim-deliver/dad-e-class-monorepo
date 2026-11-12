@@ -243,12 +243,16 @@ export const DE: TDictionary = {
       duplicateButton: 'Duplizieren',
       beginCourseButton: 'Kurs starten',
       resumeCourseButton: 'Fortsetzen',
-      reviewCourseButton: 'Überprüfen',
+      reviewCourseButton: 'Kurs bewerten',
       detailsCourseButton: 'Zum Angebot',
       publishedBadge: 'Veröffentlicht',
       underReviewBadge: 'In Bearbeitung',
       buyButton: 'Kaufen',
       fromButton: 'ab',
+      rateCourseTooltip: 'Kurs bewerten',
+      rateEntryLabel: 'Bewerten',
+      courseNotStartedHint: 'Starte den Kurs, um ihn zu bewerten.',
+      notEnrolledHint: 'Melde dich für den Kurs an, um ihn zu bewerten.',
       draftBadge: 'Entwurf',
       completedBadge: 'Kurs abgeschlossen',
       cochingSession: 'Coaching-Sitzung(en) gesamt',
@@ -289,6 +293,10 @@ export const DE: TDictionary = {
       thankYouText: 'Vielen Dank für dein Feedback!',
       errorState:
         'Fehler beim Einreichen der Bewertung. Bitte versuche es später erneut.',
+      courseHint:
+        'Dein Feedback hilft anderen Lernenden bei der Kurswahl.',
+      coachingHint:
+        'Dein Feedback hilft dem Coach und anderen Teilnehmenden.',
     },
     dragDrop: {
       title: 'Dateien hier ablegen...',

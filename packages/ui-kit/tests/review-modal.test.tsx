@@ -17,6 +17,8 @@ vi.mock('@maany_shr/e-class-translations', () => ({
         thankYouText: 'Thank you for your feedback!',
         closeButton: 'Close',
         errorState: 'An error occurred. Please try again.',
+        courseHint: 'Your feedback helps other learners choose the right course.',
+        coachingHint: 'Your feedback helps the coach and other participants.',
       },
     },
   }),
@@ -205,6 +207,20 @@ describe('ReviewDialog', () => {
   it('shows correct title for course', () => {
     render(<ReviewModal {...defaultProps} modalType="course" />);
     expect(screen.getByText('How would you rate this course?')).toBeInTheDocument();
+  });
+
+  it('shows course hint above the review text field', () => {
+    render(<ReviewModal {...defaultProps} modalType="course" />);
+    expect(
+      screen.getByText('Your feedback helps other learners choose the right course.'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows coaching hint above the review text field', () => {
+    render(<ReviewModal {...defaultProps} modalType="coaching" />);
+    expect(
+      screen.getByText('Your feedback helps the coach and other participants.'),
+    ).toBeInTheDocument();
   });
 
   it('renders dialog variant when is open', () => {

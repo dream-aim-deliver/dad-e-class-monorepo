@@ -24,6 +24,9 @@ export interface PackageCourseCardProps extends course.TCourseMetadata {
     onClickUser: () => void;
     onClickDetails: () => void;
     onClickIncludeExclude: () => void;
+    /** Logged-in: show not-enrolled hint on star click. Omit when logged out. */
+    onClickRating?: () => void;
+    ratingBlockedHint?: string;
     locale: TLocale;
 };
 
@@ -84,6 +87,8 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
     onClickUser,
     onClickDetails,
     onClickIncludeExclude,
+    onClickRating,
+    ratingBlockedHint,
 }) => {
 
     // Calculate total course duration in minutes and format as "Xh Ym"
@@ -135,7 +140,17 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
 
                     </div>
                     {shouldShowRating(reviewCount) && (
-                        <RatingDisplay rating={rating as number} totalRatings={reviewCount} />
+                        <RatingDisplay
+                            rating={rating as number}
+                            totalRatings={reviewCount}
+                            tooltip={
+                                onClickRating || ratingBlockedHint
+                                    ? dictionary.components.courseCard.rateCourseTooltip
+                                    : undefined
+                            }
+                            blockedHint={ratingBlockedHint}
+                            onActivate={onClickRating}
+                        />
                     )}
 
                     <CourseCreator

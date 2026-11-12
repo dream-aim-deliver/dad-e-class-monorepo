@@ -8,7 +8,7 @@ import { Button } from '../button';
 import { FC, useState, useEffect } from 'react';
 import { UserAvatarReel } from '../avatar/user-avatar-reel';
 import { CheckBox } from '../checkbox';
-import { StarRating } from '../star-rating';
+import { RatingDisplay } from '../rating-display';
 import { IconVideoCamera } from '../icons/icon-video-camera';
 import { IconCoachingSession, IconCourse } from '../icons';
 import Tooltip from '../tooltip';
@@ -43,6 +43,9 @@ export interface CourseGeneralInformationVisitorProps
     requirementsDetails?: string;
     requiredCourses: RequiredCourse[];
     onClickRequiredCourse: (slug: string) => void;
+    /** Logged-in visitor: show not-enrolled hint on star click. Omit when logged out. */
+    onClickRating?: () => void;
+    ratingBlockedHint?: string;
 }
 
 /**
@@ -142,6 +145,8 @@ export const CourseGeneralInformationVisitor: FC<
     requiredCourses,
     requirementsDetails,
     coachingIncluded: initialCoachingIncluded = false,
+    onClickRating,
+    ratingBlockedHint,
 }) => {
         const dictionary = getDictionary(locale);
         const [isImageError, setIsImageError] = useState(false);
@@ -192,15 +197,23 @@ export const CourseGeneralInformationVisitor: FC<
                     <h1 className="text-text-primary"> {title} </h1>
                     {shouldShowRating(totalRating) && (
                         <div className="flex flex-row items-center gap-2">
-                            <p className="text-text-primary text-sm font-semibold"> {rating} </p>
-                            <StarRating totalStars={5} size={'4'} rating={rating} />
+                            <RatingDisplay
+                                rating={rating}
+                                totalRatings={totalRating}
+                                starSize="4"
+                                tooltip={
+                                    onClickRating || ratingBlockedHint
+                                        ? dictionary.components.courseCard.rateCourseTooltip
+                                        : undefined
+                                }
+                                blockedHint={ratingBlockedHint}
+                                onActivate={onClickRating}
+                            />
                             <p className="text-text-secondary text-sm">
-                                {' '}
-                                {totalRating}{' '}
                                 {
                                     dictionary.components.courseGeneralInformationView
                                         .reviewLabel
-                                }{' '}
+                                }
                             </p>
                         </div>
                     )}

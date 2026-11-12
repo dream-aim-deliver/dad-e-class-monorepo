@@ -10,10 +10,11 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
 import { useListCoursesPresenter } from '../../hooks/use-list-courses-presenter';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -68,6 +69,9 @@ export function OffersCourseList({
         'components.paginationButton',
     );
     const offersTranslations = useTranslations('pages.offers');
+    const { data: session } = useSession();
+    const isLoggedIn = !!session;
+    const notEnrolledHint = getDictionary(locale).components.courseCard.notEnrolledHint;
 
     const router = useRouter();
 
@@ -165,6 +169,7 @@ export function OffersCourseList({
                                 selfStudy: course.fullDuration,
                             }}
                             rating={course.averageRating ?? 0}
+                            ratingBlockedHint={isLoggedIn ? notEnrolledHint : undefined}
                         />
                     );
                 })}
