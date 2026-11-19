@@ -44,16 +44,17 @@ export default class CreateCoursePresenter extends BasePresenter<
     }
 
     presentSuccess(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         response: Extract<
             TCreateCourseUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCreateCourseViewModel {
+        // The create-course view model carries no data (the page only checks the mode),
+        // and zod 4 types its empty data shape as Record<string, never>.
         return {
             mode: 'default',
-            data: {
-                ...response.data
-            }
+            data: {},
         };
     }
 

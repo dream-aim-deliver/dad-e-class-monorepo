@@ -16,6 +16,7 @@ overrides:
   smol-toml: ^1.9.1
   tinypool: ^2.1.2
   typescript: 6.0.3
+  'zod@3': ^4.6.7
   uuid@<11.1.1: ^11.1.1
 minimumReleaseAgeExclude:
   - '@dream-aim-deliver/*'

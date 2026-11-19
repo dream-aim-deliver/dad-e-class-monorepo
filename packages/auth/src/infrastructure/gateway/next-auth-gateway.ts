@@ -57,14 +57,14 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
                     data: isValidSession.data
                 }
             }
-            console.error("[NextAuthGateway]: getSession: Validation Error: ", isValidSession.error.errors)
+            console.error("[NextAuthGateway]: getSession: Validation Error: ", isValidSession.error.issues)
             return {
                 success: false,
                 data: {
                     name: "ValidationError",
                     code: 400,
                     message: "Invalid session object",
-                    context: isValidSession.error.errors
+                    context: { issues: isValidSession.error.issues }
                 }
             }
         }

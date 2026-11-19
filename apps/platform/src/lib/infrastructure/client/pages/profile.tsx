@@ -637,7 +637,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		});
 
 		if (!validationResult.success) {
-			const errors = validationResult.error.errors.map(err => err.message);
+			const errors = validationResult.error.issues.map(err => err.message);
 			setErrorMessage(errors.join(', '));
 			setSuccessMessage(null);
 			return; // Return early, don't call mutation
@@ -698,7 +698,7 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 		});
 
 		if (!validationResult.success) {
-			errors.push(...validationResult.error.errors.map(err => err.message));
+			errors.push(...validationResult.error.issues.map(err => err.message));
 		}
 
 		if (errors.length > 0) {

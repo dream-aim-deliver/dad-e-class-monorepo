@@ -56,11 +56,13 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
   const { platform } = useRequiredPlatform();
 
+  // listPackages takes no input: the platform travels in the x-eclass-platform headers.
+  // The slug/locale only scope the React Query cache per platform (the server strips
+  // them), so cast past the empty input type instead of sharing one cache entry.
+  const listPackagesInput = { platformSlug, platformLocale } as unknown as Record<string, never>;
+
   // TRPC query for listPackages usecase 
-  const [listPackagesResponse] = trpc.listPackages.useSuspenseQuery({
-    platformSlug,
-    platformLocale,
-  });
+  const [listPackagesResponse] = trpc.listPackages.useSuspenseQuery(listPackagesInput);
 
   const [listPackagesViewModel, setListPackagesViewModel] = useState<
     viewModels.TListPackagesViewModel | undefined
@@ -112,7 +114,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
       setShowArchiveModal(false);
       setShowSuccessModal(true);
       // Refetch packages by invalidating the query
-      utils.listPackages.invalidate({ platformSlug, platformLocale });
+      utils.listPackages.invalidate(listPackagesInput);
       // Auto-close success modal after 10 seconds
       const timer = setTimeout(() => {
         setShowSuccessModal(false);
@@ -139,7 +141,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     onSuccess: () => {
       setSuccessMessage(t('successMessages.packagePublished'));
       setErrorMessage(null);
-      utils.listPackages.invalidate({ platformSlug, platformLocale });
+      utils.listPackages.invalidate(listPackagesInput);
       // Auto-dismiss success message after 5 seconds
       const timer = setTimeout(() => setSuccessMessage(null), 10000);
       return () => clearTimeout(timer);

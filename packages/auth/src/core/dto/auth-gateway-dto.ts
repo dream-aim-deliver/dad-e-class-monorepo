@@ -12,9 +12,7 @@ export const GetSessionErrorDTO = z.object({
         name: z.string(),
         code: z.number(),
         message: z.string(),
-        context: z.object({
-            
-        }),
+        context: z.looseObject({}),
     })
 })
 

@@ -22,10 +22,11 @@ export default async function AllPackagesServerComponent(props: AllPackagesProps
   });
 
   // Streaming pattern: Fire prefetch without awaiting (TSK-PERF-007)
+  // Same cache-scoping input as the client page (see all-packages.tsx); the server ignores it.
   prefetch(trpc.listPackages.queryOptions({
     platformSlug: props.platformSlug,
     platformLocale: props.platformLocale
-  }));
+  } as unknown as Record<string, never>));
 
   return (
     <HydrateClient>
