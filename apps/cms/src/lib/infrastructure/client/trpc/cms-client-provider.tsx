@@ -195,28 +195,14 @@ export default function CMSTRPCClientProviders({
     // DEBUG: Log which client instance is currently active
     // console.log('[TRPC Client] ✅ Active client ready for use');
 
-    // Handle potential errors in TRPC provider setup
-    try {
-        return (
-                <trpc.Provider client={trpcClient} queryClient={queryClient}>
-                    <QueryClientProvider client={queryClient}>
-                        {children}
-                        {process.env.NODE_ENV === 'development' && (
-                            <ReactQueryDevtools />
-                        )}
-                    </QueryClientProvider>
-                </trpc.Provider>
-        );
-    } catch (error) {
-        console.error('[TRPC Provider] Failed to initialize TRPC provider:', error);
-        // Fallback: render children without TRPC (will cause hook errors but app won't crash completely)
-        return (
-            <>
-                <div style={{ color: 'red', padding: '1rem' }}>
-                    Connection Error - Check console for details
-                </div>
+    return (
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+            <QueryClientProvider client={queryClient}>
                 {children}
-            </>
-        );
-    }
+                {process.env.NODE_ENV === 'development' && (
+                    <ReactQueryDevtools />
+                )}
+            </QueryClientProvider>
+        </trpc.Provider>
+    );
 }
