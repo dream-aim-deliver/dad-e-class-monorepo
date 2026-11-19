@@ -8,8 +8,8 @@
   "// targets": "to see all targets run: nx show project cms --web",
   "targets": {
     "build": {
-      "// dependsOn": "Nx 24 infers ^typecheck for next build; keep the pre-upgrade ^build-only chain (ui-kit typecheck has pre-existing story errors)",
-      "dependsOn": ["^build"]
+      "// dependsOn": "Nx 24 infers ^typecheck for next build, but ui-kit typecheck has pre-existing story errors. next build type-checks against the declarations of referenced libraries; auth only emits them via its typecheck target (the other libs emit theirs during ui-kit's build), so depend on that one explicitly.",
+      "dependsOn": ["^build", { "target": "typecheck", "projects": ["auth"] }]
     },
     "lint": {
       "executor": "nx:run-commands",
