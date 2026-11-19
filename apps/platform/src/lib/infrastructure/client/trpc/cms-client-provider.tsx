@@ -197,30 +197,16 @@ export default function CMSTRPCClientProviders({
         [locale, cmsRestUrl, platformSlug],
     );
 
-    // Handle potential errors in TRPC provider setup
-    try {
-        return (
-            <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
-                <trpc.Provider client={trpcClient} queryClient={queryClient}>
-                    <QueryClientProvider client={queryClient}>
-                        {children}
-                        {process.env.NODE_ENV === 'development' && (
-                            <ReactQueryDevtools />
-                        )}
-                    </QueryClientProvider>
-                </trpc.Provider>
-            </ThemeProvider>
-        );
-    } catch (error) {
-        console.error('[TRPC Provider] Failed to initialize TRPC provider:', error);
-        // Fallback: render children without TRPC (will cause hook errors but app won't crash completely)
-        return (
-            <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
-                <div style={{ color: 'red', padding: '1rem' }}>
-                    TRPC Provider Error - Check console for details
-                </div>
-                {children}
-            </ThemeProvider>
-        );
-    }
+    return (
+        <ThemeProvider defaultTheme={runtimeConfig.defaultTheme}>
+            <trpc.Provider client={trpcClient} queryClient={queryClient}>
+                <QueryClientProvider client={queryClient}>
+                    {children}
+                    {process.env.NODE_ENV === 'development' && (
+                        <ReactQueryDevtools />
+                    )}
+                </QueryClientProvider>
+            </trpc.Provider>
+        </ThemeProvider>
+    );
 }
