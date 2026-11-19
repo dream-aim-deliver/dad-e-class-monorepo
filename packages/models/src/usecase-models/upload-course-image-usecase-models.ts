@@ -16,7 +16,7 @@ export type TUploadCourseImageRequest = z.infer<typeof UploadCourseImageRequestS
 
 export const UploadCourseImageSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
   storageUrl: z.string(),
-  formFields: z.record(z.string()),
+  formFields: z.record(z.string(), z.string()),
   file: z.object({
     id: z.string(),
     name: z.string(),

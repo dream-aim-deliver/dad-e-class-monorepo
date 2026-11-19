@@ -19,6 +19,7 @@ overrides:
   smol-toml: ^1.9.1
   tinypool: ^2.1.2
   typescript: 6.0.3
+  zod@3: ^4.6.7
   uuid@<11.1.1: ^11.1.1
 
 importers:
@@ -26,11 +27,11 @@ importers:
   .:
     dependencies:
       '@dream-aim-deliver/dad-cats':
-        specifier: ^0.13.4
-        version: 0.13.4
+        specifier: ^1.0.0
+        version: 1.0.0
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.4.8
-        version: 3.4.8(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)
+        specifier: 3.5.0
+        version: 3.5.0(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)
       '@mux/mux-player-react':
         specifier: 3.14.1
         version: 3.14.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -161,8 +162,8 @@ importers:
         specifier: ^6.2.3
         version: 6.2.3
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.6.7
+        version: 4.6.7
     devDependencies:
       '@babel/core':
         specifier: ^8.1.0
@@ -402,8 +403,8 @@ importers:
   packages/auth:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.4.8
-        version: 3.4.8(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)
+        specifier: 3.5.0
+        version: 3.5.0(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -417,32 +418,32 @@ importers:
         specifier: ^2.2.6
         version: 2.2.6
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.6.7
+        version: 4.6.7
 
   packages/models:
     dependencies:
       '@dream-aim-deliver/dad-cats':
-        specifier: ^0.13.4
-        version: 0.13.4
+        specifier: ^1.0.0
+        version: 1.0.0
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.4.8
-        version: 3.4.8(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)
+        specifier: 3.5.0
+        version: 3.5.0(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.6.7
+        version: 4.6.7
 
   packages/translations:
     dependencies:
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.6.7
+        version: 4.6.7
 
   packages/ui-kit:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 3.4.8
-        version: 3.4.8(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)
+        specifier: 3.5.0
+        version: 3.5.0(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -516,8 +517,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.19.2)(@vitest/coverage-v8@5.1.0)(@vitest/ui@5.1.0)(jsdom@30.1.3)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.6.7
+        version: 4.6.7
 
 packages:
 
@@ -1410,14 +1411,14 @@ packages:
   '@date-fns/tz@1.5.0':
     resolution: {integrity: sha512-lwYN/vDPeNRULcepoE/LO2Pgx+7/RV+S9ARfbc9lr2DtGkOD7pAiruHvbR1RX3Qyf6ja47EWJDMsNK5vK08DJg==}
 
-  '@dream-aim-deliver/dad-cats@0.13.4':
-    resolution: {integrity: sha512-V1Jw9yshPxqOMsQje1ZxTKmSlby8fwx157awDgsDPSlM/j6fEj4MuYXBHzN7Macp4oOtVpZAwJPmxN5OI0f6Xg==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-cats/0.13.4/45db81697ab6a751bd02851d1330d8e58fbcab99}
+  '@dream-aim-deliver/dad-cats@1.0.0':
+    resolution: {integrity: sha512-2dldDTPtwLYsQhbY3qu1PxUiuVEz29ZkM87ZOvxOr2/YYgdudQ6J6Y2sx5Ltk05VNIo3fvCLViBF2edA+2/5sA==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-cats/1.0.0/d54bccfd795cd049c82a6ffdf8af48d1865e8be6}
 
-  '@dream-aim-deliver/dad-data-platform-sdk-ts@1.3.1':
-    resolution: {integrity: sha512-aJDfUEj5IUjzt/cqlkEyg6eqzeG3cEuVRv58FVN6xl5VmNi0jDUM1kr0v233gt3blQcDveCTVhTNEE8W+Tb7ag==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/1.3.1/e99cd7a0bbead1c720a96a16cba20002640e18e9}
+  '@dream-aim-deliver/dad-data-platform-sdk-ts@2.0.0':
+    resolution: {integrity: sha512-ztbKJItZ6iDPByUQlaYstH9zyfq6JR8bhXUYVz6JwJxbdUzW9ZPoyT4Z/WBon6Sxi+cDcPzuQo/7PSCxP1hVTQ==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/2.0.0/e9d530ab51f5b0843bf8dbff9affafed478f98bf}
 
-  '@dream-aim-deliver/e-class-cms-rest@3.4.8':
-    resolution: {integrity: sha512-CMGq2aEAGxuksoGp61pYN8/cl1lX1c8Rm1nn1Hbjb5Y9ZUCRG3CuSBYjskJ4GjOO5deT5tN1Y3rzWxZLXR5iJw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.4.8/6ea7905670c0151cf3aca51ad11ba3e3510e05ba}
+  '@dream-aim-deliver/e-class-cms-rest@3.5.0':
+    resolution: {integrity: sha512-j4Uj+oXTd7FyA+UeIGh2PWxD+7UxfZkfGEALrp6XoMTS9R+E6axzLS3WZ1q1qb8BIZDlXztAVDi+6wRcvqVhSg==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/3.5.0/015a8edfc7b8f7e46b9d92aa4587bf66fee880ec}
 
   '@eloqnt/config@0.1.1':
     resolution: {integrity: sha512-YRDigSaiJEzKDfzTth5kG+L/PKfB3mo8h7yNzpXExPfvQmcD05WoZT57PdhJE0jI+Vva6eb0OCU8hnHHgdME3g==}
@@ -5155,6 +5156,7 @@ packages:
 
   axios-retry@4.5.0:
     resolution: {integrity: sha512-aR99oXhpEDGo0UuAlYcn2iGRds30k366Zfa05XWScR9QaQD4JYiP3/1Qt1u7YlefUOK+cn0CcwoL1oefavQUlQ==}
+    deprecated: axios-retry is no longer maintained. See https://github.com/softonic/axios-retry for alternatives.
     peerDependencies:
       axios: ^1.21.0
 
@@ -9833,10 +9835,10 @@ packages:
     resolution: {integrity: sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      zod: ^3.25.0 || ^4.0.0
+      zod: ^4.6.7
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
   zone.js@0.15.1:
     resolution: {integrity: sha512-XE96n56IQpJM7NAoXswY3XRLcWFW83xe0BiAOeMD7K5k5xecOeul3Qcpx6GqEeeHNkW5DWL5zOyTbEfB4eti8w==}
@@ -11052,34 +11054,34 @@ snapshots:
 
   '@date-fns/tz@1.5.0': {}
 
-  '@dream-aim-deliver/dad-cats@0.13.4':
+  '@dream-aim-deliver/dad-cats@1.0.0':
     dependencies:
       axios: 1.21.0
       axios-retry: 4.5.0(axios@1.21.0)
       deep-equal-js: 0.2.2
       pino: 9.14.0
-      zod: 3.25.76
+      zod: 4.6.7
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@dream-aim-deliver/dad-data-platform-sdk-ts@1.3.1':
+  '@dream-aim-deliver/dad-data-platform-sdk-ts@2.0.0':
     dependencies:
-      '@dream-aim-deliver/dad-cats': 0.13.4
+      '@dream-aim-deliver/dad-cats': 1.0.0
       '@mux/mux-node': 12.8.1
       axios: 1.21.0
       jsonwebtoken: 9.0.3
       pino: 9.14.0
-      zod: 3.25.76
+      zod: 4.6.7
     transitivePeerDependencies:
       - debug
       - encoding
       - supports-color
 
-  '@dream-aim-deliver/e-class-cms-rest@3.4.8(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)':
+  '@dream-aim-deliver/e-class-cms-rest@3.5.0(next@16.4.5(@babel/core@8.1.0)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)':
     dependencies:
-      '@dream-aim-deliver/dad-cats': 0.13.4
-      '@dream-aim-deliver/dad-data-platform-sdk-ts': 1.3.1
+      '@dream-aim-deliver/dad-cats': 1.0.0
+      '@dream-aim-deliver/dad-data-platform-sdk-ts': 2.0.0
       '@fastify/cors': 11.4.0
       '@fastify/otel': 0.13.1(@opentelemetry/api@1.10.0)
       '@fastify/rate-limit': 10.3.0
@@ -11106,7 +11108,7 @@ snapshots:
       reflect-metadata: 0.2.2
       superjson: 2.2.6
       uuid: 11.1.1
-      zod: 3.25.76
+      zod: 4.6.7
     transitivePeerDependencies:
       - '@types/aws-lambda'
       - '@types/express'
@@ -14166,7 +14168,7 @@ snapshots:
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 18.16.9
+      '@types/node': 24.19.2
       form-data: 4.0.6
 
   '@types/node@18.16.9': {}
@@ -15916,8 +15918,8 @@ snapshots:
       '@babel/parser': 7.29.13
       eslint: 9.39.5(jiti@2.7.0)
       hermes-parser: 0.25.1
-      zod: 3.25.76
-      zod-validation-error: 4.0.2(zod@3.25.76)
+      zod: 4.6.7
+      zod-validation-error: 4.0.2(zod@4.6.7)
     transitivePeerDependencies:
       - supports-color
 
@@ -18787,7 +18789,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.2
-      '@types/node': 18.16.9
+      '@types/node': 24.19.2
       long: 5.3.2
 
   proxy-from-env@2.1.0: {}
@@ -20476,11 +20478,11 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-validation-error@4.0.2(zod@3.25.76):
+  zod-validation-error@4.0.2(zod@4.6.7):
     dependencies:
-      zod: 3.25.76
+      zod: 4.6.7
 
-  zod@3.25.76: {}
+  zod@4.6.7: {}
 
   zone.js@0.15.1: {}
 

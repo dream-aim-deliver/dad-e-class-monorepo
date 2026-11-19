@@ -6,7 +6,7 @@ import { EN } from "./dictionaries/en";
 // Add your locales to the enum below
 export const localesSchema = z.enum(['en', 'de']);
 export type TLocale = z.infer<typeof localesSchema>;
-export const locales = Object.values(localesSchema.Values).map((locale) => locale);
+export const locales = Object.values(localesSchema.enum).map((locale) => locale);
 
 // Add your dictionaries to the object below
 export const dictionaries: Record<TLocale, TDictionary> = {
@@ -16,6 +16,6 @@ export const dictionaries: Record<TLocale, TDictionary> = {
 
 
 export const i18nConfig = {
-  defaultLocale: localesSchema.Values.en,
+  defaultLocale: localesSchema.enum.en,
   locales: locales,
 } as const;
