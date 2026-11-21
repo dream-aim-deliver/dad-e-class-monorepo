@@ -4100,8 +4100,8 @@ export const DE: TDictionary = {
         description: "Online-Kurse und persönliches Coaching für Bewerbung, Personal Branding und Sichtbarkeit. Lerne in deinem Tempo, mit Coaches an deiner Seite.",
       },
       about: {
-        title: "Über uns | {appName}",
-        description: "Wer hinter {appName} steht und wie wir dich mit Kursen und Coaching sichtbar machen – für Arbeitgeber, Kundschaft und Auftraggeber.",
+        title: "Über {appName}: Werbeagentur trifft Lernplattform",
+        description: "Agenturwissen für alle: {appName} bringt Werbeprofis, Kurse und Coaching zusammen, damit du Ideen, Marken und Angebote selbst sichtbar machst.",
       },
       offers: {
         title: "Kurse und Angebote | {appName}",
