@@ -2698,7 +2698,7 @@ export const EN: TDictionary = {
       },
     },
     aboutPage: {
-      title: 'About us',
+      title: 'About {appName}: Agency Power in Your Hands',
       loadError: {
         title: 'Unable to load page',
         description: 'We couldn\'t load the about page content. Please try again.',
@@ -2754,7 +2754,7 @@ export const EN: TDictionary = {
       },
     },
     offerInformation: {
-      title: 'Offer Information',
+      title: 'How the {appName} Offers Work',
       loadError: {
         title: 'Failed to Load Offer Information',
         description: 'Unable to load offer information. Please refresh the page.',

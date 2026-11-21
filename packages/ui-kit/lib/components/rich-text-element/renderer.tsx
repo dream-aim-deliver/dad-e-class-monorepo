@@ -40,6 +40,15 @@ function RichTextRenderer({
   );
 }
 
+const HEADING_SIZE = {
+  h1: "text-3xl",
+  h2: "text-2xl",
+  h3: "text-xl",
+  h4: "text-lg",
+  h5: "text-md",
+  h6: "text-sm",
+} as const;
+
 /**
  * ElementNode Component
  *
@@ -55,8 +64,12 @@ const RenderElement = ({ attributes, children, element }: {
 }) => {
   const style = { textAlign: element.align };
 
-  // Helper to check if element is empty (only contains empty text)
-  const isEmpty = element.children?.length === 1 && element.children[0].text === "";
+  // Helper to check if element is empty (only contains empty or whitespace-only text)
+  const isEmpty =
+    Array.isArray(element.children) &&
+    element.children.every(
+      (child: any) => typeof child.text === "string" && child.text.trim() === ""
+    );
 
   // For empty elements, insert a non-breaking space to prevent CSS collapse
   const content = isEmpty ? <>&nbsp;</> : children;
@@ -94,17 +107,21 @@ const RenderElement = ({ attributes, children, element }: {
     case "list-item":
       return <li {...attributes} style={style} className="ml-4">{children}</li>;
     case "h1":
-      return <h1 {...attributes} style={style} className={`text-3xl font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h1>;
     case "h2":
-      return <h2 {...attributes} style={style} className={`text-2xl font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h2>;
     case "h3":
-      return <h3 {...attributes} style={style} className={`text-xl font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h3>;
     case "h4":
-      return <h4 {...attributes} style={style} className={`text-lg font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h4>;
     case "h5":
-      return <h5 {...attributes} style={style} className={`text-md font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h5>;
-    case "h6":
-      return <h6 {...attributes} style={style} className={`text-sm font-bold ${isEmpty ? "h-[1lh]" : ""}`}>{content}</h6>;
+    case "h6": {
+      const sizeClass = HEADING_SIZE[element.type as keyof typeof HEADING_SIZE];
+      // SEO / accessibility: an empty heading line is only spacing, not a heading.
+      if (isEmpty) {
+        return <div {...attributes} style={style} aria-hidden="true" className={`${sizeClass} font-bold h-[1lh]`}>&nbsp;</div>;
+      }
+      // SEO: the page already renders its own <h1>; rich text content starts at <h2>.
+      // An "h1" from the editor keeps its size but is output as <h2>.
+      const Tag = (element.type === "h1" ? "h2" : element.type) as "h2" | "h3" | "h4" | "h5" | "h6";
+      return <Tag {...attributes} style={style} className={`${sizeClass} font-bold`}>{content}</Tag>;
+    }
     case "horizontal-rule":
       return (
         <div {...attributes} style={style} className="w-full">

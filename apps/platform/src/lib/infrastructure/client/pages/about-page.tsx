@@ -10,11 +10,13 @@ import {
     RichTextRenderer,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 export default function AboutPage() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.aboutPage');
+    const { NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: appName } = useRuntimeConfig();
 
     const [aboutPageResponse, { refetch: refetchAboutPage }] = trpc.getPlatformLanguage.useSuspenseQuery({});
     const [aboutPageViewModel, setAboutPageViewModel] = useState<
@@ -68,7 +70,7 @@ export default function AboutPage() {
 
     return (
         <div className="flex flex-col space-y-5 max-w-[45rem] mx-auto">
-            <h1>{t('title')}</h1>
+            <h1>{t('title', { appName })}</h1>
             {aboutPageData.aboutPageContent && (
                 <RichTextRenderer
                     content={aboutPageData.aboutPageContent}

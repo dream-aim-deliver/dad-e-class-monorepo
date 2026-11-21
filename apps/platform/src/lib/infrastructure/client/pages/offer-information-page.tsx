@@ -11,12 +11,14 @@ import {
     RichTextRenderer,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
+import { useRuntimeConfig } from '../context/runtime-config-context';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 
 export default function OfferInformationPage() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.offerInformation');
+    const { NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: appName } = useRuntimeConfig();
 
     const [offerInformationResponse, { refetch: refetchOfferInformation }] = trpc.getPlatformLanguage.useSuspenseQuery({});
     const [offerInformationViewModel, setOfferInformationViewModel] = useState<
@@ -72,7 +74,7 @@ export default function OfferInformationPage() {
 
     return (
         <div className="flex flex-col space-y-5 px-30">
-            <h1>{t('title')}</h1>
+            <h1>{t('title', { appName })}</h1>
             {offerInformationData.offerInformation && (
                 <RichTextRenderer
                     content={offerInformationData.offerInformation}
