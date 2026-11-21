@@ -6,6 +6,7 @@ const mockDictionary = {
   components: {
     coachCard: {
       coachingSession: 'session',
+      coachingSessions: 'sessions',
       teaches: 'Teaches',
       viewProfile: 'View Profile',
       bookSession: 'Book Session'

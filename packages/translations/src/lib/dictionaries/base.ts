@@ -328,6 +328,7 @@ export const DictionarySchema = z.object({
     }),
     coachCard: z.object({
       coachingSession: z.string(),
+      coachingSessions: z.string(),
       teaches: z.string(),
       more: z.string(),
       viewProfile: z.string(),
@@ -695,7 +696,8 @@ export const DictionarySchema = z.object({
       chooseSupportLevel: z.string(),
       chooseSupportLevelDescription: z.string(),
       saveLabel: z.string(),
-      reviewLabel: z.string(),
+      reviewLabelSingular: z.string(),
+      reviewLabelPlural: z.string(),
       bookLabel: z.string(),
       taughtBy: z.string(),
       requirementsTitle: z.string(),

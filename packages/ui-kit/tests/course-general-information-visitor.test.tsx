@@ -27,7 +27,8 @@ vi.mock('@maany_shr/e-class-translations', () => ({
                 coachingIncluded: 'Coaching included',
                 saveLabel: 'Save',
                 buyButton: 'Buy Course',
-                reviewLabel: 'reviews',
+                reviewLabelSingular: 'review',
+                reviewLabelPlural: 'reviews',
             },
             coachBanner: {
                 placeHolderText: 'No image available',

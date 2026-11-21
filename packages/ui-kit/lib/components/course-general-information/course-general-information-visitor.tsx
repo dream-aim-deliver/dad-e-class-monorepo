@@ -195,10 +195,11 @@ export const CourseGeneralInformationVisitor: FC<
                         <p className="text-text-secondary text-sm">
                             {' '}
                             {totalRating}{' '}
-                            {
-                                dictionary.components.courseGeneralInformationView
-                                    .reviewLabel
-                            }{' '}
+                            {totalRating === 1
+                                ? dictionary.components.courseGeneralInformationView
+                                      .reviewLabelSingular
+                                : dictionary.components.courseGeneralInformationView
+                                      .reviewLabelPlural}{' '}
                         </p>
                     </div>
 
