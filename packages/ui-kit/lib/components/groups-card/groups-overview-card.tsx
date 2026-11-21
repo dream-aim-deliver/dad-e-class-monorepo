@@ -35,6 +35,12 @@ type BaseGroupOverviewCardProps = {
 
 type GroupOverviewCardProps = BaseGroupOverviewCardProps & {
     onClickManage?: () => void;
+    /**
+     * When true, show Manage even if the current user is not listed as a
+     * group coach (e.g. superadmin / admin / course creator oversight).
+     * Coupon-based coach membership is unchanged.
+     */
+    canManageWithoutMembership?: boolean;
 };
 
 export type { GroupOverviewCardProps };
@@ -43,7 +49,8 @@ export type { GroupOverviewCardProps };
  * GroupOverviewCard component for displaying group information
  *
  * @param cardDetails - The details of the group to be displayed
- * @param onClickManage - Callback for manage action (shown if current user is a coach)
+ * @param onClickManage - Callback for manage action
+ * @param canManageWithoutMembership - Show Manage for course managers without group membership
  * @param onClickCourse - Callback for clicking on course
  * @param className - Additional CSS classes
  * @param locale - The locale for translations
@@ -54,6 +61,7 @@ const GroupOverviewCard: FC<GroupOverviewCardProps> = ({
     className,
     locale,
     onClickManage,
+    canManageWithoutMembership = false,
 }) => {
     if (!cardDetails) return null;
 
@@ -137,8 +145,10 @@ const GroupOverviewCard: FC<GroupOverviewCardProps> = ({
                 </div>
             )}
 
-            {/* Action Button - only Manage button if current user is a coach */}
-            {cardDetails.coaches?.some(coach => coach.isCurrentUser) && onClickManage && (
+            {/* Manage: group coach (isCurrentUser) OR course manager oversight */}
+            {(canManageWithoutMembership ||
+                cardDetails.coaches?.some((coach) => coach.isCurrentUser)) &&
+                onClickManage && (
                 <div className="mt-2">
                     <Button
                         variant="secondary"

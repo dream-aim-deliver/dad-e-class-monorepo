@@ -25,6 +25,7 @@ import { useGroupMembers } from './hooks/use-group-members';
 import useClientSidePagination from '../utils/use-client-side-pagination';
 import { hasNoteContent } from '../utils/has-note-content';
 import AssignmentContent from './course/enrolled-course/assignment-content';
+import { canAccessCoachGroupWorkspace } from '../../common/utils/course-group-access';
 
 interface GroupWorkspaceCoachProps {
   locale: TLocale;
@@ -43,7 +44,7 @@ export default function GroupWorkspaceCoach({
   const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
   const paginationTranslations = useTranslations('components.paginationButton');
 
-  // Authentication using Pattern B (Coach role only)
+  // Coach (coupon member) or course manager (admin / superadmin / course_creator)
   const sessionDTO = useSession();
 
   // Create/Edit Notes state
@@ -278,9 +279,8 @@ export default function GroupWorkspaceCoach({
   });
 
   const session = sessionDTO.data;
-  const isCoach = session?.user?.roles?.includes('coach');
-
-  if (!isCoach) {
+  // Coaches (coupon members) OR course managers without coupon membership
+  if (!canAccessCoachGroupWorkspace(session?.user?.roles)) {
     return (
       <DefaultError
         type="simple"
