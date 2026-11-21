@@ -13,6 +13,7 @@ import { IconVideoCamera } from '../icons/icon-video-camera';
 import { IconCoachingSession, IconCourse } from '../icons';
 import Tooltip from '../tooltip';
 import { formatPrice } from '../../utils/format-utils';
+import { shouldShowRating } from '../../utils/should-show-rating';
 
 interface Coach {
     name: string;
@@ -189,18 +190,20 @@ export const CourseGeneralInformationVisitor: FC<
                 <div className="flex flex-col basis-full md:flex-1 gap-4 md:gap-6 items-start order-1 md:order-2 min-w-0">
                     {/* Title & rating */}
                     <h1 className="text-text-primary"> {title} </h1>
-                    <div className="flex flex-row items-center gap-2">
-                        <p className="text-text-primary text-sm font-semibold"> {rating} </p>
-                        <StarRating totalStars={5} size={'4'} rating={rating} />
-                        <p className="text-text-secondary text-sm">
-                            {' '}
-                            {totalRating}{' '}
-                            {
-                                dictionary.components.courseGeneralInformationView
-                                    .reviewLabel
-                            }{' '}
-                        </p>
-                    </div>
+                    {shouldShowRating(totalRating) && (
+                        <div className="flex flex-row items-center gap-2">
+                            <p className="text-text-primary text-sm font-semibold"> {rating} </p>
+                            <StarRating totalStars={5} size={'4'} rating={rating} />
+                            <p className="text-text-secondary text-sm">
+                                {' '}
+                                {totalRating}{' '}
+                                {
+                                    dictionary.components.courseGeneralInformationView
+                                        .reviewLabel
+                                }{' '}
+                            </p>
+                        </div>
+                    )}
 
                     {/* IMAGE for mobile */}
                     <div className="relative w-full max-w-full max-h-[400px] bg-base-neutral-700 rounded-medium overflow-hidden block md:hidden sticky">

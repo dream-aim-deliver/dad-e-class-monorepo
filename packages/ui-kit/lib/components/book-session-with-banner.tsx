@@ -7,6 +7,7 @@ import SkillBadges from './skill-badges';
 import { IconLanguage } from './icons/icon-language';
 import { IconLink } from './icons/icon-link';
 import { IconLinkedin } from './icons/icon-linkedin';
+import { shouldShowRating } from '../utils/should-show-rating';
 
 export interface BookSessionWithProps extends isLocalAware {
     coachName: string;
@@ -58,6 +59,7 @@ export const BookSessionWith = ({
     portfolioWebsite,
 }: BookSessionWithProps) => {
     const dictionary = getDictionary(locale).components.bookSessionWithBanner;
+    const showRating = shouldShowRating(totalRatings);
 
     return (
         <div className="flex flex-col w-full items-start gap-4">
@@ -72,10 +74,14 @@ export const BookSessionWith = ({
                 <div className="flex flex-col w-full gap-2">
                     <h1 className="text-text-primary"> {coachName} </h1>
                     <div className="flex flex-row w-full gap-2 items-center">
-                        <StarRating totalStars={5} size={'4'} rating={coachRating} />
-                        <p className="text-sm font-important text-text-primary">
-                            {coachRating} ({totalRatings})
-                        </p>
+                        {showRating && (
+                            <>
+                                <StarRating totalStars={5} size={'4'} rating={coachRating} />
+                                <p className="text-sm font-important text-text-primary">
+                                    {coachRating} ({totalRatings})
+                                </p>
+                            </>
+                        )}
                         {/* Show coach badge and, if applicable, course creator badge */}{' '}
                         <Badge
                             variant="info"

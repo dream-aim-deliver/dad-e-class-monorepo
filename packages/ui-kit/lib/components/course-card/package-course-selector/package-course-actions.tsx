@@ -40,12 +40,18 @@ export const PackageCourseActions: React.FC<PackageCourseActionsProps> = ({
         ? dictionary.components.courseCard.excludeCourseButton
         : dictionary.components.courseCard.includeCourseButton;
 
+    const showPrice = (pricing.partialPrice ?? 0) > 0;
+
     return (
         <div className='flex flex-col gap-2'>
             <div className='flex items-center justify-between'>
-                <h6 className='text-md font-bold leading-[120%] text-text-primary'>
-                    {pricing.currency} {pricing.partialPrice}
-                </h6>
+                {showPrice ? (
+                    <h6 className='text-md font-bold leading-[120%] text-text-primary'>
+                        {pricing.currency} {pricing.partialPrice}
+                    </h6>
+                ) : (
+                    <span />
+                )}
                 <Button
                     variant='text'
                     size='medium'

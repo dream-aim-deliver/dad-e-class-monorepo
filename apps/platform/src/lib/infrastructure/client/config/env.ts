@@ -35,6 +35,12 @@ const clientEnvSchema = z.object({
         (v) => (v === '' ? undefined : v),
         z.string().url().optional(),
     ),
+    // Min review count before stars+count are shown on public cards/pages.
+    // Empty / unset → default 1 via preprocess.
+    NEXT_PUBLIC_MIN_REVIEWS_TO_SHOW: z.preprocess(
+        (v) => (v === '' || v === undefined || v === null ? '1' : v),
+        z.coerce.number().int().min(0).default(1),
+    ),
 });
 
 export { clientEnvSchema };
@@ -57,6 +63,7 @@ const runtimeEnv = {
     NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID: process.env.NEXT_PUBLIC_USERCENTRICS_SETTINGS_ID,
     NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
     NEXT_PUBLIC_LOGO_HREF: process.env.NEXT_PUBLIC_LOGO_HREF,
+    NEXT_PUBLIC_MIN_REVIEWS_TO_SHOW: process.env.NEXT_PUBLIC_MIN_REVIEWS_TO_SHOW,
 };
 
 const envValidationResult = clientEnvSchema.safeParse(runtimeEnv);
